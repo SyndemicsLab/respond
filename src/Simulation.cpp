@@ -8,7 +8,7 @@
 /// @return error code if necessary
 static int callback(void* objData, int argc, char** rowData, char** colNames){
     Simulation* sim = (Simulation*) objData;
-    // Eigen::MatrixXd convertedMatrix = convert from rowData
+    // Eigen::Tensor<float, 3> convertedMatrix = convert from rowData
     // sim->AddTransitionMatrix(convertedMatrix);
 }
 
@@ -34,16 +34,19 @@ Eigen::Tensor<float, 3> timestepPass(Eigen::Tensor<float, 3> state, Eigen::Tenso
 /// @brief Method restricted to file for getting the new state
 /// @param state Full State Tensor x(OUD) by y(Treatment) by z(Demographics)
 /// @return New State Vector after a timestep
-Eigen::Tensor<float, 3> getNewState(Eigen::Tensor<float, 3> state, std::vector<Eigen::MatrixXd> transitionMatrices){
+Eigen::Tensor<float, 3> getNewState(Eigen::Tensor<float, 3> state, std::vector<Eigen::Tensor<float, 3>> transitionMatrices){
     Eigen::Tensor<float, 3> newState = new Eigen::Tensor<float, 3>(state.dimension(0), state.dimension(1), state.dimension(2));
     int oudStates = state.dimension(0);
     int treatments = state.dimension(1);
     int counter = 0; // forgive me, I know there is an easier way my brain is just fried
+    // loop through each oud/treatment state combo - O((2N+1)*M)
     for (int i = 0; i < oudStates; i++){
         for (int j = 0; j < treatments; j++){
             std::array<int, 3> offset = {i, j, 0};
             std::array<int, 3> extent = {1, 1, state.dimension(2)};
-            timestepPass(state.slice(offset, extent), transitionMatrices[counter])
+            Eigen::Tensor<float, 3> transition = timestepPass(state.slice(offset, extent), transitionMatrices[counter]); // get the counts that changed
+            newState = state + transition; // Add the moving counts to the current counts
+            newState.slice(offset, extent) -= transition.sum(Eigen::array<int, 2>({0, 1})); // Subtract the moved counts from the current state
             counter++;
         }
     }
@@ -69,13 +72,14 @@ Simulation::Simulation(uint16_t duration, uint8_t numOUDStates, uint8_t numTreat
     this->numTreatmentStates = numDemographics;
     this->state = new Eigen::Tensor<float, 3>(numOUDStates, numTreatmentStates, numDemographics);
     this->transition = new Eigen::Tensor<float, 3>(numOUDStates, numTreatmentStates, numDemographics);
+    this->LoadTransitionMatrices("transitions.db");
 }
 
 /// @brief Driving Method
 void Simulation::Run(){
     for(uint16_t i = 0; i < duration; i++){
         this->history.push_back(this->state);
-        this->state = getNewState(this->state);
+        this->state = getNewState(this->state, this->transitionMatrices);
     }
 }
 
@@ -94,7 +98,7 @@ void Simulation::LoadTransitionMatrices(String path){
 
 /// @brief Setter for pushing on a transition matrix to the simulation vector
 /// @param matrix Matrix to push into vector
-void Simulation::AddTransitionMatrix(Eigen::MatrixXd matrix){
+void Simulation::AddTransitionMatrix(Eigen::Tensor<float, 3> matrix){
     this->transitionMatrices.push_back(matrix);
 }
 

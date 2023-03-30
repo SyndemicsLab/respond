@@ -24,13 +24,13 @@ private:
     uint8_t numTreatmentStates;
     uint16_t numDemographics;
     std::vector<Eigen::Tensor<float, 3>> history;
-    std::vector<Eigen::MatrixXd> transitionMatrices;
+    std::vector<Eigen::Tensor<float, 3>> transitionMatrices;
 public:
     Simulation();
 	Simulation(uint16_t duration, uint8_t numOUDStates, uint8_t numTreatmentStates, uint16_t numDemographics);
     ~Simulation();
     void LoadTransitionMatrices(String path);
-    void AddTransitionMatrix(Eigen::MatrixXd matrix);
+    void AddTransitionMatrix(Eigen::Tensor<float, 3> matrix);
 	void Run();
 };
 
