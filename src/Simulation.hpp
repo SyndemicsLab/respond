@@ -12,13 +12,25 @@
 #include <cstdint>
 #include <eigen3/Eigen/Eigen>
 #include <eigen3/unsupported/Eigen/CXX11/Tensor>
+#include <sqlite3.h>
+#include <string>
 
 class Simulation{
 private:
 	Eigen::Tensor<float, 3> state;
 	Eigen::Tensor<float, 3> transition;
+    uint16_t duration;
+    uint8_t numOUDStates;
+    uint8_t numTreatmentStates;
+    uint16_t numDemographics;
+    std::vector<Eigen::Tensor<float, 3>> history;
+    std::vector<Eigen::MatrixXd> transitionMatrices;
 public:
+    Simulation();
 	Simulation(uint16_t duration, uint8_t numOUDStates, uint8_t numTreatmentStates, uint16_t numDemographics);
+    ~Simulation();
+    void LoadTransitionMatrices(String path);
+    void AddTransitionMatrix(Eigen::MatrixXd matrix);
 	void Run();
 };
 
