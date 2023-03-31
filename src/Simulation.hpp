@@ -28,7 +28,7 @@ public:
     Simulation();
 	Simulation(uint16_t duration, uint8_t numOUDStates, uint8_t numTreatmentStates, uint16_t numDemographics);
     ~Simulation();
-    void LoadTransitionMatrices(std::vector<Eigen::Tensor<float, 3>>);
+    void LoadTransitionMatrices(std::vector<Eigen::Tensor<float, 3>> transitionMatrices);
     void AddTransitionMatrix(Eigen::Tensor<float, 3> matrix);
 	void Run();
 };
