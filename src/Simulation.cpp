@@ -35,7 +35,7 @@ Eigen::Tensor<float, 3> timestepPass(Eigen::Tensor<float, 3> state, Eigen::Tenso
 /// @param state Full State Tensor x(OUD) by y(Treatment) by z(Demographics)
 /// @return New State Vector after a timestep
 Eigen::Tensor<float, 3> getNewState(Eigen::Tensor<float, 3> state, std::vector<Eigen::Tensor<float, 3>> transitionMatrices){
-    Eigen::Tensor<float, 3> newState = new Eigen::Tensor<float, 3>(state.dimension(0), state.dimension(1), state.dimension(2));
+    Eigen::Tensor<float, 3> newState(state.dimension(0), state.dimension(1), state.dimension(2));
     int oudStates = state.dimension(0);
     int treatments = state.dimension(1);
     int counter = 0; // forgive me, I know there is an easier way my brain is just fried
@@ -53,12 +53,7 @@ Eigen::Tensor<float, 3> getNewState(Eigen::Tensor<float, 3> state, std::vector<E
 }
 
 /// @brief Default Constructor
-Simulation::Simulation(){
-    this->duration = 0;
-    this->numOUDStates = 0;
-    this->numTreatmentStates = 0;
-    this->numTreatmentStates = 0;
-}
+Simulation::Simulation() : Simulation(0, 0, 0, 0){}
 
 /// @brief Constructor for Simulation Object
 /// @param duration Total time for the entire simulation
@@ -66,13 +61,15 @@ Simulation::Simulation(){
 /// @param numTreatmentStates Total number of possible treatment states (2n+1) 
 /// @param numDemographics Total number of demographic combinations
 Simulation::Simulation(uint16_t duration, uint8_t numOUDStates, uint8_t numTreatmentStates, uint16_t numDemographics){
+    const auto processor_count = std::thread::hardware_concurrency();
+	Eigen::setNbThreads(processor_count);
     this->duration = duration;
     this->numOUDStates = numOUDStates;
     this->numTreatmentStates = numTreatmentStates;
     this->numTreatmentStates = numDemographics;
     this->state = new Eigen::Tensor<float, 3>(numOUDStates, numTreatmentStates, numDemographics);
     this->transition = new Eigen::Tensor<float, 3>(numOUDStates, numTreatmentStates, numDemographics);
-    this->LoadTransitionMatrices("transitions.db");
+    // this->LoadTransitionMatrices("transitions.db");
 }
 
 /// @brief Driving Method
@@ -85,15 +82,16 @@ void Simulation::Run(){
 
 /// @brief Method used to load transition table data from sqlite3 Database
 /// @param path database filepath
-void Simulation::LoadTransitionMatrices(String path){
-    string query = "SELECT * FROM transitions";
-    sqlite3 *db;
-    int rc = sqlite3_open(path, &db);
-    if(rc <= 0){
-        //log error
-        return;
-    }
-    sqlite3_exec(db, query.c_str(), callback, this, NULL);
+void Simulation::LoadTransitionMatrices(std::vector<Eigen::Tensor<float, 3>> transitionMatrices){
+    // std::string query = "SELECT * FROM transitions";
+    // sqlite3 *db;
+    // int rc = sqlite3_open(path, &db);
+    // if(rc <= 0){
+    //     //log error
+    //     return;
+    // }
+    // sqlite3_exec(db, query.c_str(), callback, this, NULL);
+    this->transitionMatrices = transitionMatrices;
 }
 
 /// @brief Setter for pushing on a transition matrix to the simulation vector
@@ -104,10 +102,10 @@ void Simulation::AddTransitionMatrix(Eigen::Tensor<float, 3> matrix){
 
 /// @brief Default Destructor
 Simulation::~Simulation(){
-    delete this->state;
-    delete this->transition;
-    while(!this->history.empty()){
-        delete this->history.pop_back();
-    }
+    // delete this->state;
+    // delete this->transition;
+    // while(!this->history.empty()){
+    //     delete this->history.pop_back();
+    // }
 }
 
