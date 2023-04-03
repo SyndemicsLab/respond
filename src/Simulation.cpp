@@ -6,11 +6,12 @@
 /// @param rowData Record Data
 /// @param colNames Names of the columns
 /// @return error code if necessary
-static int callback(void* objData, int argc, char** rowData, char** colNames){
-    Simulation* sim = (Simulation*) objData;
-    // Eigen::Tensor<float, 3> convertedMatrix = convert from rowData
-    // sim->AddTransitionMatrix(convertedMatrix);
-}
+// static int callback(void* objData, int argc, char** rowData, char** colNames){
+//     Simulation* sim = (Simulation*) objData;
+//     return 1;
+//     // Eigen::Tensor<float, 3> convertedMatrix = convert from rowData
+//     // sim->AddTransitionMatrix(convertedMatrix);
+// }
 
 /// @brief A Private timestep function used to execute one multiplcation of the two 3D matrices and return the resulting state
 /// @param state Current demographic vector for the treatment and oud under scrutiny
