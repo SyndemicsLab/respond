@@ -100,7 +100,7 @@ void Simulation::AddTransitionMatrix(Eigen::Tensor<float, 3> matrix){
     this->transitionMatrices.push_back(matrix);
 }
 
-std::vector<Eigen::Tensor<float, 3>> getHistory(){
+std::vector<Eigen::Tensor<float, 3>> Simulation::getHistory(){
     return this->history;
 }
 
