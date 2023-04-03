@@ -31,6 +31,7 @@ public:
     void LoadTransitionMatrices(std::vector<Eigen::Tensor<float, 3>> transitionMatrices);
     void AddTransitionMatrix(Eigen::Tensor<float, 3> matrix);
 	void Run();
+    std::vector<Eigen::Tensor<float, 3>> getHistory();
 };
 
 

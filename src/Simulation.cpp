@@ -100,6 +100,10 @@ void Simulation::AddTransitionMatrix(Eigen::Tensor<float, 3> matrix){
     this->transitionMatrices.push_back(matrix);
 }
 
+std::vector<Eigen::Tensor<float, 3>> getHistory(){
+    return this->history;
+}
+
 /// @brief Default Destructor
 Simulation::~Simulation(){
     // delete this->state;
