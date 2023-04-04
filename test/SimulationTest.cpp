@@ -1,23 +1,23 @@
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 #include "../src/Simulation.hpp"
 #include "mocks/MockSimulation.hpp"
 
-using ::testing::AtLeast;
+using namespace Simulation; 
 
 TEST(SimulationCreation, DefaultConstructor){
-    Simulation sim;
-    int test;
-    EXPECT_NE(sim, &test);
+    Sim sim;
+    uint16_t expected = 0;
+    EXPECT_EQ(sim.Duration, expected);
 }
 
 TEST(SimulationCreation, MainConstructor){
-    Simulation sim(10, 10, 10, 10);
-    int test;
-    EXPECT_NE(sim, &test);
+    Sim sim(10, 10, 10, 10);
+    uint16_t expected = 10;
+    EXPECT_EQ(sim.Duration, expected);
 }
 
 TEST(Loading, EnteringSamples){
-    Simulation sim(10, 10, 10, 10);
+    Sim sim(10, 10, 10, 10);
     Eigen::Tensor<float, 3> t1(2, 2, 2);
     Eigen::Tensor<float, 3> t2(2, 2, 2);
     t1.setRandom();
