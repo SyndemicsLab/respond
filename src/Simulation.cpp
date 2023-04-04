@@ -1,15 +1,6 @@
 #include "Simulation.hpp"
 
 
-
-///////////////////////////////////////////////
-///
-/// Prototypes for File Specific Functions
-///
-//////////////////////////////////////////////
-Eigen::Tensor<float, 3> timestepPass(Eigen::Tensor<float, 3> state, Eigen::Tensor<float, 3> transition);
-Eigen::Tensor<float, 3> getNewState(Eigen::Tensor<float, 3> state, std::vector<Eigen::Tensor<float, 3>> transitionMatrices);
-
 //////////////////////////////////////////////
 ///
 /// Simulation Public Implementation
@@ -28,61 +19,69 @@ Simulation::Simulation(uint16_t duration, uint8_t numOUDStates, uint8_t numTreat
     const auto processor_count = std::thread::hardware_concurrency();
 	Eigen::setNbThreads(processor_count);
     this->duration = duration;
+    this->currentTime = 0;
     this->numOUDStates = numOUDStates;
     this->numTreatmentStates = numTreatmentStates;
     this->numTreatmentStates = numDemographics;
-    this->state = new Eigen::Tensor<float, 3>(numOUDStates, numTreatmentStates, numDemographics);
-    this->transition = new Eigen::Tensor<float, 3>(numOUDStates, numTreatmentStates, numDemographics);
+    this->state = Eigen::Tensor<float, 3>(numOUDStates, numTreatmentStates, numDemographics);
+    this->transition = Eigen::Tensor<float, 3>(numOUDStates, numTreatmentStates, numDemographics);
     // this->LoadTransitionMatrices("transitions.db");
 }
 
 /// @brief Default Destructor
 Simulation::~Simulation(){
-    // delete this->state;
-    // delete this->transition;
-    // while(!this->history.empty()){
-    //     delete this->history.pop_back();
-    // }
+    delete this->state;
+    delete this->transition;
 }
 
 /// @brief 
 /// @param enterintSamples 
-void Simulation::LoadEnteringSamples(std::vector<Eigen::Tensor<float, 3>> enterintSamples){}
+void Simulation::LoadEnteringSamples(std::vector<Eigen::Tensor<float, 3>> enteringSamples){
+    this->enteringSamples = enteringSamples;
+}
 
 /// @brief 
 /// @param oudTransitions 
-void Simulation::LoadOUDTransitions(std::vector<Eigen::Tensor<float, 3>> oudTransitions){}
+void Simulation::LoadOUDTransitions(std::vector<Eigen::Tensor<float, 3>> oudTransitions){
+    this->oudTransitions = oudTransitions;
+}
 
 /// @brief 
 /// @param treatmentTransitions 
-void Simulation::LoadTreatmentTransitions(std::vector<Eigen::Tensor<float, 3>> treatmentTransitions){}
+void Simulation::LoadTreatmentTransitions(std::vector<Eigen::Tensor<float, 3>> treatmentTransitions){
+    this->treatmentTransitions = treatmentTransitions;
+}
 
 /// @brief 
 /// @param overdoseTransitions 
-void Simulation::LoadOverdoseTransitions(std::vector<Eigen::Tensor<float, 3>> overdoseTransitions){}
-
-/// @brief 
-/// @param fatalOverdoseTransitions 
-void Simulation::LoadFatalOverdoseTransitions(std::vector<Eigen::Tensor<float, 3>> fatalOverdoseTransitions){}
+void Simulation::LoadOverdoseTransitions(std::vector<Eigen::Tensor<float, 3>> overdoseTransitions){
+    this->overdoseTransitions = overdoseTransitions;
+}
 
 /// @brief 
 /// @param mortalityTransitions 
-void Simulation::LoadMortalityTransitions(std::vector<Eigen::Tensor<float, 3>> mortalityTransitions){}
+void Simulation::LoadMortalityTransitions(std::vector<Eigen::Tensor<float, 3>> mortalityTransitions){
+    this->mortalityTransitions = mortalityTransitions;
+}
 
 /// @brief 
 /// @param enteringSamples 
 /// @param oudTransitions 
 /// @param treatmentTransitions 
 /// @param overdoseTransitions 
-/// @param fatalOverdoseTransitions 
 /// @param mortalityTransitions 
 void Simulation::LoadTransitionModules(std::vector<Eigen::tensor<float, 3>> enteringSamples, 
     std::vector<Eigen::tensor<float, 3>> oudTransitions, 
     std::vector<Eigen::tensor<float, 3>> treatmentTransitions,
     std::vector<Eigen::tensor<float, 3>> overdoseTransitions,
-    std::vector<Eigen::tensor<float, 3>> fatalOverdoseTransitions,
     std::vector<Eigen::tensor<float, 3>> mortalityTransitions
-){}
+){
+    this->LoadEnteringSamples(enteringSamples);
+    this->LoadOUDTransitions(oudTransitions);
+    this->LoadTreatmentTransitions(treatmentTransitions);
+    this->LoadOverdoseTransitions(overdoseTransitions);
+    this->LoadMortalityTransitions(mortalityTransitions);
+}
 
 /// @brief Driving Method
 void Simulation::Run(){
@@ -104,73 +103,72 @@ std::vector<Eigen::Tensor<float, 3>> Simulation::getHistory(){
 ///
 ////////////////////////////////////////////////////////
 
+/// @brief Standard timestep method making a step through each module
+/// @return NextState Matrix
 Eigen::Tensor<float, 3> Simulation::step(){
     return this.multiplyMortalityTransitions(
         this.multiplyOverdoseTransitions(
             this.multiplyTreatmentTransitions(
                 this.multiplyOUDTransitions(
-                    this.multiplyEnteringSamples(this.state)
+                    this.addEnteringSamples(this.state)
                 )
             )
         )
     );
 }
 
-Eigen::Tensor<float, 3> Simulation::multiplyEnteringSamples(Eigen::Tensor<float, 3> state){}
-
-Eigen::Tensor<float, 3> Simulation::multiplyOUDTransitions(Eigen::Tensor<float, 3> state){}
-
-Eigen::Tensor<float, 3> Simulation::multiplyTreatmentTransitions(Eigen::Tensor<float, 3> state){}
-
-Eigen::Tensor<float, 3> Simulation::multiplyOverdoseTransitions(Eigen::Tensor<float, 3> state){}
-
-Eigen::Tensor<float, 3> Simulation::multiplyFatalOverdoseTransitions(Eigen::Tensor<float, 3> state){}
-
-Eigen::Tensor<float, 3> Simulation::multiplyMortalityTransitions(Eigen::Tensor<float, 3> state){}
-
-////////////////////////////////////////////////////////
-///
-/// File Specific functions
-///
-////////////////////////////////////////////////////////
-
-/// @brief A Private timestep function used to execute one multiplcation of the two 3D matrices and return the resulting state
-/// @param state Current demographic vector for the treatment and oud under scrutiny
-/// @param transition Transition probabilities matrix
-/// @return Resulting State Matrix
-Eigen::Tensor<float, 3> timestepPass(Eigen::Tensor<float, 3> state, Eigen::Tensor<float, 3> transition){
-    Eigen::Tensor<float, 3> ret = state;
-    if (state.dimension(0) != transition.dimension(0) 
-    && state.dimension(1) != transition.dimension(1) 
-    && state.dimension(2) != transition.dimension(2)){
-        uint8_t x = state.dimension(0)/transition.dimension(0);
-        uint8_t y = state.dimension(1)/transition.dimension(1);
-        uint8_t z = state.dimension(2)/transition.dimension(2);
-        Eigen::array<int, 3> bcast({x, y, z});
-        ret = state.broadcast(bcast);
-    }
-    ret *= transition;
+/// @brief Add Entering samples to current state
+/// @param state the tensor we will add the entering sample to
+/// @return Resulting tensor with added samples to the state
+Eigen::Tensor<float, 3> Simulation::addEnteringSamples(Eigen::Tensor<float, 3> state){
+    Eigen::Tensor<float, 3> ret(state.dimension(0), state.dimension(1), state.dimension(2));
+    ret.setValues(state);
+    ret += this->enteringSamples[this->currentTime];
     return ret;
 }
 
-
-/// @brief Method restricted to file for getting the new state
-/// @param state Full State Tensor x(OUD) by y(Treatment) by z(Demographics)
-/// @return New State Vector after a timestep
-Eigen::Tensor<float, 3> getNewState(Eigen::Tensor<float, 3> state, std::vector<Eigen::Tensor<float, 3>> transitionMatrices){
-    Eigen::Tensor<float, 3> newState(state.dimension(0), state.dimension(1), state.dimension(2));
-    int oudStates = state.dimension(0);
-    int treatments = state.dimension(1);
-    int counter = 0; // forgive me, I know there is an easier way my brain is just fried
-    // loop through each oud/treatment state combo - O((2N+1)*M)
-    for (int i = 0; i < oudStates; i++){
-        for (int j = 0; j < treatments; j++){
-            std::array<int, 3> offset = {i, j, 0};
-            std::array<int, 3> extent = {1, 1, state.dimension(2)};
-            Eigen::Tensor<float, 3> transition = timestepPass(state.slice(offset, extent), transitionMatrices[counter]); // get the counts that changed
-            newState = state + transition; // Add the moving counts to the current counts
-            newState.slice(offset, extent) -= transition.sum(Eigen::array<int, 2>({0, 1})); // Subtract the moved counts from the current state
-            counter++;
-        }
+/// @brief Multiply OUD transition rates to the current state
+/// @param state current state
+/// @return new state with OUD transitions
+Eigen::Tensor<float, 3> Simulation::multiplyOUDTransitions(Eigen::Tensor<float, 3> state){
+    Eigen::Tensor<float, 3> ret(state.dimension(0), state.dimension(1), state.dimension(2));
+    ret.setZeros();
+    for(int i = 0; i < state.dimension(1); i++){
+        std::array<uint16_t, 3> offset = {0,i*state.dimension(1),0};
+        std::array<uint16_t, 3> extent = {state.dimension(0),(i*state.dimension(1))+state.dimension(1),state.dimension(2)};
+        Eigen::Tensor<float, 3> sliced = state.slice({0,i,0}, {state.dimension(0), 1, state.dimension(2)});
+        ret += (sliced.broadcast({1,state.dimension(1),1}) * this->oudTransitions[this->currentTime].slice(offset, extent));
     }
+    return ret;
+}
+
+/// @brief Multiply Treatment Transitions with current state to produce change matrix
+/// @param state current state
+/// @return new state with treatment transitions
+Eigen::Tensor<float, 3> Simulation::multiplyTreatmentTransitions(Eigen::Tensor<float, 3> state){
+    Eigen::Tensor<float, 3> ret(state.dimension(0), state.dimension(1), state.dimension(2));
+    ret.setZeros();
+    for(int i = 0; i < state.dimension(0); i++){
+        std::array<uint16_t, 3> offset = {i*state.dimension(0),0,0};
+        std::array<uint16_t, 3> extent = {(i*state.dimension(0))+state.dimension(0), state.dimension(1),state.dimension(2)};
+        Eigen::Tensor<float, 3> sliced = state.slice({i,0,0}, {1, state.dimension(1), state.dimension(2)});
+        ret += (sliced.broadcast({state.dimension(0),1,1}) * this->treatmentTransitions[this->currentTime].slice(offset, extent));
+    }
+    return ret;
+}
+
+/// @brief Calculate number of Overdoses
+/// @param state current state
+/// @return Number of Overdoses
+Eigen::Tensor<float, 3> Simulation::multiplyOverdoseTransitions(Eigen::Tensor<float, 3> state){
+    return state;
+}
+
+/// @brief Calculate the amount of mortalities
+/// @param state current state
+/// @return New State with death calculated in
+Eigen::Tensor<float, 3> Simulation::multiplyMortalityTransitions(Eigen::Tensor<float, 3> state){
+    Eigen::Tensor<float, 3> ret(state.dimension(0), state.dimension(1), state.dimension(2));
+    ret = state - (state * this->mortalityTransitions[this->currentTime]);
+    return ret;
 }
