@@ -2,12 +2,6 @@ cmake_minimum_required(VERSION 3.19)
 
 set (CMAKE_CXX_STANDARD 11)
 
-# # Set some basic project attributes
-# project (RESPONDSIM
-# 	VERSION 0.1
-# 	DESCRIPTION "A Compartmentalized Simulation for Opiod Use Disorder"
-# )
-
 # Find OpenMP
 find_package(OpenMP REQUIRED)
 # Find Eigen

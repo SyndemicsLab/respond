@@ -1,8 +1,8 @@
 #include <gtest/gtest.h>
-#include "../src/Simulation.hpp"
+#include "../src/Model/Simulation.hpp"
 #include "mocks/MockSimulation.hpp"
 
-using namespace Simulation; 
+using namespace Simulation;
 
 TEST(SimulationCreation, DefaultConstructor){
     Sim sim;

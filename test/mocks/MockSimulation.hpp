@@ -1,5 +1,5 @@
 #include "gmock/gmock.h"
-#include "../src/Simulation.hpp"
+#include "../src/Model/Simulation.hpp"
 
 using namespace Simulation;
 
@@ -9,8 +9,8 @@ class MockSimulation : public ISim {
     MOCK_METHOD(void, LoadTreatmentTransitions, (DataMatrix treatmentTransitions), (override));
     MOCK_METHOD(void, LoadOverdoseTransitions, (DataMatrix overdoseTransitions), (override));
     MOCK_METHOD(void, LoadMortalityTransitions, (DataMatrix mortalityTransitions), (override));
-    MOCK_METHOD(void, LoadTransitionModules, (DataMatrix enteringSamples, 
-        DataMatrix oudTransitions, 
+    MOCK_METHOD(void, LoadTransitionModules, (DataMatrix enteringSamples,
+        DataMatrix oudTransitions,
         DataMatrix treatmentTransitions,
         DataMatrix overdoseTransitions,
         DataMatrix mortalityTransitions

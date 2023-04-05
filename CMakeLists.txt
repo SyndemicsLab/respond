@@ -4,20 +4,21 @@ set (CMAKE_CXX_STANDARD 11)
 
 # Set some basic project attributes
 project (RESPOND
-	VERSION 0.1
-	DESCRIPTION "A Compartmental Simulation for Opiod Use Disorder"
+  VERSION 2.0.0
+  DESCRIPTION "A Compartmental Simulation for Opioid Use Disorder"
 )
 
 include(GNUInstallDirs)
 
-add_library(mylib SHARED
-	src/Simulation.cpp
+add_library(respond SHARED
+  src/Model/Simulation.cpp
+  src/Controller/DataLoader.cpp
 )
-
 
 include_directories(include)
 
-add_subdirectory(src)
+add_subdirectory(src/Model)
+add_subdirectory(src/Controller)
 add_subdirectory(test)
 
 # This project will output an executable file
