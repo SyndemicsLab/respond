@@ -4,8 +4,8 @@ set (CMAKE_CXX_STANDARD 11)
 
 # Set some basic project attributes
 project (RESPOND
-  VERSION 2.0.0
-  DESCRIPTION "A Compartmental Simulation for Opioid Use Disorder"
+	VERSION 2.0.0
+	DESCRIPTION "A Compartmental Simulation for Opioid Use Disorder"
 )
 
 include(GNUInstallDirs)

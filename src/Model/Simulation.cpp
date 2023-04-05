@@ -25,11 +25,19 @@ namespace Simulation{
         this->numTreatmentStates = numTreatmentStates;
         this->numTreatmentStates = numDemographics;
         this->state = Eigen::Tensor<float, 3>(numOUDStates, numTreatmentStates, numDemographics);
+        this->state.setZero();
         this->transition = Eigen::Tensor<float, 3>(numOUDStates, numTreatmentStates, numDemographics);
+        this->transition.setZero();
     }
 
     /// @brief 
-    /// @param enterintSamples 
+    /// @param initialGroup 
+    void Sim::LoadInitialGroup(Eigen::Tensor<float, 3> initialGroup){
+        this->state = initialGroup;
+    }
+
+    /// @brief 
+    /// @param enteringSamples 
     void Sim::LoadEnteringSamples(std::vector<Eigen::Tensor<float, 3>> enteringSamples){
         this->enteringSamples = enteringSamples;
     }
@@ -59,6 +67,36 @@ namespace Simulation{
     }
 
     /// @brief 
+    /// @return 
+    DataMatrix Sim::GetEnteringSamples(){
+        return this->enteringSamples;
+    }
+
+    /// @brief 
+    /// @return 
+    DataMatrix Sim::GetOUDTransitions(){
+        return this->oudTransitions;
+    }
+
+    /// @brief 
+    /// @return 
+    DataMatrix Sim::GetTreatmentTransitions(){
+        return this->treatmentTransitions;
+    }
+    
+    /// @brief 
+    /// @return 
+    DataMatrix Sim::GetOverdoseTransitions(){
+        return this->overdoseTransitions;
+    }
+    
+    /// @brief 
+    /// @return 
+    DataMatrix Sim::GetMortalityTransitions(){
+        return this->mortalityTransitions;
+    }
+
+    /// @brief 
     /// @param enteringSamples 
     /// @param oudTransitions 
     /// @param treatmentTransitions 
@@ -79,10 +117,11 @@ namespace Simulation{
 
     /// @brief Driving Method
     void Sim::Run(){
-        for(uint16_t i = 0; i < this->Duration; i++){
+        for(this->currentTime = 0; this->currentTime < this->Duration; this->currentTime++){
             this->history.push_back(this->state);
-            // this->state = getNewState(this->state, this->transitionMatrices);
+            this->state = this->step();
         }
+        this->history.push_back(this->state);
     }
 
     /// @brief 
@@ -115,10 +154,10 @@ namespace Simulation{
     /// @param state the tensor we will add the entering sample to
     /// @return Resulting tensor with added samples to the state
     Eigen::Tensor<float, 3> Sim::addEnteringSamples(Eigen::Tensor<float, 3> state){
-        std::array<uint16_t, 3> offset = {0,0,0};
-        std::array<uint16_t, 3> extent = {state.dimension(0), state.dimension(1), state.dimension(2)};
+        std::array<long int, 3> offset = {0,0,0};
+        std::array<long int, 3> extent = {state.dimension(0), state.dimension(1), state.dimension(2)};
         Eigen::Tensor<float, 3> ret = state.slice(offset, extent);
-        ret += this->enteringSamples[this->currentTime];
+        ret += this->enteringSamples.at(this->currentTime);
         return ret;
     }
 
@@ -128,17 +167,22 @@ namespace Simulation{
     Eigen::Tensor<float, 3> Sim::multiplyOUDTransitions(Eigen::Tensor<float, 3> state){
         Eigen::Tensor<float, 3> ret(state.dimension(0), state.dimension(1), state.dimension(2));
         ret.setZero();
-        for(int i = 0; i < state.dimension(1); i++){
-            std::array<uint16_t, 3> offsetTrans = {0,i*state.dimension(1),0};
-            std::array<uint16_t, 3> extentTrans = {state.dimension(0),(i*state.dimension(1))+state.dimension(1),state.dimension(2)};
 
-            std::array<uint16_t, 3> offsetState = {0,i,0};
-            std::array<uint16_t, 3> extentState = {state.dimension(0), 1, state.dimension(2)};
+        Eigen::Tensor<float, 3> transition = this->oudTransitions.at(this->currentTime);
+        int transitionsInState = transition.dimension(1) / state.dimension(1);
+        
+        for(int i = 0; i < transitionsInState; i++){
+            std::array<long int, 3> offsetTrans = {0,i*state.dimension(1),0};
+            std::array<long int, 3> extentTrans = {state.dimension(0),state.dimension(1),state.dimension(2)};
+
+            std::array<long int, 3> offsetState = {0,i,0};
+            std::array<long int, 3> extentState = {state.dimension(0), 1, state.dimension(2)};
             Eigen::Tensor<float, 3> slicedState = state.slice(offsetState, extentState);
 
-            std::array<uint16_t, 3> bcast = {1,state.dimension(1),1};
-
-            ret += (slicedState.broadcast(bcast) * this->oudTransitions[this->currentTime].slice(offsetTrans, extentTrans));
+            std::array<long int, 3> bcast = {1,state.dimension(1),1};
+            Eigen::Tensor<float, 3> broadcastedTensor = slicedState.broadcast(bcast);
+            Eigen::Tensor<float, 3> slicedTransition = transition.slice(offsetTrans, extentTrans);
+            ret += (broadcastedTensor * slicedTransition);
         }
         return ret;
     }
@@ -149,19 +193,23 @@ namespace Simulation{
     Eigen::Tensor<float, 3> Sim::multiplyTreatmentTransitions(Eigen::Tensor<float, 3> state){
         Eigen::Tensor<float, 3> ret(state.dimension(0), state.dimension(1), state.dimension(2));
         ret.setZero();
-        for(int i = 0; i < state.dimension(0); i++){
-            std::array<uint16_t, 3> offsetTrans = {i*state.dimension(0),0,0};
-            std::array<uint16_t, 3> extentTrans = {(i*state.dimension(0))+state.dimension(0), state.dimension(1),state.dimension(2)};
 
-            std::array<uint16_t, 3> offsetState = {i,0,0};
-            std::array<uint16_t, 3> extentState = {1, state.dimension(1), state.dimension(2)};
+        Eigen::Tensor<float, 3> transition = this->treatmentTransitions.at(this->currentTime);
+        int transitionsInState = transition.dimension(0) / state.dimension(0);
 
+        for(int i = 0; i < transitionsInState; i++){
+            std::array<long int, 3> offsetTrans = {i*state.dimension(0),0,0};
+            std::array<long int, 3> extentTrans = {state.dimension(0), state.dimension(1),state.dimension(2)};
+
+            std::array<long int, 3> offsetState = {i,0,0};
+            std::array<long int, 3> extentState = {1, state.dimension(1), state.dimension(2)};
             Eigen::Tensor<float, 3> slicedState = state.slice(offsetState, extentState);
 
-            std::array<uint16_t, 3> bcast = {state.dimension(0),1,1};
-
-            ret += (slicedState.broadcast(bcast) * this->treatmentTransitions[this->currentTime].slice(offsetTrans, extentTrans));
-        }
+            std::array<long int, 3> bcast = {state.dimension(0),1,1};
+            Eigen::Tensor<float, 3> broadcastedTensor = slicedState.broadcast(bcast);
+            Eigen::Tensor<float, 3> slicedTransition = transition.slice(offsetTrans, extentTrans);
+            ret += (broadcastedTensor * slicedTransition);
+        }        
         return ret;
     }
 
