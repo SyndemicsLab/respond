@@ -15,7 +15,21 @@ pipelines:
           script:
             - apt-get update
             - apt-get install -y cmake
-            - mkdir build/
+            - apt-get update 
+            - apt-get -y --no-install-recommends install \
+                build-essential \
+                git \
+                ca-certificates \
+                gcc \
+                clang \
+                cmake \
+                gdb \
+                wget
+            - apt-get install -y libboost-all-dev \
+                libgtest-dev \
+                libeigen3-dev \
+                libgmock-dev \
+                libfmt-dev
             - cd build
             - cmake ..
             - make
