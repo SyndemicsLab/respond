@@ -23,11 +23,11 @@ pipelines:
             - apt-get -y --no-install-recommends install clang
             - apt-get -y --no-install-recommends install gdb
             - apt-get -y --no-install-recommends install wget
-            - apt-get install -y libboost-all-dev \
-                libgtest-dev \
-                libeigen3-dev \
-                libgmock-dev \
-                libfmt-dev
+            - apt-get install -y libboost-all-dev
+            - apt-get install -y libgtest-dev
+            - apt-get install -y libeigen3-dev
+            - apt-get install -y libgmock-dev
+            - apt-get install -y libfmt-dev
             - cd build
             - cmake ..
             - make
