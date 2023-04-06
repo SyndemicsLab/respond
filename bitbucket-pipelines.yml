@@ -4,7 +4,7 @@
 # The workflow allows running tests and code linting on the default branch.
 
 
-image: gcc:12.2
+image: ubuntu:22.04
 
 
 pipelines:
@@ -16,15 +16,13 @@ pipelines:
             - apt-get update
             - apt-get install -y cmake
             - apt-get update 
-            - apt-get -y --no-install-recommends install \
-                build-essential \
-                git \
-                ca-certificates \
-                gcc \
-                clang \
-                cmake \
-                gdb \
-                wget
+            - apt-get -y --no-install-recommends install build-essential
+            - apt-get -y --no-install-recommends install git
+            - apt-get -y --no-install-recommends install ca-certificates
+            - apt-get -y --no-install-recommends install gcc
+            - apt-get -y --no-install-recommends install clang
+            - apt-get -y --no-install-recommends install gdb
+            - apt-get -y --no-install-recommends install wget
             - apt-get install -y libboost-all-dev \
                 libgtest-dev \
                 libeigen3-dev \
