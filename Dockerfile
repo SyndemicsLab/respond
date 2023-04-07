@@ -16,16 +16,15 @@ RUN apt-get install -y libboost-all-dev \
     libgmock-dev \
     libfmt-dev
 
-
 WORKDIR /respond
 
 COPY / /respond
 
 WORKDIR /respond/build
 
-RUN rm -rf * 
+RUN rm -rf *
 RUN cmake -DCMAKE_BUILD_TYPE=Debug ..
-RUN cmake .. 
+RUN cmake ..
 RUN make
 
-CMD [ "./test/SimTest" ]
+CMD [ "test/respondTest" ]

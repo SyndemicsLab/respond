@@ -4,9 +4,23 @@ include(GoogleTest)
 
 include_directories(mocks)
 
-add_executable(SimTest SimulationTest.cpp)
+add_executable(respondTest
+  SimulationTest.cpp
+  DataLoaderTests.cpp
+)
+target_include_directories(respondTest PUBLIC
+  ${CMAKE_SOURCE_DIR}/src/Model
+  ${CMAKE_SOURCE_DIR}/src/Controller
+)
 
-target_include_directories(SimTest PUBLIC ${CMAKE_SOURCE_DIR}/src)
-
-target_link_libraries(SimTest gtest gtest_main Model)
-gtest_discover_tests(SimTest)
+# Link Boost
+find_package(Boost REQUIRED COMPONENTS
+  filesystem)
+target_link_libraries(respondTest
+  Boost::filesystem
+  gtest
+  gtest_main
+  Model
+  Controller
+)
+gtest_discover_tests(respondTest)

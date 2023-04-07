@@ -5,8 +5,8 @@
  *      Author: matt
  */
 
-#ifndef SRC_SIMULATION_HPP_
-#define SRC_SIMULATION_HPP_
+#ifndef MODEL_SIMULATION_HPP_
+#define MODEL_SIMULATION_HPP_
 
 #include <iostream>
 #include <stdexcept>
@@ -29,7 +29,7 @@
 #include <fmt/core.h>
 
 namespace Simulation{
-    typedef std::vector<Eigen::Tensor<float, 3>> DataMatrix;
+    using DataMatrix = std::vector<Eigen::Tensor<float, 3>>;
 
     typedef struct history{
         DataMatrix stateHistory;
@@ -52,15 +52,16 @@ namespace Simulation{
         virtual void LoadTreatmentTransitions(DataMatrix treatmentTransitions) = 0;
         virtual void LoadOverdoseTransitions(DataMatrix overdoseTransitions) = 0;
         virtual void LoadMortalityTransitions(DataMatrix mortalityTransitions) = 0;
-        
+
         virtual DataMatrix GetEnteringSamples() = 0;
         virtual DataMatrix GetOUDTransitions() = 0;
         virtual DataMatrix GetTreatmentTransitions() = 0;
         virtual DataMatrix GetOverdoseTransitions() = 0;
         virtual DataMatrix GetMortalityTransitions() = 0;
 
-        virtual void LoadTransitionModules(DataMatrix enteringSamples, 
-            DataMatrix oudTransitions, 
+        virtual void LoadTransitionModules(
+            DataMatrix enteringSamples,
+            DataMatrix oudTransitions,
             DataMatrix treatmentTransitions,
             DataMatrix overdoseTransitions,
             DataMatrix mortalityTransitions
@@ -112,8 +113,9 @@ namespace Simulation{
         DataMatrix GetOverdoseTransitions() override;
         DataMatrix GetMortalityTransitions() override;
 
-        void LoadTransitionModules(DataMatrix enteringSamples, 
-            DataMatrix oudTransitions, 
+        void LoadTransitionModules(
+            DataMatrix enteringSamples,
+            DataMatrix oudTransitions,
             DataMatrix treatmentTransitions,
             DataMatrix overdoseTransitions,
             DataMatrix mortalityTransitions
@@ -123,5 +125,4 @@ namespace Simulation{
         uint16_t Duration;
     };
 }
-
-#endif /* SRC_SIMULATION_HPP_ */
+#endif /* MODEL_SIMULATION_HPP_ */

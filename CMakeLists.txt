@@ -21,11 +21,5 @@ add_subdirectory(src/Model)
 add_subdirectory(src/Controller)
 add_subdirectory(test)
 
-# This project will output an executable file
-# add_executable(${PROJECT_NAME} RESPOND.cpp)
-
 # Create a simple configuration header
 configure_file(config.h.in config.h)
-
-# Include the configuration header in the build
-# target_include_directories(${PROJECT_NAME} PUBLIC Simulation "${PROJECT_BINARY_DIR}")
