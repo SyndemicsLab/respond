@@ -26,5 +26,5 @@ class MockSimulation : public ISim {
         DataMatrix mortalityTransitions
     ), (override));
     MOCK_METHOD(void, Run, (), (override));
-    MOCK_METHOD(DataMatrix, getHistory, (), (override));
+    MOCK_METHOD(History, getHistory, (), (override));
 };

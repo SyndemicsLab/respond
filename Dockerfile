@@ -2,6 +2,8 @@ FROM ubuntu:22.04 AS build
 
 RUN apt-get update && apt-get -y --no-install-recommends install \
     build-essential \
+    git \
+    ca-certificates \
     gcc \
     clang \
     cmake \
@@ -11,7 +13,8 @@ RUN apt-get update && apt-get -y --no-install-recommends install \
 RUN apt-get install -y libboost-all-dev \
     libgtest-dev \
     libeigen3-dev \
-    libgmock-dev
+    libgmock-dev \
+    libfmt-dev
 
 
 WORKDIR /respond
