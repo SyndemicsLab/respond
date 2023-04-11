@@ -4,23 +4,31 @@ include(GoogleTest)
 
 include_directories(mocks)
 
+# Find Eigen
+find_package (Eigen3 3.4 REQUIRED NO_MODULE)
+
 add_executable(respondTest
   SimulationTest.cpp
   DataLoaderTests.cpp
+  DataWriterTest.cpp
 )
-target_include_directories(respondTest PUBLIC
-  ${CMAKE_SOURCE_DIR}/src/Model
-  ${CMAKE_SOURCE_DIR}/src/Controller
+
+target_include_directories(respondTest INTERFACE
+  ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
 # Link Boost
 find_package(Boost REQUIRED COMPONENTS
-  filesystem)
+  filesystem
+)
+
 target_link_libraries(respondTest
+  Eigen3::Eigen
   Boost::filesystem
   gtest
   gtest_main
   Model
   Controller
 )
+
 gtest_discover_tests(respondTest)

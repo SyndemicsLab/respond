@@ -28,15 +28,9 @@
 
 #include <fmt/core.h>
 
+#include "DataTypes.hpp"
+
 namespace Simulation{
-    using DataMatrix = std::vector<Eigen::Tensor<float, 3>>;
-
-    typedef struct history{
-        DataMatrix stateHistory;
-        DataMatrix overdoseHistory;
-        DataMatrix mortalityHistory;
-    }History;
-
     enum Dimension {
         TREATMENT = 0,
         OUD = 1,
@@ -46,82 +40,82 @@ namespace Simulation{
     class ISim{
     public:
         virtual ~ISim(){};
-        virtual void LoadInitialGroup(Eigen::Tensor<float, 3> initialGroup) = 0;
-        virtual void LoadEnteringSamples(DataMatrix enteringSamples) = 0;
-        virtual void LoadOUDTransitions(DataMatrix oudTransitions) = 0;
-        virtual void LoadTreatmentTransitions(DataMatrix treatmentTransitions) = 0;
-        virtual void LoadOverdoseTransitions(DataMatrix overdoseTransitions) = 0;
-        virtual void LoadMortalityTransitions(DataMatrix mortalityTransitions) = 0;
+        virtual void LoadInitialGroup(Data::Matrix3d initialGroup) = 0;
+        virtual void LoadEnteringSamples(Data::Matrix3dOverTime enteringSamples) = 0;
+        virtual void LoadOUDTransitions(Data::Matrix3dOverTime oudTransitions) = 0;
+        virtual void LoadTreatmentTransitions(Data::Matrix3dOverTime treatmentTransitions) = 0;
+        virtual void LoadOverdoseTransitions(Data::Matrix3dOverTime overdoseTransitions) = 0;
+        virtual void LoadMortalityTransitions(Data::Matrix3dOverTime mortalityTransitions) = 0;
 
-        virtual DataMatrix GetEnteringSamples() = 0;
-        virtual DataMatrix GetOUDTransitions() = 0;
-        virtual DataMatrix GetTreatmentTransitions() = 0;
-        virtual DataMatrix GetOverdoseTransitions() = 0;
-        virtual DataMatrix GetMortalityTransitions() = 0;
+        virtual Data::Matrix3dOverTime GetEnteringSamples() = 0;
+        virtual Data::Matrix3dOverTime GetOUDTransitions() = 0;
+        virtual Data::Matrix3dOverTime GetTreatmentTransitions() = 0;
+        virtual Data::Matrix3dOverTime GetOverdoseTransitions() = 0;
+        virtual Data::Matrix3dOverTime GetMortalityTransitions() = 0;
 
         virtual void LoadTransitionModules(
-            DataMatrix enteringSamples,
-            DataMatrix oudTransitions,
-            DataMatrix treatmentTransitions,
-            DataMatrix overdoseTransitions,
-            DataMatrix mortalityTransitions
+            Data::Matrix3dOverTime enteringSamples,
+            Data::Matrix3dOverTime oudTransitions,
+            Data::Matrix3dOverTime treatmentTransitions,
+            Data::Matrix3dOverTime overdoseTransitions,
+            Data::Matrix3dOverTime mortalityTransitions
         ) = 0;
         virtual void Run() = 0;
-        virtual History getHistory() = 0;
+        virtual Data::History getHistory() = 0;
     };
 
     class Sim : public ISim {
     private:
         boost::log::sources::logger lg;
 
-        Eigen::Tensor<float, 3> state;
-        Eigen::Tensor<float, 3> transition;
+        Data::Matrix3d state;
+        Data::Matrix3d transition;
         uint16_t currentTime;
         uint8_t numOUDStates;
         uint8_t numTreatmentStates;
         uint16_t numDemographics;
-        History history;
-        DataMatrix enteringSamples;
-        DataMatrix oudTransitions;
-        DataMatrix treatmentTransitions;
-        DataMatrix overdoseTransitions;
-        DataMatrix mortalityTransitions;
-        Eigen::Tensor<float, 3> step();
-        Eigen::Tensor<float, 3> addEnteringSamples(Eigen::Tensor<float, 3> state);
-        Eigen::Tensor<float, 3> multiplyOUDTransitions(Eigen::Tensor<float, 3> state);
-        Eigen::Tensor<float, 3> multiplyTreatmentTransitions(Eigen::Tensor<float, 3> state);
-        Eigen::Tensor<float, 3> multiplyOverdoseTransitions(Eigen::Tensor<float, 3> state);
-        Eigen::Tensor<float, 3> multiplyMortalityTransitions(Eigen::Tensor<float, 3> state);
-        Eigen::Tensor<float, 3> getTransitionFromDim(Dimension dim);
-        Eigen::Tensor<float, 3> multiplyTransitions(Eigen::Tensor<float, 3> state, Dimension dim);
+        Data::History history;
+        Data::Matrix3dOverTime enteringSamples;
+        Data::Matrix3dOverTime oudTransitions;
+        Data::Matrix3dOverTime treatmentTransitions;
+        Data::Matrix3dOverTime overdoseTransitions;
+        Data::Matrix3dOverTime mortalityTransitions;
+        Data::Matrix3d step();
+        Data::Matrix3d addEnteringSamples(Data::Matrix3d state);
+        Data::Matrix3d multiplyOUDTransitions(Data::Matrix3d state);
+        Data::Matrix3d multiplyTreatmentTransitions(Data::Matrix3d state);
+        Data::Matrix3d multiplyOverdoseTransitions(Data::Matrix3d state);
+        Data::Matrix3d multiplyMortalityTransitions(Data::Matrix3d state);
+        Data::Matrix3d getTransitionFromDim(Dimension dim);
+        Data::Matrix3d multiplyTransitions(Data::Matrix3d state, Dimension dim);
     public:
-        Eigen::Tensor<float, 3> CreateNewShapedTensor();
+        Data::Matrix3d CreateNewShapedTensor();
 
         Sim();
         Sim(uint16_t duration, uint8_t numOUDStates, uint8_t numTreatmentStates, uint16_t numDemographics);
         virtual ~Sim() {};
-        void LoadInitialGroup(Eigen::Tensor<float, 3> initialGroup) override;
-        void LoadEnteringSamples(DataMatrix enteringSamples) override;
-        void LoadOUDTransitions(DataMatrix oudTransitions) override;
-        void LoadTreatmentTransitions(DataMatrix treatmentTransitions) override;
-        void LoadOverdoseTransitions(DataMatrix overdoseTransitions) override;
-        void LoadMortalityTransitions(DataMatrix mortalityTransitions) override;
+        void LoadInitialGroup(Data::Matrix3d initialGroup) override;
+        void LoadEnteringSamples(Data::Matrix3dOverTime enteringSamples) override;
+        void LoadOUDTransitions(Data::Matrix3dOverTime oudTransitions) override;
+        void LoadTreatmentTransitions(Data::Matrix3dOverTime treatmentTransitions) override;
+        void LoadOverdoseTransitions(Data::Matrix3dOverTime overdoseTransitions) override;
+        void LoadMortalityTransitions(Data::Matrix3dOverTime mortalityTransitions) override;
 
-        DataMatrix GetEnteringSamples() override;
-        DataMatrix GetOUDTransitions() override;
-        DataMatrix GetTreatmentTransitions() override;
-        DataMatrix GetOverdoseTransitions() override;
-        DataMatrix GetMortalityTransitions() override;
+        Data::Matrix3dOverTime GetEnteringSamples() override;
+        Data::Matrix3dOverTime GetOUDTransitions() override;
+        Data::Matrix3dOverTime GetTreatmentTransitions() override;
+        Data::Matrix3dOverTime GetOverdoseTransitions() override;
+        Data::Matrix3dOverTime GetMortalityTransitions() override;
 
         void LoadTransitionModules(
-            DataMatrix enteringSamples,
-            DataMatrix oudTransitions,
-            DataMatrix treatmentTransitions,
-            DataMatrix overdoseTransitions,
-            DataMatrix mortalityTransitions
+            Data::Matrix3dOverTime enteringSamples,
+            Data::Matrix3dOverTime oudTransitions,
+            Data::Matrix3dOverTime treatmentTransitions,
+            Data::Matrix3dOverTime overdoseTransitions,
+            Data::Matrix3dOverTime mortalityTransitions
         ) override;
         void Run() override;
-        History getHistory() override;
+        Data::History getHistory() override;
         uint16_t Duration;
     };
 }

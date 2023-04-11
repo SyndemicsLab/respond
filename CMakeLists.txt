@@ -3,23 +3,7 @@ cmake_minimum_required(VERSION 3.19)
 set (CMAKE_CXX_STANDARD 11)
 
 # Set some basic project attributes
-project (RESPOND
-	VERSION 2.0.0
-	DESCRIPTION "A Compartmental Simulation for Opioid Use Disorder"
-)
+project (RESPONDREPO)
 
-include(GNUInstallDirs)
-
-add_library(respond SHARED
-  src/Model/Simulation.cpp
-  src/Controller/DataLoader.cpp
-)
-
-include_directories(include)
-
-add_subdirectory(src/Model)
-add_subdirectory(src/Controller)
+add_subdirectory(src)
 add_subdirectory(test)
-
-# Create a simple configuration header
-configure_file(config.h.in config.h)

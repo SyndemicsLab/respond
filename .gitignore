@@ -10,10 +10,10 @@ local.properties
 .vscode/
 .loadpath
 .recommenders
-_build/*
 build/*
-!_build/.gitkeep
 !build/.gitkeep
+docs/*
+!docs/.gitkeep
 
 # External tool builders
 .externalToolBuilders/

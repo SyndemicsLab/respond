@@ -38,84 +38,84 @@ namespace Simulation{
 
     /// @brief Create a new Tensor shaped like the state data
     /// @return A New Empty Tensor of the same shape as the state data
-    Eigen::Tensor<float, 3> Sim::CreateNewShapedTensor(){
+    Data::Matrix3d Sim::CreateNewShapedTensor(){
         std::array<long int, 3> order = {0,0,0};
         order[OUD] = this->numOUDStates;
         order[TREATMENT] = this->numTreatmentStates;
         order[DEMOGRAPHIC_COMBO] = this->numDemographics; 
-        Eigen::Tensor<float, 3> empty(order);
+        Data::Matrix3d empty(order);
         return empty;
     }
 
     /// @brief 
     /// @param initialGroup 
-    void Sim::LoadInitialGroup(Eigen::Tensor<float, 3> initialGroup){
+    void Sim::LoadInitialGroup(Data::Matrix3d initialGroup){
         this->state = initialGroup;
         BOOST_LOG(this->lg) << "Initial Group Loaded";
     }
 
     /// @brief 
     /// @param enteringSamples 
-    void Sim::LoadEnteringSamples(std::vector<Eigen::Tensor<float, 3>> enteringSamples){
+    void Sim::LoadEnteringSamples(Data::Matrix3dOverTime enteringSamples){
         this->enteringSamples = enteringSamples;
         BOOST_LOG(this->lg) << "Entering Samples Loaded";
     }
 
     /// @brief 
     /// @param oudTransitions 
-    void Sim::LoadOUDTransitions(std::vector<Eigen::Tensor<float, 3>> oudTransitions){
+    void Sim::LoadOUDTransitions(Data::Matrix3dOverTime oudTransitions){
         this->oudTransitions = oudTransitions;
         BOOST_LOG(this->lg) << "OUD Transitions Loaded";
     }
 
     /// @brief 
     /// @param treatmentTransitions 
-    void Sim::LoadTreatmentTransitions(std::vector<Eigen::Tensor<float, 3>> treatmentTransitions){
+    void Sim::LoadTreatmentTransitions(Data::Matrix3dOverTime treatmentTransitions){
         this->treatmentTransitions = treatmentTransitions;
         BOOST_LOG(this->lg) << "Treatment Transitions Loaded";
     }
 
     /// @brief 
     /// @param overdoseTransitions 
-    void Sim::LoadOverdoseTransitions(std::vector<Eigen::Tensor<float, 3>> overdoseTransitions){
+    void Sim::LoadOverdoseTransitions(Data::Matrix3dOverTime overdoseTransitions){
         this->overdoseTransitions = overdoseTransitions;
         BOOST_LOG(this->lg) << "Overdose Transitions Loaded";
     }
 
     /// @brief 
     /// @param mortalityTransitions 
-    void Sim::LoadMortalityTransitions(std::vector<Eigen::Tensor<float, 3>> mortalityTransitions){
+    void Sim::LoadMortalityTransitions(Data::Matrix3dOverTime mortalityTransitions){
         this->mortalityTransitions = mortalityTransitions;
         BOOST_LOG(this->lg) << "Mortality Transitions Loaded";
     }
 
     /// @brief 
     /// @return 
-    DataMatrix Sim::GetEnteringSamples(){
+    Data::Matrix3dOverTime Sim::GetEnteringSamples(){
         return this->enteringSamples;
     }
 
     /// @brief 
     /// @return 
-    DataMatrix Sim::GetOUDTransitions(){
+    Data::Matrix3dOverTime Sim::GetOUDTransitions(){
         return this->oudTransitions;
     }
 
     /// @brief 
     /// @return 
-    DataMatrix Sim::GetTreatmentTransitions(){
+    Data::Matrix3dOverTime Sim::GetTreatmentTransitions(){
         return this->treatmentTransitions;
     }
     
     /// @brief 
     /// @return 
-    DataMatrix Sim::GetOverdoseTransitions(){
+    Data::Matrix3dOverTime Sim::GetOverdoseTransitions(){
         return this->overdoseTransitions;
     }
     
     /// @brief 
     /// @return 
-    DataMatrix Sim::GetMortalityTransitions(){
+    Data::Matrix3dOverTime Sim::GetMortalityTransitions(){
         return this->mortalityTransitions;
     }
 
@@ -125,11 +125,11 @@ namespace Simulation{
     /// @param treatmentTransitions 
     /// @param overdoseTransitions 
     /// @param mortalityTransitions 
-    void Sim::LoadTransitionModules(std::vector<Eigen::Tensor<float, 3>> enteringSamples, 
-        std::vector<Eigen::Tensor<float, 3>> oudTransitions, 
-        std::vector<Eigen::Tensor<float, 3>> treatmentTransitions,
-        std::vector<Eigen::Tensor<float, 3>> overdoseTransitions,
-        std::vector<Eigen::Tensor<float, 3>> mortalityTransitions
+    void Sim::LoadTransitionModules(Data::Matrix3dOverTime enteringSamples, 
+        Data::Matrix3dOverTime oudTransitions, 
+        Data::Matrix3dOverTime treatmentTransitions,
+        Data::Matrix3dOverTime overdoseTransitions,
+        Data::Matrix3dOverTime mortalityTransitions
     ){
         this->LoadEnteringSamples(enteringSamples);
         this->LoadOUDTransitions(oudTransitions);
@@ -140,7 +140,7 @@ namespace Simulation{
 
     /// @brief Driving Method
     void Sim::Run(){
-        Eigen::Tensor<float, 3> zeroMat = this->CreateNewShapedTensor();
+        Data::Matrix3d zeroMat = this->CreateNewShapedTensor();
         zeroMat.setZero();
         this->history.overdoseHistory.push_back(zeroMat);
         this->history.mortalityHistory.push_back(zeroMat);
@@ -156,7 +156,7 @@ namespace Simulation{
 
     /// @brief 
     /// @return 
-    History Sim::getHistory(){
+    Data::History Sim::getHistory(){
         return this->history;
     }
 
@@ -168,7 +168,7 @@ namespace Simulation{
 
     /// @brief Standard timestep method making a step through each module
     /// @return NextState Matrix
-    Eigen::Tensor<float, 3> Sim::step(){
+    Data::Matrix3d Sim::step(){
         return this->multiplyMortalityTransitions(
             this->multiplyOverdoseTransitions(
                 this->multiplyTreatmentTransitions(
@@ -183,8 +183,8 @@ namespace Simulation{
     /// @brief Add Entering samples to current state
     /// @param state the tensor we will add the entering sample to
     /// @return Resulting tensor with added samples to the state
-    Eigen::Tensor<float, 3> Sim::addEnteringSamples(Eigen::Tensor<float, 3> state){
-        Eigen::Tensor<float, 3> enteringSamples = this->enteringSamples.at(this->currentTime);
+    Data::Matrix3d Sim::addEnteringSamples(Data::Matrix3d state){
+        Data::Matrix3d enteringSamples = this->enteringSamples.at(this->currentTime);
         if(enteringSamples.dimensions() != state.dimensions()){
             std::string message = fmt::format("Entering Samples Dimensions does not equal the State Dimensions at timestep {}", this->currentTime);
             throw std::invalid_argument(message);
@@ -193,27 +193,27 @@ namespace Simulation{
         // Slice is done because I need a copy of the state instead of the actual state reference
         std::array<long int, 3> offset = {0,0,0};
         std::array<long int, 3> extent = {state.dimensions()};
-        Eigen::Tensor<float, 3> ret = state.slice(offset, extent);
+        Data::Matrix3d ret = state.slice(offset, extent);
 
         ret += enteringSamples;
         return ret;
     }
 
-    // /// @brief Multiply OUD transition rates to the current state
-    // /// @param state current state
-    // /// @return new state with OUD transitions
-    Eigen::Tensor<float, 3> Sim::multiplyOUDTransitions(Eigen::Tensor<float, 3> state){
+    /// @brief Multiply OUD transition rates to the current state
+    /// @param state current state
+    /// @return new state with OUD transitions
+    Data::Matrix3d Sim::multiplyOUDTransitions(Data::Matrix3d state){
         return this->multiplyTransitions(state, OUD);
     }
 
-    // /// @brief Multiply Treatment Transitions with current state to produce change matrix
-    // /// @param state current state
-    // /// @return new state with treatment transitions
-    Eigen::Tensor<float, 3> Sim::multiplyTreatmentTransitions(Eigen::Tensor<float, 3> state){
+    /// @brief Multiply Treatment Transitions with current state to produce change matrix
+    /// @param state current state
+    /// @return new state with treatment transitions
+    Data::Matrix3d Sim::multiplyTreatmentTransitions(Data::Matrix3d state){
         return this->multiplyTransitions(state, TREATMENT);
     }
 
-    Eigen::Tensor<float, 3> Sim::getTransitionFromDim(Dimension dim){
+    Data::Matrix3d Sim::getTransitionFromDim(Dimension dim){
         switch(dim){
             case OUD:
                 return this->oudTransitions.at(this->currentTime);
@@ -229,11 +229,11 @@ namespace Simulation{
     /// @param state current state
     /// @param dim dimension under investigation
     /// @return new state with transitions multiplied in
-    Eigen::Tensor<float, 3> Sim::multiplyTransitions(Eigen::Tensor<float, 3> state, Dimension dim){
-        Eigen::Tensor<float, 3> ret(state.dimensions());
+    Data::Matrix3d Sim::multiplyTransitions(Data::Matrix3d state, Dimension dim){
+        Data::Matrix3d ret(state.dimensions());
         ret.setZero();
 
-        Eigen::Tensor<float, 3> transition = this->getTransitionFromDim(dim);
+        Data::Matrix3d transition = this->getTransitionFromDim(dim);
         if(transition.dimension(dim) != pow(state.dimension(dim),2)){
             std::string message = fmt::format("Transition Dimensions does not equal the Square of State Dimensions at timestep {}", this->currentTime);
             throw std::invalid_argument(message);
@@ -252,13 +252,13 @@ namespace Simulation{
             offsetState[dim] = i;
             extentState[dim] = 1;
 
-            Eigen::Tensor<float, 3> slicedState = state.slice(offsetState, extentState); 
+            Data::Matrix3d slicedState = state.slice(offsetState, extentState); 
 
             std::array<long int, 3> bcast = {1,1,1};
             bcast[dim] = state.dimension(dim);
 
-            Eigen::Tensor<float, 3> broadcastedTensor = slicedState.broadcast(bcast);
-            Eigen::Tensor<float, 3> slicedTransition = transition.slice(offsetTrans, extentTrans);
+            Data::Matrix3d broadcastedTensor = slicedState.broadcast(bcast);
+            Data::Matrix3d slicedTransition = transition.slice(offsetTrans, extentTrans);
             ret += (broadcastedTensor * slicedTransition);
         }        
         return ret;
@@ -268,13 +268,13 @@ namespace Simulation{
     /// @brief Calculate number of Overdoses
     /// @param state current state
     /// @return Number of Overdoses
-    Eigen::Tensor<float, 3> Sim::multiplyOverdoseTransitions(Eigen::Tensor<float, 3> state){
-        Eigen::Tensor<float, 3> overdoseMatrix = this->overdoseTransitions[this->currentTime];
+    Data::Matrix3d Sim::multiplyOverdoseTransitions(Data::Matrix3d state){
+        Data::Matrix3d overdoseMatrix = this->overdoseTransitions[this->currentTime];
         if(overdoseMatrix.dimensions() != state.dimensions()){
             std::string message = fmt::format("Overdose Dimensions does not equal the State Dimensions at timestep {}", this->currentTime);
             throw std::invalid_argument(message);
         }
-        Eigen::Tensor<float, 3> mult = overdoseMatrix * state;
+        Data::Matrix3d mult = overdoseMatrix * state;
         this->history.overdoseHistory.push_back(mult);
         return state;
     }
@@ -282,14 +282,14 @@ namespace Simulation{
     /// @brief Calculate the amount of mortalities
     /// @param state current state
     /// @return New State with death calculated in
-    Eigen::Tensor<float, 3> Sim::multiplyMortalityTransitions(Eigen::Tensor<float, 3> state){
-        Eigen::Tensor<float, 3> mortalityMatrix = this->mortalityTransitions[this->currentTime];
+    Data::Matrix3d Sim::multiplyMortalityTransitions(Data::Matrix3d state){
+        Data::Matrix3d mortalityMatrix = this->mortalityTransitions[this->currentTime];
         if(mortalityMatrix.dimensions() != state.dimensions()){
             std::string message = fmt::format("Mortality Dimensions does not equal the State Dimensions at timestep {}", this->currentTime);
             throw std::invalid_argument(message);
         }
-        Eigen::Tensor<float, 3> ret(state.dimensions());
-        Eigen::Tensor<float, 3> mor = (state * mortalityMatrix);
+        Data::Matrix3d ret(state.dimensions());
+        Data::Matrix3d mor = (state * mortalityMatrix);
         this->history.mortalityHistory.push_back(mor);
         ret = state - mor;
         return ret;
