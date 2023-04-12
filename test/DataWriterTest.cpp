@@ -1,4 +1,3 @@
-#include <boost/filesystem.hpp>
 #include <gtest/gtest.h>
 #include <eigen3/Eigen/Eigen>
 #include <eigen3/unsupported/Eigen/CXX11/Tensor>

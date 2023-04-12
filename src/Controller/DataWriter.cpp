@@ -56,17 +56,17 @@ namespace Data{
         
 
         if (outputType == FILE){
-            if(!boost::filesystem::exists(this->dirname)){
-                boost::filesystem::create_directory(this->dirname);
+            if(!std::filesystem::exists(this->dirname)){
+                std::filesystem::create_directory(this->dirname);
             }
 
-            boost::filesystem::path dir(this->dirname);
-            boost::filesystem::path stateFile("stateHistory.csv");
-            boost::filesystem::path overdoseFile("overdoseHistory.csv");
-            boost::filesystem::path mortalityFile("mortalityHistory.csv");
-            boost::filesystem::path stateFullPath = dir/stateFile;
-            boost::filesystem::path overdoseFullPath = dir/overdoseFile;
-            boost::filesystem::path mortalityFullPath = dir/mortalityFile;
+            std::filesystem::path dir(this->dirname);
+            std::filesystem::path stateFile("stateHistory.csv");
+            std::filesystem::path overdoseFile("overdoseHistory.csv");
+            std::filesystem::path mortalityFile("mortalityHistory.csv");
+            std::filesystem::path stateFullPath = dir/stateFile;
+            std::filesystem::path overdoseFullPath = dir/overdoseFile;
+            std::filesystem::path mortalityFullPath = dir/mortalityFile;
 
             std::ofstream file;
             

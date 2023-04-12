@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.19)
 
-set (CMAKE_CXX_STANDARD 11)
+set (CMAKE_CXX_STANDARD 20)
 
 # Find OpenMP
 find_package(OpenMP REQUIRED)
@@ -8,14 +8,8 @@ find_package(OpenMP REQUIRED)
 find_package (Eigen3 3.4 REQUIRED NO_MODULE)
 # Find Boost
 find_package(Boost REQUIRED COMPONENTS log_setup log)
-
-include(FetchContent)
 # Find FMT
-FetchContent_Declare(fmt
-  GIT_REPOSITORY https://github.com/fmtlib/fmt.git
-  GIT_TAG master
-)
-FetchContent_MakeAvailable(fmt)
+find_package(fmt)
 
 add_library(Model
     Simulation.cpp 

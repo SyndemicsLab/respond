@@ -1,4 +1,4 @@
-#include <boost/filesystem.hpp>
+#include <filesystem>
 #include <gtest/gtest.h>
 #include "DataLoader.hpp"
 #include "mocks/MockData.hpp"
@@ -6,9 +6,9 @@
 class DataLoaderTest : public ::testing::Test {
 protected:
     void SetUp () override {
-        boost::filesystem::path DEST_DIR("TestInput/");
-        if (!boost::filesystem::is_directory(DEST_DIR)) {
-            boost::filesystem::create_directories(DEST_DIR);
+        std::filesystem::path DEST_DIR("TestInput/");
+        if (!std::filesystem::is_directory(DEST_DIR)) {
+            std::filesystem::create_directories(DEST_DIR);
         }
 
         std::ofstream mockCSV("TestInput/simple.csv");
@@ -22,7 +22,7 @@ protected:
     }
 
     void TearDown () override {
-        boost::filesystem::remove_all("TestInput");
+        std::filesystem::remove_all("TestInput");
     }
 };
 

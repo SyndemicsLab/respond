@@ -17,14 +17,8 @@ target_include_directories(respondTest INTERFACE
   ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
-# Link Boost
-find_package(Boost REQUIRED COMPONENTS
-  filesystem
-)
-
 target_link_libraries(respondTest
   Eigen3::Eigen
-  Boost::filesystem
   gtest
   gtest_main
   Model
