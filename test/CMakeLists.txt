@@ -24,5 +24,10 @@ target_link_libraries(respondTest
   Model
   Controller
 )
+add_custom_command(
+        TARGET respondTest POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+                ${CMAKE_SOURCE_DIR}/test/TestInput
+                ${CMAKE_BINARY_DIR}/TestInput)
 
 gtest_discover_tests(respondTest)

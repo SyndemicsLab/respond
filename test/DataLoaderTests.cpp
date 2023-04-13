@@ -1,39 +1,23 @@
-#include <filesystem>
 #include <gtest/gtest.h>
+#include "configuration.hpp"
 #include "DataLoader.hpp"
-#include "mocks/MockData.hpp"
 
-class DataLoaderTest : public ::testing::Test {
-protected:
-    void SetUp () override {
-        std::filesystem::path DEST_DIR("TestInput/");
-        if (!std::filesystem::is_directory(DEST_DIR)) {
-            std::filesystem::create_directories(DEST_DIR);
-        }
+using namespace Data;
 
-        std::ofstream mockCSV("TestInput/simple.csv");
-        mockCSV << "header1,header2,header3,header4" << std::endl
-                << "1,2,3,4" << std::endl
-                << "5,6,7,8" << std::endl
-                << "9,10,11,12" << std::endl
-                << "13,14,15,16" << std::endl;
-        mockCSV.close();
-        writeRealisticCSV();
-    }
+TEST(DataLoaderTest, DefaultConstructor) {
+    DataLoader dataTest;
+    std::string EXPECTED = "";
+    EXPECT_EQ(dataTest.getDirName(), EXPECTED);
+}
 
-    void TearDown () override {
-        std::filesystem::remove_all("TestInput");
-    }
-};
-
-TEST_F(DataLoaderTest, SimpleHeaderCount) {
+TEST(DataLoaderTest, CSVHeaderCount) {
     DataLoader dataTest;
     InputTable realTable = dataTest.readCSV("TestInput/simple.csv");
     int EXPECTED = 4;
     EXPECT_EQ(realTable.size(), EXPECTED);
 }
 
-TEST_F(DataLoaderTest, SimpleHeaderContent) {
+TEST(DataLoaderTest, CSVHeaderContent) {
     DataLoader dataTest;
     InputTable realTable = dataTest.readCSV("TestInput/simple.csv");
     std::vector<std::string> EXPECTED_HEADERS = {
@@ -47,7 +31,7 @@ TEST_F(DataLoaderTest, SimpleHeaderContent) {
     EXPECT_EQ(REAL_HEADERS, EXPECTED_HEADERS);
 }
 
-TEST_F(DataLoaderTest, SimpleNoMissingValues) {
+TEST(DataLoaderTest, CSVNoMissingValues) {
     DataLoader dataTest;
     InputTable realTable = dataTest.readCSV("TestInput/simple.csv");
     std::vector<std::string> HEADERS = {
@@ -62,7 +46,7 @@ TEST_F(DataLoaderTest, SimpleNoMissingValues) {
     }
 }
 
-TEST_F(DataLoaderTest, SimpleValueContent) {
+TEST(DataLoaderTest, CSVValueContent) {
     DataLoader dataTest;
     InputTable realTable = dataTest.readCSV("TestInput/simple.csv");
     std::vector<std::string> HEADERS = {
@@ -80,4 +64,86 @@ TEST_F(DataLoaderTest, SimpleValueContent) {
         REAL_VALUES = iter->second;
         EXPECT_EQ(REAL_VALUES, EXPECTED_VALUES[i]);
     }
+}
+
+TEST(DataLoaderTest, ConfigFileBool) {
+    Configuration TestConf = configure("TestInput/input1/sim.conf");
+    std::vector<bool> EXPECTED_VALUES = {
+        true,
+        true,
+        false,
+        false
+    };
+    std::vector<bool> REAL_VALUES = {
+        TestConf.cost_analysis,
+        TestConf.per_intervention_predictions,
+        TestConf.general_outputs,
+        TestConf.cost_category_outputs
+    };
+    for (int i = 0; i < REAL_VALUES.size(); ++i) {
+        EXPECT_EQ(REAL_VALUES[i], EXPECTED_VALUES[i]);
+    }
+}
+
+TEST(DataLoaderTest, ConfigFileInt) {
+    Configuration TestConf = configure("TestInput/input1/sim.conf");
+    std::vector<int> EXPECTED_VALUES = {
+        156,
+        260,
+        2
+    };
+    std::vector<int> REAL_VALUES = {
+        TestConf.duration,
+        TestConf.aging_interval,
+        TestConf.reporting_interval
+    };
+    for (int i = 0; i < REAL_VALUES.size(); ++i) {
+        EXPECT_EQ(REAL_VALUES[i], EXPECTED_VALUES[i]);
+    }
+    // there is only one double to check
+    EXPECT_EQ(TestConf.discount_rate, 0.0025);
+}
+
+TEST(DataLoaderTest, ConfigFileIntVector) {
+    Configuration TestConf = configure("TestInput/input1/sim.conf");
+    std::vector<std::vector<int>> EXPECTED_VALUES = {
+        {52, 104, 156},
+        {52, 104, 156},
+        {52, 104, 156},
+        {52, 104, 156}
+    };
+    std::vector<std::vector<int>> REAL_VALUES = {
+        TestConf.intervention_change_times,
+        TestConf.entering_sample_change_times,
+        TestConf.overdose_change_times,
+        TestConf.general_stats_output_timesteps
+    };
+    for (int i = 0; i < REAL_VALUES.size(); ++i) {
+        EXPECT_EQ(REAL_VALUES[i], EXPECTED_VALUES[i]);
+    }
+}
+
+TEST(DataLoaderTest, ConfigFileStringVector) {
+    Configuration TestConf = configure("TestInput/input1/sim.conf");
+    std::vector<std::vector<std::string>> EXPECTED_VALUES = {
+        {"No Treatment", "Buprenorphine", "Naltrexone", "Post-Buprenorphine", "Post-Naltrexone"},
+        {"10_14", "15_19", "20_24"},
+        {"male", "female"},
+        {"Active_Noninjection", "Active_Injection", "Nonactive_Noninjection", "Nonactive_Injection"}
+    };
+    std::vector<std::vector<std::string>> REAL_VALUES = {
+        TestConf.interventions,
+        TestConf.age_groups,
+        TestConf.sex,
+        TestConf.oud_states
+    };
+    for (int i = 0; i < REAL_VALUES.size(); ++i) {
+        EXPECT_EQ(REAL_VALUES[i], EXPECTED_VALUES[i]);
+    }
+}
+
+TEST(DataLoaderTest, SimulationInputs) {
+    DataLoader dataTest("TestInput/input1");
+    Simulation::Sim sim;
+    dataTest.loadSimulationInputs(sim);
 }

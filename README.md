@@ -1,23 +1,26 @@
-# RESPOND v2.0
-RESPOND v2.0 is a re-write of the original RESPOND model first proposed by our lab several years ago. While successful, it was generally slow and not pheasible to expand upon. Therefore, in order to make the codebase more modular and generally speed up the model, we have decided to refactor the project into RESPOND v2.0.
+# RESPONDv2.0
+`RESPONDv2.0` is a complete rewrite of the RESPOND model, first created by the [Syndemics Lab](https://www.syndemicslab.org) in the late 2010s, with the goals of improving the readability and maintainability of the model, improving the execution speed, and making the model calibration process easier.
 
-### Environment Dependencies
-- C++11
-- GTest
-- GMock
-- Boost
-- Eigen >= 3.4.x
-- OpenMP
-- CMake >= 3.19
+While the original model was built using a combination of the R and C++ programming languages, the core of this rewrite is purely C++, instead exposing language bindings so users can work with the model using their language of choice.
 
-### Inputs
-Previously, RESPOND managed all inputs in a massive 5 dimensional array. This meant for any changes in parameters we had to completely restructure the initial array. In addition, the array did element wise multiplication in serial slowing down the simulation substantially. 
+## Dependencies
+- [`gcc`](https://gcc.gnu.org) v4.8.1 or newer
+- [`gtest`](https://github.com/google/googletest) & `gmock`
+- [Boost](https://www.boost.org)
+- [Eigen](https://eigen.tuxfamily.org/index.php) >= 3.4.x
+- [OpenMP](https://www.openmp.org)
+- [CMake](https://cmake.org) >= 3.19
 
-This is being changed so that the input matrix is simply 3 dimensions
+## What's New?
+### Simulation Function Structure
+One of the largest changes to the model, from a programming perspective, is the approach taken for representing the simulation population. In the original RESPOND model, this was done through a large, five-dimensional array that could not easily account for new population demographics/strata and required multiplication to be performed in serial.
 
-- x: Treatment State
-- y: OUD State
-- z: Demographic Vector
+This new implementation uses Eigen objects both to speed up the simulation through parallel computation of matrix multiplication and to make the programming more directly follow the underlying mathematical logic.
 
-This allows for flexibility in the number of treatment states, OUD states, and demographic combinations. In addition, since there is no transition between demographics, we can run the z dimension in parallel across the entire simulation. 
+The State Tensor, known in the original as `cohort` (described above), is a three-dimensional array whose axes are
 
+- Treatment/Intervention Status
+- Opioid Use Disorder (OUD) Status
+- Demographics (e.g. age, sex)
+
+This enables flexibility in the number of combinations of intervention, opioid use, and demographics classifiers used in the model. The State Tensor is then wrapped in a vector to capture all timesteps.
