@@ -142,8 +142,3 @@ TEST(DataLoaderTest, ConfigFileStringVector) {
     }
 }
 
-TEST(DataLoaderTest, SimulationInputs) {
-    DataLoader dataTest("TestInput/input1");
-    Simulation::Sim sim;
-    dataTest.loadSimulationInputs(sim);
-}

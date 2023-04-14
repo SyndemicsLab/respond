@@ -75,17 +75,3 @@ std::unordered_map<std::string, InputTable> DataLoader::readInputDir(const std::
     }
     return toReturn;
 }
-
-void DataLoader::loadSimulationInputs(Simulation::Sim& sim) {
-    // for reference -- these are the methods to account for in this function
-    // void LoadEnteringSamples(Matrix3dOverTime enteringSamples) override;
-    // void LoadOUDTransitions(Matrix3dOverTime oudTransitions) override;
-    // void LoadTreatmentTransitions(Matrix3dOverTime treatmentTransitions) override;
-    // void LoadOverdoseTransitions(Matrix3dOverTime overdoseTransitions) override;
-    // void LoadMortalityTransitions(Matrix3dOverTime mortalityTransitions) override;
-
-    // Create the Initial Group
-    // void LoadInitialGroup(Matrix3d initialGroup) override;
-    Matrix3d initialGroup;
-    InputTable& initialCohort = inputTables["init_cohort.csv"];
-}

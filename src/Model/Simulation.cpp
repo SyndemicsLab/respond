@@ -36,6 +36,10 @@ namespace Simulation{
         this->transition.setZero();
     }
 
+    Sim::Sim(Data::DataLoader dataLoader){
+        // Stub for DataLoader
+    }
+
     /// @brief Create a new Tensor shaped like the state data
     /// @return A New Empty Tensor of the same shape as the state data
     Data::Matrix3d Sim::CreateNewShapedTensor(){
@@ -87,6 +91,10 @@ namespace Simulation{
     void Sim::LoadMortalityTransitions(Data::Matrix3dOverTime mortalityTransitions){
         this->mortalityTransitions = mortalityTransitions;
         BOOST_LOG(this->lg) << "Mortality Transitions Loaded";
+    }
+
+    void Sim::Load(Data::DataLoader dataLoader){
+        // Stub for Loading
     }
 
     /// @brief 

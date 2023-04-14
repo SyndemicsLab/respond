@@ -10,7 +10,6 @@
 
 #include "configuration.hpp"
 #include "DataTypes.hpp"
-#include "Simulation.hpp"
 
 namespace Data {
     using InputTable = std::unordered_map<std::string, std::vector<std::string>>;
@@ -43,7 +42,6 @@ namespace Data {
         Configuration readConfigFile(const std::string&);
         InputTable readCSV(const std::string&);
         std::unordered_map<std::string, InputTable> readInputDir(const std::string&);
-        void loadSimulationInputs(Simulation::Sim&);
     private:
         std::string dirName;
         Configuration config;

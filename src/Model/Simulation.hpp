@@ -29,6 +29,7 @@
 #include <fmt/core.h>
 
 #include "DataTypes.hpp"
+#include "DataLoader.hpp"
 
 namespace Simulation{
     enum Dimension {
@@ -46,6 +47,7 @@ namespace Simulation{
         virtual void LoadTreatmentTransitions(Data::Matrix3dOverTime treatmentTransitions) = 0;
         virtual void LoadOverdoseTransitions(Data::Matrix3dOverTime overdoseTransitions) = 0;
         virtual void LoadMortalityTransitions(Data::Matrix3dOverTime mortalityTransitions) = 0;
+        virtual void Load(Data::DataLoader dataLoader) = 0;
 
         virtual Data::Matrix3dOverTime GetEnteringSamples() = 0;
         virtual Data::Matrix3dOverTime GetOUDTransitions() = 0;
@@ -93,13 +95,15 @@ namespace Simulation{
 
         Sim();
         Sim(uint16_t duration, uint8_t numOUDStates, uint8_t numTreatmentStates, uint16_t numDemographics);
-        virtual ~Sim() {};
+        ~Sim() {};
+        Sim(Data::DataLoader dataLoader);
         void LoadInitialGroup(Data::Matrix3d initialGroup) override;
         void LoadEnteringSamples(Data::Matrix3dOverTime enteringSamples) override;
         void LoadOUDTransitions(Data::Matrix3dOverTime oudTransitions) override;
         void LoadTreatmentTransitions(Data::Matrix3dOverTime treatmentTransitions) override;
         void LoadOverdoseTransitions(Data::Matrix3dOverTime overdoseTransitions) override;
         void LoadMortalityTransitions(Data::Matrix3dOverTime mortalityTransitions) override;
+        void Load(Data::DataLoader dataLoader) override;
 
         Data::Matrix3dOverTime GetEnteringSamples() override;
         Data::Matrix3dOverTime GetOUDTransitions() override;
