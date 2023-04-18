@@ -45,6 +45,10 @@ namespace Data {
 
         // getter functions
         std::string getDirName() { return dirName; }
+        uint16_t getDuration() { return duration; }
+        uint8_t getNumOUDStates() { return numOUDStates; }
+        uint8_t getNumInterventions() { return numInterventions; }
+        uint16_t getNumDemographics() { return numDemographics; }
         Matrix3d getInitialGroup() { return initialGroup; }
         Matrix3dOverTime getEnteringSamples() { return enteringSamples; }
         Matrix3d getOUDTransitions() { return oudTransitions; }
@@ -54,6 +58,12 @@ namespace Data {
         Matrix3d getMortalityTransitions() { return mortalityTransitions; }
     private:
         std::string dirName;
+
+        uint16_t duration;
+        uint8_t numOUDStates;
+        uint8_t numInterventions;
+        uint16_t numDemographics;
+
         Matrix3d initialGroup;
         Matrix3dOverTime enteringSamples;
         Matrix3d oudTransitions;
