@@ -15,14 +15,16 @@
 #include "Simulation.hpp"
 #include "DataTypes.hpp"
 
-
+/// @brief Namespace Defining all Data Operations
 namespace Data {
 
+    /// @brief Type used to determine the output expected, used primarily in testing
     enum OutputType {
         FILE = 0,
         STRING = 1
     };
 
+    /// @brief Interface for DataWriter Object
     class IDataWriter{
     public:
         virtual ~IDataWriter(){};
@@ -35,6 +37,7 @@ namespace Data {
         virtual std::string Write(OutputType outputType) = 0;
     };
 
+    /// @brief Concrete DataWriter class implementing the corresponding interface
     class DataWriter : public IDataWriter{
     public:
         DataWriter();

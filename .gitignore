@@ -10,10 +10,18 @@ local.properties
 .vscode/
 .loadpath
 .recommenders
+
+# Build Files
 build/*
 !build/.gitkeep
-docs/*
-!docs/.gitkeep
+
+# Docs Files
+docs/html
+docs/latex
+docs/man
+docs/images/drawio
+
+
 
 # External tool builders
 .externalToolBuilders/

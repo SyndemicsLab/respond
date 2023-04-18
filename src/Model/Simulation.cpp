@@ -14,9 +14,9 @@ namespace Simulation{
     /// @brief Constructor for Simulation Object
     /// @param duration Total time for the entire simulation
     /// @param numOUDStates Total number of OUD states
-    /// @param numTreatmentStates Total number of possible treatment states (2n+1) 
+    /// @param numInterventions Total number of possible interventions 
     /// @param numDemographics Total number of demographic combinations
-    Sim::Sim(uint16_t duration, uint8_t numOUDStates, uint8_t numTreatmentStates, uint16_t numDemographics){
+    Sim::Sim(uint16_t duration, uint8_t numOUDStates, uint8_t numInterventions, uint16_t numDemographics){
         boost::log::add_file_log("simulation.log");
         boost::log::core::get()->set_filter(
             boost::log::trivial::severity >= boost::log::trivial::info
@@ -28,7 +28,7 @@ namespace Simulation{
         this->Duration = duration;
         this->currentTime = 0;
         this->numOUDStates = numOUDStates;
-        this->numTreatmentStates = numTreatmentStates;
+        this->numInterventions = numInterventions;
         this->numDemographics = numDemographics;
         this->state = this->CreateNewShapedTensor();
         this->state.setZero();
@@ -36,6 +36,8 @@ namespace Simulation{
         this->transition.setZero();
     }
 
+    /// @brief Constructor to handle DataLoader input to Simulation
+    /// @param dataLoader DataLoader object filled ready to Run
     Sim::Sim(Data::DataLoader dataLoader){
         // Stub for DataLoader
     }
@@ -45,108 +47,120 @@ namespace Simulation{
     Data::Matrix3d Sim::CreateNewShapedTensor(){
         std::array<long int, 3> order = {0,0,0};
         order[OUD] = this->numOUDStates;
-        order[TREATMENT] = this->numTreatmentStates;
+        order[INTERVENTION] = this->numInterventions;
         order[DEMOGRAPHIC_COMBO] = this->numDemographics; 
         Data::Matrix3d empty(order);
         return empty;
     }
 
-    /// @brief 
-    /// @param initialGroup 
+    /// @brief Setter for Initial Group Parameter
+    /// @param initialGroup 3 Dimensional Matrix describing the Initial Population
     void Sim::LoadInitialGroup(Data::Matrix3d initialGroup){
         this->state = initialGroup;
         BOOST_LOG(this->lg) << "Initial Group Loaded";
     }
 
-    /// @brief 
-    /// @param enteringSamples 
+    /// @brief Setter for Entering Samples Group
+    /// @param enteringSamples 3 Dimensional Matrix over Time describing the Entering Samples
     void Sim::LoadEnteringSamples(Data::Matrix3dOverTime enteringSamples){
         this->enteringSamples = enteringSamples;
         BOOST_LOG(this->lg) << "Entering Samples Loaded";
     }
 
-    /// @brief 
-    /// @param oudTransitions 
-    void Sim::LoadOUDTransitions(Data::Matrix3dOverTime oudTransitions){
+    /// @brief Setter for OUD Transitions
+    /// @param oudTransitions 3 Dimensional Matrix over Time describing the OUD Transition Percentages
+    void Sim::LoadOUDTransitions(Data::Matrix3d oudTransitions){
         this->oudTransitions = oudTransitions;
         BOOST_LOG(this->lg) << "OUD Transitions Loaded";
     }
 
-    /// @brief 
-    /// @param treatmentTransitions 
-    void Sim::LoadTreatmentTransitions(Data::Matrix3dOverTime treatmentTransitions){
-        this->treatmentTransitions = treatmentTransitions;
-        BOOST_LOG(this->lg) << "Treatment Transitions Loaded";
+    /// @brief Setter for Intervention Transitions
+    /// @param InterventionTransitions 3 Dimensional Matrix over Time describing the Intervention Transition Percentages
+    void Sim::LoadInterventionTransitions(Data::Matrix3dOverTime interventionTransitions){
+        this->interventionTransitions = interventionTransitions;
+        BOOST_LOG(this->lg) << "Intervention Transitions Loaded";
     }
 
-    /// @brief 
-    /// @param overdoseTransitions 
+    void Sim::LoadFatalOverdoseTransitions(Data::Matrix3dOverTime fatalOverdoseTransitions){
+        this->fatalOverdoseTransitions = fatalOverdoseTransitions;
+        BOOST_LOG(this->lg) << "Fatal Overdose Transitions Loaded";
+    }
+
+    /// @brief Setter for Overdose Rates
+    /// @param overdoseTransitions 3 Dimensional Matrix over Time describing the Overdose Percentages
     void Sim::LoadOverdoseTransitions(Data::Matrix3dOverTime overdoseTransitions){
         this->overdoseTransitions = overdoseTransitions;
         BOOST_LOG(this->lg) << "Overdose Transitions Loaded";
     }
 
-    /// @brief 
-    /// @param mortalityTransitions 
-    void Sim::LoadMortalityTransitions(Data::Matrix3dOverTime mortalityTransitions){
+    /// @brief Setter for Mortality Rates
+    /// @param mortalityTransitions 3 Dimensional Matrix over Time describing the Mortality Percentages
+    void Sim::LoadMortalityTransitions(Data::Matrix3d mortalityTransitions){
         this->mortalityTransitions = mortalityTransitions;
         BOOST_LOG(this->lg) << "Mortality Transitions Loaded";
     }
 
+    /// @brief Setter for all data using a DataLoader object
     void Sim::Load(Data::DataLoader dataLoader){
         // Stub for Loading
     }
 
-    /// @brief 
-    /// @return 
+    /// @brief Getter for Entering Samples Group
+    /// @return 3 Dimensional Matrix over Time describing the Entering Samples
     Data::Matrix3dOverTime Sim::GetEnteringSamples(){
         return this->enteringSamples;
     }
 
-    /// @brief 
-    /// @return 
-    Data::Matrix3dOverTime Sim::GetOUDTransitions(){
+    /// @brief Getter for OUD Transition Percentages
+    /// @return 3 Dimensional Matrix over Time describing the OUD Transition Percentages
+    Data::Matrix3d Sim::GetOUDTransitions(){
         return this->oudTransitions;
     }
 
-    /// @brief 
-    /// @return 
-    Data::Matrix3dOverTime Sim::GetTreatmentTransitions(){
-        return this->treatmentTransitions;
+    /// @brief Getter for Intervention Transition Percentages
+    /// @return 3 Dimensional Matrix over Time describing the Intervention Transition Percentages
+    Data::Matrix3dOverTime Sim::GetInterventionTransitions(){
+        return this->interventionTransitions;
+    }
+
+    Data::Matrix3dOverTime Sim::GetFatalOverdoseTransitions(){
+        return this->fatalOverdoseTransitions;
     }
     
-    /// @brief 
-    /// @return 
+    /// @brief Getter for Overdose Rates
+    /// @return 3 Dimensional Matrix over Time describing the Overdose Percentages
     Data::Matrix3dOverTime Sim::GetOverdoseTransitions(){
         return this->overdoseTransitions;
     }
     
-    /// @brief 
-    /// @return 
-    Data::Matrix3dOverTime Sim::GetMortalityTransitions(){
+    /// @brief Getter for Mortality Rates
+    /// @return 3 Dimensional Matrix over Time describing the Mortality Percentages
+    Data::Matrix3d Sim::GetMortalityTransitions(){
         return this->mortalityTransitions;
     }
 
-    /// @brief 
-    /// @param enteringSamples 
-    /// @param oudTransitions 
-    /// @param treatmentTransitions 
-    /// @param overdoseTransitions 
-    /// @param mortalityTransitions 
+    /// @brief Convenience function to Load all Matrices at Once
+    /// @param enteringSamples 3 Dimensional Matrix over Time describing the Entering Samples
+    /// @param oudTransitions 3 Dimensional Matrix over Time describing the OUD Transition Percentages
+    /// @param interventionTransitions 3 Dimensional Matrix over Time describing the Intervention Transition Percentages
+    /// @param overdoseTransitions 3 Dimensional Matrix over Time describing the Overdose Percentages
+    /// @param mortalityTransitions 3 Dimensional Matrix over Time describing the Mortality Percentages
     void Sim::LoadTransitionModules(Data::Matrix3dOverTime enteringSamples, 
-        Data::Matrix3dOverTime oudTransitions, 
-        Data::Matrix3dOverTime treatmentTransitions,
+        Data::Matrix3d oudTransitions, 
+        Data::Matrix3dOverTime interventionTransitions,
+        Data::Matrix3dOverTime fatalOverdoseTransitions,
         Data::Matrix3dOverTime overdoseTransitions,
-        Data::Matrix3dOverTime mortalityTransitions
+        Data::Matrix3d mortalityTransitions
     ){
         this->LoadEnteringSamples(enteringSamples);
         this->LoadOUDTransitions(oudTransitions);
-        this->LoadTreatmentTransitions(treatmentTransitions);
+        this->LoadInterventionTransitions(interventionTransitions);
+        this->LoadFatalOverdoseTransitions(fatalOverdoseTransitions);
         this->LoadOverdoseTransitions(overdoseTransitions);
         this->LoadMortalityTransitions(mortalityTransitions);
     }
 
-    /// @brief Driving Method
+    /// @brief Core method used to run the simulation
     void Sim::Run(){
         Data::Matrix3d zeroMat = this->CreateNewShapedTensor();
         zeroMat.setZero();
@@ -162,8 +176,8 @@ namespace Simulation{
         }
     }
 
-    /// @brief 
-    /// @return 
+    /// @brief Getter for entire stored history
+    /// @return History struct containing Overdoses, Mortality, and State Object at each timestep
     Data::History Sim::getHistory(){
         return this->history;
     }
@@ -177,15 +191,17 @@ namespace Simulation{
     /// @brief Standard timestep method making a step through each module
     /// @return NextState Matrix
     Data::Matrix3d Sim::step(){
-        return this->multiplyMortalityTransitions(
-            this->multiplyOverdoseTransitions(
-                this->multiplyTreatmentTransitions(
-                    this->multiplyOUDTransitions(
-                        this->addEnteringSamples(this->state)
-                    )
+        Data::Matrix3d transitionedState = this->multiplyInterventionTransitions(
+            this->multiplyOUDTransitions(
+                    this->addEnteringSamples(this->state)
                 )
-            )
-        );
+            );
+        
+        Data::Matrix3d overdoses = this->multiplyOverdoseTransitions(transitionedState);
+        Data::Matrix3d fatalOverdoses = this->multiplyFatalOverdoseTransitions(overdoses);
+        Data::Matrix3d mortalities = this->multiplyMortalityTransitions(transitionedState);
+
+        return (transitionedState - (mortalities + fatalOverdoses));
     }
 
     /// @brief Add Entering samples to current state
@@ -214,19 +230,19 @@ namespace Simulation{
         return this->multiplyTransitions(state, OUD);
     }
 
-    /// @brief Multiply Treatment Transitions with current state to produce change matrix
+    /// @brief Multiply Intervention Transitions with current state to produce change matrix
     /// @param state current state
-    /// @return new state with treatment transitions
-    Data::Matrix3d Sim::multiplyTreatmentTransitions(Data::Matrix3d state){
-        return this->multiplyTransitions(state, TREATMENT);
+    /// @return new state with Intervention transitions
+    Data::Matrix3d Sim::multiplyInterventionTransitions(Data::Matrix3d state){
+        return this->multiplyTransitions(state, INTERVENTION);
     }
 
     Data::Matrix3d Sim::getTransitionFromDim(Dimension dim){
         switch(dim){
             case OUD:
-                return this->oudTransitions.at(this->currentTime);
-            case TREATMENT:
-                return this->treatmentTransitions.at(this->currentTime);
+                return this->oudTransitions;
+            case INTERVENTION:
+                return this->interventionTransitions.at(this->currentTime);
             case DEMOGRAPHIC_COMBO:
             default:
                 return this->CreateNewShapedTensor();
@@ -272,6 +288,16 @@ namespace Simulation{
         return ret;
     }
 
+    Data::Matrix3d Sim::multiplyFatalOverdoseTransitions(Data::Matrix3d state){
+        Data::Matrix3d fatalOverdoseMatrix = this->fatalOverdoseTransitions[this->currentTime];
+        if(fatalOverdoseMatrix.dimensions() != state.dimensions()){
+            std::string message = fmt::format("Fatal Overdose Dimensions does not equal the State Dimensions at timestep {}", this->currentTime);
+            throw std::invalid_argument(message);
+        }
+        Data::Matrix3d mult = fatalOverdoseMatrix * state;
+        return mult;
+    }
+
 
     /// @brief Calculate number of Overdoses
     /// @param state current state
@@ -284,14 +310,14 @@ namespace Simulation{
         }
         Data::Matrix3d mult = overdoseMatrix * state;
         this->history.overdoseHistory.push_back(mult);
-        return state;
+        return mult;
     }
 
     /// @brief Calculate the amount of mortalities
     /// @param state current state
     /// @return New State with death calculated in
     Data::Matrix3d Sim::multiplyMortalityTransitions(Data::Matrix3d state){
-        Data::Matrix3d mortalityMatrix = this->mortalityTransitions[this->currentTime];
+        Data::Matrix3d mortalityMatrix = this->mortalityTransitions;
         if(mortalityMatrix.dimensions() != state.dimensions()){
             std::string message = fmt::format("Mortality Dimensions does not equal the State Dimensions at timestep {}", this->currentTime);
             throw std::invalid_argument(message);
@@ -299,7 +325,6 @@ namespace Simulation{
         Data::Matrix3d ret(state.dimensions());
         Data::Matrix3d mor = (state * mortalityMatrix);
         this->history.mortalityHistory.push_back(mor);
-        ret = state - mor;
-        return ret;
+        return mor;
     }
 }
