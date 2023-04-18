@@ -9,7 +9,12 @@ namespace Data{
     using Matrix3d = Eigen::Tensor<float, 3>;
     using Matrix3dOverTime = std::vector<Matrix3d>;
 
-    /// @brief Structure to contain the entire history of the model including state, overdose, and mortality rates
+    enum Dimension {
+        INTERVENTION = 0,
+        OUD = 1,
+        DEMOGRAPHIC_COMBO = 2
+    };
+
     typedef struct History{
         Matrix3dOverTime stateHistory;
         Matrix3dOverTime overdoseHistory;

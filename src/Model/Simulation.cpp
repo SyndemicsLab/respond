@@ -46,9 +46,9 @@ namespace Simulation{
     /// @return A New Empty Tensor of the same shape as the state data
     Data::Matrix3d Sim::CreateNewShapedTensor(){
         std::array<long int, 3> order = {0,0,0};
-        order[OUD] = this->numOUDStates;
-        order[INTERVENTION] = this->numInterventions;
-        order[DEMOGRAPHIC_COMBO] = this->numDemographics; 
+        order[Data::OUD] = this->numOUDStates;
+        order[Data::INTERVENTION] = this->numInterventions;
+        order[Data::DEMOGRAPHIC_COMBO] = this->numDemographics; 
         Data::Matrix3d empty(order);
         return empty;
     }
@@ -227,23 +227,23 @@ namespace Simulation{
     /// @param state current state
     /// @return new state with OUD transitions
     Data::Matrix3d Sim::multiplyOUDTransitions(Data::Matrix3d state){
-        return this->multiplyTransitions(state, OUD);
+        return this->multiplyTransitions(state, Data::OUD);
     }
 
     /// @brief Multiply Intervention Transitions with current state to produce change matrix
     /// @param state current state
     /// @return new state with Intervention transitions
     Data::Matrix3d Sim::multiplyInterventionTransitions(Data::Matrix3d state){
-        return this->multiplyTransitions(state, INTERVENTION);
+        return this->multiplyTransitions(state, Data::INTERVENTION);
     }
 
-    Data::Matrix3d Sim::getTransitionFromDim(Dimension dim){
+    Data::Matrix3d Sim::getTransitionFromDim(Data::Dimension dim){
         switch(dim){
-            case OUD:
+            case Data::OUD:
                 return this->oudTransitions;
-            case INTERVENTION:
+            case Data::INTERVENTION:
                 return this->interventionTransitions.at(this->currentTime);
-            case DEMOGRAPHIC_COMBO:
+            case Data::DEMOGRAPHIC_COMBO:
             default:
                 return this->CreateNewShapedTensor();
         }
@@ -253,7 +253,7 @@ namespace Simulation{
     /// @param state current state
     /// @param dim dimension under investigation
     /// @return new state with transitions multiplied in
-    Data::Matrix3d Sim::multiplyTransitions(Data::Matrix3d state, Dimension dim){
+    Data::Matrix3d Sim::multiplyTransitions(Data::Matrix3d state, Data::Dimension dim){
         Data::Matrix3d ret(state.dimensions());
         ret.setZero();
 
@@ -276,7 +276,7 @@ namespace Simulation{
             offsetState[dim] = i;
             extentState[dim] = 1;
 
-            Data::Matrix3d slicedState = state.slice(offsetState, extentState); 
+            Data::Matrix3d slicedState = state.slice(offsetState, extentState);
 
             std::array<long int, 3> bcast = {1,1,1};
             bcast[dim] = state.dimension(dim);
@@ -284,7 +284,7 @@ namespace Simulation{
             Data::Matrix3d broadcastedTensor = slicedState.broadcast(bcast);
             Data::Matrix3d slicedTransition = transition.slice(offsetTrans, extentTrans);
             ret += (broadcastedTensor * slicedTransition);
-        }        
+        }
         return ret;
     }
 

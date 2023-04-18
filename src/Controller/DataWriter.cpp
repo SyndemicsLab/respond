@@ -1,7 +1,7 @@
 #include "DataWriter.hpp"
 
 
-namespace Data{       
+namespace Data{
 
     /// @brief Default Constructor creating a completely empty DataWriter Object
     DataWriter::DataWriter() : DataWriter("", {}, {}, {}, {}){}
@@ -73,7 +73,7 @@ namespace Data{
             std::ostringstream s;
             return s.str();
         }
-        
+
 
         if (outputType == FILE){
             if(!std::filesystem::exists(this->dirname)){
@@ -89,7 +89,7 @@ namespace Data{
             std::filesystem::path mortalityFullPath = dir/mortalityFile;
 
             std::ofstream file;
-            
+
             file.open(stateFullPath.string());
             this->Writer(file, this->history.stateHistory);
             file.close();
@@ -125,9 +125,9 @@ namespace Data{
                     }
                     for(Matrix3d dm : historyToWrite){
                         std::array<long, 3> index = {0,0,0};
-                        index[Simulation::INTERVENTION] = i;
-                        index[Simulation::OUD] = j;
-                        index[Simulation::DEMOGRAPHIC_COMBO] = k;
+                        index[Data::INTERVENTION] = i;
+                        index[Data::OUD] = j;
+                        index[Data::DEMOGRAPHIC_COMBO] = k;
                         stream << dm(index[0], index[1], index[2]) << ",";
                     }
                     stream << std::endl;

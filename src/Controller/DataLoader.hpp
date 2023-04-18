@@ -2,6 +2,7 @@
 #define CONTROLLER_DATALOADER_HPP_
 
 #include <boost/tokenizer.hpp>
+#include <cmath>
 #include <fstream>
 #include <iostream>
 #include <string>
@@ -38,14 +39,28 @@ namespace Data {
     public:
         DataLoader() {};
         DataLoader(const std::string&);
-        std::string getDirName();
         Configuration readConfigFile(const std::string&);
         InputTable readCSV(const std::string&);
         std::unordered_map<std::string, InputTable> readInputDir(const std::string&);
+
+        // getter functions
+        std::string getDirName() { return dirName; }
+        Matrix3d getInitialGroup() { return initialGroup; }
+        Matrix3dOverTime getEnteringSamples() { return enteringSamples; }
+        Matrix3d getOUDTransitions() { return oudTransitions; }
+        Matrix3dOverTime getInterventionTransitions() { return interventionTransitions; }
+        Matrix3dOverTime getOverdoseTransitions() { return overdoseTransitions; }
+        Matrix3dOverTime getFatalOverdoseTransitions() { return fatalOverdoseTransitions; }
+        Matrix3d getMortalityTransitions() { return mortalityTransitions; }
     private:
         std::string dirName;
-        Configuration config;
-        std::unordered_map<std::string, InputTable> inputTables;
+        Matrix3d initialGroup;
+        Matrix3dOverTime enteringSamples;
+        Matrix3d oudTransitions;
+        Matrix3dOverTime interventionTransitions;
+        Matrix3dOverTime overdoseTransitions;
+        Matrix3dOverTime fatalOverdoseTransitions;
+        Matrix3d mortalityTransitions;
     };
 }
 #endif // CONTROLLER_DATALOADER_HPP_

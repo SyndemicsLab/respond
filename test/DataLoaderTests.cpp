@@ -126,7 +126,7 @@ TEST(DataLoaderTest, ConfigFileIntVector) {
 TEST(DataLoaderTest, ConfigFileStringVector) {
     Configuration TestConf = configure("TestInput/input1/sim.conf");
     std::vector<std::vector<std::string>> EXPECTED_VALUES = {
-        {"No Treatment", "Buprenorphine", "Naltrexone", "Post-Buprenorphine", "Post-Naltrexone"},
+        {"No_Treatment", "Buprenorphine", "Naltrexone", "Post-Buprenorphine", "Post-Naltrexone"},
         {"10_14", "15_19", "20_24"},
         {"male", "female"},
         {"Active_Noninjection", "Active_Injection", "Nonactive_Noninjection", "Nonactive_Injection"}
@@ -141,4 +141,3 @@ TEST(DataLoaderTest, ConfigFileStringVector) {
         EXPECT_EQ(REAL_VALUES[i], EXPECTED_VALUES[i]);
     }
 }
-

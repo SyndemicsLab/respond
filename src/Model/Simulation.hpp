@@ -33,15 +33,6 @@
 
 /// @brief Namespace defining all Simulation Operations
 namespace Simulation{
-    
-    /// @brief Enumeration defining dimension order in Simulation
-    enum Dimension {
-        INTERVENTION = 0,
-        OUD = 1,
-        DEMOGRAPHIC_COMBO = 2
-    };
-
-    /// @brief Interface describing the Sim Object
     class ISim{
     public:
         virtual ~ISim(){};
@@ -102,8 +93,8 @@ namespace Simulation{
         Data::Matrix3d multiplyFatalOverdoseTransitions(Data::Matrix3d state);
         Data::Matrix3d multiplyOverdoseTransitions(Data::Matrix3d state);
         Data::Matrix3d multiplyMortalityTransitions(Data::Matrix3d state);
-        Data::Matrix3d getTransitionFromDim(Dimension dim);
-        Data::Matrix3d multiplyTransitions(Data::Matrix3d state, Dimension dim);
+        Data::Matrix3d getTransitionFromDim(Data::Dimension dim);
+        Data::Matrix3d multiplyTransitions(Data::Matrix3d state, Data::Dimension dim);
     public:
         Data::Matrix3d CreateNewShapedTensor();
 
