@@ -2,6 +2,8 @@
 
 using namespace Data;
 
+/// @brief
+/// @param
 DataLoader::DataLoader(const std::string& inputDir): dirName(inputDir) {
     // PROCESSING INPUT FILES
     // account for no trailing slash in the provided input directory
@@ -28,7 +30,7 @@ DataLoader::DataLoader(const std::string& inputDir): dirName(inputDir) {
 
     // INITIAL GROUP
     InputTable& initialCohort = inputTables["init_cohort.csv"];
-    initialGroup = Matrix3d(nonPostInterventions, oud_states, age_groups * sexes);
+    initialGroup = Matrix3d(interventions, oud_states, age_groups * sexes).constant(0);
     int row = 0;
     for (int intervention = 0; intervention < nonPostInterventions; ++intervention) {
         for (int age = 0; age < age_groups; ++age) {
@@ -327,6 +329,9 @@ std::unordered_map<std::string, InputTable> DataLoader::readInputDir(const std::
     return toReturn;
 }
 
+/// @brief A convenience function useful for viewing `Matrix3d` objects as 2d
+/// slices along the demographics axis -- used for printf debugging
+/// @param toPrint the `Matrix3d` object to print
 void printMatrix3d(Matrix3d& toPrint) {
     Matrix3d::Dimensions dim = toPrint.dimensions();
     for (int i = 0; i < dim[2]; ++i) {
