@@ -39,7 +39,24 @@ namespace Simulation{
     /// @brief Constructor to handle DataLoader input to Simulation
     /// @param dataLoader DataLoader object filled ready to Run
     Sim::Sim(Data::DataLoader dataLoader){
-        // Stub for DataLoader
+        boost::log::add_file_log("simulation.log");
+        boost::log::core::get()->set_filter(
+            boost::log::trivial::severity >= boost::log::trivial::info
+        );
+
+        BOOST_LOG(this->lg) << "Initialize Logging";
+        const auto processor_count = std::thread::hardware_concurrency();
+        Eigen::setNbThreads(processor_count);
+        this->Duration = dataLoader.getDuration();
+        this->currentTime = 0;
+        this->numOUDStates = dataLoader.getNumOUDStates();
+        this->numInterventions = dataLoader.getNumInterventions();
+        this->numDemographics = dataLoader.getNumDemographics();
+        this->state = this->CreateNewShapedTensor();
+        this->state.setZero();
+        this->transition = this->CreateNewShapedTensor();
+        this->transition.setZero();
+        this->Load(dataLoader);
     }
 
     /// @brief Create a new Tensor shaped like the state data
@@ -102,7 +119,13 @@ namespace Simulation{
 
     /// @brief Setter for all data using a DataLoader object
     void Sim::Load(Data::DataLoader dataLoader){
-        // Stub for Loading
+        this->LoadInitialGroup(dataLoader.getInitialGroup());
+        this->LoadEnteringSamples(dataLoader.getEnteringSamples());
+        this->LoadOUDTransitions(dataLoader.getOUDTransitions());
+        this->LoadInterventionTransitions(dataLoader.getInterventionTransitions());
+        this->LoadFatalOverdoseTransitions(dataLoader.getFatalOverdoseTransitions());
+        this->LoadOverdoseTransitions(dataLoader.getOverdoseTransitions());
+        this->LoadMortalityTransitions(dataLoader.getMortalityTransitions());
     }
 
     /// @brief Getter for Entering Samples Group

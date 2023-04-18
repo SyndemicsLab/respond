@@ -56,6 +56,8 @@ namespace Data {
         Matrix3dOverTime getOverdoseTransitions() { return overdoseTransitions; }
         Matrix3dOverTime getFatalOverdoseTransitions() { return fatalOverdoseTransitions; }
         Matrix3d getMortalityTransitions() { return mortalityTransitions; }
+        std::vector<std::string> getInterventions() { return interventions; }
+        std::vector<std::string> getOUDStates() { return oudStates; }
     private:
         std::string dirName;
 
@@ -63,6 +65,9 @@ namespace Data {
         uint8_t numOUDStates;
         uint8_t numInterventions;
         uint16_t numDemographics;
+
+        std::vector<std::string> interventions;
+        std::vector<std::string> oudStates;
 
         Matrix3d initialGroup;
         Matrix3dOverTime enteringSamples;

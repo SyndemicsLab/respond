@@ -15,11 +15,16 @@ DataLoader::DataLoader(const std::string& inputDir): dirName(inputDir) {
     Configuration config = readConfigFile(configPath);
     std::unordered_map<std::string, InputTable> inputTables = readInputDir(inputDir);
 
+    // SETTING STRING VECTORS FOR DATA WRITER
+    this->interventions = config.interventions;
+    this->oudStates = config.oud_states;
+
     // SETTING SIMULATION CONSTANTS
     const int& interventions   = config.interventions.size();
     const int& oud_states      = config.oud_states.size();
     const int& age_groups      = config.age_groups.size();
     const int& sexes           = config.sex.size();
+
     // needed for some post-intervention processes
     const int& nonPostInterventions = ((interventions - 1)/2 + 1);
 

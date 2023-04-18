@@ -13,7 +13,7 @@ include(GNUInstallDirs)
 add_subdirectory(Model)
 add_subdirectory(Controller)
 
-add_library(respond)
+add_executable(respond main.cpp)
 
 target_link_libraries(respond
   Controller
