@@ -6,8 +6,8 @@
 (
     cd "build/" || return
     rm -rf ./*
-    cmake ..
+    cmake .. $@
     make
-    # run gtests
-    test/respondTest
+    # run gtests if built
+    [[ -f "test/respondTest" ]] && test/respondTest
 )

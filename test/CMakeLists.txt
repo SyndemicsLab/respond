@@ -24,6 +24,8 @@ target_link_libraries(respondTest
   Model
   Controller
 )
+
+# create the test data set in the build directory
 add_custom_command(
         TARGET respondTest POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_directory
