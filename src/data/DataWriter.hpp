@@ -1,5 +1,5 @@
-#ifndef CONTROLLER_DATAWRITER_HPP_
-#define CONTROLLER_DATAWRITER_HPP_
+#ifndef DATA_DATAWRITER_HPP_
+#define DATA_DATAWRITER_HPP_
 
 #include <iostream>
 #include <fstream>

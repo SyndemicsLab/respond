@@ -1,5 +1,5 @@
-#ifndef CONTROLLER_DATALOADER_HPP_
-#define CONTROLLER_DATALOADER_HPP_
+#ifndef DATA_DATALOADER_HPP_
+#define DATA_DATALOADER_HPP_
 
 #include <boost/tokenizer.hpp>
 #include <cmath>
@@ -8,9 +8,11 @@
 #include <string>
 #include <unordered_map>
 #include <vector>
+#include <map>
 
 #include "configuration.hpp"
 #include "DataTypes.hpp"
+#include "Matrix3dFactory.hpp"
 
 namespace Data {
     using InputTable = std::unordered_map<std::string, std::vector<std::string>>;
@@ -58,6 +60,15 @@ namespace Data {
         Matrix3d getMortalityTransitions() { return mortalityTransitions; }
         std::vector<std::string> getInterventions() { return interventions; }
         std::vector<std::string> getOUDStates() { return oudStates; }
+
+        // Loading from Tables
+        void LoadInitialGroup(std::string csvName);
+        void LoadEnteringSamples(std::string csvName);
+        void LoadOUDTransitions(std::string csvName);
+        void LoadInterventionTransitions(std::string csvName);
+        void LoadOverdoseTransitions(std::string csvName);
+        void LoadMortalityTransitions(std::string csvName);
+
     private:
         std::string dirName;
 
@@ -68,6 +79,11 @@ namespace Data {
 
         std::vector<std::string> interventions;
         std::vector<std::string> oudStates;
+        std::vector<std::vector<std::string>> demographicCombos;
+        std::vector<int> demographicCounts;
+        std::map<std::string, std::vector<int>> simulationParameters;
+
+        Configuration Config;
 
         Matrix3d initialGroup;
         Matrix3dOverTime enteringSamples;
@@ -76,6 +92,8 @@ namespace Data {
         Matrix3dOverTime overdoseTransitions;
         Matrix3dOverTime fatalOverdoseTransitions;
         Matrix3d mortalityTransitions;
+
+        std::unordered_map<std::string, InputTable> inputTables;
     };
 }
-#endif // CONTROLLER_DATALOADER_HPP_
+#endif // DATA_DATALOADER_HPP_

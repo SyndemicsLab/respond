@@ -11,23 +11,24 @@ find_package (Eigen3 3.4 REQUIRED NO_MODULE)
 # Find FMT
 find_package (fmt REQUIRED)
 
-add_library(Controller
+add_library(data
   DataLoader.cpp
   DataWriter.cpp
   DataTypes.cpp
   configuration.cpp
 )
-target_sources(Controller PUBLIC
+target_sources(data PUBLIC
   DataLoader.hpp
   DataWriter.hpp
   DataTypes.hpp
 )
-target_include_directories(Controller INTERFACE
+target_include_directories(data INTERFACE
   ${CMAKE_CURRENT_SOURCE_DIR}
+  ${Boost_INCLUDE_DIRS}
 )
-target_link_libraries(Controller
+target_link_libraries(data
   ${Boost_LIBRARIES}
-  Model
+  model
   fmt::fmt
   Eigen3::Eigen
 )

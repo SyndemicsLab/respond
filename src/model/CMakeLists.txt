@@ -11,22 +11,23 @@ find_package(Boost REQUIRED COMPONENTS log_setup log)
 # Find FMT
 find_package(fmt)
 
-add_library(Model
+add_library(model
     Simulation.cpp 
 )
 
-target_sources(Model PUBLIC 
+target_sources(model PUBLIC 
   Simulation.hpp
 )
 
-target_include_directories(Model INTERFACE
+target_include_directories(model INTERFACE
   ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
-target_link_libraries(Model 
+target_link_libraries(model 
   OpenMP::OpenMP_CXX 
   ${Boost_LIBRARIES}
   fmt::fmt
   Eigen3::Eigen
-  Controller
+  data
+  utilities
 )

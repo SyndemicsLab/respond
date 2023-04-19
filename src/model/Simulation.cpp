@@ -30,9 +30,9 @@ namespace Simulation{
         this->numOUDStates = numOUDStates;
         this->numInterventions = numInterventions;
         this->numDemographics = numDemographics;
-        this->state = this->CreateNewShapedTensor();
+        this->state = Utilities::Matrix3dFactory::Create(this->numOUDStates, this->numInterventions, this->numDemographics);
         this->state.setZero();
-        this->transition = this->CreateNewShapedTensor();
+        this->transition = Utilities::Matrix3dFactory::Create(this->numOUDStates, this->numInterventions, this->numDemographics);
         this->transition.setZero();
     }
 
@@ -52,22 +52,11 @@ namespace Simulation{
         this->numOUDStates = dataLoader.getNumOUDStates();
         this->numInterventions = dataLoader.getNumInterventions();
         this->numDemographics = dataLoader.getNumDemographics();
-        this->state = this->CreateNewShapedTensor();
+        this->state = Utilities::Matrix3dFactory::Create(this->numOUDStates, this->numInterventions, this->numDemographics);
         this->state.setZero();
-        this->transition = this->CreateNewShapedTensor();
+        this->transition = Utilities::Matrix3dFactory::Create(this->numOUDStates, this->numInterventions, this->numDemographics);
         this->transition.setZero();
         this->Load(dataLoader);
-    }
-
-    /// @brief Create a new Tensor shaped like the state data
-    /// @return A New Empty Tensor of the same shape as the state data
-    Data::Matrix3d Sim::CreateNewShapedTensor(){
-        std::array<long int, 3> order = {0,0,0};
-        order[Data::OUD] = this->numOUDStates;
-        order[Data::INTERVENTION] = this->numInterventions;
-        order[Data::DEMOGRAPHIC_COMBO] = this->numDemographics; 
-        Data::Matrix3d empty(order);
-        return empty;
     }
 
     /// @brief Setter for Initial Group Parameter
@@ -185,7 +174,7 @@ namespace Simulation{
 
     /// @brief Core method used to run the simulation
     void Sim::Run(){
-        Data::Matrix3d zeroMat = this->CreateNewShapedTensor();
+        Data::Matrix3d zeroMat = Utilities::Matrix3dFactory::Create(this->numOUDStates, this->numInterventions, this->numDemographics);
         zeroMat.setZero();
         this->history.overdoseHistory.push_back(zeroMat);
         this->history.mortalityHistory.push_back(zeroMat);
@@ -268,7 +257,7 @@ namespace Simulation{
                 return this->interventionTransitions.at(this->currentTime);
             case Data::DEMOGRAPHIC_COMBO:
             default:
-                return this->CreateNewShapedTensor();
+                return Utilities::Matrix3dFactory::Create(this->numOUDStates, this->numInterventions, this->numDemographics);
         }
     }
 

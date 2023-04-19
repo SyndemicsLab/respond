@@ -21,8 +21,8 @@ target_link_libraries(respondTest
   Eigen3::Eigen
   gtest
   gtest_main
-  Model
-  Controller
+  model
+  data
 )
 
 # create the test data set in the build directory

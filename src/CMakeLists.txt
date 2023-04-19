@@ -10,14 +10,15 @@ project (RESPOND
 
 include(GNUInstallDirs)
 
-add_subdirectory(Model)
-add_subdirectory(Controller)
+add_subdirectory(model)
+add_subdirectory(data)
+add_subdirectory(utilities)
 
 add_executable(respond main.cpp)
 
 target_link_libraries(respond
-  Controller
-  Model
+  data
+  model
 )
 
 # Create a simple configuration header

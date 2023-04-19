@@ -30,6 +30,7 @@
 
 #include "DataTypes.hpp"
 #include "DataLoader.hpp"
+#include "Matrix3dFactory.hpp"
 
 /// @brief Namespace defining all Simulation Operations
 namespace Simulation{
@@ -96,8 +97,6 @@ namespace Simulation{
         Data::Matrix3d getTransitionFromDim(Data::Dimension dim);
         Data::Matrix3d multiplyTransitions(Data::Matrix3d state, Data::Dimension dim);
     public:
-        Data::Matrix3d CreateNewShapedTensor();
-
         Sim();
         Sim(uint16_t duration, uint8_t numOUDStates, uint8_t numInterventions, uint16_t numDemographics);
         ~Sim() {};

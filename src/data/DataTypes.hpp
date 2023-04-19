@@ -1,5 +1,5 @@
-#ifndef CONTROLLER_DATATYPES_HPP_
-#define CONTROLLER_DATATYPES_HPP_
+#ifndef DATA_DATATYPES_HPP_
+#define DATA_DATATYPES_HPP_
 
 #include <vector>
 #include <eigen3/Eigen/Eigen>
