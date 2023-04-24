@@ -76,10 +76,10 @@ namespace Simulation{
 
         Data::Matrix3d state;
         Data::Matrix3d transition;
-        uint16_t currentTime;
-        uint8_t numOUDStates;
-        uint8_t numInterventions;
-        uint16_t numDemographics;
+        int currentTime;
+        int numOUDStates;
+        int numInterventions;
+        int numDemographics;
         Data::History history;
         Data::Matrix3dOverTime enteringSamples;
         Data::Matrix3d oudTransitions;
@@ -98,7 +98,7 @@ namespace Simulation{
         Data::Matrix3d multiplyTransitions(Data::Matrix3d state, Data::Dimension dim);
     public:
         Sim();
-        Sim(uint16_t duration, uint8_t numOUDStates, uint8_t numInterventions, uint16_t numDemographics);
+        Sim(int duration, int numOUDStates, int numInterventions, int numDemographics);
         ~Sim() {};
         Sim(Data::DataLoader dataLoader);
         void LoadInitialGroup(Data::Matrix3d initialGroup) override;
@@ -127,7 +127,7 @@ namespace Simulation{
         ) override;
         void Run() override;
         Data::History getHistory() override;
-        uint16_t Duration;
+        int Duration;
     };
 }
 #endif /* MODEL_SIMULATION_HPP_ */

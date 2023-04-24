@@ -39,18 +39,19 @@ namespace Data {
 
     class DataLoader {
     public:
+        ~DataLoader() {};
         DataLoader() {};
-        DataLoader(const std::string&);
-        Configuration readConfigFile(const std::string&);
-        InputTable readCSV(const std::string&);
-        std::unordered_map<std::string, InputTable> readInputDir(const std::string&);
+        DataLoader(std::string);
+        Configuration readConfigFile(std::string);
+        InputTable readCSV(std::string);
+        std::unordered_map<std::string, InputTable> readInputDir(std::string);
 
         // getter functions
         std::string getDirName() { return dirName; }
-        uint16_t getDuration() { return duration; }
-        uint8_t getNumOUDStates() { return numOUDStates; }
-        uint8_t getNumInterventions() { return numInterventions; }
-        uint16_t getNumDemographics() { return numDemographics; }
+        int getDuration() { return duration; }
+        int getNumOUDStates() { return numOUDStates; }
+        int getNumInterventions() { return numInterventions; }
+        int getNumDemographics() { return numDemographics; }
         Matrix3d getInitialGroup() { return initialGroup; }
         Matrix3dOverTime getEnteringSamples() { return enteringSamples; }
         Matrix3d getOUDTransitions() { return oudTransitions; }
@@ -67,19 +68,29 @@ namespace Data {
         void LoadOUDTransitions(std::string csvName);
         void LoadInterventionTransitions(std::string csvName);
         void LoadOverdoseTransitions(std::string csvName);
+        void LoadFatalOverdoseTransitions(std::string csvName);
         void LoadMortalityTransitions(std::string csvName);
 
     private:
+        InputTable RemoveColumns(std::string colString, InputTable ogTable);
+        Matrix3d BuildMatrixFromTransitionData(std::vector<std::vector<int>> indicesVec, InputTable table, Data::Dimension dimension);
+        Matrix3d BuildInterventionMatrix(std::vector<int> indices, InputTable table);
+        Matrix3d BuildOverdoseTransitions(InputTable table, std::string key);
+        std::vector<int> FindIndices(std::vector<std::string> const &v, std::string target);
+        std::vector<int> FindIndicesExactMatch(std::vector<std::string> const &v, std::string target);
+        std::vector<std::vector<int>> GetIndicesVector(std::vector<std::string> col);
+        Matrix3dOverTime CalcInterventionTransitions(std::vector<int> ict, InputTable table, std::vector<std::vector<int>> indicesVec);
         std::string dirName;
 
-        uint16_t duration;
-        uint8_t numOUDStates;
-        uint8_t numInterventions;
-        uint16_t numDemographics;
+        int duration;
+        int numOUDStates;
+        int numInterventions;
+        int numDemographics;
+        int numDemographicCombos;
 
         std::vector<std::string> interventions;
         std::vector<std::string> oudStates;
-        std::vector<std::vector<std::string>> demographicCombos;
+        // std::vector<std::vector<std::string>> demographicCombos;
         std::vector<int> demographicCounts;
         std::map<std::string, std::vector<int>> simulationParameters;
 

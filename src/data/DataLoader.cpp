@@ -2,9 +2,11 @@
 
 using namespace Data;
 
+void printMatrix3d(Matrix3d toPrint);
+
 /// @brief
 /// @param
-DataLoader::DataLoader(const std::string& inputDir): dirName(inputDir) {
+DataLoader::DataLoader(std::string inputDir) {
     // PROCESSING INPUT FILES
     // account for no trailing slash in the provided input directory
     std::string configPath = inputDir;
@@ -18,24 +20,25 @@ DataLoader::DataLoader(const std::string& inputDir): dirName(inputDir) {
     // SETTING STRING VECTORS FOR DATA WRITER
     this->interventions = this->Config.GetInterventions();
     this->oudStates = this->Config.GetOUDStates();
-    this->demographicCombos = this->Config.GetDemographicCombos();
     this->demographicCounts = this->Config.GetDemographicCounts();
 
     // SETTING SIMULATION CONSTANTS
     this->numInterventions   = this->interventions.size();
     this->numOUDStates       = this->oudStates.size();
 
-    // needed for some post-intervention processes
-    const int& nonPostInterventions = ((this->numInterventions - 1)/2 + 1);
+    this->duration = this->Config.GetDuration();
+    this->numDemographics = this->demographicCounts.size();
+    this->numDemographicCombos = this->Config.GetNumDemographicCombos();
 
-    duration = this->Config.GetDuration();
-    numDemographics = this->demographicCombos.size();
-
+    std::vector<std::string> demographicCombos = this->Config.GetDemographicCombos();
+    
     this->LoadInitialGroup("init_cohort.csv");
     this->LoadEnteringSamples("entering_cohort.csv");
     this->LoadOUDTransitions("oud_trans.csv");
     this->LoadInterventionTransitions("block_trans.csv");
     this->LoadOverdoseTransitions("all_types_overdose.csv");
+    this->LoadFatalOverdoseTransitions("fatal_overdose.csv");
+    this->LoadMortalityTransitions("SMR.csv");
 
 }
 
@@ -45,61 +48,47 @@ void DataLoader::LoadInitialGroup(std::string csvName){
     int nonPostInterventions = ((this->numInterventions - 1)/2 + 1);
 
     // INITIAL GROUP
-    InputTable& initialCohort = this->inputTables[csvName];
-    initialGroup = Utilities::Matrix3dFactory::Create(this->numOUDStates, this->numInterventions, this->numDemographics).constant(0);
+    InputTable initialCohort = this->inputTables[csvName];
+    initialGroup = Utilities::Matrix3dFactory::Create(this->numOUDStates, this->numInterventions, this->numDemographicCombos).constant(0);
     int row = 0;
     for (int intervention = 0; intervention < nonPostInterventions; ++intervention) {
-        for (int age = 0; age < this->demographicCounts.at(0); ++age) {
-            for (int sex = 0; sex < this->demographicCounts.at(1); ++sex) {
-                for (int oud_state = 0; oud_state < this->numOUDStates; ++oud_state) {
-                    initialGroup(intervention, oud_state, (age * this->demographicCounts.at(1)) + sex) =
-                        std::stof(initialCohort["counts"][row]);
-                    ++row;
-                }
+        for (int dem = 0; dem < this->numDemographicCombos; ++dem) {
+            for (int oud_state = 0; oud_state < this->numOUDStates; ++oud_state) {
+                initialGroup(intervention, oud_state, dem) =
+                    std::stof(initialCohort["counts"][row]);
+                ++row;
             }
         }
     }
 }
+
+
 /// @brief 
 /// @param csvName 
 void DataLoader::LoadEnteringSamples(std::string csvName){
     // ENTERING SAMPLES
-    InputTable& enteringSamplesTable = inputTables[csvName];
+    InputTable enteringSamplesTable = inputTables[csvName];
     // new population enters the reference state, "currently Active Non-Injection
     // in No Treatment" aka the first state in interventions and oud states
     int enteringSampleIntervention = 0;
     int enteringSampleOUD          = 0;
-    std::vector<Matrix3d> tempSamples;
     std::string columnPrefix = "number_of_new_comers_cycle";
     // generate each unique `Matrix3d enteringSamples`
-    for (int& timestep: this->Config.GetEnteringSampleChangeTimes()) {
-        Matrix3d enteringSample = Utilities::Matrix3dFactory::Create(this->numOUDStates, this->numInterventions, this->numDemographics);
+    std::vector<int> changeTimes = this->Config.GetEnteringSampleChangeTimes();
+    for (int timestep : changeTimes) {
+        Matrix3d enteringSample = Utilities::Matrix3dFactory::Create(this->numOUDStates, this->numInterventions, this->numDemographicCombos).constant(0);
         for (int intervention = 0; intervention < this->numInterventions; ++intervention) {
-            for (int age = 0; age < this->demographicCounts.at(0); ++age) {
-                for (int sex = 0; sex < this->demographicCounts.at(1); ++sex) {
-                    for (int oud = 0; oud < this->numOUDStates; ++oud) {
-                        if ((intervention == enteringSampleIntervention) and (oud == enteringSampleOUD)) {
-                            std::string column = columnPrefix + std::to_string(timestep);
-                            int demographic = age * this->demographicCounts.at(1) + sex;
-                            enteringSample(intervention, oud, demographic) =
-                                std::stof(enteringSamplesTable[column][demographic]);
-                        }
-                        else {
-                            enteringSample(intervention, oud, age * this->demographicCounts.at(1) + sex) = 0;
-                        }
+            for (int dem = 0; dem < this->numDemographicCombos; ++dem) {
+                for (int oud = 0; oud < this->numOUDStates; ++oud) {
+                    if ((intervention == enteringSampleIntervention) and (oud == enteringSampleOUD)) {
+                        std::string column = columnPrefix + std::to_string(timestep);
+                        enteringSample(intervention, oud, dem) =
+                            std::stof(enteringSamplesTable[column][dem]);
                     }
                 }
             }
         }
-        tempSamples.push_back(enteringSample);
-    }
-
-    // create copies as appropriate, based on the timesteps in config
-    for (int i = 0; i < tempSamples.size(); ++i) {
-        int tmpSize = enteringSamples.size();
-        for (int j = tmpSize; j < this->Config.GetEnteringSampleChangeTimes()[i]; ++j) {
-            enteringSamples.push_back(tempSamples[i]);
-        }
+        this->enteringSamples.insert(enteringSample, timestep);
     }
 }
 
@@ -108,27 +97,25 @@ void DataLoader::LoadEnteringSamples(std::string csvName){
 void DataLoader::LoadOUDTransitions(std::string csvName){
 
     // OUD TRANSITIONS
-    InputTable& oudTransitionTable = inputTables[csvName];
+    InputTable oudTransitionTable = inputTables[csvName];
     // end dimensions of oudTransitions are this->numInterventions x this->numOUDStates^2 x demographics
     // start with a vector of StateTensor-sized Matrix3d objects and stack at the end
     std::vector<Matrix3d> tempOUDTransitions;
     for (int i = 0; i < this->numOUDStates; ++i) {
-        tempOUDTransitions.push_back(Utilities::Matrix3dFactory::Create(this->numOUDStates, this->numInterventions, this->numDemographics));
+        tempOUDTransitions.push_back(Utilities::Matrix3dFactory::Create(this->numOUDStates, this->numInterventions, this->numDemographicCombos));
     }
     // Matrix3d objects in the vector are matched with the order that oud states are
     // specified in the Config file. the order represents the "initial oud state"
     for (int initial_state = 0; initial_state < this->numOUDStates; ++initial_state) {
         int row = 0;
         for (int intervention = 0; intervention < this->numInterventions; ++intervention) {
-            for (int age = 0; age < this->demographicCounts.at(0); ++age) {
-                for (int sex = 0; sex < this->demographicCounts.at(1); ++sex) {
-                    for (int result_state = 0; result_state < this->numOUDStates; ++result_state) {
-                        std::string column = "to_" + this->oudStates[result_state];
-                        tempOUDTransitions[initial_state](intervention, result_state, (age * this->demographicCounts.at(1)) + sex) =
-                            std::stof(oudTransitionTable[column][this->numOUDStates*row+initial_state]);
-                    }
-                    ++row;
+            for (int dem = 0; dem < this->numDemographicCombos; ++dem) {
+                for (int result_state = 0; result_state < this->numOUDStates; ++result_state) {
+                    std::string column = "to_" + this->oudStates[result_state];
+                    tempOUDTransitions[initial_state](intervention, result_state, dem) =
+                        std::stof(oudTransitionTable[column][this->numOUDStates*row+initial_state]);
                 }
+                ++row;
             }
         }
     }
@@ -137,9 +124,140 @@ void DataLoader::LoadOUDTransitions(std::string csvName){
     oudTransitions = tempOUDTransitions[0];
     for (int i = 1; i < tempOUDTransitions.size(); ++i) {
         Matrix3d temp = oudTransitions.concatenate(tempOUDTransitions[i], Data::OUD).eval()
-            .reshape(Matrix3d::Dimensions(this->numInterventions, (i+1) * this->numOUDStates, this->demographicCounts.at(0) * this->demographicCounts.at(1)));
+            .reshape(Matrix3d::Dimensions(this->numInterventions, (i+1) * this->numOUDStates, this->numDemographicCombos));
         oudTransitions = std::move(temp);
     }
+}
+
+InputTable DataLoader::RemoveColumns(std::string colString, InputTable ogTable){
+    InputTable res = ogTable;
+    std::vector<std::string> keys;
+    for(auto i : res){
+        if((i.first.find(colString) == std::string::npos) && (i.first.find("cycle") != std::string::npos)){
+            std::string temp = i.first;
+            keys.push_back(temp);
+        }
+    }
+
+    for(auto i : keys){
+        res.erase(i);
+    }
+
+    for(auto kv : res){
+        std::cout << kv.first << std::endl;
+    }
+    return res;
+}
+
+Data::Matrix3d DataLoader::BuildInterventionMatrix(std::vector<int> indices, InputTable table){
+    Data::Matrix3d transMat = Utilities::Matrix3dFactory::Create(this->numOUDStates, this->numInterventions, this->numDemographicCombos).constant(0);
+    std::string currentIntervention = table["initial_block"][indices[0]];
+    std::vector<std::string> keys;
+
+    // reconstructing order of interventions based on column keys
+    bool postFlag = false;
+    for(auto inter : this->Config.GetInterventions()){
+        for(auto kv : table){
+            if(kv.first.find(inter) != std::string::npos){
+                std::string key = kv.first;
+                keys.push_back(key);
+            }
+            else if((inter.find("Post") != std::string::npos) &&
+                    (kv.first.find("post") != std::string::npos) &&
+                    !postFlag){
+                std::string key = kv.first;
+                keys.push_back(key);
+                postFlag = true; // only assumes one "to_corresponding_post_trt column"
+            }
+        }
+    }
+
+    for(int i = 0; i < keys.size(); i++){
+        int interventionOffset = i;
+        // int interventionOffset = (keys[i].find("post") != std::string::npos) ? i : i + indices[0];
+        // std::cout << keys[i] << " " << interventionOffset << std::endl;
+        
+        std::string key = keys[i];
+        int oudIdx = 0;
+        int demIdx = 0;
+        for (int idx : indices){
+            std::string val = table[key][idx];
+            transMat(interventionOffset, oudIdx, demIdx) = std::stof(val);
+            oudIdx++; 
+            if(oudIdx%this->numOUDStates == 0){
+                oudIdx = 0;
+                demIdx++;
+            }
+        }
+
+    }
+    return transMat;
+}
+
+Data::Matrix3d DataLoader::BuildMatrixFromTransitionData(std::vector<std::vector<int>> indicesVec, InputTable table, Data::Dimension dimension){
+    if(dimension == Data::INTERVENTION){
+        Matrix3d stackingMatrices = Utilities::Matrix3dFactory::Create(this->numOUDStates, 
+        this->numInterventions * this->numInterventions, 
+        this->numDemographicCombos).constant(0);
+        for (int i=0; i < indicesVec.size(); i++){
+            // assign to index + offset of numInterventions
+            Eigen::array<Eigen::Index, 3> offsets = {i * this->numInterventions, 0,0};
+            Eigen::array<Eigen::Index, 3> extents = {this->numInterventions, this->numOUDStates, this->numDemographicCombos};
+            stackingMatrices.slice(offsets, extents) = this->BuildInterventionMatrix(indicesVec[i], table);
+        }
+        return stackingMatrices;
+
+    }
+    else if(dimension == Data::OUD){
+        Matrix3d stackingMatrices = Utilities::Matrix3dFactory::Create(this->numOUDStates * this->numOUDStates, 
+            this->numInterventions, 
+            this->numDemographicCombos).constant(0);
+        return stackingMatrices;
+    }
+    Matrix3d stackingMatrices = Utilities::Matrix3dFactory::Create(this->numOUDStates, 
+        this->numInterventions, 
+        this->numDemographicCombos).constant(0);
+    return stackingMatrices;
+}
+    
+std::vector<int> DataLoader::FindIndices(std::vector<std::string> const &v, std::string target) {
+    std::vector<int> indices;
+    auto it = v.begin();
+    while ((it = std::find_if(it, v.end(), [&] (std::string const &e) { return e.find(target) != std::string::npos; })) != v.end()) {
+        indices.push_back(std::distance(v.begin(), it));
+        it++;
+    }
+    return indices;
+}
+
+std::vector<int> DataLoader::FindIndicesExactMatch(std::vector<std::string> const &v, std::string target) {
+    std::vector<int> indices;
+    auto it = v.begin();
+    while ((it = std::find_if(it, v.end(), [&] (std::string const &e) { return e.compare(target) == 0; })) != v.end()) {
+        indices.push_back(std::distance(v.begin(), it));
+        it++;
+    }
+    return indices;
+}
+
+std::vector<std::vector<int>> DataLoader::GetIndicesVector(std::vector<std::string> col){
+    std::vector<std::vector<int>> indicesVec;
+    for(std::string in : this->Config.GetInterventions()){
+        indicesVec.push_back(this->FindIndicesExactMatch(col, in));
+    }
+    return indicesVec;
+}
+
+Matrix3dOverTime DataLoader::CalcInterventionTransitions(std::vector<int> ict, InputTable table, std::vector<std::vector<int>> indicesVec){
+    Matrix3dOverTime m3dot;
+    
+    for (int timestep: ict) {        
+        // Get rid of the pointless columns for this iteration
+        std::string str_timestep = "cycle" + std::to_string(timestep);
+        InputTable currentTimeTable = this->RemoveColumns(str_timestep, table);    
+        m3dot.insert(this->BuildMatrixFromTransitionData(indicesVec, currentTimeTable, Data::INTERVENTION), timestep);   
+    }
+    return m3dot;
 }
 
 /// @brief 
@@ -147,133 +265,71 @@ void DataLoader::LoadOUDTransitions(std::string csvName){
 void DataLoader::LoadInterventionTransitions(std::string csvName){
 
     // INTERVENTION TRANSITIONS
-    InputTable& interventionTransitionTable = inputTables[csvName];
-    // the first depth of vectors represents the time-variation
-    // the internal set of vectors represents the transition tensors for each initial intervention state
-    std::vector<std::vector<Matrix3d>> tempInterventionTransitions;
-    for (int& timestep: this->Config.GetInterventionChangeTimes()) {
-        // create the blank state matrices for each initial intervention
-        std::vector<Matrix3d> interventionTransition;
-        for (int i = 0; i < this->numInterventions; ++i) {
-            interventionTransition.push_back(
-                Utilities::Matrix3dFactory::Create(
-                    this->numOUDStates, 
-                    this->numInterventions, 
-                    this->numDemographics
-                    ).constant(0)
-                );
-        }
-        for (int age = 0; age < this->demographicCounts.at(0); ++age) {
-            for (int sex = 0; sex < this->demographicCounts.at(1); ++sex) {
-                for (int oud = 0; oud < this->numOUDStates; ++oud) {
-                    for (int initial_inter = 0; initial_inter < this->numInterventions; ++initial_inter) {
-                        // row indicates the initial state, the same row is used across all initial
-                        // this->numInterventions because columns are broken into to_<result_inter>
-                        int row = age * this->demographicCounts.at(1) * this->numOUDStates * this->numInterventions + sex * this->numOUDStates * this->numInterventions
-                            + oud * this->numInterventions + initial_inter;
-                        // iterate over the to_<result_inter> columns for the current timestep
-                        // referencing nonPostInterventions due to post-treatments being condensed to
-                        // `corresponding_post_trt`
-                        int nonPostInterventions = ((this->numInterventions - 1)/2 + 1);
-                        for (int result_inter = 0; result_inter <= nonPostInterventions; ++result_inter) {
-                            // the if statements below ensure that post-intervention states work out
-                            // correctly, with a special check to avoid overwriting values originating
-                            // from No Treatment
-                            int toState;
-                            std::string toStateString;
-                            if (result_inter < nonPostInterventions) {
-                                // considering entering a "normal"/non-post intervention state
-                                toState       = result_inter;
-                                toStateString = this->interventions[result_inter];
-                            }
-                            else {
-                                // considering post-treatment states
-                                // if the current intervention is greater than result_inter aka nonPostInterventions
-                                // it is a post-intervention state already
-                                // special handling for coming from No Treatment
-                                if (initial_inter == 0) {
-                                    toState = result_inter;
-                                }
-                                else {
-                                    toState = (initial_inter >= result_inter) ?
-                                        initial_inter : result_inter + initial_inter - 1;
-                                }
-                                // post-treatments are grouped into "corresponding_post_trt"
-                                toStateString = "corresponding_post_trt";
-                            }
-                            std::string column = "to_" + toStateString + "_cycle"
-                                + std::to_string(timestep);
-                            interventionTransition[row % this->numInterventions](toState, oud, (age * this->demographicCounts.at(1)) + sex) =
-                                std::stof(interventionTransitionTable[column][row]);
-                        }
-                    }
+    InputTable interventionTransitionTable = inputTables[csvName];
+    std::vector<int> ict = this->Config.GetInterventionChangeTimes();
+
+    std::vector<std::vector<int>> indicesVec = this->GetIndicesVector(interventionTransitionTable["initial_block"]);
+    this->interventionTransitions = this->CalcInterventionTransitions(ict, interventionTransitionTable, indicesVec);
+    
+}
+
+Matrix3d DataLoader::BuildOverdoseTransitions(InputTable table, std::string key){
+    std::vector<std::string> oudStates = this->Config.GetOUDStates();
+
+    Matrix3d overdoseTransitionsCycle = Utilities::Matrix3dFactory::Create(
+        this->numOUDStates, 
+        this->numInterventions, 
+        this->numDemographicCombos).constant(0);
+
+    int row = 0;
+    for (int intervention = 0; intervention < this->numInterventions; ++intervention) {
+        for (int dem = 0; dem < this->numDemographicCombos; ++dem) {
+            for (int oud_state = 0; oud_state < this->numOUDStates; ++oud_state) {
+                if(oudStates[oud_state].find("Nonactive") != std::string::npos){
+                    overdoseTransitionsCycle(intervention, oud_state, dem) = 0.0f;
                 }
+                else{
+                    overdoseTransitionsCycle(intervention, oud_state, dem) =
+                    std::stof(table[key][row]);
+                    ++row;
+                }   
             }
         }
-        tempInterventionTransitions.push_back(interventionTransition);
     }
-    // stack the intervention Matrix3d objects along the intervention axis
-    std::vector<Matrix3d> interventionTransitionHolder;
-    for (std::vector<Matrix3d>& intervention: tempInterventionTransitions) {
-        Matrix3d tempIntervention = intervention[0];
-        for (int i = 1; i < intervention.size(); ++i) {
-            Matrix3d temp = tempIntervention.concatenate(intervention[i], Data::INTERVENTION).eval()
-                .reshape(Matrix3d::Dimensions((i+1) * this->numInterventions, this->numOUDStates, this->demographicCounts.at(0) * this->demographicCounts.at(1)));
-            tempIntervention = std::move(temp);
-        }
-        interventionTransitionHolder.push_back(tempIntervention);
-    }
-    // create copies as appropriate, based on the timesteps in the Config
-    for (int i = 0; i < interventionTransitionHolder.size(); ++i) {
-        int tmpSize = interventionTransitions.size();
-        for (int j = tmpSize; j < this->Config.GetInterventionChangeTimes()[i]; ++j) {
-            interventionTransitions.push_back(interventionTransitionHolder[i]);
-        }
-    }
+    return overdoseTransitionsCycle;
 }
 
 /// @brief 
 /// @param csvName 
 void DataLoader::LoadOverdoseTransitions(std::string csvName){
     // OVERDOSE
-    InputTable& overdoseTransitionTable = inputTables[csvName];
-    InputTable& fatalOverdoseTable      = inputTables["fatal_overdose.csv"];
-    std::vector<Matrix3d> tempOverdoseTransitions;
-    std::vector<Matrix3d> tempFatalOverdoseTransitions;
-    for (int& timestep: this->Config.GetOverdoseChangeTimes()) {
-        Matrix3d overdoseTransition = Utilities::Matrix3dFactory::Create(this->numOUDStates, this->numInterventions, this->numDemographics).constant(0);
-        // fatal overdose is a constant across all strata
-        std::string fodColumn = "fatal_to_all_types_overdose_ratio_cycle" + std::to_string(timestep);
-        Matrix3d fatalOverdose = Utilities::Matrix3dFactory::Create(this->numOUDStates, this->numInterventions, this->numDemographics)
-            .constant(std::stof(fatalOverdoseTable[fodColumn][0]));
-        // regular overdose is straightforward to convert to the state tensor, one element
-        // per stratum per timestep
-        int row = 0;
-        for (int intervention = 0; intervention < this->numInterventions; ++intervention) {
-            for (int age = 0; age < this->demographicCounts.at(0); ++age) {
-                for (int sex = 0; sex < this->demographicCounts.at(1); ++sex) {
-                    for (int oud = 0; oud < this->numOUDStates; ++oud) {
-                        // only active oud states can overdose
-                        if (oud < this->numOUDStates/2) {
-                            std::string column = "all_types_overdose_cycle" + std::to_string(timestep);
-                            overdoseTransition(intervention, oud, (age * this->demographicCounts.at(1)) + sex) = stof(overdoseTransitionTable[column][row]);
-                            ++row;
-                        }
-                    }
-                }
+    InputTable overdoseTransitionTable = this->inputTables[csvName];
+    std::vector<int> oct = this->Config.GetOverdoseChangeTimes();
+
+    for(auto timestep : oct){
+        std::string str_timestep = "cycle" + std::to_string(timestep);
+        InputTable currentTimeTable = this->RemoveColumns(str_timestep, overdoseTransitionTable); 
+        for(auto kv : currentTimeTable){
+            std::string str = kv.first;
+            if(str.find("overdose_cycle") != std::string::npos){
+                this->overdoseTransitions.insert(this->BuildOverdoseTransitions(currentTimeTable, str), timestep);
             }
         }
-        tempOverdoseTransitions.push_back(overdoseTransition);
-        tempFatalOverdoseTransitions.push_back(fatalOverdose);
-    }
-    // create copies as appropriate, based on the timesteps in the Config
-    for (int i = 0; i < tempOverdoseTransitions.size(); ++i) {
-        // only use one temporary variable, because regular overdose and fatal overdose both have the same change timesteps
-        int tmpOverdoseSize = overdoseTransitions.size();
-        for (int j = tmpOverdoseSize; j < this->Config.GetOverdoseChangeTimes()[i]; ++j) {
-            overdoseTransitions.push_back(tempOverdoseTransitions[i]);
-            fatalOverdoseTransitions.push_back(tempFatalOverdoseTransitions[i]);
-        }
+    }    
+}
+
+void DataLoader::LoadFatalOverdoseTransitions(std::string csvName){
+    InputTable fatalOverdoseTable      = inputTables[csvName];
+    std::vector<Matrix3d> tempFatalOverdoseTransitions;
+    for (int timestep: this->Config.GetOverdoseChangeTimes()) {
+        Matrix3d overdoseTransition = Utilities::Matrix3dFactory::Create(this->numOUDStates, this->numInterventions, this->numDemographicCombos).constant(0);
+        // fatal overdose is a constant across all strata
+        std::string fodColumn = "fatal_to_all_types_overdose_ratio_cycle" + std::to_string(timestep);
+        this->fatalOverdoseTransitions.insert(
+            Utilities::Matrix3dFactory::Create(
+                this->numOUDStates, this->numInterventions, this->numDemographicCombos
+            ).constant(std::stof(fatalOverdoseTable[fodColumn][0])), timestep
+        );
     }
 }
 
@@ -285,11 +341,11 @@ void DataLoader::LoadMortalityTransitions(std::string csvName){
     // mortality here refers to death from reasons other than oud and is calculated
     // by combining the SMR and background mortality
     // calculation to combine these into the mortality is 1-exp(log(1-bg_mort)*SMR)
-    std::vector<std::string> smrColumn                 = inputTables["SMR.csv"]["SMR"];
+    std::vector<std::string> smrColumn                 = inputTables[csvName]["SMR"];
     // only stratified by the demographics, needs to be expanded for oud and intervention
     std::vector<std::string> backgroundMortalityColumn = inputTables["background_mortality.csv"]["death_prob"];
     std::vector<std::string> backgroundMortality;
-    Matrix3d mortalityTransition = Utilities::Matrix3dFactory::Create(this->numOUDStates, this->numInterventions, this->numDemographics);
+    Matrix3d mortalityTransition = Utilities::Matrix3dFactory::Create(this->numOUDStates, this->numInterventions, this->numDemographicCombos);
     // make the dimensions match between SMR and background_mortality
     for (int intervention = 0; intervention < this->numInterventions; ++intervention) {
         for (int oud = 0; oud < this->numOUDStates; ++oud) {
@@ -303,7 +359,7 @@ void DataLoader::LoadMortalityTransitions(std::string csvName){
             for (int sex = 0; sex < this->demographicCounts.at(1); ++sex) {
                 for (int oud = 0; oud < this->numOUDStates; ++oud) {
                     int index =
-                        intervention * this->demographicCounts.at(0) * this->demographicCounts.at(1) * this->numOUDStates +
+                        intervention * this->numDemographicCombos * this->numOUDStates +
                         age * this->demographicCounts.at(1) * this->numOUDStates +
                         sex * this->numOUDStates + oud;
                     mortalityTransition(intervention, oud, (age * this->demographicCounts.at(1)) + sex) =
@@ -318,7 +374,7 @@ void DataLoader::LoadMortalityTransitions(std::string csvName){
 /// @brief Reads a configuration file to a Configuration object
 /// @param inputFile path to the configuration file to be read
 /// @return
-Configuration DataLoader::readConfigFile(const std::string& inputFile) {
+Configuration DataLoader::readConfigFile(std::string inputFile) {
     Configuration config(inputFile);
     return config;
 }
@@ -327,7 +383,7 @@ Configuration DataLoader::readConfigFile(const std::string& inputFile) {
 /// keys and the rest of the columns are stored as vectors of strings
 /// @param inputFile path to the CSV to be read
 /// @return A map object containing columns stored as key-value pairs
-InputTable DataLoader::readCSV(const std::string& inputFile) {
+InputTable DataLoader::readCSV(std::string inputFile) {
     using boost::tokenizer;
 
     std::string inputContents;
@@ -361,7 +417,7 @@ InputTable DataLoader::readCSV(const std::string& inputFile) {
 /// @param inputDir the directory from which to read input files
 /// @return an unordered map whose keys are table names and values are
 /// CSV/InputTables
-std::unordered_map<std::string, InputTable> DataLoader::readInputDir(const std::string& inputDir) {
+std::unordered_map<std::string, InputTable> DataLoader::readInputDir(std::string inputDir) {
     std::string inputDirFixed = inputDir;
     std::unordered_map<std::string, InputTable> toReturn;
     // account for no trailing slash in the provided input directory
@@ -369,7 +425,7 @@ std::unordered_map<std::string, InputTable> DataLoader::readInputDir(const std::
         inputDirFixed.push_back('/');
     }
 
-    for (std::string& inputFile: INPUT_FILES) {
+    for (std::string inputFile: INPUT_FILES) {
         toReturn[inputFile] = readCSV(inputDirFixed + inputFile);
     }
     return toReturn;
@@ -378,7 +434,7 @@ std::unordered_map<std::string, InputTable> DataLoader::readInputDir(const std::
 /// @brief A convenience function useful for viewing `Matrix3d` objects as 2d
 /// slices along the demographics axis -- used for printf debugging
 /// @param toPrint the `Matrix3d` object to print
-void printMatrix3d(Matrix3d& toPrint) {
+void printMatrix3d(Matrix3d toPrint) {
     Matrix3d::Dimensions dim = toPrint.dimensions();
     for (int i = 0; i < dim[2]; ++i) {
         // intervention iterated along columns

@@ -5,7 +5,7 @@ Configuration::Configuration(std::string configFile){
 
     for (auto& section : this->ptree)
     {
-        if(section.first.compare("demographic")){
+        if(section.first.compare("demographic") == 0){
             for (auto& key : section.second){
                 this->demographicOrder.push_back(key.first);
                 this->demographicParams[key.first] = this->ParseString2VectorOfStrings(key.second.get_value<std::string>());
@@ -17,66 +17,68 @@ Configuration::Configuration(std::string configFile){
 /// @brief 
 /// @return 
 std::vector<std::string> Configuration::GetInterventions(){
-    return this->ParseString2VectorOfStrings(this->ptree.get<std::string>("state.interventions"));
+    std::string res = this->ptree.get<std::string>("state.interventions");
+    return this->ParseString2VectorOfStrings(res);
 }
 
 /// @brief 
 /// @return 
 std::vector<std::string> Configuration::GetOUDStates(){
-    return this->ParseString2VectorOfStrings(this->ptree.get<std::string>("state.ouds"));
+    std::string res = this->ptree.get<std::string>("state.ouds");
+    return this->ParseString2VectorOfStrings(res);
 }
+
+
+std::vector<int> updateIndices(std::vector<int> indices, std::vector<int> maxIndices){
+    int lastIdx = indices.size()-1;
+    std::vector<int> results = indices;
+    results[lastIdx]++;
+    for(int i = lastIdx; i > 0; i--){
+        if((results[i] % maxIndices[i] == 0) && (results[i] != 0)){
+            results[i] = 0;
+            results[i-1]++;
+        }
+    }
+    return results;
+
+}
+
+std::vector<std::string> Configuration::GetDemographicCombos(){
+    int n = this->GetNumDemographicCombos();
+    std::vector<int> demographics = this->GetDemographicCounts();
+    int k = demographics.size();
+
+    std::vector<int> indices(k, 0);
+
+    std::vector<std::string> results;
+
+    for(int i = 0; i < n; i++){
+        std::string str;
+        for(int j = 0; j < k; j++){
+            str = str + " " + this->demographicParams[this->demographicOrder[j]][indices[j]];
+        }
+        results.push_back(str);
+        indices = updateIndices(indices, demographics);
+    }
+    return results;
+}
+
+
+
 
 /// @brief 
 /// @return 
-std::vector<std::vector<std::string>> Configuration::GetDemographicCombos(){
-    std::vector<std::vector<std::string>> dems;
+int Configuration::GetNumDemographicCombos(){
+    int totalCombos = 1;
     for(std::string key : this->demographicOrder){
-        dems.push_back(this->demographicParams[key]);
+        std::vector<std::string> temp = this->demographicParams[key];
+        totalCombos *= temp.size();
     }
+    return totalCombos;
+}
 
-    // number of arrays
-    size_t n = dems.size();
- 
-    std::vector<std::vector<std::string>> demographicCombo;
-    // to keep track of next element in each of
-    // the n arrays
-    std::vector<int> indices(n, 0);
+void recurseHelper(std::vector<std::string> currentList){
 
-    int next = n - 1;
-    while (next >= 0) {
-        
-        std::vector<std::string> combination(n);
-        // print current combination
-        for (int i = 0; i < n; i++){
-            combination.push_back(dems[i][indices[i]]);
-        }
-        demographicCombo.push_back(combination);
- 
-        // find the rightmost array that has more
-        // elements left after the current element
-        // in that array
-        next = n - 1;
-        while (next >= 0 && (indices[next] + 1 >= dems[next].size())){
-            next--;
-        }
- 
-        // no such array is found so no more
-        // combinations left
-        if (next < 0)
-            break;
- 
-        // if found move to next element in that
-        // array
-        indices[next]++;
- 
-        // for all arrays to the right of this
-        // array current index again points to
-        // first element
-        for (int i = next + 1; i < n; i++){
-            indices[i] = 0;
-        }
-    }    
-    return demographicCombo;
 }
 
 /// @brief 
@@ -91,48 +93,52 @@ std::vector<int> Configuration::GetDemographicCounts(){
 
 /// @brief 
 /// @return 
-uint16_t Configuration::GetDuration(){
-    return this->ptree.get<uint16_t>("simulation.duration");
+int Configuration::GetDuration(){
+    return this->ptree.get<int>("simulation.duration");
 
 }
 
 std::vector<int> Configuration::GetEnteringSampleChangeTimes(){
-    return this->ParseString2VectorOfInts(this->ptree.get<std::string>("simulation.entering_sample_change_times"));
+    std::string res = this->ptree.get<std::string>("simulation.entering_sample_change_times");
+    return this->ParseString2VectorOfInts(res);
 }
 
 std::vector<int> Configuration::GetInterventionChangeTimes(){
-    return this->ParseString2VectorOfInts(this->ptree.get<std::string>("state.intervention_change_times"));
+    std::string res = this->ptree.get<std::string>("simulation.intervention_change_times");
+    return this->ParseString2VectorOfInts(res);
 }
 
 std::vector<int> Configuration::GetOverdoseChangeTimes(){
-    return this->ParseString2VectorOfInts(this->ptree.get<std::string>("simulation.overdose_change_times"));
+    std::string res = this->ptree.get<std::string>("simulation.overdose_change_times");
+    return this->ParseString2VectorOfInts(res);
 }
 
 
 template<>
-double Configuration::Get<double>(const std::string& str){
+double Configuration::Get<double>(std::string str){
     return this->ptree.get<double>(str);
 }
 
 template<>
-bool Configuration::Get<bool>(const std::string& str){
+bool Configuration::Get<bool>(std::string str){
     return this->ptree.get<bool>(str);
 }
 
 template<>
-int Configuration::Get<int>(const std::string& str){
+int Configuration::Get<int>(std::string str){
     return this->ptree.get<int>(str);
 }
 
 template<>
-std::vector<int> Configuration::Get<std::vector<int>>(const std::string& str){
+std::vector<int> Configuration::Get<std::vector<int>>(std::string str){
     std::string ahh = this->ptree.get<std::string>(str);
     return this->ParseString2VectorOfInts(ahh);
 }
 
 template<>
-std::vector<std::string> Configuration::Get<std::vector<std::string>>(const std::string& str){
-    return this->ParseString2VectorOfStrings(this->ptree.get<std::string>(str));
+std::vector<std::string> Configuration::Get<std::vector<std::string>>(std::string str){
+    std::string res = this->ptree.get<std::string>(str);
+    return this->ParseString2VectorOfStrings(res);
 }
 
 
@@ -155,7 +161,10 @@ std::vector<std::string> Configuration::ParseString2VectorOfStrings(std::string 
     while( ss.good() ){
         std::string substr;
         getline( ss, substr, ',' );
-        result.push_back( substr );
+        int first = substr.find_first_not_of(' ');
+        if(std::string::npos == first){ break; } // catch error and return result vector
+        int last = substr.find_last_not_of(' ');
+        result.push_back( substr.substr(first, (last-first+1)) );
     }
     return result;
 }
@@ -164,14 +173,14 @@ std::vector<std::string> Configuration::ParseString2VectorOfStrings(std::string 
 /// @param st 
 /// @return 
 std::vector<int> Configuration::ParseString2VectorOfInts(std::string st){
-    std::stringstream iss( st );
 
-    int number;
-    std::vector<int> result;
-    while(iss.good()){
-        std::string substr;
-        getline(iss, substr, ',');
-        result.push_back(std::stoi(substr));
+    std::vector<int> res;
+
+    std::istringstream iss(st);
+    std::string token;
+    while (std::getline(iss, token, ',')){
+         res.push_back(std::stoi(token));
     }
-    return result;
+    if(res.empty()){ return {}; }
+    return res;
 }

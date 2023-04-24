@@ -28,3 +28,4 @@ RUN cmake ..
 RUN make
 
 CMD [ "test/respondTest" ]
+# CMD [ "src/respond" ]

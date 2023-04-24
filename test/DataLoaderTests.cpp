@@ -133,13 +133,13 @@ TEST(DataLoaderTest, ConfigFileStringVector) {
         {"male", "female"},
         {"Active_Noninjection", "Active_Injection", "Nonactive_Noninjection", "Nonactive_Injection"}
     };
-    // std::vector<std::vector<std::string>> REAL_VALUES = {
-    //     TestConf.Get<std::vector<std::string>>("state.interventions"),
-    //     TestConf.Get<std::vector<std::string>>("demographic.age_groups"),
-    //     TestConf.Get<std::vector<std::string>>("demographic.sex"),
-    //     TestConf.Get<std::vector<std::string>>("state.oud_states")
-    // };
-    // for (int i = 0; i < REAL_VALUES.size(); ++i) {
-    //     EXPECT_EQ(REAL_VALUES[i], EXPECTED_VALUES[i]);
-    // }
+    std::vector<std::vector<std::string>> REAL_VALUES = {
+        TestConf.Get<std::vector<std::string>>("state.interventions"),
+        TestConf.Get<std::vector<std::string>>("demographic.age_groups"),
+        TestConf.Get<std::vector<std::string>>("demographic.sex"),
+        TestConf.Get<std::vector<std::string>>("state.ouds")
+    };
+    for (int i = 0; i < REAL_VALUES.size(); ++i) {
+        EXPECT_EQ(REAL_VALUES[i], EXPECTED_VALUES[i]);
+    }
 }

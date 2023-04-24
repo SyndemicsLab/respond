@@ -7,7 +7,7 @@
 
 namespace Data{
     using Matrix3d = Eigen::Tensor<float, 3>;
-    using Matrix3dOverTime = std::vector<Matrix3d>;
+    // using Matrix3dOverTime = std::vector<Matrix3d>;
 
     enum Dimension {
         INTERVENTION = 0,
@@ -15,11 +15,24 @@ namespace Data{
         DEMOGRAPHIC_COMBO = 2
     };
 
+    class Matrix3dOverTime{
+    public:
+        Matrix3dOverTime(){}
+        Matrix3dOverTime(std::vector<Matrix3d> data);
+        Matrix3dOverTime(std::vector<Matrix3d> data, std::vector<int> timestepChanges);
+        Matrix3d GetMatrix3dAtTimestep(int timestep);
+        void insert(Matrix3d datapoint, int timestep);
+        std::vector<Matrix3d> GetMatrices();
+    private:
+        std::map<int, Matrix3d> data;
+        // int GetIdxFromTimestep(int timestep);
+    };
+
     typedef struct History{
         Matrix3dOverTime stateHistory;
         Matrix3dOverTime overdoseHistory;
         Matrix3dOverTime mortalityHistory;
     }History;
-}
+};
 
 #endif

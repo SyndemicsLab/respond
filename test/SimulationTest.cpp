@@ -8,13 +8,13 @@ using namespace Data;
 
 TEST(SimulationCreation, DefaultConstructor){
     Sim sim;
-    uint16_t expected = 0;
+    int expected = 0;
     EXPECT_EQ(sim.Duration, expected);
 }
 
 TEST(SimulationCreation, MainConstructor){
     Sim sim(10, 10, 10, 10);
-    uint16_t expected = 10;
+    int expected = 10;
     EXPECT_EQ(sim.Duration, expected);
 }
 
@@ -24,7 +24,7 @@ TEST(Loading, InitialGroup){
     t1.setRandom();
     sim.LoadInitialGroup(t1);
     sim.Run();
-    Matrix3d result = sim.getHistory().stateHistory.at(0);
+    Matrix3d result = sim.getHistory().stateHistory.GetMatrix3dAtTimestep(0);
     Eigen::Tensor<bool, 0> eq = (t1 == result).all();
     int res = eq(0);
     EXPECT_TRUE(res);
@@ -36,11 +36,10 @@ TEST(Loading, EnteringSamples){
     Matrix3d t2(2, 2, 2);
     t1.setRandom();
     t2.setRandom();
-    Matrix3dOverTime samples;
-    samples.push_back(t1);
-    samples.push_back(t2);
+    std::vector<Matrix3d> agg{t1, t2};
+    Matrix3dOverTime samples(agg);
     sim.LoadEnteringSamples(samples);
-    Eigen::Tensor<bool, 0> eq = (samples.at(0) == sim.GetEnteringSamples().at(0)).all();
+    Eigen::Tensor<bool, 0> eq = (samples.GetMatrix3dAtTimestep(0) == sim.GetEnteringSamples().GetMatrix3dAtTimestep(0)).all();
     int res = eq(0);
     EXPECT_TRUE(res);
 }
@@ -61,11 +60,10 @@ TEST(Loading, InterventionTransitions){
     Matrix3d t2(2, 2, 2);
     t1.setRandom();
     t2.setRandom();
-    Matrix3dOverTime samples;
-    samples.push_back(t1);
-    samples.push_back(t2);
+    std::vector<Matrix3d> agg{t1, t2};
+    Matrix3dOverTime samples(agg);
     sim.LoadInterventionTransitions(samples);
-    Eigen::Tensor<bool, 0> eq = (samples.at(0) == sim.GetInterventionTransitions().at(0)).all();
+    Eigen::Tensor<bool, 0> eq = (samples.GetMatrix3dAtTimestep(0) == sim.GetInterventionTransitions().GetMatrix3dAtTimestep(0)).all();
     int res = eq(0);
     EXPECT_TRUE(res);
 }
@@ -76,11 +74,10 @@ TEST(Loading, OverdoseTransitions){
     Matrix3d t2(2, 2, 2);
     t1.setRandom();
     t2.setRandom();
-    Matrix3dOverTime samples;
-    samples.push_back(t1);
-    samples.push_back(t2);
+    std::vector<Matrix3d> agg{t1, t2};
+    Matrix3dOverTime samples(agg);
     sim.LoadOverdoseTransitions(samples);
-    Eigen::Tensor<bool, 0> eq = (samples.at(0) == sim.GetOverdoseTransitions().at(0)).all();
+    Eigen::Tensor<bool, 0> eq = (samples.GetMatrix3dAtTimestep(0) == sim.GetOverdoseTransitions().GetMatrix3dAtTimestep(0)).all();
     int res = eq(0);
     EXPECT_TRUE(res);
 }
@@ -101,9 +98,8 @@ TEST(Loading, TransitionModules){
     Matrix3d e2(2, 2, 2);
     e1.setRandom();
     e2.setRandom();
-    Matrix3dOverTime eVec;
-    eVec.push_back(e1);
-    eVec.push_back(e2);
+    std::vector<Matrix3d> es{e1, e2};
+    Matrix3dOverTime eVec(es);
 
     Matrix3d o1(2, 2, 2);
     o1.setRandom();
@@ -112,35 +108,32 @@ TEST(Loading, TransitionModules){
     Matrix3d t2(2, 2, 2);
     t1.setRandom();
     t2.setRandom();
-    Matrix3dOverTime tVec;
-    tVec.push_back(t1);
-    tVec.push_back(t2);
+    std::vector<Matrix3d>ts{t1, t2};
+    Matrix3dOverTime tVec(ts);
 
     Matrix3d d1(2, 2, 2);
     Matrix3d d2(2, 2, 2);
     d1.setRandom();
     d2.setRandom();
-    Matrix3dOverTime dVec;
-    dVec.push_back(d1);
-    dVec.push_back(d2);
+    std::vector<Matrix3d> ds{d1, d2};
+    Matrix3dOverTime dVec(ds);
 
     Matrix3d fod1(2, 2, 2);
     Matrix3d fod2(2, 2, 2);
     fod1.setRandom();
     fod2.setRandom();
-    Matrix3dOverTime fodVec;
-    fodVec.push_back(fod1);
-    fodVec.push_back(fod2);
+    std::vector<Matrix3d> fods{fod1, fod2};
+    Matrix3dOverTime fodVec(fods);
 
     Matrix3d m1(2, 2, 2);
     m1.setRandom();
 
     sim.LoadTransitionModules(eVec, o1, tVec, fodVec, dVec, m1);
     
-    Eigen::Tensor<bool, 0> eq1 = (eVec.at(0) == sim.GetEnteringSamples().at(0)).all();
+    Eigen::Tensor<bool, 0> eq1 = (eVec.GetMatrix3dAtTimestep(0) == sim.GetEnteringSamples().GetMatrix3dAtTimestep(0)).all();
     Eigen::Tensor<bool, 0> eq2 = (o1 == sim.GetOUDTransitions()).all();
-    Eigen::Tensor<bool, 0> eq3 = (tVec.at(0) == sim.GetInterventionTransitions().at(0)).all();
-    Eigen::Tensor<bool, 0> eq4 = (dVec.at(0) == sim.GetOverdoseTransitions().at(0)).all();
+    Eigen::Tensor<bool, 0> eq3 = (tVec.GetMatrix3dAtTimestep(0) == sim.GetInterventionTransitions().GetMatrix3dAtTimestep(0)).all();
+    Eigen::Tensor<bool, 0> eq4 = (dVec.GetMatrix3dAtTimestep(0) == sim.GetOverdoseTransitions().GetMatrix3dAtTimestep(0)).all();
     Eigen::Tensor<bool, 0> eq5 = (m1 == sim.GetMortalityTransitions()).all();
     
     int res = eq1(0) * eq2(0) * eq3(0) * eq4(0) * eq5(0);
@@ -153,7 +146,7 @@ TEST(Run, EmptyRun){
     expected.setZero();
     sim.LoadInitialGroup(expected);
     sim.Run();
-    Matrix3d actual = sim.getHistory().stateHistory.at(0);
+    Matrix3d actual = sim.getHistory().stateHistory.GetMatrix3dAtTimestep(0);
     Eigen::Tensor<bool, 0> eq = (expected == actual).all();
     int res = eq(0);
     EXPECT_TRUE(res);
@@ -165,28 +158,31 @@ TEST(Run, SingleStepRun){
     Matrix3d e1(2, 2, 2);
     e1.setValues( {{{1, 1}, {1, 1}},
                    {{1, 1}, {1, 1}}} );
-    Matrix3dOverTime eVec;
-    eVec.push_back(e1);
+    std::vector<Matrix3d> es{e1};
+    Matrix3dOverTime eVec(es);
+
     Matrix3d o1(2, 4, 2);
     o1.setValues( {{{.85, .9}, {.15, .1}, {.1, .2}, {.9, .8}},
                    {{.85, .9}, {.15, .1}, {.1, .2}, {.9, .8}}} );
+
     Matrix3d t1(4, 2, 2);
     t1.setValues( {{{.8, .2}, {.9, .1}}, {{.8, .2}, {.9, .1}},
                    {{.05, .95}, {.15, .85}}, {{.05, .95}, {.15, .85}}} );
-    Matrix3dOverTime tVec;
-    tVec.push_back(t1);
+    std::vector<Matrix3d> ts{t1};
+    Matrix3dOverTime tVec(ts);
 
     Matrix3d fod1(2, 2, 2);
     fod1.setValues({{{.0, .0}, {.0, .0}},
                     {{.0, .0}, {.0, .0}}});
-    Matrix3dOverTime fodVec;
-    fodVec.push_back(fod1);
+    std::vector<Matrix3d> fods{fod1};
+    Matrix3dOverTime fodVec(fods);
 
     Matrix3d d1(2, 2, 2);
     d1.setValues( {{{.25, .25}, {.25, .25}},
                    {{.25, .25}, {.25, .25}}} );
-    Matrix3dOverTime dVec;
-    dVec.push_back(d1);
+    std::vector<Matrix3d> ds{d1};
+    Matrix3dOverTime dVec(ds);
+
     Matrix3d m1(2, 2, 2);
     m1.setValues( {{{.01, .01}, {.01, .01}},
                    {{.01, .01}, {.01, .01}}} );
@@ -207,8 +203,8 @@ TEST(Run, SingleStepRun){
     
     sim.Run();
     History history = sim.getHistory();
-    Matrix3d actual0 = history.stateHistory.at(0);
-    Matrix3d actual1 = history.stateHistory.at(1);
+    Matrix3d actual0 = history.stateHistory.GetMatrix3dAtTimestep(0);
+    Matrix3d actual1 = history.stateHistory.GetMatrix3dAtTimestep(1);
     Eigen::Tensor<bool, 0> eq0 = (expected0 == actual0).all();
     
     Matrix3d res1 = (expected1 - actual1).abs();
@@ -231,11 +227,9 @@ TEST(Run, MultiStepRun){
     Matrix3d e3(2, 2, 2);
     e3.setValues( {{{1, 1}, {1, 1}},
                    {{1, 1}, {1, 1}}} );
-    Matrix3dOverTime eVec;
-    eVec.push_back(e1);
-    eVec.push_back(e2);
-    eVec.push_back(e3);
-
+    std::vector<Matrix3d> es{e1, e2, e3};
+    Matrix3dOverTime eVec(es);
+    
     Matrix3d o1(2, 4, 2);
     o1.setValues( {{{.85, .9}, {.15, .1}, {.1, .2}, {.9, .8}},
                    {{.85, .9}, {.15, .1}, {.1, .2}, {.9, .8}}} );
@@ -249,10 +243,8 @@ TEST(Run, MultiStepRun){
     Matrix3d t3(4, 2, 2);
     t3.setValues( {{{.8, .2}, {.9, .1}}, {{.8, .2}, {.9, .1}},
                    {{.05, .95}, {.15, .85}}, {{.05, .95}, {.15, .85}}} );
-    Matrix3dOverTime tVec;
-    tVec.push_back(t1);
-    tVec.push_back(t2);
-    tVec.push_back(t3);
+    std::vector<Matrix3d> ts{t1, t2, t3};
+    Matrix3dOverTime tVec(ts);
 
     Matrix3d fod1(2, 2, 2);
     fod1.setValues( {{{.0, .0}, {.0, .0}},
@@ -263,10 +255,8 @@ TEST(Run, MultiStepRun){
     Matrix3d fod3(2, 2, 2);
     fod3.setValues( {{{.0, .0}, {.0, .0}},
                      {{.0, .0}, {.0, .0}}} );
-    Matrix3dOverTime fodVec;
-    fodVec.push_back(fod1);
-    fodVec.push_back(fod2);
-    fodVec.push_back(fod3);
+    std::vector<Matrix3d> fods{fod1, fod2, fod3};
+    Matrix3dOverTime fodVec(fods);
 
     Matrix3d d1(2, 2, 2);
     d1.setValues( {{{.25, .25}, {.25, .25}},
@@ -277,10 +267,8 @@ TEST(Run, MultiStepRun){
     Matrix3d d3(2, 2, 2);
     d3.setValues( {{{.25, .25}, {.25, .25}},
                    {{.25, .25}, {.25, .25}}} );
-    Matrix3dOverTime dVec;
-    dVec.push_back(d1);
-    dVec.push_back(d2);
-    dVec.push_back(d3);
+    std::vector<Matrix3d> ds{d1, d2, d3};
+    Matrix3dOverTime dVec(ds);
 
     Matrix3d m1(2, 2, 2);
     m1.setValues( {{{.01, .01}, {.01, .01}},
@@ -311,10 +299,10 @@ TEST(Run, MultiStepRun){
     
     sim.Run();
     History history = sim.getHistory();
-    Matrix3d actual0 = history.stateHistory.at(0);
-    Matrix3d actual1 = history.stateHistory.at(1);
-    Matrix3d actual2 = history.stateHistory.at(2);
-    Matrix3d actual3 = history.stateHistory.at(3);
+    Matrix3d actual0 = history.stateHistory.GetMatrix3dAtTimestep(0);
+    Matrix3d actual1 = history.stateHistory.GetMatrix3dAtTimestep(1);
+    Matrix3d actual2 = history.stateHistory.GetMatrix3dAtTimestep(2);
+    Matrix3d actual3 = history.stateHistory.GetMatrix3dAtTimestep(3);
 
     Eigen::Tensor<bool, 0> eq0 = (expected0 == actual0).all();
 

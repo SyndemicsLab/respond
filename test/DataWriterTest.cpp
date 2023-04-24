@@ -37,9 +37,13 @@ TEST(SimpleWriteTest, SingleValueDimensions){
     mortalityHistoryMatrix.setZero();
     mortalityHistoryMatrix(0,0,1) = 1;
 
-    Matrix3dOverTime stateHistory = {stateHistoryMatrix};
-    Matrix3dOverTime overdoseHistory = {overdoseHistoryMatrix};
-    Matrix3dOverTime mortalityHistory = {mortalityHistoryMatrix};
+    std::vector<Matrix3d> svec{stateHistoryMatrix};
+    std::vector<Matrix3d> ovec{overdoseHistoryMatrix};
+    std::vector<Matrix3d> mvec{mortalityHistoryMatrix};
+
+    Matrix3dOverTime stateHistory(svec);
+    Matrix3dOverTime overdoseHistory(ovec);
+    Matrix3dOverTime mortalityHistory(mvec);
 
     History history;
     history.stateHistory = stateHistory;
@@ -110,9 +114,13 @@ TEST(SimpleWriteTest, MultiTimestep){
     mortalityHistoryMatrix2.setZero();
     mortalityHistoryMatrix2(0,0,1) = 1;
 
-    Matrix3dOverTime stateHistory = {stateHistoryMatrix1, stateHistoryMatrix2};
-    Matrix3dOverTime overdoseHistory = {overdoseHistoryMatrix1, overdoseHistoryMatrix2};
-    Matrix3dOverTime mortalityHistory = {mortalityHistoryMatrix1, mortalityHistoryMatrix2};
+    std::vector<Matrix3d> svec{stateHistoryMatrix1, stateHistoryMatrix2};
+    std::vector<Matrix3d> ovec{overdoseHistoryMatrix1, overdoseHistoryMatrix2};
+    std::vector<Matrix3d> mvec{mortalityHistoryMatrix1, mortalityHistoryMatrix2};
+
+    Matrix3dOverTime stateHistory(svec);
+    Matrix3dOverTime overdoseHistory(ovec);
+    Matrix3dOverTime mortalityHistory(mvec);
 
     History history;
     history.stateHistory = stateHistory;

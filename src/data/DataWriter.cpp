@@ -63,9 +63,9 @@ namespace Data{
     /// @param outputType Output Enum, generally Data::FILE
     /// @return string containing the result if output enum is Data::STRING or description of status otherwise
     std::string DataWriter::Write(OutputType outputType) {
-        if(this->history.stateHistory.empty() ||
-            this->history.overdoseHistory.empty() ||
-            this->history.mortalityHistory.empty() ||
+        if(this->history.stateHistory.GetMatrices().empty() ||
+            this->history.overdoseHistory.GetMatrices().empty() ||
+            this->history.mortalityHistory.GetMatrices().empty() ||
             this->dirname.empty()) {
             //log error
             std::ostringstream s;
@@ -112,7 +112,8 @@ namespace Data{
     /// @param stream Stream type to write data to
     /// @param historyToWrite Specific portion of history to save
     void DataWriter::Writer(std::ostream &stream, Matrix3dOverTime historyToWrite) {
-        stream << WriteColumnHeaders(historyToWrite.size()) << std::endl;
+        std::vector<Matrix3d> Matrix3dVec = historyToWrite.GetMatrices();
+        stream << WriteColumnHeaders(Matrix3dVec.size()) << std::endl;
         for(int i=0; i<this->interventions.size(); i++) {
             for(int j=0; j<this->oudStates.size(); j++) {
                 for(int k=0; k<this->demographics.size(); k++) {
@@ -121,7 +122,7 @@ namespace Data{
                     for(int dem=0; dem<this->demographics[k].size(); dem++) {
                         stream << this->demographics[k][dem] << ",";
                     }
-                    for(Matrix3d dm : historyToWrite) {
+                    for(Matrix3d dm : Matrix3dVec) {
                         std::array<long, 3> index = {0,0,0};
                         index[Data::INTERVENTION] = i;
                         index[Data::OUD] = j;

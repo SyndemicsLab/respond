@@ -16,7 +16,7 @@ namespace Simulation{
     /// @param numOUDStates Total number of OUD states
     /// @param numInterventions Total number of possible interventions 
     /// @param numDemographics Total number of demographic combinations
-    Sim::Sim(uint16_t duration, uint8_t numOUDStates, uint8_t numInterventions, uint16_t numDemographics){
+    Sim::Sim(int duration, int numOUDStates, int numInterventions, int numDemographics){
         boost::log::add_file_log("simulation.log");
         boost::log::core::get()->set_filter(
             boost::log::trivial::severity >= boost::log::trivial::info
@@ -176,15 +176,15 @@ namespace Simulation{
     void Sim::Run(){
         Data::Matrix3d zeroMat = Utilities::Matrix3dFactory::Create(this->numOUDStates, this->numInterventions, this->numDemographics);
         zeroMat.setZero();
-        this->history.overdoseHistory.push_back(zeroMat);
-        this->history.mortalityHistory.push_back(zeroMat);
-        this->history.stateHistory.push_back(this->state);
+        this->history.overdoseHistory.insert(zeroMat, 0);
+        this->history.mortalityHistory.insert(zeroMat, 0);
+        this->history.stateHistory.insert(this->state, 0);
 
         for(this->currentTime = 0; this->currentTime < this->Duration; this->currentTime++){
             std::string fmt_string = fmt::format("Running Timestep {}\n", this->currentTime);
             BOOST_LOG(this->lg) << fmt_string;
             this->state = this->step();
-            this->history.stateHistory.push_back(this->state);
+            this->history.stateHistory.insert(this->state, currentTime+1);
         }
     }
 
@@ -220,7 +220,7 @@ namespace Simulation{
     /// @param state the tensor we will add the entering sample to
     /// @return Resulting tensor with added samples to the state
     Data::Matrix3d Sim::addEnteringSamples(Data::Matrix3d state){
-        Data::Matrix3d enteringSamples = this->enteringSamples.at(this->currentTime);
+        Data::Matrix3d enteringSamples = this->enteringSamples.GetMatrix3dAtTimestep(this->currentTime);
         if(enteringSamples.dimensions() != state.dimensions()){
             std::string message = fmt::format("Entering Samples Dimensions does not equal the State Dimensions at timestep {}", this->currentTime);
             throw std::invalid_argument(message);
@@ -254,7 +254,7 @@ namespace Simulation{
             case Data::OUD:
                 return this->oudTransitions;
             case Data::INTERVENTION:
-                return this->interventionTransitions.at(this->currentTime);
+                return this->interventionTransitions.GetMatrix3dAtTimestep(this->currentTime);
             case Data::DEMOGRAPHIC_COMBO:
             default:
                 return Utilities::Matrix3dFactory::Create(this->numOUDStates, this->numInterventions, this->numDemographics);
@@ -301,7 +301,7 @@ namespace Simulation{
     }
 
     Data::Matrix3d Sim::multiplyFatalOverdoseTransitions(Data::Matrix3d state){
-        Data::Matrix3d fatalOverdoseMatrix = this->fatalOverdoseTransitions[this->currentTime];
+        Data::Matrix3d fatalOverdoseMatrix = this->fatalOverdoseTransitions.GetMatrix3dAtTimestep(this->currentTime);
         if(fatalOverdoseMatrix.dimensions() != state.dimensions()){
             std::string message = fmt::format("Fatal Overdose Dimensions does not equal the State Dimensions at timestep {}", this->currentTime);
             throw std::invalid_argument(message);
@@ -315,13 +315,13 @@ namespace Simulation{
     /// @param state current state
     /// @return Number of Overdoses
     Data::Matrix3d Sim::multiplyOverdoseTransitions(Data::Matrix3d state){
-        Data::Matrix3d overdoseMatrix = this->overdoseTransitions[this->currentTime];
+        Data::Matrix3d overdoseMatrix = this->overdoseTransitions.GetMatrix3dAtTimestep(this->currentTime);
         if(overdoseMatrix.dimensions() != state.dimensions()){
             std::string message = fmt::format("Overdose Dimensions does not equal the State Dimensions at timestep {}", this->currentTime);
             throw std::invalid_argument(message);
         }
         Data::Matrix3d mult = overdoseMatrix * state;
-        this->history.overdoseHistory.push_back(mult);
+        this->history.overdoseHistory.insert(mult, this->currentTime+1);
         return mult;
     }
 
@@ -336,7 +336,7 @@ namespace Simulation{
         }
         Data::Matrix3d ret(state.dimensions());
         Data::Matrix3d mor = (state * mortalityMatrix);
-        this->history.mortalityHistory.push_back(mor);
+        this->history.mortalityHistory.insert(mor, this->currentTime+1);
         return mor;
     }
 }

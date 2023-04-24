@@ -14,31 +14,30 @@
 #include <boost/lexical_cast.hpp>
 
 
-template <typename C> struct is_vector : std::false_type {};    
-template <typename T,typename A> struct is_vector< std::vector<T,A> > : std::true_type {};    
-template <typename C> inline constexpr bool is_vector_v = is_vector<C>::value;
-
 class Configuration{
 public:
+    ~Configuration() {};
     Configuration() {};
     Configuration(std::string configFile);
 
     // getters
     std::vector<std::string> GetInterventions();
     std::vector<std::string> GetOUDStates();
-    std::vector<std::vector<std::string>> GetDemographicCombos();
+    int GetNumDemographicCombos();
     std::vector<int> GetDemographicCounts();
     std::vector<int> GetEnteringSampleChangeTimes();
     std::vector<int> GetInterventionChangeTimes();
     std::vector<int> GetOverdoseChangeTimes();
+    std::vector<std::string> GetDemographicCombos();
 
-    uint16_t GetDuration();
+    int GetDuration();
 
     template<typename T>
-    T Get(const std::string& str);
+    T Get(std::string str);
 
 private:
     std::map<std::string, std::vector<std::string>> demographicParams;
+    std::vector<std::vector<std::string>> demographics;
     std::vector<std::string> demographicOrder;
     boost::property_tree::ptree ptree;
 
