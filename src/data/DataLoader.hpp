@@ -61,6 +61,8 @@ namespace Data {
         Matrix3d getMortalityTransitions() { return mortalityTransitions; }
         std::vector<std::string> getInterventions() { return interventions; }
         std::vector<std::string> getOUDStates() { return oudStates; }
+        int getAgingInterval() { return agingInterval; }
+        int getAgeGroupShift() { return ageGroupShift; }
 
         // Loading from Tables
         void LoadInitialGroup(std::string csvName);
@@ -83,6 +85,8 @@ namespace Data {
         std::string dirName;
 
         int duration;
+        int agingInterval;
+        int ageGroupShift;
         int numOUDStates;
         int numInterventions;
         int numDemographics;

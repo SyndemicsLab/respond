@@ -30,6 +30,7 @@ public:
     std::vector<int> GetOverdoseChangeTimes();
     std::vector<std::string> GetDemographicCombos();
 
+    int GetAgingInterval();
     int GetDuration();
 
     template<typename T>

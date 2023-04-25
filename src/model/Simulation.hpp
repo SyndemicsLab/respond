@@ -8,14 +8,6 @@
 #ifndef MODEL_SIMULATION_HPP_
 #define MODEL_SIMULATION_HPP_
 
-#include <iostream>
-#include <stdexcept>
-#include <cmath>
-#include <cstdint>
-#include <eigen3/Eigen/Eigen>
-#include <eigen3/unsupported/Eigen/CXX11/Tensor>
-#include <string>
-
 #include <boost/log/core.hpp>
 #include <boost/log/trivial.hpp>
 #include <boost/log/expressions.hpp>
@@ -25,8 +17,14 @@
 #include <boost/log/sources/severity_logger.hpp>
 #include <boost/log/sources/record_ostream.hpp>
 #include <boost/log/sources/logger.hpp>
-
+#include <cmath>
+#include <cstdint>
+#include <eigen3/Eigen/Eigen>
+#include <eigen3/unsupported/Eigen/CXX11/Tensor>
 #include <fmt/core.h>
+#include <iostream>
+#include <stdexcept>
+#include <string>
 
 #include "DataTypes.hpp"
 #include "DataLoader.hpp"
@@ -45,6 +43,7 @@ namespace Simulation{
         virtual void LoadFatalOverdoseTransitions(Data::Matrix3dOverTime fatalOverdoseTransitions) = 0;
         virtual void LoadMortalityTransitions(Data::Matrix3d mortalityTransitions) = 0;
         virtual void Load(Data::DataLoader dataLoader) = 0;
+        virtual void LoadAgingParameters(int shift, int interval) = 0;
 
         virtual Data::Matrix3dOverTime GetEnteringSamples() = 0;
         virtual Data::Matrix3d GetOUDTransitions() = 0;
@@ -62,6 +61,7 @@ namespace Simulation{
             Data::Matrix3d mortalityTransitions
         ) = 0;
         virtual void Run() = 0;
+        virtual void raisePopulationAge() = 0;
         virtual Data::History getHistory() = 0;
     };
 
@@ -71,6 +71,44 @@ namespace Simulation{
      *  \image latex pdf/RESPOND-StateMatrix.pdf "Multiplication" width=10cm
      */
     class Sim : public ISim {
+    public:
+        Sim();
+        Sim(int duration, int numOUDStates, int numInterventions, int numDemographics);
+        ~Sim() {};
+        Sim(Data::DataLoader dataLoader);
+        void LoadInitialGroup(Data::Matrix3d initialGroup) override;
+        void LoadEnteringSamples(Data::Matrix3dOverTime enteringSamples) override;
+        void LoadOUDTransitions(Data::Matrix3d oudTransitions) override;
+        void LoadInterventionTransitions(Data::Matrix3dOverTime interventionTransitions) override;
+        void LoadOverdoseTransitions(Data::Matrix3dOverTime overdoseTransitions) override;
+        void LoadFatalOverdoseTransitions(Data::Matrix3dOverTime fatalOverdoseTransitions) override;
+        void LoadMortalityTransitions(Data::Matrix3d mortalityTransitions) override;
+        void Load(Data::DataLoader dataLoader) override;
+        void LoadAgingParameters(int shift, int interval) override;
+
+        Data::Matrix3dOverTime GetEnteringSamples() override;
+        Data::Matrix3d GetOUDTransitions() override;
+        Data::Matrix3dOverTime GetInterventionTransitions() override;
+        Data::Matrix3dOverTime GetOverdoseTransitions() override;
+        Data::Matrix3dOverTime GetFatalOverdoseTransitions() override;
+        Data::Matrix3d GetMortalityTransitions() override;
+
+        void LoadTransitionModules(
+            Data::Matrix3dOverTime enteringSamples,
+            Data::Matrix3d oudTransitions,
+            Data::Matrix3dOverTime interventionTransitions,
+            Data::Matrix3dOverTime fatalOverdoseTransitions,
+            Data::Matrix3dOverTime overdoseTransitions,
+            Data::Matrix3d mortalityTransitions
+        ) override;
+        void Run() override;
+        void raisePopulationAge() override;
+        Data::History getHistory() override;
+        int Duration;
+        int agingInterval;
+        int ageGroupShift;
+        bool agingSwitch;
+
     private:
         boost::log::sources::logger lg;
 
@@ -96,38 +134,6 @@ namespace Simulation{
         Data::Matrix3d multiplyMortalityTransitions(Data::Matrix3d state);
         Data::Matrix3d getTransitionFromDim(Data::Dimension dim);
         Data::Matrix3d multiplyTransitions(Data::Matrix3d state, Data::Dimension dim);
-    public:
-        Sim();
-        Sim(int duration, int numOUDStates, int numInterventions, int numDemographics);
-        ~Sim() {};
-        Sim(Data::DataLoader dataLoader);
-        void LoadInitialGroup(Data::Matrix3d initialGroup) override;
-        void LoadEnteringSamples(Data::Matrix3dOverTime enteringSamples) override;
-        void LoadOUDTransitions(Data::Matrix3d oudTransitions) override;
-        void LoadInterventionTransitions(Data::Matrix3dOverTime interventionTransitions) override;
-        void LoadOverdoseTransitions(Data::Matrix3dOverTime overdoseTransitions) override;
-        void LoadFatalOverdoseTransitions(Data::Matrix3dOverTime fatalOverdoseTransitions) override;
-        void LoadMortalityTransitions(Data::Matrix3d mortalityTransitions) override;
-        void Load(Data::DataLoader dataLoader) override;
-
-        Data::Matrix3dOverTime GetEnteringSamples() override;
-        Data::Matrix3d GetOUDTransitions() override;
-        Data::Matrix3dOverTime GetInterventionTransitions() override;
-        Data::Matrix3dOverTime GetOverdoseTransitions() override;
-        Data::Matrix3dOverTime GetFatalOverdoseTransitions() override;
-        Data::Matrix3d GetMortalityTransitions() override;
-
-        void LoadTransitionModules(
-            Data::Matrix3dOverTime enteringSamples,
-            Data::Matrix3d oudTransitions,
-            Data::Matrix3dOverTime interventionTransitions,
-            Data::Matrix3dOverTime fatalOverdoseTransitions,
-            Data::Matrix3dOverTime overdoseTransitions,
-            Data::Matrix3d mortalityTransitions
-        ) override;
-        void Run() override;
-        Data::History getHistory() override;
-        int Duration;
     };
 }
 #endif /* MODEL_SIMULATION_HPP_ */
