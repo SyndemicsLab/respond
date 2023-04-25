@@ -79,7 +79,6 @@ namespace Data {
         Matrix3d BuildInterventionMatrix(std::vector<int> indices, InputTable table);
         Matrix3d BuildOverdoseTransitions(InputTable table, std::string key);
         std::vector<int> FindIndices(std::vector<std::string> const &v, std::string target);
-        std::vector<int> FindIndicesExactMatch(std::vector<std::string> const &v, std::string target);
         std::vector<std::vector<int>> GetIndicesVector(std::vector<std::string> col);
         Matrix3dOverTime CalcInterventionTransitions(std::vector<int> ict, InputTable table, std::vector<std::vector<int>> indicesVec);
         std::string dirName;

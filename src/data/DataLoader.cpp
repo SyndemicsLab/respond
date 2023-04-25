@@ -52,12 +52,12 @@ void DataLoader::LoadInitialGroup(std::string csvName) {
 
     // INITIAL GROUP
     InputTable initialCohort = this->inputTables[csvName];
-    initialGroup = Utilities::Matrix3dFactory::Create(this->numOUDStates, this->numInterventions, this->numDemographicCombos).constant(0);
+    this->initialGroup = Utilities::Matrix3dFactory::Create(this->numOUDStates, this->numInterventions, this->numDemographicCombos).constant(0);
     int row = 0;
     for (int intervention = 0; intervention < nonPostInterventions; ++intervention) {
         for (int dem = 0; dem < this->numDemographicCombos; ++dem) {
             for (int oud_state = 0; oud_state < this->numOUDStates; ++oud_state) {
-                initialGroup(intervention, oud_state, dem) =
+                this->initialGroup(intervention, oud_state, dem) =
                     std::stof(initialCohort["counts"][row]);
                 ++row;
             }
@@ -91,7 +91,7 @@ void DataLoader::LoadEnteringSamples(std::string csvName) {
                 }
             }
         }
-        this->enteringSamples.insert(enteringSample, timestep);
+        this->enteringSamples.insert(enteringSample, timestep);        
     }
 }
 
@@ -123,11 +123,11 @@ void DataLoader::LoadOUDTransitions(std::string csvName) {
     }
 
     // stack the Matrix3d objects along the OUD axis
-    oudTransitions = tempOUDTransitions[0];
+    this->oudTransitions = tempOUDTransitions[0];
     for (int i = 1; i < tempOUDTransitions.size(); ++i) {
-        Matrix3d temp = oudTransitions.concatenate(tempOUDTransitions[i], Data::OUD).eval()
+        Matrix3d temp = this->oudTransitions.concatenate(tempOUDTransitions[i], Data::OUD).eval()
             .reshape(Matrix3d::Dimensions(this->numInterventions, (i+1) * this->numOUDStates, this->numDemographicCombos));
-        oudTransitions = std::move(temp);
+        this->oudTransitions = std::move(temp);
     }
 }
 
@@ -144,10 +144,6 @@ InputTable DataLoader::RemoveColumns(std::string colString, InputTable ogTable) 
     for(auto i : keys) {
         res.erase(i);
     }
-
-    for(auto kv : res) {
-        std::cout << kv.first << std::endl;
-    }
     return res;
 }
 
@@ -158,9 +154,11 @@ Data::Matrix3d DataLoader::BuildInterventionMatrix(std::vector<int> indices, Inp
 
     // reconstructing order of interventions based on column keys
     bool postFlag = false;
-    for(auto inter : this->Config.GetInterventions()) {
-        for(auto kv : table) {
-            if(kv.first.find(inter) != std::string::npos) {
+    int idx = 0;
+    int offset = 0;
+    for(auto inter : this->Config.GetInterventions()){
+        for(auto kv : table){
+            if(kv.first.find(inter) != std::string::npos){
                 std::string key = kv.first;
                 keys.push_back(key);
             }
@@ -172,12 +170,25 @@ Data::Matrix3d DataLoader::BuildInterventionMatrix(std::vector<int> indices, Inp
                 postFlag = true; // only assumes one "to_corresponding_post_trt column"
             }
         }
+        if(currentIntervention.compare(inter) == 0){
+            offset = idx;
+        }
+        idx++;
     }
 
     for(int i = 0; i < keys.size(); i++) {
         int interventionOffset = i;
-        // int interventionOffset = (keys[i].find("post") != std::string::npos) ? i : i + indices[0];
-        // std::cout << keys[i] << " " << interventionOffset << std::endl;
+
+        if(currentIntervention.compare("No_Treatment") == 0){
+            interventionOffset = i;
+        }   
+        else if(keys[i].find("post") != std::string::npos){
+            interventionOffset = i+offset-1;
+            if(currentIntervention.find("Post") != std::string::npos){
+                interventionOffset -= 2;
+            }
+        }
+        
 
         std::string key = keys[i];
         int oudIdx = 0;
@@ -225,16 +236,6 @@ Data::Matrix3d DataLoader::BuildMatrixFromTransitionData(std::vector<std::vector
 std::vector<int> DataLoader::FindIndices(std::vector<std::string> const &v, std::string target) {
     std::vector<int> indices;
     auto it = v.begin();
-    while ((it = std::find_if(it, v.end(), [&] (std::string const &e) { return e.find(target) != std::string::npos; })) != v.end()) {
-        indices.push_back(std::distance(v.begin(), it));
-        it++;
-    }
-    return indices;
-}
-
-std::vector<int> DataLoader::FindIndicesExactMatch(std::vector<std::string> const &v, std::string target) {
-    std::vector<int> indices;
-    auto it = v.begin();
     while ((it = std::find_if(it, v.end(), [&] (std::string const &e) { return e.compare(target) == 0; })) != v.end()) {
         indices.push_back(std::distance(v.begin(), it));
         it++;
@@ -245,7 +246,7 @@ std::vector<int> DataLoader::FindIndicesExactMatch(std::vector<std::string> cons
 std::vector<std::vector<int>> DataLoader::GetIndicesVector(std::vector<std::string> col) {
     std::vector<std::vector<int>> indicesVec;
     for(std::string in : this->Config.GetInterventions()) {
-        indicesVec.push_back(this->FindIndicesExactMatch(col, in));
+        indicesVec.push_back(this->FindIndices(col, in));
     }
     return indicesVec;
 }
@@ -272,7 +273,6 @@ void DataLoader::LoadInterventionTransitions(std::string csvName) {
 
     std::vector<std::vector<int>> indicesVec = this->GetIndicesVector(interventionTransitionTable["initial_block"]);
     this->interventionTransitions = this->CalcInterventionTransitions(ict, interventionTransitionTable, indicesVec);
-
 }
 
 Matrix3d DataLoader::BuildOverdoseTransitions(InputTable table, std::string key) {
