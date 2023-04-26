@@ -208,6 +208,11 @@ namespace Simulation{
         Data::Matrix3d::Dimensions dims = tempState.dimensions();
         for (int intervention = 0; intervention < dims[Data::INTERVENTION]; ++intervention) {
             for (int oud = 0; oud < dims[Data::OUD]; ++oud) {
+                // zero out the youngest age bracket
+                for (int demos = 0; demos < this->ageGroupShift; ++demos) {
+                    this->state(intervention, oud, demos) = 0;
+                }
+                // move all remaining states
                 for (int demos = 0; demos < (dims[Data::DEMOGRAPHIC_COMBO] - this->ageGroupShift); ++demos) {
                     this->state(intervention, oud, demos + this->ageGroupShift) =
                         tempState(intervention, oud, demos);
