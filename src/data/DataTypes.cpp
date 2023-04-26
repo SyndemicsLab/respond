@@ -19,7 +19,7 @@ namespace Data{
         }
     }
 
-    Matrix3d Matrix3dOverTime::GetMatrix3dAtTimestep(int timestep){
+    Matrix3d Matrix3dOverTime::getMatrix3dAtTimestep(int timestep){
         int temp = this->data.begin()->first;
         for(auto itr=this->data.begin(); itr != this->data.end(); ++itr){
             int key = itr->first;
@@ -32,7 +32,7 @@ namespace Data{
         this->data.insert({timestep, datapoint});
     }
 
-    std::vector<Matrix3d> Matrix3dOverTime::GetMatrices(){
+    std::vector<Matrix3d> Matrix3dOverTime::getMatrices(){
         std::vector<Matrix3d> values;
         for(auto itr = this->data.begin(); itr != this->data.end(); itr++){
             Matrix3d mat = itr->second;

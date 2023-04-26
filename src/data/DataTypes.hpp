@@ -20,9 +20,9 @@ namespace Data{
         Matrix3dOverTime(){}
         Matrix3dOverTime(std::vector<Matrix3d> data);
         Matrix3dOverTime(std::vector<Matrix3d> data, std::vector<int> timestepChanges);
-        Matrix3d GetMatrix3dAtTimestep(int timestep);
+        Matrix3d getMatrix3dAtTimestep(int timestep);
         void insert(Matrix3d datapoint, int timestep);
-        std::vector<Matrix3d> GetMatrices();
+        std::vector<Matrix3d> getMatrices();
     private:
         std::map<int, Matrix3d> data;
         // int GetIdxFromTimestep(int timestep);

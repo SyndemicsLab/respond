@@ -21,20 +21,20 @@ public:
     Configuration(std::string configFile);
 
     // getters
-    std::vector<std::string> GetInterventions();
-    std::vector<std::string> GetOUDStates();
-    int GetNumDemographicCombos();
-    std::vector<int> GetDemographicCounts();
-    std::vector<int> GetEnteringSampleChangeTimes();
-    std::vector<int> GetInterventionChangeTimes();
-    std::vector<int> GetOverdoseChangeTimes();
-    std::vector<std::string> GetDemographicCombos();
+    std::vector<std::string> getInterventions();
+    std::vector<std::string> getOUDStates();
+    int getNumDemographicCombos();
+    std::vector<int> getDemographicCounts();
+    std::vector<int> getEnteringSampleChangeTimes();
+    std::vector<int> getInterventionChangeTimes();
+    std::vector<int> getOverdoseChangeTimes();
+    std::vector<std::string> getDemographicCombos();
 
-    int GetAgingInterval();
-    int GetDuration();
+    int getAgingInterval();
+    int getDuration();
 
     template<typename T>
-    T Get(std::string str);
+    T get(std::string str);
 
 private:
     std::map<std::string, std::vector<std::string>> demographicParams;
@@ -42,9 +42,9 @@ private:
     std::vector<std::string> demographicOrder;
     boost::property_tree::ptree ptree;
 
-    void LoadMap(std::pair<const std::string, boost::property_tree::ptree> section, std::map<std::string, std::string> m);
-    std::vector<std::string> ParseString2VectorOfStrings(std::string st);
-    std::vector<int> ParseString2VectorOfInts(std::string st);
+    void loadMap(std::pair<const std::string, boost::property_tree::ptree> section, std::map<std::string, std::string> m);
+    std::vector<std::string> parseString2VectorOfStrings(std::string st);
+    std::vector<int> parseString2VectorOfInts(std::string st);
 };
 
 #endif // DATA_CONFIGURATION_HPP_

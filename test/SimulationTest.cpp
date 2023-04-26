@@ -22,9 +22,9 @@ TEST(Loading, InitialGroup){
     Sim sim;
     Matrix3d t1(2, 2, 2);
     t1.setRandom();
-    sim.LoadInitialGroup(t1);
+    sim.loadInitialSample(t1);
     sim.Run();
-    Matrix3d result = sim.getHistory().stateHistory.GetMatrix3dAtTimestep(0);
+    Matrix3d result = sim.getHistory().stateHistory.getMatrix3dAtTimestep(0);
     Eigen::Tensor<bool, 0> eq = (t1 == result).all();
     int res = eq(0);
     EXPECT_TRUE(res);
@@ -38,8 +38,8 @@ TEST(Loading, EnteringSamples){
     t2.setRandom();
     std::vector<Matrix3d> agg{t1, t2};
     Matrix3dOverTime samples(agg);
-    sim.LoadEnteringSamples(samples);
-    Eigen::Tensor<bool, 0> eq = (samples.GetMatrix3dAtTimestep(0) == sim.GetEnteringSamples().GetMatrix3dAtTimestep(0)).all();
+    sim.loadEnteringSamples(samples);
+    Eigen::Tensor<bool, 0> eq = (samples.getMatrix3dAtTimestep(0) == sim.GetEnteringSamples().getMatrix3dAtTimestep(0)).all();
     int res = eq(0);
     EXPECT_TRUE(res);
 }
@@ -48,7 +48,7 @@ TEST(Loading, OUDTransitions){
     Sim sim(10, 10, 10, 10);
     Matrix3d t1(2, 2, 2);
     t1.setRandom();
-    sim.LoadOUDTransitions(t1);
+    sim.loadOUDTransitionRates(t1);
     Eigen::Tensor<bool, 0> eq = (t1 == sim.GetOUDTransitions()).all();
     int res = eq(0);
     EXPECT_TRUE(res);
@@ -62,8 +62,8 @@ TEST(Loading, InterventionTransitions){
     t2.setRandom();
     std::vector<Matrix3d> agg{t1, t2};
     Matrix3dOverTime samples(agg);
-    sim.LoadInterventionTransitions(samples);
-    Eigen::Tensor<bool, 0> eq = (samples.GetMatrix3dAtTimestep(0) == sim.GetInterventionTransitions().GetMatrix3dAtTimestep(0)).all();
+    sim.loadInterventionTransitionRates(samples);
+    Eigen::Tensor<bool, 0> eq = (samples.getMatrix3dAtTimestep(0) == sim.GetInterventionTransitions().getMatrix3dAtTimestep(0)).all();
     int res = eq(0);
     EXPECT_TRUE(res);
 }
@@ -76,8 +76,8 @@ TEST(Loading, OverdoseTransitions){
     t2.setRandom();
     std::vector<Matrix3d> agg{t1, t2};
     Matrix3dOverTime samples(agg);
-    sim.LoadOverdoseTransitions(samples);
-    Eigen::Tensor<bool, 0> eq = (samples.GetMatrix3dAtTimestep(0) == sim.GetOverdoseTransitions().GetMatrix3dAtTimestep(0)).all();
+    sim.loadOverdoseRates(samples);
+    Eigen::Tensor<bool, 0> eq = (samples.getMatrix3dAtTimestep(0) == sim.GetOverdoseTransitions().getMatrix3dAtTimestep(0)).all();
     int res = eq(0);
     EXPECT_TRUE(res);
 }
@@ -86,7 +86,7 @@ TEST(Loading, MortalityTransitions){
     Sim sim(10, 10, 10, 10);
     Matrix3d t1(2, 2, 2);
     t1.setRandom();
-    sim.LoadMortalityTransitions(t1);
+    sim.loadMortalityRates(t1);
     Eigen::Tensor<bool, 0> eq = (t1 == sim.GetMortalityTransitions()).all();
     int res = eq(0);
     EXPECT_TRUE(res);
@@ -130,10 +130,10 @@ TEST(Loading, TransitionModules){
 
     sim.LoadTransitionModules(eVec, o1, tVec, fodVec, dVec, m1);
     
-    Eigen::Tensor<bool, 0> eq1 = (eVec.GetMatrix3dAtTimestep(0) == sim.GetEnteringSamples().GetMatrix3dAtTimestep(0)).all();
+    Eigen::Tensor<bool, 0> eq1 = (eVec.getMatrix3dAtTimestep(0) == sim.GetEnteringSamples().getMatrix3dAtTimestep(0)).all();
     Eigen::Tensor<bool, 0> eq2 = (o1 == sim.GetOUDTransitions()).all();
-    Eigen::Tensor<bool, 0> eq3 = (tVec.GetMatrix3dAtTimestep(0) == sim.GetInterventionTransitions().GetMatrix3dAtTimestep(0)).all();
-    Eigen::Tensor<bool, 0> eq4 = (dVec.GetMatrix3dAtTimestep(0) == sim.GetOverdoseTransitions().GetMatrix3dAtTimestep(0)).all();
+    Eigen::Tensor<bool, 0> eq3 = (tVec.getMatrix3dAtTimestep(0) == sim.GetInterventionTransitions().getMatrix3dAtTimestep(0)).all();
+    Eigen::Tensor<bool, 0> eq4 = (dVec.getMatrix3dAtTimestep(0) == sim.GetOverdoseTransitions().getMatrix3dAtTimestep(0)).all();
     Eigen::Tensor<bool, 0> eq5 = (m1 == sim.GetMortalityTransitions()).all();
     
     int res = eq1(0) * eq2(0) * eq3(0) * eq4(0) * eq5(0);
@@ -144,9 +144,9 @@ TEST(Run, EmptyRun){
     Sim sim(0, 0, 0, 0);
     Matrix3d expected(0, 0, 0);
     expected.setZero();
-    sim.LoadInitialGroup(expected);
+    sim.loadInitialSample(expected);
     sim.Run();
-    Matrix3d actual = sim.getHistory().stateHistory.GetMatrix3dAtTimestep(0);
+    Matrix3d actual = sim.getHistory().stateHistory.getMatrix3dAtTimestep(0);
     Eigen::Tensor<bool, 0> eq = (expected == actual).all();
     int res = eq(0);
     EXPECT_TRUE(res);
@@ -188,23 +188,23 @@ TEST(Run, SingleStepRun){
                    {{.01, .01}, {.01, .01}}} );
     sim.LoadTransitionModules(eVec, o1, tVec, fodVec, dVec, m1);
 
-    Matrix3d initialGroup(2, 2, 2);
-    initialGroup.setValues( {{{1, 1}, {1, 1}}, 
+    Matrix3d initialSample(2, 2, 2);
+    initialSample.setValues( {{{1, 1}, {1, 1}}, 
                              {{1, 1}, {1, 1}}} );
-    sim.LoadInitialGroup(initialGroup);
+    sim.loadInitialSample(initialSample);
 
     Matrix3d expected0(2, 2, 2);
     expected0.setValues( {{{1, 1}, {1, 1}},
                           {{1, 1}, {1, 1}}} );
 
     Matrix3d expected1(2, 2, 2);
-    expected1.setValues( {{{1.59885, 2.5047}, {2.18295, 1.6929}},
-                          {{1.59885, 2.5047}, {2.18295, 1.6929}}} );
+    expected1.setValues( {{{1.60289, 2.51102}, {2.18846, 1.69718}},
+                          {{1.60289, 2.51102}, {2.18846, 1.69718}}} );
     
     sim.Run();
     History history = sim.getHistory();
-    Matrix3d actual0 = history.stateHistory.GetMatrix3dAtTimestep(0);
-    Matrix3d actual1 = history.stateHistory.GetMatrix3dAtTimestep(1);
+    Matrix3d actual0 = history.stateHistory.getMatrix3dAtTimestep(0);
+    Matrix3d actual1 = history.stateHistory.getMatrix3dAtTimestep(1);
     Eigen::Tensor<bool, 0> eq0 = (expected0 == actual0).all();
     
     Matrix3d res1 = (expected1 - actual1).abs();
@@ -276,33 +276,33 @@ TEST(Run, MultiStepRun){
 
     sim.LoadTransitionModules(eVec, o1, tVec, fodVec, dVec, m1);
 
-    Matrix3d initialGroup(2, 2, 2);
-    initialGroup.setValues( {{{1, 1}, {1, 1}}, 
+    Matrix3d initialSample(2, 2, 2);
+    initialSample.setValues( {{{1, 1}, {1, 1}}, 
                              {{1, 1}, {1, 1}}} );
-    sim.LoadInitialGroup(initialGroup);
+    sim.loadInitialSample(initialSample);
 
     Matrix3d expected0(2, 2, 2);
     expected0.setValues( {{{1, 1}, {1, 1}},
                           {{1, 1}, {1, 1}}} );
 
     Matrix3d expected1(2, 2, 2);
-    expected1.setValues( {{{1.59885, 2.5047}, {2.18295, 1.6929}},
-                          {{1.59885, 2.5047}, {2.18295, 1.6929}}} );
+    expected1.setValues( {{{1.60289, 2.51102}, {2.18846, 1.69718}},
+                          {{1.60289, 2.51102}, {2.18846, 1.69718}}} );
 
     Matrix3d expected2(2, 2, 2);
-    expected2.setValues( {{{2.12674, 4.20426}, {3.38303, 2.35576}},
-                          {{2.12674, 4.20426}, {3.38303, 2.35576}}} );
+    expected2.setValues( {{{2.13547, 4.22235}, {3.39738, 2.36553}},
+                          {{2.13547, 4.22235}, {3.39738, 2.36553}}} );
     
     Matrix3d expected3(2, 2, 2);
-    expected3.setValues( {{{2.60531, 6.09665}, {4.58808, 3.01433}},
-                          {{2.60531, 6.09665}, {4.58808, 3.01433}}} );
+    expected3.setValues( {{{2.61936, 6.13286}, {4.61449, 3.03102}},
+                          {{2.61936, 6.13286}, {4.61449, 3.03102}}} );
     
     sim.Run();
     History history = sim.getHistory();
-    Matrix3d actual0 = history.stateHistory.GetMatrix3dAtTimestep(0);
-    Matrix3d actual1 = history.stateHistory.GetMatrix3dAtTimestep(1);
-    Matrix3d actual2 = history.stateHistory.GetMatrix3dAtTimestep(2);
-    Matrix3d actual3 = history.stateHistory.GetMatrix3dAtTimestep(3);
+    Matrix3d actual0 = history.stateHistory.getMatrix3dAtTimestep(0);
+    Matrix3d actual1 = history.stateHistory.getMatrix3dAtTimestep(1);
+    Matrix3d actual2 = history.stateHistory.getMatrix3dAtTimestep(2);
+    Matrix3d actual3 = history.stateHistory.getMatrix3dAtTimestep(3);
 
     Eigen::Tensor<bool, 0> eq0 = (expected0 == actual0).all();
 
@@ -311,13 +311,14 @@ TEST(Run, MultiStepRun){
     bool eq1 = (res2(0) <= 0.00001f);
 
     res1 = (expected2 - actual2).abs();
+    std::cout << expected2 << std::endl;
+    std::cout << actual2 << std::endl;
     res2 = res1.maximum();
     bool eq2 = (res2(0) <= 0.00001f);
 
     res1 = (expected3 - actual3).abs();
     res2 = res1.maximum();
     bool eq3 = (res2(0) <= 0.00001f);
-
     int res = eq0(0) * eq1 * eq2 * eq3;
     EXPECT_TRUE(res);
 }

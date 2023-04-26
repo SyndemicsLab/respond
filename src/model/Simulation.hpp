@@ -35,13 +35,13 @@ namespace Simulation{
     class ISim{
     public:
         virtual ~ISim(){};
-        virtual void LoadInitialGroup(Data::Matrix3d initialGroup) = 0;
-        virtual void LoadEnteringSamples(Data::Matrix3dOverTime enteringSamples) = 0;
-        virtual void LoadOUDTransitions(Data::Matrix3d oudTransitions) = 0;
-        virtual void LoadInterventionTransitions(Data::Matrix3dOverTime interventionTransitions) = 0;
-        virtual void LoadOverdoseTransitions(Data::Matrix3dOverTime overdoseTransitions) = 0;
-        virtual void LoadFatalOverdoseTransitions(Data::Matrix3dOverTime fatalOverdoseTransitions) = 0;
-        virtual void LoadMortalityTransitions(Data::Matrix3d mortalityTransitions) = 0;
+        virtual void loadInitialSample(Data::Matrix3d initialSample) = 0;
+        virtual void loadEnteringSamples(Data::Matrix3dOverTime enteringSamples) = 0;
+        virtual void loadOUDTransitionRates(Data::Matrix3d oudTransitionRates) = 0;
+        virtual void loadInterventionTransitionRates(Data::Matrix3dOverTime interventionTransitionRates) = 0;
+        virtual void loadOverdoseRates(Data::Matrix3dOverTime overdoseRates) = 0;
+        virtual void loadFatalOverdoseRates(Data::Matrix3dOverTime fatalOverdoseRates) = 0;
+        virtual void loadMortalityRates(Data::Matrix3d mortalityRates) = 0;
         virtual void Load(Data::DataLoader dataLoader) = 0;
         virtual void LoadAgingParameters(int shift, int interval) = 0;
 
@@ -54,11 +54,11 @@ namespace Simulation{
 
         virtual void LoadTransitionModules(
             Data::Matrix3dOverTime enteringSamples,
-            Data::Matrix3d oudTransitions,
-            Data::Matrix3dOverTime interventionTransitions,
-            Data::Matrix3dOverTime fatalOverdoseTransitions,
-            Data::Matrix3dOverTime overdoseTransitions,
-            Data::Matrix3d mortalityTransitions
+            Data::Matrix3d oudTransitionRates,
+            Data::Matrix3dOverTime interventionTransitionRates,
+            Data::Matrix3dOverTime fatalOverdoseRates,
+            Data::Matrix3dOverTime overdoseRates,
+            Data::Matrix3d mortalityRates
         ) = 0;
         virtual void Run() = 0;
         virtual void raisePopulationAge() = 0;
@@ -76,13 +76,13 @@ namespace Simulation{
         Sim(int duration, int numOUDStates, int numInterventions, int numDemographics);
         ~Sim() {};
         Sim(Data::DataLoader dataLoader);
-        void LoadInitialGroup(Data::Matrix3d initialGroup) override;
-        void LoadEnteringSamples(Data::Matrix3dOverTime enteringSamples) override;
-        void LoadOUDTransitions(Data::Matrix3d oudTransitions) override;
-        void LoadInterventionTransitions(Data::Matrix3dOverTime interventionTransitions) override;
-        void LoadOverdoseTransitions(Data::Matrix3dOverTime overdoseTransitions) override;
-        void LoadFatalOverdoseTransitions(Data::Matrix3dOverTime fatalOverdoseTransitions) override;
-        void LoadMortalityTransitions(Data::Matrix3d mortalityTransitions) override;
+        void loadInitialSample(Data::Matrix3d initialSample) override;
+        void loadEnteringSamples(Data::Matrix3dOverTime enteringSamples) override;
+        void loadOUDTransitionRates(Data::Matrix3d oudTransitionRates) override;
+        void loadInterventionTransitionRates(Data::Matrix3dOverTime interventionTransitionRates) override;
+        void loadOverdoseRates(Data::Matrix3dOverTime overdoseRates) override;
+        void loadFatalOverdoseRates(Data::Matrix3dOverTime fatalOverdoseRates) override;
+        void loadMortalityRates(Data::Matrix3d mortalityRates) override;
         void Load(Data::DataLoader dataLoader) override;
         void LoadAgingParameters(int shift, int interval) override;
 
@@ -95,11 +95,11 @@ namespace Simulation{
 
         void LoadTransitionModules(
             Data::Matrix3dOverTime enteringSamples,
-            Data::Matrix3d oudTransitions,
-            Data::Matrix3dOverTime interventionTransitions,
-            Data::Matrix3dOverTime fatalOverdoseTransitions,
-            Data::Matrix3dOverTime overdoseTransitions,
-            Data::Matrix3d mortalityTransitions
+            Data::Matrix3d oudTransitionRates,
+            Data::Matrix3dOverTime interventionTransitionRates,
+            Data::Matrix3dOverTime fatalOverdoseRates,
+            Data::Matrix3dOverTime overdoseRates,
+            Data::Matrix3d mortalityRates
         ) override;
         void Run() override;
         void raisePopulationAge() override;
@@ -120,11 +120,11 @@ namespace Simulation{
         int numDemographics;
         Data::History history;
         Data::Matrix3dOverTime enteringSamples;
-        Data::Matrix3d oudTransitions;
-        Data::Matrix3dOverTime interventionTransitions;
-        Data::Matrix3dOverTime fatalOverdoseTransitions;
-        Data::Matrix3dOverTime overdoseTransitions;
-        Data::Matrix3d mortalityTransitions;
+        Data::Matrix3d oudTransitionRates;
+        Data::Matrix3dOverTime interventionTransitionRates;
+        Data::Matrix3dOverTime fatalOverdoseRates;
+        Data::Matrix3dOverTime overdoseRates;
+        Data::Matrix3d mortalityRates;
         Data::Matrix3d step();
         Data::Matrix3d addEnteringSamples(Data::Matrix3d state);
         Data::Matrix3d multiplyOUDTransitions(Data::Matrix3d state);

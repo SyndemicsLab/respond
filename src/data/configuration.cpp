@@ -7,7 +7,7 @@ Configuration::Configuration(std::string configFile) {
         if(section.first.compare("demographic") == 0) {
             for (auto& key : section.second) {
                 this->demographicOrder.push_back(key.first);
-                this->demographicParams[key.first] = this->ParseString2VectorOfStrings(key.second.get_value<std::string>());
+                this->demographicParams[key.first] = this->parseString2VectorOfStrings(key.second.get_value<std::string>());
             }
         }
     }
@@ -15,16 +15,16 @@ Configuration::Configuration(std::string configFile) {
 
 /// @brief
 /// @return
-std::vector<std::string> Configuration::GetInterventions() {
+std::vector<std::string> Configuration::getInterventions() {
     std::string res = this->ptree.get<std::string>("state.interventions");
-    return this->ParseString2VectorOfStrings(res);
+    return this->parseString2VectorOfStrings(res);
 }
 
 /// @brief
 /// @return
-std::vector<std::string> Configuration::GetOUDStates() {
+std::vector<std::string> Configuration::getOUDStates() {
     std::string res = this->ptree.get<std::string>("state.ouds");
-    return this->ParseString2VectorOfStrings(res);
+    return this->parseString2VectorOfStrings(res);
 }
 
 
@@ -42,9 +42,9 @@ std::vector<int> updateIndices(std::vector<int> indices, std::vector<int> maxInd
 
 }
 
-std::vector<std::string> Configuration::GetDemographicCombos() {
-    int n = this->GetNumDemographicCombos();
-    std::vector<int> demographics = this->GetDemographicCounts();
+std::vector<std::string> Configuration::getDemographicCombos() {
+    int n = this->getNumDemographicCombos();
+    std::vector<int> demographics = this->getDemographicCounts();
     int k = demographics.size();
 
     std::vector<int> indices(k, 0);
@@ -64,7 +64,7 @@ std::vector<std::string> Configuration::GetDemographicCombos() {
 
 /// @brief
 /// @return
-int Configuration::GetNumDemographicCombos() {
+int Configuration::getNumDemographicCombos() {
     int totalCombos = 1;
     for(std::string key : this->demographicOrder) {
         std::vector<std::string> temp = this->demographicParams[key];
@@ -79,7 +79,7 @@ void recurseHelper(std::vector<std::string> currentList) {
 
 /// @brief
 /// @return
-std::vector<int> Configuration::GetDemographicCounts() {
+std::vector<int> Configuration::getDemographicCounts() {
     std::vector<int> results;
     for(std::string key : this->demographicOrder) {
         results.push_back(this->demographicParams[key].size());
@@ -89,64 +89,64 @@ std::vector<int> Configuration::GetDemographicCounts() {
 
 /// @brief
 /// @return
-int Configuration::GetAgingInterval() {
+int Configuration::getAgingInterval() {
     return this->ptree.get<int>("simulation.aging_interval");
 }
 
 /// @brief
 /// @return
-int Configuration::GetDuration() {
+int Configuration::getDuration() {
     return this->ptree.get<int>("simulation.duration");
 
 }
 
-std::vector<int> Configuration::GetEnteringSampleChangeTimes() {
+std::vector<int> Configuration::getEnteringSampleChangeTimes() {
     std::string res = this->ptree.get<std::string>("simulation.entering_sample_change_times");
-    return this->ParseString2VectorOfInts(res);
+    return this->parseString2VectorOfInts(res);
 }
 
-std::vector<int> Configuration::GetInterventionChangeTimes() {
+std::vector<int> Configuration::getInterventionChangeTimes() {
     std::string res = this->ptree.get<std::string>("simulation.intervention_change_times");
-    return this->ParseString2VectorOfInts(res);
+    return this->parseString2VectorOfInts(res);
 }
 
-std::vector<int> Configuration::GetOverdoseChangeTimes() {
+std::vector<int> Configuration::getOverdoseChangeTimes() {
     std::string res = this->ptree.get<std::string>("simulation.overdose_change_times");
-    return this->ParseString2VectorOfInts(res);
+    return this->parseString2VectorOfInts(res);
 }
 
 template<>
-double Configuration::Get<double>(std::string str) {
+double Configuration::get<double>(std::string str) {
     return this->ptree.get<double>(str);
 }
 
 template<>
-bool Configuration::Get<bool>(std::string str) {
+bool Configuration::get<bool>(std::string str) {
     return this->ptree.get<bool>(str);
 }
 
 template<>
-int Configuration::Get<int>(std::string str) {
+int Configuration::get<int>(std::string str) {
     return this->ptree.get<int>(str);
 }
 
 template<>
-std::vector<int> Configuration::Get<std::vector<int>>(std::string str) {
+std::vector<int> Configuration::get<std::vector<int>>(std::string str) {
     std::string ahh = this->ptree.get<std::string>(str);
-    return this->ParseString2VectorOfInts(ahh);
+    return this->parseString2VectorOfInts(ahh);
 }
 
 template<>
-std::vector<std::string> Configuration::Get<std::vector<std::string>>(std::string str) {
+std::vector<std::string> Configuration::get<std::vector<std::string>>(std::string str) {
     std::string res = this->ptree.get<std::string>(str);
-    return this->ParseString2VectorOfStrings(res);
+    return this->parseString2VectorOfStrings(res);
 }
 
 
 /// @brief
 /// @param section
 /// @param m
-void Configuration::LoadMap(std::pair<const std::string, boost::property_tree::ptree> section, std::map<std::string, std::string> m) {
+void Configuration::loadMap(std::pair<const std::string, boost::property_tree::ptree> section, std::map<std::string, std::string> m) {
     for (auto& key : section.second) {
         m[key.first] = key.second.get_value<std::string>();
     }
@@ -155,7 +155,7 @@ void Configuration::LoadMap(std::pair<const std::string, boost::property_tree::p
 /// @brief
 /// @param st
 /// @return
-std::vector<std::string> Configuration::ParseString2VectorOfStrings(std::string st) {
+std::vector<std::string> Configuration::parseString2VectorOfStrings(std::string st) {
     std::stringstream ss( st );
     std::vector<std::string> result;
 
@@ -173,7 +173,7 @@ std::vector<std::string> Configuration::ParseString2VectorOfStrings(std::string 
 /// @brief
 /// @param st
 /// @return
-std::vector<int> Configuration::ParseString2VectorOfInts(std::string st) {
+std::vector<int> Configuration::parseString2VectorOfInts(std::string st) {
     std::vector<int> res;
 
     std::istringstream iss(st);

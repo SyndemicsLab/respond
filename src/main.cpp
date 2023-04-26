@@ -24,5 +24,5 @@ int main(int argc, char** argv) {
         inputs.getOUDStates(), 
         demographics,
         sim.getHistory());
-    writer.Write(Data::FILE);
+    writer.write(Data::FILE);
 }

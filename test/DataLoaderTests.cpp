@@ -75,10 +75,10 @@ TEST(DataLoaderTest, ConfigFileBool) {
         false
     };
     std::vector<bool> REAL_VALUES = {
-        TestConf.Get<bool>("cost.cost_analysis"),
-        TestConf.Get<bool>("output.per_intervention_predictions"),
-        TestConf.Get<bool>("output.general_outputs"),
-        TestConf.Get<bool>("output.cost_category_outputs")
+        TestConf.get<bool>("cost.cost_analysis"),
+        TestConf.get<bool>("output.per_intervention_predictions"),
+        TestConf.get<bool>("output.general_outputs"),
+        TestConf.get<bool>("output.cost_category_outputs")
     };
 
     for (int i = 0; i < REAL_VALUES.size(); ++i) {
@@ -94,16 +94,16 @@ TEST(DataLoaderTest, ConfigFileInt) {
         2
     };
     std::vector<int> REAL_VALUES = {
-        TestConf.Get<int>("simulation.duration"),
-        TestConf.Get<int>("simulation.aging_interval"),
-        TestConf.Get<int>("output.reporting_interval")
+        TestConf.get<int>("simulation.duration"),
+        TestConf.get<int>("simulation.aging_interval"),
+        TestConf.get<int>("output.reporting_interval")
     };
 
     for (int i = 0; i < REAL_VALUES.size(); ++i) {
         EXPECT_EQ(REAL_VALUES[i], EXPECTED_VALUES[i]);
     }
     // there is only one double to check
-    EXPECT_EQ(TestConf.Get<double>("cost.discount_rate"), 0.0025);
+    EXPECT_EQ(TestConf.get<double>("cost.discount_rate"), 0.0025);
 }
 
 TEST(DataLoaderTest, ConfigFileIntVector) {
@@ -115,10 +115,10 @@ TEST(DataLoaderTest, ConfigFileIntVector) {
         {52, 104, 156}
     };
     std::vector<std::vector<int>> REAL_VALUES = {
-        TestConf.Get<std::vector<int>>("simulation.intervention_change_times"),
-        TestConf.Get<std::vector<int>>("simulation.entering_sample_change_times"),
-        TestConf.Get<std::vector<int>>("simulation.overdose_change_times"),
-        TestConf.Get<std::vector<int>>("output.general_stats_output_timesteps")
+        TestConf.get<std::vector<int>>("simulation.intervention_change_times"),
+        TestConf.get<std::vector<int>>("simulation.entering_sample_change_times"),
+        TestConf.get<std::vector<int>>("simulation.overdose_change_times"),
+        TestConf.get<std::vector<int>>("output.general_stats_output_timesteps")
     };
     for (int i = 0; i < REAL_VALUES.size(); ++i) {
         EXPECT_EQ(REAL_VALUES[i], EXPECTED_VALUES[i]);
@@ -134,10 +134,10 @@ TEST(DataLoaderTest, ConfigFileStringVector) {
         {"Active_Noninjection", "Active_Injection", "Nonactive_Noninjection", "Nonactive_Injection"}
     };
     std::vector<std::vector<std::string>> REAL_VALUES = {
-        TestConf.Get<std::vector<std::string>>("state.interventions"),
-        TestConf.Get<std::vector<std::string>>("demographic.age_groups"),
-        TestConf.Get<std::vector<std::string>>("demographic.sex"),
-        TestConf.Get<std::vector<std::string>>("state.ouds")
+        TestConf.get<std::vector<std::string>>("state.interventions"),
+        TestConf.get<std::vector<std::string>>("demographic.age_groups"),
+        TestConf.get<std::vector<std::string>>("demographic.sex"),
+        TestConf.get<std::vector<std::string>>("state.ouds")
     };
     for (int i = 0; i < REAL_VALUES.size(); ++i) {
         EXPECT_EQ(REAL_VALUES[i], EXPECTED_VALUES[i]);

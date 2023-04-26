@@ -52,35 +52,35 @@ namespace Data {
         int getNumOUDStates() { return numOUDStates; }
         int getNumInterventions() { return numInterventions; }
         int getNumDemographics() { return numDemographics; }
-        Matrix3d getInitialGroup() { return initialGroup; }
+        Matrix3d getInitialSample() { return initialSample; }
         Matrix3dOverTime getEnteringSamples() { return enteringSamples; }
-        Matrix3d getOUDTransitions() { return oudTransitions; }
-        Matrix3dOverTime getInterventionTransitions() { return interventionTransitions; }
-        Matrix3dOverTime getOverdoseTransitions() { return overdoseTransitions; }
-        Matrix3dOverTime getFatalOverdoseTransitions() { return fatalOverdoseTransitions; }
-        Matrix3d getMortalityTransitions() { return mortalityTransitions; }
+        Matrix3d getOUDTransitionRates() { return oudTransitionRates; }
+        Matrix3dOverTime getInterventionTransitionRates() { return interventionTransitionRates; }
+        Matrix3dOverTime getOverdoseRates() { return overdoseRates; }
+        Matrix3dOverTime getFatalOverdoseRates() { return fatalOverdoseRates; }
+        Matrix3d getMortalityRates() { return mortalityRates; }
         std::vector<std::string> getInterventions() { return interventions; }
         std::vector<std::string> getOUDStates() { return oudStates; }
         int getAgingInterval() { return agingInterval; }
         int getAgeGroupShift() { return ageGroupShift; }
 
         // Loading from Tables
-        void LoadInitialGroup(std::string csvName);
-        void LoadEnteringSamples(std::string csvName);
-        void LoadOUDTransitions(std::string csvName);
-        void LoadInterventionTransitions(std::string csvName);
-        void LoadOverdoseTransitions(std::string csvName);
-        void LoadFatalOverdoseTransitions(std::string csvName);
-        void LoadMortalityTransitions(std::string csvName);
+        Matrix3d loadInitialSample(std::string csvName);
+        Matrix3dOverTime loadEnteringSamples(std::string csvName);
+        Matrix3d loadOUDTransitionRates(std::string csvName);
+        Matrix3dOverTime loadInterventionTransitionRates(std::string csvName);
+        Matrix3dOverTime loadOverdoseRates(std::string csvName);
+        Matrix3dOverTime loadFatalOverdoseRates(std::string csvName);
+        Matrix3d loadMortalityRates(std::string smrCSVName, std::string bgmCSVName);
 
     private:
-        InputTable RemoveColumns(std::string colString, InputTable ogTable);
-        Matrix3d BuildMatrixFromTransitionData(std::vector<std::vector<int>> indicesVec, InputTable table, Data::Dimension dimension);
-        Matrix3d BuildInterventionMatrix(std::vector<int> indices, InputTable table);
-        Matrix3d BuildOverdoseTransitions(InputTable table, std::string key);
-        std::vector<int> FindIndices(std::vector<std::string> const &v, std::string target);
-        std::vector<std::vector<int>> GetIndicesVector(std::vector<std::string> col);
-        Matrix3dOverTime CalcInterventionTransitions(std::vector<int> ict, InputTable table, std::vector<std::vector<int>> indicesVec);
+        InputTable removeColumns(std::string colString, InputTable ogTable);
+        Matrix3d createTransitionMatrix3d(std::vector<std::vector<int>> indicesVec, InputTable table, Data::Dimension dimension);
+        Matrix3d buildInterventionMatrix(std::vector<int> indices, InputTable table);
+        Matrix3d buildOverdoseTransitions(InputTable table, std::string key);
+        std::vector<int> findIndices(std::vector<std::string> const &v, std::string target);
+        std::vector<std::vector<int>> getIndicesByIntervention(std::vector<std::string> col);
+        Matrix3dOverTime buildTransitionRatesOverTime(std::vector<int> ict, InputTable table, std::vector<std::vector<int>> indicesVec);
         std::string dirName;
 
         int duration;
@@ -93,19 +93,18 @@ namespace Data {
 
         std::vector<std::string> interventions;
         std::vector<std::string> oudStates;
-        // std::vector<std::vector<std::string>> demographicCombos;
         std::vector<int> demographicCounts;
         std::map<std::string, std::vector<int>> simulationParameters;
 
         Configuration Config;
 
-        Matrix3d initialGroup;
+        Matrix3d initialSample;
         Matrix3dOverTime enteringSamples;
-        Matrix3d oudTransitions;
-        Matrix3dOverTime interventionTransitions;
-        Matrix3dOverTime overdoseTransitions;
-        Matrix3dOverTime fatalOverdoseTransitions;
-        Matrix3d mortalityTransitions;
+        Matrix3d oudTransitionRates;
+        Matrix3dOverTime interventionTransitionRates;
+        Matrix3dOverTime overdoseRates;
+        Matrix3dOverTime fatalOverdoseRates;
+        Matrix3d mortalityRates;
 
         std::unordered_map<std::string, InputTable> inputTables;
     };

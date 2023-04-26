@@ -20,18 +20,18 @@ namespace Data{
             this->interventions = interventions;
             this->oudStates = oudStates;
             this->demographics = demographics;
-            this->AddHistory(history);
+            this->addHistory(history);
     }
 
     /// @brief Setter for History from a Simulation
     /// @param history History to write to a CSV
-    void DataWriter::AddHistory(History history) {
+    void DataWriter::addHistory(History history) {
         this->history = history;
     }
 
     /// @brief Setter for Directory Path
     /// @param dirname String representing a path to a directory
-    void DataWriter::AddDirname(std::string dirname) {
+    void DataWriter::addDirname(std::string dirname) {
         this->dirname = dirname;
     }
 
@@ -59,13 +59,13 @@ namespace Data{
         this->demographics = demographics;
     }
 
-    /// @brief Main Operation of Class, Write data to output
+    /// @brief Main Operation of Class, write data to output
     /// @param outputType Output Enum, generally Data::FILE
     /// @return string containing the result if output enum is Data::STRING or description of status otherwise
-    std::string DataWriter::Write(OutputType outputType) {
-        if(this->history.stateHistory.GetMatrices().empty() ||
-            this->history.overdoseHistory.GetMatrices().empty() ||
-            this->history.mortalityHistory.GetMatrices().empty() ||
+    std::string DataWriter::write(OutputType outputType) {
+        if(this->history.stateHistory.getMatrices().empty() ||
+            this->history.overdoseHistory.getMatrices().empty() ||
+            this->history.mortalityHistory.getMatrices().empty() ||
             this->dirname.empty()) {
             //log error
             std::ostringstream s;
@@ -89,31 +89,31 @@ namespace Data{
             std::ofstream file;
 
             file.open(stateFullPath.string());
-            this->Writer(file, this->history.stateHistory);
+            this->writer(file, this->history.stateHistory);
             file.close();
 
             file.open(overdoseFullPath.string());
-            this->Writer(file, this->history.overdoseHistory);
+            this->writer(file, this->history.overdoseHistory);
             file.close();
 
             file.open(mortalityFullPath.string());
-            this->Writer(file, this->history.mortalityHistory);
+            this->writer(file, this->history.mortalityHistory);
             file.close();
             return "success";
         }
         std::ostringstream stringstream;
-        this->Writer(stringstream, this->history.stateHistory);
-        this->Writer(stringstream, this->history.overdoseHistory);
-        this->Writer(stringstream, this->history.mortalityHistory);
+        this->writer(stringstream, this->history.stateHistory);
+        this->writer(stringstream, this->history.overdoseHistory);
+        this->writer(stringstream, this->history.mortalityHistory);
         return stringstream.str();
     }
 
     /// @brief Helper function to write data to the specified stream
     /// @param stream Stream type to write data to
     /// @param historyToWrite Specific portion of history to save
-    void DataWriter::Writer(std::ostream &stream, Matrix3dOverTime historyToWrite) {
-        std::vector<Matrix3d> Matrix3dVec = historyToWrite.GetMatrices();
-        stream << WriteColumnHeaders(Matrix3dVec.size()) << std::endl;
+    void DataWriter::writer(std::ostream &stream, Matrix3dOverTime historyToWrite) {
+        std::vector<Matrix3d> Matrix3dVec = historyToWrite.getMatrices();
+        stream << writeColumnHeaders(Matrix3dVec.size()) << std::endl;
         for(int i=0; i<this->interventions.size(); i++) {
             for(int j=0; j<this->oudStates.size(); j++) {
                 for(int k=0; k<this->demographics.size(); k++) {
@@ -127,7 +127,7 @@ namespace Data{
                         index[Data::INTERVENTION] = i;
                         index[Data::OUD] = j;
                         index[Data::DEMOGRAPHIC_COMBO] = k;
-                        stream << dm(index[0], index[1], index[2]) << ",";
+                        stream << std::to_string(dm(index[0], index[1], index[2])) << ",";
                     }
                     stream << std::endl;
                 }
@@ -138,7 +138,7 @@ namespace Data{
     /// @brief Helper function to write Headers to CSVs
     /// @param timesteps Total duration incurred during the simulation
     /// @return String containing the CSV Column Headers
-    std::string DataWriter::WriteColumnHeaders(int timesteps) {
+    std::string DataWriter::writeColumnHeaders(int timesteps) {
         std::string ret = "Interventions, OUD States,";
         for(int counter=0; counter<this->demographics[0].size(); counter++) {
             ret += fmt::format("Demographic {},", counter);

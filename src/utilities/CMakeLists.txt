@@ -8,10 +8,12 @@ find_package (Eigen3 3.4 REQUIRED NO_MODULE)
 
 add_library(utilities
     Matrix3dFactory.cpp
+    Matrix3dPrinter.cpp
 )
 
 target_sources(utilities PUBLIC 
     Matrix3dFactory.hpp
+    Matrix3dPrinter.hpp
 )
 
 target_include_directories(utilities INTERFACE
