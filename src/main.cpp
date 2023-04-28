@@ -10,6 +10,14 @@ int main(int argc, char** argv) {
              << "RESPOND, a compartmental simulation of healthcare in communities with high-risk opioid use";
     }
     Data::DataLoader inputs(argv[1]);
+    inputs.loadInitialSample("init_cohort.csv");
+    inputs.loadEnteringSamples("entering_cohort.csv");
+    inputs.loadOUDTransitionRates("oud_trans.csv");
+    inputs.loadInterventionInitRates("block_init_effect.csv");
+    inputs.loadInterventionTransitionRates("block_trans.csv");
+    inputs.loadOverdoseRates("all_types_overdose.csv");
+    inputs.loadFatalOverdoseRates("fatal_overdose.csv");
+    inputs.loadMortalityRates("SMR.csv", "background_mortality.csv");
     Simulation::Sim sim(inputs);
     sim.Run();
 

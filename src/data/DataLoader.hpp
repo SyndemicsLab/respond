@@ -10,11 +10,13 @@
 #include <vector>
 #include <map>
 
-#include "configuration.hpp"
+#include "Configuration.hpp"
 #include "DataTypes.hpp"
 #include "Matrix3dFactory.hpp"
+#include "Matrix3dPrinter.hpp"
 
 namespace Data {
+    /// @brief 
     using InputTable = std::unordered_map<std::string, std::vector<std::string>>;
 
     // tabular files from the current RESPOND directory structure, as of [2023-04-06]
@@ -37,40 +39,133 @@ namespace Data {
         "treatment_utilization_cost.csv"
     };
 
+    /// @brief 
     class DataLoader {
     public:
         ~DataLoader() {};
-        DataLoader() {};
-        DataLoader(std::string);
+        DataLoader();
+        DataLoader(std::string inputDir);
+        DataLoader(Configuration configFile, std::string inputDir);
+
+        /// @brief 
+        /// @param  
+        /// @return 
         Configuration readConfigFile(std::string);
+
+        /// @brief 
+        /// @param  
+        /// @return 
         InputTable readCSV(std::string);
+
+        /// @brief 
+        /// @param  
+        /// @return 
         std::unordered_map<std::string, InputTable> readInputDir(std::string);
 
-        // getter functions
+        /// @brief 
+        /// @return 
         std::string getDirName() { return dirName; }
+
+        /// @brief 
+        /// @return 
         int getDuration() { return duration; }
+
+        /// @brief 
+        /// @return 
         int getNumOUDStates() { return numOUDStates; }
+
+        /// @brief 
+        /// @return 
         int getNumInterventions() { return numInterventions; }
+        
+        /// @brief 
+        /// @param indices 
+        /// @param table 
+        /// @return 
         int getNumDemographics() { return numDemographics; }
+
+        /// @brief 
+        /// @return 
         Matrix3d getInitialSample() { return initialSample; }
+
+        /// @brief 
         Matrix3dOverTime getEnteringSamples() { return enteringSamples; }
+
+        /// @brief 
         Matrix3d getOUDTransitionRates() { return oudTransitionRates; }
+
+        /// @brief 
         Matrix3dOverTime getInterventionTransitionRates() { return interventionTransitionRates; }
+
+        /// @brief 
+        /// @return 
         Matrix3dOverTime getOverdoseRates() { return overdoseRates; }
+
+        /// @brief 
         Matrix3dOverTime getFatalOverdoseRates() { return fatalOverdoseRates; }
+
+        /// @brief 
         Matrix3d getMortalityRates() { return mortalityRates; }
+
+        /// @brief 
+        /// @return 
+        Matrix3d getInterventionInitRates() { return interventionInitRates; }
+
+        /// @brief 
+        /// @return 
         std::vector<std::string> getInterventions() { return interventions; }
+
+        /// @brief 
+        /// @return 
         std::vector<std::string> getOUDStates() { return oudStates; }
+
+        /// @brief 
+        /// @return 
         int getAgingInterval() { return agingInterval; }
+
+        /// @brief 
+        /// @return 
         int getAgeGroupShift() { return ageGroupShift; }
 
-        // Loading from Tables
+        /// @brief 
+        /// @param csvName 
+        /// @return 
         Matrix3d loadInitialSample(std::string csvName);
+
+        /// @brief 
+        /// @param csvName 
+        /// @return 
         Matrix3dOverTime loadEnteringSamples(std::string csvName);
+
+        /// @brief 
+        /// @param csvName 
+        /// @return 
         Matrix3d loadOUDTransitionRates(std::string csvName);
+
+        /// @brief 
+        /// @param csvName 
+        /// @return 
+        Matrix3d loadInterventionInitRates(std::string csvName);
+
+        /// @brief 
+        /// @param csvName 
+        /// @return 
         Matrix3dOverTime loadInterventionTransitionRates(std::string csvName);
+
+        /// @brief 
+        /// @param csvName 
+        /// @return 
         Matrix3dOverTime loadOverdoseRates(std::string csvName);
+
+        /// @brief 
+        /// @param csvName 
+        /// @return 
         Matrix3dOverTime loadFatalOverdoseRates(std::string csvName);
+        
+        /// @brief 
+        /// @param smrCSVName 
+        /// @param bgmCSVName 
+        /// @return 
         Matrix3d loadMortalityRates(std::string smrCSVName, std::string bgmCSVName);
 
     private:
@@ -101,6 +196,7 @@ namespace Data {
         Matrix3d initialSample;
         Matrix3dOverTime enteringSamples;
         Matrix3d oudTransitionRates;
+        Matrix3d interventionInitRates;
         Matrix3dOverTime interventionTransitionRates;
         Matrix3dOverTime overdoseRates;
         Matrix3dOverTime fatalOverdoseRates;

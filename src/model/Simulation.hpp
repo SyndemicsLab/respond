@@ -38,6 +38,7 @@ namespace Simulation{
         virtual void loadInitialSample(Data::Matrix3d initialSample) = 0;
         virtual void loadEnteringSamples(Data::Matrix3dOverTime enteringSamples) = 0;
         virtual void loadOUDTransitionRates(Data::Matrix3d oudTransitionRates) = 0;
+        virtual void loadInterventionInitRates(Data::Matrix3d interventionInitRates) = 0;
         virtual void loadInterventionTransitionRates(Data::Matrix3dOverTime interventionTransitionRates) = 0;
         virtual void loadOverdoseRates(Data::Matrix3dOverTime overdoseRates) = 0;
         virtual void loadFatalOverdoseRates(Data::Matrix3dOverTime fatalOverdoseRates) = 0;
@@ -55,6 +56,7 @@ namespace Simulation{
         virtual void LoadTransitionModules(
             Data::Matrix3dOverTime enteringSamples,
             Data::Matrix3d oudTransitionRates,
+            Data::Matrix3d interventionInitRates,
             Data::Matrix3dOverTime interventionTransitionRates,
             Data::Matrix3dOverTime fatalOverdoseRates,
             Data::Matrix3dOverTime overdoseRates,
@@ -79,6 +81,7 @@ namespace Simulation{
         void loadInitialSample(Data::Matrix3d initialSample) override;
         void loadEnteringSamples(Data::Matrix3dOverTime enteringSamples) override;
         void loadOUDTransitionRates(Data::Matrix3d oudTransitionRates) override;
+        void loadInterventionInitRates(Data::Matrix3d interventionInitRates) override;
         void loadInterventionTransitionRates(Data::Matrix3dOverTime interventionTransitionRates) override;
         void loadOverdoseRates(Data::Matrix3dOverTime overdoseRates) override;
         void loadFatalOverdoseRates(Data::Matrix3dOverTime fatalOverdoseRates) override;
@@ -96,6 +99,7 @@ namespace Simulation{
         void LoadTransitionModules(
             Data::Matrix3dOverTime enteringSamples,
             Data::Matrix3d oudTransitionRates,
+            Data::Matrix3d interventionInitRates,
             Data::Matrix3dOverTime interventionTransitionRates,
             Data::Matrix3dOverTime fatalOverdoseRates,
             Data::Matrix3dOverTime overdoseRates,
@@ -112,6 +116,8 @@ namespace Simulation{
     private:
         boost::log::sources::logger lg;
 
+        bool interventionInitState = false;
+
         Data::Matrix3d state;
         Data::Matrix3d transition;
         int currentTime;
@@ -121,11 +127,13 @@ namespace Simulation{
         Data::History history;
         Data::Matrix3dOverTime enteringSamples;
         Data::Matrix3d oudTransitionRates;
+        Data::Matrix3d interventionInitRates;
         Data::Matrix3dOverTime interventionTransitionRates;
         Data::Matrix3dOverTime fatalOverdoseRates;
         Data::Matrix3dOverTime overdoseRates;
         Data::Matrix3d mortalityRates;
         Data::Matrix3d step();
+        Data::Matrix3d multiplyInterventionInit(Data::Matrix3d interventionState);
         Data::Matrix3d addEnteringSamples(Data::Matrix3d state);
         Data::Matrix3d multiplyOUDTransitions(Data::Matrix3d state);
         Data::Matrix3d multiplyInterventionTransitions(Data::Matrix3d state);

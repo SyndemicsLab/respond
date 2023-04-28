@@ -9,8 +9,9 @@ find_package (Eigen3 3.4 REQUIRED NO_MODULE)
 
 add_executable(respondTest
   SimulationTest.cpp
-  DataLoaderTests.cpp
+  DataLoaderTest.cpp
   DataWriterTest.cpp
+  ConfigurationTest.cpp
 )
 
 target_include_directories(respondTest INTERFACE

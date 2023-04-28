@@ -1,4 +1,17 @@
-#include "configuration.hpp"
+#include "Configuration.hpp"
+
+using namespace Data;
+
+/**************************************************
+ *
+ * Constructors
+ * 
+ **************************************************/
+
+Configuration::Configuration() {
+    this->demographicOrder = {};
+    this->demographicParams = {};
+}
 
 Configuration::Configuration(std::string configFile) {
     read_ini(configFile, this->ptree);
@@ -13,33 +26,20 @@ Configuration::Configuration(std::string configFile) {
     }
 }
 
-/// @brief
-/// @return
+/**************************************************
+ *
+ * Public Methods
+ * 
+ **************************************************/
+
 std::vector<std::string> Configuration::getInterventions() {
     std::string res = this->ptree.get<std::string>("state.interventions");
     return this->parseString2VectorOfStrings(res);
 }
 
-/// @brief
-/// @return
 std::vector<std::string> Configuration::getOUDStates() {
     std::string res = this->ptree.get<std::string>("state.ouds");
     return this->parseString2VectorOfStrings(res);
-}
-
-
-std::vector<int> updateIndices(std::vector<int> indices, std::vector<int> maxIndices) {
-    int lastIdx = indices.size()-1;
-    std::vector<int> results = indices;
-    results[lastIdx]++;
-    for(int i = lastIdx; i > 0; i--) {
-        if((results[i] % maxIndices[i] == 0) && (results[i] != 0)) {
-            results[i] = 0;
-            results[i-1]++;
-        }
-    }
-    return results;
-
 }
 
 std::vector<std::string> Configuration::getDemographicCombos() {
@@ -57,13 +57,11 @@ std::vector<std::string> Configuration::getDemographicCombos() {
             str = str + " " + this->demographicParams[this->demographicOrder[j]][indices[j]];
         }
         results.push_back(str);
-        indices = updateIndices(indices, demographics);
+        indices = this->updateIndices(indices, demographics);
     }
     return results;
 }
 
-/// @brief
-/// @return
 int Configuration::getNumDemographicCombos() {
     int totalCombos = 1;
     for(std::string key : this->demographicOrder) {
@@ -73,12 +71,6 @@ int Configuration::getNumDemographicCombos() {
     return totalCombos;
 }
 
-void recurseHelper(std::vector<std::string> currentList) {
-
-}
-
-/// @brief
-/// @return
 std::vector<int> Configuration::getDemographicCounts() {
     std::vector<int> results;
     for(std::string key : this->demographicOrder) {
@@ -87,14 +79,10 @@ std::vector<int> Configuration::getDemographicCounts() {
     return results;
 }
 
-/// @brief
-/// @return
 int Configuration::getAgingInterval() {
     return this->ptree.get<int>("simulation.aging_interval");
 }
 
-/// @brief
-/// @return
 int Configuration::getDuration() {
     return this->ptree.get<int>("simulation.duration");
 
@@ -143,13 +131,28 @@ std::vector<std::string> Configuration::get<std::vector<std::string>>(std::strin
 }
 
 
-/// @brief
-/// @param section
-/// @param m
-void Configuration::loadMap(std::pair<const std::string, boost::property_tree::ptree> section, std::map<std::string, std::string> m) {
-    for (auto& key : section.second) {
-        m[key.first] = key.second.get_value<std::string>();
+/**************************************************
+ *
+ * Private Methods
+ * 
+ **************************************************/
+
+/// @brief 
+/// @param indices 
+/// @param maxIndices 
+/// @return 
+std::vector<int> Configuration::updateIndices(std::vector<int> indices, std::vector<int> maxIndices) {
+    int lastIdx = indices.size()-1;
+    std::vector<int> results = indices;
+    results[lastIdx]++;
+    for(int i = lastIdx; i > 0; i--) {
+        if((results[i] % maxIndices[i] == 0) && (results[i] != 0)) {
+            results[i] = 0;
+            results[i-1]++;
+        }
     }
+    return results;
+
 }
 
 /// @brief

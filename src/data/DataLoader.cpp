@@ -7,6 +7,34 @@ using namespace Data;
  * Constructors
  * 
  *********************************************************************/
+DataLoader::DataLoader(){
+    this->duration = 0;
+    this->agingInterval = 0;
+    this->ageGroupShift = 0;
+    this->numOUDStates = 0;
+    this->numInterventions = 0;
+    this->numDemographics = 0;
+    this->numDemographicCombos = 0;
+
+    this->interventions = {};
+    this->oudStates = {};
+    this->demographicCounts = {};
+    this->simulationParameters = {};
+
+    this->Config;
+
+    this->initialSample;
+    this->enteringSamples;
+    this->oudTransitionRates;
+    this->interventionTransitionRates;
+    this->overdoseRates;
+    this->fatalOverdoseRates;
+    this->mortalityRates;
+
+    this->inputTables = {};
+
+}
+
 
 /// @brief The default constructor for the object that processes input data
 /// @param inputDir the name of the directory where input files are stored
@@ -39,14 +67,24 @@ DataLoader::DataLoader(std::string inputDir) {
     this->ageGroupShift = this->numDemographicCombos/this->demographicCounts[0];
 
     std::vector<std::string> demographicCombos = this->Config.getDemographicCombos();
+}
 
-    this->loadInitialSample("init_cohort.csv");
-    this->loadEnteringSamples("entering_cohort.csv");
-    this->loadOUDTransitionRates("oud_trans.csv");
-    this->loadInterventionTransitionRates("block_trans.csv");
-    this->loadOverdoseRates("all_types_overdose.csv");
-    this->loadFatalOverdoseRates("fatal_overdose.csv");
-    this->loadMortalityRates("SMR.csv", "background_mortality.csv");
+DataLoader::DataLoader(Configuration config, std::string inputDir){
+    this->Config = config;
+    this->inputTables = this->readInputDir(inputDir);
+    // SETTING STRING VECTORS FOR DATA WRITER
+    this->interventions = this->Config.getInterventions();
+    this->oudStates = this->Config.getOUDStates();
+    this->demographicCounts = this->Config.getDemographicCounts();
+
+    // SETTING SIMULATION CONSTANTS
+    this->numInterventions   = this->interventions.size();
+    this->numOUDStates       = this->oudStates.size();
+
+    this->duration = this->Config.getDuration();
+    this->numDemographics = this->demographicCounts.size();
+    this->numDemographicCombos = this->Config.getNumDemographicCombos();
+    this->agingInterval = this->Config.getAgingInterval();
 }
 
 /*********************************************************************
@@ -61,6 +99,9 @@ Matrix3d DataLoader::loadInitialSample(std::string csvName) {
     int nonPostInterventions = ((this->numInterventions - 1)/2 + 1);
 
     // INITIAL GROUP
+    if(this->inputTables.find(csvName) == this->inputTables.end()){
+        return Utilities::Matrix3dFactory::Create(0, 0, 0).constant(0);
+    }
     InputTable initialCohort = this->inputTables[csvName];
     this->initialSample = Utilities::Matrix3dFactory::Create(this->numOUDStates, this->numInterventions, this->numDemographicCombos).constant(0);
     int row = 0;
@@ -142,6 +183,76 @@ Matrix3d DataLoader::loadOUDTransitionRates(std::string csvName) {
         this->oudTransitionRates = std::move(temp);
     }
     return this->oudTransitionRates;
+}
+
+/// @brief
+/// @param csvName
+Matrix3d DataLoader::loadInterventionInitRates(std::string csvName) {
+    // OUD TRANSITIONS
+    InputTable interventionInitTable = inputTables[csvName];
+    // end dimensions of oudTransitionRates are this->numInterventions x this->numOUDStates^2 x demographics
+    // start with a vector of StateTensor-sized Matrix3d objects and stack at the end
+    std::vector<Matrix3d> tempinterventionInit;
+    int activeNonActiveOffset = this->numOUDStates/2;
+    for (int i = 0; i < this->numOUDStates; ++i) {
+        tempinterventionInit.push_back(Utilities::Matrix3dFactory::Create(this->numOUDStates, this->numInterventions, this->numDemographicCombos).constant(0));
+    }
+    // Matrix3d objects in the vector are matched with the order that oud states are
+    // specified in the Config file. the order represents the "initial oud state"
+    for (int initial_state = 0; initial_state < this->numOUDStates; ++initial_state) {
+        std::string currentOUDState = this->oudStates[initial_state];
+        auto iterator = std::find(
+            interventionInitTable["initial_oud_state"].begin(), 
+            interventionInitTable["initial_oud_state"].end(), 
+            currentOUDState
+        );
+
+        int idx = 0;
+        if(iterator != interventionInitTable["initial_oud_state"].end()){
+            idx = iterator - interventionInitTable["initial_oud_state"].begin();
+        }
+
+        int nonactiveFlag = false;
+        if(currentOUDState.find("Nonactive") != std::string::npos){
+            nonactiveFlag = true;
+        }
+        else{
+            nonactiveFlag = false;
+        }
+
+        for (int intervention = 0; intervention < this->numInterventions; ++intervention) {
+            std::string currentIntervention = this->interventions[intervention];
+            std::string dash("-");
+            std::string period(".");
+            size_t pos = currentIntervention.find(dash);
+            if(pos != std::string::npos){
+                currentIntervention.replace(pos, dash.length(), period);
+            }
+            currentIntervention = "to_" + currentIntervention;
+
+            float tableVal = std::stof(interventionInitTable[currentIntervention][idx]);
+            float oppVal = 1 - tableVal;
+            int oppValIdx = (nonactiveFlag) ? idx - activeNonActiveOffset : idx + activeNonActiveOffset;
+            for (int dem = 0; dem < this->numDemographicCombos; ++dem) {
+                tempinterventionInit[initial_state](intervention, idx, dem) = tableVal;
+                tempinterventionInit[initial_state](intervention, oppValIdx, dem) = oppVal;               
+            }
+        }
+    }
+
+    // stack the Matrix3d objects along the OUD axis
+    this->interventionInitRates = tempinterventionInit[0];
+    for (int i = 1; i < tempinterventionInit.size(); ++i) {
+        Matrix3d temp = this->interventionInitRates.concatenate(tempinterventionInit[i], Data::OUD).eval()
+            .reshape(Matrix3d::Dimensions(this->numInterventions, (i+1) * this->numOUDStates, this->numDemographicCombos));
+        this->interventionInitRates = std::move(temp);
+    }
+
+    // std::cout << this->interventionInitRates << std::endl;
+    std::cout << std::endl;
+    Utilities::Matrix3dPrinter::Print(this->interventionInitRates, std::cout);
+
+    return this->interventionInitRates;
 }
 
 /// @brief

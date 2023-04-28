@@ -28,4 +28,4 @@ RUN cmake ..
 RUN make
 
 CMD [ "test/respondTest" ]
-# CMD [ "src/respond" ]
+# CMD [ "src/respond", "TestInput/input1", "1" ]

@@ -16,7 +16,7 @@ add_library(data
   DataLoader.cpp
   DataWriter.cpp
   DataTypes.cpp
-  configuration.cpp
+  Configuration.cpp
 )
 target_sources(data PUBLIC
   DataLoader.hpp

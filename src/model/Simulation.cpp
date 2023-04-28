@@ -87,6 +87,13 @@ namespace Simulation{
         BOOST_LOG(this->lg) << "OUD Transitions Loaded";
     }
 
+    /// @brief Setter for OUD Transitions
+    /// @param oudTransitionRates 3 Dimensional Matrix over Time describing the OUD Transition Percentages
+    void Sim::loadInterventionInitRates(Data::Matrix3d interventionInitRates) {
+        this->interventionInitRates = interventionInitRates;
+        BOOST_LOG(this->lg) << "Intervention Init Rates Loaded";
+    }
+
     /// @brief Setter for Intervention Transitions
     /// @param InterventionTransitions 3 Dimensional Matrix over Time describing the Intervention Transition Percentages
     void Sim::loadInterventionTransitionRates(Data::Matrix3dOverTime interventionTransitionRates) {
@@ -94,6 +101,8 @@ namespace Simulation{
         BOOST_LOG(this->lg) << "Intervention Transitions Loaded";
     }
 
+    /// @brief 
+    /// @param fatalOverdoseRates 
     void Sim::loadFatalOverdoseRates(Data::Matrix3dOverTime fatalOverdoseRates) {
         this->fatalOverdoseRates = fatalOverdoseRates;
         BOOST_LOG(this->lg) << "Fatal Overdose Transitions Loaded";
@@ -118,6 +127,7 @@ namespace Simulation{
         this->loadInitialSample(dataLoader.getInitialSample());
         this->loadEnteringSamples(dataLoader.getEnteringSamples());
         this->loadOUDTransitionRates(dataLoader.getOUDTransitionRates());
+        this->loadInterventionInitRates(dataLoader.getInterventionInitRates());
         this->loadInterventionTransitionRates(dataLoader.getInterventionTransitionRates());
         this->loadFatalOverdoseRates(dataLoader.getFatalOverdoseRates());
         this->loadOverdoseRates(dataLoader.getOverdoseRates());
@@ -174,6 +184,7 @@ namespace Simulation{
     void Sim::LoadTransitionModules(
         Data::Matrix3dOverTime enteringSamples,
         Data::Matrix3d oudTransitionRates,
+        Data::Matrix3d interventionInitRates,
         Data::Matrix3dOverTime interventionTransitionRates,
         Data::Matrix3dOverTime fatalOverdoseRates,
         Data::Matrix3dOverTime overdoseRates,
@@ -181,6 +192,7 @@ namespace Simulation{
     ) {
         this->loadEnteringSamples(enteringSamples);
         this->loadOUDTransitionRates(oudTransitionRates);
+        this->loadInterventionInitRates(interventionInitRates);
         this->loadInterventionTransitionRates(interventionTransitionRates);
         this->loadFatalOverdoseRates(fatalOverdoseRates);
         this->loadOverdoseRates(overdoseRates);
@@ -245,11 +257,9 @@ namespace Simulation{
         }
 
         // STATE TRANSITION
-        Data::Matrix3d transitionedState = this->multiplyInterventionTransitions(
-            this->multiplyOUDTransitions(
-                    this->addEnteringSamples(this->state)
-                )
-            );
+        Data::Matrix3d enterSampleState = this->addEnteringSamples(this->state);
+        Data::Matrix3d oudTransState = this->multiplyOUDTransitions(enterSampleState);
+        Data::Matrix3d transitionedState = this->multiplyInterventionTransitions(oudTransState);
 
         Data::Matrix3d overdoses = this->multiplyOverdoseTransitions(transitionedState);
         Data::Matrix3d fatalOverdoses = this->multiplyFatalOverdoseTransitions(overdoses);
@@ -294,7 +304,13 @@ namespace Simulation{
     Data::Matrix3d Sim::getTransitionFromDim(Data::Dimension dim) {
         switch(dim) {
             case Data::OUD:
-                return this->oudTransitionRates;
+                if(this->interventionInitState){
+                    // std::cout << this->interventionInitRates << std::endl << std::endl;
+                    return this->interventionInitRates;
+                }   
+                else{
+                    return this->oudTransitionRates;
+                }
             case Data::INTERVENTION:
                 return this->interventionTransitionRates.getMatrix3dAtTimestep(this->currentTime);
             case Data::DEMOGRAPHIC_COMBO:
@@ -313,7 +329,8 @@ namespace Simulation{
 
         Data::Matrix3d transition = this->getTransitionFromDim(dim);
         if(transition.dimension(dim) != pow(state.dimension(dim),2)) {
-            std::string message = fmt::format("Transition Dimensions does not equal the Square of State Dimensions at timestep {}", this->currentTime);
+            std::string message = fmt::format("Transition Dimensions does not equal the Square of State Dimensions at timestep {}\nTransition Dimension: {}\nState Dimension: {}\n Dimension: {}", this->currentTime, 
+            this->transition.dimension(dim), pow(state.dimension(dim),2), dim);
             throw std::invalid_argument(message);
         }
 
@@ -337,9 +354,22 @@ namespace Simulation{
 
             Data::Matrix3d broadcastedTensor = slicedState.broadcast(bcast);
             Data::Matrix3d slicedTransition = transition.slice(offsetTrans, extentTrans);
-            ret += (broadcastedTensor * slicedTransition);
+            
+            if(dim == Data::INTERVENTION){
+                this->interventionInitState = true;
+                Data::Matrix3d t = this->multiplyInterventionInit(broadcastedTensor * slicedTransition);
+                ret += t;
+                this->interventionInitState = false;
+            }
+            else{
+                ret += (broadcastedTensor * slicedTransition);
+            }
         }
         return ret;
+    }
+
+    Data::Matrix3d Sim::multiplyInterventionInit(Data::Matrix3d interventionState){
+        return this->multiplyOUDTransitions(interventionState);
     }
 
     Data::Matrix3d Sim::multiplyFatalOverdoseTransitions(Data::Matrix3d state) {

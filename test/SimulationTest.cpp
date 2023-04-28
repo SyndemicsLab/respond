@@ -104,6 +104,9 @@ TEST(Loading, TransitionModules){
     Matrix3d o1(2, 2, 2);
     o1.setRandom();
 
+    Matrix3d i1(2, 2, 2);
+    i1.setRandom();
+
     Matrix3d t1(2, 2, 2);
     Matrix3d t2(2, 2, 2);
     t1.setRandom();
@@ -128,7 +131,7 @@ TEST(Loading, TransitionModules){
     Matrix3d m1(2, 2, 2);
     m1.setRandom();
 
-    sim.LoadTransitionModules(eVec, o1, tVec, fodVec, dVec, m1);
+    sim.LoadTransitionModules(eVec, o1, i1, tVec, fodVec, dVec, m1);
     
     Eigen::Tensor<bool, 0> eq1 = (eVec.getMatrix3dAtTimestep(0) == sim.GetEnteringSamples().getMatrix3dAtTimestep(0)).all();
     Eigen::Tensor<bool, 0> eq2 = (o1 == sim.GetOUDTransitions()).all();
@@ -165,6 +168,10 @@ TEST(Run, SingleStepRun){
     o1.setValues( {{{.85, .9}, {.15, .1}, {.1, .2}, {.9, .8}},
                    {{.85, .9}, {.15, .1}, {.1, .2}, {.9, .8}}} );
 
+    Matrix3d i1(2, 4, 2);
+    i1.setValues( {{{0.256506, 0.102857}, {0.743494, 0.897143}, {1.0, 1.0}, {0.0, 0.0}},
+                   {{0.256506, 0.102857}, {0.743494, 0.897143}, {1.0, 1.0}, {0.0, 0.0}}} );
+
     Matrix3d t1(4, 2, 2);
     t1.setValues( {{{.8, .2}, {.9, .1}}, {{.8, .2}, {.9, .1}},
                    {{.05, .95}, {.15, .85}}, {{.05, .95}, {.15, .85}}} );
@@ -186,7 +193,7 @@ TEST(Run, SingleStepRun){
     Matrix3d m1(2, 2, 2);
     m1.setValues( {{{.01, .01}, {.01, .01}},
                    {{.01, .01}, {.01, .01}}} );
-    sim.LoadTransitionModules(eVec, o1, tVec, fodVec, dVec, m1);
+    sim.LoadTransitionModules(eVec, o1, i1, tVec, fodVec, dVec, m1);
 
     Matrix3d initialSample(2, 2, 2);
     initialSample.setValues( {{{1, 1}, {1, 1}}, 
@@ -198,13 +205,14 @@ TEST(Run, SingleStepRun){
                           {{1, 1}, {1, 1}}} );
 
     Matrix3d expected1(2, 2, 2);
-    expected1.setValues( {{{1.60289, 2.51102}, {2.18846, 1.69718}},
-                          {{1.60289, 2.51102}, {2.18846, 1.69718}}} );
+    expected1.setValues( {{{2.59961, 1.95545}, {1.19174, 2.25275}},
+                          {{2.59961, 1.95545}, {1.19174, 2.25275}}} );
     
     sim.Run();
     History history = sim.getHistory();
     Matrix3d actual0 = history.stateHistory.getMatrix3dAtTimestep(0);
     Matrix3d actual1 = history.stateHistory.getMatrix3dAtTimestep(1);
+
     Eigen::Tensor<bool, 0> eq0 = (expected0 == actual0).all();
     
     Matrix3d res1 = (expected1 - actual1).abs();
@@ -233,6 +241,10 @@ TEST(Run, MultiStepRun){
     Matrix3d o1(2, 4, 2);
     o1.setValues( {{{.85, .9}, {.15, .1}, {.1, .2}, {.9, .8}},
                    {{.85, .9}, {.15, .1}, {.1, .2}, {.9, .8}}} );
+
+    Matrix3d i1(2, 4, 2);
+    i1.setValues( {{{0.256506, 0.102857}, {0.743494, 0.897143}, {1.0, 1.0}, {0.0, 0.0}},
+                   {{0.256506, 0.102857}, {0.743494, 0.897143}, {1.0, 1.0}, {0.0, 0.0}}} );
 
     Matrix3d t1(4, 2, 2);
     t1.setValues( {{{.8, .2}, {.9, .1}}, {{.8, .2}, {.9, .1}},
@@ -274,7 +286,7 @@ TEST(Run, MultiStepRun){
     m1.setValues( {{{.01, .01}, {.01, .01}},
                    {{.01, .01}, {.01, .01}}} );
 
-    sim.LoadTransitionModules(eVec, o1, tVec, fodVec, dVec, m1);
+    sim.LoadTransitionModules(eVec, o1, i1, tVec, fodVec, dVec, m1);
 
     Matrix3d initialSample(2, 2, 2);
     initialSample.setValues( {{{1, 1}, {1, 1}}, 
@@ -286,16 +298,16 @@ TEST(Run, MultiStepRun){
                           {{1, 1}, {1, 1}}} );
 
     Matrix3d expected1(2, 2, 2);
-    expected1.setValues( {{{1.60289, 2.51102}, {2.18846, 1.69718}},
-                          {{1.60289, 2.51102}, {2.18846, 1.69718}}} );
+    expected1.setValues( {{{2.59961, 1.95545}, {1.19174, 2.25275}},
+                          {{2.59961, 1.95545}, {1.19174, 2.25275}}} );
 
     Matrix3d expected2(2, 2, 2);
-    expected2.setValues( {{{2.13547, 4.22235}, {3.39738, 2.36553}},
-                          {{2.13547, 4.22235}, {3.39738, 2.36553}}} );
+    expected2.setValues( {{{3.32787, 3.12085}, {2.05659, 3.38983}},
+                          {{3.32787, 3.12085}, {2.05659, 3.38983}}} );
     
     Matrix3d expected3(2, 2, 2);
-    expected3.setValues( {{{2.61936, 6.13286}, {4.61449, 3.03102}},
-                          {{2.61936, 6.13286}, {4.61449, 3.03102}}} );
+    expected3.setValues( {{{4.40553, 4.23827}, {2.4991, 4.69671}},
+                          {{4.40553, 4.23827}, {2.4991, 4.69671}}} );
     
     sim.Run();
     History history = sim.getHistory();
@@ -311,8 +323,6 @@ TEST(Run, MultiStepRun){
     bool eq1 = (res2(0) <= 0.00001f);
 
     res1 = (expected2 - actual2).abs();
-    std::cout << expected2 << std::endl;
-    std::cout << actual2 << std::endl;
     res2 = res1.maximum();
     bool eq2 = (res2(0) <= 0.00001f);
 
