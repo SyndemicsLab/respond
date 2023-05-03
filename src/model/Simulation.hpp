@@ -133,7 +133,7 @@ namespace Simulation{
         Data::Matrix3dOverTime overdoseRates;
         Data::Matrix3d mortalityRates;
         Data::Matrix3d step();
-        Data::Matrix3d multiplyInterventionInit(Data::Matrix3d interventionState);
+        Data::Matrix3d multiplyInterventionInit(Data::Matrix3d interventionState, int i);
         Data::Matrix3d addEnteringSamples(Data::Matrix3d state);
         Data::Matrix3d multiplyOUDTransitions(Data::Matrix3d state);
         Data::Matrix3d multiplyInterventionTransitions(Data::Matrix3d state);

@@ -205,8 +205,8 @@ TEST(Run, SingleStepRun){
                           {{1, 1}, {1, 1}}} );
 
     Matrix3d expected1(2, 2, 2);
-    expected1.setValues( {{{2.59961, 1.95545}, {1.19174, 2.25275}},
-                          {{2.59961, 1.95545}, {1.19174, 2.25275}}} );
+    expected1.setValues( {{{1.84077, 2.16312}, {1.94103, 2.03448}},
+                          {{2.35114, 2.2921}, {1.43066, 1.9055}}} );
     
     sim.Run();
     History history = sim.getHistory();
@@ -298,16 +298,16 @@ TEST(Run, MultiStepRun){
                           {{1, 1}, {1, 1}}} );
 
     Matrix3d expected1(2, 2, 2);
-    expected1.setValues( {{{2.59961, 1.95545}, {1.19174, 2.25275}},
-                          {{2.59961, 1.95545}, {1.19174, 2.25275}}} );
+    expected1.setValues( {{{1.84077, 2.16312}, {1.94103, 2.03448}},
+                          {{2.35114, 2.2921}, {1.43066, 1.9055}}} );
 
     Matrix3d expected2(2, 2, 2);
-    expected2.setValues( {{{3.32787, 3.12085}, {2.05659, 3.38983}},
-                          {{3.32787, 3.12085}, {2.05659, 3.38983}}} );
+    expected2.setValues( {{{2.5841, 3.25968}, {2.85186, 3.26194}},
+                          {{3.4414, 3.67511}, {1.99455, 2.84651}}} );
     
     Matrix3d expected3(2, 2, 2);
-    expected3.setValues( {{{4.40553, 4.23827}, {2.4991, 4.69671}},
-                          {{4.40553, 4.23827}, {2.4991, 4.69671}}} );
+    expected3.setValues( {{{3.26877, 4.39218}, {3.71778, 4.57904}},
+                          {{4.46667, 5.15593}, {2.51988, 3.81529}}} );
     
     sim.Run();
     History history = sim.getHistory();
@@ -329,6 +329,7 @@ TEST(Run, MultiStepRun){
     res1 = (expected3 - actual3).abs();
     res2 = res1.maximum();
     bool eq3 = (res2(0) <= 0.00001f);
+
     int res = eq0(0) * eq1 * eq2 * eq3;
     EXPECT_TRUE(res);
 }

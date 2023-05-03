@@ -258,12 +258,16 @@ namespace Simulation{
 
         // STATE TRANSITION
         Data::Matrix3d enterSampleState = this->addEnteringSamples(this->state);
+        // enterSampleState matches excel
+                
         Data::Matrix3d oudTransState = this->multiplyOUDTransitions(enterSampleState);
-        Data::Matrix3d transitionedState = this->multiplyInterventionTransitions(oudTransState);
+        // oudTransState matches excel
+
+        Data::Matrix3d transitionedState = this->multiplyInterventionTransitions(oudTransState);        
 
         Data::Matrix3d overdoses = this->multiplyOverdoseTransitions(transitionedState);
         Data::Matrix3d fatalOverdoses = this->multiplyFatalOverdoseTransitions(overdoses);
-        Data::Matrix3d mortalities = this->multiplyMortalityTransitions(transitionedState-overdoses);
+        Data::Matrix3d mortalities = this->multiplyMortalityTransitions(transitionedState-fatalOverdoses);
 
         return (transitionedState - (mortalities + fatalOverdoses));
     }
@@ -357,8 +361,8 @@ namespace Simulation{
             
             if(dim == Data::INTERVENTION){
                 this->interventionInitState = true;
-                Data::Matrix3d t = this->multiplyInterventionInit(broadcastedTensor * slicedTransition);
-                ret += t;
+                // broadcastedTensor*slicedTransition matches excel
+                ret += this->multiplyInterventionInit(broadcastedTensor * slicedTransition, i);
                 this->interventionInitState = false;
             }
             else{
@@ -368,8 +372,46 @@ namespace Simulation{
         return ret;
     }
 
-    Data::Matrix3d Sim::multiplyInterventionInit(Data::Matrix3d interventionState){
-        return this->multiplyOUDTransitions(interventionState);
+    Data::Matrix3d Sim::multiplyInterventionInit(Data::Matrix3d interventionState, int i){
+        Data::Matrix3d result(interventionState.dimensions());
+        result.setZero();   
+
+        for(int j=0; j < this->numInterventions; j++){
+            
+            std::array<long int, 3> of3 = {0,0,0};
+            std::array<long int, 3> ex3 = result.dimensions();
+            of3[Data::INTERVENTION] = j;
+            ex3[Data::INTERVENTION] = 1;
+            if(i == j){
+                result.slice(of3, ex3) += interventionState.slice(of3, ex3);
+            }
+            else{
+
+                Data::Matrix3d oudMat((Data::Matrix3d(result.slice(of3, ex3))).dimensions());
+
+                for(int k = 0; k < this->numOUDStates; k++){
+                    std::array<long int, 3> iof = {0,0,0};
+                    std::array<long int, 3> iex = interventionState.dimensions();
+                    iof[Data::INTERVENTION] = j;
+                    iex[Data::INTERVENTION] = 1;
+                    iof[Data::OUD] = k;
+                    iex[Data::OUD] = 1;
+                    for(int l=0; l < this->numOUDStates; l++){
+                        std::array<long int, 3> rof = {0,0,0};
+                        std::array<long int, 3> rex = interventionState.dimensions();
+                        rof[Data::INTERVENTION] = j;
+                        rex[Data::INTERVENTION] = 1;
+                        rof[Data::OUD] = (k*this->numOUDStates)+l;
+                        rex[Data::OUD] = 1;
+
+                        of3[Data::OUD] = l;
+                        ex3[Data::OUD] = 1;
+                        result.slice(of3, ex3) += interventionState.slice(iof, iex) * this->interventionInitRates.slice(rof, rex);
+                    }
+                }
+            }
+        }
+        return result;
     }
 
     Data::Matrix3d Sim::multiplyFatalOverdoseTransitions(Data::Matrix3d state) {
