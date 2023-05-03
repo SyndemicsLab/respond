@@ -48,6 +48,18 @@ namespace Data{
 
     /// @brief
     using History = History;
+
+    struct Cost {
+        Matrix3dOverTime healthcareCost;
+        Matrix3dOverTime overdoseCost;
+        Matrix3dOverTime pharmaCost;
+        Matrix3dOverTime treatmentCost;
+    };
+
+    /// @brief
+    using Cost = Cost;
+
+
 };
 
 #endif

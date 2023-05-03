@@ -378,36 +378,38 @@ namespace Simulation{
 
         for(int j=0; j < this->numInterventions; j++){
             
-            std::array<long int, 3> of3 = {0,0,0};
-            std::array<long int, 3> ex3 = result.dimensions();
-            of3[Data::INTERVENTION] = j;
-            ex3[Data::INTERVENTION] = 1;
+            std::array<long int, 3> result_offset = {0,0,0};
+            std::array<long int, 3> result_extent = result.dimensions();
+            result_offset[Data::INTERVENTION] = j;
+            result_extent[Data::INTERVENTION] = 1;
             if(i == j){
-                result.slice(of3, ex3) += interventionState.slice(of3, ex3);
+                result.slice(result_offset, result_extent) += interventionState.slice(result_offset, result_extent);
             }
             else{
 
-                Data::Matrix3d oudMat((Data::Matrix3d(result.slice(of3, ex3))).dimensions());
+                Data::Matrix3d oudMat((Data::Matrix3d(result.slice(result_offset, result_extent))).dimensions());
 
                 for(int k = 0; k < this->numOUDStates; k++){
-                    std::array<long int, 3> iof = {0,0,0};
-                    std::array<long int, 3> iex = interventionState.dimensions();
-                    iof[Data::INTERVENTION] = j;
-                    iex[Data::INTERVENTION] = 1;
-                    iof[Data::OUD] = k;
-                    iex[Data::OUD] = 1;
-                    for(int l=0; l < this->numOUDStates; l++){
-                        std::array<long int, 3> rof = {0,0,0};
-                        std::array<long int, 3> rex = interventionState.dimensions();
-                        rof[Data::INTERVENTION] = j;
-                        rex[Data::INTERVENTION] = 1;
-                        rof[Data::OUD] = (k*this->numOUDStates)+l;
-                        rex[Data::OUD] = 1;
+                    std::array<long int, 3> intervention_offset = {0,0,0};
+                    std::array<long int, 3> intervention_extent = interventionState.dimensions();
+                    intervention_offset[Data::INTERVENTION] = j;
+                    intervention_extent[Data::INTERVENTION] = 1;
+                    intervention_offset[Data::OUD] = k;
+                    intervention_extent[Data::OUD] = 1;
 
-                        of3[Data::OUD] = l;
-                        ex3[Data::OUD] = 1;
-                        result.slice(of3, ex3) += interventionState.slice(iof, iex) * this->interventionInitRates.slice(rof, rex);
-                    }
+                    std::array<long int, 3> bcast = {1,1,1};
+                    bcast[Data::OUD] = this->numOUDStates;
+                    Data::Matrix3d slicedState = interventionState.slice(intervention_offset, intervention_extent);
+                    Data::Matrix3d broadcastedTensor = slicedState.broadcast(bcast);
+
+                    std::array<long int, 3> rates_offset = {0,0,0};
+                    std::array<long int, 3> rates_extent = this->interventionInitRates.dimensions();
+                    rates_offset[Data::INTERVENTION] = j;
+                    rates_extent[Data::INTERVENTION] = 1;
+                    rates_offset[Data::OUD] = (k*this->numOUDStates);
+                    rates_extent[Data::OUD] = this->numOUDStates;                    
+
+                    result.slice(result_offset, result_extent) += broadcastedTensor * this->interventionInitRates.slice(rates_offset, rates_extent);
                 }
             }
         }

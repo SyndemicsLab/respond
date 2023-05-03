@@ -21,15 +21,15 @@ int main(int argc, char** argv) {
     Simulation::Sim sim(inputs);
     sim.Run();
 
-    std::vector<std::vector<std::string>> demographics{ 
-        { "10_14", "male" }, { "10_14", "female" }, 
-        { "15_19", "male" }, { "15_19", "female" }, 
+    std::vector<std::vector<std::string>> demographics{
+        { "10_14", "male" }, { "10_14", "female" },
+        { "15_19", "male" }, { "15_19", "female" },
         { "20_24", "male" }, { "20_24", "female" }
-        }; 
+        };
 
-    Data::DataWriter writer("output", 
-        inputs.getInterventions(), 
-        inputs.getOUDStates(), 
+    Data::DataWriter writer("output",
+        inputs.getInterventions(),
+        inputs.getOUDStates(),
         demographics,
         sim.getHistory());
     writer.write(Data::FILE);

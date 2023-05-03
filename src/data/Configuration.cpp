@@ -89,17 +89,32 @@ int Configuration::getDuration() {
 
 std::vector<int> Configuration::getEnteringSampleChangeTimes() {
     std::string res = this->ptree.get<std::string>("simulation.entering_sample_change_times");
-    return this->parseString2VectorOfInts(res);
+    std::vector<int> resVec = this->parseString2VectorOfInts(res);
+    std::vector<int> result;
+    for(int r : resVec){
+        result.push_back(r-1);
+    }
+    return result;
 }
 
 std::vector<int> Configuration::getInterventionChangeTimes() {
     std::string res = this->ptree.get<std::string>("simulation.intervention_change_times");
-    return this->parseString2VectorOfInts(res);
+    std::vector<int> resVec = this->parseString2VectorOfInts(res);
+    std::vector<int> result;
+    for(int r : resVec){
+        result.push_back(r-1);
+    }
+    return result;
 }
 
 std::vector<int> Configuration::getOverdoseChangeTimes() {
     std::string res = this->ptree.get<std::string>("simulation.overdose_change_times");
-    return this->parseString2VectorOfInts(res);
+    std::vector<int> resVec = this->parseString2VectorOfInts(res);
+    std::vector<int> result;
+    for(int r : resVec){
+        result.push_back(r-1);
+    }
+    return result;
 }
 
 template<>
@@ -119,8 +134,13 @@ int Configuration::get<int>(std::string str) {
 
 template<>
 std::vector<int> Configuration::get<std::vector<int>>(std::string str) {
-    std::string ahh = this->ptree.get<std::string>(str);
-    return this->parseString2VectorOfInts(ahh);
+    std::string res = this->ptree.get<std::string>(str);
+    std::vector<int> resVec = this->parseString2VectorOfInts(res);
+    std::vector<int> result;
+    for(int r : resVec){
+        result.push_back(r-1);
+    }
+    return result;
 }
 
 template<>

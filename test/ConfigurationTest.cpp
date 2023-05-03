@@ -56,7 +56,7 @@ TEST(ConfigurationTest, getNumDemographicCombos){
 }
 
 TEST(ConfigurationTest, getEnteringSampleChangeTimes){
-    std::vector<int> EXPECTED = {52, 104, 156};
+    std::vector<int> EXPECTED = {51, 103, 155};
 
     Configuration config("TestInput/input1/sim.conf");
 
@@ -67,7 +67,7 @@ TEST(ConfigurationTest, getEnteringSampleChangeTimes){
 }
 
 TEST(ConfigurationTest, getInterventionChangeTimes){
-    std::vector<int> EXPECTED = {52, 104, 156};
+    std::vector<int> EXPECTED = {51, 103, 155};
 
     Configuration config("TestInput/input1/sim.conf");
 
@@ -78,7 +78,7 @@ TEST(ConfigurationTest, getInterventionChangeTimes){
 }
 
 TEST(ConfigurationTest, getOverdoseChangeTimes){
-    std::vector<int> EXPECTED = {52, 104, 156};
+    std::vector<int> EXPECTED = {51, 103, 155};
 
     Configuration config("TestInput/input1/sim.conf");
 
@@ -166,10 +166,10 @@ TEST(ConfigurationTest, getInt) {
 TEST(ConfigurationTest, getVectorInt) {
     Configuration TestConf("TestInput/input1/sim.conf");
     std::vector<std::vector<int>> EXPECTED_VALUES = {
-        {52, 104, 156},
-        {52, 104, 156},
-        {52, 104, 156},
-        {52, 104, 156}
+        {51, 103, 155},
+        {51, 103, 155},
+        {51, 103, 155},
+        {51, 103, 155}
     };
     std::vector<std::vector<int>> REAL_VALUES = {
         TestConf.get<std::vector<int>>("simulation.intervention_change_times"),

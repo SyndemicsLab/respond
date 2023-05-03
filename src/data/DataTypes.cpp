@@ -1,13 +1,11 @@
 #include "DataTypes.hpp"
 
-
-namespace Data{    
+namespace Data {
     Matrix3dOverTime::Matrix3dOverTime(std::vector<Matrix3d> data){
         for(int i=0; i < data.size(); i++){
             this->data.insert({i, data[i]});
         }
     }
-
 
     Matrix3dOverTime::Matrix3dOverTime(std::vector<Matrix3d> data, std::vector<int> timestepChanges){
         if(data.size() != timestepChanges.size()){
