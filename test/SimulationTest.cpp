@@ -216,7 +216,7 @@ TEST(Run, SingleStepRun){
     Eigen::Tensor<bool, 0> eq0 = (expected0 == actual0).all();
     
     Matrix3d res1 = (expected1 - actual1).abs();
-    Eigen::Tensor<float, 0> res2 = res1.maximum();
+    Eigen::Tensor<double, 0> res2 = res1.maximum();
     bool eq1 = (res2(0) <= 0.00001f);
 
     int res = eq0(0) * eq1;
@@ -319,7 +319,7 @@ TEST(Run, MultiStepRun){
     Eigen::Tensor<bool, 0> eq0 = (expected0 == actual0).all();
 
     Matrix3d res1 = (expected1 - actual1).abs();
-    Eigen::Tensor<float, 0> res2 = res1.maximum();
+    Eigen::Tensor<double, 0> res2 = res1.maximum();
     bool eq1 = (res2(0) <= 0.00001f);
 
     res1 = (expected2 - actual2).abs();

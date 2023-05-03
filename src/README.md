@@ -6,11 +6,15 @@ While the original model was built using a combination of the R and C++ programm
 
 ## Dependencies
 
-- [`gcc`](https://gcc.gnu.org) v4.8.1 or newer
-- [Boost](https://www.boost.org)
-- [Eigen](https://eigen.tuxfamily.org/index.php) >= 3.4.x
-- [OpenMP](https://www.openmp.org)
-- [CMake](https://cmake.org) >= 3.19
+<center>
+| Library                                        | Minimum Version |
+| ---------------------------------------------- | --------------- |
+| [`gcc`](https://gcc.gnu.org)                   | 4.8.1           |
+| [Boost](https://www.boost.org)                 | -               |
+| [Eigen](https://eigen.tuxfamily.org/index.php) | 3.4             |
+| [OpenMP](https://www.openmp.org)               | -               |
+| [CMake](https://cmake.org)                     | 3.19            |
+</center>
 
 ## What's New?
 
@@ -27,6 +31,17 @@ The State Tensor, known in the original as `cohort` (described above), is a thre
 - Demographics (e.g. age, sex)
 
 This enables flexibility in the number of combinations of intervention, opioid use, and demographics classifiers used in the model. The State Tensor is then wrapped in a vector to capture all timesteps.
+
+### Terminology
+
+Some specialized language is sometimes necessary to discuss the `RESPOND` model. In the course of its use, the terminology has become somewhat overlapping. We attempt to address some of this here:
+
+<center>
+| Original Term | New Term     | Definition                                                                                                                                 |
+| ------------- | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| Block         | Intervention | A sub-group of the population representing the group undergoing some treatment or lack thereof, i.e. "No Treatment", "Buprenorphine", etc. |
+| Strategy      | Input Set    | A singular input folder representing a specific population of interest in a `RESPOND` study                                                |
+</center>
 
 ## Mathematics
 
@@ -59,9 +74,9 @@ $$
  \hline
  \mathbf{M} & \text{Mortality Chance Matrix} & N_I \times N_U \times N_D \\\\
  \hline
- t & \text{timestep} & 1 \\\\
+ t & \text{Timestep} & \textrm{Scalar} \\\\
  \hline
- \Delta t & \text{change in time} & 1 \\\\
+ \Delta t & \text{Change in Time} & \textrm{Scalar} \\\\
  \hline
 \end{array}
 $$
@@ -77,7 +92,7 @@ Now, a single step is composed of 5 different operations:
 The Entering Samples can be modeled via:
 $$
 \begin{align}
-    \mathbf{\Phi_e} =  N_I \times N_U \times N_D \quad | \quad
+    \mathbf{\textrm{Shape}(\Phi_e)} =  N_I \times N_U \times N_D \quad | \quad
     \mathbf{\Phi_e} = \mathbf{S} + \mathbf{E}
 \end{align}
 $$
@@ -85,16 +100,16 @@ $$
 OUD Transitions are modeled by:
 $$
 \begin{align}
-    \mathbf{\Phi_a} =  N_I \times N_U \times N_D \quad | \quad
-    \mathbf{\Phi_a} &= \sum_{\alpha \in \mathbf{A}}{\mathbf{\Phi_e}_{\alpha} * \mathbf{Z_I}_{\alpha:\alpha+N_I}}
+    \mathbf{\textrm{Shape}(\Phi_a)} =  N_I \times N_U \times N_D \quad | \quad
+    \mathbf{\Phi_a} &= \sum_{\alpha \in \mathbf{A}}{\mathbf{\Phi_e}_{\alpha} \cdot \mathbf{Z_I}_{\alpha:\alpha+N_I}}
 \end{align}
 $$
 
 Intervention Transitions are modeled by:
 $$
 \begin{align}
-    \mathbf{\Phi_u} =  N_I \times N_U \times N_D \quad | \quad
-    \mathbf{\Phi_u} &= \sum_{\beta \in \mathbf{U}}{\mathbf{\Phi_a}_{\beta} * 
+    \mathbf{\textrm{Shape}(\Phi_u)} =  N_I \times N_U \times N_D \quad | \quad
+    \mathbf{\Phi_u} &= \sum_{\beta \in \mathbf{U}}{\mathbf{\Phi_a}_{\beta} \cdot
     \mathbf{Z_U}_{\beta:\beta+N_U}}
 \end{align}
 $$
@@ -102,18 +117,35 @@ $$
 Overdoses are modeled by:
 $$
 \begin{align}
-    \mathbf{\Phi_o} =  N_I \times N_U \times N_D \quad | \quad
-    \mathbf{\Phi_o} = \mathbf{\Phi_u} * \mathbf{O}
+    \mathbf{\textrm{Shape}(\Phi_o)} =  N_I \times N_U \times N_D \quad | \quad
+    \mathbf{\Phi_o} = \mathbf{\Phi_u} \cdot \mathbf{O}
 \end{align}
 $$
 
 Finally, mortality is modeled by:
 $$
 \begin{align}
-    \mathbf{\Phi_m} =  N_I \times N_U \times N_D \quad | \quad
-    \mathbf{\Phi_m} = \mathbf{\Phi_u} * \mathbf{M}
+    \mathbf{\textrm{Shape}(\Phi_m)} =  N_I \times N_U \times N_D \quad | \quad
+    \mathbf{\Phi_m} = \mathbf{\Phi_u} \cdot \mathbf{M}
 \end{align}
 $$
+
+<!-- Test -->
+<!-- $$ -->
+<!-- \begin{array}{ |l|l|l| } -->
+<!-- \hline -->
+<!--  \textbf{Section} & \textbf{Shape} & \textbf{Definition} \\\\ -->
+<!--  \hline -->
+<!--  Foo & Bar & Baz \\\\ -->
+<!--  \hline -->
+<!--  Foo & Bar & Baz \\\\ -->
+<!--  \hline -->
+<!--  Foo & Bar & Baz \\\\ -->
+<!--  \hline -->
+<!--  Foo & Bar & Baz \\\\ -->
+<!--  \hline -->
+<!-- \end{array} -->
+<!-- $$ -->
 
 Thus the new step becomes:
 $$
@@ -124,12 +156,12 @@ $$
 
 Altogether this becomes:
 $$
-    \mathbf{S_{t+1}} = (\sum_{\beta \in \mathbf{U}}
-    {(\sum_{\alpha \in \mathbf{A}}
-    {(\mathbf{S_t} + \mathbf{E})_{\alpha} * \mathbf{Z_I}_{\alpha:\alpha+N_I}}
-    )_{\beta} * \mathbf{Z_U}_{\beta:\beta+N_U}}) - ((\sum_{\beta \in \mathbf{U}}
-    {(\sum_{\alpha \in \mathbf{A}}
-    {(\mathbf{S_t} + \mathbf{E})_{\alpha} * \mathbf{Z_I}_{\alpha:\alpha+N_I}}
-    )_{\beta} * 
-    \mathbf{Z_U}_{\beta:\beta+N_U}}) * \mathbf{M})
+    \mathbf{S_{t+1}} = \Bigg(\sum_{\beta \in \mathbf{U}}
+    {\Big(\sum_{\alpha \in \mathbf{A}}
+    {(\mathbf{S_t} + \mathbf{E})_{\alpha} \cdot \mathbf{Z_I}_{\alpha:\alpha+N_I}}
+    \Big)_{\beta} \cdot \mathbf{Z_U}_{\beta:\beta+N_U}}\Bigg) - \Bigg(\Big(\sum_{\beta \in \mathbf{U}}
+    {\Big(\sum_{\alpha \in \mathbf{A}}
+    {(\mathbf{S_t} + \mathbf{E})_{\alpha} \cdot \mathbf{Z_I}_{\alpha:\alpha+N_I}}
+    \Big)_{\beta} \cdot
+    \mathbf{Z_U}_{\beta:\beta+N_U}}\Big) \cdot \mathbf{M}\Bigg)
 $$

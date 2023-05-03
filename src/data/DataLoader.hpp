@@ -16,7 +16,10 @@
 #include "Matrix3dPrinter.hpp"
 
 namespace Data {
-    /// @brief 
+    /// @brief The object in which values from CSV files are stored
+    ///
+    /// InputTable stores the tables as key, value pairs where the keys are
+    /// column headers and the values are vectors containing entire columns.
     using InputTable = std::unordered_map<std::string, std::vector<std::string>>;
 
     // tabular files from the current RESPOND directory structure, as of [2023-04-06]
@@ -39,133 +42,157 @@ namespace Data {
         "treatment_utilization_cost.csv"
     };
 
-    /// @brief 
+    /*!
+     * @brief The object that processes model inputs
+     *
+     * DataLoader handles the primary configuration file, `sim.conf`, and the
+     * tabular inputs necessary to run the model.
+     *
+     * Updated **[2023-04-28]**
+     *
+     * **Required Input Tables:**
+     * - `sim.conf`
+     * - `all_types_overdose.csv`
+     * - `background_mortality.csv`
+     * - `block_init_effect.csv`
+     * - `block_trans.csv`
+     * - `entering_cohort.csv`
+     * - `fatal_overdose.csv`
+     * - `init_cohort.csv`
+     * - `oud_trans.csv`
+     * - `SMR.csv`
+     *
+     * **Optional Input Tables:**
+     * - `bg_utility.csv`
+     * - `healthcare_utilization_cost.csv`
+     * - `oud_utility.csv`
+     * - `overdose_cost.csv`
+     * - `pharmaceutical_cost.csv`
+     * - `setting_utility.csv`
+     * - `treatment_utilization_cost.csv`
+     */
     class DataLoader {
     public:
-        ~DataLoader() {};
+        // CONSTRUCTORS
+        /// @brief The default constructor for DataLoader.
+        ///
+        /// This constructor initializes all members to zero or to empty objects.
         DataLoader();
+        /// @brief A constructor for DataLoader that generates necessary model
+        /// objects based on the contents of the provided input directory
+        /// @param inputDir the name of the directory where input files are stored
         DataLoader(std::string inputDir);
-        DataLoader(Configuration configFile, std::string inputDir);
+        /// @brief An alternative constructor for DataLoader for loading data
+        /// when a Configuration object has already been created prior to
+        /// specifying the directory containing tabular inputs
+        /// @param config The object containing parameters read from an
+        /// already-processed configuration file
+        /// @param inputDir The name of the directory where input files are stored
+        DataLoader(Configuration config, std::string inputDir);
+        ~DataLoader() {};
 
-        /// @brief 
-        /// @param  
-        /// @return 
+        // PUBLIC METHODS
+        /// @brief Reads a configuration file to a Configuration object
+        /// @param inputFile path to the configuration file to be read
+        /// @return
         Configuration readConfigFile(std::string);
-
-        /// @brief 
-        /// @param  
-        /// @return 
+        /// @brief Read a CSV-formatted file into a map object where the headers are
+        /// keys and the rest of the columns are stored as vectors of strings
+        /// @param inputFile path to the CSV to be read
+        /// @return A map object containing columns stored as key-value pairs
         InputTable readCSV(std::string);
-
-        /// @brief 
-        /// @param  
-        /// @return 
+        /// @brief Reads typical RESPOND input files from the provided input directory
+        /// @param inputDir the directory from which to read input files
+        /// @return an unordered map whose keys are table names and values are
+        /// CSV/InputTables
         std::unordered_map<std::string, InputTable> readInputDir(std::string);
 
-        /// @brief 
-        /// @return 
+        // GETTERS
+        /// @brief
+        /// @return
         std::string getDirName() { return dirName; }
-
-        /// @brief 
-        /// @return 
+        /// @brief
+        /// @return
         int getDuration() { return duration; }
-
-        /// @brief 
-        /// @return 
+        /// @brief
+        /// @return
         int getNumOUDStates() { return numOUDStates; }
-
-        /// @brief 
-        /// @return 
+        /// @brief
+        /// @return
         int getNumInterventions() { return numInterventions; }
-        
-        /// @brief 
-        /// @param indices 
-        /// @param table 
-        /// @return 
+        /// @brief
+        /// @return
         int getNumDemographics() { return numDemographics; }
-
-        /// @brief 
-        /// @return 
+        /// @brief
+        /// @return
         Matrix3d getInitialSample() { return initialSample; }
-
-        /// @brief 
+        /// @brief
+        /// @return
         Matrix3dOverTime getEnteringSamples() { return enteringSamples; }
-
-        /// @brief 
+        /// @brief
+        /// @return
         Matrix3d getOUDTransitionRates() { return oudTransitionRates; }
-
-        /// @brief 
+        /// @brief
+        /// @return
         Matrix3dOverTime getInterventionTransitionRates() { return interventionTransitionRates; }
-
-        /// @brief 
-        /// @return 
+        /// @brief
+        /// @return
         Matrix3dOverTime getOverdoseRates() { return overdoseRates; }
-
-        /// @brief 
+        /// @brief
+        /// @return
         Matrix3dOverTime getFatalOverdoseRates() { return fatalOverdoseRates; }
-
-        /// @brief 
+        /// @brief
+        /// @return
         Matrix3d getMortalityRates() { return mortalityRates; }
-
-        /// @brief 
-        /// @return 
+        /// @brief
+        /// @return
         Matrix3d getInterventionInitRates() { return interventionInitRates; }
-
-        /// @brief 
-        /// @return 
+        /// @brief
+        /// @return
         std::vector<std::string> getInterventions() { return interventions; }
-
-        /// @brief 
-        /// @return 
+        /// @brief
+        /// @return
         std::vector<std::string> getOUDStates() { return oudStates; }
-
-        /// @brief 
-        /// @return 
+        /// @brief
+        /// @return
         int getAgingInterval() { return agingInterval; }
-
-        /// @brief 
-        /// @return 
+        /// @brief
+        /// @return
         int getAgeGroupShift() { return ageGroupShift; }
 
-        /// @brief 
-        /// @param csvName 
-        /// @return 
+        // SETTERS
+        /// @brief
+        /// @param csvName
+        /// @return
         Matrix3d loadInitialSample(std::string csvName);
-
-        /// @brief 
-        /// @param csvName 
-        /// @return 
+        /// @brief
+        /// @param csvName
+        /// @return
         Matrix3dOverTime loadEnteringSamples(std::string csvName);
-
-        /// @brief 
-        /// @param csvName 
-        /// @return 
+        /// @brief
+        /// @param csvName
+        /// @return
         Matrix3d loadOUDTransitionRates(std::string csvName);
-
-        /// @brief 
-        /// @param csvName 
-        /// @return 
+        /// @brief
+        /// @param csvName
+        /// @return
         Matrix3d loadInterventionInitRates(std::string csvName);
-
-        /// @brief 
-        /// @param csvName 
-        /// @return 
+        /// @brief
+        /// @param csvName
+        /// @return
         Matrix3dOverTime loadInterventionTransitionRates(std::string csvName);
-
-        /// @brief 
-        /// @param csvName 
-        /// @return 
+        /// @brief
+        /// @param csvName
+        /// @return
         Matrix3dOverTime loadOverdoseRates(std::string csvName);
-
-        /// @brief 
-        /// @param csvName 
-        /// @return 
+        /// @brief
+        /// @param csvName
+        /// @return
         Matrix3dOverTime loadFatalOverdoseRates(std::string csvName);
-        
-        /// @brief 
-        /// @param smrCSVName 
-        /// @param bgmCSVName 
-        /// @return 
+        /// @brief
+        /// @param smrCSVName
+        /// @param bgmCSVName
+        /// @return
         Matrix3d loadMortalityRates(std::string smrCSVName, std::string bgmCSVName);
 
     private:
@@ -176,8 +203,8 @@ namespace Data {
         std::vector<int> findIndices(std::vector<std::string> const &v, std::string target);
         std::vector<std::vector<int>> getIndicesByIntervention(std::vector<std::string> col);
         Matrix3dOverTime buildTransitionRatesOverTime(std::vector<int> ict, InputTable table, std::vector<std::vector<int>> indicesVec);
-        std::string dirName;
 
+        std::string dirName;
         int duration;
         int agingInterval;
         int ageGroupShift;

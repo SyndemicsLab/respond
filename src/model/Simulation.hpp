@@ -1,10 +1,3 @@
-/*
- * Simulation.hpp
- *
- *  Created on: Mar 29, 2023
- *      Author: matt
- */
-
 #ifndef MODEL_SIMULATION_HPP_
 #define MODEL_SIMULATION_HPP_
 
@@ -67,17 +60,24 @@ namespace Simulation{
         virtual Data::History getHistory() = 0;
     };
 
-
     /*! Concrete Class for Sim implementing the ISim interface
-     *  \image html png/RESPOND-StateMatrix.png
-     *  \image latex pdf/RESPOND-StateMatrix.pdf "Multiplication" width=10cm
+     *  @image html png/RESPOND-StateMatrix.png
+     *  @image latex pdf/RESPOND-StateMatrix.pdf "Multiplication" width=10cm
      */
     class Sim : public ISim {
     public:
+        // CONSTRUCTORS
         Sim();
         Sim(int duration, int numOUDStates, int numInterventions, int numDemographics);
         ~Sim() {};
         Sim(Data::DataLoader dataLoader);
+
+        // PUBLIC METHODS
+        void Run() override;
+        void raisePopulationAge() override;
+        Data::History getHistory() override;
+
+        // SETTERS
         void loadInitialSample(Data::Matrix3d initialSample) override;
         void loadEnteringSamples(Data::Matrix3dOverTime enteringSamples) override;
         void loadOUDTransitionRates(Data::Matrix3d oudTransitionRates) override;
@@ -89,13 +89,6 @@ namespace Simulation{
         void Load(Data::DataLoader dataLoader) override;
         void LoadAgingParameters(int shift, int interval) override;
 
-        Data::Matrix3dOverTime GetEnteringSamples() override;
-        Data::Matrix3d GetOUDTransitions() override;
-        Data::Matrix3dOverTime GetInterventionTransitions() override;
-        Data::Matrix3dOverTime GetOverdoseTransitions() override;
-        Data::Matrix3dOverTime GetFatalOverdoseTransitions() override;
-        Data::Matrix3d GetMortalityTransitions() override;
-
         void LoadTransitionModules(
             Data::Matrix3dOverTime enteringSamples,
             Data::Matrix3d oudTransitionRates,
@@ -105,9 +98,16 @@ namespace Simulation{
             Data::Matrix3dOverTime overdoseRates,
             Data::Matrix3d mortalityRates
         ) override;
-        void Run() override;
-        void raisePopulationAge() override;
-        Data::History getHistory() override;
+
+        // GETTERS
+        Data::Matrix3dOverTime GetEnteringSamples() override;
+        Data::Matrix3d GetOUDTransitions() override;
+        Data::Matrix3dOverTime GetInterventionTransitions() override;
+        Data::Matrix3dOverTime GetOverdoseTransitions() override;
+        Data::Matrix3dOverTime GetFatalOverdoseTransitions() override;
+        Data::Matrix3d GetMortalityTransitions() override;
+
+        // PUBLIC MEMBER OBJECTS
         int Duration;
         int agingInterval;
         int ageGroupShift;
@@ -144,4 +144,4 @@ namespace Simulation{
         Data::Matrix3d multiplyTransitions(Data::Matrix3d state, Data::Dimension dim);
     };
 }
-#endif /* MODEL_SIMULATION_HPP_ */
+#endif // MODEL_SIMULATION_HPP_

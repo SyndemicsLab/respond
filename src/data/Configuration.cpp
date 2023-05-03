@@ -5,7 +5,7 @@ using namespace Data;
 /**************************************************
  *
  * Constructors
- * 
+ *
  **************************************************/
 
 Configuration::Configuration() {
@@ -29,7 +29,7 @@ Configuration::Configuration(std::string configFile) {
 /**************************************************
  *
  * Public Methods
- * 
+ *
  **************************************************/
 
 std::vector<std::string> Configuration::getInterventions() {
@@ -48,7 +48,6 @@ std::vector<std::string> Configuration::getDemographicCombos() {
     int k = demographics.size();
 
     std::vector<int> indices(k, 0);
-
     std::vector<std::string> results;
 
     for(int i = 0; i < n; i++) {
@@ -134,13 +133,13 @@ std::vector<std::string> Configuration::get<std::vector<std::string>>(std::strin
 /**************************************************
  *
  * Private Methods
- * 
+ *
  **************************************************/
 
-/// @brief 
-/// @param indices 
-/// @param maxIndices 
-/// @return 
+/// @brief
+/// @param indices
+/// @param maxIndices
+/// @return
 std::vector<int> Configuration::updateIndices(std::vector<int> indices, std::vector<int> maxIndices) {
     int lastIdx = indices.size()-1;
     std::vector<int> results = indices;
