@@ -14,10 +14,12 @@ find_package(fmt)
 
 add_library(model
     Simulation.cpp 
+    CostCalculator.cpp
 )
 
 target_sources(model PUBLIC 
   Simulation.hpp
+  CostCalculator.hpp
 )
 
 target_include_directories(model INTERFACE

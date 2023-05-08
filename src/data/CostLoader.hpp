@@ -1,0 +1,73 @@
+#ifndef DATA_COSTLOADER_HPP_
+#define DATA_COSTLOADER_HPP_
+
+#include <string>
+#include <unordered_map>
+
+#include "Loader.hpp"
+#include "DataTypes.hpp"
+#include "Matrix3dFactory.hpp"
+#include "Matrix3dPrinter.hpp"
+
+namespace Data{
+    class CostLoader : public Loader {
+    public:
+        CostLoader() {};
+        CostLoader(std::string inputDir);
+
+        // SETTERS
+        /// @brief
+        /// @param csvName
+        /// @return
+        Matrix3d loadHealthcareUtilizationCost(std::string csvName);
+
+        /// @brief
+        /// @param csvName
+        /// @return
+        std::unordered_map<std::string, double> loadOverdoseCost(std::string csvName);
+
+        /// @brief
+        /// @param csvName
+        /// @return
+        Matrix3d loadPharmaceuticalCost(std::string csvName);
+
+        /// @brief
+        /// @param csvName
+        /// @return
+        Matrix3d loadTreatmentUtilizationCost(std::string csvName);
+
+        /// @brief 
+        /// @return 
+        Matrix3d getHealthcareUtilizationCost() { return this->healthcareUtilizationCost; }
+
+        /// @brief 
+        /// @return 
+        Matrix3d getPharmaceuticalCost() { return this->pharmaceuticalCost; }
+
+        /// @brief 
+        /// @return 
+        Matrix3d getTreatmentUtilizationCost() { return this->treatmentUtilizationCost; }
+        
+        /// @brief 
+        /// @return 
+        double getNonFatalOverdoseCost();
+
+        /// @brief 
+        /// @return 
+        double getFatalOverdoseCost();
+
+    private:
+        Matrix3d healthcareUtilizationCost;
+        Matrix3d pharmaceuticalCost;
+        Matrix3d treatmentUtilizationCost;
+        std::unordered_map<std::string, double> overdoseCostsMap;
+        std::unordered_map<std::string, double> pharmaceuticalCostsMap;
+        std::unordered_map<std::string, double> treatmentUtilizationCostMap;
+
+        std::unordered_map<std::string, double> loadTreatmentUtilizationCostMap(InputTable table);
+        std::unordered_map<std::string, double> loadPharmaceuticalCostMap(InputTable table);
+    };
+}
+
+
+#endif

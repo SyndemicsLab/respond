@@ -203,6 +203,7 @@ namespace Simulation{
     void Sim::Run() {
         Data::Matrix3d zeroMat = Utilities::Matrix3dFactory::Create(this->numOUDStates, this->numInterventions, this->numDemographics).constant(0);
         this->history.overdoseHistory.insert(zeroMat, 0);
+        this->history.fatalOverdoseHistory.insert(zeroMat, 0);
         this->history.mortalityHistory.insert(zeroMat, 0);
         this->history.stateHistory.insert(this->state, 0);
 
@@ -423,6 +424,7 @@ namespace Simulation{
             throw std::invalid_argument(message);
         }
         Data::Matrix3d mult = fatalOverdoseMatrix * state;
+        this->history.fatalOverdoseHistory.insert(mult, this->currentTime+1);
         return mult;
     }
 

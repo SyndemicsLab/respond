@@ -31,7 +31,7 @@ DataLoader::DataLoader() {
     this->fatalOverdoseRates;
     this->mortalityRates;
 
-    this->inputTables = {};
+    Loader::inputTables = {};
 }
 
 DataLoader::DataLoader(std::string inputDir) {
@@ -104,9 +104,15 @@ Matrix3d DataLoader::loadInitialSample(std::string csvName) {
     for (int intervention = 0; intervention < nonPostInterventions; ++intervention) {
         for (int dem = 0; dem < this->numDemographicCombos; ++dem) {
             for (int oud_state = 0; oud_state < this->numOUDStates; ++oud_state) {
-                this->initialSample(intervention, oud_state, dem) =
-                    std::stod(initialCohort["counts"][row]);
-                ++row;
+                auto itr = initialCohort.find("counts");
+                if(itr != initialCohort.end()){
+                    this->initialSample(intervention, oud_state, dem) = std::stod(itr->second[row]);
+                    ++row;
+                }
+                else{
+                    std::string message = "\'counts\' column not found in Initial Cohort file";
+                    throw std::invalid_argument(message);
+                }
             }
         }
     }
@@ -327,58 +333,6 @@ Matrix3d DataLoader::loadMortalityRates(std::string smrCSVName, std::string bgmC
     return this->mortalityRates;
 }
 
-/*********************************************************************
- *
- *********************************************************************/
-
-Configuration DataLoader::readConfigFile(std::string inputFile) {
-    Configuration config(inputFile);
-    return config;
-}
-
-InputTable DataLoader::readCSV(std::string inputFile) {
-    using boost::tokenizer;
-
-    std::string inputContents;
-    std::ifstream inputStream(inputFile);
-    InputTable toReturn;
-
-    // use the headers of the csv table to create keys for the unordered map
-    std::getline(inputStream, inputContents);
-    std::vector<std::string> headerNames;
-    tokenizer<boost::escaped_list_separator<char>> token(inputContents);
-    for (tokenizer<boost::escaped_list_separator<char>>::iterator beg = token.begin();
-         beg != token.end(); ++beg) {
-        headerNames.push_back(*beg);
-        toReturn[*beg] = {};
-    }
-    // populate the keys/headers with values
-    int i = 0;
-    while (std::getline(inputStream, inputContents)) {
-        tokenizer<boost::escaped_list_separator<char>> token(inputContents);
-        for (tokenizer<boost::escaped_list_separator<char>>::iterator beg = token.begin();
-             beg != token.end(); ++beg) {
-            toReturn[headerNames[i % headerNames.size()]].push_back(*beg);
-            ++i;
-        }
-    }
-    inputStream.close();
-    return toReturn;
-}
-
-std::unordered_map<std::string, InputTable> DataLoader::readInputDir(std::string inputDir) {
-    std::string inputDirFixed = inputDir;
-    std::unordered_map<std::string, InputTable> toReturn;
-    // account for no trailing slash in the provided input directory
-    if (inputDirFixed.back() != '/') {
-        inputDirFixed.push_back('/');
-    }
-
-    for (std::string inputFile: INPUT_FILES) {
-        toReturn[inputFile] = readCSV(inputDirFixed + inputFile);
-    }
-    return toReturn;
-}
 
 /*********************************************************************
  *
@@ -442,7 +396,7 @@ Data::Matrix3d DataLoader::buildInterventionMatrix(std::vector<int> indices, Inp
         if(currentIntervention.compare("No_Treatment") == 0){ interventionOffset = i; }
         else if(keys[i].find("post") != std::string::npos){
             interventionOffset = i+offset-1;
-            if(currentIntervention.find("Post") != std::string::npos){ interventionOffset -= 2; }
+            if(currentIntervention.find("Post") != std::string::npos){ interventionOffset -= ((this->numInterventions - 1) / 2); }
         }
 
         std::string key = keys[i];

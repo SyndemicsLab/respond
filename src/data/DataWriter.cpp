@@ -65,6 +65,7 @@ namespace Data{
     std::string DataWriter::write(OutputType outputType) {
         if(this->history.stateHistory.getMatrices().empty() ||
             this->history.overdoseHistory.getMatrices().empty() ||
+            this->history.fatalOverdoseHistory.getMatrices().empty() ||
             this->history.mortalityHistory.getMatrices().empty() ||
             this->dirname.empty()) {
             //log error
@@ -81,9 +82,11 @@ namespace Data{
             std::filesystem::path dir(this->dirname);
             std::filesystem::path stateFile("stateHistory.csv");
             std::filesystem::path overdoseFile("overdoseHistory.csv");
+            std::filesystem::path fatalOverdoseFile("fatalOverdoseHistory.csv");
             std::filesystem::path mortalityFile("mortalityHistory.csv");
             std::filesystem::path stateFullPath = dir/stateFile;
             std::filesystem::path overdoseFullPath = dir/overdoseFile;
+            std::filesystem::path fatalOverdoseFullPath = dir/fatalOverdoseFile;
             std::filesystem::path mortalityFullPath = dir/mortalityFile;
 
             std::ofstream file;
@@ -96,6 +99,10 @@ namespace Data{
             this->writer(file, this->history.overdoseHistory);
             file.close();
 
+            file.open(fatalOverdoseFullPath.string());
+            this->writer(file, this->history.fatalOverdoseHistory);
+            file.close();
+
             file.open(mortalityFullPath.string());
             this->writer(file, this->history.mortalityHistory);
             file.close();
@@ -104,9 +111,75 @@ namespace Data{
         std::ostringstream stringstream;
         this->writer(stringstream, this->history.stateHistory);
         this->writer(stringstream, this->history.overdoseHistory);
+        this->writer(stringstream, this->history.fatalOverdoseHistory);
         this->writer(stringstream, this->history.mortalityHistory);
         return stringstream.str();
     }
+
+    /// @brief Main Operation of Class, write data to output
+    /// @param outputType Output Enum, generally Data::FILE
+    /// @return string containing the result if output enum is Data::STRING or description of status otherwise
+    std::string DataWriter::writeCost(OutputType outputType, Cost cost) {
+        if(cost.healthcareCost.getMatrices().empty() ||
+            cost.pharmaCost.getMatrices().empty() ||
+            cost.fatalOverdoseCost.getMatrices().empty() ||
+            cost.nonFatalOverdoseCost.getMatrices().empty() ||
+            cost.treatmentCost.getMatrices().empty()) {
+            //log error
+            std::ostringstream s;
+            return s.str();
+        }
+
+
+        if (outputType == FILE) {
+            if(!std::filesystem::exists(this->dirname)) {
+                std::filesystem::create_directory(this->dirname);
+            }
+
+            std::filesystem::path dir(this->dirname);
+            std::filesystem::path healthUtilFile("healthcareCost.csv");
+            std::filesystem::path pharmaFile("pharmaCost.csv");
+            std::filesystem::path fatalOverdoseFile("fatalOverdoseCost.csv");
+            std::filesystem::path nonFatalOverdoseFile("nonFatalOverdoseCost.csv");
+            std::filesystem::path treatmentFile("treatmentCost.csv");
+            std::filesystem::path healthUtilFullPath = dir/healthUtilFile;
+            std::filesystem::path pharmaFullPath = dir/pharmaFile;
+            std::filesystem::path fatalOverdoseFullPath = dir/fatalOverdoseFile;
+            std::filesystem::path nonFatalOverdoseFullPath = dir/nonFatalOverdoseFile;
+            std::filesystem::path treatmentFullPath = dir/treatmentFile;
+
+            std::ofstream file;
+
+            file.open(healthUtilFullPath.string());
+            this->writer(file, cost.healthcareCost);
+            file.close();
+
+            file.open(pharmaFullPath.string());
+            this->writer(file, cost.pharmaCost);
+            file.close();
+
+            file.open(fatalOverdoseFullPath.string());
+            this->writer(file, cost.fatalOverdoseCost);
+            file.close();
+
+            file.open(nonFatalOverdoseFullPath.string());
+            this->writer(file, cost.nonFatalOverdoseCost);
+            file.close();
+
+            file.open(treatmentFullPath.string());
+            this->writer(file, cost.treatmentCost);
+            file.close();
+            return "success";
+        }
+        std::ostringstream stringstream;
+        this->writer(stringstream, cost.healthcareCost);
+        this->writer(stringstream, cost.pharmaCost);
+        this->writer(stringstream, cost.fatalOverdoseCost);
+        this->writer(stringstream, cost.nonFatalOverdoseCost);
+        this->writer(stringstream, cost.treatmentCost);
+        return stringstream.str();
+    }
+    
 
     /// @brief Helper function to write data to the specified stream
     /// @param stream Stream type to write data to

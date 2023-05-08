@@ -13,12 +13,16 @@ find_package (Eigen3 3.4 REQUIRED NO_MODULE)
 find_package (fmt REQUIRED)
 
 add_library(data
+  Loader.cpp
+  CostLoader.cpp
   DataLoader.cpp
   DataWriter.cpp
   DataTypes.cpp
   Configuration.cpp
 )
 target_sources(data PUBLIC
+  Loader.hpp
+  CostLoader.hpp
   DataLoader.hpp
   DataWriter.hpp
   DataTypes.hpp

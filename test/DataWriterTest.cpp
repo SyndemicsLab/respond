@@ -33,21 +33,27 @@ TEST(SimpleWriteTest, SingleValueDimensions){
     overdoseHistoryMatrix.setZero();
     overdoseHistoryMatrix(0,0,0) = 1;
 
+    Matrix3d fatalOverdoseHistoryMatrix(2,2,2);
+    fatalOverdoseHistoryMatrix.setZero();
+
     Matrix3d mortalityHistoryMatrix(2,2,2);
     mortalityHistoryMatrix.setZero();
     mortalityHistoryMatrix(0,0,1) = 1;
 
     std::vector<Matrix3d> svec{stateHistoryMatrix};
     std::vector<Matrix3d> ovec{overdoseHistoryMatrix};
+    std::vector<Matrix3d> fovec{fatalOverdoseHistoryMatrix};
     std::vector<Matrix3d> mvec{mortalityHistoryMatrix};
 
     Matrix3dOverTime stateHistory(svec);
     Matrix3dOverTime overdoseHistory(ovec);
+    Matrix3dOverTime fatalOverdoseHistory(fovec);
     Matrix3dOverTime mortalityHistory(mvec);
 
     History history;
     history.stateHistory = stateHistory;
     history.overdoseHistory = overdoseHistory;
+    history.fatalOverdoseHistory = fatalOverdoseHistory;
     history.mortalityHistory = mortalityHistory;
     
     std::vector<std::string> interventions = {"inter1", "inter2"};
@@ -72,6 +78,15 @@ TEST(SimpleWriteTest, SingleValueDimensions){
     "inter2,oud2,10_14,Female,1.000000,\n"
     "Interventions, OUD States,Demographic 0,Demographic 1,t+0,\n"
     "inter1,oud1,10_14,Male,1.000000,\n"
+    "inter1,oud1,10_14,Female,0.000000,\n"
+    "inter1,oud2,10_14,Male,0.000000,\n"
+    "inter1,oud2,10_14,Female,0.000000,\n"
+    "inter2,oud1,10_14,Male,0.000000,\n"
+    "inter2,oud1,10_14,Female,0.000000,\n"
+    "inter2,oud2,10_14,Male,0.000000,\n"
+    "inter2,oud2,10_14,Female,0.000000,\n"
+    "Interventions, OUD States,Demographic 0,Demographic 1,t+0,\n"
+    "inter1,oud1,10_14,Male,0.000000,\n"
     "inter1,oud1,10_14,Female,0.000000,\n"
     "inter1,oud2,10_14,Male,0.000000,\n"
     "inter1,oud2,10_14,Female,0.000000,\n"
@@ -107,6 +122,11 @@ TEST(SimpleWriteTest, MultiTimestep){
     overdoseHistoryMatrix2.setZero();
     overdoseHistoryMatrix2(0,0,0) = 1;
 
+    Matrix3d fatalOverdoseHistoryMatrix1(2,2,2);
+    fatalOverdoseHistoryMatrix1.setZero();
+    Matrix3d fatalOverdoseHistoryMatrix2(2,2,2);
+    fatalOverdoseHistoryMatrix2.setZero();
+
     Matrix3d mortalityHistoryMatrix1(2,2,2);
     mortalityHistoryMatrix1.setZero();
     mortalityHistoryMatrix1(1,0,0) = 1;
@@ -116,15 +136,18 @@ TEST(SimpleWriteTest, MultiTimestep){
 
     std::vector<Matrix3d> svec{stateHistoryMatrix1, stateHistoryMatrix2};
     std::vector<Matrix3d> ovec{overdoseHistoryMatrix1, overdoseHistoryMatrix2};
+    std::vector<Matrix3d> fovec{fatalOverdoseHistoryMatrix1, fatalOverdoseHistoryMatrix2};
     std::vector<Matrix3d> mvec{mortalityHistoryMatrix1, mortalityHistoryMatrix2};
 
     Matrix3dOverTime stateHistory(svec);
     Matrix3dOverTime overdoseHistory(ovec);
+    Matrix3dOverTime fatalOverdoseHistory(fovec);
     Matrix3dOverTime mortalityHistory(mvec);
 
     History history;
     history.stateHistory = stateHistory;
     history.overdoseHistory = overdoseHistory;
+    history.fatalOverdoseHistory = fatalOverdoseHistory;
     history.mortalityHistory = mortalityHistory;
     
     std::vector<std::string> interventions = {"inter1", "inter2"};
@@ -156,6 +179,15 @@ TEST(SimpleWriteTest, MultiTimestep){
     "inter2,oud1,10_14,Female,0.000000,0.000000,\n"
     "inter2,oud2,10_14,Male,0.000000,0.000000,\n"
     "inter2,oud2,10_14,Female,1.000000,0.000000,\n"
+    "Interventions, OUD States,Demographic 0,Demographic 1,t+0,t+1,\n"
+    "inter1,oud1,10_14,Male,0.000000,0.000000,\n"
+    "inter1,oud1,10_14,Female,0.000000,0.000000,\n"
+    "inter1,oud2,10_14,Male,0.000000,0.000000,\n"
+    "inter1,oud2,10_14,Female,0.000000,0.000000,\n"
+    "inter2,oud1,10_14,Male,0.000000,0.000000,\n"
+    "inter2,oud1,10_14,Female,0.000000,0.000000,\n"
+    "inter2,oud2,10_14,Male,0.000000,0.000000,\n"
+    "inter2,oud2,10_14,Female,0.000000,0.000000,\n"
     "Interventions, OUD States,Demographic 0,Demographic 1,t+0,t+1,\n"
     "inter1,oud1,10_14,Male,0.000000,0.000000,\n"
     "inter1,oud1,10_14,Female,0.000000,1.000000,\n"

@@ -1,6 +1,8 @@
 #include "DataLoader.hpp"
 #include "DataWriter.hpp"
 #include "Simulation.hpp"
+#include "CostLoader.hpp"
+#include "CostCalculator.hpp"
 
 int main(int argc, char** argv) {
     using std::cout, std::cerr;
@@ -21,6 +23,14 @@ int main(int argc, char** argv) {
     Simulation::Sim sim(inputs);
     sim.Run();
 
+    Data::CostLoader costLoader(argv[1]);
+    costLoader.loadHealthcareUtilizationCost("healthcare_utilization_cost.csv");
+    costLoader.loadOverdoseCost("overdose_cost.csv");
+    costLoader.loadPharmaceuticalCost("pharmaceutical_cost.csv");
+    costLoader.loadTreatmentUtilizationCost("treatment_utilization_cost.csv");
+    Calculator::CostCalculator costCalculator(costLoader, sim.getHistory());
+    Data::Cost cost = costCalculator.calculate();
+
     std::vector<std::vector<std::string>> demographics{
         { "10_14", "male" }, { "10_14", "female" },
         { "15_19", "male" }, { "15_19", "female" },
@@ -33,4 +43,5 @@ int main(int argc, char** argv) {
         demographics,
         sim.getHistory());
     writer.write(Data::FILE);
+    writer.writeCost(Data::FILE, cost);
 }

@@ -1,4 +1,4 @@
-block,agegrp,sex,oud,healthcare_utilization_cost_ healthcare_system
+block,agegrp,sex,oud,healthcare_utilization_cost_healthcare_system
 No_Treatment,10_14,Male,Active_Noninjection,243
 No_Treatment,10_14,Male,Active_Injection,355.96
 No_Treatment,10_14,Male,Nonactive_Noninjection,162.22

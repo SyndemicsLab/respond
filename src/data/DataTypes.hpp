@@ -43,6 +43,7 @@ namespace Data{
     struct History {
         Matrix3dOverTime stateHistory;
         Matrix3dOverTime overdoseHistory;
+        Matrix3dOverTime fatalOverdoseHistory;
         Matrix3dOverTime mortalityHistory;
     };
 
@@ -51,7 +52,8 @@ namespace Data{
 
     struct Cost {
         Matrix3dOverTime healthcareCost;
-        Matrix3dOverTime overdoseCost;
+        Matrix3dOverTime nonFatalOverdoseCost;
+        Matrix3dOverTime fatalOverdoseCost;
         Matrix3dOverTime pharmaCost;
         Matrix3dOverTime treatmentCost;
     };
