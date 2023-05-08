@@ -68,6 +68,8 @@ $$
  \hline
  \mathbf{Z_I} & \text{Intervention Transition Matrix} & N_I^2 \times N_U \times N_D \\\\
  \hline
+ \mathbf{\Beta} & \text{Intervention Initialization Effect} & N_I \times N_U \times N_D \\\\
+ \hline
  \mathbf{Z_U} & \text{OUD Transition Matrix} & N_I \times N_U^2 \times N_D \\\\
  \hline
  \mathbf{O} & \text{Overdose Chance Matrix} & N_I \times N_U \times N_D \\\\
@@ -86,6 +88,7 @@ Now, a single step is composed of 5 different operations:
 1. Samples Enter the Simulation
 2. OUD Transitions Occur
 3. Intervention Transitions Occur
+   1. Anything that changes intervention has the opportunity to change OUD again.
 4. Overdoses Occur
 5. Mortalities Occur
 
@@ -111,6 +114,13 @@ $$
     \mathbf{\textrm{Shape}(\Phi_u)} =  N_I \times N_U \times N_D \quad | \quad
     \mathbf{\Phi_u} &= \sum_{\beta \in \mathbf{U}}{\mathbf{\Phi_a}_{\beta} \cdot
     \mathbf{Z_U}_{\beta:\beta+N_U}}
+\end{align}
+$$
+
+The values that change intervention have the opportunity to once again switch OUD states via the Intervention Initialization Effect Rate:
+$$
+\begin{align}
+    \mathbf{\textrm{Shape}(\Beta)} = N_I \times N_U \times N_D \quad | \quad \mathbf{\Phi_u} = \Beta \cdot \Phi_u 
 \end{align}
 $$
 
@@ -156,12 +166,12 @@ $$
 
 Altogether this becomes:
 $$
-    \mathbf{S_{t+1}} = \Bigg(\sum_{\beta \in \mathbf{U}}
+    \mathbf{S_{t+1}} = \Bigg(\Beta \cdot \sum_{\beta \in \mathbf{U}}
     {\Big(\sum_{\alpha \in \mathbf{A}}
     {(\mathbf{S_t} + \mathbf{E})_{\alpha} \cdot \mathbf{Z_I}_{\alpha:\alpha+N_I}}
     \Big)_{\beta} \cdot \mathbf{Z_U}_{\beta:\beta+N_U}}\Bigg) - \Bigg(\Big(\sum_{\beta \in \mathbf{U}}
     {\Big(\sum_{\alpha \in \mathbf{A}}
     {(\mathbf{S_t} + \mathbf{E})_{\alpha} \cdot \mathbf{Z_I}_{\alpha:\alpha+N_I}}
     \Big)_{\beta} \cdot
-    \mathbf{Z_U}_{\beta:\beta+N_U}}\Big) \cdot \mathbf{M}\Bigg)
+    \mathbf{Z_U}_{\beta:\beta+N_U}}\Big) \cdot \Beta \cdot \mathbf{M}\Bigg)
 $$

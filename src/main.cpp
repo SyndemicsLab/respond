@@ -28,8 +28,15 @@ int main(int argc, char** argv) {
     costLoader.loadOverdoseCost("overdose_cost.csv");
     costLoader.loadPharmaceuticalCost("pharmaceutical_cost.csv");
     costLoader.loadTreatmentUtilizationCost("treatment_utilization_cost.csv");
-    Calculator::CostCalculator costCalculator(costLoader, sim.getHistory());
-    Data::Cost cost = costCalculator.calculate();
+
+    Data::UtilityLoader utilityLoader(argv[1]);
+    utilityLoader.loadBackgroundUtility("bg_utility.csv");
+    utilityLoader.loadOUDUtility("oud_utility.csv");
+    utilityLoader.loadSettingUtility("setting_utility.csv");
+
+    Calculator::CostCalculator costCalculator(costLoader, utilityLoader, sim.getHistory());
+    Data::Cost cost = costCalculator.calculateCost();
+    Data::Utility util = costCalculator.calculateUtility();
 
     std::vector<std::vector<std::string>> demographics{
         { "10_14", "male" }, { "10_14", "female" },
@@ -44,4 +51,5 @@ int main(int argc, char** argv) {
         sim.getHistory());
     writer.write(Data::FILE);
     writer.writeCost(Data::FILE, cost);
+    writer.writeUtility(Data::FILE, util);
 }

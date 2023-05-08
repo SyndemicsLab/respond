@@ -36,6 +36,7 @@ namespace Data {
         virtual void setDemographics(std::vector<std::vector<std::string>> demographics) = 0;
         virtual std::string write(OutputType outputType) = 0;
         virtual std::string writeCost(OutputType outputType, Cost cost) = 0;
+        virtual std::string writeUtility(OutputType outputType, Utility util) = 0;
     };
 
     /// @brief Concrete DataWriter class implementing the corresponding interface
@@ -55,6 +56,7 @@ namespace Data {
         void setDemographics(std::vector<std::vector<std::string>> demographics) override;
         std::string write(OutputType outputType) override;
         std::string writeCost(OutputType outputType, Cost cost) override;
+        std::string writeUtility(OutputType outputType, Utility util) override;
     private:
         std::vector<std::string> interventions;
         std::vector<std::string> oudStates;

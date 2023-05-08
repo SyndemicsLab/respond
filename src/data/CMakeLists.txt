@@ -15,6 +15,7 @@ find_package (fmt REQUIRED)
 add_library(data
   Loader.cpp
   CostLoader.cpp
+  UtilityLoader.cpp
   DataLoader.cpp
   DataWriter.cpp
   DataTypes.cpp
@@ -23,6 +24,7 @@ add_library(data
 target_sources(data PUBLIC
   Loader.hpp
   CostLoader.hpp
+  UtilityLoader.hpp
   DataLoader.hpp
   DataWriter.hpp
   DataTypes.hpp

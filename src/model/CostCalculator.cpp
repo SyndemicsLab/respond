@@ -2,12 +2,13 @@
 
 using namespace Calculator;
 
-CostCalculator::CostCalculator(Data::CostLoader costLoader, Data::History history){
+CostCalculator::CostCalculator(Data::CostLoader costLoader, Data::UtilityLoader utilityLoader, Data::History history){
     this->history = history;
     this->costLoader = costLoader;
+    this->utilityLoader = utilityLoader;
 }
 
-Data::Cost CostCalculator::calculate(){
+Data::Cost CostCalculator::calculateCost(){
     Data::Cost cost;
     cost.healthcareCost = this->calculateCost(this->history.stateHistory, this->costLoader.getHealthcareUtilizationCost());
     cost.pharmaCost = this->calculateCost(this->history.stateHistory, this->costLoader.getPharmaceuticalCost());
@@ -15,6 +16,14 @@ Data::Cost CostCalculator::calculate(){
     cost.nonFatalOverdoseCost = this->calculateOverdoseCost(this->history.overdoseHistory, this->costLoader.getNonFatalOverdoseCost());
     cost.fatalOverdoseCost = this->calculateOverdoseCost(this->history.fatalOverdoseHistory, this->costLoader.getFatalOverdoseCost());
     return cost;
+}
+
+Data::Utility CostCalculator::calculateUtility(){
+    Data::Utility util;
+    util.backgroundUtility = this->calculateCost(this->history.stateHistory, this->utilityLoader.getBackgroundUtility());
+    util.oudUtility = this->calculateCost(this->history.stateHistory, this->utilityLoader.getOUDUtility());
+    util.settingUtility = this->calculateCost(this->history.stateHistory, this->utilityLoader.getSettingUtility());
+    return util;
 }
 
 Data::Matrix3dOverTime CostCalculator::calculateOverdoseCost(Data::Matrix3dOverTime overdose, double cost){

@@ -61,6 +61,15 @@ namespace Data{
     /// @brief
     using Cost = Cost;
 
+    struct Utility {
+        Matrix3dOverTime backgroundUtility;
+        Matrix3dOverTime oudUtility;
+        Matrix3dOverTime settingUtility;
+    };
+
+    /// @brief
+    using Utility = Utility;
+
 
 };
 
