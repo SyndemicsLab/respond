@@ -2,6 +2,18 @@
 
 using namespace Data;
 
+Loader::Loader(std::string inputDir){
+    // PROCESSING INPUT FILES
+    // account for no trailing slash in the provided input directory
+    std::string configPath = inputDir;
+    if (configPath.back() != '/') {
+        configPath.push_back('/');
+    }
+    configPath += "sim.conf";
+    this->Config = readConfigFile(configPath);
+    this->inputTables = readInputDir(inputDir);
+}
+
 InputTable Loader::readCSV(std::string inputFile) {
     using boost::tokenizer;
 

@@ -17,13 +17,9 @@ add_library(model
     CostCalculator.cpp
 )
 
-target_sources(model PUBLIC 
-  Simulation.hpp
-  CostCalculator.hpp
-)
-
 target_include_directories(model INTERFACE
   ${CMAKE_CURRENT_SOURCE_DIR}
+  "include/"
 )
 
 target_link_libraries(model 

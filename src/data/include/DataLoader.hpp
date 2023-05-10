@@ -130,7 +130,7 @@ namespace Data {
         /// @brief
         /// @param csvName
         /// @return
-        Matrix3dOverTime loadEnteringSamples(std::string csvName);
+        Matrix3dOverTime loadEnteringSamples(std::string csvName, std::string enteringSampleIntervention, std::string enteringSampleOUD);
         /// @brief
         /// @param csvName
         /// @return

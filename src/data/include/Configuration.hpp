@@ -20,6 +20,7 @@ namespace Data{
         virtual std::vector<std::string> getInterventions() = 0;
         virtual std::vector<std::string> getOUDStates() = 0;
         virtual int getNumDemographicCombos() = 0;
+        virtual std::vector<std::vector<std::string>> getDemographicCombosVecOfVec() = 0;
         virtual std::vector<int> getDemographicCounts() = 0;
         virtual std::vector<int> getEnteringSampleChangeTimes() = 0;
         virtual std::vector<int> getInterventionChangeTimes() = 0;
@@ -104,35 +105,38 @@ namespace Data{
         ~Configuration() {};
 
         // GENERATOR FUNCTIONS
-        /// @brief
-        /// @return
+        /// @brief Build and return the list of interventions from the config file
+        /// @return Vector of Strings containing Interventions
         std::vector<std::string> getInterventions() override;
-        /// @brief
-        /// @return
+        /// @brief Build and return the list of OUD states from the config file
+        /// @return Vector of Strings containing OUD States
         std::vector<std::string> getOUDStates() override;
-        /// @brief
-        /// @return
+        /// @brief Calculate number of Demographic Combos
+        /// @return Integer of Number of Demographic Combos
         int getNumDemographicCombos() override;
-        /// @brief
-        /// @return
+        /// @brief Format Demographic Combos as a Vector of Vectors of Strings
+        /// @return Vector of Vector of Strings containing Demographic Combos
+        std::vector<std::vector<std::string>> getDemographicCombosVecOfVec() override;
+        /// @brief Return the total number of demographics
+        /// @return Vector of Integers for all the demographic Counts
         std::vector<int> getDemographicCounts() override;
-        /// @brief
-        /// @return
+        /// @brief Load and Return the Entering Sample Time Changes
+        /// @return Vector of Integers for all the Entering Sample Time Changes
         std::vector<int> getEnteringSampleChangeTimes() override;
-        /// @brief
-        /// @return
+        /// @brief Load and Return the Intervention Time Changes
+        /// @return Vector of Integers for all the Intervention Time Changes
         std::vector<int> getInterventionChangeTimes() override;
-        /// @brief
-        /// @return
+        /// @brief Load and Return the Overdose Time Changes
+        /// @return Vector of Integers for all the Overdose Time Changes
         std::vector<int> getOverdoseChangeTimes() override;
-        /// @brief
-        /// @return
+        /// @brief Load and Generate the Demographic Combos
+        /// @return Vector of Strings containing the Demographic Combos
         std::vector<std::string> getDemographicCombos() override;
-        /// @brief
-        /// @return
+        /// @brief Load and Return the Aging Interval
+        /// @return Integer containing the Aging Interval
         int getAgingInterval() override;
-        /// @brief
-        /// @return
+        /// @brief Load and Return the Duration
+        /// @return Integer containing the Simulation Duration
         int getDuration() override;
 
         /// @brief

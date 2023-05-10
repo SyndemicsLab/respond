@@ -28,13 +28,12 @@ namespace Data {
     class IDataWriter{
     public:
         virtual ~IDataWriter(){};
-        virtual void addHistory(History history) = 0;
         virtual void addDirname(std::string dirname) = 0;
         virtual std::string getDirname() = 0;
         virtual void setInterventions(std::vector<std::string> interventions) = 0;
         virtual void setOUDStates(std::vector<std::string> oudStates) = 0;
         virtual void setDemographics(std::vector<std::vector<std::string>> demographics) = 0;
-        virtual std::string write(OutputType outputType) = 0;
+        virtual std::string writeHistory(OutputType outputType, History history) = 0;
         virtual std::string writeCost(OutputType outputType, Cost cost) = 0;
         virtual std::string writeUtility(OutputType outputType, Utility util) = 0;
     };
@@ -46,15 +45,13 @@ namespace Data {
         DataWriter(std::string dirname, 
         std::vector<std::string> interventions, 
         std::vector<std::string> oudStates, 
-        std::vector<std::vector<std::string>> demographics,
-        History history);
-        void addHistory(History history) override;
+        std::vector<std::vector<std::string>> demographics);
         void addDirname(std::string dirname) override;
         std::string getDirname() override;
         void setInterventions(std::vector<std::string> interventions) override;
         void setOUDStates(std::vector<std::string> oudStates) override;
         void setDemographics(std::vector<std::vector<std::string>> demographics) override;
-        std::string write(OutputType outputType) override;
+        std::string writeHistory(OutputType outputType, History history) override;
         std::string writeCost(OutputType outputType, Cost cost) override;
         std::string writeUtility(OutputType outputType, Utility util) override;
     private:
@@ -62,7 +59,6 @@ namespace Data {
         std::vector<std::string> oudStates;
         std::vector<std::vector<std::string>> demographics;
         std::string dirname;
-        History history;
         std::string writeColumnHeaders(int timesteps);
         void writer(std::ostream &stream, Matrix3dOverTime historyToWrite);
     };

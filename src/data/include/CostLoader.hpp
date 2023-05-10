@@ -16,14 +16,14 @@ namespace Data{
         CostLoader(std::string inputDir);
 
         // SETTERS
-        /// @brief
-        /// @param csvName
-        /// @return
+        /// @brief Load Healthcare Utilization Cost from file
+        /// @param csvName filename for Healthcare Utilization Cost
+        /// @return Matrix3d containing the Healthcare Utilization Cost
         Matrix3d loadHealthcareUtilizationCost(std::string csvName);
 
-        /// @brief
-        /// @param csvName
-        /// @return
+        /// @brief Load Overdose Cost from file
+        /// @param csvName filename for Overdose Cost
+        /// @return unordered map for Overdose Costs, string to double
         std::unordered_map<std::string, double> loadOverdoseCost(std::string csvName);
 
         /// @brief

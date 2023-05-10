@@ -42,6 +42,8 @@ namespace Data{
 
     class Loader{
     public:
+        Loader(){};
+        Loader(std::string inputDir);
         /// @brief Reads a configuration file to a Configuration object
         /// @param inputFile path to the configuration file to be read
         /// @return
@@ -56,6 +58,8 @@ namespace Data{
         /// @return an unordered map whose keys are table names and values are
         /// CSV/InputTables
         std::unordered_map<std::string, InputTable> readInputDir(std::string);
+
+        Configuration getConfiguration() { return this->Config; }
 
     protected:
         std::unordered_map<std::string, InputTable> inputTables;

@@ -3,7 +3,7 @@
 namespace Data{
 
     /// @brief Default Constructor creating a completely empty DataWriter Object
-    DataWriter::DataWriter() : DataWriter("", {}, {}, {}, {}) {}
+    DataWriter::DataWriter() : DataWriter("", {}, {}, {}) {}
 
     /// @brief The main Constructor for DataWriter, it fills the object with the given parameters
     /// @param dirname A string containing a path to a directory to write output files
@@ -14,19 +14,11 @@ namespace Data{
     DataWriter::DataWriter(std::string dirname,
         std::vector<std::string> interventions,
         std::vector<std::string> oudStates,
-        std::vector<std::vector<std::string>> demographics,
-        History history) {
+        std::vector<std::vector<std::string>> demographics) {
             this->dirname = dirname;
             this->interventions = interventions;
             this->oudStates = oudStates;
             this->demographics = demographics;
-            this->addHistory(history);
-    }
-
-    /// @brief Setter for History from a Simulation
-    /// @param history History to write to a CSV
-    void DataWriter::addHistory(History history) {
-        this->history = history;
     }
 
     /// @brief Setter for Directory Path
@@ -62,11 +54,11 @@ namespace Data{
     /// @brief Main Operation of Class, write data to output
     /// @param outputType Output Enum, generally Data::FILE
     /// @return string containing the result if output enum is Data::STRING or description of status otherwise
-    std::string DataWriter::write(OutputType outputType) {
-        if(this->history.stateHistory.getMatrices().empty() ||
-            this->history.overdoseHistory.getMatrices().empty() ||
-            this->history.fatalOverdoseHistory.getMatrices().empty() ||
-            this->history.mortalityHistory.getMatrices().empty() ||
+    std::string DataWriter::writeHistory(OutputType outputType, History history) {
+        if(history.stateHistory.getMatrices().empty() ||
+            history.overdoseHistory.getMatrices().empty() ||
+            history.fatalOverdoseHistory.getMatrices().empty() ||
+            history.mortalityHistory.getMatrices().empty() ||
             this->dirname.empty()) {
             //log error
             std::ostringstream s;
@@ -92,27 +84,27 @@ namespace Data{
             std::ofstream file;
 
             file.open(stateFullPath.string());
-            this->writer(file, this->history.stateHistory);
+            this->writer(file, history.stateHistory);
             file.close();
 
             file.open(overdoseFullPath.string());
-            this->writer(file, this->history.overdoseHistory);
+            this->writer(file, history.overdoseHistory);
             file.close();
 
             file.open(fatalOverdoseFullPath.string());
-            this->writer(file, this->history.fatalOverdoseHistory);
+            this->writer(file, history.fatalOverdoseHistory);
             file.close();
 
             file.open(mortalityFullPath.string());
-            this->writer(file, this->history.mortalityHistory);
+            this->writer(file, history.mortalityHistory);
             file.close();
             return "success";
         }
         std::ostringstream stringstream;
-        this->writer(stringstream, this->history.stateHistory);
-        this->writer(stringstream, this->history.overdoseHistory);
-        this->writer(stringstream, this->history.fatalOverdoseHistory);
-        this->writer(stringstream, this->history.mortalityHistory);
+        this->writer(stringstream, history.stateHistory);
+        this->writer(stringstream, history.overdoseHistory);
+        this->writer(stringstream, history.fatalOverdoseHistory);
+        this->writer(stringstream, history.mortalityHistory);
         return stringstream.str();
     }
 
@@ -245,10 +237,13 @@ namespace Data{
                         stream << this->demographics[k][dem] << ",";
                     }
                     for(Matrix3d dm : Matrix3dVec) {
-                        std::array<long, 3> index = {0,0,0};
+                        std::array<long int, 3> index = {0,0,0};
                         index[Data::INTERVENTION] = i;
                         index[Data::OUD] = j;
                         index[Data::DEMOGRAPHIC_COMBO] = k;
+                        if(dm.NumDimensions != 3){
+                            throw std::invalid_argument("Not 3 Dimensions in Matrix3d");
+                        }
                         stream << std::to_string(dm(index[0], index[1], index[2])) << ",";
                     }
                     stream << std::endl;

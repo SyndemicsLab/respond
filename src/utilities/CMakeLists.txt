@@ -11,13 +11,9 @@ add_library(utilities
     Matrix3dPrinter.cpp
 )
 
-target_sources(utilities PUBLIC 
-    Matrix3dFactory.hpp
-    Matrix3dPrinter.hpp
-)
-
 target_include_directories(utilities INTERFACE
   ${CMAKE_CURRENT_SOURCE_DIR}
+  "include/"
 )
 
 target_link_libraries(utilities 

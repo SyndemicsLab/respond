@@ -3,17 +3,7 @@
 using namespace Data;
 
 
-CostLoader::CostLoader(std::string inputDir){
-    // PROCESSING INPUT FILES
-    // account for no trailing slash in the provided input directory
-    std::string configPath = inputDir;
-    if (configPath.back() != '/') {
-        configPath.push_back('/');
-    }
-    configPath += "sim.conf";
-    this->Config = readConfigFile(configPath);
-    this->inputTables = readInputDir(inputDir);
-}
+CostLoader::CostLoader(std::string inputDir) : Loader(inputDir) { }
 
 Matrix3d CostLoader::loadHealthcareUtilizationCost(std::string csvName){
 

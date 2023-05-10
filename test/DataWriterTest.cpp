@@ -20,7 +20,7 @@ TEST(DataWriterCreation, MainConstructor){
     std::vector<std::vector<std::string>> demographics;
     History history;
 
-    DataWriter writer(dirname, interventions, oudStates, demographics, history);
+    DataWriter writer(dirname, interventions, oudStates, demographics);
     EXPECT_EQ(writer.getDirname(), dirname);
 }
 
@@ -64,8 +64,8 @@ TEST(SimpleWriteTest, SingleValueDimensions){
     
     std::string dirname = "build/test/TestDir";
 
-    DataWriter writer(dirname, interventions, oudStates, demographics, history);
-    std::string result = writer.write(STRING);
+    DataWriter writer(dirname, interventions, oudStates, demographics);
+    std::string result = writer.writeHistory(STRING, history);
 
     std::string expected = "Interventions, OUD States,Demographic 0,Demographic 1,t+0,\n"
     "inter1,oud1,10_14,Male,0.000000,\n"
@@ -158,8 +158,8 @@ TEST(SimpleWriteTest, MultiTimestep){
     
     std::string dirname = "build/test/TestDir";
 
-    DataWriter writer(dirname, interventions, oudStates, demographics, history);
-    std::string result = writer.write(Data::STRING);
+    DataWriter writer(dirname, interventions, oudStates, demographics);
+    std::string result = writer.writeHistory(Data::STRING, history);
 
     std::string expected = "Interventions, OUD States,Demographic 0,Demographic 1,t+0,t+1,\n"
     "inter1,oud1,10_14,Male,1.000000,0.000000,\n"

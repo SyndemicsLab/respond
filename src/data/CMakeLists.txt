@@ -21,17 +21,11 @@ add_library(data
   DataTypes.cpp
   Configuration.cpp
 )
-target_sources(data PUBLIC
-  Loader.hpp
-  CostLoader.hpp
-  UtilityLoader.hpp
-  DataLoader.hpp
-  DataWriter.hpp
-  DataTypes.hpp
-)
+
 target_include_directories(data INTERFACE
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${Boost_INCLUDE_DIRS}
+  "include/"
 )
 target_link_libraries(data
   ${Boost_LIBRARIES}

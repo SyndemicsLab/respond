@@ -14,6 +14,11 @@ Configuration::Configuration() {
 }
 
 Configuration::Configuration(std::string configFile) {
+    std::ifstream f(configFile.c_str());
+    if(!f.good()){
+        throw std::invalid_argument("Invalid Config File Provided. " + configFile + " was not found.");
+    }
+
     read_ini(configFile, this->ptree);
 
     for (auto& section : this->ptree) {
@@ -34,17 +39,38 @@ Configuration::Configuration(std::string configFile) {
 
 std::vector<std::string> Configuration::getInterventions() {
     std::string res = this->ptree.get<std::string>("state.interventions");
-    return this->parseString2VectorOfStrings(res);
+    if(res.empty()){ 
+        throw std::invalid_argument("No Valid Interventions Provided. Make sure state.interventions exists in your config file!");
+    }
+    std::vector<std::string> result = this->parseString2VectorOfStrings(res);
+
+    if(result.size()%2 == 0){
+        throw std::invalid_argument("An even number of interventions were provided. "
+        "The model assumes there is one No Treatment Intervention and then a Post Treatment for each treatment provided.");
+    }
+    int mid = result.size()/2 + 1;
+    for(int i=0; i < result.size()/2; i++){
+        if(result[mid+i].find(result[i+1]) == std::string::npos){
+            throw std::invalid_argument("Post-Intervention order does not correspond with Intervention Order.");
+        }
+    }
+    return result;
 }
 
 std::vector<std::string> Configuration::getOUDStates() {
     std::string res = this->ptree.get<std::string>("state.ouds");
+    if(res.empty()){
+        throw std::invalid_argument("No Valid OUDs Provided. Make sure state.ouds exists in your config file!");
+    }
     return this->parseString2VectorOfStrings(res);
 }
 
 std::vector<std::string> Configuration::getDemographicCombos() {
     int n = this->getNumDemographicCombos();
     std::vector<int> demographics = this->getDemographicCounts();
+    if(demographics.size() != this->demographicParams.size()){
+        throw std::invalid_argument("The Demographic Parameters size do not match.");
+    }
     int k = demographics.size();
 
     std::vector<int> indices(k, 0);
@@ -56,6 +82,28 @@ std::vector<std::string> Configuration::getDemographicCombos() {
             str = str + " " + this->demographicParams[this->demographicOrder[j]][indices[j]];
         }
         results.push_back(str);
+        indices = this->updateIndices(indices, demographics);
+    }
+    return results;
+}
+
+std::vector<std::vector<std::string>> Configuration::getDemographicCombosVecOfVec() {
+    int n = this->getNumDemographicCombos();
+    std::vector<int> demographics = this->getDemographicCounts();
+    if(demographics.size() != this->demographicParams.size()){
+        throw std::invalid_argument("The Demographic Parameters size do not match.");
+    }
+    int k = demographics.size();
+
+    std::vector<int> indices(k, 0);
+    std::vector<std::vector<std::string>> results;
+
+    for(int i = 0; i < n; i++) {
+        std::vector<std::string> vec;
+        for(int j = 0; j < k; j++) {
+            vec.push_back(this->demographicParams[this->demographicOrder[j]][indices[j]]);
+        }
+        results.push_back(vec);
         indices = this->updateIndices(indices, demographics);
     }
     return results;
@@ -83,7 +131,11 @@ int Configuration::getAgingInterval() {
 }
 
 int Configuration::getDuration() {
-    return this->ptree.get<int>("simulation.duration");
+    int duration = this->ptree.get<int>("simulation.duration");
+    if(duration <= 0){
+        throw std::invalid_argument("Invalid Duration Provided");
+    }
+    return duration;
 
 }
 
@@ -92,8 +144,16 @@ std::vector<int> Configuration::getEnteringSampleChangeTimes() {
     std::vector<int> resVec = this->parseString2VectorOfInts(res);
     std::vector<int> result;
     for(int r : resVec){
+        if(!result.empty() && result.back() > r){
+            throw std::invalid_argument("Invalid Entering Cohort Change Times. Values are out of order.");
+        }
         result.push_back(r-1);
     }
+
+    if(this->getDuration() > (result.back()+1)){
+        throw std::invalid_argument("Invalid Entering Cohort Change Times. Last value must be greater than or equal to the duration");
+    }
+
     return result;
 }
 
@@ -102,8 +162,16 @@ std::vector<int> Configuration::getInterventionChangeTimes() {
     std::vector<int> resVec = this->parseString2VectorOfInts(res);
     std::vector<int> result;
     for(int r : resVec){
+        if(!result.empty() && result.back() > r){
+            throw std::invalid_argument("Invalid Intervention Change Times. Values are out of order.");
+        }
         result.push_back(r-1);
     }
+
+    if(this->getDuration() > (result.back()+1)){
+        throw std::invalid_argument("Invalid Intervention Change Times. Last value must be greater than or equal to the duration");
+    }
+
     return result;
 }
 
@@ -112,8 +180,16 @@ std::vector<int> Configuration::getOverdoseChangeTimes() {
     std::vector<int> resVec = this->parseString2VectorOfInts(res);
     std::vector<int> result;
     for(int r : resVec){
+        if(!result.empty() && result.back() > r){
+            throw std::invalid_argument("Invalid Overdose Change Times. Values are out of order.");
+        }
         result.push_back(r-1);
     }
+
+    if(this->getDuration() > (result.back()+1)){
+        throw std::invalid_argument("Invalid Overdose Change Times. Last value must be greater than or equal to the duration.");
+    }
+
     return result;
 }
 
@@ -146,6 +222,7 @@ std::vector<int> Configuration::get<std::vector<int>>(std::string str) {
 template<>
 std::vector<std::string> Configuration::get<std::vector<std::string>>(std::string str) {
     std::string res = this->ptree.get<std::string>(str);
+    if(res.empty()){ return {}; }
     return this->parseString2VectorOfStrings(res);
 }
 
@@ -162,6 +239,9 @@ std::vector<std::string> Configuration::get<std::vector<std::string>>(std::strin
 /// @return
 std::vector<int> Configuration::updateIndices(std::vector<int> indices, std::vector<int> maxIndices) {
     int lastIdx = indices.size()-1;
+    if(lastIdx < 0){
+        throw std::invalid_argument("Invalid index count");
+    }
     std::vector<int> results = indices;
     results[lastIdx]++;
     for(int i = lastIdx; i > 0; i--) {
