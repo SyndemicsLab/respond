@@ -15,6 +15,8 @@ namespace Data{
         CostLoader() {};
         CostLoader(std::string inputDir);
 
+        Configuration loadConfigurationFile(std::string configPath);
+
         // SETTERS
         /// @brief Load Healthcare Utilization Cost from file
         /// @param csvName filename for Healthcare Utilization Cost

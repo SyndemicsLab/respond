@@ -14,6 +14,11 @@ Loader::Loader(std::string inputDir){
     this->inputTables = readInputDir(inputDir);
 }
 
+Configuration Loader::loadConfigurationFile(std::string configPath){
+    this->Config = readConfigFile(configPath);
+    return this->Config;
+}
+
 InputTable Loader::readCSV(std::string inputFile) {
     using boost::tokenizer;
 

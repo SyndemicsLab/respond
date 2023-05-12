@@ -25,27 +25,84 @@
 
 /// @brief Namespace defining all Simulation Operations
 namespace Simulation{
+    /// @brief Interface for all Simulations
     class ISim{
     public:
         virtual ~ISim(){};
+
+        /// @brief Load the Initial Sample
+        /// @param initialSample Matrix3d of InitialSample
         virtual void loadInitialSample(Data::Matrix3d initialSample) = 0;
+
+        /// @brief Load the Entering Samples
+        /// @param enteringSamples Matrix3dOverTime of Entering Samples
         virtual void loadEnteringSamples(Data::Matrix3dOverTime enteringSamples) = 0;
+
+        /// @brief Load the OUD Transition Rates
+        /// @param oudTransitionRates Matrix3d of OUD Transition Rates
         virtual void loadOUDTransitionRates(Data::Matrix3d oudTransitionRates) = 0;
+
+        /// @brief Load the Intervention Initialization Rates
+        /// @param interventionInitRates Matrix3d of Intervention Initialization Rates
         virtual void loadInterventionInitRates(Data::Matrix3d interventionInitRates) = 0;
+
+        /// @brief Load the Intervention Transition Rates
+        /// @param interventionTransitionRates Matrix3dOverTime of Intervention Transition Rates
         virtual void loadInterventionTransitionRates(Data::Matrix3dOverTime interventionTransitionRates) = 0;
+
+        /// @brief Load the Overdose Rates
+        /// @param overdoseRates Matrix3dOverTime of Overdose Rates
         virtual void loadOverdoseRates(Data::Matrix3dOverTime overdoseRates) = 0;
+
+        /// @brief Load the Fatal Overdose Rates
+        /// @param fatalOverdoseRates Matrix3dOverTime of Fatal Overdose Rates
         virtual void loadFatalOverdoseRates(Data::Matrix3dOverTime fatalOverdoseRates) = 0;
+
+        /// @brief Load the Mortality Rates
+        /// @param mortalityRates Matrix3d of Mortality Rates
         virtual void loadMortalityRates(Data::Matrix3d mortalityRates) = 0;
+
+        /// @brief Load Data to the Simulation
+        /// @param dataLoader dataLoader containing necessary data for Simulations
         virtual void Load(Data::DataLoader dataLoader) = 0;
+
+        /// @brief Load Aging Parameters
+        /// @param shift Integer Value to offset aging
+        /// @param interval Integer Size of Age Group
         virtual void LoadAgingParameters(int shift, int interval) = 0;
 
+        /// @brief Get the Entering Samples
+        /// @return Matrix3dOverTime of Entering Samples
         virtual Data::Matrix3dOverTime GetEnteringSamples() = 0;
+
+        /// @brief Get the OUD Transitions
+        /// @return Matrix3d of OUD Transitions
         virtual Data::Matrix3d GetOUDTransitions() = 0;
+
+        /// @brief Get the Intervention Transitions
+        /// @return Matrix3dOverTime of Intervention Transitions
         virtual Data::Matrix3dOverTime GetInterventionTransitions() = 0;
+
+        /// @brief Get the Overdose Transactions
+        /// @return Matrix3dOverTime of Overdose Transitions
         virtual Data::Matrix3dOverTime GetOverdoseTransitions() = 0;
+
+        /// @brief Get the Fatal Overdose Transitions
+        /// @return Matrix3dOverTime of Fatal Overdose Transitions
         virtual Data::Matrix3dOverTime GetFatalOverdoseTransitions() = 0;
+
+        /// @brief Get the Mortality Transitions
+        /// @return Matrix3d of Mortality Transitions
         virtual Data::Matrix3d GetMortalityTransitions() = 0;
 
+        /// @brief Load all Modules
+        /// @param enteringSamples Matrix3dOverTime of Entering Samples
+        /// @param oudTransitionRates Matrix3d of OUD Transition Rates
+        /// @param interventionInitRates Matrix3d of Intervention Initialization Rates
+        /// @param interventionTransitionRates Matrix3dOverTime of Intervention Transition Rates
+        /// @param fatalOverdoseRates Matrix3dOverTime of Fatal Overdose Rates
+        /// @param overdoseRates Matrix3dOverTime of Overdose Rates
+        /// @param mortalityRates Matrix3d of Mortality Rates
         virtual void LoadTransitionModules(
             Data::Matrix3dOverTime enteringSamples,
             Data::Matrix3d oudTransitionRates,
@@ -55,8 +112,15 @@ namespace Simulation{
             Data::Matrix3dOverTime overdoseRates,
             Data::Matrix3d mortalityRates
         ) = 0;
+
+        /// @brief Core Run Function
         virtual void Run() = 0;
+
+        /// @brief Helper used to Raise Population Age according to cycle
         virtual void raisePopulationAge() = 0;
+
+        /// @brief Return the History generated in the Simulation
+        /// @return History struct
         virtual Data::History getHistory() = 0;
     };
 

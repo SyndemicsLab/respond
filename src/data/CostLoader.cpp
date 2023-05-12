@@ -5,6 +5,10 @@ using namespace Data;
 
 CostLoader::CostLoader(std::string inputDir) : Loader(inputDir) { }
 
+Configuration CostLoader::loadConfigurationFile(std::string configPath){
+    return Loader::loadConfigurationFile(configPath);
+}
+
 Matrix3d CostLoader::loadHealthcareUtilizationCost(std::string csvName){
 
     size_t numOUDStates = this->Config.getOUDStates().size();

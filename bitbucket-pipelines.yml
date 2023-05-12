@@ -15,6 +15,7 @@ pipelines:
             - apt-get install -y cmake
             - apt-get update
             - apt-get -y --no-install-recommends install build-essential
+            - apt-get -y --no-install-recommends install git
             - apt-get -y --no-install-recommends install ca-certificates
             - apt-get -y --no-install-recommends install gcc
             - apt-get -y --no-install-recommends install clang
@@ -23,7 +24,15 @@ pipelines:
             - apt-get install -y libeigen3-dev
             - apt-get install -y libgmock-dev
             - apt-get install -y libfmt-dev
+            - apt-get install -y libasio-dev
+            - cd libs
+            - git clone https://github.com/CrowCpp/Crow.git
+            - cd Crow
+            - mkdir build
             - cd build
+            - cmake .. -DCROW_BUILD_EXAMPLES=OFF -DCROW_BUILD_TESTS=OFF
+            - make install
+            - cd ../../../build
             - cmake ..
             - make
             - test/respondTest

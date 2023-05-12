@@ -28,13 +28,43 @@ namespace Data {
     class IDataWriter{
     public:
         virtual ~IDataWriter(){};
+
+        /// @brief Specify the Directory Name
+        /// @param dirname Directory location to write files
         virtual void addDirname(std::string dirname) = 0;
+
+        /// @brief Get the Directory Name
+        /// @return String specifying directory
         virtual std::string getDirname() = 0;
+
+        /// @brief Specify the Interventions
+        /// @param interventions Vector of Strings of Interventions
         virtual void setInterventions(std::vector<std::string> interventions) = 0;
+
+        /// @brief Specify the OUD States
+        /// @param oudStates Vector of Strings of OUD States
         virtual void setOUDStates(std::vector<std::string> oudStates) = 0;
+
+        /// @brief Specify the Demographics
+        /// @param demographics Vector of Vector of Strings of Demographics
         virtual void setDemographics(std::vector<std::vector<std::string>> demographics) = 0;
+
+        /// @brief Main function to write the history
+        /// @param outputType Enum describing the output type. Defaults to FILE
+        /// @param history History struct containing the results of the simulation
+        /// @return String depending on the output type
         virtual std::string writeHistory(OutputType outputType, History history) = 0;
+
+        /// @brief Main function to write the cost
+        /// @param outputType Enum describing the output type. Defaults to FILE
+        /// @param cost Cost struct containing the results of the simulation
+        /// @return String depending on the output type
         virtual std::string writeCost(OutputType outputType, Cost cost) = 0;
+
+        /// @brief Main function to write the Utilities
+        /// @param outputType Enum describing the output type. Defaults to FILE
+        /// @param util Utility struct containing the results of the simulation
+        /// @return String depending on the output type
         virtual std::string writeUtility(OutputType outputType, Utility util) = 0;
     };
 

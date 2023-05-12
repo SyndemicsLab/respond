@@ -44,6 +44,9 @@ namespace Data{
     public:
         Loader(){};
         Loader(std::string inputDir);
+
+        Configuration loadConfigurationFile(std::string configPath);
+
         /// @brief Reads a configuration file to a Configuration object
         /// @param inputFile path to the configuration file to be read
         /// @return
@@ -53,12 +56,14 @@ namespace Data{
         /// @param inputFile path to the CSV to be read
         /// @return A map object containing columns stored as key-value pairs
         InputTable readCSV(std::string);
+        
         /// @brief Reads typical RESPOND input files from the provided input directory
         /// @param inputDir the directory from which to read input files
-        /// @return an unordered map whose keys are table names and values are
-        /// CSV/InputTables
+        /// @return an unordered map whose keys are table names and values are CSV/InputTables
         std::unordered_map<std::string, InputTable> readInputDir(std::string);
 
+        /// @brief Get the Configuration from the Loader
+        /// @return Configuration
         Configuration getConfiguration() { return this->Config; }
 
     protected:

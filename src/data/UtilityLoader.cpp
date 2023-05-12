@@ -4,6 +4,10 @@ using namespace Data;
 
 UtilityLoader::UtilityLoader(std::string inputDir) : Loader(inputDir) { }
 
+Configuration UtilityLoader::loadConfigurationFile(std::string configPath){
+    return Loader::loadConfigurationFile(configPath);
+}
+
 Matrix3d UtilityLoader::loadBackgroundUtility(std::string csvName){
     size_t numOUDStates = this->Config.getOUDStates().size();
     size_t numDemographicCombos = this->Config.getNumDemographicCombos();

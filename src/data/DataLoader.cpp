@@ -79,6 +79,23 @@ DataLoader::DataLoader(Configuration config, std::string inputDir){
  *
  *********************************************************************/
 
+Configuration DataLoader::loadConfigurationFile(std::string configPath){
+    Loader::loadConfigurationFile(configPath);
+    this->interventions = this->Config.getInterventions();
+    this->oudStates = this->Config.getOUDStates();
+    this->demographicCounts = this->Config.getDemographicCounts();
+
+    // SETTING SIMULATION CONSTANTS
+    this->numInterventions   = this->interventions.size();
+    this->numOUDStates       = this->oudStates.size();
+
+    this->duration = this->Config.getDuration();
+    this->numDemographics = this->demographicCounts.size();
+    this->numDemographicCombos = this->Config.getNumDemographicCombos();
+    this->agingInterval = this->Config.getAgingInterval();
+    return this->Config;
+}
+
 /// @brief
 /// @param csvName
 Matrix3d DataLoader::loadInitialSample(std::string csvName) {
