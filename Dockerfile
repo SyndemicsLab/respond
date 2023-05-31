@@ -32,4 +32,4 @@ RUN cmake -DCMAKE_BUILD_TYPE=Debug ..
 RUN make
 
 # CMD [ "test/respondTest" ]
-CMD [ "src/respond", "TestInput/input1", "1" ]
+CMD [ "src/respond", "TestInput/", "2" ]

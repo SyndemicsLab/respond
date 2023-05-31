@@ -3,8 +3,8 @@
 
 #include <array>
 
-#include <eigen3/Eigen/Eigen>
-#include <eigen3/unsupported/Eigen/CXX11/Tensor>
+#include <Eigen/Eigen>
+#include <unsupported/Eigen/CXX11/Tensor>
 
 #include "DataTypes.hpp"
 

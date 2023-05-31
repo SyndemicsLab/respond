@@ -44,7 +44,6 @@ namespace Simulation{
         boost::log::core::get()->set_filter(
             boost::log::trivial::severity >= boost::log::trivial::info
         );
-
         BOOST_LOG(this->lg) << "Initialize Logging";
         const auto processor_count = std::thread::hardware_concurrency();
         Eigen::setNbThreads(processor_count);
@@ -64,6 +63,7 @@ namespace Simulation{
         if (this->agingInterval) {
             this->agingSwitch = true;
         }
+        
     }
 
     /// @brief Setter for Initial Group Parameter
@@ -259,15 +259,15 @@ namespace Simulation{
 
         // STATE TRANSITION
         Data::Matrix3d enterSampleState = this->addEnteringSamples(this->state);
-        // enterSampleState matches excel
-                
+
         Data::Matrix3d oudTransState = this->multiplyOUDTransitions(enterSampleState);
-        // oudTransState matches excel
 
         Data::Matrix3d transitionedState = this->multiplyInterventionTransitions(oudTransState);        
 
         Data::Matrix3d overdoses = this->multiplyOverdoseTransitions(transitionedState);
+
         Data::Matrix3d fatalOverdoses = this->multiplyFatalOverdoseTransitions(overdoses);
+
         Data::Matrix3d mortalities = this->multiplyMortalityTransitions(transitionedState-fatalOverdoses);
 
         return (transitionedState - (mortalities + fatalOverdoses));
@@ -310,7 +310,6 @@ namespace Simulation{
         switch(dim) {
             case Data::OUD:
                 if(this->interventionInitState){
-                    // std::cout << this->interventionInitRates << std::endl << std::endl;
                     return this->interventionInitRates;
                 }   
                 else{
@@ -336,6 +335,14 @@ namespace Simulation{
         if(transition.dimension(dim) != pow(state.dimension(dim),2)) {
             std::string message = fmt::format("Transition Dimensions does not equal the Square of State Dimensions at timestep {}\nTransition Dimension: {}\nState Dimension: {}\n Dimension: {}", this->currentTime, 
             this->transition.dimension(dim), pow(state.dimension(dim),2), dim);
+            throw std::invalid_argument(message);
+        }
+        else if(transition.dimension(dim) == 0){
+            std::string message = fmt::format("Transition Dimension is zero at timestep {}", this->currentTime);
+            throw std::invalid_argument(message);
+        }
+        else if(state.dimension(dim) == 0){
+            std::string message = fmt::format("State Dimension is zero at timestep {}", this->currentTime);
             throw std::invalid_argument(message);
         }
 

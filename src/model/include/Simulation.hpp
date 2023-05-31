@@ -12,8 +12,8 @@
 #include <boost/log/sources/logger.hpp>
 #include <cmath>
 #include <cstdint>
-#include <eigen3/Eigen/Eigen>
-#include <eigen3/unsupported/Eigen/CXX11/Tensor>
+#include <Eigen/Eigen>
+#include <unsupported/Eigen/CXX11/Tensor>
 #include <fmt/core.h>
 #include <iostream>
 #include <stdexcept>

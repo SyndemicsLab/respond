@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
-#include <eigen3/Eigen/Eigen>
-#include <eigen3/unsupported/Eigen/CXX11/Tensor>
+#include <Eigen/Eigen>
+#include <unsupported/Eigen/CXX11/Tensor>
 
 #include "DataWriter.hpp"
 

@@ -14,14 +14,3 @@ TEST(DataLoaderTest, DefaultConstructor) {
     std::string EXPECTED = "";
     EXPECT_EQ(dataTest.getDirName(), EXPECTED);
 }
-
-TEST(DataLoaderTest, Empty_loadInitialSample) {
-    std::string inputDir = "TestInput/input1";
-    DataLoader dataloader;
-    std::array<long int, 3> order = {0,0,0};
-    Data::Matrix3d empty(order);
-    empty.setZero();
-    Eigen::Tensor<bool, 0> eq = (dataloader.loadInitialSample("init_cohort.csv") == empty).all();
-    EXPECT_TRUE(eq(0));
-}
-

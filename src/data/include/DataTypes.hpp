@@ -2,8 +2,8 @@
 #define DATA_DATATYPES_HPP_
 
 #include <vector>
-#include <eigen3/Eigen/Eigen>
-#include <eigen3/unsupported/Eigen/CXX11/Tensor>
+#include <Eigen/Eigen>
+#include <unsupported/Eigen/CXX11/Tensor>
 
 namespace Data{
     /// @brief Eigen 3d Tensor

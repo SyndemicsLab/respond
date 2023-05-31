@@ -81,6 +81,7 @@ DataLoader::DataLoader(Configuration config, std::string inputDir){
 
 Configuration DataLoader::loadConfigurationFile(std::string configPath){
     Loader::loadConfigurationFile(configPath);
+    this->inputTables[configPath] = Loader::readCSV(configPath);
     this->interventions = this->Config.getInterventions();
     this->oudStates = this->Config.getOUDStates();
     this->demographicCounts = this->Config.getDemographicCounts();
@@ -101,7 +102,7 @@ Configuration DataLoader::loadConfigurationFile(std::string configPath){
 Matrix3d DataLoader::loadInitialSample(std::string csvName) {
     // INITIAL GROUP
     if(this->inputTables.find(csvName) == this->inputTables.end()){
-        return Utilities::Matrix3dFactory::Create(0, 0, 0).constant(0);
+        this->inputTables[csvName] = Loader::readCSV(csvName);
     }
 
     int nonPostInterventions = ((this->numInterventions - 1)/2 + 1);
@@ -139,7 +140,7 @@ Matrix3d DataLoader::loadInitialSample(std::string csvName) {
 Matrix3dOverTime DataLoader::loadEnteringSamples(std::string csvName, std::string enteringSampleIntervention, std::string enteringSampleOUD) {
 
     if(this->inputTables.find(csvName) == this->inputTables.end()){
-        return Matrix3dOverTime();
+        this->inputTables[csvName] = Loader::readCSV(csvName);
     }
 
     int esiIdx = 0;
@@ -187,7 +188,7 @@ Matrix3dOverTime DataLoader::loadEnteringSamples(std::string csvName, std::strin
 Matrix3d DataLoader::loadOUDTransitionRates(std::string csvName) {
 
     if(this->inputTables.find(csvName) == this->inputTables.end()){
-        return Utilities::Matrix3dFactory::Create(0, 0, 0).constant(0);
+        this->inputTables[csvName] = Loader::readCSV(csvName);
     }
 
     // OUD TRANSITIONS
@@ -229,7 +230,7 @@ Matrix3d DataLoader::loadOUDTransitionRates(std::string csvName) {
 Matrix3d DataLoader::loadInterventionInitRates(std::string csvName) {
 
     if(this->inputTables.find(csvName) == this->inputTables.end()){
-        return Utilities::Matrix3dFactory::Create(0, 0, 0).constant(0);
+        this->inputTables[csvName] = Loader::readCSV(csvName);
     }
 
     // OUD TRANSITIONS
@@ -300,7 +301,7 @@ Matrix3d DataLoader::loadInterventionInitRates(std::string csvName) {
 Matrix3dOverTime DataLoader::loadInterventionTransitionRates(std::string csvName) {
 
     if(this->inputTables.find(csvName) == this->inputTables.end()){
-        return Matrix3dOverTime();
+        this->inputTables[csvName] = Loader::readCSV(csvName);
     }
 
     // INTERVENTION TRANSITIONS
@@ -317,7 +318,7 @@ Matrix3dOverTime DataLoader::loadInterventionTransitionRates(std::string csvName
 Matrix3dOverTime DataLoader::loadOverdoseRates(std::string csvName) {
 
     if(this->inputTables.find(csvName) == this->inputTables.end()){
-        return Matrix3dOverTime();
+        this->inputTables[csvName] = Loader::readCSV(csvName);
     }
 
     // OVERDOSE
@@ -343,7 +344,7 @@ Matrix3dOverTime DataLoader::loadOverdoseRates(std::string csvName) {
 Matrix3dOverTime DataLoader::loadFatalOverdoseRates(std::string csvName) {
 
     if(this->inputTables.find(csvName) == this->inputTables.end()){
-        return Matrix3dOverTime();
+        this->inputTables[csvName] = Loader::readCSV(csvName);
     }
 
     InputTable fatalOverdoseTable      = inputTables[csvName];
@@ -365,10 +366,13 @@ Matrix3dOverTime DataLoader::loadFatalOverdoseRates(std::string csvName) {
 /// @param csvName
 Matrix3d DataLoader::loadMortalityRates(std::string smrCSVName, std::string bgmCSVName) {
 
-    if(this->inputTables.find(smrCSVName) == this->inputTables.end() || 
-    this->inputTables.find(bgmCSVName) == this->inputTables.end()){
-        return Utilities::Matrix3dFactory::Create(0, 0, 0).constant(0);
+    if (this->inputTables.find(smrCSVName) == this->inputTables.end()){
+        this->inputTables[smrCSVName] = Loader::readCSV(smrCSVName);
     }
+    if (this->inputTables.find(bgmCSVName) == this->inputTables.end()){
+        this->inputTables[bgmCSVName] = Loader::readCSV(bgmCSVName);
+    }
+    
 
     // MORTALITY TRANSITIONS
     // mortality here refers to death from reasons other than oud and is calculated
