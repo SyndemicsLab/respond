@@ -39,7 +39,7 @@ Configuration::Configuration(std::string configFile) {
 
 std::vector<std::string> Configuration::getInterventions() {
     std::string res = this->ptree.get<std::string>("state.interventions");
-    if(res.empty()){ 
+    if(res.empty()){
         throw std::invalid_argument("No Valid Interventions Provided. Make sure state.interventions exists in your config file!");
     }
     std::vector<std::string> result = this->parseString2VectorOfStrings(res);
@@ -136,7 +136,6 @@ int Configuration::getDuration() {
         throw std::invalid_argument("Invalid Duration Provided");
     }
     return duration;
-
 }
 
 std::vector<int> Configuration::getEnteringSampleChangeTimes() {
@@ -188,6 +187,62 @@ std::vector<int> Configuration::getOverdoseChangeTimes() {
 
     if(this->getDuration() > (result.back()+1)){
         throw std::invalid_argument("Invalid Overdose Change Times. Last value must be greater than or equal to the duration.");
+    }
+
+    return result;
+}
+
+bool Configuration::getCostSwitch(){
+    return this->ptree.get<bool>("cost.cost_analysis");
+}
+
+std::vector<std::string> Configuration::getCostPerspectives(){
+    std::string res = this->ptree.get<std::string>("cost.cost_perspectives");
+    if(res.empty()){
+        throw std::invalid_argument("No cost perspectives provided.");
+    }
+    std::vector<std::string> result = this->parseString2VectorOfStrings(res);
+    return result;
+}
+
+double Configuration::getDiscountRate(){
+    return this->ptree.get<double>("cost.discount_rate");
+}
+
+int Configuration::getReportingInterval(){
+    return this->ptree.get<int>("cost.reporting_interval");
+}
+
+bool Configuration::getCostCategoryOutputs(){
+    return this->ptree.get<bool>("cost.cost_category_outputs");
+}
+
+bool Configuration::getPerInterventionPredictions(){
+    return this->ptree.get<bool>("output.per_intervention_predictions");
+}
+
+bool Configuration::getGeneralOutputsSwitch(){
+    return this->ptree.get<bool>("output.general_outputs");
+}
+
+std::vector<int> Configuration::getGeneralStatsOutputTimesteps(){
+    std::vector<int> result;
+    std::string res = this->ptree.get<std::string>("output.general_stats_output_timesteps");
+    if(res.empty()){
+        throw std::invalid_argument("No General Stats timesteps provided.");
+    }
+    else{
+        std::vector<int> resVec = this->parseString2VectorOfInts(res);
+        for(int r : resVec){
+            if(result.back() > r){
+                throw std::invalid_argument("Invalid General Stats Output Timesteps. Values are not in ascending order.");
+            }
+            result.push_back(r-1);
+        }
+    }
+
+    if(this->getDuration() > (result.back()+1)){
+        throw std::invalid_argument("Invalid General Stats Output Timesteps. Last value must be greater than or equal to the simulation duration.");
     }
 
     return result;

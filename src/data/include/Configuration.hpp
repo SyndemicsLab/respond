@@ -28,6 +28,14 @@ namespace Data{
         virtual std::vector<std::string> getDemographicCombos() = 0;
         virtual int getAgingInterval() = 0;
         virtual int getDuration() = 0;
+        virtual bool getCostSwitch() = 0;
+        virtual std::vector<std::string> getCostPerspectives() = 0;
+        virtual double getDiscountRate() = 0;
+        virtual int getReportingInterval() = 0;
+        virtual bool getPerInterventionPredictions() = 0;
+        virtual bool getGeneralOutputsSwitch() = 0;
+        virtual std::vector<int> getGeneralStatsOutputTimesteps() = 0;
+        virtual bool getCostCategoryOutputs() = 0;
     };
 
     /// @brief An object that stores parameters from model configuration files
@@ -138,6 +146,30 @@ namespace Data{
         /// @brief Load and Return the Duration
         /// @return Integer containing the Simulation Duration
         int getDuration() override;
+        /// @brief
+        /// @return
+        bool getCostSwitch() override;
+        /// @brief
+        /// @return
+        std::vector<std::string> getCostPerspectives() override;
+        /// @brief
+        /// @return
+        double getDiscountRate() override;
+        /// @brief
+        /// @return
+        int getReportingInterval() override;
+        /// @brief
+        /// @return
+        bool getPerInterventionPredictions() override;
+        /// @brief
+        /// @return
+        bool getGeneralOutputsSwitch() override;
+        /// @brief
+        /// @return
+        std::vector<int> getGeneralStatsOutputTimesteps() override;
+        /// @brief
+        /// @return
+        bool getCostCategoryOutputs() override;
 
         /// @brief
         /// @tparam T

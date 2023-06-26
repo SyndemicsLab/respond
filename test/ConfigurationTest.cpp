@@ -16,10 +16,10 @@ TEST(ConfigurationTest, GeneralConstructor){
 }
 
 TEST(ConfigurationTest, getInterventions){
-    std::vector<std::string> EXPECTED = {"No_Treatment", 
-        "Buprenorphine", 
-        "Naltrexone", 
-        "Post-Buprenorphine", 
+    std::vector<std::string> EXPECTED = {"No_Treatment",
+        "Buprenorphine",
+        "Naltrexone",
+        "Post-Buprenorphine",
         "Post-Naltrexone"
     };
 
@@ -32,9 +32,9 @@ TEST(ConfigurationTest, getInterventions){
 }
 
 TEST(ConfigurationTest, getOUDStates){
-    std::vector<std::string> EXPECTED = {"Active_Noninjection", 
-        "Active_Injection", 
-        "Nonactive_Noninjection", 
+    std::vector<std::string> EXPECTED = {"Active_Noninjection",
+        "Active_Injection",
+        "Nonactive_Noninjection",
         "Nonactive_Injection"
     };
 
@@ -89,9 +89,9 @@ TEST(ConfigurationTest, getOverdoseChangeTimes){
 }
 
 TEST(ConfigurationTest, getDemographicCombos){
-    std::vector<std::string> EXPECTED = {" 10_14 male", 
-        " 10_14 female", 
-        " 15_19 male", 
+    std::vector<std::string> EXPECTED = {" 10_14 male",
+        " 10_14 female",
+        " 15_19 male",
         " 15_19 female",
         " 20_24 male",
         " 20_24 female"
@@ -135,7 +135,7 @@ TEST(ConfigurationTest, getBool) {
         TestConf.get<bool>("cost.cost_analysis"),
         TestConf.get<bool>("output.per_intervention_predictions"),
         TestConf.get<bool>("output.general_outputs"),
-        TestConf.get<bool>("output.cost_category_outputs")
+        TestConf.get<bool>("cost.cost_category_outputs")
     };
 
     for (int i = 0; i < REAL_VALUES.size(); ++i) {
@@ -153,7 +153,7 @@ TEST(ConfigurationTest, getInt) {
     std::vector<int> REAL_VALUES = {
         TestConf.get<int>("simulation.duration"),
         TestConf.get<int>("simulation.aging_interval"),
-        TestConf.get<int>("output.reporting_interval")
+        TestConf.get<int>("cost.reporting_interval")
     };
 
     for (int i = 0; i < REAL_VALUES.size(); ++i) {

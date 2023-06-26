@@ -20,8 +20,10 @@ target_include_directories(respondTest INTERFACE
 
 target_link_libraries(respondTest
   Eigen3::Eigen
-  gtest
-  gtest_main
+  GTest::gtest
+  GTest::gtest_main
+  GTest::gmock
+  GTest::gmock_main
   model
   data
 )

@@ -7,7 +7,7 @@ using namespace Data;
  * Constructors
  *
  *********************************************************************/
-DataLoader::DataLoader() {
+DataLoader::DataLoader(){
     this->duration = 0;
     this->agingInterval = 0;
     this->ageGroupShift = 0;
@@ -15,6 +15,7 @@ DataLoader::DataLoader() {
     this->numInterventions = 0;
     this->numDemographics = 0;
     this->numDemographicCombos = 0;
+    this->costSwitch = false;
 
     this->interventions = {};
     this->oudStates = {};
@@ -34,7 +35,7 @@ DataLoader::DataLoader() {
     Loader::inputTables = {};
 }
 
-DataLoader::DataLoader(std::string inputDir) : Loader(inputDir) {
+DataLoader::DataLoader(std::string inputDir) : Loader(inputDir){
     // SETTING STRING VECTORS FOR DATA WRITER
     this->interventions = this->Config.getInterventions();
     this->oudStates = this->Config.getOUDStates();
@@ -53,11 +54,21 @@ DataLoader::DataLoader(std::string inputDir) : Loader(inputDir) {
     this->ageGroupShift = this->numDemographicCombos/this->demographicCounts[0];
 
     std::vector<std::string> demographicCombos = this->Config.getDemographicCombos();
+
+    // COST VARIABLES
+    this->costSwitch         = this->Config.getCostSwitch();
+    this->populateCostParameters();
+
+    // OUTPUT VARIABLES
+    this->perInterventionPredictions = this->Config.getPerInterventionPredictions();
+    this->generalOutputsSwitch = this->Config.getGeneralOutputsSwitch();
+    this->generalStatsOutputTimesteps = this->Config.getGeneralStatsOutputTimesteps();
 }
 
 DataLoader::DataLoader(Configuration config, std::string inputDir){
     this->Config = config;
     this->inputTables = this->readInputDir(inputDir);
+
     // SETTING STRING VECTORS FOR DATA WRITER
     this->interventions = this->Config.getInterventions();
     this->oudStates = this->Config.getOUDStates();
@@ -71,6 +82,15 @@ DataLoader::DataLoader(Configuration config, std::string inputDir){
     this->numDemographics = this->demographicCounts.size();
     this->numDemographicCombos = this->Config.getNumDemographicCombos();
     this->agingInterval = this->Config.getAgingInterval();
+
+    // COST VARIABLES
+    this->costSwitch         = this->Config.getCostSwitch();
+    this->populateCostParameters();
+
+    // OUTPUT VARIABLES
+    this->perInterventionPredictions = this->Config.getPerInterventionPredictions();
+    this->generalOutputsSwitch = this->Config.getGeneralOutputsSwitch();
+    this->generalStatsOutputTimesteps = this->Config.getGeneralStatsOutputTimesteps();
 }
 
 /*********************************************************************
@@ -99,7 +119,7 @@ Configuration DataLoader::loadConfigurationFile(std::string configPath){
 
 /// @brief
 /// @param csvName
-Matrix3d DataLoader::loadInitialSample(std::string csvName) {
+Matrix3d DataLoader::loadInitialSample(std::string csvName){
     // INITIAL GROUP
     if(this->inputTables.find(csvName) == this->inputTables.end()){
         this->inputTables[csvName] = Loader::readCSV(csvName);
@@ -114,17 +134,17 @@ Matrix3d DataLoader::loadInitialSample(std::string csvName) {
     if(itr == initialCohort.end()){
         throw std::invalid_argument("\'counts\' column not found in Initial Cohort file");
     }
-    
-    if(itr->second.size() > (nonPostInterventions*this->numDemographicCombos*this->numOUDStates)) {
+
+    if(itr->second.size() > (nonPostInterventions*this->numDemographicCombos*this->numOUDStates)){
         throw std::invalid_argument("Invalid Number of Counts found in Initial Cohort File");
     }
 
     this->initialSample = Utilities::Matrix3dFactory::Create(this->numOUDStates, this->numInterventions, this->numDemographicCombos).constant(0);
 
     int row = 0;
-    for (int intervention = 0; intervention < nonPostInterventions; ++intervention) {
-        for (int dem = 0; dem < this->numDemographicCombos; ++dem) {
-            for (int oud_state = 0; oud_state < this->numOUDStates; ++oud_state) {
+    for (int intervention = 0; intervention < nonPostInterventions; ++intervention){
+        for (int dem = 0; dem < this->numDemographicCombos; ++dem){
+            for (int oud_state = 0; oud_state < this->numOUDStates; ++oud_state){
                 // have to use the row counter here because nonPostInterventions != numInterventions
                 this->initialSample(intervention, oud_state, dem) = std::stod(itr->second[row]);
                 ++row;
@@ -173,7 +193,7 @@ Matrix3dOverTime DataLoader::loadEnteringSamples(std::string csvName, std::strin
             throw std::domain_error(column + " not found in Entering Cohorts Table.");
         }
         Matrix3d enteringSample = Utilities::Matrix3dFactory::Create(this->numOUDStates, this->numInterventions, this->numDemographicCombos).constant(0);
-        
+
         for (int dem = 0; dem < this->numDemographicCombos; ++dem) {
             enteringSample(esiIdx, esoIdx, dem) = std::stod(enteringSamplesTable[column][dem]);
         }
@@ -372,7 +392,7 @@ Matrix3d DataLoader::loadMortalityRates(std::string smrCSVName, std::string bgmC
     if (this->inputTables.find(bgmCSVName) == this->inputTables.end()){
         this->inputTables[bgmCSVName] = Loader::readCSV(bgmCSVName);
     }
-    
+
 
     // MORTALITY TRANSITIONS
     // mortality here refers to death from reasons other than oud and is calculated
@@ -587,4 +607,13 @@ Matrix3d DataLoader::buildOverdoseTransitions(InputTable table, std::string key)
         }
     }
     return overdoseTransitionsCycle;
+}
+
+void DataLoader::populateCostParameters() {
+    if (this->costSwitch) {
+        this->costPerspectives    = this->Config.getCostPerspectives();
+        this->discountRate        = this->Config.getDiscountRate();
+        this->reportingInterval   = this->Config.getReportingInterval();
+        this->costCategoryOutputs = this->Config.getCostCategoryOutputs();
+    }
 }

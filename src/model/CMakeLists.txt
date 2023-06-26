@@ -9,11 +9,9 @@ find_package(OpenMP REQUIRED)
 find_package (Eigen3 3.4 REQUIRED NO_MODULE)
 # Find Boost
 find_package(Boost REQUIRED COMPONENTS log_setup log)
-# Find FMT
-find_package(fmt)
 
 add_library(model
-    Simulation.cpp 
+    Simulation.cpp
     CostCalculator.cpp
 )
 
@@ -22,8 +20,8 @@ target_include_directories(model INTERFACE
   "include/"
 )
 
-target_link_libraries(model 
-  OpenMP::OpenMP_CXX 
+target_link_libraries(model
+  OpenMP::OpenMP_CXX
   ${Boost_LIBRARIES}
   fmt::fmt
   Eigen3::Eigen

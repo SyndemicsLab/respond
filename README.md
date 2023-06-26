@@ -6,12 +6,20 @@ While the original model was built using a combination of the R and C++ programm
 
 ## Dependencies
 
-- [`gcc`](https://gcc.gnu.org) v4.8.1 or newer
-- [`gtest`](https://github.com/google/googletest) & `gmock`
 - [Boost](https://www.boost.org)
-- [Eigen](https://eigen.tuxfamily.org/index.php) >= 3.4.x
-- [OpenMP](https://www.openmp.org)
 - [CMake](https://cmake.org) >= 3.19
+- [Eigen](https://eigen.tuxfamily.org/index.php) >= 3.4.x
+- [`fmt`](https://github.com/fmtlib/fmt) v9.0.0 or v9.1.0
+- [`gcc`](https://gcc.gnu.org) v4.8.1 or newer
+- [OpenMP](https://www.openmp.org)
+
+### Tests
+
+- [`gtest`](https://github.com/google/googletest) & `gmock`
+
+### API
+
+- [`Crow`](https://github.com/CrowCpp/Crow)
 
 ## What's New?
 
