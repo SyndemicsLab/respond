@@ -1,8 +1,25 @@
+//===-- Loader.cpp - Loader class definition --------------------*- C++ -*-===//
+//
+// Part of the RESPOND - Researching Effective Strategies to Prevent Opioid
+// Death Project, under the AGPLv3 License. See https://www.gnu.org/licenses/
+// for license information.
+// SPDX-License-Identifier: AGPLv3
+//
+//===----------------------------------------------------------------------===//
+///
+/// \file
+/// This file contains the declaration of the Loader class.
+///
+/// Created Date: Tuesday, June 27th 2023, 10:20:34 am
+/// Contact: Benjamin.Linas@bmc.org
+///
+//===----------------------------------------------------------------------===//
+
 #include "Loader.hpp"
 
 using namespace Data;
 
-Loader::Loader(std::string inputDir){
+Loader::Loader(std::string inputDir) {
     // PROCESSING INPUT FILES
     // account for no trailing slash in the provided input directory
     std::string configPath = inputDir;
@@ -14,7 +31,7 @@ Loader::Loader(std::string inputDir){
     this->inputTables = readInputDir(inputDir);
 }
 
-Configuration Loader::loadConfigurationFile(std::string configPath){
+Configuration Loader::loadConfigurationFile(std::string configPath) {
     this->Config = readConfigFile(configPath);
     return this->Config;
 }
@@ -30,7 +47,8 @@ InputTable Loader::readCSV(std::string inputFile) {
     std::getline(inputStream, inputContents);
     std::vector<std::string> headerNames;
     tokenizer<boost::escaped_list_separator<char>> token(inputContents);
-    for (tokenizer<boost::escaped_list_separator<char>>::iterator beg = token.begin();
+    for (tokenizer<boost::escaped_list_separator<char>>::iterator beg =
+             token.begin();
          beg != token.end(); ++beg) {
         headerNames.push_back(*beg);
         toReturn[*beg] = {};
@@ -39,7 +57,8 @@ InputTable Loader::readCSV(std::string inputFile) {
     int i = 0;
     while (std::getline(inputStream, inputContents)) {
         tokenizer<boost::escaped_list_separator<char>> token(inputContents);
-        for (tokenizer<boost::escaped_list_separator<char>>::iterator beg = token.begin();
+        for (tokenizer<boost::escaped_list_separator<char>>::iterator beg =
+                 token.begin();
              beg != token.end(); ++beg) {
             toReturn[headerNames[i % headerNames.size()]].push_back(*beg);
             ++i;
@@ -49,8 +68,8 @@ InputTable Loader::readCSV(std::string inputFile) {
     return toReturn;
 }
 
-
-std::unordered_map<std::string, InputTable> Loader::readInputDir(std::string inputDir) {
+std::unordered_map<std::string, InputTable>
+Loader::readInputDir(std::string inputDir) {
     std::string inputDirFixed = inputDir;
     std::unordered_map<std::string, InputTable> toReturn;
     // account for no trailing slash in the provided input directory
@@ -58,12 +77,11 @@ std::unordered_map<std::string, InputTable> Loader::readInputDir(std::string inp
         inputDirFixed.push_back('/');
     }
 
-    for (std::string inputFile: INPUT_FILES) {
+    for (std::string inputFile : INPUT_FILES) {
         toReturn[inputFile] = readCSV(inputDirFixed + inputFile);
     }
     return toReturn;
 }
-
 
 Configuration Loader::readConfigFile(std::string inputFile) {
     Configuration config(inputFile);
