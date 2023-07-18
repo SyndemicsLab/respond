@@ -28,10 +28,12 @@
 #include <boost/log/trivial.hpp>
 #include <boost/log/utility/setup/common_attributes.hpp>
 #include <boost/log/utility/setup/file.hpp>
+#include <algorithm>
 #include <cmath>
 #include <cstdint>
 #include <fmt/core.h>
 #include <iostream>
+#include <numeric>
 #include <string>
 #include <unsupported/Eigen/CXX11/Tensor>
 
@@ -214,6 +216,11 @@ private:
     int numOUDStates;
     int numInterventions;
     int numDemographics;
+    int numDemographicCombos;
+    std::vector<int> reportingInterval;
+    Data::Matrix3d runningOverdoses;
+    Data::Matrix3d runningMortality;
+    Data::Matrix3d runningFOD;
     Data::History history;
     Data::Matrix3dOverTime enteringSamples;
     Data::Matrix3d oudTransitionRates;

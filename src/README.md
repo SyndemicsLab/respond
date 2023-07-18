@@ -7,6 +7,8 @@ The structure of `RESPOND` can be broken down into the following pieces:
 3. Care Delivery
 4. Mortality
 
+These parameter sets were designed and made via expert opinion and general consensus. Future work plans to experiment with the general structure accuracy.
+
 ## Implementation Details
 The original implementation of `RESPOND` was written in a combination of two programming languages--R and C++. `RESPONDv2.0` is a complete rewrite of `RESPOND`, written purely in C++, with the goals of improving the readability and maintainability of the model, improving the execution speed, and making the model calibration process easier.
 

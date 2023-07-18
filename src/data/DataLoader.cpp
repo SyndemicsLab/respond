@@ -157,7 +157,7 @@ Matrix3d DataLoader::loadInitialSample(std::string csvName) {
     ASSERTM(itr != initialCohort.end(), "\'counts\' Column Successfully Found");
 
     ASSERTM(itr->second.size() <= (nonPostInterventions * this->numDemographicCombos * this->numOUDStates), "Correct number of Counts Found");
-    
+
     this->initialSample = Utilities::Matrix3dFactory::Create(
                               this->numOUDStates, this->numInterventions,
                               this->numDemographicCombos)
@@ -169,7 +169,7 @@ Matrix3d DataLoader::loadInitialSample(std::string csvName) {
         for (int dem = 0; dem < this->numDemographicCombos; ++dem) {
             for (int oud_state = 0; oud_state < this->numOUDStates;
                  ++oud_state) {
-                // have to use the row counter here because 
+                // have to use the row counter here because
                 // nonPostInterventions != numInterventions
                 this->initialSample(intervention, oud_state, dem) =
                     std::stod(itr->second[row]);
@@ -217,7 +217,7 @@ DataLoader::loadEnteringSamples(std::string csvName,
     for (int timestep : changeTimes) {
         std::string column = columnPrefix + std::to_string(timestep + 1);
         ASSERTM(enteringSamplesTable.find(column) != enteringSamplesTable.end(), (column + " Successfully Found"));
-        
+
         Matrix3d enteringSample =
             Utilities::Matrix3dFactory::Create(this->numOUDStates,
                                                this->numInterventions,
@@ -728,4 +728,32 @@ void DataLoader::populateCostParameters() {
         this->reportingInterval = this->Config.getReportingInterval();
         this->costCategoryOutputs = this->Config.getCostCategoryOutputs();
     }
+}
+
+std::vector<std::string> DataLoader::getCostPerspectives() {
+    if (!this->costSwitch) {
+        return {};
+    }
+    return this->costPerspectives;
+}
+
+double DataLoader::getDiscountRate() {
+    if (!this->costSwitch) {
+        return 0.0;
+    }
+    return this->discountRate;
+}
+
+int DataLoader::getReportingInterval() {
+    if (!this->costSwitch) {
+        return 0;
+    }
+    return this->reportingInterval;
+}
+
+bool DataLoader::getCostCategoryOutputs() {
+    if (!this->costSwitch) {
+        return false;
+    }
+    return this->costCategoryOutputs;
 }

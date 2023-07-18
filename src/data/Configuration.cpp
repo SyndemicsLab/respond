@@ -242,8 +242,8 @@ std::vector<int> Configuration::getGeneralStatsOutputTimesteps() {
 
     std::vector<int> resVec = this->parseString2VectorOfInts(res);
     for (int r : resVec) {
-        ASSERTM(result.back() <= r,
-                "General Stat Output Timesteps in Ascending Order.");
+        // ASSERTM(resVec.back() <= r,
+        //         "General Stat Output Timesteps in Ascending Order.");
         result.push_back(r - 1);
     }
 

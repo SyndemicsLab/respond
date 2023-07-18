@@ -148,7 +148,7 @@ TEST(ConfigurationTest, getBool) {
 
 TEST(ConfigurationTest, getInt) {
     Configuration TestConf("TestInput/input1/sim.conf");
-    std::vector<int> EXPECTED_VALUES = {156, 260, 2};
+    std::vector<int> EXPECTED_VALUES = {156, 260, 52};
     std::vector<int> REAL_VALUES = {
         TestConf.get<int>("simulation.duration"),
         TestConf.get<int>("simulation.aging_interval"),

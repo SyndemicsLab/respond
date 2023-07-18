@@ -102,6 +102,9 @@ public:
     /// @brief Get the Number of Demographics
     /// @return Integer Number of Demographics
     int getNumDemographics() { return numDemographics; }
+    /// @brief Get the Number of Demographics
+    /// @return Integer Number of Demographics
+    int getNumDemographicCombos() { return numDemographicCombos; }
     /// @brief Get the Initial Sample
     /// @return Matrix3d Initial Sample
     Matrix3d getInitialSample() { return initialSample; }
@@ -140,12 +143,40 @@ public:
     /// @brief Get the Age Group Shift
     /// @return Integer Age Group Shift
     int getAgeGroupShift() { return ageGroupShift; }
-    /// @brief
-    /// @return
+    /// @brief Determine if cost analysis is on or off
+    /// @return Boolean true if user config specifies to include cost analysis,
+    /// otherwise false
     bool getCostSwitch() { return costSwitch; }
-    /// @brief
-    /// @return
+    /// @brief Get the vector of cost perspectives if cost analysis is on,
+    /// otherwise, get an empty vector
+    /// @return Vector of Strings representing perspectives from which to
+    /// consider costs
     std::vector<std::string> getCostPerspectives();
+    /// @brief Get the decimal representation of the discount rate applied to
+    /// cost, provided that cost analysis is enabled. Otherwise, get 0.0
+    /// @return Double Discount Rate
+    double getDiscountRate();
+    /// @brief Get the bin size for cost reporting timesteps if cost analysis is
+    /// enabled. Otherwise, get 0
+    /// @return Integer cost reporting timestep bin size
+    int getReportingInterval();
+    /// @brief Get the user config variable specifying whether the cost outputs
+    /// should be broken down by cost perspective. Always returns false if cost
+    /// analysis is disabled.
+    /// @return Boolean cost category breakdown switch
+    bool getCostCategoryOutputs();
+    /// @brief Get a boolean which represents whether to break down outputs by
+    /// interventions or to group all interventions in a single output
+    /// @return Boolean per intervention outputs
+    bool getPerInterventionPredictions() { return perInterventionPredictions; }
+    /// @brief Get a boolean which represents whether to generate an output file
+    /// that contains the entire state tensor object across all timesteps
+    /// @return Boolean general outputs switch
+    bool getGeneralOutputsSwitch() { return generalOutputsSwitch; }
+    /// @brief Select which timesteps to provide general statistics output
+    /// @return Vector of Integers representing the timesteps at which to print
+    /// output
+    std::vector<int> getGeneralStatsOutputTimesteps() { return generalStatsOutputTimesteps; }
 
     // SETTERS
     /// @brief Load the Initial Sample from a File
