@@ -41,16 +41,6 @@ jobs:
     - name: Create default Conan profile
       run: conan profile detect --force
 
-    - name: Conan profile update
-      run:  |
-            conan profile update settings.compiler=gcc default
-            conan profile update settings.compiler.version=11 default
-            conan profile update settings.compiler.cppstd=20 default
-            conan profile update env.CC=[/usr/bin/gcc-11] default
-            conan profile update env.CXX=[/usr/bin/g++-11] default
-            conan profile update conf.tools.cmake.cmaketoolchain:generator=Ninja default
-            conan profile show default
-
     - name: Conan install dependencies
       run:  |
             conan install . \
