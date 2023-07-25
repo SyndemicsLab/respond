@@ -45,7 +45,7 @@ jobs:
       run: rm -rf ${{github.workspace}}/build/*
 
     - name: Conan install dependencies
-      working-directory: ${{github.workspace}}/build
+      working-directory: ${{github.workspace}}
       run:  conan install .. --output-folder=${{github.workspace}}/build --build=missing            
 
     - name: CMake configuration

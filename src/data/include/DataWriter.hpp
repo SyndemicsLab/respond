@@ -18,13 +18,15 @@
 #ifndef DATA_DATAWRITER_HPP_
 #define DATA_DATAWRITER_HPP_
 
-#include <Eigen3/Eigen>
+#define FMT_HEADER_ONLY
+
+#include <eigen3/Eigen/Eigen>
 #include <ctime>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
 #include <string>
-#include <unsupported/Eigen/CXX11/Tensor>
+#include <eigen3/unsupported/Eigen/CXX11/Tensor>
 #include <vector>
 
 #include <fmt/core.h>
