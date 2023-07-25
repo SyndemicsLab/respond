@@ -44,10 +44,8 @@ jobs:
     - name: Conan install dependencies
       run:  |
             conan install . \
-            -s build_type=${{env.BUILD_TYPE}} \
-            --install-folder=${{github.workspace}}/build \
-            -pr default \
-            -b=missing
+            --output-folder=${{github.workspace}}/build \
+            -build=missing
             
 
     - name: CMake configuration
