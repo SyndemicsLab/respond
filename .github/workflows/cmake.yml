@@ -45,7 +45,7 @@ jobs:
       run:  |
             conan install . \
             --output-folder=${{github.workspace}}/build \
-            -build=missing
+            --build=missing
             
 
     - name: CMake configuration
