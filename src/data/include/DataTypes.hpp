@@ -18,7 +18,7 @@
 #ifndef DATA_DATATYPES_HPP_
 #define DATA_DATATYPES_HPP_
 
-#include <Eigen/Eigen>
+#include <Eigen3/Eigen>
 #include <cassert>
 #include <unsupported/Eigen/CXX11/Tensor>
 #include <vector>
