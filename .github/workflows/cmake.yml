@@ -41,18 +41,13 @@ jobs:
     - name: Create default Conan profile
       run: conan profile detect --force
 
-    - name: Conan configure remotes
-      run:  |
-            conan remote add bincrafters https://bincrafters.jfrog.io/artifactory/api/conan/public-conan
-            conan config set general.revisions_enabled=1
-
     - name: Conan profile update
       run:  |
             conan profile update settings.compiler=gcc default
-            conan profile update settings.compiler.version=10 default
+            conan profile update settings.compiler.version=11 default
             conan profile update settings.compiler.cppstd=20 default
-            conan profile update env.CC=[/usr/bin/gcc-10] default
-            conan profile update env.CXX=[/usr/bin/g++-10] default
+            conan profile update env.CC=[/usr/bin/gcc-11] default
+            conan profile update env.CXX=[/usr/bin/g++-11] default
             conan profile update conf.tools.cmake.cmaketoolchain:generator=Ninja default
             conan profile show default
 
