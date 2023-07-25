@@ -20,7 +20,7 @@
 
 #include <array>
 
-#include <Eigen/Eigen>
+#include <Eigen3/Eigen>
 #include <unsupported/Eigen/CXX11/Tensor>
 
 #include "DataTypes.hpp"
