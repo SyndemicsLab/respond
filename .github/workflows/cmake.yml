@@ -42,8 +42,7 @@ jobs:
       run: conan profile detect --force
 
     - name: Conan install dependencies
-      run:  |
-            conan install . \
+      run:  conan install . \
             --output-folder=${{github.workspace}}/build \
             --build=missing
             
@@ -51,7 +50,7 @@ jobs:
       run: cd build && pwd
 
     - name: list out
-      run: ls -larth
+      run: ls .. -larth
             
 
     - name: CMake configuration
