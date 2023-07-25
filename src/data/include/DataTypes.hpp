@@ -18,9 +18,9 @@
 #ifndef DATA_DATATYPES_HPP_
 #define DATA_DATATYPES_HPP_
 
-#include <Eigen/Eigen>
 #include <cassert>
 #include <unsupported/Eigen/CXX11/Tensor>
+#include <Eigen/Eigen>
 #include <vector>
 
 #define ASSERTM(exp, msg) assert(((void)msg, exp))
