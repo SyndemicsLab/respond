@@ -48,7 +48,7 @@ jobs:
 
     - name: Cmake build
       working-directory: build
-      run: cmake --build . --config ${{env.BUILD_TYPE}}
+      run: ls && cmake --build . --config ${{env.BUILD_TYPE}}
 
     - name: Cmake test
       working-directory: build
