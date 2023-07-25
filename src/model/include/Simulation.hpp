@@ -18,7 +18,7 @@
 #ifndef MODEL_SIMULATION_HPP_
 #define MODEL_SIMULATION_HPP_
 
-#include <eigen3/Eigen/Eigen>
+#include <Eigen/Eigen>
 #include <boost/log/core.hpp>
 #include <boost/log/expressions.hpp>
 #include <boost/log/sinks/text_file_backend.hpp>
