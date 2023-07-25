@@ -23,9 +23,6 @@ jobs:
     - name: Get GCC-11
       run:  sudo apt update && sudo apt install gcc-11 g++-11
 
-    - name: Install Doxygen
-      run: sudo apt-get update && sudo apt-get install -y --no-install-recommends doxygen graphviz
-
     - name: Conan Installation
       id: conan
       uses: turtlebrowser/get-conan@main
@@ -37,7 +34,8 @@ jobs:
       run: rm -rf build/*
 
     - name: Conan install dependencies
-      run:  conan install . --output-folder=build --build=missing     
+      working-directory: build
+      run:  conan install .. --output-folder=build --build=missing     
 
     - name: Print github.workspace
       run: echo "${{github.workspace}}"
@@ -55,6 +53,9 @@ jobs:
     - name: Cmake test
       working-directory: build
       run: ./test/respondTest
+
+    - name: Install Doxygen
+      run: sudo apt-get update && sudo apt-get install -y --no-install-recommends doxygen graphviz
 
     - name: Doxygen documentation generation
       working-directory: ${{github.workspace}}/build
