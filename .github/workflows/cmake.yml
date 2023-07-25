@@ -45,33 +45,14 @@ jobs:
       run: rm -rf ${{github.workspace}}/build/*
 
     - name: Conan install dependencies
-      run:  | 
-            conan install . \
-            --output-folder=${{github.workspace}}/build \
-            --build=missing
-
-    - name: list out one
-      run: ls -larth
-
-    - name: Shift to Build Folder
-      run: cd build && pwd
-
-    - name: list out two
-      run: ls -larth
-            
+      working-directory: ${{github.workspace}}/build
+      run:  conan install . --output-folder=${{github.workspace}}/build --build=missing            
 
     - name: CMake configuration
       # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
       # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type  
       working-directory: ${{github.workspace}}/build
-      run:  |
-            cmake ${{github.workspace}} \
-            -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake \
-            -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
-
-    - name: list out three
-      working-directory: ${{github.workspace}}/build
-      run: ls -larth
+      run:  cmake ${{github.workspace}} -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
 
     - name: Cmake build
       working-directory: ${{github.workspace}}/build
@@ -79,7 +60,7 @@ jobs:
 
     - name: Cmake test
       working-directory: ${{github.workspace}}/build
-      run: ctest -C ${{env.BUILD_TYPE}}
+      run: ./test/respondTest
 
     - name: Doxygen documentation generation
       working-directory: ${{github.workspace}}/build
