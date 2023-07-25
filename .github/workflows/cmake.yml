@@ -35,16 +35,13 @@ jobs:
 
     - name: Conan install dependencies
       working-directory: build
-      run:  conan install .. --build=missing     
-
-    - name: Print github.workspace
-      run: echo "${{github.workspace}}"
+      run:  conan install .. --build=missing && ls
 
     # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
     # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type  
     - name: CMake configuration
       working-directory: build
-      run:  cmake .. -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+      run:  cmake .. -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} && ls
 
     - name: Cmake build
       working-directory: build
