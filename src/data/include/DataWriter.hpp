@@ -18,7 +18,7 @@
 #ifndef DATA_DATAWRITER_HPP_
 #define DATA_DATAWRITER_HPP_
 
-#include <eigen3/Eigen>
+#include <Eigen3/Eigen>
 #include <ctime>
 #include <filesystem>
 #include <fstream>
