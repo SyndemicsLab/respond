@@ -48,7 +48,7 @@ jobs:
             --build=missing
             
     - name: Shift to Build Folder
-      run: cd build && echo "${{ pwd }}"
+      run: cd build && pwd
             
 
     - name: CMake configuration
