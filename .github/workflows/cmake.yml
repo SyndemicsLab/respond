@@ -19,19 +19,81 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
 
-    - name: Configure CMake
+    - name: Get GCC-11
+      run:  |
+            sudo apt update
+            sudo apt install gcc-11 g++-11
+      shell: bash
+
+    - name: Install Doxygen
+      run: sudo apt-get update && sudo apt-get install -y --no-install-recommends doxygen graphviz
+
+    - name: Conan Installation
+      id: conan
+      uses: turtlebrowser/get-conan@v2.0
+
+    - name: Conan Version
+      run: echo "${{ steps.conan.outputs.version }}"
+
+    - name: Create default Conan profile
+      run: conan profile new default --detect
+
+    - name: Conan configure remotes
+      run:  |
+            conan remote add bincrafters https://bincrafters.jfrog.io/artifactory/api/conan/public-conan
+            conan config set general.revisions_enabled=1
+
+    - name: Conan profile update
+      run:  |
+            conan profile update settings.compiler=gcc default
+            conan profile update settings.compiler.version=10 default
+            conan profile update settings.compiler.cppstd=20 default
+            conan profile update env.CC=[/usr/bin/gcc-10] default
+            conan profile update env.CXX=[/usr/bin/g++-10] default
+            conan profile update conf.tools.cmake.cmaketoolchain:generator=Ninja default
+            conan profile show default
+
+    - name: Conan install dependencies
+      run:  |
+            conan install . \
+            -s build_type=${{env.BUILD_TYPE}} \
+            --install-folder=${{github.workspace}}/build \
+            -pr default \
+            -b=missing
+            
+
+    - name: CMake configuration
       # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
       # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
-      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+      run:  |
+            cmake -B ${{github.workspace}}/build \
+            -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake \
+            -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+      shell: bash
+      env:
+       CC:   gcc-11
+       CXX:  g++-11
 
-    - name: Build
-      # Build your program with the given configuration
+    - name: Cmake build
       run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
 
-    - name: Test
+    - name: Cmake test
       working-directory: ${{github.workspace}}/build
-      # Execute tests defined by the CMake configuration.
-      # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
       run: ctest -C ${{env.BUILD_TYPE}}
+
+    - name: Doxygen documentation generation
+      working-directory: ${{github.workspace}}/build
+      run: make doc
+
+    - name: Documentation moving generated files
+      run: mv ${{github.workspace}}/build/doc/html ./doc/api
+
+    - name: Documentation deploy to Github Pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./doc/api
 
