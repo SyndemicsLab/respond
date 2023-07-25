@@ -11,6 +11,8 @@ project (
 
 include(GNUInstallDirs)
 
+find_package(fmt REQUIRED)
+
 add_subdirectory(model)
 add_subdirectory(data)
 add_subdirectory(utilities)
