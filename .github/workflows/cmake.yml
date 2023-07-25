@@ -46,11 +46,14 @@ jobs:
             conan install . \
             --output-folder=${{github.workspace}}/build \
             --build=missing
-            
+
+    - name: list out one
+      run: ls -larth
+
     - name: Shift to Build Folder
       run: cd build && pwd
 
-    - name: list out
+    - name: list out two
       run: ls -larth
             
 
