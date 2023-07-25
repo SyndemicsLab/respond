@@ -72,7 +72,7 @@ jobs:
       run: ls -larth
 
     - name: Cmake build
-      run: cmake --build . --config ${{env.BUILD_TYPE}}
+      run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
 
     - name: Cmake test
       working-directory: ${{github.workspace}}/build
