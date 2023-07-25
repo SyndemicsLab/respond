@@ -65,7 +65,7 @@ jobs:
       # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type  
       run:  |
             cmake ${{github.workspace}} \
-            -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake \
+            -DCMAKE_TOOLCHAIN_FILE=${{github.workspace}}/build/conan_toolchain.cmake \
             -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
 
     - name: list out three
