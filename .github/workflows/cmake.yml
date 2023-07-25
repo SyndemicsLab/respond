@@ -33,7 +33,7 @@ jobs:
 
     - name: Conan Installation
       id: conan
-      uses: turtlebrowser/get-conan@v2.0
+      uses: turtlebrowser/get-conan@main
 
     - name: Conan Version
       run: echo "${{ steps.conan.outputs.version }}"
