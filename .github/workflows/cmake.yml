@@ -155,12 +155,12 @@ jobs:
       run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
 
     - name: List area
-      working-directory: ${{github.workspace}}/build/test
+      working-directory: ${{github.workspace}}/build/test/Release
       run: dir
 
     - name: Cmake test
       working-directory: ${{github.workspace}}/build
-      run: start ./test/respondTest.dir
+      run: ./test/respondTest.dir
 
     # - name: Install Doxygen
     #   run: sudo apt-get update && sudo apt-get install -y --no-install-recommends doxygen graphviz
