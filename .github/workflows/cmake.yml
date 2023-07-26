@@ -132,8 +132,8 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    - name: Get GCC-11
-      run:  choco install gcc@11
+    - name: Get MinGW
+      run:  choco install mingw
 
     - name: Conan Installation
       id: conan
