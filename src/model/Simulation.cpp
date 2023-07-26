@@ -347,8 +347,8 @@ Data::Matrix3d Sim::addEnteringSamples(Data::Matrix3d state) {
     
     // Slice is done because I need a copy of the state instead of the actual
     // state reference
-    std::array<long int, 3> offset = {0, 0, 0};
-    std::array<long int, 3> extent = {state.dimensions()};
+    Eigen::array<Eigen::Index, 3> offset = {0, 0, 0};
+    Eigen::array<Eigen::Index, 3> extent = {state.dimensions()};
     Data::Matrix3d ret = state.slice(offset, extent);
 
     ret += enteringSamples;
@@ -407,18 +407,18 @@ Data::Matrix3d Sim::multiplyTransitions(Data::Matrix3d state,
 
     for (int i = 0; i < transitionsInState; i++) {
 
-        std::array<long int, 3> offsetTrans = {0, 0, 0};
-        std::array<long int, 3> extentTrans = state.dimensions();
+        Eigen::array<Eigen::Index, 3> offsetTrans = {0, 0, 0};
+        Eigen::array<Eigen::Index, 3> extentTrans = state.dimensions();
         offsetTrans[dim] = i * state.dimension(dim);
 
-        std::array<long int, 3> offsetState = {0, 0, 0};
-        std::array<long int, 3> extentState = state.dimensions();
+        Eigen::array<Eigen::Index, 3> offsetState = {0, 0, 0};
+        Eigen::array<Eigen::Index, 3> extentState = state.dimensions();
         offsetState[dim] = i;
         extentState[dim] = 1;
 
         Data::Matrix3d slicedState = state.slice(offsetState, extentState);
 
-        std::array<long int, 3> bcast = {1, 1, 1};
+        Eigen::array<Eigen::Index, 3> bcast = {1, 1, 1};
         bcast[dim] = state.dimension(dim);
 
         Data::Matrix3d broadcastedTensor = slicedState.broadcast(bcast);
@@ -445,8 +445,8 @@ Data::Matrix3d Sim::multiplyInterventionInit(Data::Matrix3d interventionState,
 
     for (int j = 0; j < this->numInterventions; j++) {
 
-        std::array<long int, 3> result_offset = {0, 0, 0};
-        std::array<long int, 3> result_extent = result.dimensions();
+        Eigen::array<Eigen::Index, 3> result_offset = {0, 0, 0};
+        Eigen::array<Eigen::Index, 3> result_extent = result.dimensions();
         result_offset[Data::INTERVENTION] = j;
         result_extent[Data::INTERVENTION] = 1;
         if (i == j) {
@@ -459,22 +459,22 @@ Data::Matrix3d Sim::multiplyInterventionInit(Data::Matrix3d interventionState,
                     .dimensions());
 
             for (int k = 0; k < this->numOUDStates; k++) {
-                std::array<long int, 3> intervention_offset = {0, 0, 0};
-                std::array<long int, 3> intervention_extent =
+                Eigen::array<Eigen::Index, 3> intervention_offset = {0, 0, 0};
+                Eigen::array<Eigen::Index, 3> intervention_extent =
                     interventionState.dimensions();
                 intervention_offset[Data::INTERVENTION] = j;
                 intervention_extent[Data::INTERVENTION] = 1;
                 intervention_offset[Data::OUD] = k;
                 intervention_extent[Data::OUD] = 1;
 
-                std::array<long int, 3> bcast = {1, 1, 1};
+                Eigen::array<Eigen::Index, 3> bcast = {1, 1, 1};
                 bcast[Data::OUD] = this->numOUDStates;
                 Data::Matrix3d slicedState = interventionState.slice(
                     intervention_offset, intervention_extent);
                 Data::Matrix3d broadcastedTensor = slicedState.broadcast(bcast);
 
-                std::array<long int, 3> rates_offset = {0, 0, 0};
-                std::array<long int, 3> rates_extent =
+                Eigen::array<Eigen::Index, 3> rates_offset = {0, 0, 0};
+                Eigen::array<Eigen::Index, 3> rates_extent =
                     this->interventionInitRates.dimensions();
                 rates_offset[Data::INTERVENTION] = j;
                 rates_extent[Data::INTERVENTION] = 1;

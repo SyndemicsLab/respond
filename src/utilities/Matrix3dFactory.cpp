@@ -21,7 +21,8 @@ namespace Utilities {
 
 Data::Matrix3d Matrix3dFactory::Create(int numOUDStates, int numInterventions,
                                        int numDemographics) {
-    std::array<long int, 3> order = {0, 0, 0};
+    Eigen::array<Eigen::Index, 3> order = {0, 0, 0};
+    // std::array<long int, 3> order = {0, 0, 0};
     order[Data::OUD] = numOUDStates;
     order[Data::INTERVENTION] = numInterventions;
     order[Data::DEMOGRAPHIC_COMBO] = numDemographics;

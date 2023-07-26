@@ -108,8 +108,8 @@ Matrix3d CostLoader::loadPharmaceuticalCost(std::string csvName) {
     std::vector<std::string> interventions = this->Config.getInterventions();
 
     for (int i = 0; i < numInterventions; ++i) {
-        std::array<long int, 3> offset = {0, 0, 0};
-        std::array<long int, 3> extent = this->pharmaceuticalCost.dimensions();
+        Eigen::array<Eigen::Index, 3> offset = {0, 0, 0};
+        Eigen::array<Eigen::Index, 3> extent = this->pharmaceuticalCost.dimensions();
         offset[Data::INTERVENTION] = i;
         extent[Data::INTERVENTION] = 1;
         Matrix3d slice = this->pharmaceuticalCost.slice(offset, extent);
@@ -153,8 +153,8 @@ Matrix3d CostLoader::loadTreatmentUtilizationCost(std::string csvName) {
     std::vector<std::string> interventions = this->Config.getInterventions();
 
     for (int i = 0; i < numInterventions; ++i) {
-        std::array<long int, 3> offset = {0, 0, 0};
-        std::array<long int, 3> extent =
+        Eigen::array<Eigen::Index, 3> offset = {0, 0, 0};
+        Eigen::array<Eigen::Index, 3> extent =
             this->treatmentUtilizationCost.dimensions();
         offset[Data::INTERVENTION] = i;
         extent[Data::INTERVENTION] = 1;
