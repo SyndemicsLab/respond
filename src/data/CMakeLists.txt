@@ -26,6 +26,7 @@ add_library(data
 target_include_directories(data INTERFACE
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${Boost_INCLUDE_DIRS}
+  ${Eigen3_INCLUDE_DIRS}
   "include/"
 )
 target_link_libraries(data
