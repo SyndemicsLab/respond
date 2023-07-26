@@ -147,7 +147,8 @@ jobs:
     # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type  
     - name: CMake configuration
       working-directory: ${{github.workspace}}/build
-      run:  cmake ${{github.workspace}} -DCMAKE_TOOLCHAIN_FILE="conan_toolchain.cmake" -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+      run: cmake ${{github.workspace}} -G "Visual Studio 15 2017" -DCMAKE_TOOLCHAIN_FILE="conan_toolchain.cmake"
+      # run:  cmake ${{github.workspace}} -DCMAKE_TOOLCHAIN_FILE="conan_toolchain.cmake" -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
 
     - name: Cmake build
       working-directory: ${{github.workspace}}/build
@@ -159,7 +160,7 @@ jobs:
 
     - name: Cmake test
       working-directory: ${{github.workspace}}/build
-      run: start ./test/respondTest.exe
+      run: start ./test/respondTest.dir
 
     # - name: Install Doxygen
     #   run: sudo apt-get update && sudo apt-get install -y --no-install-recommends doxygen graphviz
