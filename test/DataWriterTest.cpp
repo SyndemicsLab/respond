@@ -16,7 +16,7 @@
 ///
 //===----------------------------------------------------------------------===//
 
-#include <eigen/Eigen3/Eigen>
+#include <eigen3/Eigen3/Eigen>
 #include <gtest/gtest.h>
 #include <unsupported/Eigen/CXX11/Tensor>
 

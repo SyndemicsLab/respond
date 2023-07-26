@@ -20,7 +20,7 @@
 
 #define FMT_HEADER_ONLY
 
-#include <eigen/Eigen3/Eigen>
+#include <eigen3/Eigen3/Eigen>
 #include <ctime>
 #include <filesystem>
 #include <fstream>
