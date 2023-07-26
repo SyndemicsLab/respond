@@ -20,7 +20,7 @@
 
 #define FMT_HEADER_ONLY
 
-#include <eigen3/Eigen/Eigen>
+#include <Eigen/Core>
 #include <boost/log/core.hpp>
 #include <boost/log/expressions.hpp>
 #include <boost/log/sinks/text_file_backend.hpp>
@@ -37,7 +37,7 @@
 #include <iostream>
 #include <numeric>
 #include <string>
-#include <eigen3/unsupported/Eigen/CXX11/Tensor>
+#include <unsupported/Eigen/CXX11/Tensor>
 
 #include "DataLoader.hpp"
 #include "DataTypes.hpp"

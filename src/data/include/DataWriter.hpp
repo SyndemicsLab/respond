@@ -20,13 +20,13 @@
 
 #define FMT_HEADER_ONLY
 
-#include <eigen3/Eigen/Eigen>
+#include <Eigen/Core>
 #include <ctime>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
 #include <string>
-#include <eigen3/unsupported/Eigen/CXX11/Tensor>
+#include <unsupported/Eigen/CXX11/Tensor>
 #include <vector>
 
 #include <fmt/core.h>
