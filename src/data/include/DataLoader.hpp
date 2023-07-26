@@ -18,6 +18,8 @@
 #ifndef DATA_DATALOADER_HPP_
 #define DATA_DATALOADER_HPP_
 
+#define FMT_HEADER_ONLY
+
 #include <boost/tokenizer.hpp>
 #include <cmath>
 #include <fmt/core.h>
