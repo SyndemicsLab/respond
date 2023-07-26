@@ -1,9 +1,0 @@
-{
-    "version": 4,
-    "vendor": {
-        "conan": {}
-    },
-    "include": [
-        "/home/matt/repos/BMC/RESPONDSimulationv2/build/CMakePresets.json"
-    ]
-}
