@@ -2,7 +2,7 @@ name: CMake
 
 on:
   push:
-    branches: [ "master", "macos-workflow" ]
+    branches: [ "master", "windows-workflowfix" ]
   pull_request:
     branches: [ "master" ]
 
@@ -123,3 +123,55 @@ jobs:
     #     github_token: ${{ secrets.GITHUB_TOKEN }}
     #     publish_dir: ./doc/api
 
+  build-windows:
+    # The CMake configure and build commands are platform agnostic and should work equally well on Windows or Mac.
+    # You can convert this to a matrix build if you need cross-platform coverage.
+    # See: https://docs.github.com/en/free-pro-team@latest/actions/learn-github-actions/managing-complex-workflows#using-a-build-matrix
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Get GCC-11
+      run:  choco install gcc@11
+
+    - name: Conan Installation
+      id: conan
+      uses: turtlebrowser/get-conan@main
+
+    - name: Create default Conan profile
+      run: conan profile detect --force
+
+    - name: Conan install dependencies
+      working-directory: ${{github.workspace}}/build
+      run:  conan install .. --build=missing
+
+    # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
+    # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type  
+    - name: CMake configuration
+      working-directory: ${{github.workspace}}/build
+      run:  cmake .. -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+
+    - name: Cmake build
+      working-directory: ${{github.workspace}}/build
+      run: cmake --build . --config ${{env.BUILD_TYPE}}
+
+    - name: Cmake test
+      working-directory: ${{github.workspace}}/build
+      run: ./test/respondTest
+
+    # - name: Install Doxygen
+    #   run: sudo apt-get update && sudo apt-get install -y --no-install-recommends doxygen graphviz
+
+    # - name: Doxygen documentation generation
+    #   working-directory: ${{github.workspace}}/build
+    #   run: make doc
+
+    # - name: Documentation moving generated files
+    #   run: mv ${{github.workspace}}/build/doc/html ./doc/api
+
+    # - name: Documentation deploy to Github Pages
+    #   uses: peaceiris/actions-gh-pages@v3
+    #   with:
+    #     github_token: ${{ secrets.GITHUB_TOKEN }}
+    #     publish_dir: ./doc/api
