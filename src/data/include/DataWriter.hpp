@@ -18,7 +18,9 @@
 #ifndef DATA_DATAWRITER_HPP_
 #define DATA_DATAWRITER_HPP_
 
-#include <eigen3/Eigen/Eigen>
+#define FMT_HEADER_ONLY
+
+#include <Eigen/Eigen>
 #include <ctime>
 #include <filesystem>
 #include <fstream>

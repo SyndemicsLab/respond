@@ -11,7 +11,7 @@ find_package(Boost REQUIRED COMPONENTS
 find_package(fmt REQUIRED)
 
 # Find Eigen
-find_package (Eigen3 3.4 REQUIRED NO_MODULE)
+find_package (Eigen3 3.4 REQUIRED)
 
 add_library(data
   Loader.cpp
@@ -26,6 +26,7 @@ add_library(data
 target_include_directories(data INTERFACE
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${Boost_INCLUDE_DIRS}
+  ${Eigen3_INCLUDE_DIRS}
   "include/"
 )
 target_link_libraries(data
