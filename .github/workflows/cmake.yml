@@ -2,7 +2,7 @@ name: CMake
 
 on:
   push:
-    branches: [ "master", "workflowfix" ]
+    branches: [ "master", "macos-workflow" ]
   pull_request:
     branches: [ "master" ]
 
