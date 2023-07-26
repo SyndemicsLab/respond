@@ -13,7 +13,7 @@ include(GNUInstallDirs)
 
 find_package(fmt REQUIRED)
 
-find_package(Eigen3 3.4 REQUIRED NO_MODULE)
+find_package(Eigen3 3.4 REQUIRED)
 
 add_subdirectory(model)
 add_subdirectory(data)

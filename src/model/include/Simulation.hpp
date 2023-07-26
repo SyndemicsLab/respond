@@ -20,7 +20,7 @@
 
 #define FMT_HEADER_ONLY
 
-#include <eigen3/Eigen3/Eigen>
+#include <Eigen/Eigen>
 #include <boost/log/core.hpp>
 #include <boost/log/expressions.hpp>
 #include <boost/log/sinks/text_file_backend.hpp>

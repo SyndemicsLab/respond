@@ -5,7 +5,7 @@ include(GoogleTest)
 include_directories(mocks)
 
 # Find Eigen
-find_package (Eigen3 3.4 REQUIRED NO_MODULE)
+find_package (Eigen3 3.4 REQUIRED)
 
 add_executable(respondTest
   SimulationTest.cpp

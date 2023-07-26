@@ -11,7 +11,7 @@ find_package(Boost REQUIRED COMPONENTS
 find_package(fmt REQUIRED)
 
 # Find Eigen
-find_package (Eigen3 3.4 REQUIRED NO_MODULE)
+find_package (Eigen3 3.4 REQUIRED)
 
 add_library(data
   Loader.cpp
