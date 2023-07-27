@@ -2,7 +2,7 @@ name: CMake
 
 on:
   push:
-    branches: [ "master", "windows-workflowfix" ]
+    branches: [ "master" ]
   pull_request:
     branches: [ "master" ]
 
@@ -34,8 +34,8 @@ jobs:
       run: rm -rf ${{github.workspace}}/build/*
 
     - name: Conan install dependencies
-      working-directory: ${{github.workspace}}/build
-      run:  conan install .. --build=missing
+      working-directory: ${{github.workspace}}
+      run:  conan install . --output-folder=build --build=missing
 
     # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
     # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type  
