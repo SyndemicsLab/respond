@@ -35,7 +35,7 @@ int main(int argc, char **argv) {
 
     for (int i = 0; i < std::stoi(argv[2]); i++) {
         std::string inputDir = argv[1];
-        inputDir += "input" + std::to_string(i + 1);
+        inputDir += "input_set" + std::to_string(i + 1);
         Data::DataLoader inputs(inputDir);
         inputs.loadInitialSample("init_cohort.csv");
         inputs.loadEnteringSamples("entering_cohort.csv", "No_Treatment",
@@ -71,7 +71,7 @@ int main(int argc, char **argv) {
         std::vector<std::vector<std::string>> demographics =
             inputs.getConfiguration().getDemographicCombosVecOfVec();
 
-        std::string outputDir = "output_bl" + std::to_string(i + 1);
+        std::string outputDir = "output" + std::to_string(i + 1);
         Data::DataWriter writer(outputDir, inputs.getInterventions(),
                                 inputs.getOUDStates(), demographics);
 
