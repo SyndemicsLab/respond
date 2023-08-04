@@ -444,12 +444,12 @@ Matrix3dOverTime DataLoader::loadFatalOverdoseRates(std::string csvName) {
         // fatal overdose is a constant across all strata
         std::string fodColumn = "fatal_to_all_types_overdose_ratio_cycle" +
                                 std::to_string(timestep + 1);
+        double t = std::stod(fatalOverdoseTable[fodColumn][0]);
         this->fatalOverdoseRates.insert(
             Utilities::Matrix3dFactory::Create(this->numOUDStates,
                                                this->numInterventions,
                                                this->numDemographicCombos)
-                .constant(std::stod(fatalOverdoseTable[fodColumn][0])),
-            timestep);
+                .constant(t), timestep);
     }
     return this->fatalOverdoseRates;
 }
@@ -538,15 +538,18 @@ Data::Matrix3d DataLoader::buildInterventionMatrix(std::vector<int> indices,
         return transMat;
     }
 
-    std::string currentIntervention = table["initial_block"][indices[0]];
+    std::vector<std::string> t1 = table["initial_block"];
+    std::string currentIntervention = t1[indices[0]];
     std::vector<std::string> keys;
 
     // reconstructing order of interventions based on column keys
     bool postFlag = false;
     int idx = 0;
     int offset = 0;
-    for (auto inter : this->Config.getInterventions()) {
-        for (auto kv : table) {
+    std::vector<std::string> interventions = this->Config.getInterventions();
+    for (std::string inter : interventions) {
+        InputTable tempTable = table;
+        for (auto kv : tempTable) {
             if (kv.first.find(inter) != std::string::npos) {
                 std::string key = kv.first;
                 keys.push_back(key);
@@ -581,8 +584,10 @@ Data::Matrix3d DataLoader::buildInterventionMatrix(std::vector<int> indices,
         int oudIdx = 0;
         int demIdx = 0;
         for (int idx : indices) {
-            std::string val = table[key][idx];
-            transMat(interventionOffset, oudIdx, demIdx) = std::stod(val);
+            std::vector<std::string> t2 = table[key];
+            std::string val = t2[idx];
+            double v = std::stod(val);
+            transMat(interventionOffset, oudIdx, demIdx) = v;
             oudIdx++;
             if (oudIdx % this->numOUDStates == 0) {
                 oudIdx = 0;
@@ -616,8 +621,8 @@ DataLoader::createTransitionMatrix3d(std::vector<std::vector<int>> indicesVec,
             Eigen::array<Eigen::Index, 3> extents = {
                 this->numInterventions, this->numOUDStates,
                 this->numDemographicCombos};
-            stackingMatrices.slice(offsets, extents) =
-                this->buildInterventionMatrix(indicesVec[i], table);
+            Data::Matrix3d temp = this->buildInterventionMatrix(indicesVec[i], table);
+            stackingMatrices.slice(offsets, extents) = temp;
         }
         return stackingMatrices;
 

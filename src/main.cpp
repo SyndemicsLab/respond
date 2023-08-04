@@ -50,33 +50,33 @@ int main(int argc, char **argv) {
         sim.Run();
         Data::History history = sim.getHistory();
 
-        Data::CostLoader costLoader(inputDir);
-        costLoader.loadHealthcareUtilizationCost(
-            "healthcare_utilization_cost.csv");
-        costLoader.loadOverdoseCost("overdose_cost.csv");
-        costLoader.loadPharmaceuticalCost("pharmaceutical_cost.csv");
-        costLoader.loadTreatmentUtilizationCost(
-            "treatment_utilization_cost.csv");
+        // Data::CostLoader costLoader(inputDir);
+        // costLoader.loadHealthcareUtilizationCost(
+        //     "healthcare_utilization_cost.csv");
+        // costLoader.loadOverdoseCost("overdose_cost.csv");
+        // costLoader.loadPharmaceuticalCost("pharmaceutical_cost.csv");
+        // costLoader.loadTreatmentUtilizationCost(
+        //     "treatment_utilization_cost.csv");
 
-        Data::UtilityLoader utilityLoader(inputDir);
-        utilityLoader.loadBackgroundUtility("bg_utility.csv");
-        utilityLoader.loadOUDUtility("oud_utility.csv");
-        utilityLoader.loadSettingUtility("setting_utility.csv");
+        // Data::UtilityLoader utilityLoader(inputDir);
+        // utilityLoader.loadBackgroundUtility("bg_utility.csv");
+        // utilityLoader.loadOUDUtility("oud_utility.csv");
+        // utilityLoader.loadSettingUtility("setting_utility.csv");
 
-        Calculator::CostCalculator costCalculator(costLoader, utilityLoader,
-                                                  history);
-        Data::Cost cost = costCalculator.calculateCost();
-        Data::Utility util = costCalculator.calculateUtility();
+        // Calculator::CostCalculator costCalculator(costLoader, utilityLoader,
+        //                                           history);
+        // Data::Cost cost = costCalculator.calculateCost();
+        // Data::Utility util = costCalculator.calculateUtility();
 
         std::vector<std::vector<std::string>> demographics =
             inputs.getConfiguration().getDemographicCombosVecOfVec();
 
-        std::string outputDir = "output" + std::to_string(i + 1);
+        std::string outputDir = "output_bl" + std::to_string(i + 1);
         Data::DataWriter writer(outputDir, inputs.getInterventions(),
                                 inputs.getOUDStates(), demographics);
 
         writer.writeHistory(Data::FILE, history);
-        writer.writeCost(Data::FILE, cost);
-        writer.writeUtility(Data::FILE, util);
+        // writer.writeCost(Data::FILE, cost);
+        // writer.writeUtility(Data::FILE, util);
     }
 }
