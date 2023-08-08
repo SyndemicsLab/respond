@@ -26,6 +26,10 @@
 
 # Whom to send the email to
 #$ -M matthew.carroll@bmc.org
+
+# use tasks, comment this line if running on single node.
+#$ -t 1-1000
+
 echo "=========================================================="
 echo "Starting on : $(date)"
 echo "Task index number : $SGE_TASK_ID"
