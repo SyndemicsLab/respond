@@ -1,31 +1,4 @@
-#!/usr/bin/bash -l
-
-#
-# All lines starting with "#" are comments
-# All lines starting with "#$" are SGE qsub commands
-# 
-
-#  Specify a project to use (Required for BUMC projects).
-#$ -P respond
-
-#  Give this job a name
-#$ -N respond_calibration
-
-#  Join standard output and error to a single file
-#$ -j y
-
-#  Name the file where to redirect standard output and error
-#$ -o respond_calibration.qlog
-
-#  Request time needed for job to run (default: 12 hours)
-#$ -l h_rt=12:00:00
-
-#  Send an email when the job begins and when it ends running
-#  (b = when job begins, a = if job aborts, e = when job ends)
-#$ -m a
-
-# Whom to send the email to
-#$ -M matthew.carroll@bmc.org
+#!/usr/bin/bash
 
 SCC_HOSTS=(
     "scc1"
@@ -59,9 +32,4 @@ SCC_HOSTS=(
     )
     # run gtests if built
     # [[ -f "test/respondTest" ]] && test/respondTest
-
-    taskstart=$(( (SGE_TASK_ID - 1) * 1000 + 1 ))
-    tasksend=$(( (SGE_TASK_ID * 1000) + 1 ))
-
-    src/respond "TestInput/" "$taskstart" "$tasksend"
 )
