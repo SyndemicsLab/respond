@@ -47,13 +47,12 @@ Matrix3d CostLoader::loadHealthcareUtilizationCost(std::string csvName) {
          ++intervention) {
         for (int dem = 0; dem < numDemographicCombos; ++dem) {
             for (int oud_state = 0; oud_state < numOUDStates; ++oud_state) {
-                int rowIdx = (intervention * numInterventions) +
-                             (dem * numDemographicCombos) + oud_state;
-                this->healthcareUtilizationCost(intervention, oud_state, dem) =
-                    std::stod(
-                        table["healthcare_utilization_cost_healthcare_system"]
-                             [rowIdx]);
-            }
+                int rowIdx = ((intervention * numInterventions) +
+                             (dem * numDemographicCombos) + oud_state);
+                std::vector<std::string> v = table["healthcare_utilization_cost_healthcare_system"];
+                double t = std::stod(v[rowIdx]);
+                this->healthcareUtilizationCost(intervention, oud_state, dem) = t;
+            } 
         }
     }
     return this->healthcareUtilizationCost;

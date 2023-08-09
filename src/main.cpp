@@ -27,15 +27,15 @@
 
 int main(int argc, char **argv) {
     using std::cout, std::cerr;
-    if (argc != 3) {
-        cerr << "Usage: " << argv[0] << "[INPUT FOLDER] [RUN NUMBER]\n\n"
+    if (argc != 4) {
+        cerr << "Usage: " << argv[0] << "[INPUT FOLDER] [RUN START] [RUN END]\n\n"
              << "RESPOND, a compartmental simulation of healthcare in "
                 "communities with high-risk opioid use";
     }
 
-    for (int i = 0; i < std::stoi(argv[2]); i++) {
+    for (int i = std::stoi(argv[2]); i < std::stoi(argv[3]); i++) {
         std::string inputDir = argv[1];
-        inputDir += "input" + std::to_string(i + 1);
+        inputDir += "input_set" + std::to_string(i);
         Data::DataLoader inputs(inputDir);
         inputs.loadInitialSample("init_cohort.csv");
         inputs.loadEnteringSamples("entering_cohort.csv", "No_Treatment",
@@ -50,33 +50,33 @@ int main(int argc, char **argv) {
         sim.Run();
         Data::History history = sim.getHistory();
 
-        Data::CostLoader costLoader(inputDir);
-        costLoader.loadHealthcareUtilizationCost(
-            "healthcare_utilization_cost.csv");
-        costLoader.loadOverdoseCost("overdose_cost.csv");
-        costLoader.loadPharmaceuticalCost("pharmaceutical_cost.csv");
-        costLoader.loadTreatmentUtilizationCost(
-            "treatment_utilization_cost.csv");
+        // Data::CostLoader costLoader(inputDir);
+        // costLoader.loadHealthcareUtilizationCost(
+        //     "healthcare_utilization_cost.csv");
+        // costLoader.loadOverdoseCost("overdose_cost.csv");
+        // costLoader.loadPharmaceuticalCost("pharmaceutical_cost.csv");
+        // costLoader.loadTreatmentUtilizationCost(
+        //     "treatment_utilization_cost.csv");
 
-        Data::UtilityLoader utilityLoader(inputDir);
-        utilityLoader.loadBackgroundUtility("bg_utility.csv");
-        utilityLoader.loadOUDUtility("oud_utility.csv");
-        utilityLoader.loadSettingUtility("setting_utility.csv");
+        // Data::UtilityLoader utilityLoader(inputDir);
+        // utilityLoader.loadBackgroundUtility("bg_utility.csv");
+        // utilityLoader.loadOUDUtility("oud_utility.csv");
+        // utilityLoader.loadSettingUtility("setting_utility.csv");
 
-        Calculator::CostCalculator costCalculator(costLoader, utilityLoader,
-                                                  history);
-        Data::Cost cost = costCalculator.calculateCost();
-        Data::Utility util = costCalculator.calculateUtility();
+        // Calculator::CostCalculator costCalculator(costLoader, utilityLoader,
+        //                                           history);
+        // Data::Cost cost = costCalculator.calculateCost();
+        // Data::Utility util = costCalculator.calculateUtility();
 
         std::vector<std::vector<std::string>> demographics =
             inputs.getConfiguration().getDemographicCombosVecOfVec();
 
-        std::string outputDir = "output" + std::to_string(i + 1);
+        std::string outputDir = "outputs/output" + std::to_string(i);
         Data::DataWriter writer(outputDir, inputs.getInterventions(),
                                 inputs.getOUDStates(), demographics);
 
         writer.writeHistory(Data::FILE, history);
-        writer.writeCost(Data::FILE, cost);
-        writer.writeUtility(Data::FILE, util);
+        // writer.writeCost(Data::FILE, cost);
+        // writer.writeUtility(Data::FILE, util);
     }
 }
