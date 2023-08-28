@@ -27,6 +27,7 @@ Data::Matrix3d Matrix3dFactory::Create(int numOUDStates, int numInterventions,
     order[Data::INTERVENTION] = numInterventions;
     order[Data::DEMOGRAPHIC_COMBO] = numDemographics;
     Data::Matrix3d empty(order);
+    empty.setZero();
     return empty;
 }
 
