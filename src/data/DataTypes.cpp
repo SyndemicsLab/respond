@@ -50,8 +50,8 @@ void Matrix3dOverTime::insert(Matrix3d datapoint, int timestep) {
 
 std::vector<Matrix3d> Matrix3dOverTime::getMatrices() {
     std::vector<Matrix3d> values;
-    for (auto itr = this->data.begin(); itr != this->data.end(); itr++) {
-        Matrix3d mat = itr->second;
+    for (auto const &x : this->data) {
+        Matrix3d mat = x.second;
         values.push_back(mat);
     }
     return values;

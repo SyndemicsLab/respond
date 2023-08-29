@@ -244,9 +244,9 @@ std::string DataWriter::writeUtility(OutputType outputType, Utility util) {
 void DataWriter::writer(std::ostream &stream, Matrix3dOverTime historyToWrite) {
     std::vector<Matrix3d> Matrix3dVec = historyToWrite.getMatrices();
     stream << writeColumnHeaders(Matrix3dVec.size()) << std::endl;
-    for (int i = 0; i < this->interventions.size(); i++) {
-        for (int j = 0; j < this->oudStates.size(); j++) {
-            for (int k = 0; k < this->demographics.size(); k++) {
+    for (long int i = 0; i < this->interventions.size(); i++) {
+        for (long int j = 0; j < this->oudStates.size(); j++) {
+            for (long int k = 0; k < this->demographics.size(); k++) {
                 stream << this->interventions[i] << ",";
                 stream << this->oudStates[j] << ",";
                 for (int dem = 0; dem < this->demographics[k].size(); dem++) {
@@ -257,9 +257,10 @@ void DataWriter::writer(std::ostream &stream, Matrix3dOverTime historyToWrite) {
                     index[Data::INTERVENTION] = i;
                     index[Data::OUD] = j;
                     index[Data::DEMOGRAPHIC_COMBO] = k;
-                    ASSERTM(dm.NumDimensions == 3, "3 Dimensions Found in Matrix3d");
-                    stream << std::to_string(dm(index[0], index[1], index[2]))
-                           << ",";
+                    ASSERTM(dm.NumDimensions == 3,
+                            "3 Dimensions Found in Matrix3d");
+                    double value = dm(index[0], index[1], index[2]);
+                    stream << std::to_string(value) << ",";
                 }
                 stream << std::endl;
             }
