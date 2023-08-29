@@ -28,11 +28,11 @@
 #$ -M matthew.carroll@bmc.org
 
 # use tasks, comment this line if running on single node.
-# # $ -t 1-1000
+#$ -t 1-1000
 
 echo "=========================================================="
 echo "Starting on : $(date)"
-# echo "Task index number : $SGE_TASK_ID"
+echo "Task index number : $SGE_TASK_ID"
 echo "=========================================================="
 
 module load boost/1.79.0_gcc5+
@@ -40,10 +40,10 @@ module load cmake/3.22.2
 module load eigen/3.4.0
 module load gcc/12.2.0
 
-# taskstart=$(( (SGE_TASK_ID - 1) * 1000 + 1 ))
-# tasksend=$(( (SGE_TASK_ID * 1000) + 1 ))
+taskstart=$(( (SGE_TASK_ID - 1) * 1000 + 1 ))
+tasksend=$(( (SGE_TASK_ID * 1000) + 1 ))
 
-src/respond "../../RESPONDCalibrationv2/inputs/" "1" "100"
+src/respond "../../RESPONDCalibrationv2/inputs/" "$taskstart" "$tasksend"
 
 
 echo "=========================================================="
