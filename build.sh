@@ -16,7 +16,6 @@ SCC_HOSTS=(
 	module load boost/1.79.0_gcc5+
 	module load cmake/3.22.2
 	module load eigen/3.4.0
-	module load openmpi
 	module load gcc/12.2.0
     fi
     cd "build/" || return
