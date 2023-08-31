@@ -355,6 +355,11 @@ Data::Matrix3d Sim::addEnteringSamples(Data::Matrix3d state) {
     Data::Matrix3d ret = state.slice(offset, extent);
 
     ret += enteringSamples;
+
+    Data::Matrix3d roundingMatrix(ret.dimensions());
+    roundingMatrix.setZero();
+    ret = ret.cwiseMax(roundingMatrix);
+
     return ret;
 }
 
