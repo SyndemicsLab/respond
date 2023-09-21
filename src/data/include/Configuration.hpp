@@ -1,4 +1,4 @@
-//===-- Configuration.hpp - Configuration class definition ------*- C++ -*-===//
+//===-----------------------------*- C++ -*--------------------------------===//
 //
 // Part of the RESPOND - Researching Effective Strategies to Prevent Opioid
 // Death Project, under the AGPLv3 License. See https://www.gnu.org/licenses/
