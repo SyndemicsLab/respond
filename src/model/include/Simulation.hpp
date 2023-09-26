@@ -20,6 +20,9 @@
 
 #define FMT_HEADER_ONLY
 
+#include "DataLoader.hpp"
+#include "DataTypes.hpp"
+#include "Matrix3dFactory.hpp"
 #include <Eigen/Eigen>
 #include <boost/log/core.hpp>
 #include <boost/log/expressions.hpp>
@@ -38,10 +41,6 @@
 #include <numeric>
 #include <string>
 #include <unsupported/Eigen/CXX11/Tensor>
-
-#include "DataLoader.hpp"
-#include "DataTypes.hpp"
-#include "Matrix3dFactory.hpp"
 
 /// @brief Namespace defining all Simulation Operations
 namespace Simulation {
