@@ -28,7 +28,8 @@
 int main(int argc, char **argv) {
     using std::cout, std::cerr;
     if (argc != 4) {
-        cerr << "Usage: " << argv[0] << "[INPUT FOLDER] [RUN START] [RUN END]\n\n"
+        cerr << "Usage: " << argv[0]
+             << "[INPUT FOLDER] [RUN START] [RUN END]\n\n"
              << "RESPOND, a compartmental simulation of healthcare in "
                 "communities with high-risk opioid use";
     }
