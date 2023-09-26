@@ -27,72 +27,72 @@
 #include "Matrix3dPrinter.hpp"
 
 namespace Data {
-class CostLoader : public Loader {
-public:
-    CostLoader(){};
-    CostLoader(std::string inputDir);
+    class CostLoader : public Loader {
+    public:
+        CostLoader(){};
+        CostLoader(std::string inputDir);
 
-    Configuration loadConfigurationFile(std::string configPath);
+        Configuration loadConfigurationFile(std::string configPath);
 
-    // SETTERS
-    /// @brief Load Healthcare Utilization Cost from file
-    /// @param csvName filename for Healthcare Utilization Cost
-    /// @return Matrix3d containing the Healthcare Utilization Cost
-    Matrix3d loadHealthcareUtilizationCost(std::string csvName);
+        // SETTERS
+        /// @brief Load Healthcare Utilization Cost from file
+        /// @param csvName filename for Healthcare Utilization Cost
+        /// @return Matrix3d containing the Healthcare Utilization Cost
+        Matrix3d loadHealthcareUtilizationCost(std::string csvName);
 
-    /// @brief Load Overdose Cost from file
-    /// @param csvName filename for Overdose Cost
-    /// @return unordered map for Overdose Costs, string to double
-    std::unordered_map<std::string, double>
-    loadOverdoseCost(std::string csvName);
+        /// @brief Load Overdose Cost from file
+        /// @param csvName filename for Overdose Cost
+        /// @return unordered map for Overdose Costs, string to double
+        std::unordered_map<std::string, double>
+        loadOverdoseCost(std::string csvName);
 
-    /// @brief
-    /// @param csvName
-    /// @return
-    Matrix3d loadPharmaceuticalCost(std::string csvName);
+        /// @brief
+        /// @param csvName
+        /// @return
+        Matrix3d loadPharmaceuticalCost(std::string csvName);
 
-    /// @brief
-    /// @param csvName
-    /// @return
-    Matrix3d loadTreatmentUtilizationCost(std::string csvName);
+        /// @brief
+        /// @param csvName
+        /// @return
+        Matrix3d loadTreatmentUtilizationCost(std::string csvName);
 
-    /// @brief
-    /// @return
-    Matrix3d getHealthcareUtilizationCost() {
-        return this->healthcareUtilizationCost;
-    }
+        /// @brief
+        /// @return
+        Matrix3d getHealthcareUtilizationCost() {
+            return this->healthcareUtilizationCost;
+        }
 
-    /// @brief
-    /// @return
-    Matrix3d getPharmaceuticalCost() { return this->pharmaceuticalCost; }
+        /// @brief
+        /// @return
+        Matrix3d getPharmaceuticalCost() { return this->pharmaceuticalCost; }
 
-    /// @brief
-    /// @return
-    Matrix3d getTreatmentUtilizationCost() {
-        return this->treatmentUtilizationCost;
-    }
+        /// @brief
+        /// @return
+        Matrix3d getTreatmentUtilizationCost() {
+            return this->treatmentUtilizationCost;
+        }
 
-    /// @brief
-    /// @return
-    double getNonFatalOverdoseCost();
+        /// @brief
+        /// @return
+        double getNonFatalOverdoseCost();
 
-    /// @brief
-    /// @return
-    double getFatalOverdoseCost();
+        /// @brief
+        /// @return
+        double getFatalOverdoseCost();
 
-private:
-    Matrix3d healthcareUtilizationCost;
-    Matrix3d pharmaceuticalCost;
-    Matrix3d treatmentUtilizationCost;
-    std::unordered_map<std::string, double> overdoseCostsMap;
-    std::unordered_map<std::string, double> pharmaceuticalCostsMap;
-    std::unordered_map<std::string, double> treatmentUtilizationCostMap;
+    private:
+        Matrix3d healthcareUtilizationCost;
+        Matrix3d pharmaceuticalCost;
+        Matrix3d treatmentUtilizationCost;
+        std::unordered_map<std::string, double> overdoseCostsMap;
+        std::unordered_map<std::string, double> pharmaceuticalCostsMap;
+        std::unordered_map<std::string, double> treatmentUtilizationCostMap;
 
-    std::unordered_map<std::string, double>
-    loadTreatmentUtilizationCostMap(InputTable table);
-    std::unordered_map<std::string, double>
-    loadPharmaceuticalCostMap(InputTable table);
-};
+        std::unordered_map<std::string, double>
+        loadTreatmentUtilizationCostMap(InputTable table);
+        std::unordered_map<std::string, double>
+        loadPharmaceuticalCostMap(InputTable table);
+    };
 } // namespace Data
 
 #endif

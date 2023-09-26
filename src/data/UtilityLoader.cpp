@@ -40,11 +40,13 @@ Matrix3d UtilityLoader::loadBackgroundUtility(std::string csvName) {
                                            numDemographicCombos)
             .constant(0);
 
-    ASSERTM(table.find("utility") != table.end(), "\'utility\' Column Successfully Found");
-    
+    ASSERTM(table.find("utility") != table.end(),
+            "\'utility\' Column Successfully Found");
+
     for (int dem = 0; dem < numDemographicCombos; ++dem) {
         Eigen::array<Eigen::Index, 3> offset = {0, 0, 0};
-        Eigen::array<Eigen::Index, 3> extent = this->backgroundUtility.dimensions();
+        Eigen::array<Eigen::Index, 3> extent =
+            this->backgroundUtility.dimensions();
         offset[Data::DEMOGRAPHIC_COMBO] = dem;
         extent[Data::DEMOGRAPHIC_COMBO] = 1;
         Matrix3d temp = this->backgroundUtility.slice(offset, extent);
@@ -68,13 +70,15 @@ Matrix3d UtilityLoader::loadOUDUtility(std::string csvName) {
                            numOUDStates, numInterventions, numDemographicCombos)
                            .constant(0);
 
-    ASSERTM(table.find("utility") != table.end(), "\'utility\' Column Successfully Found");
-    
+    ASSERTM(table.find("utility") != table.end(),
+            "\'utility\' Column Successfully Found");
+
     for (int intervention = 0; intervention < numInterventions;
          intervention++) {
         for (int oud = 0; oud < numOUDStates; ++oud) {
             Eigen::array<Eigen::Index, 3> offset = {0, 0, 0};
-            Eigen::array<Eigen::Index, 3> extent = this->oudUtility.dimensions();
+            Eigen::array<Eigen::Index, 3> extent =
+                this->oudUtility.dimensions();
             offset[Data::OUD] = oud;
             offset[Data::INTERVENTION] = intervention;
             extent[Data::OUD] = 1;
@@ -104,12 +108,14 @@ Matrix3d UtilityLoader::loadSettingUtility(std::string csvName) {
                                            numDemographicCombos)
             .constant(0);
 
-    ASSERTM(table.find("utility") != table.end(), "\'utility\' Column Successfully Found");
+    ASSERTM(table.find("utility") != table.end(),
+            "\'utility\' Column Successfully Found");
 
     for (int intervention = 0; intervention < numInterventions;
          ++intervention) {
         Eigen::array<Eigen::Index, 3> offset = {0, 0, 0};
-        Eigen::array<Eigen::Index, 3> extent = this->settingUtility.dimensions();
+        Eigen::array<Eigen::Index, 3> extent =
+            this->settingUtility.dimensions();
         offset[Data::INTERVENTION] = intervention;
         extent[Data::INTERVENTION] = 1;
         Matrix3d temp = this->settingUtility.slice(offset, extent);

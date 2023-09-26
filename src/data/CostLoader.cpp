@@ -41,18 +41,23 @@ Matrix3d CostLoader::loadHealthcareUtilizationCost(std::string csvName) {
                                            numDemographicCombos)
             .constant(0);
 
-    ASSERTM(table.find("healthcare_utilization_cost_healthcare_system") != table.end(), "\'healthcare_utilization_cost_healthcare_system\' Column Successfully Found");
+    ASSERTM(table.find("healthcare_utilization_cost_healthcare_system") !=
+                table.end(),
+            "\'healthcare_utilization_cost_healthcare_system\' Column "
+            "Successfully Found");
 
     for (int intervention = 0; intervention < numInterventions;
          ++intervention) {
         for (int dem = 0; dem < numDemographicCombos; ++dem) {
             for (int oud_state = 0; oud_state < numOUDStates; ++oud_state) {
                 int rowIdx = ((intervention * numInterventions) +
-                             (dem * numDemographicCombos) + oud_state);
-                std::vector<std::string> v = table["healthcare_utilization_cost_healthcare_system"];
+                              (dem * numDemographicCombos) + oud_state);
+                std::vector<std::string> v =
+                    table["healthcare_utilization_cost_healthcare_system"];
                 double t = std::stod(v[rowIdx]);
-                this->healthcareUtilizationCost(intervention, oud_state, dem) = t;
-            } 
+                this->healthcareUtilizationCost(intervention, oud_state, dem) =
+                    t;
+            }
         }
     }
     return this->healthcareUtilizationCost;
@@ -108,7 +113,8 @@ Matrix3d CostLoader::loadPharmaceuticalCost(std::string csvName) {
 
     for (int i = 0; i < numInterventions; ++i) {
         Eigen::array<Eigen::Index, 3> offset = {0, 0, 0};
-        Eigen::array<Eigen::Index, 3> extent = this->pharmaceuticalCost.dimensions();
+        Eigen::array<Eigen::Index, 3> extent =
+            this->pharmaceuticalCost.dimensions();
         offset[Data::INTERVENTION] = i;
         extent[Data::INTERVENTION] = 1;
         Matrix3d slice = this->pharmaceuticalCost.slice(offset, extent);
