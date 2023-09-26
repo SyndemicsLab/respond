@@ -156,7 +156,10 @@ Matrix3d DataLoader::loadInitialSample(std::string csvName) {
 
     ASSERTM(itr != initialCohort.end(), "\'counts\' Column Successfully Found");
 
-    ASSERTM(itr->second.size() <= (nonPostInterventions * this->numDemographicCombos * this->numOUDStates), "Correct number of Counts Found");
+    ASSERTM(itr->second.size() <=
+                (nonPostInterventions * this->numDemographicCombos *
+                 this->numOUDStates),
+            "Correct number of Counts Found");
 
     this->initialSample = Utilities::Matrix3dFactory::Create(
                               this->numOUDStates, this->numInterventions,
@@ -216,7 +219,8 @@ DataLoader::loadEnteringSamples(std::string csvName,
     std::vector<int> changeTimes = this->Config.getEnteringSampleChangeTimes();
     for (int timestep : changeTimes) {
         std::string column = columnPrefix + std::to_string(timestep + 1);
-        ASSERTM(enteringSamplesTable.find(column) != enteringSamplesTable.end(), (column + " Successfully Found"));
+        ASSERTM(enteringSamplesTable.find(column) != enteringSamplesTable.end(),
+                (column + " Successfully Found"));
 
         Matrix3d enteringSample =
             Utilities::Matrix3dFactory::Create(this->numOUDStates,
@@ -449,7 +453,8 @@ Matrix3dOverTime DataLoader::loadFatalOverdoseRates(std::string csvName) {
             Utilities::Matrix3dFactory::Create(this->numOUDStates,
                                                this->numInterventions,
                                                this->numDemographicCombos)
-                .constant(t), timestep);
+                .constant(t),
+            timestep);
     }
     return this->fatalOverdoseRates;
 }
@@ -621,7 +626,8 @@ DataLoader::createTransitionMatrix3d(std::vector<std::vector<int>> indicesVec,
             Eigen::array<Eigen::Index, 3> extents = {
                 this->numInterventions, this->numOUDStates,
                 this->numDemographicCombos};
-            Data::Matrix3d temp = this->buildInterventionMatrix(indicesVec[i], table);
+            Data::Matrix3d temp =
+                this->buildInterventionMatrix(indicesVec[i], table);
             stackingMatrices.slice(offsets, extents) = temp;
         }
         return stackingMatrices;

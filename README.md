@@ -2,7 +2,7 @@
 
 `RESPONDv2.0` is a complete rewrite of the RESPOND model, first created by the [Syndemics Lab](https://www.syndemicslab.org) in the late 2010s, with the goals of improving the readability and maintainability of the model, improving the execution speed, and making the model calibration process easier.
 
-While the original model was built using a combination of the R and C++ programming languages, the core of this rewrite is purely C++, instead exposing language bindings so users can work with the model using their language of choice.
+While the original model was built using a combination of the R and C++ programming languages, the core of this rewrite is purely C++, instead planning to expose language bindings so users can work with the model using their language of choice.
 
 ## Dependencies
 
@@ -36,3 +36,12 @@ The State Tensor, known in the original as `cohort` (described above), is a thre
 - Demographics (e.g. age, sex)
 
 This enables flexibility in the number of combinations of intervention, opioid use, and demographics classifiers used in the model. The State Tensor is then wrapped in a vector to capture all timesteps.
+
+## Building RESPOND
+
+With the necessary dependencies installed, building RESPOND should only require the following commands:
+```sh
+cd build/
+cmake ..
+make
+```
