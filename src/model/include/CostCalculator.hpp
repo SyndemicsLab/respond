@@ -52,8 +52,17 @@ namespace Calculator {
         Data::CostLoader costLoader;
         Data::UtilityLoader utilityLoader;
 
+        /// @brief
+        /// @param overdose
+        /// @param cost
+        /// @return
         Data::Matrix3dOverTime
         calculateOverdoseCost(Data::Matrix3dOverTime overdose, double cost);
+
+        /// @brief
+        /// @param state
+        /// @param cost
+        /// @return
         Data::Matrix3dOverTime calculateCost(Data::Matrix3dOverTime state,
                                              Data::Matrix3d cost);
     };

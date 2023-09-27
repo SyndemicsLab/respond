@@ -68,17 +68,17 @@ namespace Data {
      */
     class DataLoader : public Loader {
     public:
-        // CONSTRUCTORS
         /// @brief The default constructor for DataLoader.
-        ///
         /// This constructor initializes all members to zero or to empty
         /// objects.
         DataLoader();
+
         /// @brief A constructor for DataLoader that generates necessary model
         /// objects based on the contents of the provided input directory
         /// @param inputDir the name of the directory where input files are
         /// stored
         DataLoader(std::string inputDir);
+
         /// @brief An alternative constructor for DataLoader for loading data
         /// when a Configuration object has already been created prior to
         /// specifying the directory containing tabular inputs
@@ -87,38 +87,50 @@ namespace Data {
         /// @param inputDir The name of the directory where input files are
         /// stored
         DataLoader(Configuration config, std::string inputDir);
+
         ~DataLoader(){};
 
-        // PUBLIC METHODS
-        // GETTERS
+        /// @brief
+        /// @param configPath
+        /// @return
         Configuration loadConfigurationFile(std::string configPath);
+
         /// @brief Get the Directory Name
         /// @return String Directory Name
         std::string getDirName() { return dirName; }
+
         /// @brief Get the Simulation Duration
         /// @return Integer Duration
         int getDuration() { return duration; }
+
         /// @brief Get Number of OUD States
         /// @return Integer Number of OUD States
         int getNumOUDStates() { return numOUDStates; }
+
         /// @brief Get Number of Integerventions
         /// @return Integer Number of Interventions
         int getNumInterventions() { return numInterventions; }
+
         /// @brief Get the Number of Demographics
         /// @return Integer Number of Demographics
         int getNumDemographics() { return numDemographics; }
+
         /// @brief Get the Number of Demographics
         /// @return Integer Number of Demographics
         int getNumDemographicCombos() { return numDemographicCombos; }
+
         /// @brief Get the Initial Sample
         /// @return Matrix3d Initial Sample
         Matrix3d getInitialSample() { return initialSample; }
+
         /// @brief Get the Entering Samples
         /// @return Matrix3dOverTime Entering Samples
         Matrix3dOverTime getEnteringSamples() { return enteringSamples; }
+
         /// @brief Get the OUD Transition Rates
         /// @return Matrix3d OUD Transition Rates
         Matrix3d getOUDTransitionRates() { return oudTransitionRates; }
+
         /// @brief Get the Intervention Transition Rates
         /// @return Matrix3dOverTime Intervention Transition Rates
         Matrix3dOverTime getInterventionTransitionRates() {
@@ -127,60 +139,75 @@ namespace Data {
         /// @brief Get the Overdose Rates
         /// @return Matrix3dOverTime Overdose Rates
         Matrix3dOverTime getOverdoseRates() { return overdoseRates; }
+
         /// @brief Get the Fatal Overdose Rates
         /// @return Matrix3dOverTime Fatal Overdose Rates
         Matrix3dOverTime getFatalOverdoseRates() { return fatalOverdoseRates; }
+
         /// @brief Get the Mortality Rates
         /// @return Matrix3d Mortality Rates
         Matrix3d getMortalityRates() { return mortalityRates; }
+
         /// @brief Get the Intervention Initialization Rates
         /// @return Matrix3d Intervention Initialization Rates
         Matrix3d getInterventionInitRates() { return interventionInitRates; }
+
         /// @brief Get the Interventions
         /// @return Vector of Strings Interventions
         std::vector<std::string> getInterventions() { return interventions; }
+
         /// @brief Get the OUD States
         /// @return Vector of Strings OUD States
         std::vector<std::string> getOUDStates() { return oudStates; }
+
         /// @brief Get the Aging Interval
         /// @return Integer Aging Interval
         int getAgingInterval() { return agingInterval; }
+
         /// @brief Get the Age Group Shift
         /// @return Integer Age Group Shift
         int getAgeGroupShift() { return ageGroupShift; }
+
         /// @brief Determine if cost analysis is on or off
         /// @return Boolean true if user config specifies to include cost
         /// analysis, otherwise false
         bool getCostSwitch() { return costSwitch; }
+
         /// @brief Get the vector of cost perspectives if cost analysis is on,
         /// otherwise, get an empty vector
         /// @return Vector of Strings representing perspectives from which to
         /// consider costs
         std::vector<std::string> getCostPerspectives();
+
         /// @brief Get the decimal representation of the discount rate applied
         /// to cost, provided that cost analysis is enabled. Otherwise, get 0.0
         /// @return Double Discount Rate
         double getDiscountRate();
+
         /// @brief Get the bin size for cost reporting timesteps if cost
         /// analysis is enabled. Otherwise, get 0
         /// @return Integer cost reporting timestep bin size
         int getReportingInterval();
+
         /// @brief Get the user config variable specifying whether the cost
         /// outputs should be broken down by cost perspective. Always returns
         /// false if cost analysis is disabled.
         /// @return Boolean cost category breakdown switch
         bool getCostCategoryOutputs();
+
         /// @brief Get a boolean which represents whether to break down outputs
         /// by interventions or to group all interventions in a single output
         /// @return Boolean per intervention outputs
         bool getPerInterventionPredictions() {
             return perInterventionPredictions;
         }
+
         /// @brief Get a boolean which represents whether to generate an output
         /// file that contains the entire state tensor object across all
         /// timesteps
         /// @return Boolean general outputs switch
         bool getGeneralOutputsSwitch() { return generalOutputsSwitch; }
+
         /// @brief Select which timesteps to provide general statistics output
         /// @return Vector of Integers representing the timesteps at which to
         /// print output
@@ -188,7 +215,6 @@ namespace Data {
             return generalStatsOutputTimesteps;
         }
 
-        // SETTERS
         /// @brief Load the Initial Sample from a File
         /// @param csvName Filename to the Initial Sample
         /// @return Matrix3d Initial Sample
@@ -238,20 +264,57 @@ namespace Data {
                                     std::string bgmCSVName);
 
     private:
+        /// @brief
+        /// @param colString
+        /// @param ogTable
+        /// @return
         InputTable removeColumns(std::string colString, InputTable ogTable);
+
+        /// @brief
+        /// @param indicesVec
+        /// @param table
+        /// @param dimension
+        /// @return
         Matrix3d
         createTransitionMatrix3d(std::vector<std::vector<int>> indicesVec,
                                  InputTable table, Data::Dimension dimension);
+
+        /// @brief
+        /// @param indices
+        /// @param table
+        /// @return
         Matrix3d buildInterventionMatrix(std::vector<int> indices,
                                          InputTable table);
+
+        /// @brief
+        /// @param table
+        /// @param key
+        /// @return
         Matrix3d buildOverdoseTransitions(InputTable table, std::string key);
+
+        /// @brief
+        /// @param v
+        /// @param target
+        /// @return
         std::vector<int> findIndices(std::vector<std::string> const &v,
                                      std::string target);
+
+        /// @brief
+        /// @param col
+        /// @return
         std::vector<std::vector<int>>
         getIndicesByIntervention(std::vector<std::string> col);
+
+        /// @brief
+        /// @param ict
+        /// @param table
+        /// @param indicesVec
+        /// @return
         Matrix3dOverTime
         buildTransitionRatesOverTime(std::vector<int> ict, InputTable table,
                                      std::vector<std::vector<int>> indicesVec);
+
+        /// @brief
         void populateCostParameters();
 
         std::string dirName;
