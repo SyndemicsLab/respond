@@ -30,5 +30,5 @@ SCC_HOSTS=(
 	([[ ! -z "$CORES" ]] && make -j"$CORES") || make
     )
     # run gtests if built
-    # [[ -f "test/respondTest" ]] && test/respondTest
+    [[ -f "test/respondTest" ]] && test/respondTest
 )
