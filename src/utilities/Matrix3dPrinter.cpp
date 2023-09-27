@@ -19,9 +19,6 @@
 
 namespace Utilities {
 
-    /// @brief A convenience function useful for viewing `Matrix3d` objects as
-    /// 2d slices along the demographics axis -- used for printf debugging
-    /// @param toPrint the `Matrix3d` object to print
     void Matrix3dPrinter::Print(Data::Matrix3d mat, std::ostream &stream) {
         Data::Matrix3d::Dimensions dim = mat.dimensions();
         for (int i = 0; i < dim[2]; ++i) {

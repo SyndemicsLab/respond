@@ -94,19 +94,56 @@ namespace Data {
     /// interface
     class DataWriter : public IDataWriter {
     public:
+        /// @brief
         DataWriter();
+
+        /// @brief
+        /// @param dirname
+        /// @param interventions
+        /// @param oudStates
+        /// @param demographics
         DataWriter(std::string dirname, std::vector<std::string> interventions,
                    std::vector<std::string> oudStates,
                    std::vector<std::vector<std::string>> demographics);
+
+        /// @brief
+        /// @param dirname
         void addDirname(std::string dirname) override;
+
+        /// @brief
+        /// @return
         std::string getDirname() override;
+
+        /// @brief
+        /// @param interventions
         void setInterventions(std::vector<std::string> interventions) override;
+
+        /// @brief
+        /// @param oudStates
         void setOUDStates(std::vector<std::string> oudStates) override;
+
+        /// @brief
+        /// @param demographics
         void setDemographics(
             std::vector<std::vector<std::string>> demographics) override;
+
+        /// @brief
+        /// @param outputType
+        /// @param history
+        /// @return
         std::string writeHistory(OutputType outputType,
                                  History history) override;
+
+        /// @brief
+        /// @param outputType
+        /// @param cost
+        /// @return
         std::string writeCost(OutputType outputType, Cost cost) override;
+
+        /// @brief
+        /// @param outputType
+        /// @param util
+        /// @return
         std::string writeUtility(OutputType outputType, Utility util) override;
 
     private:
@@ -114,7 +151,15 @@ namespace Data {
         std::vector<std::string> oudStates;
         std::vector<std::vector<std::string>> demographics;
         std::string dirname;
+
+        /// @brief
+        /// @param timesteps
+        /// @return
         std::string writeColumnHeaders(int timesteps);
+
+        /// @brief
+        /// @param stream
+        /// @param historyToWrite
         void writer(std::ostream &stream, Matrix3dOverTime historyToWrite);
     };
 } // namespace Data
