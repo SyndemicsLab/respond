@@ -159,34 +159,85 @@ namespace Simulation {
      */
     class Sim : public ISim {
     public:
-        // CONSTRUCTORS
+        /// @brief
         Sim();
+
+        /// @brief
+        /// @param duration
+        /// @param numOUDStates
+        /// @param numInterventions
+        /// @param numDemographics
         Sim(int duration, int numOUDStates, int numInterventions,
             int numDemographics);
         ~Sim(){};
+
+        /// @brief
+        /// @param dataLoader
         Sim(Data::DataLoader dataLoader);
 
-        // PUBLIC METHODS
+        /// @brief
         void Run() override;
+
+        /// @brief
         void raisePopulationAge() override;
+
+        /// @brief
+        /// @return
         Data::History getHistory() override;
 
-        // SETTERS
+        /// @brief
+        /// @param initialSample
         void loadInitialSample(Data::Matrix3d initialSample) override;
+
+        /// @brief
+        /// @param enteringSamples
         void
         loadEnteringSamples(Data::Matrix3dOverTime enteringSamples) override;
+
+        /// @brief
+        /// @param oudTransitionRates
         void loadOUDTransitionRates(Data::Matrix3d oudTransitionRates) override;
+
+        /// @brief
+        /// @param interventionInitRates
         void loadInterventionInitRates(
             Data::Matrix3d interventionInitRates) override;
+
+        /// @brief
+        /// @param interventionTransitionRates
         void loadInterventionTransitionRates(
             Data::Matrix3dOverTime interventionTransitionRates) override;
+
+        /// @brief
+        /// @param overdoseRates
         void loadOverdoseRates(Data::Matrix3dOverTime overdoseRates) override;
+
+        /// @brief
+        /// @param fatalOverdoseRates
         void loadFatalOverdoseRates(
             Data::Matrix3dOverTime fatalOverdoseRates) override;
+
+        /// @brief
+        /// @param mortalityRates
         void loadMortalityRates(Data::Matrix3d mortalityRates) override;
+
+        /// @brief
+        /// @param dataLoader
         void Load(Data::DataLoader dataLoader) override;
+
+        /// @brief
+        /// @param shift
+        /// @param interval
         void LoadAgingParameters(int shift, int interval) override;
 
+        /// @brief
+        /// @param enteringSamples
+        /// @param oudTransitionRates
+        /// @param interventionInitRates
+        /// @param interventionTransitionRates
+        /// @param fatalOverdoseRates
+        /// @param overdoseRates
+        /// @param mortalityRates
         void LoadTransitionModules(
             Data::Matrix3dOverTime enteringSamples,
             Data::Matrix3d oudTransitionRates,
@@ -196,12 +247,28 @@ namespace Simulation {
             Data::Matrix3dOverTime overdoseRates,
             Data::Matrix3d mortalityRates) override;
 
-        // GETTERS
+        /// @brief
+        /// @return
         Data::Matrix3dOverTime GetEnteringSamples() override;
+
+        /// @brief
+        /// @return
         Data::Matrix3d GetOUDTransitions() override;
+
+        /// @brief
+        /// @return
         Data::Matrix3dOverTime GetInterventionTransitions() override;
+
+        /// @brief
+        /// @return
         Data::Matrix3dOverTime GetOverdoseTransitions() override;
+
+        /// @brief
+        /// @return
         Data::Matrix3dOverTime GetFatalOverdoseTransitions() override;
+
+        /// @brief
+        /// @return
         Data::Matrix3d GetMortalityTransitions() override;
 
         // PUBLIC MEMBER OBJECTS
@@ -234,16 +301,57 @@ namespace Simulation {
         Data::Matrix3dOverTime fatalOverdoseRates;
         Data::Matrix3dOverTime overdoseRates;
         Data::Matrix3d mortalityRates;
+
+        /// @brief
+        /// @return
         Data::Matrix3d step();
+
+        /// @brief
+        /// @param interventionState
+        /// @param i
+        /// @return
         Data::Matrix3d
         multiplyInterventionInit(Data::Matrix3d interventionState, int i);
+
+        /// @brief
+        /// @param state
+        /// @return
         Data::Matrix3d addEnteringSamples(Data::Matrix3d state);
+
+        /// @brief
+        /// @param state
+        /// @return
         Data::Matrix3d multiplyOUDTransitions(Data::Matrix3d state);
+
+        /// @brief
+        /// @param state
+        /// @return
         Data::Matrix3d multiplyInterventionTransitions(Data::Matrix3d state);
+
+        /// @brief
+        /// @param state
+        /// @return
         Data::Matrix3d multiplyFatalOverdoseTransitions(Data::Matrix3d state);
+
+        /// @brief
+        /// @param state
+        /// @return
         Data::Matrix3d multiplyOverdoseTransitions(Data::Matrix3d state);
+
+        /// @brief
+        /// @param state
+        /// @return
         Data::Matrix3d multiplyMortalityTransitions(Data::Matrix3d state);
+
+        /// @brief
+        /// @param dim
+        /// @return
         Data::Matrix3d getTransitionFromDim(Data::Dimension dim);
+
+        /// @brief
+        /// @param state
+        /// @param dim
+        /// @return
         Data::Matrix3d multiplyTransitions(Data::Matrix3d state,
                                            Data::Dimension dim);
     };
