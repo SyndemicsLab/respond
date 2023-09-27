@@ -1,51 +1,87 @@
 #!/usr/bin/bash -l
+# The default RESPOND qsub shell script.
+# Runs batch jobs using the Sun Grid Engine queueing system.
 
-#
-# All lines starting with "#" are comments
-# All lines starting with "#$" are SGE qsub commands
-# 
-
-#  Specify a project to use (Required for BUMC projects).
+# Project Name
 #$ -P respond
 
-#  Give this job a name
-#$ -N respond_calibration
+# Name of this job
+#$ -N respond-model
 
-#  Join standard output and error to a single file
-#$ -j y
-
-#  Name the file where to redirect standard output and error
-#$ -o respond_calibration.qlog
-
-#  Request time needed for job to run (default: 12 hours)
+# Job Maximum Duration (default: 12 hours)
 #$ -l h_rt=12:00:00
 
-#  Send an email when the job begins and when it ends running
-#  (b = when job begins, a = if job aborts, e = when job ends)
+# Include the following line if you want output from commands run
+# to be together in one file. Otherwise, you would need to specify
+# separate files for command output versus error output.
+#$ -j y
+
+# Name the output file for command output (will also be used for
+# error output if they are being consolidated to a single file).
+# If using separate files for each, an additional file must be
+# specified for errors using the -e flag.
+#$ -o respond.log
+
+# Send an email if the program encounters the specified events
+# (b = when job begins, a = if job aborts, e = when job ends)
+# e.g. ae if you want to receive emails either if it aborts or ends
 #$ -m a
 
-# Whom to send the email to
-#$ -M matthew.carroll@bmc.org
+# Email address (overwrites the default used to report the job)
+#$ -M example@example.com
 
-# use tasks, comment this line if running on single node.
-#$ -t 1-1000
+# Request multiple slots for multithreaded or large-memory processes
+# Values here may range from 1-28 or 36
+#$ -pe omp 12
 
-echo "=========================================================="
-echo "Starting on : $(date)"
-echo "Task index number : $SGE_TASK_ID"
-echo "=========================================================="
+# Use "tasks", also known as array jobs, to run multiple copies of
+# the same or nearly the same job, to reduce the number of required
+# individually-scheduled jobs. Input as a-b, where a and b must both
+# be at least 1 (both are allowed to be 1 if running a single job)
+# and an optional argument to set the increment between tasks is also
+# allowed as a-b:step
+#$ -t 1-100
+
+## Below this point is Bourne Again Shell (bash) scripting containing
+## the instructions for what to do during the job.
+
+# ------------------------------------------------------------------------------
+
+# Write information about the start of tasks to the log file
+echo \
+"================================================================================
+Date/Time         : $(date)
+Node              : $(hostname)
+Working Directory : $(pwd)
+SCC Job ID        : $JOB_ID
+SCC Job Name      : $JOB_NAME
+Task ID           : $SGE_TASK_ID
+================================================================================"
 
 module load boost/1.79.0_gcc5+
 module load cmake/3.22.2
 module load eigen/3.4.0
 module load gcc/12.2.0
 
-taskstart=$(( (SGE_TASK_ID - 1) * 1000 + 1 ))
-tasksend=$(( (SGE_TASK_ID * 1000) + 1 ))
+# folder containing RESPOND inputs
+INPUT_PATH="/projectnb/respond/matt/RESPONDCalibrationv2/inputs/"
 
-src/respond "../../RESPONDCalibrationv2/inputs/" "$taskstart" "$tasksend"
+# used when running the model with many input sets per task/node
+RUNS_PER_TASK=1000
+TASKSTART=$(( (SGE_TASK_ID - 1) * RUNS_PER_TASK + 1 ))
+TASKSEND=$(( (SGE_TASK_ID * RUNS_PER_TASK) + 1 ))
 
+# run the model in a subshell
+(
+    # if running qsub from the top-level directory
+    [[ -d build ]] && (cd build || exit)
+    src/respond "$INPUT_PATH" "$TASKSTART" "$TASKSEND"
+)
 
-echo "=========================================================="
-echo "Finished on : $(date)"
-echo "=========================================================="
+# Write information about when tasks complete without error
+echo \
+"================================================================================
+SCC Job ID        : $JOB_ID
+Task ID           : $SGE_TASK_ID
+Completion Time   : $(date)
+================================================================================"
