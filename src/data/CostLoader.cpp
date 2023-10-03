@@ -46,15 +46,20 @@ namespace Data {
                 "\'healthcare_utilization_cost_healthcare_system\' Column "
                 "Successfully Found");
 
+        std::vector<std::string> v =
+            table["healthcare_utilization_cost_healthcare_system"];
+
+        int rowIdx = 0;
         for (int intervention = 0; intervention < numInterventions;
              ++intervention) {
             for (int dem = 0; dem < numDemographicCombos; ++dem) {
                 for (int oud_state = 0; oud_state < numOUDStates; ++oud_state) {
-                    int rowIdx = ((intervention * numInterventions) +
-                                  (dem * numDemographicCombos) + oud_state);
-                    std::vector<std::string> v =
-                        table["healthcare_utilization_cost_healthcare_system"];
-                    double t = std::stod(v[rowIdx]);
+                    // int rowIdx = ((intervention * numInterventions) +
+                    //               (dem * numDemographicCombos) + oud_state);
+
+                    std::string value = v[rowIdx];
+                    rowIdx++;
+                    double t = std::stod(value);
                     this->healthcareUtilizationCost(intervention, oud_state,
                                                     dem) = t;
                 }

@@ -87,6 +87,15 @@ namespace Data {
 
         if (outputType == FILE) {
             if (!std::filesystem::exists(this->dirname)) {
+                std::stringstream dircheck(this->dirname);
+                std::string buildingPath = "";
+                std::string temp;
+                while (getline(dircheck, temp, '/')) {
+                    buildingPath += temp + "/";
+                    if (!std::filesystem::exists(buildingPath)) {
+                        std::filesystem::create_directory(buildingPath);
+                    }
+                }
                 std::filesystem::create_directory(this->dirname);
             }
 
