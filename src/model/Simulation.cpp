@@ -59,6 +59,9 @@ namespace Simulation {
         this->runningFOD = Utilities::Matrix3dFactory::Create(
             this->numOUDStates, this->numInterventions,
             this->numDemographicCombos);
+        this->runningAdmissions = Utilities::Matrix3dFactory::Create(
+            this->numOUDStates, this->numInterventions,
+            this->numDemographicCombos);
     }
 
     Sim::Sim(Data::DataLoader dataLoader) {
@@ -92,6 +95,9 @@ namespace Simulation {
             this->numOUDStates, this->numInterventions,
             this->numDemographicCombos);
         this->runningFOD = Utilities::Matrix3dFactory::Create(
+            this->numOUDStates, this->numInterventions,
+            this->numDemographicCombos);
+        this->runningAdmissions = Utilities::Matrix3dFactory::Create(
             this->numOUDStates, this->numInterventions,
             this->numDemographicCombos);
 
@@ -209,6 +215,7 @@ namespace Simulation {
         this->history.fatalOverdoseHistory.insert(zeroMat, 0);
         this->history.mortalityHistory.insert(zeroMat, 0);
         this->history.stateHistory.insert(this->state, 0);
+        this->history.interventionAdmissionHistory.insert(zeroMat, 0);
 
         for (this->currentTime = 0; this->currentTime < this->Duration;
              this->currentTime++) {
@@ -266,6 +273,19 @@ namespace Simulation {
 
         Data::Matrix3d transitionedState =
             this->multiplyInterventionTransitions(oudTransState);
+
+        this->runningAdmissions += transitionedState;
+
+        if (std::find(this->reportingInterval.begin(),
+                      this->reportingInterval.end(),
+                      this->currentTime) != this->reportingInterval.end()) {
+            this->history.interventionAdmissionHistory.insert(
+                this->runningAdmissions, currentTime + 1);
+
+            this->runningAdmissions = Utilities::Matrix3dFactory::Create(
+                this->numOUDStates, this->numInterventions,
+                this->numDemographicCombos);
+        }
 
         Data::Matrix3d overdoses =
             this->multiplyOverdoseTransitions(transitionedState);
