@@ -17,8 +17,8 @@
 //===----------------------------------------------------------------------===//
 
 #include "Simulation.hpp"
+#include "../mocks/MockSimulation.hpp"
 #include "DataTypes.hpp"
-#include "mocks/MockSimulation.hpp"
 #include <gtest/gtest.h>
 
 using namespace Simulation;

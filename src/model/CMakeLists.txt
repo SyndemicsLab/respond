@@ -7,6 +7,8 @@ set (CMAKE_CXX_STANDARD 20)
 # Find Eigen
 find_package (Eigen3 3.4 REQUIRED)
 
+find_package(fmt REQUIRED)
+
 # Find Boost
 find_package(Boost REQUIRED COMPONENTS log_setup log)
 

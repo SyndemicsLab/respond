@@ -1,6 +1,11 @@
-project("GoogleTest")
-enable_testing()
-include(GoogleTest)
+# project("GoogleTest")
+# enable_testing()
+# include(GoogleTest)
+
+cmake_minimum_required(VERSION 3.24)
+project(RESPONDTest CXX)
+
+find_package(GTest REQUIRED CONFIG)
 
 include_directories(mocks)
 
@@ -8,14 +13,15 @@ include_directories(mocks)
 find_package (Eigen3 3.4 REQUIRED)
 
 add_executable(respondTest
-  SimulationTest.cpp
-  DataLoaderTest.cpp
-  DataWriterTest.cpp
-  ConfigurationTest.cpp
+  src/SimulationTest.cpp
+  src/DataLoaderTest.cpp
+  src/DataWriterTest.cpp
+  src/ConfigurationTest.cpp
 )
 
 target_include_directories(respondTest INTERFACE
   ${CMAKE_CURRENT_SOURCE_DIR}
+  "mocks/"
 )
 
 target_link_libraries(respondTest
@@ -32,7 +38,7 @@ target_link_libraries(respondTest
 add_custom_command(
         TARGET respondTest POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_directory
-                ${CMAKE_SOURCE_DIR}/test/TestInput
+                ${CMAKE_SOURCE_DIR}/tests/TestInput
                 ${CMAKE_BINARY_DIR}/TestInput)
 
-gtest_discover_tests(respondTest)
+# gtest_discover_tests(respondTest)
