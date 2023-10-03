@@ -26,12 +26,11 @@
 #include "Simulation.hpp"
 
 int main(int argc, char **argv) {
-    using std::cout, std::cerr;
     if (argc != 4) {
-        cerr << "Usage: " << argv[0]
-             << "[INPUT FOLDER] [RUN START] [RUN END]\n\n"
-             << "RESPOND, a compartmental simulation of healthcare in "
-                "communities with high-risk opioid use";
+        std::cerr << "Usage: " << argv[0]
+                  << "[INPUT FOLDER] [RUN START] [RUN END]\n\n"
+                  << "RESPOND, a compartmental simulation of healthcare in "
+                     "communities with high-risk opioid use";
     }
 
     for (int i = std::stoi(argv[2]); i < std::stoi(argv[3]); i++) {
@@ -80,4 +79,7 @@ int main(int argc, char **argv) {
         writer.writeCost(Data::FILE, cost);
         writer.writeUtility(Data::FILE, util);
     }
+
+    std::cout << "Simulation Complete! :)" << std::endl;
+    return 0;
 }
