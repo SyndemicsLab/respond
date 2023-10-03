@@ -6,7 +6,7 @@ import os
 
 
 class RESPONDRecipe(ConanFile):
-    name = "RESPOND"
+    name = "respond"
     version = "2.0.0"
 
     options = {
