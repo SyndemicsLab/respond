@@ -72,7 +72,7 @@ int main(int argc, char **argv) {
         std::vector<std::vector<std::string>> demographics =
             inputs.getConfiguration().getDemographicCombosVecOfVec();
 
-        std::string outputDir = "outputs/output" + std::to_string(i);
+        std::string outputDir = inputDir + "/output" + std::to_string(i);
         Data::DataWriter writer(outputDir, inputs.getInterventions(),
                                 inputs.getOUDStates(), demographics);
 
