@@ -20,10 +20,10 @@
 #include <gtest/gtest.h>
 #include <iostream>
 
+#include "../mocks/MockConfiguration.hpp"
 #include "Configuration.hpp"
 #include "DataLoader.hpp"
 #include "DataTypes.hpp"
-#include "mocks/MockConfiguration.hpp"
 
 using namespace Data;
 
