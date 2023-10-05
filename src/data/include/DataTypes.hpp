@@ -64,6 +64,7 @@ namespace Data {
         Matrix3dOverTime overdoseHistory;
         Matrix3dOverTime fatalOverdoseHistory;
         Matrix3dOverTime mortalityHistory;
+        Matrix3dOverTime interventionAdmissionHistory;
     };
 
     /// @brief Struct defining all the History Matrices Across the Duration of
