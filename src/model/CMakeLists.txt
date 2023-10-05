@@ -14,7 +14,7 @@ find_package(Boost REQUIRED COMPONENTS log_setup log)
 
 add_library(model
     Simulation.cpp
-    CostCalculator.cpp
+    PostSimulationCalculator.cpp
 )
 
 target_include_directories(model INTERFACE

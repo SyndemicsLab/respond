@@ -74,6 +74,8 @@ namespace Data {
         ASSERTM(table.find("utility") != table.end(),
                 "\'utility\' Column Successfully Found");
 
+        int rowIdx = 0;
+
         for (int intervention = 0; intervention < numInterventions;
              intervention++) {
             for (int oud = 0; oud < numOUDStates; ++oud) {
@@ -85,8 +87,8 @@ namespace Data {
                 extent[Data::OUD] = 1;
                 extent[Data::INTERVENTION] = 1;
                 Matrix3d temp = this->oudUtility.slice(offset, extent);
-                temp.setConstant(std::stod(
-                    table["utility"][(intervention * numInterventions) + oud]));
+                temp.setConstant(std::stod(table["utility"][rowIdx]));
+                rowIdx++;
                 this->oudUtility.slice(offset, extent) = temp;
             }
         }

@@ -87,6 +87,15 @@ namespace Data {
 
         if (outputType == FILE) {
             if (!std::filesystem::exists(this->dirname)) {
+                std::stringstream dircheck(this->dirname);
+                std::string buildingPath = "";
+                std::string temp;
+                while (getline(dircheck, temp, '/')) {
+                    buildingPath += temp + "/";
+                    if (!std::filesystem::exists(buildingPath)) {
+                        std::filesystem::create_directory(buildingPath);
+                    }
+                }
                 std::filesystem::create_directory(this->dirname);
             }
 
@@ -95,11 +104,13 @@ namespace Data {
             std::filesystem::path overdoseFile("overdoseHistory.csv");
             std::filesystem::path fatalOverdoseFile("fatalOverdoseHistory.csv");
             std::filesystem::path mortalityFile("mortalityHistory.csv");
+            std::filesystem::path admissionsFile("admissionsHistory.csv");
             std::filesystem::path stateFullPath = dir / stateFile;
             std::filesystem::path overdoseFullPath = dir / overdoseFile;
             std::filesystem::path fatalOverdoseFullPath =
                 dir / fatalOverdoseFile;
             std::filesystem::path mortalityFullPath = dir / mortalityFile;
+            std::filesystem::path admissionsFullPath = dir / admissionsFile;
 
             std::ofstream file;
 
@@ -117,6 +128,10 @@ namespace Data {
 
             file.open(mortalityFullPath.string());
             this->writer(file, history.mortalityHistory);
+            file.close();
+
+            file.open(admissionsFullPath.string());
+            this->writer(file, history.interventionAdmissionHistory);
             file.close();
             return "success";
         }
@@ -166,6 +181,7 @@ namespace Data {
             std::ofstream file;
 
             file.open(healthUtilFullPath.string());
+
             this->writer(file, cost.healthcareCost);
             file.close();
 
