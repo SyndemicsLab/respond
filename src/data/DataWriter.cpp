@@ -181,6 +181,7 @@ namespace Data {
             std::ofstream file;
 
             file.open(healthUtilFullPath.string());
+
             this->writer(file, cost.healthcareCost);
             file.close();
 

@@ -19,10 +19,10 @@
 #include <cassert>
 #include <iostream>
 
-#include "CostCalculator.hpp"
 #include "CostLoader.hpp"
 #include "DataLoader.hpp"
 #include "DataWriter.hpp"
+#include "PostSimulationCalculator.hpp"
 #include "Simulation.hpp"
 
 int main(int argc, char **argv) {
@@ -63,10 +63,11 @@ int main(int argc, char **argv) {
         utilityLoader.loadOUDUtility("oud_utility.csv");
         utilityLoader.loadSettingUtility("setting_utility.csv");
 
-        Calculator::CostCalculator costCalculator(costLoader, utilityLoader,
-                                                  history);
-        Data::Cost cost = costCalculator.calculateCost();
-        Data::Utility util = costCalculator.calculateUtility();
+        Calculator::PostSimulationCalculator PostSimulationCalculator(
+            costLoader, utilityLoader, history);
+        Data::Cost cost = PostSimulationCalculator.calculateCost();
+
+        Data::Utility util = PostSimulationCalculator.calculateUtility();
 
         std::vector<std::vector<std::string>> demographics =
             inputs.getConfiguration().getDemographicCombosVecOfVec();
