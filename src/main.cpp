@@ -34,7 +34,7 @@ int main(int argc, char **argv) {
     }
 
     for (int i = std::stoi(argv[2]); i < std::stoi(argv[3]); i++) {
-        std::string inputDir = argv[1] + '/';
+        std::string inputDir = argv[1];
         inputDir += "input" + std::to_string(i);
         Data::DataLoader inputs(inputDir);
         inputs.loadInitialSample("init_cohort.csv");

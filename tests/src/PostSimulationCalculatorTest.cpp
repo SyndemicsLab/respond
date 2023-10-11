@@ -16,14 +16,27 @@
 ///
 //===----------------------------------------------------------------------===//
 
+#include <boost/filesystem.hpp>
 #include <gtest/gtest.h>
 
 #include "PostSimulationCalculator.hpp"
 
 class PostSimulationCalculatorTest : public ::testing::Test {
 protected:
-    void SetUp() override {}
-    void TearDown() override {}
+    boost::filesystem::path tempRelativeFile;
+    boost::filesystem::path tempAbsoluteFile;
+    std::ofstream outputFileStream;
+    void SetUp() override {
+        tempRelativeFile =
+            boost::filesystem::unique_path("%%%%_%%%%_%%%%_%%%%.csv");
+        tempAbsoluteFile =
+            boost::filesystem::temp_directory_path() / tempRelativeFile;
+    }
+    void TearDown() override {
+        if (outputFileStream.is_open()) {
+            outputFileStream.close();
+        }
+    }
 };
 
 TEST_F(PostSimulationCalculatorTest, constructor) {}

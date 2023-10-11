@@ -7,6 +7,9 @@ project(RESPONDTest CXX)
 
 find_package(GTest REQUIRED CONFIG)
 
+# Link Boost
+find_package(Boost REQUIRED COMPONENTS filesystem)
+
 include_directories(mocks)
 
 # Find Eigen
@@ -26,6 +29,7 @@ target_include_directories(respondTest INTERFACE
 )
 
 target_link_libraries(respondTest
+  Boost::filesystem
   Eigen3::Eigen
   GTest::gtest
   GTest::gtest_main

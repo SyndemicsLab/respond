@@ -2,7 +2,7 @@
 
 :: Install Conan
 ECHO "Checking Python Avaliability"
-python --version 3>nul
+python3 --version 3>nul
 
 if errorlevel 1 (
     ECHO.
@@ -78,7 +78,7 @@ if errorlevel 1 (
 
 ECHO "Checking Make Version"
 CALL make --version >nul
-if errorlevel 1(
+if errorlevel 1 (
     ECHO.
     ECHO Error^: "Make not installed" 
     ECHO.
@@ -98,12 +98,12 @@ ECHO "Conan Installed Dependencies Successfully"
 cd build
 CALL ./Debug/generators/conanbuild.bat
 ECHO "CMake Build Started"
-CALL cmake .. -G "MinGW Makefiles" -DCMAKE_TOOLCHAIN_FILE=Debug/generators/conan_toolchain.cmake
+CALL cmake .. -G "MinGW Makefiles" -DCMAKE_TOOLCHAIN_FILE=Debug/generators/conan_toolchain.cmake -DCMAKE_BUILD_TYPE=Debug
 CALL cmake --build .
 CALL ./Debug/generators/deactivate_conanbuild.bat
 ECHO "CMake Built Successfully."
 ECHO "Tests Started."
-CALL ./tests/respondTest.exe
+CALL "./tests/respondTest.exe"
 ECHO "Full Build Finished"
 
 cmd /k

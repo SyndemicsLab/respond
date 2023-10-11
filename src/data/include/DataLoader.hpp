@@ -77,7 +77,7 @@ namespace Data {
         /// objects based on the contents of the provided input directory
         /// @param inputDir the name of the directory where input files are
         /// stored
-        DataLoader(std::string inputDir);
+        DataLoader(std::string const &inputDir);
 
         /// @brief An alternative constructor for DataLoader for loading data
         /// when a Configuration object has already been created prior to

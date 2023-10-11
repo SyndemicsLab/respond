@@ -52,7 +52,7 @@ namespace Data {
         Loader::inputTables = {};
     }
 
-    DataLoader::DataLoader(std::string inputDir) : Loader(inputDir) {
+    DataLoader::DataLoader(std::string const &inputDir) : Loader(inputDir) {
         // SETTING STRING VECTORS FOR DATA WRITER
         this->interventions = this->Config.getInterventions();
         this->oudStates = this->Config.getOUDStates();
