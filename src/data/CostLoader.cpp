@@ -186,20 +186,20 @@ namespace Data {
         return this->treatmentUtilizationCost;
     }
 
-    double CostLoader::getNonFatalOverdoseCost() {
+    double CostLoader::getNonFatalOverdoseCost() const {
         if (this->overdoseCostsMap.find("non_fatal_overdose") ==
             this->overdoseCostsMap.end()) {
             return 0.0;
         }
-        return this->overdoseCostsMap["non_fatal_overdose"];
+        return this->overdoseCostsMap.at("non_fatal_overdose");
     }
 
-    double CostLoader::getFatalOverdoseCost() {
+    double CostLoader::getFatalOverdoseCost() const {
         if (this->overdoseCostsMap.find("fatal_overdose") ==
             this->overdoseCostsMap.end()) {
             return 0.0;
         }
-        return this->overdoseCostsMap["fatal_overdose"];
+        return this->overdoseCostsMap.at("fatal_overdose");
     }
 
     std::unordered_map<std::string, double>

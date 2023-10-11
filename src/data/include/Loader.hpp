@@ -59,27 +59,28 @@ namespace Data {
     class Loader {
     public:
         Loader(){};
-        Loader(std::string inputDir);
+        Loader(std::string const &inputDir);
 
-        Configuration loadConfigurationFile(std::string configPath);
+        Configuration loadConfigurationFile(std::string const &configPath);
 
         /// @brief Reads a configuration file to a Configuration object
         /// @param inputFile path to the configuration file to be read
         /// @return
-        Configuration readConfigFile(std::string);
+        Configuration readConfigFile(std::string const &);
         /// @brief Read a CSV-formatted file into a map object where the headers
         /// are keys and the rest of the columns are stored as vectors of
         /// strings
         /// @param inputFile path to the CSV to be read
         /// @return A map object containing columns stored as key-value pairs
-        InputTable readCSV(std::string);
+        InputTable readCSV(std::string const &);
 
         /// @brief Reads typical RESPOND input files from the provided input
         /// directory
         /// @param inputDir the directory from which to read input files
         /// @return an unordered map whose keys are table names and values are
         /// CSV/InputTables
-        std::unordered_map<std::string, InputTable> readInputDir(std::string);
+        std::unordered_map<std::string, InputTable>
+        readInputDir(std::string const &);
 
         /// @brief Get the Configuration from the Loader
         /// @return Configuration

@@ -24,36 +24,42 @@
 #include "gmock/gmock.h"
 
 using namespace Simulation;
-using namespace Data;
 
 class MockSimulation : public ISim {
-    MOCK_METHOD(void, loadInitialSample, (Matrix3d initialSample), (override));
-    MOCK_METHOD(void, loadEnteringSamples, (Matrix3dOverTime enteringSamples),
+    MOCK_METHOD(void, loadInitialSample, (Data::Matrix3d const &initialSample),
                 (override));
-    MOCK_METHOD(void, loadOUDTransitionRates, (Matrix3d oudTransitionRates),
-                (override));
+    MOCK_METHOD(void, loadEnteringSamples,
+                (Data::Matrix3dOverTime const &enteringSamples), (override));
+    MOCK_METHOD(void, loadOUDTransitionRates,
+                (Data::Matrix3d const &oudTransitionRates), (override));
     MOCK_METHOD(void, loadInterventionTransitionRates,
-                (Matrix3dOverTime InterventionTransitions), (override));
-    MOCK_METHOD(void, loadOverdoseRates, (Matrix3dOverTime overdoseRates),
+                (Data::Matrix3dOverTime const &InterventionTransitions),
                 (override));
-    MOCK_METHOD(void, loadMortalityRates, (Matrix3d mortalityRates),
-                (override));
+    MOCK_METHOD(void, loadOverdoseRates,
+                (Data::Matrix3dOverTime const &overdoseRates), (override));
+    MOCK_METHOD(void, loadMortalityRates,
+                (Data::Matrix3d const &mortalityRates), (override));
 
-    MOCK_METHOD(Matrix3dOverTime, GetEnteringSamples, (), (override));
-    MOCK_METHOD(Matrix3d, GetOUDTransitions, (), (override));
-    MOCK_METHOD(Matrix3dOverTime, GetInterventionTransitions, (), (override));
-    MOCK_METHOD(Matrix3dOverTime, GetOverdoseTransitions, (), (override));
-    MOCK_METHOD(Matrix3d, GetMortalityTransitions, (), (override));
+    MOCK_METHOD(Data::Matrix3dOverTime, GetEnteringSamples, (),
+                (const, override));
+    MOCK_METHOD(Data::Matrix3d, GetOUDTransitions, (), (const, override));
+    MOCK_METHOD(Data::Matrix3dOverTime, GetInterventionTransitions, (),
+                (const, override));
+    MOCK_METHOD(Data::Matrix3dOverTime, GetOverdoseTransitions, (),
+                (const, override));
+    MOCK_METHOD(Data::Matrix3d, GetMortalityTransitions, (), (const, override));
 
     MOCK_METHOD(void, LoadTransitionModules,
-                (Matrix3dOverTime enteringSamples, Matrix3d oudTransitionRates,
-                 Matrix3d interventionInitRates,
-                 Matrix3dOverTime interventionTransitionRates,
-                 Matrix3dOverTime fatalOverdoseRates,
-                 Matrix3dOverTime overdoseRates, Matrix3d mortalityRates),
+                (Data::Matrix3dOverTime const &enteringSamples,
+                 Data::Matrix3d const &oudTransitionRates,
+                 Data::Matrix3d const &interventionInitRates,
+                 Data::Matrix3dOverTime const &interventionTransitionRates,
+                 Data::Matrix3dOverTime const &fatalOverdoseRates,
+                 Data::Matrix3dOverTime const &overdoseRates,
+                 Data::Matrix3d const &mortalityRates),
                 (override));
     MOCK_METHOD(void, Run, (), (override));
-    MOCK_METHOD(History, getHistory, (), (override));
+    MOCK_METHOD(Data::History, getHistory, (), (const, override));
 };
 
 #endif

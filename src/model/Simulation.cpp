@@ -108,49 +108,51 @@ namespace Simulation {
         }
     }
 
-    void Sim::loadInitialSample(Data::Matrix3d initialSample) {
+    void Sim::loadInitialSample(Data::Matrix3d const &initialSample) {
         this->state = initialSample;
         BOOST_LOG(this->lg) << "Initial Group Loaded";
     }
 
-    void Sim::loadEnteringSamples(Data::Matrix3dOverTime enteringSamples) {
+    void
+    Sim::loadEnteringSamples(Data::Matrix3dOverTime const &enteringSamples) {
         this->enteringSamples = enteringSamples;
         BOOST_LOG(this->lg) << "Entering Samples Loaded";
     }
 
-    void Sim::loadOUDTransitionRates(Data::Matrix3d oudTransitionRates) {
+    void Sim::loadOUDTransitionRates(Data::Matrix3d const &oudTransitionRates) {
         this->oudTransitionRates = oudTransitionRates;
         BOOST_LOG(this->lg) << "OUD Transitions Loaded";
     }
 
-    void Sim::loadInterventionInitRates(Data::Matrix3d interventionInitRates) {
+    void Sim::loadInterventionInitRates(
+        Data::Matrix3d const &interventionInitRates) {
         this->interventionInitRates = interventionInitRates;
         BOOST_LOG(this->lg) << "Intervention Init Rates Loaded";
     }
 
     void Sim::loadInterventionTransitionRates(
-        Data::Matrix3dOverTime interventionTransitionRates) {
+        Data::Matrix3dOverTime const &interventionTransitionRates) {
         this->interventionTransitionRates = interventionTransitionRates;
         BOOST_LOG(this->lg) << "Intervention Transitions Loaded";
     }
 
-    void
-    Sim::loadFatalOverdoseRates(Data::Matrix3dOverTime fatalOverdoseRates) {
+    void Sim::loadFatalOverdoseRates(
+        Data::Matrix3dOverTime const &fatalOverdoseRates) {
         this->fatalOverdoseRates = fatalOverdoseRates;
         BOOST_LOG(this->lg) << "Fatal Overdose Transitions Loaded";
     }
 
-    void Sim::loadOverdoseRates(Data::Matrix3dOverTime overdoseRates) {
+    void Sim::loadOverdoseRates(Data::Matrix3dOverTime const &overdoseRates) {
         this->overdoseRates = overdoseRates;
         BOOST_LOG(this->lg) << "Overdose Transitions Loaded";
     }
 
-    void Sim::loadMortalityRates(Data::Matrix3d mortalityRates) {
+    void Sim::loadMortalityRates(Data::Matrix3d const &mortalityRates) {
         this->mortalityRates = mortalityRates;
         BOOST_LOG(this->lg) << "Mortality Transitions Loaded";
     }
 
-    void Sim::Load(Data::DataLoader dataLoader) {
+    void Sim::Load(Data::DataLoader const &dataLoader) {
         this->loadInitialSample(dataLoader.getInitialSample());
         this->loadEnteringSamples(dataLoader.getEnteringSamples());
         this->loadOUDTransitionRates(dataLoader.getOUDTransitionRates());
@@ -162,41 +164,21 @@ namespace Simulation {
         this->loadMortalityRates(dataLoader.getMortalityRates());
     }
 
-    void Sim::LoadAgingParameters(int shift, int interval) {
+    void Sim::LoadAgingParameters(int const &shift, int const &interval) {
         this->ageGroupShift = shift;
         this->agingInterval = interval;
         this->agingSwitch = true;
         BOOST_LOG(this->lg) << "Aging Parameters Loaded";
     }
 
-    Data::Matrix3dOverTime Sim::GetEnteringSamples() {
-        return this->enteringSamples;
-    }
-
-    Data::Matrix3d Sim::GetOUDTransitions() { return this->oudTransitionRates; }
-
-    Data::Matrix3dOverTime Sim::GetInterventionTransitions() {
-        return this->interventionTransitionRates;
-    }
-
-    Data::Matrix3dOverTime Sim::GetFatalOverdoseTransitions() {
-        return this->fatalOverdoseRates;
-    }
-
-    Data::Matrix3dOverTime Sim::GetOverdoseTransitions() {
-        return this->overdoseRates;
-    }
-
-    Data::Matrix3d Sim::GetMortalityTransitions() {
-        return this->mortalityRates;
-    }
-
     void Sim::LoadTransitionModules(
-        Data::Matrix3dOverTime enteringSamples,
-        Data::Matrix3d oudTransitionRates, Data::Matrix3d interventionInitRates,
-        Data::Matrix3dOverTime interventionTransitionRates,
-        Data::Matrix3dOverTime fatalOverdoseRates,
-        Data::Matrix3dOverTime overdoseRates, Data::Matrix3d mortalityRates) {
+        Data::Matrix3dOverTime const &enteringSamples,
+        Data::Matrix3d const &oudTransitionRates,
+        Data::Matrix3d const &interventionInitRates,
+        Data::Matrix3dOverTime const &interventionTransitionRates,
+        Data::Matrix3dOverTime const &fatalOverdoseRates,
+        Data::Matrix3dOverTime const &overdoseRates,
+        Data::Matrix3d const &mortalityRates) {
         this->loadEnteringSamples(enteringSamples);
         this->loadOUDTransitionRates(oudTransitionRates);
         this->loadInterventionInitRates(interventionInitRates);
@@ -253,14 +235,12 @@ namespace Simulation {
         }
     }
 
-    Data::History Sim::getHistory() { return this->history; }
-
     Data::Matrix3d Sim::step() {
         // AGING
         // needed for the half-cycle correction
         int agingReference = std::floor(this->agingInterval / 2);
         // raise cohort age at appropriate timesteps, if allowed
-        if (this->agingSwitch and
+        if (this->agingSwitch &&
             ((this->currentTime - agingReference) % this->agingInterval == 0)) {
             this->raisePopulationAge();
         }
@@ -300,9 +280,8 @@ namespace Simulation {
     }
 
     Data::Matrix3d Sim::addEnteringSamples(Data::Matrix3d state) {
-        Data::Matrix3d enteringSamples =
-            this->enteringSamples.getMatrix3dAtTimestep(this->currentTime);
-        ASSERTM(enteringSamples.dimensions() == state.dimensions(),
+        Data::Matrix3d es = this->enteringSamples(this->currentTime);
+        ASSERTM(es.dimensions() == state.dimensions(),
                 "Entering Sample Dimensions is Correct");
 
         // Slice is done because I need a copy of the state instead of the
@@ -311,7 +290,7 @@ namespace Simulation {
         Eigen::array<Eigen::Index, 3> extent = {state.dimensions()};
         Data::Matrix3d ret = state.slice(offset, extent);
 
-        ret += enteringSamples;
+        ret += es;
 
         Data::Matrix3d roundingMatrix(ret.dimensions());
         roundingMatrix.setZero();
@@ -337,8 +316,7 @@ namespace Simulation {
                 return this->oudTransitionRates;
             }
         case Data::INTERVENTION:
-            return this->interventionTransitionRates.getMatrix3dAtTimestep(
-                this->currentTime);
+            return this->interventionTransitionRates(this->currentTime);
         case Data::DEMOGRAPHIC_COMBO:
         default:
             return Utilities::Matrix3dFactory::Create(
@@ -384,7 +362,6 @@ namespace Simulation {
 
             if (dim == Data::INTERVENTION) {
                 this->interventionInitState = true;
-                // broadcastedTensor*slicedTransition matches excel
                 ret += this->multiplyInterventionInit(
                     broadcastedTensor * slicedTransition, i);
                 this->interventionInitState = false;
@@ -451,7 +428,7 @@ namespace Simulation {
 
     Data::Matrix3d Sim::multiplyFatalOverdoseTransitions(Data::Matrix3d state) {
         Data::Matrix3d fatalOverdoseMatrix =
-            this->fatalOverdoseRates.getMatrix3dAtTimestep(this->currentTime);
+            this->fatalOverdoseRates(this->currentTime);
         ASSERTM(fatalOverdoseMatrix.dimensions() == state.dimensions(),
                 "Fatal Overdose Dimensions are Correct");
 
@@ -476,8 +453,7 @@ namespace Simulation {
     }
 
     Data::Matrix3d Sim::multiplyOverdoseTransitions(Data::Matrix3d state) {
-        Data::Matrix3d overdoseMatrix =
-            this->overdoseRates.getMatrix3dAtTimestep(this->currentTime);
+        Data::Matrix3d overdoseMatrix = this->overdoseRates(this->currentTime);
 
         ASSERTM(overdoseMatrix.dimensions() == state.dimensions(),
                 "Overdose Dimensions equal State Dimensions");

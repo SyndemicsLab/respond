@@ -20,5 +20,5 @@ cd build
 source Debug/generators/conanbuild.sh
 cmake .. -DCMAKE_TOOLCHAIN_FILE=Debug/generators/conan_toolchain.cmake -DCMAKE_BUILD_TYPE=Debug
 cmake --build .
-source Debug generators/deactivate_conanbuild.sh
+source Debug/generators/deactivate_conanbuild.sh
 ./tests/respondTest

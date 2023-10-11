@@ -17,6 +17,7 @@ add_executable(respondTest
   src/DataLoaderTest.cpp
   src/DataWriterTest.cpp
   src/ConfigurationTest.cpp
+  src/PostSimulationCalculatorTest.cpp
 )
 
 target_include_directories(respondTest INTERFACE

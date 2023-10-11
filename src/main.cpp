@@ -79,6 +79,7 @@ int main(int argc, char **argv) {
         writer.writeHistory(Data::FILE, history);
         writer.writeCost(Data::FILE, cost);
         writer.writeUtility(Data::FILE, util);
+        std::cout << "Output " << std::to_string(i) << " Complete" << std::endl;
     }
 
     std::cout << "Simulation Complete! :)" << std::endl;

@@ -49,15 +49,15 @@ namespace Data {
         // GETTERS
         /// @brief Get the Background Utility
         /// @return Matrix3d of Background Utility
-        Matrix3d getBackgroundUtility() { return backgroundUtility; }
+        Matrix3d getBackgroundUtility() const { return backgroundUtility; }
 
         /// @brief Get the OUD Utility
         /// @return Matrix3d of OUD Utility
-        Matrix3d getOUDUtility() { return oudUtility; }
+        Matrix3d getOUDUtility() const { return oudUtility; }
 
         /// @brief Get the Setting Utility
         /// @return Matrix3d of Setting Utility
-        Matrix3d getSettingUtility() { return settingUtility; }
+        Matrix3d getSettingUtility() const { return settingUtility; }
 
     private:
         Matrix3d backgroundUtility;

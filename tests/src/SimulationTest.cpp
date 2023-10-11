@@ -42,7 +42,7 @@ TEST(Loading, InitialGroup) {
     t1.setRandom();
     sim.loadInitialSample(t1);
     sim.Run();
-    Matrix3d result = sim.getHistory().stateHistory.getMatrix3dAtTimestep(0);
+    Matrix3d result = sim.getHistory().stateHistory(0);
     Eigen::Tensor<bool, 0> eq = (t1 == result).all();
     int res = eq(0);
     EXPECT_TRUE(res);
@@ -58,9 +58,7 @@ TEST(Loading, EnteringSamples) {
     Matrix3dOverTime samples(agg);
     sim.loadEnteringSamples(samples);
     Eigen::Tensor<bool, 0> eq =
-        (samples.getMatrix3dAtTimestep(0) ==
-         sim.GetEnteringSamples().getMatrix3dAtTimestep(0))
-            .all();
+        (samples(0) == sim.GetEnteringSamples()(0)).all();
     int res = eq(0);
     EXPECT_TRUE(res);
 }
@@ -85,9 +83,7 @@ TEST(Loading, InterventionTransitions) {
     Matrix3dOverTime samples(agg);
     sim.loadInterventionTransitionRates(samples);
     Eigen::Tensor<bool, 0> eq =
-        (samples.getMatrix3dAtTimestep(0) ==
-         sim.GetInterventionTransitions().getMatrix3dAtTimestep(0))
-            .all();
+        (samples(0) == sim.GetInterventionTransitions()(0)).all();
     int res = eq(0);
     EXPECT_TRUE(res);
 }
@@ -102,9 +98,7 @@ TEST(Loading, OverdoseTransitions) {
     Matrix3dOverTime samples(agg);
     sim.loadOverdoseRates(samples);
     Eigen::Tensor<bool, 0> eq =
-        (samples.getMatrix3dAtTimestep(0) ==
-         sim.GetOverdoseTransitions().getMatrix3dAtTimestep(0))
-            .all();
+        (samples(0) == sim.GetOverdoseTransitions()(0)).all();
     int res = eq(0);
     EXPECT_TRUE(res);
 }
@@ -160,19 +154,12 @@ TEST(Loading, TransitionModules) {
 
     sim.LoadTransitionModules(eVec, o1, i1, tVec, fodVec, dVec, m1);
 
-    Eigen::Tensor<bool, 0> eq1 =
-        (eVec.getMatrix3dAtTimestep(0) ==
-         sim.GetEnteringSamples().getMatrix3dAtTimestep(0))
-            .all();
+    Eigen::Tensor<bool, 0> eq1 = (eVec(0) == sim.GetEnteringSamples()(0)).all();
     Eigen::Tensor<bool, 0> eq2 = (o1 == sim.GetOUDTransitions()).all();
     Eigen::Tensor<bool, 0> eq3 =
-        (tVec.getMatrix3dAtTimestep(0) ==
-         sim.GetInterventionTransitions().getMatrix3dAtTimestep(0))
-            .all();
+        (tVec(0) == sim.GetInterventionTransitions()(0)).all();
     Eigen::Tensor<bool, 0> eq4 =
-        (dVec.getMatrix3dAtTimestep(0) ==
-         sim.GetOverdoseTransitions().getMatrix3dAtTimestep(0))
-            .all();
+        (dVec(0) == sim.GetOverdoseTransitions()(0)).all();
     Eigen::Tensor<bool, 0> eq5 = (m1 == sim.GetMortalityTransitions()).all();
 
     int res = eq1(0) * eq2(0) * eq3(0) * eq4(0) * eq5(0);
@@ -185,7 +172,7 @@ TEST(Run, EmptyRun) {
     expected.setZero();
     sim.loadInitialSample(expected);
     sim.Run();
-    Matrix3d actual = sim.getHistory().stateHistory.getMatrix3dAtTimestep(0);
+    Matrix3d actual = sim.getHistory().stateHistory(0);
     Eigen::Tensor<bool, 0> eq = (expected == actual).all();
     int res = eq(0);
     EXPECT_TRUE(res);
@@ -243,8 +230,8 @@ TEST(Run, SingleStepRun) {
 
     sim.Run();
     History history = sim.getHistory();
-    Matrix3d actual0 = history.stateHistory.getMatrix3dAtTimestep(0);
-    Matrix3d actual1 = history.stateHistory.getMatrix3dAtTimestep(1);
+    Matrix3d actual0 = history.stateHistory(0);
+    Matrix3d actual1 = history.stateHistory(1);
 
     Eigen::Tensor<bool, 0> eq0 = (expected0 == actual0).all();
 
@@ -339,10 +326,10 @@ TEST(Run, MultiStepRun) {
 
     sim.Run();
     History history = sim.getHistory();
-    Matrix3d actual0 = history.stateHistory.getMatrix3dAtTimestep(0);
-    Matrix3d actual1 = history.stateHistory.getMatrix3dAtTimestep(1);
-    Matrix3d actual2 = history.stateHistory.getMatrix3dAtTimestep(2);
-    Matrix3d actual3 = history.stateHistory.getMatrix3dAtTimestep(3);
+    Matrix3d actual0 = history.stateHistory(0);
+    Matrix3d actual1 = history.stateHistory(1);
+    Matrix3d actual2 = history.stateHistory(2);
+    Matrix3d actual3 = history.stateHistory(3);
 
     Eigen::Tensor<bool, 0> eq0 = (expected0 == actual0).all();
 
