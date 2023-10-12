@@ -17,8 +17,8 @@
 //===----------------------------------------------------------------------===//
 
 #include <cassert>
-#include <iostream>
 #include <filesystem>
+#include <iostream>
 
 #include "CostLoader.hpp"
 #include "DataLoader.hpp"
@@ -36,7 +36,8 @@ int main(int argc, char **argv) {
 
     for (int i = std::stoi(argv[2]); i < std::stoi(argv[3]); i++) {
         std::filesystem::path inputDir = argv[1];
-        std::filesystem::path inputSet = inputDir / ("input" + std::to_string(i));
+        std::filesystem::path inputSet =
+            inputDir / ("input" + std::to_string(i));
         // delete print lines below after testing on Windows
         std::cout << inputDir << std::endl;
         std::cout << inputSet << std::endl;
@@ -76,7 +77,8 @@ int main(int argc, char **argv) {
         std::vector<std::vector<std::string>> demographics =
             inputs.getConfiguration().getDemographicCombosVecOfVec();
 
-        std::filesystem::path outputDir = inputDir / ("output" + std::to_string(i));
+        std::filesystem::path outputDir =
+            inputDir / ("output" + std::to_string(i));
         // delete print line below after testing on Windows
         std::cout << outputDir << std::endl;
         Data::DataWriter writer(outputDir, inputs.getInterventions(),
