@@ -11,8 +11,6 @@ project (
 
 include(GNUInstallDirs)
 
-find_package(Eigen3 3.4 REQUIRED)
-
 add_subdirectory(model)
 add_subdirectory(data)
 add_subdirectory(utilities)
