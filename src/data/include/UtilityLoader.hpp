@@ -26,25 +26,25 @@ namespace Data {
     class UtilityLoader : public Loader {
     public:
         UtilityLoader(){};
-        UtilityLoader(std::string inputDir);
+        UtilityLoader(std::string const &inputDir);
 
-        Configuration loadConfigurationFile(std::string configPath);
+        Configuration loadConfigurationFile(std::string const &configPath);
 
         // SETTERS
         /// @brief Load the Background Utilties from a File
         /// @param csvName Filename containing Background Utility
         /// @return Matrix3d of Background Utility
-        Matrix3d loadBackgroundUtility(std::string csvName);
+        Matrix3d loadBackgroundUtility(std::string const &csvName);
 
         /// @brief Load the OUD Utility from a File
         /// @param csvName Filename containing OUD Utility
         /// @return Matrix3d of OUD Utility
-        Matrix3d loadOUDUtility(std::string csvName);
+        Matrix3d loadOUDUtility(std::string const &csvName);
 
         /// @brief Load the Setting Utility from a File
         /// @param csvName Filename containing the Setting Utility
         /// @return Matrix3d of Setting Utility
-        Matrix3d loadSettingUtility(std::string csvName);
+        Matrix3d loadSettingUtility(std::string const &csvName);
 
         // GETTERS
         /// @brief Get the Background Utility
@@ -63,6 +63,12 @@ namespace Data {
         Matrix3d backgroundUtility;
         Matrix3d oudUtility;
         Matrix3d settingUtility;
+
+        /// @brief
+        /// @param csvName
+        /// @param utilMatrix
+        /// @return
+        Matrix3d loadUtility(std::string const &csvName, Matrix3d &utilMatrix);
     };
 } // namespace Data
 
