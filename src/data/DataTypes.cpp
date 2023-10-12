@@ -33,22 +33,21 @@ namespace Data {
         }
     }
 
-    Matrix3d Matrix3dOverTime::getMatrix3dAtTimestep(int timestep) {
-        int temp = this->data.begin()->first;
-        for (auto itr = this->data.begin(); itr != this->data.end(); ++itr) {
-            int key = itr->first;
-            if (key >= timestep) {
-                return this->data[key];
-            }
+    Matrix3d &Matrix3dOverTime::getMatrix3dAtTimestep(int timestep) {
+        if (this->data.find(timestep) == this->data.end()) {
+            // std::cout << this->data.end()->first << std::endl;
+            // return this->data.end()->second;
+            throw std::invalid_argument("The Provided Timestep Does Not Exist");
+        } else {
+            return this->data.at(timestep);
         }
-        return this->data.end()->second;
     }
 
-    void Matrix3dOverTime::insert(Matrix3d datapoint, int timestep) {
+    void Matrix3dOverTime::insert(Matrix3d const &datapoint, int timestep) {
         this->data.insert({timestep, datapoint});
     }
 
-    std::vector<Matrix3d> Matrix3dOverTime::getMatrices() {
+    std::vector<Matrix3d> Matrix3dOverTime::getMatrices() const {
         std::vector<Matrix3d> values;
         for (auto const &x : this->data) {
             Matrix3d mat = x.second;
@@ -56,4 +55,33 @@ namespace Data {
         }
         return values;
     }
+
+    Matrix3d &Matrix3dOverTime::operator()(int timestep) {
+        return this->getMatrix3dAtTimestep(timestep);
+    }
+
+    Matrix3d Matrix3dOverTime::operator()(int timestep) const {
+        if (this->data.find(timestep) == this->data.end()) {
+            throw std::invalid_argument("The Provided Timestep Does Not Exist");
+        } else {
+            Matrix3d temp = this->data.at(timestep);
+            return temp;
+        }
+    }
+
+    double &Matrix3dOverTime::operator()(int timestep, int idx1, int idx2,
+                                         int idx3) {
+        return this->getMatrix3dAtTimestep(timestep)(idx1, idx2, idx3);
+    }
+
+    double Matrix3dOverTime::operator()(int timestep, int idx1, int idx2,
+                                        int idx3) const {
+        if (this->data.find(timestep) == this->data.end()) {
+            throw std::invalid_argument("The Provided Timestep Does Not Exist");
+        } else {
+            Matrix3d temp = this->data.at(timestep);
+            return temp(idx1, idx2, idx3);
+        }
+    }
+
 } // namespace Data

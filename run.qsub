@@ -58,10 +58,17 @@ SCC Job Name      : $JOB_NAME
 Task ID           : $SGE_TASK_ID
 ================================================================================"
 
-module load boost/1.79.0_gcc5+
-module load cmake/3.22.2
-module load eigen/3.4.0
+module load python3/3.10.12
+pip install conan
 module load gcc/12.2.0
+
+$HOME/.local/bin/conan profile detect --force
+$HOME/.local/bin/conan install . --build=missing --settings=build_type=Debug
+cd build
+source Debug/generators/conanbuild.sh
+cmake .. -DCMAKE_TOOLCHAIN_FILE=Debug/generators/conan_toolchain.cmake -DCMAKE_BUILD_TYPE=Debug
+cmake --build .
+source Debug/generators/deactivate_conanbuild.sh
 
 # folder containing RESPOND inputs
 INPUT_PATH="/projectnb/respond/matt/RESPONDCalibrationv2/inputs/"

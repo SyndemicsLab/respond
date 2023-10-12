@@ -20,14 +20,15 @@
 namespace Calculator {
 
     PostSimulationCalculator::PostSimulationCalculator(
-        Data::CostLoader costLoader, Data::UtilityLoader utilityLoader,
-        Data::History history) {
+        Data::CostLoader const &costLoader,
+        Data::UtilityLoader const &utilityLoader,
+        Data::History const &history) {
         this->history = history;
         this->costLoader = costLoader;
         this->utilityLoader = utilityLoader;
     }
 
-    Data::Cost PostSimulationCalculator::calculateCost() {
+    Data::Cost PostSimulationCalculator::calculateCost() const {
         Data::Cost cost;
         cost.healthcareCost = this->multiplyMatrix(
             this->history.stateHistory,
@@ -49,7 +50,7 @@ namespace Calculator {
         return cost;
     }
 
-    Data::Utility PostSimulationCalculator::calculateUtility() {
+    Data::Utility PostSimulationCalculator::calculateUtility() const {
         Data::Utility util;
         util.backgroundUtility =
             this->multiplyMatrix(this->history.stateHistory,
@@ -62,9 +63,8 @@ namespace Calculator {
         return util;
     }
 
-    Data::Matrix3dOverTime
-    PostSimulationCalculator::multiplyDouble(Data::Matrix3dOverTime overdose,
-                                             double value) {
+    Data::Matrix3dOverTime PostSimulationCalculator::multiplyDouble(
+        Data::Matrix3dOverTime const &overdose, double const &value) const {
         std::vector<Data::Matrix3d> overdoseVec = overdose.getMatrices();
         std::vector<Data::Matrix3d> result;
 
@@ -84,9 +84,9 @@ namespace Calculator {
         return ret;
     }
 
-    Data::Matrix3dOverTime
-    PostSimulationCalculator::multiplyMatrix(Data::Matrix3dOverTime state,
-                                             Data::Matrix3d value) {
+    Data::Matrix3dOverTime PostSimulationCalculator::multiplyMatrix(
+        Data::Matrix3dOverTime const &state,
+        Data::Matrix3d const &value) const {
         std::vector<Data::Matrix3d> result;
         std::vector<Data::Matrix3d> stateVec = state.getMatrices();
         for (Data::Matrix3d timeMat : stateVec) {

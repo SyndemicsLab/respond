@@ -58,27 +58,29 @@ namespace Data {
 
         /// @brief
         /// @return
-        Matrix3d getHealthcareUtilizationCost() {
+        Matrix3d getHealthcareUtilizationCost() const {
             return this->healthcareUtilizationCost;
         }
 
         /// @brief
         /// @return
-        Matrix3d getPharmaceuticalCost() { return this->pharmaceuticalCost; }
+        Matrix3d getPharmaceuticalCost() const {
+            return this->pharmaceuticalCost;
+        }
 
         /// @brief
         /// @return
-        Matrix3d getTreatmentUtilizationCost() {
+        Matrix3d getTreatmentUtilizationCost() const {
             return this->treatmentUtilizationCost;
         }
 
         /// @brief
         /// @return
-        double getNonFatalOverdoseCost();
+        double getNonFatalOverdoseCost() const;
 
         /// @brief
         /// @return
-        double getFatalOverdoseCost();
+        double getFatalOverdoseCost() const;
 
     private:
         Matrix3d healthcareUtilizationCost;

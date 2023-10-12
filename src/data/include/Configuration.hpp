@@ -131,7 +131,7 @@ namespace Data {
     public:
         // CONSTRUCTORS
         Configuration();
-        Configuration(std::string configFile);
+        Configuration(std::string const &configFile);
         ~Configuration(){};
 
         // GENERATOR FUNCTIONS
