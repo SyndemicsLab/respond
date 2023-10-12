@@ -19,7 +19,7 @@
 
 namespace Data {
 
-    Loader::Loader(std::string inputDir) {
+    Loader::Loader(std::string const &inputDir) {
         // PROCESSING INPUT FILES
         // account for no trailing slash in the provided input directory
         std::string configPath = inputDir;
@@ -31,12 +31,12 @@ namespace Data {
         this->inputTables = readInputDir(inputDir);
     }
 
-    Configuration Loader::loadConfigurationFile(std::string configPath) {
+    Configuration Loader::loadConfigurationFile(std::string const &configPath) {
         this->Config = readConfigFile(configPath);
         return this->Config;
     }
 
-    InputTable Loader::readCSV(std::string inputFile) {
+    InputTable Loader::readCSV(std::string const &inputFile) {
         using boost::tokenizer;
 
         std::string inputContents;
@@ -69,7 +69,7 @@ namespace Data {
     }
 
     std::unordered_map<std::string, InputTable>
-    Loader::readInputDir(std::string inputDir) {
+    Loader::readInputDir(std::string const &inputDir) {
         std::string inputDirFixed = inputDir;
         std::unordered_map<std::string, InputTable> toReturn;
         // account for no trailing slash in the provided input directory
@@ -83,7 +83,7 @@ namespace Data {
         return toReturn;
     }
 
-    Configuration Loader::readConfigFile(std::string inputFile) {
+    Configuration Loader::readConfigFile(std::string const &inputFile) {
         Configuration config(inputFile);
         return config;
     }

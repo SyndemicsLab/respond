@@ -35,17 +35,17 @@ namespace Calculator {
         /// @param utilityLoader Utility Loader Class containing Information to
         /// calculate the Utility
         /// @param history History Class containing Simulation State History
-        PostSimulationCalculator(Data::CostLoader costLoader,
-                                 Data::UtilityLoader utilityLoader,
-                                 Data::History history);
+        PostSimulationCalculator(Data::CostLoader const &costLoader,
+                                 Data::UtilityLoader const &utilityLoader,
+                                 Data::History const &history);
 
         /// @brief Main function to calculate the Cost
         /// @return Cost Struct filled with calculated Cost
-        Data::Cost calculateCost();
+        Data::Cost calculateCost() const;
 
         /// @brief Main function to calculate the Utility
         /// @return Cost Struct filled with calculated Utility
-        Data::Utility calculateUtility();
+        Data::Utility calculateUtility() const;
 
     private:
         Data::History history;
@@ -56,15 +56,17 @@ namespace Calculator {
         /// @param overdose
         /// @param cost
         /// @return
-        Data::Matrix3dOverTime multiplyDouble(Data::Matrix3dOverTime overdose,
-                                              double cost);
+        Data::Matrix3dOverTime
+        multiplyDouble(Data::Matrix3dOverTime const &overdose,
+                       double const &cost) const;
 
         /// @brief
         /// @param state
         /// @param cost
         /// @return
-        Data::Matrix3dOverTime multiplyMatrix(Data::Matrix3dOverTime state,
-                                              Data::Matrix3d cost);
+        Data::Matrix3dOverTime
+        multiplyMatrix(Data::Matrix3dOverTime const &state,
+                       Data::Matrix3d const &cost) const;
     };
 } // namespace Calculator
 

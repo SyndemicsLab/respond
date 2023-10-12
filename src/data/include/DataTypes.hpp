@@ -21,17 +21,20 @@
 #include <Eigen/Eigen>
 #include <cassert>
 #include <cfenv>
+#include <iostream>
+#include <stdexcept>
 #include <unsupported/Eigen/CXX11/Tensor>
 #include <vector>
 
 #define ASSERTM(exp, msg) assert(((void)msg, exp))
 
 namespace Data {
-    /// @brief Eigen 3d Tensor
-    using Matrix3d = Eigen::Tensor<double, 3>;
 
     /// @brief Specification for each dimension in the Matrix3d
     enum Dimension { INTERVENTION = 0, OUD = 1, DEMOGRAPHIC_COMBO = 2 };
+
+    /// @brief Eigen 3d Tensor
+    using Matrix3d = Eigen::Tensor<double, 3>;
 
     /// @brief Eigen 3d Tensor maintaining Time Order
     class Matrix3dOverTime {
@@ -44,16 +47,22 @@ namespace Data {
         /// @brief Get the Matrix3d at the Specified Timestep
         /// @param timestep Timestep to retrieve the Matrix3d
         /// @return Matrix3d at Specified Timestep
-        Matrix3d getMatrix3dAtTimestep(int timestep);
+        Matrix3d &getMatrix3dAtTimestep(int timestep);
+
+        Matrix3d &operator()(int timestep);
+        Matrix3d operator()(int timestep) const;
+
+        double &operator()(int timestep, int idx1, int idx2, int idx3);
+        double operator()(int timestep, int idx1, int idx2, int idx3) const;
 
         /// @brief Add the Matrix3d at the specified Timestep
         /// @param datapoint Matrix3d Data
         /// @param timestep Timestep to insert the Matrix3d
-        void insert(Matrix3d datapoint, int timestep);
+        void insert(Matrix3d const &datapoint, int timestep);
 
         /// @brief Return all the Matrices in order by their timestep
         /// @return Vector of Matrix3ds in timestep order
-        std::vector<Matrix3d> getMatrices();
+        std::vector<Matrix3d> getMatrices() const;
 
     private:
         std::map<int, Matrix3d> data;

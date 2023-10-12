@@ -30,7 +30,7 @@ namespace Data {
         this->demographicParams = {};
     }
 
-    Configuration::Configuration(std::string configFile) {
+    Configuration::Configuration(std::string const &configFile) {
         std::ifstream f(configFile.c_str());
         ASSERTM(f.good(), "Valid Config File Provided");
 
