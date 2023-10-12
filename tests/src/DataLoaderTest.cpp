@@ -340,26 +340,62 @@ TEST_F(DataLoaderTest, interventionInitRates) {
     EXPECT_EQ(result(0, 0, 0), 2917.55795376043);
 }
 
-TEST_F(DataLoaderTest, getInterventions) {}
+TEST_F(DataLoaderTest, getInterventions) {
+    Data::DataLoader dl(boost::filesystem::temp_directory_path().string());
+    EXPECT_EQ(dl.getInterventions().size(), 9);
+}
 
-TEST_F(DataLoaderTest, getOUDStates) {}
+TEST_F(DataLoaderTest, getOUDStates) {
+    Data::DataLoader dl(boost::filesystem::temp_directory_path().string());
+    EXPECT_EQ(dl.getOUDStates().size(), 4);
+}
 
-TEST_F(DataLoaderTest, getAgingInterval) {}
+TEST_F(DataLoaderTest, getAgingInterval) {
+    Data::DataLoader dl(boost::filesystem::temp_directory_path().string());
+    EXPECT_EQ(dl.getAgingInterval(), 260);
+}
 
-TEST_F(DataLoaderTest, getAgeGroupShift) {}
+TEST_F(DataLoaderTest, getAgeGroupShift) {
+    Data::DataLoader dl(boost::filesystem::temp_directory_path().string());
+    EXPECT_EQ(dl.getAgeGroupShift(), 2);
+}
 
-TEST_F(DataLoaderTest, getCostSwitch) {}
+TEST_F(DataLoaderTest, getCostSwitch) {
+    Data::DataLoader dl(boost::filesystem::temp_directory_path().string());
+    EXPECT_TRUE(dl.getCostSwitch());
+}
 
-TEST_F(DataLoaderTest, getCostPerspectives) {}
+TEST_F(DataLoaderTest, getCostPerspectives) {
+    Data::DataLoader dl(boost::filesystem::temp_directory_path().string());
+    EXPECT_EQ(dl.getCostPerspectives().size(), 3);
+}
 
-TEST_F(DataLoaderTest, getDiscountRate) {}
+TEST_F(DataLoaderTest, getDiscountRate) {
+    Data::DataLoader dl(boost::filesystem::temp_directory_path().string());
+    EXPECT_EQ(dl.getDiscountRate(), 0.0025);
+}
 
-TEST_F(DataLoaderTest, getReportingInterval) {}
+TEST_F(DataLoaderTest, getReportingInterval) {
+    Data::DataLoader dl(boost::filesystem::temp_directory_path().string());
+    EXPECT_EQ(dl.getReportingInterval(), 52);
+}
 
-TEST_F(DataLoaderTest, getCostCategoryOutputs) {}
+TEST_F(DataLoaderTest, getCostCategoryOutputs) {
+    Data::DataLoader dl(boost::filesystem::temp_directory_path().string());
+    EXPECT_FALSE(dl.getCostCategoryOutputs());
+}
 
-TEST_F(DataLoaderTest, getCogetPerInterventionPredictionsstSwitch) {}
+TEST_F(DataLoaderTest, getPerInterventionPredictions) {
+    Data::DataLoader dl(boost::filesystem::temp_directory_path().string());
+    EXPECT_TRUE(dl.getPerInterventionPredictions());
+}
 
-TEST_F(DataLoaderTest, getGeneralOutputsSwitch) {}
+TEST_F(DataLoaderTest, getGeneralOutputsSwitch) {
+    Data::DataLoader dl(boost::filesystem::temp_directory_path().string());
+    EXPECT_FALSE(dl.getGeneralOutputsSwitch());
+}
 
-TEST_F(DataLoaderTest, getGeneralStatsOutputTimesteps) {}
+TEST_F(DataLoaderTest, getGeneralStatsOutputTimesteps) {
+    Data::DataLoader dl(boost::filesystem::temp_directory_path().string());
+    EXPECT_EQ(dl.getGeneralStatsOutputTimesteps().size(), 1);
+}
