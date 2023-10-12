@@ -20,8 +20,8 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    - name: Get GCC-11
-      run:  sudo apt update && sudo apt install gcc-11 g++-11
+    - name: Get GCC-12
+      run:  sudo apt update && sudo apt install gcc-12 g++-12
 
     - name: Conan Installation
       id: conan
@@ -35,17 +35,25 @@ jobs:
 
     - name: Conan install dependencies
       working-directory: ${{github.workspace}}
-      run:  conan install . --output-folder=build --build=missing
+      run:  conan install . --build=missing --settings=build_type=Release
+
+    - name: Activate Conan VirtualEnv
+      working-directory: ${{github.workspace}}/build
+      run: source Release/generators/conanbuild.sh
 
     # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
     # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type  
     - name: CMake configuration
       working-directory: ${{github.workspace}}/build
-      run:  cmake .. -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+      run:  cmake .. -DCMAKE_TOOLCHAIN_FILE=Release/generators/conan_toolchain.cmake -DCMAKE_BUILD_TYPE=Release
 
     - name: Cmake build
       working-directory: ${{github.workspace}}/build
-      run: cmake --build . --config ${{env.BUILD_TYPE}}
+      run: cmake --build . --config Release
+
+    - name: Deactivate Conan VirtualEnv
+      working_directory: ${{github.workspace}}/build
+      run: source Release/generators/deactivate_conanbuild.sh
 
     - name: Cmake test
       working-directory: ${{github.workspace}}/build

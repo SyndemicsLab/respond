@@ -18,6 +18,7 @@ find_package (Eigen3 3.4 REQUIRED)
 add_executable(respondTest
   src/SimulationTest.cpp
   src/DataLoaderTest.cpp
+  src/CostLoaderTest.cpp
   src/DataWriterTest.cpp
   src/ConfigurationTest.cpp
   src/PostSimulationCalculatorTest.cpp
