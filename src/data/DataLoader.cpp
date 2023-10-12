@@ -53,6 +53,7 @@ namespace Data {
     }
 
     DataLoader::DataLoader(std::string const &inputDir) : Loader(inputDir) {
+        this->dirName = inputDir;
         // SETTING STRING VECTORS FOR DATA WRITER
         this->interventions = this->Config.getInterventions();
         this->oudStates = this->Config.getOUDStates();
@@ -174,7 +175,8 @@ namespace Data {
                     // have to use the row counter here because
                     // nonPostInterventions != numInterventions
                     this->initialSample(intervention, oud_state, dem) =
-                        std::stod(itr->second[row]);
+                        (row < itr->second.size()) ? std::stod(itr->second[row])
+                                                   : 0.0;
                     ++row;
                 }
             }
@@ -218,7 +220,9 @@ namespace Data {
 
             for (int dem = 0; dem < this->numDemographicCombos; ++dem) {
                 enteringSample(esiIdx, esoIdx, dem) =
-                    std::stod(enteringSamplesTable[column][dem]);
+                    (dem < enteringSamplesTable[column].size())
+                        ? std::stod(enteringSamplesTable[column][dem])
+                        : enteringSample(esiIdx, esoIdx, dem) = 0.0;
             }
             while (startTime <= changepoint) {
                 this->enteringSamples.insert(enteringSample, startTime);
@@ -257,12 +261,15 @@ namespace Data {
                          result_state < this->numOUDStates; ++result_state) {
                         std::string column =
                             "to_" + this->oudStates[result_state];
-                        tempOUDTransitions[initial_state](intervention,
-                                                          result_state, dem) =
-                            std::stod(
-                                oudTransitionTable[column]
-                                                  [this->numOUDStates * row +
-                                                   initial_state]);
+                        int idx = this->numOUDStates * row + initial_state;
+                        if (idx < oudTransitionTable[column].size()) {
+                            tempOUDTransitions[initial_state](
+                                intervention, result_state, dem) =
+                                std::stod(oudTransitionTable[column][idx]);
+                        } else {
+                            tempOUDTransitions[initial_state](
+                                intervention, result_state, dem) = 0.0;
+                        }
                     }
                     ++row;
                 }
@@ -425,7 +432,10 @@ namespace Data {
             // fatal overdose is a constant across all strata
             std::string fodColumn = "fatal_to_all_types_overdose_ratio_cycle" +
                                     std::to_string(timestep + 1);
-            double t = std::stod(fatalOverdoseTable[fodColumn][0]);
+
+            double t = (fatalOverdoseTable[fodColumn].size() > 0)
+                           ? std::stod(fatalOverdoseTable[fodColumn][0])
+                           : 0.0;
 
             Matrix3d temp = Utilities::Matrix3dFactory::Create(
                                 this->numOUDStates, this->numInterventions,
@@ -464,11 +474,17 @@ namespace Data {
              ++intervention) {
             for (int dem = 0; dem < this->numDemographicCombos; dem++) {
                 for (int oud = 0; oud < this->numOUDStates; ++oud) {
-                    mortalityTransition(intervention, oud, dem) =
-                        1 -
-                        exp(log(1 - std::stod(backgroundMortalityColumn[dem])) *
-                            std::stod(smrColumn[smrIndex]));
-                    smrIndex++;
+                    if (backgroundMortalityColumn.size() > dem &&
+                        smrColumn.size() > smrIndex) {
+                        mortalityTransition(intervention, oud, dem) =
+                            1 -
+                            exp(log(1 -
+                                    std::stod(backgroundMortalityColumn[dem])) *
+                                std::stod(smrColumn[smrIndex]));
+                        smrIndex++;
+                    } else {
+                        mortalityTransition(intervention, oud, dem) = 0.0;
+                    }
                 }
             }
         }
@@ -523,6 +539,10 @@ namespace Data {
         }
 
         std::vector<std::string> t1 = table.at("initial_block");
+        if (indices.size() == 0 || indices[0] >= t1.size()) {
+            return transMat;
+        }
+
         std::string currentIntervention = t1[indices[0]];
         std::vector<std::string> keys;
 
@@ -704,7 +724,8 @@ namespace Data {
                 for (int oud_state = 0; oud_state < this->numOUDStates;
                      ++oud_state) {
                     if (oudStates[oud_state].find("Nonactive") !=
-                        std::string::npos) {
+                            std::string::npos ||
+                        row >= table.at(key).size()) {
                         overdoseTransitionsCycle(intervention, oud_state, dem) =
                             0.0f;
                     } else {

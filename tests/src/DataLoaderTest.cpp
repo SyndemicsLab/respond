@@ -20,20 +20,29 @@
 #include <gtest/gtest.h>
 #include <iostream>
 
+#include "Configuration.hpp"
 #include "DataLoader.hpp"
 
 class DataLoaderTest : public ::testing::Test {
 protected:
     boost::filesystem::path tempRelativeFile;
     boost::filesystem::path tempAbsoluteFile;
+    boost::filesystem::path tempRelativeFile2;
+    boost::filesystem::path tempAbsoluteFile2;
     boost::filesystem::path configFile;
     std::ofstream fileStream;
+    std::ofstream fileStream2;
     std::ofstream configFileStream;
     void SetUp() override {
         tempRelativeFile =
             boost::filesystem::unique_path("%%%%_%%%%_%%%%_%%%%.csv");
         tempAbsoluteFile =
             boost::filesystem::temp_directory_path() / tempRelativeFile;
+
+        tempRelativeFile2 =
+            boost::filesystem::unique_path("%%%%_%%%%_%%%%_%%%%.csv");
+        tempAbsoluteFile2 =
+            boost::filesystem::temp_directory_path() / tempRelativeFile2;
 
         configFile = boost::filesystem::temp_directory_path() /
                      boost::filesystem::path("sim.conf");
@@ -90,10 +99,18 @@ protected:
                             "general_stats_output_timesteps = 52";
         // clang-format on
         configFileStream.close();
+        fileStream.open(tempAbsoluteFile);
+        fileStream2.open(tempAbsoluteFile2);
     }
     void TearDown() override {
         if (configFileStream.is_open()) {
             configFileStream.close();
+        }
+        if (fileStream.is_open()) {
+            fileStream.close();
+        }
+        if (fileStream2.is_open()) {
+            fileStream2.close();
         }
     }
 };
@@ -105,42 +122,223 @@ TEST_F(DataLoaderTest, Constructor) {
 
 TEST_F(DataLoaderTest, ConstructorInputDirectory) {
     Data::DataLoader dl(boost::filesystem::temp_directory_path().string());
-    std::cout << configFile << std::endl;
-    std::cout << boost::filesystem::temp_directory_path().string() << std::endl;
     EXPECT_EQ(dl.getInterventions().size(), 9);
 }
 
-TEST_F(DataLoaderTest, ConstructorIDandConfig) {}
+TEST_F(DataLoaderTest, ConstructorIDandConfig) {
+    Data::Configuration config(configFile.string());
+    Data::DataLoader dl(config,
+                        boost::filesystem::temp_directory_path().string());
+    EXPECT_EQ(dl.getInterventions().size(), 9);
+}
 
-TEST_F(DataLoaderTest, loadConfigurationFile) {}
+TEST_F(DataLoaderTest, loadConfigurationFile) {
+    Data::DataLoader dl;
+    EXPECT_EQ(dl.getInterventions().size(), 0);
+    dl.loadConfigurationFile(configFile.string());
+    EXPECT_EQ(dl.getInterventions().size(), 9);
+}
 
-TEST_F(DataLoaderTest, getDirName) {}
+TEST_F(DataLoaderTest, getDirName) {
+    Data::DataLoader dl(boost::filesystem::temp_directory_path().string());
+    EXPECT_EQ(dl.getDirName(),
+              boost::filesystem::temp_directory_path().string());
+}
 
-TEST_F(DataLoaderTest, getDuration) {}
+TEST_F(DataLoaderTest, getDuration) {
+    Data::DataLoader dl(boost::filesystem::temp_directory_path().string());
+    EXPECT_EQ(dl.getDuration(), 52);
+}
 
-TEST_F(DataLoaderTest, getNumOUDStates) {}
+TEST_F(DataLoaderTest, getNumOUDStates) {
+    Data::DataLoader dl(boost::filesystem::temp_directory_path().string());
+    EXPECT_EQ(dl.getNumOUDStates(), 4);
+}
 
-TEST_F(DataLoaderTest, getNumInterventions) {}
+TEST_F(DataLoaderTest, getNumInterventions) {
+    Data::DataLoader dl(boost::filesystem::temp_directory_path().string());
+    EXPECT_EQ(dl.getNumInterventions(), 9);
+}
 
-TEST_F(DataLoaderTest, getNumDemographics) {}
+TEST_F(DataLoaderTest, getNumDemographics) {
+    Data::DataLoader dl(boost::filesystem::temp_directory_path().string());
+    EXPECT_EQ(dl.getNumDemographics(), 2);
+}
 
-TEST_F(DataLoaderTest, getNumDemographicCombos) {}
+TEST_F(DataLoaderTest, getNumDemographicCombos) {
+    Data::DataLoader dl(boost::filesystem::temp_directory_path().string());
+    EXPECT_EQ(dl.getNumDemographicCombos(), 36);
+}
 
-TEST_F(DataLoaderTest, getInitialSample) {}
+TEST_F(DataLoaderTest, initialSample) {
+    fileStream
+        << "block,agegrp,sex,oud,counts" << std::endl
+        << "No_Treatment,10_14,Male,Active_Noninjection,2917.55795376043"
+        << std::endl
+        << "No_Treatment,10_14,Male,Active_Injection,977.390032367151"
+        << std::endl
+        << "No_Treatment,10_14,Male,Nonactive_Noninjection,288.995723856067";
+    fileStream.close();
 
-TEST_F(DataLoaderTest, getEnteringSamples) {}
+    Data::DataLoader dl(boost::filesystem::temp_directory_path().string());
 
-TEST_F(DataLoaderTest, getOUDTransitionRates) {}
+    dl.loadInitialSample(tempAbsoluteFile.string());
 
-TEST_F(DataLoaderTest, getInterventionTransitionRates) {}
+    Data::Matrix3d result = dl.getInitialSample();
+    EXPECT_EQ(result(0, 0, 0), 2917.55795376043);
+}
 
-TEST_F(DataLoaderTest, getOverdoseRates) {}
+TEST_F(DataLoaderTest, enteringSamples) {
+    fileStream << "agegrp,sex,number_of_new_comers_cycle52" << std::endl
+               << "10_14,male,11.4389540364826" << std::endl
+               << "10_14,female,7.10870959447953" << std::endl
+               << "15_19,male,12.0934754686572";
+    fileStream.close();
 
-TEST_F(DataLoaderTest, getFatalOverdoseRates) {}
+    Data::DataLoader dl(boost::filesystem::temp_directory_path().string());
 
-TEST_F(DataLoaderTest, getMortalityRates) {}
+    dl.loadEnteringSamples(tempAbsoluteFile.string(),
+                           std::string("No_Treatment"),
+                           std::string("Active_Noninjection"));
 
-TEST_F(DataLoaderTest, getInterventionInitRates) {}
+    Data::Matrix3dOverTime result = dl.getEnteringSamples();
+    EXPECT_EQ(result(0, 0, 0, 0), 11.4389540364826);
+}
+
+TEST_F(DataLoaderTest, OUDTransitionRates) {
+    fileStream
+        << "block,agegrp,sex,initial_status,to_Active_Noninjection,to_Active_"
+           "Injection,to_Nonactive_Noninjection,to_Nonactive_Injection"
+        << std::endl
+        << "No_Treatment,10_14,male,Active_Noninjection,0.560720353446504,0."
+           "406726715244475,0.0325529313090211,0"
+        << std::endl
+        << "No_Treatment,10_14,male,Active_Injection,0.174836047529822,0."
+           "591213148061237,0,0.233950804408941"
+        << std::endl
+        << "No_Treatment,10_14,male,Nonactive_Noninjection,0.308436737296612,0."
+           "0564816594618387,0.635081603241549,0";
+    fileStream.close();
+
+    Data::DataLoader dl(boost::filesystem::temp_directory_path().string());
+
+    dl.loadOUDTransitionRates(tempAbsoluteFile.string());
+
+    Data::Matrix3d result = dl.getOUDTransitionRates();
+    EXPECT_EQ(result(0, 0, 0), 0.560720353446504);
+}
+
+TEST_F(DataLoaderTest, interventionTransitionRates) {
+    fileStream << "agegrp,sex,oud,initial_block,to_No_Treatment260,to_"
+                  "Buprenorphine260,to_Naltrexone260,to_Methadone260,to_"
+                  "Detox260,to_corresponding_post_trt260"
+               << std::endl
+               << "10_14,male,Active_Noninjection,No_Treatment,0."
+                  "625523912484771,0.101388565684697,0.0472664681057711,0."
+                  "178570136497494,0.0472509172272673,0"
+               << std::endl
+               << "10_14,male,Active_Noninjection,Buprenorphine,0,0."
+                  "996990941661389,0,0,0,0.0030090583386112"
+               << std::endl
+               << "10_14,male,Active_Noninjection,Naltrexone,0,0,0."
+                  "88186832069196,0,0,0.11813167930804";
+    fileStream.close();
+
+    Data::DataLoader dl(boost::filesystem::temp_directory_path().string());
+
+    dl.loadInterventionTransitionRates(tempAbsoluteFile.string());
+
+    Data::Matrix3dOverTime result = dl.getInterventionTransitionRates();
+    EXPECT_EQ(result(0, 0, 0, 0), 0.625523912484771);
+}
+
+TEST_F(DataLoaderTest, overdoseRates) {
+    fileStream
+        << "block,agegrp,sex,oud,all_types_overdose_cycle52,all_types_overdose_"
+           "cycle104,all_types_overdose_cycle156,all_types_overdose_cycle208,"
+           "all_types_overdose_cycle260"
+        << std::endl
+        << "No_Treatment,10_14,male,Active_Noninjection,0.00059346577560159,0."
+           "000895542690723513,0.000780514937366773,0.000510919750042232,0."
+           "000108104676301938"
+        << std::endl
+        << "No_Treatment,10_14,male,Active_Injection,0.00159609306875247,0."
+           "00746057563493888,0.0019836509574786,0.00179252999267244,0."
+           "00113800623019004"
+        << std::endl
+        << "No_Treatment,10_14,female,Active_Noninjection,0.000255931977117035,"
+           "0.000469701882303847,0.000837585099598164,0.000557619510178251,0."
+           "000348390775561181";
+    fileStream.close();
+
+    Data::DataLoader dl(boost::filesystem::temp_directory_path().string());
+
+    dl.loadOverdoseRates(tempAbsoluteFile.string());
+
+    Data::Matrix3dOverTime result = dl.getOverdoseRates();
+    EXPECT_EQ(result(0, 0, 0, 0), 0.00059346577560159);
+}
+
+TEST_F(DataLoaderTest, fatalOverdoseRates) {
+    fileStream << "fatal_to_all_types_overdose_ratio_cycle52,fatal_to_all_"
+                  "types_overdose_ratio_cycle104,fatal_to_all_types_overdose_"
+                  "ratio_cycle156,fatal_to_all_types_overdose_ratio_cycle208,"
+                  "fatal_to_all_types_overdose_ratio_cycle260"
+               << std::endl
+               << "0.216540329711774,0.297741215749976,0.113841797135366,0."
+                  "126092413319309,0.156049415151599";
+    fileStream.close();
+
+    Data::DataLoader dl(boost::filesystem::temp_directory_path().string());
+
+    dl.loadFatalOverdoseRates(tempAbsoluteFile.string());
+
+    Data::Matrix3dOverTime result = dl.getFatalOverdoseRates();
+    EXPECT_EQ(result(0, 0, 0, 0), 0.216540329711774);
+}
+
+TEST_F(DataLoaderTest, mortalityRates) {
+    fileStream
+        << "block,agegrp,sex,oud,SMR" << std::endl
+        << "No_Treatment,10_14,male,Active_Noninjection,2.1203387149855"
+        << std::endl
+        << "No_Treatment,10_14,male,Active_Injection,5.51986056060266"
+        << std::endl
+        << "No_Treatment,10_14,male,Nonactive_Noninjection,1.83401409064184";
+    fileStream.close();
+
+    fileStream2 << "agegrp,sex,death_prob" << std::endl
+                << "10_14,Male,3.22625844595414E-06" << std::endl
+                << "10_14,Female,2.3250579153089E-06" << std::endl
+                << "15_19,Male,1.2191975906517E-05";
+    fileStream2.close();
+
+    Data::DataLoader dl(boost::filesystem::temp_directory_path().string());
+
+    dl.loadMortalityRates(tempAbsoluteFile.string(),
+                          tempAbsoluteFile2.string());
+
+    Data::Matrix3d result = dl.getMortalityRates();
+    EXPECT_EQ(result(0, 0, 0), 6.8407483245769285e-06);
+}
+
+TEST_F(DataLoaderTest, interventionInitRates) {
+    fileStream
+        << "block,agegrp,sex,oud,counts" << std::endl
+        << "No_Treatment,10_14,Male,Active_Noninjection,2917.55795376043"
+        << std::endl
+        << "No_Treatment,10_14,Male,Active_Injection,977.390032367151"
+        << std::endl
+        << "No_Treatment,10_14,Male,Nonactive_Noninjection,288.995723856067";
+    fileStream.close();
+
+    Data::DataLoader dl(boost::filesystem::temp_directory_path().string());
+
+    dl.loadInitialSample(tempAbsoluteFile.string());
+
+    Data::Matrix3d result = dl.getInitialSample();
+    EXPECT_EQ(result(0, 0, 0), 2917.55795376043);
+}
 
 TEST_F(DataLoaderTest, getInterventions) {}
 
@@ -165,19 +363,3 @@ TEST_F(DataLoaderTest, getCogetPerInterventionPredictionsstSwitch) {}
 TEST_F(DataLoaderTest, getGeneralOutputsSwitch) {}
 
 TEST_F(DataLoaderTest, getGeneralStatsOutputTimesteps) {}
-
-TEST_F(DataLoaderTest, loadInitialSample) {}
-
-TEST_F(DataLoaderTest, loadEnteringSamples) {}
-
-TEST_F(DataLoaderTest, loadOUDTransitionRates) {}
-
-TEST_F(DataLoaderTest, loadInterventionInitRates) {}
-
-TEST_F(DataLoaderTest, loadInterventionTransitionRates) {}
-
-TEST_F(DataLoaderTest, loadOverdoseRates) {}
-
-TEST_F(DataLoaderTest, loadFatalOverdoseRates) {}
-
-TEST_F(DataLoaderTest, loadMortalityRates) {}
