@@ -326,13 +326,6 @@ namespace Data {
         /// @brief
         void populateCostParameters();
 
-        InputTable loadTable(std::string const &filename) {
-            if (this->inputTables.find(filename) == this->inputTables.end()) {
-                this->inputTables[filename] = Loader::readCSV(filename);
-            }
-            return this->inputTables[filename];
-        }
-
         std::string dirName;
         int duration;
         int agingInterval;

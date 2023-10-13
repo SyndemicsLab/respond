@@ -19,34 +19,29 @@
 
 namespace Data {
 
-    CostLoader::CostLoader(std::string inputDir) : Loader(inputDir) {}
+    CostLoader::CostLoader(std::string const &inputDir) : Loader(inputDir) {}
 
-    Configuration CostLoader::loadConfigurationFile(std::string configPath) {
+    Configuration
+    CostLoader::loadConfigurationFile(std::string const &configPath) {
         return Loader::loadConfigurationFile(configPath);
     }
 
-    Matrix3d CostLoader::loadHealthcareUtilizationCost(std::string csvName) {
-
+    Matrix3d
+    CostLoader::loadHealthcareUtilizationCost(std::string const &csvName) {
+        InputTable table = loadTable(csvName);
         size_t numOUDStates = this->Config.getOUDStates().size();
         size_t numDemographicCombos = this->Config.getNumDemographicCombos();
         size_t numInterventions = this->Config.getInterventions().size();
 
-        if (this->inputTables.find(csvName) == this->inputTables.end()) {
-            return Utilities::Matrix3dFactory::Create(0, 0, 0).constant(0);
-        }
-        InputTable table = this->inputTables[csvName];
-
-        this->healthcareUtilizationCost =
-            Utilities::Matrix3dFactory::Create(numOUDStates, numInterventions,
-                                               numDemographicCombos)
-                .constant(0);
+        this->healthcareUtilizationCost = Utilities::Matrix3dFactory::Create(
+            numOUDStates, numInterventions, numDemographicCombos);
 
         ASSERTM(table.find("healthcare_utilization_cost_healthcare_system") !=
                     table.end(),
                 "\'healthcare_utilization_cost_healthcare_system\' Column "
                 "Successfully Found");
 
-        std::vector<std::string> v =
+        std::vector<std::string> healthColumn =
             table["healthcare_utilization_cost_healthcare_system"];
 
         int rowIdx = 0;
@@ -54,14 +49,12 @@ namespace Data {
              ++intervention) {
             for (int dem = 0; dem < numDemographicCombos; ++dem) {
                 for (int oud_state = 0; oud_state < numOUDStates; ++oud_state) {
-                    // int rowIdx = ((intervention * numInterventions) +
-                    //               (dem * numDemographicCombos) + oud_state);
-
-                    std::string value = v[rowIdx];
-                    rowIdx++;
-                    double t = std::stod(value);
+                    double cost = (healthColumn.size() > rowIdx)
+                                      ? std::stod(healthColumn[rowIdx])
+                                      : 0.0;
                     this->healthcareUtilizationCost(intervention, oud_state,
-                                                    dem) = t;
+                                                    dem) = cost;
+                    rowIdx++;
                 }
             }
         }
@@ -69,50 +62,41 @@ namespace Data {
     }
 
     std::unordered_map<std::string, double>
-    CostLoader::loadOverdoseCost(std::string csvName) {
-        if (this->inputTables.find(csvName) == this->inputTables.end()) {
-            return this->overdoseCostsMap;
-        }
-        InputTable overdoseTable = this->inputTables[csvName];
+    CostLoader::loadOverdoseCost(std::string const &csvName) {
+        InputTable table = loadTable(csvName);
 
-        ASSERTM(overdoseTable.find("healthcare_system_cost_USD") !=
-                    overdoseTable.end(),
+        ASSERTM(table.find("healthcare_system_cost_USD") != table.end(),
                 "healthcare_system_cost_USD Column Successfully Found");
 
-        ASSERTM(overdoseTable.find("X") != overdoseTable.end(),
+        ASSERTM(table.find("X") != table.end(),
                 "\'X\' Column Successfully Found");
 
-        for (size_t i = 0; i < overdoseTable["X"].size(); i++) {
-            this->overdoseCostsMap[overdoseTable["X"][i]] =
-                std::stod(overdoseTable["healthcare_system_cost_USD"][i]);
+        for (size_t i = 0; i < table["X"].size(); i++) {
+            this->overdoseCostsMap[table["X"][i]] =
+                std::stod(table["healthcare_system_cost_USD"][i]);
         }
         return this->overdoseCostsMap;
     }
 
-    Matrix3d CostLoader::loadPharmaceuticalCost(std::string csvName) {
+    Matrix3d CostLoader::loadPharmaceuticalCost(std::string const &csvName) {
+        InputTable table = loadTable(csvName);
+
         size_t numOUDStates = this->Config.getOUDStates().size();
         size_t numDemographicCombos = this->Config.getNumDemographicCombos();
         size_t numInterventions = this->Config.getInterventions().size();
 
-        if (this->inputTables.find(csvName) == this->inputTables.end()) {
-            return Utilities::Matrix3dFactory::Create(0, 0, 0).constant(0);
-        }
-        InputTable pharmaTable = this->inputTables[csvName];
-
-        ASSERTM(pharmaTable.find("block") != pharmaTable.end(),
+        ASSERTM(table.find("block") != table.end(),
                 "\'block\' Column Successfully Found");
 
-        ASSERTM(pharmaTable.find("pharmaceutical_cost_healthcare_system") !=
-                    pharmaTable.end(),
+        ASSERTM(table.find("pharmaceutical_cost_healthcare_system") !=
+                    table.end(),
                 "\'pharmaceutical_cost_healthcare_system\' Column Successfully "
                 "Found");
 
-        this->loadPharmaceuticalCostMap(pharmaTable);
+        this->loadPharmaceuticalCostMap(table);
 
-        this->pharmaceuticalCost =
-            Utilities::Matrix3dFactory::Create(numOUDStates, numInterventions,
-                                               numDemographicCombos)
-                .constant(0);
+        this->pharmaceuticalCost = Utilities::Matrix3dFactory::Create(
+            numOUDStates, numInterventions, numDemographicCombos);
 
         std::vector<std::string> interventions =
             this->Config.getInterventions();
@@ -136,27 +120,24 @@ namespace Data {
         return this->pharmaceuticalCost;
     }
 
-    Matrix3d CostLoader::loadTreatmentUtilizationCost(std::string csvName) {
+    Matrix3d
+    CostLoader::loadTreatmentUtilizationCost(std::string const &csvName) {
+        InputTable table = loadTable(csvName);
+
         size_t numOUDStates = this->Config.getOUDStates().size();
         size_t numDemographicCombos = this->Config.getNumDemographicCombos();
         size_t numInterventions = this->Config.getInterventions().size();
 
-        if (this->inputTables.find(csvName) == this->inputTables.end()) {
-            return Utilities::Matrix3dFactory::Create(0, 0, 0).constant(0);
-        }
-        InputTable treatmentTable = this->inputTables[csvName];
-
-        ASSERTM(treatmentTable.find("block") != treatmentTable.end(),
+        ASSERTM(table.find("block") != table.end(),
                 "\'block\' Column Successfully Found");
 
-        ASSERTM(treatmentTable.find(
-                    "treatment_utilization_cost_healthcare_system") !=
-                    treatmentTable.end(),
+        ASSERTM(table.find("treatment_utilization_cost_healthcare_system") !=
+                    table.end(),
                 "\'treatment_utilization_cost_healthcare_system\' Column "
                 "Successfully "
                 "Found");
 
-        this->loadTreatmentUtilizationCostMap(treatmentTable);
+        this->loadTreatmentUtilizationCostMap(table);
 
         this->treatmentUtilizationCost =
             Utilities::Matrix3dFactory::Create(numOUDStates, numInterventions,
