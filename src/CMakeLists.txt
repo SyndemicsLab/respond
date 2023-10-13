@@ -22,5 +22,36 @@ target_link_libraries(respond
   model
 )
 
-# Create a simple configuration header
-configure_file(config.h.in config.h)
+include(GNUInstallDirs)
+install(TARGETS 
+          respond
+          model
+          data
+          utilities
+        CONFIGURATIONS Debug
+        RUNTIME
+          DESTINATION Debug/bin
+)
+
+install(TARGETS 
+          respond
+          model
+          data
+          utilities
+        CONFIGURATIONS Release
+        RUNTIME
+          DESTINATION Release/bin
+)
+
+include(InstallRequiredSystemLibraries)
+
+set(CPACK_PACKAGE_NAME "respond")
+set(CPACK_PACKAGE_VENDOR "SyndemicsLab")
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "RESPOND - Opioid Use Disorder Population Based Simulation")
+# set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/LICENSE.txt")
+set(CPACK_PACKAGE_VERSION_MAJOR "2")
+set(CPACK_PACKAGE_VERSION_MINOR "0")
+set(CPACK_PACKAGE_VERSION_PATCH "0")
+
+set(CPACK_SOURCE_GENERATOR "ZIP")
+include(CPack)
