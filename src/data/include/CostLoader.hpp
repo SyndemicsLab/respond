@@ -29,32 +29,40 @@
 namespace Data {
     class CostLoader : public Loader {
     public:
-        CostLoader(){};
-        CostLoader(std::string inputDir);
+        CostLoader() : Loader() {
+            healthcareUtilizationCost =
+                Utilities::Matrix3dFactory::Create(0, 0, 0);
 
-        Configuration loadConfigurationFile(std::string configPath);
+            pharmaceuticalCost = Utilities::Matrix3dFactory::Create(0, 0, 0);
+
+            treatmentUtilizationCost =
+                Utilities::Matrix3dFactory::Create(0, 0, 0);
+        };
+        CostLoader(std::string const &inputDir);
+
+        Configuration loadConfigurationFile(std::string const &configPath);
 
         // SETTERS
         /// @brief Load Healthcare Utilization Cost from file
         /// @param csvName filename for Healthcare Utilization Cost
         /// @return Matrix3d containing the Healthcare Utilization Cost
-        Matrix3d loadHealthcareUtilizationCost(std::string csvName);
+        Matrix3d loadHealthcareUtilizationCost(std::string const &csvName);
 
         /// @brief Load Overdose Cost from file
         /// @param csvName filename for Overdose Cost
         /// @return unordered map for Overdose Costs, string to double
         std::unordered_map<std::string, double>
-        loadOverdoseCost(std::string csvName);
+        loadOverdoseCost(std::string const &csvName);
 
         /// @brief
         /// @param csvName
         /// @return
-        Matrix3d loadPharmaceuticalCost(std::string csvName);
+        Matrix3d loadPharmaceuticalCost(std::string const &csvName);
 
         /// @brief
         /// @param csvName
         /// @return
-        Matrix3d loadTreatmentUtilizationCost(std::string csvName);
+        Matrix3d loadTreatmentUtilizationCost(std::string const &csvName);
 
         /// @brief
         /// @return

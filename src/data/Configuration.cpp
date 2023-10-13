@@ -295,11 +295,6 @@ namespace Data {
      * Private Methods
      *
      **************************************************/
-
-    /// @brief
-    /// @param indices
-    /// @param maxIndices
-    /// @return
     std::vector<int> Configuration::updateIndices(std::vector<int> indices,
                                                   std::vector<int> maxIndices) {
         int lastIdx = indices.size() - 1;
@@ -316,9 +311,6 @@ namespace Data {
         return results;
     }
 
-    /// @brief
-    /// @param st
-    /// @return
     std::vector<std::string>
     Configuration::parseString2VectorOfStrings(std::string st) {
         std::stringstream ss(st);
@@ -337,9 +329,6 @@ namespace Data {
         return result;
     }
 
-    /// @brief
-    /// @param st
-    /// @return
     std::vector<int> Configuration::parseString2VectorOfInts(std::string st) {
         std::vector<int> res;
 

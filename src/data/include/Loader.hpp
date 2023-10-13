@@ -89,6 +89,13 @@ namespace Data {
     protected:
         std::unordered_map<std::string, InputTable> inputTables;
         Configuration Config;
+
+        InputTable loadTable(std::string const &filename) {
+            if (this->inputTables.find(filename) == this->inputTables.end()) {
+                this->inputTables[filename] = Loader::readCSV(filename);
+            }
+            return this->inputTables[filename];
+        }
     };
 
 } // namespace Data
