@@ -62,7 +62,7 @@ int main(int argc, char **argv) {
         std::execution::par_unseq, std::begin(runs), std::end(runs),
         [&](int i) {
             // for (int i = std::stoi(argv[2]); i < std::stoi(argv[3]); i++) {
-            std::string inputDir = rootInputDir;
+            std::filesystem::path inputDir = rootInputDir;
             // for (int i = std::stoi(argv[2]); i < std::stoi(argv[3]); i++) {
             //     std::filesystem::path inputDir = argv[1];
             std::filesystem::path inputSet =
