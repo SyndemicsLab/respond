@@ -39,9 +39,19 @@ This enables flexibility in the number of combinations of intervention, opioid u
 
 ## Building RESPOND
 
-With the necessary dependencies installed, building RESPOND should only require the following commands:
-```sh
-cd build/
-cmake ..
-make
+If on **Unix**:
+1. Install conan2.0 via python and pip
+2. Ensure > gcc 11 installed
+3. Install cmake
+4. Run the command:
+```
+$ ./debug-conanbuild.sh
+$ src/respond inputfolder/ 1 2
+```
+
+If on **Windows**:
+1. Run the command:
+```
+> debug-conanbuild.bat
+> src/respond.exe inputfolder/ 1 2
 ```

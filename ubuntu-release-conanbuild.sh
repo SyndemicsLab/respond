@@ -18,7 +18,7 @@
 conan install . --build=missing --settings=build_type=Debug
 cd build
 source Debug/generators/conanbuild.sh
-cmake .. -DCMAKE_TOOLCHAIN_FILE=Debug/generators/conan_toolchain.cmake -DCMAKE_BUILD_TYPE=Debug -DBUILD_TESTS=ON
+cmake .. -DCMAKE_TOOLCHAIN_FILE=Debug/generators/conan_toolchain.cmake -DCMAKE_BUILD_TYPE=Debug -DBUILD_TESTS=OFF
 cmake --build .
 source Debug/generators/deactivate_conanbuild.sh
-./tests/respondTest
+cpack -G ZIP -C Release

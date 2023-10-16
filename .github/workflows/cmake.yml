@@ -45,11 +45,11 @@ jobs:
     # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type  
     - name: CMake configuration
       working-directory: ${{github.workspace}}/build
-      run:  cmake .. -DCMAKE_TOOLCHAIN_FILE=Release/generators/conan_toolchain.cmake -DCMAKE_BUILD_TYPE=Debug
+      run:  cmake .. -DCMAKE_TOOLCHAIN_FILE=Debug/generators/conan_toolchain.cmake -DCMAKE_BUILD_TYPE=Debug -DBUILD_TESTS=ON
 
     - name: Cmake build
       working-directory: ${{github.workspace}}/build
-      run: cmake --build . --config Release
+      run: cmake --build .
 
     - name: Deactivate Conan VirtualEnv
       working-directory: ${{github.workspace}}/build
@@ -57,7 +57,7 @@ jobs:
 
     - name: Cmake test
       working-directory: ${{github.workspace}}/build
-      run: ./test/respondTest
+      run: ./tests/respondTest
 
     # - name: Install Doxygen
     #   run: sudo apt-get update && sudo apt-get install -y --no-install-recommends doxygen graphviz
