@@ -52,7 +52,7 @@ jobs:
       run: cmake --build . --config Release
 
     - name: Deactivate Conan VirtualEnv
-      working_directory: ${{github.workspace}}/build
+      working-directory: ${{github.workspace}}/build
       run: source Release/generators/deactivate_conanbuild.sh
 
     - name: Cmake test
