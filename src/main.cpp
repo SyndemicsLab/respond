@@ -17,6 +17,7 @@
 //===----------------------------------------------------------------------===//
 
 #include <cassert>
+#include <filesystem>
 #include <iostream>
 
 #include "CostLoader.hpp"
@@ -27,16 +28,20 @@
 
 int main(int argc, char **argv) {
     if (argc != 4) {
-        std::cerr << "Usage: " << argv[0]
+        std::cerr << "Usage: " << argv[0] << " "
                   << "[INPUT FOLDER] [RUN START] [RUN END]\n\n"
                   << "RESPOND, a compartmental simulation of healthcare in "
                      "communities with high-risk opioid use";
     }
 
     for (int i = std::stoi(argv[2]); i < std::stoi(argv[3]); i++) {
-        std::string inputDir = argv[1];
-        inputDir += "input" + std::to_string(i);
-        Data::DataLoader inputs(inputDir);
+        std::filesystem::path inputDir = argv[1];
+        std::filesystem::path inputSet =
+            inputDir / ("input" + std::to_string(i));
+        // delete print lines below after testing on Windows
+        std::cout << inputDir << std::endl;
+        std::cout << inputSet << std::endl;
+        Data::DataLoader inputs(inputSet.string());
         inputs.loadInitialSample("init_cohort.csv");
         inputs.loadEnteringSamples("entering_cohort.csv", "No_Treatment",
                                    "Active_Noninjection");
@@ -50,7 +55,7 @@ int main(int argc, char **argv) {
         sim.Run();
         Data::History history = sim.getHistory();
 
-        Data::CostLoader costLoader(inputDir);
+        Data::CostLoader costLoader(inputSet.string());
         costLoader.loadHealthcareUtilizationCost(
             "healthcare_utilization_cost.csv");
         costLoader.loadOverdoseCost("overdose_cost.csv");
@@ -58,7 +63,7 @@ int main(int argc, char **argv) {
         costLoader.loadTreatmentUtilizationCost(
             "treatment_utilization_cost.csv");
 
-        Data::UtilityLoader utilityLoader(inputDir);
+        Data::UtilityLoader utilityLoader(inputSet.string());
         utilityLoader.loadBackgroundUtility("bg_utility.csv");
         utilityLoader.loadOUDUtility("oud_utility.csv");
         utilityLoader.loadSettingUtility("setting_utility.csv");
@@ -72,7 +77,10 @@ int main(int argc, char **argv) {
         std::vector<std::vector<std::string>> demographics =
             inputs.getConfiguration().getDemographicCombosVecOfVec();
 
-        std::string outputDir = inputDir + "output" + std::to_string(i);
+        std::filesystem::path outputDir =
+            inputDir / ("output" + std::to_string(i));
+        // delete print line below after testing on Windows
+        std::cout << outputDir << std::endl;
         Data::DataWriter writer(outputDir, inputs.getInterventions(),
                                 inputs.getOUDStates(), demographics);
 
@@ -81,7 +89,6 @@ int main(int argc, char **argv) {
         writer.writeUtility(Data::FILE, util);
         std::cout << "Output " << std::to_string(i) << " Complete" << std::endl;
     }
-
     std::cout << "Simulation Complete! :)" << std::endl;
     return 0;
 }

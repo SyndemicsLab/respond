@@ -18,16 +18,11 @@
 #include "Loader.hpp"
 
 namespace Data {
-
     Loader::Loader(std::string const &inputDir) {
         // PROCESSING INPUT FILES
-        // account for no trailing slash in the provided input directory
-        std::string configPath = inputDir;
-        if (configPath.back() != '/') {
-            configPath.push_back('/');
-        }
-        configPath += "sim.conf";
-        this->Config = readConfigFile(configPath);
+        std::filesystem::path configPath =
+            (std::filesystem::path)inputDir / "sim.conf";
+        this->Config = readConfigFile(configPath.string());
         this->inputTables = readInputDir(inputDir);
     }
 
@@ -70,15 +65,12 @@ namespace Data {
 
     std::unordered_map<std::string, InputTable>
     Loader::readInputDir(std::string const &inputDir) {
-        std::string inputDirFixed = inputDir;
+        std::filesystem::path inputDirFixed = inputDir;
         std::unordered_map<std::string, InputTable> toReturn;
-        // account for no trailing slash in the provided input directory
-        if (inputDirFixed.back() != '/') {
-            inputDirFixed.push_back('/');
-        }
 
         for (std::string inputFile : INPUT_FILES) {
-            toReturn[inputFile] = readCSV(inputDirFixed + inputFile);
+            std::filesystem::path filePath = inputDirFixed / inputFile;
+            toReturn[inputFile] = readCSV(filePath.string());
         }
         return toReturn;
     }
