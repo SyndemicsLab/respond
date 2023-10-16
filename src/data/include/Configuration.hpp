@@ -58,6 +58,7 @@ namespace Data {
         virtual bool getCostCategoryOutputs() = 0;
     };
 
+    // clang-format off
     /// @brief An object that stores parameters from model configuration files
     /// @details `RESPOND`, by default, searches for a file named `sim.conf`
     /// from within a given input directory to define simulation initialization
@@ -75,9 +76,8 @@ namespace Data {
     /// overdose_change_times = 52, 104, 156
     ///
     /// [state]
-    /// interventions = No_Treatment, Buprenorphine, Naltrexone,
-    /// Post-Buprenorphine, Post-Naltrexone ouds = Active_Noninjection,
-    /// Active_Injection, Nonactive_Noninjection, Nonactive_Injection
+    /// interventions = No_Treatment, Buprenorphine, Naltrexone, Post-Buprenorphine, Post-Naltrexone
+    /// ouds = Active_Noninjection, Active_Injection, Nonactive_Noninjection, Nonactive_Injection
     ///
     /// [demographic]
     /// age_groups = 10_14, 15_19, 20_24
@@ -87,13 +87,13 @@ namespace Data {
     /// cost_analysis = true
     /// cost_perspectives = Healthcare System, Societal, Policymakers
     /// discount_rate = 0.0025
+    /// reporting_interval = 2
+    /// cost_category_outputs = false
     ///
     /// [output]
-    /// reporting_interval = 2
     /// per_intervention_predictions = true
     /// general_outputs = false
     /// general_stats_output_timesteps = 52, 104, 156
-    /// cost_category_outputs = false
     /// @endcode
     ///
     /// This configuration is broken down into sections `[simulation]`,
@@ -127,6 +127,7 @@ namespace Data {
     /// `age_group` parameter **MUST** be specified first in `[demographic]`.
     /// Beyond this, `[demographic]` is capable of supporting an unbounded
     /// number of demographic vectors.
+    // clang-format on
     class Configuration : public IConfiguration {
     public:
         // CONSTRUCTORS
