@@ -15,10 +15,10 @@
 #    [[ -f test/respondTest ]] && test/respondTest
 # )
 
-conan install . --build=missing --settings=build_type=Release
+conan install . --build=missing --settings=build_type=Debug
 cd build
-source Release/generators/conanbuild.sh
-cmake .. -DCMAKE_TOOLCHAIN_FILE=Release/generators/conan_toolchain.cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=OFF
+source Debug/generators/conanbuild.sh
+cmake .. -DCMAKE_TOOLCHAIN_FILE=Debug/generators/conan_toolchain.cmake -DCMAKE_BUILD_TYPE=Debug -DBUILD_TESTS=OFF
 cmake --build .
-source Release/generators/deactivate_conanbuild.sh
+source Debug/generators/deactivate_conanbuild.sh
 cpack -G ZIP -C Release
