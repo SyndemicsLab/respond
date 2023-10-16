@@ -22,5 +22,3 @@ endif()
 if (WITH_API)
   add_subdirectory(api)
 endif()
-
-

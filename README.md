@@ -39,7 +39,7 @@ This enables flexibility in the number of combinations of intervention, opioid u
 
 ## Building RESPOND
 
-If on **Linux**:
+If on **Unix**:
 1. Install conan2.0 via python and pip
 2. Ensure > gcc 11 installed
 3. Install cmake
