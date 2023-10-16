@@ -205,11 +205,14 @@ namespace Simulation {
                 fmt::format("Running Timestep {}\n", this->currentTime);
             BOOST_LOG(this->lg) << fmt_string;
             this->state = this->step();
-            if (std::find(this->reportingInterval.begin(),
-                          this->reportingInterval.end(),
-                          this->currentTime) != this->reportingInterval.end()) {
-                this->history.stateHistory.insert(this->state, currentTime + 1);
-            }
+            // if (std::find(this->reportingInterval.begin(),
+            //               this->reportingInterval.end(),
+            //               this->currentTime) !=
+            //               this->reportingInterval.end()) {
+            //     this->history.stateHistory.insert(this->state, currentTime +
+            //     1);
+            // }
+            this->history.stateHistory.insert(this->state, currentTime + 1);
         }
     }
 
