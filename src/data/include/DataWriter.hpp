@@ -80,7 +80,7 @@ namespace Data {
         /// @param outputType Enum describing the output type. Defaults to FILE
         /// @param cost Cost struct containing the results of the simulation
         /// @return String depending on the output type
-        virtual std::string writeCost(OutputType outputType, Cost cost) = 0;
+        virtual std::string writeCosts(OutputType outputType, Costs costs) = 0;
 
         /// @brief Main function to write the Utilities
         /// @param outputType Enum describing the output type. Defaults to FILE
@@ -138,7 +138,7 @@ namespace Data {
         /// @param outputType
         /// @param cost
         /// @return
-        std::string writeCost(OutputType outputType, Cost cost) override;
+        std::string writeCosts(OutputType outputType, Costs costs) override;
 
         /// @brief
         /// @param outputType

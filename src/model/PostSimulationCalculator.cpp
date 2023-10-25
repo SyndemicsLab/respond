@@ -28,26 +28,34 @@ namespace Calculator {
         this->utilityLoader = utilityLoader;
     }
 
-    Data::Cost PostSimulationCalculator::calculateCost() const {
-        Data::Cost cost;
-        cost.healthcareCost = this->multiplyMatrix(
-            this->history.stateHistory,
-            this->costLoader.getHealthcareUtilizationCost());
-        cost.pharmaCost =
-            this->multiplyMatrix(this->history.stateHistory,
-                                 this->costLoader.getPharmaceuticalCost());
+    Data::Costs PostSimulationCalculator::calculateCosts() const {
+        Data::Costs costs;
+        std::vector<std::string> perspectives =
+            this->costLoader.getCostPerspectives();
 
-        cost.treatmentCost = this->multiplyMatrix(
-            this->history.stateHistory,
-            this->costLoader.getTreatmentUtilizationCost());
-        cost.nonFatalOverdoseCost =
-            this->multiplyDouble(this->history.overdoseHistory,
-                                 this->costLoader.getNonFatalOverdoseCost());
+        for (std::string perspective : perspectives) {
+            Data::Cost cost;
+            cost.perspective = perspective;
+            cost.healthcareCost = this->multiplyMatrix(
+                this->history.stateHistory,
+                this->costLoader.getHealthcareUtilizationCost(perspective));
+            cost.pharmaCost = this->multiplyMatrix(
+                this->history.stateHistory,
+                this->costLoader.getPharmaceuticalCost(perspective));
 
-        cost.fatalOverdoseCost =
-            this->multiplyDouble(this->history.fatalOverdoseHistory,
-                                 this->costLoader.getFatalOverdoseCost());
-        return cost;
+            cost.treatmentCost = this->multiplyMatrix(
+                this->history.stateHistory,
+                this->costLoader.getTreatmentUtilizationCost(perspective));
+            cost.nonFatalOverdoseCost = this->multiplyDouble(
+                this->history.overdoseHistory,
+                this->costLoader.getNonFatalOverdoseCost(perspective));
+
+            cost.fatalOverdoseCost = this->multiplyDouble(
+                this->history.fatalOverdoseHistory,
+                this->costLoader.getFatalOverdoseCost(perspective));
+            costs.push_back(cost);
+        }
+        return costs;
     }
 
     Data::Utility PostSimulationCalculator::calculateUtility() const {

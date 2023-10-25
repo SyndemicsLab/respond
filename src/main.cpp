@@ -99,7 +99,7 @@ int main(int argc, char **argv) {
 
             Calculator::PostSimulationCalculator PostSimulationCalculator(
                 costLoader, utilityLoader, history);
-            Data::Cost cost = PostSimulationCalculator.calculateCost();
+            Data::Costs costs = PostSimulationCalculator.calculateCosts();
 
             Data::Utility util = PostSimulationCalculator.calculateUtility();
 
@@ -114,7 +114,7 @@ int main(int argc, char **argv) {
                                     inputs.getOUDStates(), demographics);
 
             writer.writeHistory(Data::FILE, history);
-            writer.writeCost(Data::FILE, cost);
+            writer.writeCosts(Data::FILE, costs);
             writer.writeUtility(Data::FILE, util);
             std::cout << "Output " << std::to_string(i) << " Complete"
                       << std::endl;
