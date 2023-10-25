@@ -29,15 +29,17 @@
 namespace Data {
     class CostLoader : public Loader {
     public:
-        CostLoader() : Loader() {
-            healthcareUtilizationCost =
-                Utilities::Matrix3dFactory::Create(0, 0, 0);
+        CostLoader()
+            : Loader(){
+                  // healthcareUtilizationCost =
+                  //     Utilities::Matrix3dFactory::Create(0, 0, 0);
 
-            pharmaceuticalCost = Utilities::Matrix3dFactory::Create(0, 0, 0);
+                  // pharmaceuticalCost = Utilities::Matrix3dFactory::Create(0,
+                  // 0, 0);
 
-            treatmentUtilizationCost =
-                Utilities::Matrix3dFactory::Create(0, 0, 0);
-        };
+                  // treatmentUtilizationCost =
+                  //     Utilities::Matrix3dFactory::Create(0, 0, 0);
+              };
         CostLoader(std::string const &inputDir);
 
         Configuration loadConfigurationFile(std::string const &configPath);
@@ -46,61 +48,100 @@ namespace Data {
         /// @brief Load Healthcare Utilization Cost from file
         /// @param csvName filename for Healthcare Utilization Cost
         /// @return Matrix3d containing the Healthcare Utilization Cost
-        Matrix3d loadHealthcareUtilizationCost(std::string const &csvName);
+        std::unordered_map<std::string, Matrix3d>
+        loadHealthcareUtilizationCost(std::string const &csvName);
 
         /// @brief Load Overdose Cost from file
         /// @param csvName filename for Overdose Cost
         /// @return unordered map for Overdose Costs, string to double
-        std::unordered_map<std::string, double>
+        std::unordered_map<std::string, std::unordered_map<std::string, double>>
         loadOverdoseCost(std::string const &csvName);
 
         /// @brief
         /// @param csvName
         /// @return
-        Matrix3d loadPharmaceuticalCost(std::string const &csvName);
+        std::unordered_map<std::string, Matrix3d>
+        loadPharmaceuticalCost(std::string const &csvName);
 
         /// @brief
         /// @param csvName
         /// @return
-        Matrix3d loadTreatmentUtilizationCost(std::string const &csvName);
+        std::unordered_map<std::string, Matrix3d>
+        loadTreatmentUtilizationCost(std::string const &csvName);
+
+        /// @brief
+        void populateCostParameters();
 
         /// @brief
         /// @return
-        Matrix3d getHealthcareUtilizationCost() const {
-            return this->healthcareUtilizationCost;
+        Matrix3d
+        getHealthcareUtilizationCost(std::string const &perspective) const {
+            if (this->healthcareUtilizationCost.find(perspective) !=
+                this->healthcareUtilizationCost.end()) {
+                return this->healthcareUtilizationCost.at(perspective);
+            }
+            // add warning
+            Matrix3d result;
+            return result;
         }
 
         /// @brief
         /// @return
-        Matrix3d getPharmaceuticalCost() const {
-            return this->pharmaceuticalCost;
+        Matrix3d getPharmaceuticalCost(std::string const &perspective) const {
+            if (this->pharmaceuticalCost.find(perspective) !=
+                this->pharmaceuticalCost.end()) {
+                return this->pharmaceuticalCost.at(perspective);
+            }
+            // add warning
+            Matrix3d result;
+            return result;
         }
 
         /// @brief
         /// @return
-        Matrix3d getTreatmentUtilizationCost() const {
-            return this->treatmentUtilizationCost;
+        Matrix3d
+        getTreatmentUtilizationCost(std::string const &perspective) const {
+            if (this->treatmentUtilizationCost.find(perspective) !=
+                this->treatmentUtilizationCost.end()) {
+                return this->treatmentUtilizationCost.at(perspective);
+            }
+            // add warning
+            Matrix3d result;
+            return result;
         }
 
         /// @brief
         /// @return
-        double getNonFatalOverdoseCost() const;
+        double getNonFatalOverdoseCost(std::string const &perspective) const;
 
         /// @brief
         /// @return
-        double getFatalOverdoseCost() const;
+        double getFatalOverdoseCost(std::string const &perspective) const;
+
+        std::vector<std::string> getCostPerspectives() const {
+            return this->costPerspectives;
+        }
 
     private:
-        Matrix3d healthcareUtilizationCost;
-        Matrix3d pharmaceuticalCost;
-        Matrix3d treatmentUtilizationCost;
-        std::unordered_map<std::string, double> overdoseCostsMap;
-        std::unordered_map<std::string, double> pharmaceuticalCostsMap;
-        std::unordered_map<std::string, double> treatmentUtilizationCostMap;
+        std::unordered_map<std::string, Matrix3d> healthcareUtilizationCost;
+        std::unordered_map<std::string, Matrix3d> pharmaceuticalCost;
+        std::unordered_map<std::string, Matrix3d> treatmentUtilizationCost;
+        std::unordered_map<std::string, std::unordered_map<std::string, double>>
+            overdoseCostsMap;
+        std::unordered_map<std::string, std::unordered_map<std::string, double>>
+            pharmaceuticalCostsMap;
+        std::unordered_map<std::string, std::unordered_map<std::string, double>>
+            treatmentUtilizationCostMap;
 
-        std::unordered_map<std::string, double>
+        bool costSwitch;
+        std::vector<std::string> costPerspectives;
+        double discountRate;
+        int reportingInterval;
+        bool costCategoryOutputs;
+
+        std::unordered_map<std::string, std::unordered_map<std::string, double>>
         loadTreatmentUtilizationCostMap(InputTable table);
-        std::unordered_map<std::string, double>
+        std::unordered_map<std::string, std::unordered_map<std::string, double>>
         loadPharmaceuticalCostMap(InputTable table);
     };
 } // namespace Data

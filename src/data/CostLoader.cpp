@@ -19,66 +19,79 @@
 
 namespace Data {
 
-    CostLoader::CostLoader(std::string const &inputDir) : Loader(inputDir) {}
+    CostLoader::CostLoader(std::string const &inputDir) : Loader(inputDir) {
+        this->populateCostParameters();
+    }
 
     Configuration
     CostLoader::loadConfigurationFile(std::string const &configPath) {
-        return Loader::loadConfigurationFile(configPath);
+        Loader::loadConfigurationFile(configPath);
+        this->populateCostParameters();
+        return this->Config;
     }
 
-    Matrix3d
+    std::unordered_map<std::string, Matrix3d>
     CostLoader::loadHealthcareUtilizationCost(std::string const &csvName) {
         InputTable table = loadTable(csvName);
         size_t numOUDStates = this->Config.getOUDStates().size();
         size_t numDemographicCombos = this->Config.getNumDemographicCombos();
         size_t numInterventions = this->Config.getInterventions().size();
 
-        this->healthcareUtilizationCost = Utilities::Matrix3dFactory::Create(
-            numOUDStates, numInterventions, numDemographicCombos);
+        for (std::string perspective : this->costPerspectives) {
+            std::string message =
+                "\'" + perspective + "\' Column Successfully Found";
+            ASSERTM(table.find(perspective) != table.end(), message);
 
-        ASSERTM(table.find("healthcare_utilization_cost_healthcare_system") !=
-                    table.end(),
-                "\'healthcare_utilization_cost_healthcare_system\' Column "
-                "Successfully Found");
+            this->healthcareUtilizationCost[perspective] =
+                Utilities::Matrix3dFactory::Create(
+                    numOUDStates, numInterventions, numDemographicCombos);
 
-        std::vector<std::string> healthColumn =
-            table["healthcare_utilization_cost_healthcare_system"];
+            std::vector<std::string> healthColumn = table[perspective];
 
-        int rowIdx = 0;
-        for (int intervention = 0; intervention < numInterventions;
-             ++intervention) {
-            for (int dem = 0; dem < numDemographicCombos; ++dem) {
-                for (int oud_state = 0; oud_state < numOUDStates; ++oud_state) {
-                    double cost = (healthColumn.size() > rowIdx)
-                                      ? std::stod(healthColumn[rowIdx])
-                                      : 0.0;
-                    this->healthcareUtilizationCost(intervention, oud_state,
-                                                    dem) = cost;
-                    rowIdx++;
+            int rowIdx = 0;
+            for (int intervention = 0; intervention < numInterventions;
+                 ++intervention) {
+                for (int dem = 0; dem < numDemographicCombos; ++dem) {
+                    for (int oud_state = 0; oud_state < numOUDStates;
+                         ++oud_state) {
+                        double cost = (healthColumn.size() > rowIdx)
+                                          ? std::stod(healthColumn[rowIdx])
+                                          : 0.0;
+                        this->healthcareUtilizationCost[perspective](
+                            intervention, oud_state, dem) = cost;
+                        rowIdx++;
+                    }
                 }
             }
         }
         return this->healthcareUtilizationCost;
     }
 
-    std::unordered_map<std::string, double>
+    std::unordered_map<std::string, std::unordered_map<std::string, double>>
     CostLoader::loadOverdoseCost(std::string const &csvName) {
         InputTable table = loadTable(csvName);
 
-        ASSERTM(table.find("healthcare_system_cost_USD") != table.end(),
-                "healthcare_system_cost_USD Column Successfully Found");
+        for (std::string perspective : this->costPerspectives) {
+            std::string message =
+                "\'" + perspective + "\' Column Successfully Found";
+
+            ASSERTM(table.find(perspective) != table.end(), message);
+        }
 
         ASSERTM(table.find("X") != table.end(),
                 "\'X\' Column Successfully Found");
 
-        for (size_t i = 0; i < table["X"].size(); i++) {
-            this->overdoseCostsMap[table["X"][i]] =
-                std::stod(table["healthcare_system_cost_USD"][i]);
+        for (std::string perspective : this->costPerspectives) {
+            for (size_t i = 0; i < table["X"].size(); i++) {
+                this->overdoseCostsMap[perspective][table["X"][i]] =
+                    std::stod(table[perspective][i]);
+            }
         }
         return this->overdoseCostsMap;
     }
 
-    Matrix3d CostLoader::loadPharmaceuticalCost(std::string const &csvName) {
+    std::unordered_map<std::string, Matrix3d>
+    CostLoader::loadPharmaceuticalCost(std::string const &csvName) {
         InputTable table = loadTable(csvName);
 
         size_t numOUDStates = this->Config.getOUDStates().size();
@@ -88,39 +101,47 @@ namespace Data {
         ASSERTM(table.find("block") != table.end(),
                 "\'block\' Column Successfully Found");
 
-        ASSERTM(table.find("pharmaceutical_cost_healthcare_system") !=
-                    table.end(),
-                "\'pharmaceutical_cost_healthcare_system\' Column Successfully "
-                "Found");
+        for (std::string perspective : this->costPerspectives) {
+            std::string message =
+                "\'" + perspective + "\' Column Successfully Found";
+            ASSERTM(table.find(perspective) != table.end(), message);
+        }
 
         this->loadPharmaceuticalCostMap(table);
 
-        this->pharmaceuticalCost = Utilities::Matrix3dFactory::Create(
-            numOUDStates, numInterventions, numDemographicCombos);
+        for (std::string perspective : this->costPerspectives) {
+            this->pharmaceuticalCost[perspective] =
+                Utilities::Matrix3dFactory::Create(
+                    numOUDStates, numInterventions, numDemographicCombos);
 
-        std::vector<std::string> interventions =
-            this->Config.getInterventions();
+            std::vector<std::string> interventions =
+                this->Config.getInterventions();
 
-        for (int i = 0; i < numInterventions; ++i) {
-            Eigen::array<Eigen::Index, 3> offset = {0, 0, 0};
-            Eigen::array<Eigen::Index, 3> extent =
-                this->pharmaceuticalCost.dimensions();
-            offset[Data::INTERVENTION] = i;
-            extent[Data::INTERVENTION] = 1;
-            Matrix3d slice = this->pharmaceuticalCost.slice(offset, extent);
-            if (this->pharmaceuticalCostsMap.find(interventions[i]) !=
-                this->pharmaceuticalCostsMap.end()) {
-                slice.setConstant(
-                    this->pharmaceuticalCostsMap[interventions[i]]);
-            } else {
-                slice.setConstant(0.0);
+            for (int i = 0; i < numInterventions; ++i) {
+                Eigen::array<Eigen::Index, 3> offset = {0, 0, 0};
+                Eigen::array<Eigen::Index, 3> extent =
+                    this->pharmaceuticalCost[perspective].dimensions();
+                offset[Data::INTERVENTION] = i;
+                extent[Data::INTERVENTION] = 1;
+                Matrix3d slice =
+                    this->pharmaceuticalCost[perspective].slice(offset, extent);
+                if (this->pharmaceuticalCostsMap[perspective].find(
+                        interventions[i]) !=
+                    this->pharmaceuticalCostsMap[perspective].end()) {
+                    slice.setConstant(
+                        this->pharmaceuticalCostsMap[perspective]
+                                                    [interventions[i]]);
+                } else {
+                    slice.setConstant(0.0);
+                }
+                this->pharmaceuticalCost[perspective].slice(offset, extent) =
+                    slice;
             }
-            this->pharmaceuticalCost.slice(offset, extent) = slice;
         }
         return this->pharmaceuticalCost;
     }
 
-    Matrix3d
+    std::unordered_map<std::string, Matrix3d>
     CostLoader::loadTreatmentUtilizationCost(std::string const &csvName) {
         InputTable table = loadTable(csvName);
 
@@ -131,74 +152,96 @@ namespace Data {
         ASSERTM(table.find("block") != table.end(),
                 "\'block\' Column Successfully Found");
 
-        ASSERTM(table.find("treatment_utilization_cost_healthcare_system") !=
-                    table.end(),
-                "\'treatment_utilization_cost_healthcare_system\' Column "
-                "Successfully "
-                "Found");
+        for (std::string perspective : this->costPerspectives) {
+            std::string message =
+                "\'" + perspective + "\' Column Successfully Found";
+            ASSERTM(table.find(perspective) != table.end(), message);
+        }
 
         this->loadTreatmentUtilizationCostMap(table);
 
-        this->treatmentUtilizationCost =
-            Utilities::Matrix3dFactory::Create(numOUDStates, numInterventions,
-                                               numDemographicCombos)
-                .constant(0);
+        for (std::string perspective : this->costPerspectives) {
+            this->treatmentUtilizationCost[perspective] =
+                Utilities::Matrix3dFactory::Create(
+                    numOUDStates, numInterventions, numDemographicCombos)
+                    .constant(0);
 
-        std::vector<std::string> interventions =
-            this->Config.getInterventions();
+            std::vector<std::string> interventions =
+                this->Config.getInterventions();
 
-        for (int i = 0; i < numInterventions; ++i) {
-            Eigen::array<Eigen::Index, 3> offset = {0, 0, 0};
-            Eigen::array<Eigen::Index, 3> extent =
-                this->treatmentUtilizationCost.dimensions();
-            offset[Data::INTERVENTION] = i;
-            extent[Data::INTERVENTION] = 1;
-            Matrix3d slice =
-                this->treatmentUtilizationCost.slice(offset, extent);
-            if (this->treatmentUtilizationCostMap.find(interventions[i]) !=
-                this->treatmentUtilizationCostMap.end()) {
-                slice.setConstant(
-                    this->treatmentUtilizationCostMap[interventions[i]]);
-            } else {
-                slice.setConstant(0.0);
+            for (int i = 0; i < numInterventions; ++i) {
+                Eigen::array<Eigen::Index, 3> offset = {0, 0, 0};
+                Eigen::array<Eigen::Index, 3> extent =
+                    this->treatmentUtilizationCost[perspective].dimensions();
+                offset[Data::INTERVENTION] = i;
+                extent[Data::INTERVENTION] = 1;
+                Matrix3d slice =
+                    this->treatmentUtilizationCost[perspective].slice(offset,
+                                                                      extent);
+                if (this->treatmentUtilizationCostMap[perspective].find(
+                        interventions[i]) !=
+                    this->treatmentUtilizationCostMap[perspective].end()) {
+                    slice.setConstant(
+                        this->treatmentUtilizationCostMap[perspective]
+                                                         [interventions[i]]);
+                } else {
+                    slice.setConstant(0.0);
+                }
+                this->treatmentUtilizationCost[perspective].slice(
+                    offset, extent) = slice;
             }
-            this->treatmentUtilizationCost.slice(offset, extent) = slice;
         }
         return this->treatmentUtilizationCost;
     }
 
-    double CostLoader::getNonFatalOverdoseCost() const {
-        if (this->overdoseCostsMap.find("non_fatal_overdose") ==
-            this->overdoseCostsMap.end()) {
+    double
+    CostLoader::getNonFatalOverdoseCost(std::string const &perspective) const {
+        if (this->overdoseCostsMap.at(perspective).find("non_fatal_overdose") ==
+            this->overdoseCostsMap.at(perspective).end()) {
             return 0.0;
         }
-        return this->overdoseCostsMap.at("non_fatal_overdose");
+        return this->overdoseCostsMap.at(perspective).at("non_fatal_overdose");
     }
 
-    double CostLoader::getFatalOverdoseCost() const {
-        if (this->overdoseCostsMap.find("fatal_overdose") ==
-            this->overdoseCostsMap.end()) {
+    double
+    CostLoader::getFatalOverdoseCost(std::string const &perspective) const {
+        if (this->overdoseCostsMap.at(perspective).find("fatal_overdose") ==
+            this->overdoseCostsMap.at(perspective).end()) {
             return 0.0;
         }
-        return this->overdoseCostsMap.at("fatal_overdose");
+        return this->overdoseCostsMap.at(perspective).at("fatal_overdose");
     }
 
-    std::unordered_map<std::string, double>
+    std::unordered_map<std::string, std::unordered_map<std::string, double>>
     CostLoader::loadPharmaceuticalCostMap(InputTable table) {
-        for (size_t i = 0; i < table["block"].size(); i++) {
-            this->pharmaceuticalCostsMap[table["block"][i]] =
-                std::stod(table["pharmaceutical_cost_healthcare_system"][i]);
+        for (std::string perspective : this->costPerspectives) {
+            for (size_t i = 0; i < table["block"].size(); i++) {
+                this->pharmaceuticalCostsMap[perspective][table["block"][i]] =
+                    std::stod(table[perspective][i]);
+            }
         }
         return this->pharmaceuticalCostsMap;
     }
 
-    std::unordered_map<std::string, double>
+    std::unordered_map<std::string, std::unordered_map<std::string, double>>
     CostLoader::loadTreatmentUtilizationCostMap(InputTable table) {
-        for (size_t i = 0; i < table["block"].size(); i++) {
-            this->treatmentUtilizationCostMap[table["block"][i]] = std::stod(
-                table["treatment_utilization_cost_healthcare_system"][i]);
+        for (std::string perspective : this->costPerspectives) {
+            for (size_t i = 0; i < table["block"].size(); i++) {
+                this->treatmentUtilizationCostMap[perspective]
+                                                 [table["block"][i]] =
+                    std::stod(table[perspective][i]);
+            }
         }
         return this->treatmentUtilizationCostMap;
+    }
+
+    void CostLoader::populateCostParameters() {
+        if (this->costSwitch) {
+            this->costPerspectives = this->Config.getCostPerspectives();
+            this->discountRate = this->Config.getDiscountRate();
+            this->reportingInterval = this->Config.getReportingInterval();
+            this->costCategoryOutputs = this->Config.getCostCategoryOutputs();
+        }
     }
 
 } // namespace Data

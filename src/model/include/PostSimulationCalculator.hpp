@@ -41,7 +41,7 @@ namespace Calculator {
 
         /// @brief Main function to calculate the Cost
         /// @return Cost Struct filled with calculated Cost
-        Data::Cost calculateCost() const;
+        Data::Costs calculateCosts() const;
 
         /// @brief Main function to calculate the Utility
         /// @return Cost Struct filled with calculated Utility
