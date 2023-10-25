@@ -81,6 +81,7 @@ namespace Data {
     using History = History;
 
     struct Cost {
+        std::string perspective;
         Matrix3dOverTime healthcareCost;
         Matrix3dOverTime nonFatalOverdoseCost;
         Matrix3dOverTime fatalOverdoseCost;
@@ -88,9 +89,10 @@ namespace Data {
         Matrix3dOverTime treatmentCost;
     };
 
+    using Cost = Cost;
     /// @brief Struct defining Cost Matrices Across the Duration of the
     /// Simulation
-    using Cost = Cost;
+    using Costs = std::vector<Cost>;
 
     struct Utility {
         Matrix3dOverTime backgroundUtility;

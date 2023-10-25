@@ -147,67 +147,79 @@ namespace Data {
     /// @param outputType Output Enum, generally Data::FILE
     /// @return string containing the result if output enum is Data::STRING or
     /// description of status otherwise
-    std::string DataWriter::writeCost(OutputType outputType, Cost cost) {
-        if (cost.healthcareCost.getMatrices().empty() ||
-            cost.pharmaCost.getMatrices().empty() ||
-            cost.fatalOverdoseCost.getMatrices().empty() ||
-            cost.nonFatalOverdoseCost.getMatrices().empty() ||
-            cost.treatmentCost.getMatrices().empty()) {
-            // log error
-            std::ostringstream s;
-            return s.str();
-        }
+    std::string DataWriter::writeCosts(OutputType outputType, Costs costs) {
+        std::ostringstream stringstream;
 
-        if (outputType == FILE) {
-            if (!std::filesystem::exists(this->dirname)) {
-                std::filesystem::create_directory(this->dirname);
+        for (Cost cost : costs) {
+
+            if (cost.healthcareCost.getMatrices().empty() ||
+                cost.pharmaCost.getMatrices().empty() ||
+                cost.fatalOverdoseCost.getMatrices().empty() ||
+                cost.nonFatalOverdoseCost.getMatrices().empty() ||
+                cost.treatmentCost.getMatrices().empty()) {
+                // log error
+                std::ostringstream s;
+                return s.str();
             }
 
-            std::filesystem::path dir(this->dirname);
-            std::filesystem::path healthUtilFile("healthcareCost.csv");
-            std::filesystem::path pharmaFile("pharmaCost.csv");
-            std::filesystem::path fatalOverdoseFile("fatalOverdoseCost.csv");
-            std::filesystem::path nonFatalOverdoseFile(
-                "nonFatalOverdoseCost.csv");
-            std::filesystem::path treatmentFile("treatmentCost.csv");
-            std::filesystem::path healthUtilFullPath = dir / healthUtilFile;
-            std::filesystem::path pharmaFullPath = dir / pharmaFile;
-            std::filesystem::path fatalOverdoseFullPath =
-                dir / fatalOverdoseFile;
-            std::filesystem::path nonFatalOverdoseFullPath =
-                dir / nonFatalOverdoseFile;
-            std::filesystem::path treatmentFullPath = dir / treatmentFile;
+            if (outputType == FILE) {
+                if (!std::filesystem::exists(this->dirname)) {
+                    std::filesystem::create_directory(this->dirname);
+                }
 
-            std::ofstream file;
+                std::filesystem::path dir(this->dirname);
 
-            file.open(healthUtilFullPath.string());
+                std::filesystem::path healthUtilFile("healthcareCost-" +
+                                                     cost.perspective + ".csv");
+                std::filesystem::path pharmaFile("pharmaCost-" +
+                                                 cost.perspective + ".csv");
+                std::filesystem::path fatalOverdoseFile(
+                    "fatalOverdoseCost-" + cost.perspective + ".csv");
+                std::filesystem::path nonFatalOverdoseFile(
+                    "nonFatalOverdoseCost-" + cost.perspective + ".csv");
+                std::filesystem::path treatmentFile("treatmentCost-" +
+                                                    cost.perspective + ".csv");
+                std::filesystem::path healthUtilFullPath = dir / healthUtilFile;
+                std::filesystem::path pharmaFullPath = dir / pharmaFile;
+                std::filesystem::path fatalOverdoseFullPath =
+                    dir / fatalOverdoseFile;
+                std::filesystem::path nonFatalOverdoseFullPath =
+                    dir / nonFatalOverdoseFile;
+                std::filesystem::path treatmentFullPath = dir / treatmentFile;
 
-            this->writer(file, cost.healthcareCost);
-            file.close();
+                std::ofstream file;
 
-            file.open(pharmaFullPath.string());
-            this->writer(file, cost.pharmaCost);
-            file.close();
+                file.open(healthUtilFullPath.string());
 
-            file.open(fatalOverdoseFullPath.string());
-            this->writer(file, cost.fatalOverdoseCost);
-            file.close();
+                this->writer(file, cost.healthcareCost);
+                file.close();
 
-            file.open(nonFatalOverdoseFullPath.string());
-            this->writer(file, cost.nonFatalOverdoseCost);
-            file.close();
+                file.open(pharmaFullPath.string());
+                this->writer(file, cost.pharmaCost);
+                file.close();
 
-            file.open(treatmentFullPath.string());
-            this->writer(file, cost.treatmentCost);
-            file.close();
+                file.open(fatalOverdoseFullPath.string());
+                this->writer(file, cost.fatalOverdoseCost);
+                file.close();
+
+                file.open(nonFatalOverdoseFullPath.string());
+                this->writer(file, cost.nonFatalOverdoseCost);
+                file.close();
+
+                file.open(treatmentFullPath.string());
+                this->writer(file, cost.treatmentCost);
+                file.close();
+            }
+
+            this->writer(stringstream, cost.healthcareCost);
+            this->writer(stringstream, cost.pharmaCost);
+            this->writer(stringstream, cost.fatalOverdoseCost);
+            this->writer(stringstream, cost.nonFatalOverdoseCost);
+            this->writer(stringstream, cost.treatmentCost);
+        }
+        if (outputType == FILE) {
             return "success";
         }
-        std::ostringstream stringstream;
-        this->writer(stringstream, cost.healthcareCost);
-        this->writer(stringstream, cost.pharmaCost);
-        this->writer(stringstream, cost.fatalOverdoseCost);
-        this->writer(stringstream, cost.nonFatalOverdoseCost);
-        this->writer(stringstream, cost.treatmentCost);
         return stringstream.str();
     }
 
