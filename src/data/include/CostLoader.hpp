@@ -122,6 +122,8 @@ namespace Data {
             return this->costPerspectives;
         }
 
+        bool getCostSwitch() const { return this->costSwitch; }
+
     private:
         std::unordered_map<std::string, Matrix3d> healthcareUtilizationCost;
         std::unordered_map<std::string, Matrix3d> pharmaceuticalCost;
@@ -133,7 +135,7 @@ namespace Data {
         std::unordered_map<std::string, std::unordered_map<std::string, double>>
             treatmentUtilizationCostMap;
 
-        bool costSwitch;
+        bool costSwitch = true;
         std::vector<std::string> costPerspectives;
         double discountRate;
         int reportingInterval;
