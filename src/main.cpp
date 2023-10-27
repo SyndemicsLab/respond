@@ -67,9 +67,7 @@ int main(int argc, char **argv) {
             //     std::filesystem::path inputDir = argv[1];
             std::filesystem::path inputSet =
                 inputDir / ("input" + std::to_string(i));
-            // delete print lines below after testing on Windows
-            std::cout << inputDir << std::endl;
-            std::cout << inputSet << std::endl;
+
             Data::DataLoader inputs(inputSet.string());
             inputs.loadInitialSample("init_cohort.csv");
             inputs.loadEnteringSamples("entering_cohort.csv", "No_Treatment",
@@ -84,38 +82,43 @@ int main(int argc, char **argv) {
             sim.Run();
             Data::History history = sim.getHistory();
 
-            Data::CostLoader costLoader(inputSet.string());
-            costLoader.loadHealthcareUtilizationCost(
-                "healthcare_utilization_cost.csv");
-            costLoader.loadOverdoseCost("overdose_cost.csv");
-            costLoader.loadPharmaceuticalCost("pharmaceutical_cost.csv");
-            costLoader.loadTreatmentUtilizationCost(
-                "treatment_utilization_cost.csv");
-
-            Data::UtilityLoader utilityLoader(inputSet.string());
-            utilityLoader.loadBackgroundUtility("bg_utility.csv");
-            utilityLoader.loadOUDUtility("oud_utility.csv");
-            utilityLoader.loadSettingUtility("setting_utility.csv");
-
-            Calculator::PostSimulationCalculator PostSimulationCalculator(
-                costLoader, utilityLoader, history);
-            Data::Costs costs = PostSimulationCalculator.calculateCosts();
-
-            Data::Utility util = PostSimulationCalculator.calculateUtility();
-
             std::vector<std::vector<std::string>> demographics =
                 inputs.getConfiguration().getDemographicCombosVecOfVec();
 
             std::filesystem::path outputDir =
                 inputDir / ("output" + std::to_string(i));
-            // delete print line below after testing on Windows
-            std::cout << outputDir << std::endl;
+
             Data::DataWriter writer(outputDir, inputs.getInterventions(),
                                     inputs.getOUDStates(), demographics);
 
             writer.writeHistory(Data::FILE, history);
-            writer.writeCosts(Data::FILE, costs);
-            writer.writeUtility(Data::FILE, util);
+
+            Data::CostLoader costLoader(inputSet.string());
+
+            if (costLoader.getCostSwitch()) {
+                costLoader.loadHealthcareUtilizationCost(
+                    "healthcare_utilization_cost.csv");
+                costLoader.loadOverdoseCost("overdose_cost.csv");
+                costLoader.loadPharmaceuticalCost("pharmaceutical_cost.csv");
+                costLoader.loadTreatmentUtilizationCost(
+                    "treatment_utilization_cost.csv");
+
+                Data::UtilityLoader utilityLoader(inputSet.string());
+                utilityLoader.loadBackgroundUtility("bg_utility.csv");
+                utilityLoader.loadOUDUtility("oud_utility.csv");
+                utilityLoader.loadSettingUtility("setting_utility.csv");
+
+                Calculator::PostSimulationCalculator PostSimulationCalculator(
+                    costLoader, utilityLoader, history);
+                Data::Costs costs = PostSimulationCalculator.calculateCosts();
+
+                Data::Utility util =
+                    PostSimulationCalculator.calculateUtility();
+
+                writer.writeCosts(Data::FILE, costs);
+                writer.writeUtility(Data::FILE, util);
+            }
+
             std::cout << "Output " << std::to_string(i) << " Complete"
                       << std::endl;
         });
