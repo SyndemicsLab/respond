@@ -24,7 +24,7 @@ jobs:
 
     - name: Conan Install
       working-directory: ${{github.workspace}}
-      run: conan install . --output-folder=build --build=missing --settings=build_type=Debug --settings=compiler.cppstd=17 --settings=compiler=gcc --settings=compiler.verison=12.2
+      run: conan install . --output-folder=build --build=missing -pr:b=profiles/windows-default
 
     - name: Activate Conan Environment
       working-directory: ${{github.workspace}}/build/build/generators
