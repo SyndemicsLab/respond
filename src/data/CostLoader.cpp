@@ -236,6 +236,7 @@ namespace Data {
     }
 
     void CostLoader::populateCostParameters() {
+        this->costSwitch = this->Config.getCostSwitch();
         if (this->costSwitch) {
             this->costPerspectives = this->Config.getCostPerspectives();
             this->discountRate = this->Config.getDiscountRate();

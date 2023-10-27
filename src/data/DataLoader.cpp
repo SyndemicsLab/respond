@@ -420,27 +420,50 @@ namespace Data {
     Matrix3dOverTime
     DataLoader::loadFatalOverdoseRates(std::string const &csvName) {
 
-        InputTable fatalOverdoseTable = loadTable(csvName);
         std::vector<Matrix3d> tempFatalOverdoseTransitions;
+
+        InputTable fatalOverdoseTable = loadTable(csvName);
+        std::vector<int> oct = this->Config.getOverdoseChangeTimes();
         int startTime = 0;
-        for (int timestep : this->Config.getOverdoseChangeTimes()) {
+        for (int timestep : oct) {
             Matrix3d overdoseTransition =
                 Utilities::Matrix3dFactory::Create(this->numOUDStates,
                                                    this->numInterventions,
                                                    this->numDemographicCombos)
                     .constant(0);
-            // fatal overdose is a constant across all strata
+
             std::string fodColumn = "fatal_to_all_types_overdose_ratio_cycle" +
                                     std::to_string(timestep + 1);
-
-            double t = (fatalOverdoseTable[fodColumn].size() > 0)
-                           ? std::stod(fatalOverdoseTable[fodColumn][0])
-                           : 0.0;
 
             Matrix3d temp = Utilities::Matrix3dFactory::Create(
                                 this->numOUDStates, this->numInterventions,
                                 this->numDemographicCombos)
-                                .constant(t);
+                                .setZero();
+
+            if (fatalOverdoseTable.find("block") != fatalOverdoseTable.end()) {
+                for (int intervention = 0;
+                     intervention < this->getNumInterventions();
+                     ++intervention) {
+                    double t =
+                        (fatalOverdoseTable[fodColumn][intervention].size() > 0)
+                            ? std::stod(
+                                  fatalOverdoseTable[fodColumn][intervention])
+                            : 0.0;
+
+                    Eigen::array<Eigen::Index, 3> offsets = {intervention, 0,
+                                                             0};
+                    Eigen::array<Eigen::Index, 3> extents = {
+                        1, this->numOUDStates, this->numDemographicCombos};
+                    temp.slice(offsets, extents) =
+                        temp.slice(offsets, extents).setConstant(t);
+                }
+            } else {
+                double t = (fatalOverdoseTable[fodColumn].size() > 0)
+                               ? std::stod(fatalOverdoseTable[fodColumn][0])
+                               : 0.0;
+
+                temp = temp.constant(t);
+            }
 
             while (startTime <= timestep) {
                 this->fatalOverdoseRates.insert(temp, startTime);

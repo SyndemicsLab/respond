@@ -105,4 +105,10 @@ namespace Calculator {
         Data::Matrix3dOverTime ret(result);
         return ret;
     }
+
+    Data::Matrix3d provideDiscount(Data::Matrix3d data, double discountRate,
+                                   int N) {
+        Data::Matrix3d result = data / pow((1.0 + discountRate), N);
+        return result;
+    }
 } // namespace Calculator
