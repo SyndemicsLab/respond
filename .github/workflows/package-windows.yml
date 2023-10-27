@@ -26,17 +26,17 @@ jobs:
       working-directory: ${{github.workspace}}
       run: conan install . --output-folder=build --build=missing --settings=build_type=Debug --settings=compiler.cppstd=17
 
-    - name: Dir Local Space
-      working-directory: ${{github.workspace}}/build/build/generators
-      run: dir
-
     - name: Activate Conan Environment
       working-directory: ${{github.workspace}}/build/build/generators
       run: cmd.exe /c 'conanbuild.bat'
 
     - name: Configure CMake
-      working-directory: ${{github.workspace}}/build/build
+      working-directory: ${{github.workspace}}
       run: cmake . -G "MinGW Makefiles" -DCMAKE_TOOLCHAIN_FILE=${{github.workspace}}/build/build/generators/conan_toolchain.cmake -DCMAKE_BUILD_TYPE=Debug
+
+    - name: Dir Local Space
+      working-directory: ${{github.workspace}}/build/build
+      run: dir
 
     - name: Build
       # Build your program with the given configuration
