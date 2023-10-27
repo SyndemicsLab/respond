@@ -23,7 +23,8 @@ jobs:
       run: conan profile detect --force
 
     - name: Conan Install
-      run: conan install ${{github.workspace}} --build=missing --settings=build_type=Debug --settings=compiler.cppstd=17
+      working-directory: ${{github.workspace}}
+      run: conan install . --output-folder=build --build=missing --settings=build_type=Debug --settings=compiler.cppstd=17
 
     - name: Activate Conan Environment
       working-directory: ${{github.workspace}}/build/Debug/generators
