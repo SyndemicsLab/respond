@@ -1,5 +1,7 @@
 #!/usr/bin/bash
 
+cd ..
+
 SCC_HOSTS=(
     "scc1"
     "scc2"

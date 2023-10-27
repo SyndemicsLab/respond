@@ -1,5 +1,6 @@
 @ECHO OFF
 
+cd ..
 :: Install Conan
 ECHO "Checking Python Avaliability"
 python3 --version 3>nul
