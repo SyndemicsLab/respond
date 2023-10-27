@@ -19,9 +19,6 @@ jobs:
       id: conan
       uses: turtlebrowser/get-conan@main
 
-    - name: Create default Conan profile
-      run: conan profile detect --force
-
     - name: Conan Install
       working-directory: ${{github.workspace}}
       run: conan install . --output-folder=build --build=missing -pr:b=${{github.workspace}}/profiles/windows-build -pr:h=${{github.workspace}}/profiles/windows-build
