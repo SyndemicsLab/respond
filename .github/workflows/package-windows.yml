@@ -24,7 +24,7 @@ jobs:
 
     - name: Conan Install
       working-directory: ${{github.workspace}}
-      run: conan install . --output-folder=build --build=missing -pr:b=${{github.workspace}}/profiles/windows-build
+      run: conan install . --output-folder=build --build=missing -pr:b=${{github.workspace}}/profiles/windows-build -pr:h=${{github.workspace}}/profiles/windows-build
 
     - name: Activate Conan Environment
       working-directory: ${{github.workspace}}/build/build/generators
