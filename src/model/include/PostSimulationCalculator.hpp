@@ -18,6 +18,8 @@
 #ifndef MODEL_COSTCALCULATOR_HPP_
 #define MODEL_COSTCALCULATOR_HPP_
 
+#include <math.h>
+
 #include "CostLoader.hpp"
 #include "DataTypes.hpp"
 #include "Matrix3dFactory.hpp"
@@ -46,6 +48,9 @@ namespace Calculator {
         /// @brief Main function to calculate the Utility
         /// @return Cost Struct filled with calculated Utility
         Data::Utility calculateUtility() const;
+
+        Data::Matrix3d static provideDiscount(Data::Matrix3d data,
+                                              double discountRate, int N);
 
     private:
         Data::History history;

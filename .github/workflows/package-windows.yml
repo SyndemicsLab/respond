@@ -26,6 +26,10 @@ jobs:
       working-directory: ${{github.workspace}}
       run: conan install . --output-folder=build --build=missing --settings=build_type=Debug --settings=compiler.cppstd=17
 
+    - name: Dir Local Space
+      working-directory: ${{github.workspace}}/build
+      run: dir
+
     - name: Activate Conan Environment
       working-directory: ${{github.workspace}}/build/Debug/generators
       run: conanbuild.bat
