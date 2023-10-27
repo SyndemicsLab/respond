@@ -27,16 +27,16 @@ jobs:
       run: conan install . --output-folder=build --build=missing --settings=build_type=Debug --settings=compiler.cppstd=17
 
     - name: Dir Local Space
-      working-directory: ${{github.workspace}}/build/build
+      working-directory: ${{github.workspace}}/build/build/generators
       run: dir
 
     - name: Activate Conan Environment
-      working-directory: ${{github.workspace}}/build/build/Debug/generators
+      working-directory: ${{github.workspace}}/build/build/generators
       run: conanbuild.bat
 
     - name: Configure CMake
       working-directory: ${{github.workspace}}/build/build
-      run: cmake ${{github.workspace}}/build -G "MinGW Makefiles" -DCMAKE_TOOLCHAIN_FILE=${{github.workspace}}/build/Debug/generators/conan_toolchain.cmake -DCMAKE_BUILD_TYPE=Debug
+      run: cmake . -G "MinGW Makefiles" -DCMAKE_TOOLCHAIN_FILE=${{github.workspace}}/build/build/generators/conan_toolchain.cmake -DCMAKE_BUILD_TYPE=Debug
 
     - name: Build
       # Build your program with the given configuration
@@ -45,7 +45,7 @@ jobs:
     - name: Deactivate Conan Environment
       # Execute tests defined by the CMake configuration.
       # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
-      working-directory: ${{github.workspace}}/build/build/Debug/generators
+      working-directory: ${{github.workspace}}/build/build/generators
       run: deactivate_conanbuild.bat
 
     - name: Cpack
