@@ -25,6 +25,7 @@
 #include <vector>
 
 #include "CostLoader.hpp"
+#include "DataFormatter.hpp"
 #include "DataLoader.hpp"
 #include "DataWriter.hpp"
 #include "PostSimulationCalculator.hpp"
@@ -61,14 +62,19 @@ int main(int argc, char **argv) {
     std::for_each(
         std::execution::par_unseq, std::begin(runs), std::end(runs),
         [&](int i) {
-            // for (int i = std::stoi(argv[2]); i < std::stoi(argv[3]); i++) {
             std::filesystem::path inputDir = rootInputDir;
-            // for (int i = std::stoi(argv[2]); i < std::stoi(argv[3]); i++) {
-            //     std::filesystem::path inputDir = argv[1];
             std::filesystem::path inputSet =
                 inputDir / ("input" + std::to_string(i));
+            std::filesystem::path outputDir =
+                inputDir / ("output" + std::to_string(i));
 
             Data::DataLoader inputs(inputSet.string());
+            Data::CostLoader costLoader(inputSet.string());
+            Data::UtilityLoader utilityLoader(inputSet.string());
+
+            Data::Costs costs;
+            Data::Utility util;
+
             inputs.loadInitialSample("init_cohort.csv");
             inputs.loadEnteringSamples("entering_cohort.csv", "No_Treatment",
                                        "Active_Noninjection");
@@ -78,22 +84,6 @@ int main(int argc, char **argv) {
             inputs.loadOverdoseRates("all_types_overdose.csv");
             inputs.loadFatalOverdoseRates("fatal_overdose.csv");
             inputs.loadMortalityRates("SMR.csv", "background_mortality.csv");
-            Simulation::Sim sim(inputs);
-            sim.Run();
-            Data::History history = sim.getHistory();
-
-            std::vector<std::vector<std::string>> demographics =
-                inputs.getConfiguration().getDemographicCombosVecOfVec();
-
-            std::filesystem::path outputDir =
-                inputDir / ("output" + std::to_string(i));
-
-            Data::DataWriter writer(outputDir, inputs.getInterventions(),
-                                    inputs.getOUDStates(), demographics);
-
-            writer.writeHistory(Data::FILE, history);
-
-            Data::CostLoader costLoader(inputSet.string());
 
             if (costLoader.getCostSwitch()) {
                 costLoader.loadHealthcareUtilizationCost(
@@ -103,18 +93,41 @@ int main(int argc, char **argv) {
                 costLoader.loadTreatmentUtilizationCost(
                     "treatment_utilization_cost.csv");
 
-                Data::UtilityLoader utilityLoader(inputSet.string());
                 utilityLoader.loadBackgroundUtility("bg_utility.csv");
                 utilityLoader.loadOUDUtility("oud_utility.csv");
                 utilityLoader.loadSettingUtility("setting_utility.csv");
+            }
 
+            std::vector<std::vector<std::string>> demographics =
+                inputs.getConfiguration().getDemographicCombosVecOfVec();
+
+            Simulation::Sim sim(inputs);
+            sim.Run();
+            Data::History history = sim.getHistory();
+
+            if (costLoader.getCostSwitch()) {
                 Calculator::PostSimulationCalculator PostSimulationCalculator(
                     costLoader, utilityLoader, history);
-                Data::Costs costs = PostSimulationCalculator.calculateCosts();
+                costs = PostSimulationCalculator.calculateCosts();
+                util = PostSimulationCalculator.calculateUtility();
+            }
 
-                Data::Utility util =
-                    PostSimulationCalculator.calculateUtility();
+            std::vector<int> outputTimesteps =
+                inputs.getGeneralStatsOutputTimesteps();
 
+            Data::DataWriter writer(
+                outputDir.string(), inputs.getInterventions(),
+                inputs.getOUDStates(), demographics, outputTimesteps,
+                inputs.getGeneralOutputsSwitch());
+
+            Data::DataFormatter formatter;
+
+            formatter.extractTimesteps(outputTimesteps, history, costs, util,
+                                       costLoader.getCostSwitch());
+
+            writer.writeHistory(Data::FILE, history);
+
+            if (costLoader.getCostSwitch()) {
                 writer.writeCosts(Data::FILE, costs);
                 writer.writeUtility(Data::FILE, util);
             }

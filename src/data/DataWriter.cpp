@@ -20,7 +20,7 @@
 namespace Data {
 
     /// @brief Default Constructor creating a completely empty DataWriter Object
-    DataWriter::DataWriter() : DataWriter("", {}, {}, {}) {}
+    DataWriter::DataWriter() : DataWriter("", {}, {}, {}, {}, false) {}
 
     /// @brief The main Constructor for DataWriter, it fills the object with the
     /// given parameters
@@ -29,15 +29,19 @@ namespace Data {
     /// @param interventions A list of Intervention State Names
     /// @param oudStates A list of OUD State Names
     /// @param demographics A List of Each Demographic List of Names
-    /// @param history The history recorded from a Simulation Run
+    /// @param history The history recorded from a Simulation
+    /// Runstd::vector<int> timesteps, bool writeState
     DataWriter::DataWriter(std::string dirname,
                            std::vector<std::string> interventions,
                            std::vector<std::string> oudStates,
-                           std::vector<std::vector<std::string>> demographics) {
+                           std::vector<std::vector<std::string>> demographics,
+                           std::vector<int> timesteps, bool writeState) {
         this->dirname = dirname;
         this->interventions = interventions;
         this->oudStates = oudStates;
         this->demographics = demographics;
+        this->timesteps = timesteps;
+        this->writeState = writeState;
     }
 
     /// @brief Setter for Directory Path
@@ -114,9 +118,11 @@ namespace Data {
 
             std::ofstream file;
 
-            file.open(stateFullPath.string());
-            this->writer(file, history.stateHistory);
-            file.close();
+            if (this->writeState) {
+                file.open(stateFullPath.string());
+                this->writer(file, history.stateHistory);
+                file.close();
+            }
 
             file.open(overdoseFullPath.string());
             this->writer(file, history.overdoseHistory);
@@ -278,7 +284,7 @@ namespace Data {
     void DataWriter::writer(std::ostream &stream,
                             Matrix3dOverTime historyToWrite) {
         std::vector<Matrix3d> Matrix3dVec = historyToWrite.getMatrices();
-        stream << writeColumnHeaders(Matrix3dVec.size()) << std::endl;
+        stream << writeColumnHeaders() << std::endl;
         for (long int i = 0; i < this->interventions.size(); i++) {
             for (long int j = 0; j < this->oudStates.size(); j++) {
                 for (long int k = 0; k < this->demographics.size(); k++) {
@@ -307,13 +313,13 @@ namespace Data {
     /// @brief Helper function to write Headers to CSVs
     /// @param timesteps Total duration incurred during the simulation
     /// @return String containing the CSV Column Headers
-    std::string DataWriter::writeColumnHeaders(int timesteps) {
+    std::string DataWriter::writeColumnHeaders() {
         std::string ret = "Interventions, OUD States,";
         for (int counter = 0; counter < this->demographics[0].size();
              counter++) {
             ret += fmt::format("Demographic {},", counter);
         }
-        for (int timestep = 0; timestep < timesteps; timestep++) {
+        for (int timestep : this->timesteps) {
             ret += fmt::format("t+{},", timestep);
         }
         return ret;

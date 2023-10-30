@@ -64,6 +64,8 @@ namespace Data {
         /// @return Vector of Matrix3ds in timestep order
         std::vector<Matrix3d> getMatrices() const;
 
+        std::map<int, Matrix3d> getMappedData() const { return this->data; }
+
     private:
         std::map<int, Matrix3d> data;
     };
