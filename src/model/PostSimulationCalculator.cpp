@@ -20,71 +20,75 @@
 namespace Calculator {
 
     PostSimulationCalculator::PostSimulationCalculator(
-        Data::CostLoader const &costLoader,
-        Data::UtilityLoader const &utilityLoader,
         Data::History const &history) {
         this->history = history;
-        this->costLoader = costLoader;
-        this->utilityLoader = utilityLoader;
     }
 
-    Data::Costs PostSimulationCalculator::calculateCosts() const {
+    Data::Costs PostSimulationCalculator::calculateCosts(
+        Data::ICostLoader const &costLoader) const {
         Data::Costs costs;
         std::vector<std::string> perspectives =
-            this->costLoader.getCostPerspectives();
+            costLoader.getCostPerspectives();
 
         for (std::string perspective : perspectives) {
             Data::Cost cost;
             cost.perspective = perspective;
             cost.healthcareCost = this->multiplyMatrix(
                 this->history.stateHistory,
-                this->costLoader.getHealthcareUtilizationCost(perspective));
+                costLoader.getHealthcareUtilizationCost(perspective), true,
+                costLoader.getDiscountRate());
             cost.pharmaCost = this->multiplyMatrix(
                 this->history.stateHistory,
-                this->costLoader.getPharmaceuticalCost(perspective));
+                costLoader.getPharmaceuticalCost(perspective), true,
+                costLoader.getDiscountRate());
 
             cost.treatmentCost = this->multiplyMatrix(
                 this->history.stateHistory,
-                this->costLoader.getTreatmentUtilizationCost(perspective));
+                costLoader.getTreatmentUtilizationCost(perspective), true,
+                costLoader.getDiscountRate());
             cost.nonFatalOverdoseCost = this->multiplyDouble(
                 this->history.overdoseHistory,
-                this->costLoader.getNonFatalOverdoseCost(perspective));
+                costLoader.getNonFatalOverdoseCost(perspective), true,
+                costLoader.getDiscountRate());
 
             cost.fatalOverdoseCost = this->multiplyDouble(
                 this->history.fatalOverdoseHistory,
-                this->costLoader.getFatalOverdoseCost(perspective));
+                costLoader.getFatalOverdoseCost(perspective), true,
+                costLoader.getDiscountRate());
             costs.push_back(cost);
         }
         return costs;
     }
 
-    Data::Utility PostSimulationCalculator::calculateUtility() const {
+    Data::Utility PostSimulationCalculator::calculateUtility(
+        Data::IUtilityLoader const &utilityLoader) const {
         Data::Utility util;
-        util.backgroundUtility =
-            this->multiplyMatrix(this->history.stateHistory,
-                                 this->utilityLoader.getBackgroundUtility());
-        util.oudUtility = this->multiplyMatrix(
-            this->history.stateHistory, this->utilityLoader.getOUDUtility());
-        util.settingUtility =
-            this->multiplyMatrix(this->history.stateHistory,
-                                 this->utilityLoader.getSettingUtility());
+        util.backgroundUtility = this->multiplyMatrix(
+            this->history.stateHistory, utilityLoader.getBackgroundUtility());
+        util.oudUtility = this->multiplyMatrix(this->history.stateHistory,
+                                               utilityLoader.getOUDUtility());
+        util.settingUtility = this->multiplyMatrix(
+            this->history.stateHistory, utilityLoader.getSettingUtility());
         return util;
     }
 
     Data::Matrix3dOverTime PostSimulationCalculator::multiplyDouble(
-        Data::Matrix3dOverTime const &overdose, double const &value) const {
+        Data::Matrix3dOverTime const &overdose, double const &value,
+        bool provideDiscount, double discountRate) const {
         std::vector<Data::Matrix3d> overdoseVec = overdose.getMatrices();
         std::vector<Data::Matrix3d> result;
 
-        for (Data::Matrix3d timeMat : overdoseVec) {
+        for (int t = 0; t < overdoseVec.size(); t++) {
             Data::Matrix3d valueMatrix =
                 Utilities::Matrix3dFactory::Create(
-                    timeMat.dimension(Data::OUD),
-                    timeMat.dimension(Data::INTERVENTION),
-                    timeMat.dimension(Data::DEMOGRAPHIC_COMBO))
+                    overdoseVec[t].dimension(Data::OUD),
+                    overdoseVec[t].dimension(Data::INTERVENTION),
+                    overdoseVec[t].dimension(Data::DEMOGRAPHIC_COMBO))
                     .constant(value);
-
-            Data::Matrix3d temp = timeMat * valueMatrix;
+            Data::Matrix3d temp = overdoseVec[t] * valueMatrix;
+            if (provideDiscount) {
+                temp = this->provideDiscount(temp, discountRate, t);
+            }
             result.push_back(temp);
         }
 
@@ -93,12 +97,15 @@ namespace Calculator {
     }
 
     Data::Matrix3dOverTime PostSimulationCalculator::multiplyMatrix(
-        Data::Matrix3dOverTime const &state,
-        Data::Matrix3d const &value) const {
+        Data::Matrix3dOverTime const &state, Data::Matrix3d const &value,
+        bool provideDiscount, double discountRate) const {
         std::vector<Data::Matrix3d> result;
         std::vector<Data::Matrix3d> stateVec = state.getMatrices();
-        for (Data::Matrix3d timeMat : stateVec) {
-            Data::Matrix3d temp = timeMat * value;
+        for (int t = 0; t < stateVec.size(); t++) {
+            Data::Matrix3d temp = stateVec[t] * value;
+            if (provideDiscount) {
+                temp = this->provideDiscount(temp, discountRate, t);
+            }
             result.push_back(temp);
         }
 
@@ -106,10 +113,28 @@ namespace Calculator {
         return ret;
     }
 
-    Data::Matrix3d
-    PostSimulationCalculator::provideDiscount(Data::Matrix3d data,
-                                              double discountRate, int N) {
-        Data::Matrix3d result = data / pow((1.0 + discountRate), N);
+    Data::Matrix3d PostSimulationCalculator::provideDiscount(
+        Data::Matrix3d data, double discountRate, int N, bool isDiscrete,
+        bool weeklyTimestep) {
+        if (!weeklyTimestep) {
+            // notify we do not support this yet
+            return data;
+        }
+
+        double discountConstant;
+        if (isDiscrete) {
+            discountConstant = 1 / pow((1.0 + (discountRate) / 52.0), N);
+
+        } else {
+            discountConstant = exp(-discountRate * (N / 52));
+        }
+
+        Data::Matrix3d discount =
+            Utilities::Matrix3dFactory::Create(
+                data.dimension(Data::OUD), data.dimension(Data::INTERVENTION),
+                data.dimension(Data::DEMOGRAPHIC_COMBO))
+                .setConstant(discountConstant);
+        Data::Matrix3d result = data - discount;
         return result;
     }
 } // namespace Calculator

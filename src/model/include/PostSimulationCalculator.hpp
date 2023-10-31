@@ -37,25 +37,26 @@ namespace Calculator {
         /// @param utilityLoader Utility Loader Class containing Information to
         /// calculate the Utility
         /// @param history History Class containing Simulation State History
-        PostSimulationCalculator(Data::CostLoader const &costLoader,
-                                 Data::UtilityLoader const &utilityLoader,
-                                 Data::History const &history);
+        PostSimulationCalculator(Data::History const &history);
 
         /// @brief Main function to calculate the Cost
         /// @return Cost Struct filled with calculated Cost
-        Data::Costs calculateCosts() const;
+        Data::Costs calculateCosts(Data::ICostLoader const &costLoader) const;
 
         /// @brief Main function to calculate the Utility
         /// @return Cost Struct filled with calculated Utility
-        Data::Utility calculateUtility() const;
+        Data::Utility
+        calculateUtility(Data::IUtilityLoader const &utilityLoader) const;
 
         Data::Matrix3d static provideDiscount(Data::Matrix3d data,
-                                              double discountRate, int N);
+                                              double discountRate, int N,
+                                              bool isDiscrete = true,
+                                              bool weeklyTimestep = true);
+
+        Data::History getHistory() const { return this->history; }
 
     private:
         Data::History history;
-        Data::CostLoader costLoader;
-        Data::UtilityLoader utilityLoader;
 
         /// @brief
         /// @param overdose
@@ -63,7 +64,8 @@ namespace Calculator {
         /// @return
         Data::Matrix3dOverTime
         multiplyDouble(Data::Matrix3dOverTime const &overdose,
-                       double const &cost) const;
+                       double const &cost, bool provideDiscount = false,
+                       double discountRate = 0.0) const;
 
         /// @brief
         /// @param state
@@ -71,7 +73,8 @@ namespace Calculator {
         /// @return
         Data::Matrix3dOverTime
         multiplyMatrix(Data::Matrix3dOverTime const &state,
-                       Data::Matrix3d const &cost) const;
+                       Data::Matrix3d const &cost, bool provideDiscount = false,
+                       double discountRate = 0.0) const;
     };
 } // namespace Calculator
 

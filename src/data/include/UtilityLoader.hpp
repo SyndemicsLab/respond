@@ -23,41 +23,57 @@
 #include "Matrix3dFactory.hpp"
 
 namespace Data {
-    class UtilityLoader : public Loader {
+    class IUtilityLoader : public virtual ILoader {
+    public:
+        /// @brief Load the Background Utilties from a File
+        /// @param csvName Filename containing Background Utility
+        /// @return Matrix3d of Background Utility
+        virtual Matrix3d loadBackgroundUtility(std::string const &csvName) = 0;
+
+        /// @brief Load the OUD Utility from a File
+        /// @param csvName Filename containing OUD Utility
+        /// @return Matrix3d of OUD Utility
+        virtual Matrix3d loadOUDUtility(std::string const &csvName) = 0;
+
+        /// @brief Load the Setting Utility from a File
+        /// @param csvName Filename containing the Setting Utility
+        /// @return Matrix3d of Setting Utility
+        virtual Matrix3d loadSettingUtility(std::string const &csvName) = 0;
+
+        // GETTERS
+        /// @brief Get the Background Utility
+        /// @return Matrix3d of Background Utility
+        virtual Matrix3d getBackgroundUtility() const = 0;
+
+        /// @brief Get the OUD Utility
+        /// @return Matrix3d of OUD Utility
+        virtual Matrix3d getOUDUtility() const = 0;
+
+        /// @brief Get the Setting Utility
+        /// @return Matrix3d of Setting Utility
+        virtual Matrix3d getSettingUtility() const = 0;
+    };
+
+    class UtilityLoader : public Loader, public IUtilityLoader {
     public:
         UtilityLoader(){};
         UtilityLoader(std::string const &inputDir);
 
         Configuration loadConfigurationFile(std::string const &configPath);
 
-        // SETTERS
-        /// @brief Load the Background Utilties from a File
-        /// @param csvName Filename containing Background Utility
-        /// @return Matrix3d of Background Utility
-        Matrix3d loadBackgroundUtility(std::string const &csvName);
+        virtual Matrix3d loadBackgroundUtility(std::string const &csvName);
 
-        /// @brief Load the OUD Utility from a File
-        /// @param csvName Filename containing OUD Utility
-        /// @return Matrix3d of OUD Utility
-        Matrix3d loadOUDUtility(std::string const &csvName);
+        virtual Matrix3d loadOUDUtility(std::string const &csvName);
 
-        /// @brief Load the Setting Utility from a File
-        /// @param csvName Filename containing the Setting Utility
-        /// @return Matrix3d of Setting Utility
-        Matrix3d loadSettingUtility(std::string const &csvName);
+        virtual Matrix3d loadSettingUtility(std::string const &csvName);
 
-        // GETTERS
-        /// @brief Get the Background Utility
-        /// @return Matrix3d of Background Utility
-        Matrix3d getBackgroundUtility() const { return backgroundUtility; }
+        virtual Matrix3d getBackgroundUtility() const {
+            return backgroundUtility;
+        }
 
-        /// @brief Get the OUD Utility
-        /// @return Matrix3d of OUD Utility
-        Matrix3d getOUDUtility() const { return oudUtility; }
+        virtual Matrix3d getOUDUtility() const { return oudUtility; }
 
-        /// @brief Get the Setting Utility
-        /// @return Matrix3d of Setting Utility
-        Matrix3d getSettingUtility() const { return settingUtility; }
+        virtual Matrix3d getSettingUtility() const { return settingUtility; }
 
     private:
         Matrix3d backgroundUtility;

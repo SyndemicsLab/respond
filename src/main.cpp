@@ -107,9 +107,9 @@ int main(int argc, char **argv) {
 
             if (costLoader.getCostSwitch()) {
                 Calculator::PostSimulationCalculator PostSimulationCalculator(
-                    costLoader, utilityLoader, history);
-                costs = PostSimulationCalculator.calculateCosts();
-                util = PostSimulationCalculator.calculateUtility();
+                    history);
+                costs = PostSimulationCalculator.calculateCosts(costLoader);
+                util = PostSimulationCalculator.calculateUtility(utilityLoader);
             }
 
             std::vector<int> outputTimesteps =
