@@ -104,7 +104,8 @@ namespace Data {
         /// @param demographics
         DataWriter(std::string dirname, std::vector<std::string> interventions,
                    std::vector<std::string> oudStates,
-                   std::vector<std::vector<std::string>> demographics);
+                   std::vector<std::vector<std::string>> demographics,
+                   std::vector<int> timesteps, bool writeState);
 
         /// @brief
         /// @param dirname
@@ -151,11 +152,13 @@ namespace Data {
         std::vector<std::string> oudStates;
         std::vector<std::vector<std::string>> demographics;
         std::string dirname;
+        std::vector<int> timesteps;
+        bool writeState;
 
         /// @brief
         /// @param timesteps
         /// @return
-        std::string writeColumnHeaders(int timesteps);
+        std::string writeColumnHeaders();
 
         /// @brief
         /// @param stream

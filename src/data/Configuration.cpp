@@ -246,9 +246,7 @@ namespace Data {
 
         std::vector<int> resVec = this->parseString2VectorOfInts(res);
         for (int r : resVec) {
-            // ASSERTM(resVec.back() <= r,
-            //         "General Stat Output Timesteps in Ascending Order.");
-            result.push_back(r - 1);
+            result.push_back(r);
         }
 
         ASSERTM(this->getDuration() <= (result.back() + 1),

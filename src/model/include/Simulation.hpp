@@ -306,11 +306,6 @@ namespace Simulation {
         int numInterventions;
         int numDemographics;
         int numDemographicCombos;
-        std::vector<int> reportingInterval;
-        Data::Matrix3d runningOverdoses;
-        Data::Matrix3d runningMortality;
-        Data::Matrix3d runningFOD;
-        Data::Matrix3d runningAdmissions;
         Data::History history;
         Data::Matrix3dOverTime enteringSamples;
         Data::Matrix3d oudTransitionRates;
