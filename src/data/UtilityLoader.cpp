@@ -20,55 +20,89 @@
 namespace Data {
 
     UtilityLoader::UtilityLoader(std::string const &inputDir)
-        : Loader(inputDir) {}
+        : Loader(inputDir) {
+        this->populateCostParameters();
+    }
 
     Configuration
     UtilityLoader::loadConfigurationFile(std::string const &configPath) {
-        return Loader::loadConfigurationFile(configPath);
+        Loader::loadConfigurationFile(configPath);
+        this->populateCostParameters();
+        return this->Config;
     }
 
-    Matrix3d UtilityLoader::loadBackgroundUtility(std::string const &csvName) {
-        return this->loadUtility(csvName, this->backgroundUtility);
+    std::unordered_map<std::string, Matrix3d>
+    UtilityLoader::loadBackgroundUtility(std::string const &csvName) {
+        this->backgroundUtility = this->loadUtility(csvName);
+        return this->backgroundUtility;
     }
 
-    Matrix3d UtilityLoader::loadOUDUtility(std::string const &csvName) {
-        return this->loadUtility(csvName, this->oudUtility);
+    std::unordered_map<std::string, Matrix3d>
+    UtilityLoader::loadOUDUtility(std::string const &csvName) {
+        this->oudUtility = this->loadUtility(csvName);
+        return this->oudUtility;
     }
 
-    Matrix3d UtilityLoader::loadSettingUtility(std::string const &csvName) {
-        return this->loadUtility(csvName, this->settingUtility);
+    std::unordered_map<std::string, Matrix3d>
+    UtilityLoader::loadSettingUtility(std::string const &csvName) {
+        this->settingUtility = this->loadUtility(csvName);
+        return this->settingUtility;
     }
 
-    Matrix3d UtilityLoader::loadUtility(std::string const &csvName,
-                                        Matrix3d &utilMatrix) {
+    std::unordered_map<std::string, Matrix3d>
+    UtilityLoader::loadUtility(std::string const &csvName) {
         InputTable table = loadTable(csvName);
+
+        for (std::string perspective : this->costPerspectives) {
+            std::string message =
+                "\'" + perspective + "\' Column Successfully Found";
+
+            ASSERTM(table.find(perspective) != table.end(), message);
+        }
 
         size_t numOUDStates = this->Config.getOUDStates().size();
         size_t numDemographicCombos = this->Config.getNumDemographicCombos();
         size_t numInterventions = this->Config.getInterventions().size();
 
-        utilMatrix = Utilities::Matrix3dFactory::Create(
-                         numOUDStates, numInterventions, numDemographicCombos)
-                         .constant(0);
+        std::unordered_map<std::string, Data::Matrix3d> result;
+        for (std::string perspective : this->costPerspectives) {
+            Data::Matrix3d utilMatrix =
+                Utilities::Matrix3dFactory::Create(
+                    numOUDStates, numInterventions, numDemographicCombos)
+                    .constant(0);
 
-        ASSERTM(table.find("utility") != table.end(),
-                "\'utility\' Column Successfully Found");
+            std::string message =
+                "\'" + perspective + "\' Column Successfully Found";
+            ASSERTM(table.find(perspective) != table.end(), message);
 
-        for (int intervention = 0; intervention < numInterventions;
-             ++intervention) {
-            Eigen::array<Eigen::Index, 3> offset = {0, 0, 0};
-            Eigen::array<Eigen::Index, 3> extent = utilMatrix.dimensions();
-            offset[Data::INTERVENTION] = intervention;
-            extent[Data::INTERVENTION] = 1;
-            Matrix3d temp = utilMatrix.slice(offset, extent);
-            if (table["utility"].size() > intervention) {
-                temp.setConstant(std::stod(table["utility"][intervention]));
-            } else {
-                temp.setConstant(0.0);
+            for (int intervention = 0; intervention < numInterventions;
+                 ++intervention) {
+                Eigen::array<Eigen::Index, 3> offset = {0, 0, 0};
+                Eigen::array<Eigen::Index, 3> extent = utilMatrix.dimensions();
+                offset[Data::INTERVENTION] = intervention;
+                extent[Data::INTERVENTION] = 1;
+                Matrix3d temp = utilMatrix.slice(offset, extent);
+                if (table[perspective].size() > intervention) {
+                    temp.setConstant(
+                        std::stod(table[perspective][intervention]));
+                } else {
+                    temp.setConstant(0.0);
+                }
+
+                utilMatrix.slice(offset, extent) = temp;
             }
-
-            utilMatrix.slice(offset, extent) = temp;
+            result[perspective] = utilMatrix;
         }
-        return utilMatrix;
+        return result;
+    }
+
+    void UtilityLoader::populateCostParameters() {
+        this->costSwitch = this->Config.getCostSwitch();
+        if (this->costSwitch) {
+            this->costPerspectives = this->Config.getCostPerspectives();
+            this->discountRate = this->Config.getDiscountRate();
+            this->reportingInterval = this->Config.getReportingInterval();
+            this->costCategoryOutputs = this->Config.getCostCategoryOutputs();
+        }
     }
 } // namespace Data

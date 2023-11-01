@@ -45,8 +45,8 @@ namespace Calculator {
 
         /// @brief Main function to calculate the Utility
         /// @return Cost Struct filled with calculated Utility
-        Data::Utility
-        calculateUtility(Data::IUtilityLoader const &utilityLoader) const;
+        Data::UtilityList
+        calculateUtilities(Data::IUtilityLoader const &utilityLoader) const;
 
         Data::Matrix3d static provideDiscount(Data::Matrix3d data,
                                               double discountRate, int N,

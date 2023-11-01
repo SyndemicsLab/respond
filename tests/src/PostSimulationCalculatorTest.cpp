@@ -183,20 +183,24 @@ TEST_F(PostSimulationCalculatorTest, calculateUtility) {
 
     MockUtilityLoader utilityLoader;
 
+    std::vector<std::string> retPerspectiveValue{"healthcare"};
+    EXPECT_CALL(utilityLoader, getCostPerspectives())
+        .WillOnce(Return(retPerspectiveValue));
+
     Data::Matrix3d retUtility =
         Utilities::Matrix3dFactory::Create(1, 1, 1).setConstant(3.0);
-    EXPECT_CALL(utilityLoader, getBackgroundUtility())
+    EXPECT_CALL(utilityLoader, getBackgroundUtility("healthcare"))
         .WillRepeatedly(Return(retUtility));
 
-    EXPECT_CALL(utilityLoader, getOUDUtility())
+    EXPECT_CALL(utilityLoader, getOUDUtility("healthcare"))
         .WillRepeatedly(Return(retUtility));
 
-    EXPECT_CALL(utilityLoader, getSettingUtility())
+    EXPECT_CALL(utilityLoader, getSettingUtility("healthcare"))
         .WillRepeatedly(Return(retUtility));
 
-    Data::Utility result = calculator.calculateUtility(utilityLoader);
+    Data::UtilityList result = calculator.calculateUtilities(utilityLoader);
 
-    EXPECT_EQ(result.backgroundUtility(0, 0, 0, 0), 6);
-    EXPECT_EQ(result.oudUtility(0, 0, 0, 0), 6);
-    EXPECT_EQ(result.settingUtility(0, 0, 0, 0), 6);
+    EXPECT_EQ(result[0].backgroundUtility(0, 0, 0, 0), 6);
+    EXPECT_EQ(result[0].oudUtility(0, 0, 0, 0), 6);
+    EXPECT_EQ(result[0].settingUtility(0, 0, 0, 0), 6);
 }

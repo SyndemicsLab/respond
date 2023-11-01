@@ -233,48 +233,53 @@ namespace Data {
     /// @param outputType Output Enum, generally Data::FILE
     /// @return string containing the result if output enum is Data::STRING or
     /// description of status otherwise
-    std::string DataWriter::writeUtility(OutputType outputType, Utility util) {
-        if (util.backgroundUtility.getMatrices().empty() ||
-            util.oudUtility.getMatrices().empty() ||
-            util.settingUtility.getMatrices().empty()) {
-            // log error
-            std::ostringstream s;
-            return s.str();
+    std::string DataWriter::writeUtilities(OutputType outputType,
+                                           UtilityList utilities) {
+        std::ostringstream stringstream;
+        for (Data::Utility util : utilities) {
+            if (util.backgroundUtility.getMatrices().empty() ||
+                util.oudUtility.getMatrices().empty() ||
+                util.settingUtility.getMatrices().empty()) {
+                // log error
+                std::ostringstream s;
+                return s.str();
+            }
+
+            if (outputType == FILE) {
+                if (!std::filesystem::exists(this->dirname)) {
+                    std::filesystem::create_directory(this->dirname);
+                }
+
+                std::filesystem::path dir(this->dirname);
+                std::filesystem::path bgFile("backgroundUtility.csv");
+                std::filesystem::path oudFile("oudUtility.csv");
+                std::filesystem::path settingFile("settingUtility.csv");
+                std::filesystem::path bgFullPath = dir / bgFile;
+                std::filesystem::path oudFullPath = dir / oudFile;
+                std::filesystem::path settingFullPath = dir / settingFile;
+
+                std::ofstream file;
+
+                file.open(bgFullPath.string());
+                this->writer(file, util.backgroundUtility);
+                file.close();
+
+                file.open(oudFullPath.string());
+                this->writer(file, util.oudUtility);
+                file.close();
+
+                file.open(settingFullPath.string());
+                this->writer(file, util.settingUtility);
+                file.close();
+            }
+            this->writer(stringstream, util.backgroundUtility);
+            this->writer(stringstream, util.oudUtility);
+            this->writer(stringstream, util.settingUtility);
         }
 
         if (outputType == FILE) {
-            if (!std::filesystem::exists(this->dirname)) {
-                std::filesystem::create_directory(this->dirname);
-            }
-
-            std::filesystem::path dir(this->dirname);
-            std::filesystem::path bgFile("backgroundUtility.csv");
-            std::filesystem::path oudFile("oudUtility.csv");
-            std::filesystem::path settingFile("settingUtility.csv");
-            std::filesystem::path bgFullPath = dir / bgFile;
-            std::filesystem::path oudFullPath = dir / oudFile;
-            std::filesystem::path settingFullPath = dir / settingFile;
-
-            std::ofstream file;
-
-            file.open(bgFullPath.string());
-            this->writer(file, util.backgroundUtility);
-            file.close();
-
-            file.open(oudFullPath.string());
-            this->writer(file, util.oudUtility);
-            file.close();
-
-            file.open(settingFullPath.string());
-            this->writer(file, util.settingUtility);
-            file.close();
-
             return "success";
         }
-        std::ostringstream stringstream;
-        this->writer(stringstream, util.backgroundUtility);
-        this->writer(stringstream, util.oudUtility);
-        this->writer(stringstream, util.settingUtility);
         return stringstream.str();
     }
 

@@ -60,16 +60,29 @@ namespace Calculator {
         return costs;
     }
 
-    Data::Utility PostSimulationCalculator::calculateUtility(
+    Data::UtilityList PostSimulationCalculator::calculateUtilities(
         Data::IUtilityLoader const &utilityLoader) const {
-        Data::Utility util;
-        util.backgroundUtility = this->multiplyMatrix(
-            this->history.stateHistory, utilityLoader.getBackgroundUtility());
-        util.oudUtility = this->multiplyMatrix(this->history.stateHistory,
-                                               utilityLoader.getOUDUtility());
-        util.settingUtility = this->multiplyMatrix(
-            this->history.stateHistory, utilityLoader.getSettingUtility());
-        return util;
+        Data::UtilityList utilities;
+
+        std::vector<std::string> perspectives =
+            utilityLoader.getCostPerspectives();
+
+        for (std::string perspective : perspectives) {
+            Data::Utility util;
+            util.perspective = perspective;
+            util.backgroundUtility = this->multiplyMatrix(
+                this->history.stateHistory,
+                utilityLoader.getBackgroundUtility(perspective));
+            util.oudUtility =
+                this->multiplyMatrix(this->history.stateHistory,
+                                     utilityLoader.getOUDUtility(perspective));
+            util.settingUtility = this->multiplyMatrix(
+                this->history.stateHistory,
+                utilityLoader.getSettingUtility(perspective));
+            utilities.push_back(util);
+        }
+
+        return utilities;
     }
 
     Data::Matrix3dOverTime PostSimulationCalculator::multiplyDouble(

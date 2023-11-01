@@ -73,7 +73,7 @@ int main(int argc, char **argv) {
             Data::UtilityLoader utilityLoader(inputSet.string());
 
             Data::Costs costs;
-            Data::Utility util;
+            Data::UtilityList utilities;
 
             inputs.loadInitialSample("init_cohort.csv");
             inputs.loadEnteringSamples("entering_cohort.csv", "No_Treatment",
@@ -109,7 +109,8 @@ int main(int argc, char **argv) {
                 Calculator::PostSimulationCalculator PostSimulationCalculator(
                     history);
                 costs = PostSimulationCalculator.calculateCosts(costLoader);
-                util = PostSimulationCalculator.calculateUtility(utilityLoader);
+                utilities =
+                    PostSimulationCalculator.calculateUtilities(utilityLoader);
             }
 
             std::vector<int> outputTimesteps =
@@ -122,14 +123,14 @@ int main(int argc, char **argv) {
 
             Data::DataFormatter formatter;
 
-            formatter.extractTimesteps(outputTimesteps, history, costs, util,
-                                       costLoader.getCostSwitch());
+            formatter.extractTimesteps(outputTimesteps, history, costs,
+                                       utilities, costLoader.getCostSwitch());
 
             writer.writeHistory(Data::FILE, history);
 
             if (costLoader.getCostSwitch()) {
                 writer.writeCosts(Data::FILE, costs);
-                writer.writeUtility(Data::FILE, util);
+                writer.writeUtilities(Data::FILE, utilities);
             }
 
             std::cout << "Output " << std::to_string(i) << " Complete"

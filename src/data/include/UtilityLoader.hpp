@@ -28,30 +28,47 @@ namespace Data {
         /// @brief Load the Background Utilties from a File
         /// @param csvName Filename containing Background Utility
         /// @return Matrix3d of Background Utility
-        virtual Matrix3d loadBackgroundUtility(std::string const &csvName) = 0;
+        virtual std::unordered_map<std::string, Matrix3d>
+        loadBackgroundUtility(std::string const &csvName) = 0;
 
         /// @brief Load the OUD Utility from a File
         /// @param csvName Filename containing OUD Utility
         /// @return Matrix3d of OUD Utility
-        virtual Matrix3d loadOUDUtility(std::string const &csvName) = 0;
+        virtual std::unordered_map<std::string, Matrix3d>
+        loadOUDUtility(std::string const &csvName) = 0;
 
         /// @brief Load the Setting Utility from a File
         /// @param csvName Filename containing the Setting Utility
         /// @return Matrix3d of Setting Utility
-        virtual Matrix3d loadSettingUtility(std::string const &csvName) = 0;
+        virtual std::unordered_map<std::string, Matrix3d>
+        loadSettingUtility(std::string const &csvName) = 0;
 
         // GETTERS
         /// @brief Get the Background Utility
         /// @return Matrix3d of Background Utility
-        virtual Matrix3d getBackgroundUtility() const = 0;
+        virtual Matrix3d
+        getBackgroundUtility(std::string const &perspective) const = 0;
 
         /// @brief Get the OUD Utility
         /// @return Matrix3d of OUD Utility
-        virtual Matrix3d getOUDUtility() const = 0;
+        virtual Matrix3d
+        getOUDUtility(std::string const &perspective) const = 0;
 
         /// @brief Get the Setting Utility
         /// @return Matrix3d of Setting Utility
-        virtual Matrix3d getSettingUtility() const = 0;
+        virtual Matrix3d
+        getSettingUtility(std::string const &perspective) const = 0;
+
+        /// @brief
+        virtual void populateCostParameters() = 0;
+
+        /// @brief
+        /// @return
+        virtual std::vector<std::string> getCostPerspectives() const = 0;
+
+        /// @brief
+        /// @return
+        virtual bool getCostSwitch() const = 0;
     };
 
     class UtilityLoader : public Loader, public IUtilityLoader {
@@ -61,30 +78,72 @@ namespace Data {
 
         Configuration loadConfigurationFile(std::string const &configPath);
 
-        virtual Matrix3d loadBackgroundUtility(std::string const &csvName);
+        virtual std::unordered_map<std::string, Matrix3d>
+        loadBackgroundUtility(std::string const &csvName);
 
-        virtual Matrix3d loadOUDUtility(std::string const &csvName);
+        virtual std::unordered_map<std::string, Matrix3d>
+        loadOUDUtility(std::string const &csvName);
 
-        virtual Matrix3d loadSettingUtility(std::string const &csvName);
+        virtual std::unordered_map<std::string, Matrix3d>
+        loadSettingUtility(std::string const &csvName);
 
-        virtual Matrix3d getBackgroundUtility() const {
-            return backgroundUtility;
+        virtual Matrix3d
+        getBackgroundUtility(std::string const &perspective) const {
+            if (this->backgroundUtility.find(perspective) !=
+                this->backgroundUtility.end()) {
+                return this->backgroundUtility.at(perspective);
+            }
+
+            // add warning
+            Matrix3d result;
+            return result;
         }
 
-        virtual Matrix3d getOUDUtility() const { return oudUtility; }
+        virtual Matrix3d getOUDUtility(std::string const &perspective) const {
+            if (this->oudUtility.find(perspective) != this->oudUtility.end()) {
+                return this->oudUtility.at(perspective);
+            }
+            // add warning
+            Matrix3d result;
+            return result;
+        }
 
-        virtual Matrix3d getSettingUtility() const { return settingUtility; }
+        virtual Matrix3d
+        getSettingUtility(std::string const &perspective) const {
+            if (this->settingUtility.find(perspective) !=
+                this->settingUtility.end()) {
+                return this->settingUtility.at(perspective);
+            }
+            // add warning
+            Matrix3d result;
+            return result;
+        }
+
+        virtual void populateCostParameters();
+
+        virtual std::vector<std::string> getCostPerspectives() const {
+            return this->costPerspectives;
+        }
+
+        virtual bool getCostSwitch() const { return this->costSwitch; }
 
     private:
-        Matrix3d backgroundUtility;
-        Matrix3d oudUtility;
-        Matrix3d settingUtility;
+        std::unordered_map<std::string, Matrix3d> backgroundUtility;
+        std::unordered_map<std::string, Matrix3d> oudUtility;
+        std::unordered_map<std::string, Matrix3d> settingUtility;
+
+        bool costSwitch = true;
+        std::vector<std::string> costPerspectives;
+        double discountRate;
+        int reportingInterval;
+        bool costCategoryOutputs;
 
         /// @brief
         /// @param csvName
         /// @param utilMatrix
         /// @return
-        Matrix3d loadUtility(std::string const &csvName, Matrix3d &utilMatrix);
+        std::unordered_map<std::string, Matrix3d>
+        loadUtility(std::string const &csvName);
     };
 } // namespace Data
 

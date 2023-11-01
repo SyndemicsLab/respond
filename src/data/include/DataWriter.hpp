@@ -86,8 +86,8 @@ namespace Data {
         /// @param outputType Enum describing the output type. Defaults to FILE
         /// @param util Utility struct containing the results of the simulation
         /// @return String depending on the output type
-        virtual std::string writeUtility(OutputType outputType,
-                                         Utility util) = 0;
+        virtual std::string writeUtilities(OutputType outputType,
+                                           UtilityList utilities) = 0;
     };
 
     /// @brief Concrete DataWriter class implementing the corresponding
@@ -145,7 +145,8 @@ namespace Data {
         /// @param outputType
         /// @param util
         /// @return
-        std::string writeUtility(OutputType outputType, Utility util) override;
+        std::string writeUtilities(OutputType outputType,
+                                   UtilityList utilities) override;
 
     private:
         std::vector<std::string> interventions;
