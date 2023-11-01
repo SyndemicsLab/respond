@@ -18,6 +18,7 @@ add_library(data
   UtilityLoader.cpp
   DataLoader.cpp
   DataWriter.cpp
+  DataFormatter.cpp
   DataTypes.cpp
   Configuration.cpp
 )

@@ -45,23 +45,6 @@ namespace Simulation {
             this->numOUDStates, this->numInterventions, this->numDemographics);
         this->transition.setZero();
         this->agingSwitch = false;
-
-        for (int i = 0; i <= duration; i++) {
-            this->reportingInterval.push_back(i);
-        }
-
-        this->runningOverdoses = Utilities::Matrix3dFactory::Create(
-            this->numOUDStates, this->numInterventions,
-            this->numDemographicCombos);
-        this->runningMortality = Utilities::Matrix3dFactory::Create(
-            this->numOUDStates, this->numInterventions,
-            this->numDemographicCombos);
-        this->runningFOD = Utilities::Matrix3dFactory::Create(
-            this->numOUDStates, this->numInterventions,
-            this->numDemographicCombos);
-        this->runningAdmissions = Utilities::Matrix3dFactory::Create(
-            this->numOUDStates, this->numInterventions,
-            this->numDemographicCombos);
     }
 
     Sim::Sim(Data::DataLoader dataLoader) {
@@ -87,19 +70,6 @@ namespace Simulation {
         this->transition.setZero();
         this->agingInterval = dataLoader.getAgingInterval();
         this->ageGroupShift = dataLoader.getAgeGroupShift();
-        this->reportingInterval = dataLoader.getGeneralStatsOutputTimesteps();
-        this->runningOverdoses = Utilities::Matrix3dFactory::Create(
-            this->numOUDStates, this->numInterventions,
-            this->numDemographicCombos);
-        this->runningMortality = Utilities::Matrix3dFactory::Create(
-            this->numOUDStates, this->numInterventions,
-            this->numDemographicCombos);
-        this->runningFOD = Utilities::Matrix3dFactory::Create(
-            this->numOUDStates, this->numInterventions,
-            this->numDemographicCombos);
-        this->runningAdmissions = Utilities::Matrix3dFactory::Create(
-            this->numOUDStates, this->numInterventions,
-            this->numDemographicCombos);
 
         this->Load(dataLoader);
         // if the aging interval is non-zero, activate aging
@@ -205,13 +175,6 @@ namespace Simulation {
                 fmt::format("Running Timestep {}\n", this->currentTime);
             BOOST_LOG(this->lg) << fmt_string;
             this->state = this->step();
-            // if (std::find(this->reportingInterval.begin(),
-            //               this->reportingInterval.end(),
-            //               this->currentTime) !=
-            //               this->reportingInterval.end()) {
-            //     this->history.stateHistory.insert(this->state, currentTime +
-            //     1);
-            // }
             this->history.stateHistory.insert(this->state, currentTime + 1);
         }
     }
@@ -257,18 +220,8 @@ namespace Simulation {
         Data::Matrix3d transitionedState =
             this->multiplyInterventionTransitions(oudTransState);
 
-        this->runningAdmissions += transitionedState;
-
-        if (std::find(this->reportingInterval.begin(),
-                      this->reportingInterval.end(),
-                      this->currentTime) != this->reportingInterval.end()) {
-            this->history.interventionAdmissionHistory.insert(
-                this->runningAdmissions, currentTime + 1);
-
-            this->runningAdmissions = Utilities::Matrix3dFactory::Create(
-                this->numOUDStates, this->numInterventions,
-                this->numDemographicCombos);
-        }
+        this->history.interventionAdmissionHistory.insert(transitionedState,
+                                                          currentTime + 1);
 
         Data::Matrix3d overdoses =
             this->multiplyOverdoseTransitions(transitionedState);
@@ -437,21 +390,8 @@ namespace Simulation {
 
         Data::Matrix3d mult = fatalOverdoseMatrix * state;
 
-        if (mult(1, 2, 0) > 1000000) {
-            std::cout << "Testing" << std::endl;
-        }
+        this->history.fatalOverdoseHistory.insert(mult, this->currentTime + 1);
 
-        this->runningFOD += mult;
-        if (std::find(this->reportingInterval.begin(),
-                      this->reportingInterval.end(),
-                      this->currentTime) != this->reportingInterval.end()) {
-            this->history.fatalOverdoseHistory.insert(this->runningFOD,
-                                                      this->currentTime + 1);
-
-            this->runningFOD = Utilities::Matrix3dFactory::Create(
-                this->numOUDStates, this->numInterventions,
-                this->numDemographicCombos);
-        }
         return mult;
     }
 
@@ -462,16 +402,7 @@ namespace Simulation {
                 "Overdose Dimensions equal State Dimensions");
 
         Data::Matrix3d mult = overdoseMatrix * state;
-        this->runningOverdoses += mult;
-        if (std::find(this->reportingInterval.begin(),
-                      this->reportingInterval.end(),
-                      this->currentTime) != this->reportingInterval.end()) {
-            this->history.overdoseHistory.insert(this->runningOverdoses,
-                                                 this->currentTime + 1);
-            this->runningOverdoses = Utilities::Matrix3dFactory::Create(
-                this->numOUDStates, this->numInterventions,
-                this->numDemographicCombos);
-        }
+        this->history.overdoseHistory.insert(mult, this->currentTime + 1);
         return mult;
     }
 
@@ -483,16 +414,8 @@ namespace Simulation {
 
         Data::Matrix3d ret(state.dimensions());
         Data::Matrix3d mor = (state * mortalityMatrix);
-        this->runningMortality += mor;
-        if (std::find(this->reportingInterval.begin(),
-                      this->reportingInterval.end(),
-                      this->currentTime) != this->reportingInterval.end()) {
-            this->history.mortalityHistory.insert(this->runningMortality,
-                                                  this->currentTime + 1);
-            this->runningMortality = Utilities::Matrix3dFactory::Create(
-                this->numOUDStates, this->numInterventions,
-                this->numDemographicCombos);
-        }
+
+        this->history.mortalityHistory.insert(mor, this->currentTime + 1);
         return mor;
     }
 } // namespace Simulation
