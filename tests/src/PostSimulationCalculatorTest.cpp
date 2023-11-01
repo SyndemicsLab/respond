@@ -19,12 +19,19 @@
 #include "gmock/gmock.h"
 #include <boost/filesystem.hpp>
 #include <gtest/gtest.h>
+#include <iostream>
+#include <string>
+#include <vector>
 
 #include "DataTypes.hpp"
 #include "Matrix3dFactory.hpp"
+#include "Matrix3dPrinter.hpp"
 #include "MockCostLoader.hpp"
 #include "MockDataLoader.hpp"
+#include "MockUtilityLoader.hpp"
 #include "PostSimulationCalculator.hpp"
+
+using ::testing::Return;
 
 class PostSimulationCalculatorTest : public ::testing::Test {
 protected:
@@ -125,11 +132,71 @@ TEST_F(PostSimulationCalculatorTest, calculateCost) {
         Utilities::Matrix3dFactory::Create(1, 1, 1).setConstant(2.0);
     Data::Matrix3dOverTime stateHistory({temp});
     history.stateHistory = stateHistory;
+    history.overdoseHistory = stateHistory;
+    history.fatalOverdoseHistory = stateHistory;
     Calculator::PostSimulationCalculator calculator(history);
-    MockCostLoader costLoader;
-    EXPECT_CALL(costLoader, getHealthcareUtilizationCost("healthcare"));
 
-    calculator.calculateCost(costLoader);
+    MockCostLoader costLoader;
+
+    std::vector<std::string> retPerspectiveValue{"healthcare"};
+    EXPECT_CALL(costLoader, getCostPerspectives())
+        .WillOnce(Return(retPerspectiveValue));
+
+    EXPECT_CALL(costLoader, getDiscountRate()).WillRepeatedly(Return(0.03));
+
+    Data::Matrix3d retCost =
+        Utilities::Matrix3dFactory::Create(1, 1, 1).setConstant(3.0);
+    EXPECT_CALL(costLoader, getHealthcareUtilizationCost("healthcare"))
+        .WillRepeatedly(Return(retCost));
+
+    EXPECT_CALL(costLoader, getPharmaceuticalCost("healthcare"))
+        .WillRepeatedly(Return(retCost));
+
+    EXPECT_CALL(costLoader, getTreatmentUtilizationCost("healthcare"))
+        .WillRepeatedly(Return(retCost));
+
+    double retNonFODCost = 100.0;
+    EXPECT_CALL(costLoader, getNonFatalOverdoseCost("healthcare"))
+        .WillRepeatedly(Return(retNonFODCost));
+
+    double retFODCost = 200.0;
+    EXPECT_CALL(costLoader, getFatalOverdoseCost("healthcare"))
+        .WillRepeatedly(Return(retFODCost));
+
+    Data::Costs result = calculator.calculateCosts(costLoader);
+
+    EXPECT_EQ(result[0].healthcareCost(0, 0, 0, 0), 5);
+    EXPECT_EQ(result[0].pharmaCost(0, 0, 0, 0), 5);
+    EXPECT_EQ(result[0].treatmentCost(0, 0, 0, 0), 5);
+    EXPECT_EQ(result[0].nonFatalOverdoseCost(0, 0, 0, 0), 199);
+    EXPECT_EQ(result[0].fatalOverdoseCost(0, 0, 0, 0), 399);
 }
 
-TEST_F(PostSimulationCalculatorTest, calculateUtility) {}
+TEST_F(PostSimulationCalculatorTest, calculateUtility) {
+    Data::History history;
+    Data::Matrix3d temp =
+        Utilities::Matrix3dFactory::Create(1, 1, 1).setConstant(2.0);
+    Data::Matrix3dOverTime stateHistory({temp});
+    history.stateHistory = stateHistory;
+
+    Calculator::PostSimulationCalculator calculator(history);
+
+    MockUtilityLoader utilityLoader;
+
+    Data::Matrix3d retUtility =
+        Utilities::Matrix3dFactory::Create(1, 1, 1).setConstant(3.0);
+    EXPECT_CALL(utilityLoader, getBackgroundUtility())
+        .WillRepeatedly(Return(retUtility));
+
+    EXPECT_CALL(utilityLoader, getOUDUtility())
+        .WillRepeatedly(Return(retUtility));
+
+    EXPECT_CALL(utilityLoader, getSettingUtility())
+        .WillRepeatedly(Return(retUtility));
+
+    Data::Utility result = calculator.calculateUtility(utilityLoader);
+
+    EXPECT_EQ(result.backgroundUtility(0, 0, 0, 0), 6);
+    EXPECT_EQ(result.oudUtility(0, 0, 0, 0), 6);
+    EXPECT_EQ(result.settingUtility(0, 0, 0, 0), 6);
+}
