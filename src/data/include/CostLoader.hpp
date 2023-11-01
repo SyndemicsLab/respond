@@ -37,7 +37,7 @@ namespace Data {
 
         /// @brief Load Overdose Cost from file
         /// @param csvName filename for Overdose Cost
-        /// @return unordered map for Overdose Costs, string to double
+        /// @return unordered map for Overdose CostList, string to double
         virtual std::unordered_map<std::string,
                                    std::unordered_map<std::string, double>>
         loadOverdoseCost(std::string const &csvName) = 0;

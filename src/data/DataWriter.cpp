@@ -153,7 +153,7 @@ namespace Data {
     /// @param outputType Output Enum, generally Data::FILE
     /// @return string containing the result if output enum is Data::STRING or
     /// description of status otherwise
-    std::string DataWriter::writeCosts(OutputType outputType, Costs costs) {
+    std::string DataWriter::writeCosts(OutputType outputType, CostList costs) {
         std::ostringstream stringstream;
 
         for (Cost cost : costs) {

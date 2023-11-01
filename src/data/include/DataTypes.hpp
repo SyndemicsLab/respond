@@ -96,7 +96,7 @@ namespace Data {
 
     /// @brief Struct defining Cost Matrices Across the Duration of the
     /// Simulation
-    using Costs = std::vector<Cost>;
+    using CostList = std::vector<Cost>;
 
     struct Utility {
         std::string perspective;

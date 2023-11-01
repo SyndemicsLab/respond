@@ -163,7 +163,7 @@ TEST_F(PostSimulationCalculatorTest, calculateCost) {
     EXPECT_CALL(costLoader, getFatalOverdoseCost("healthcare"))
         .WillRepeatedly(Return(retFODCost));
 
-    Data::Costs result = calculator.calculateCosts(costLoader);
+    Data::CostList result = calculator.calculateCosts(costLoader);
 
     EXPECT_EQ(result[0].healthcareCost(0, 0, 0, 0), 5);
     EXPECT_EQ(result[0].pharmaCost(0, 0, 0, 0), 5);

@@ -24,9 +24,9 @@ namespace Calculator {
         this->history = history;
     }
 
-    Data::Costs PostSimulationCalculator::calculateCosts(
+    Data::CostList PostSimulationCalculator::calculateCosts(
         Data::ICostLoader const &costLoader) const {
-        Data::Costs costs;
+        Data::CostList costs;
         std::vector<std::string> perspectives =
             costLoader.getCostPerspectives();
 

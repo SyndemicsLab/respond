@@ -72,7 +72,7 @@ int main(int argc, char **argv) {
             Data::CostLoader costLoader(inputSet.string());
             Data::UtilityLoader utilityLoader(inputSet.string());
 
-            Data::Costs costs;
+            Data::CostList costs;
             Data::UtilityList utilities;
 
             inputs.loadInitialSample("init_cohort.csv");

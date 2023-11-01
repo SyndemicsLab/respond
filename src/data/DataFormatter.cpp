@@ -3,7 +3,7 @@
 namespace Data {
     void DataFormatter::extractTimesteps(std::vector<int> timesteps,
                                          Data::History &history,
-                                         Data::Costs &costs,
+                                         Data::CostList &costs,
                                          Data::UtilityList &utilities,
                                          bool costSwitch) {
         if (timesteps.size() == 0) {

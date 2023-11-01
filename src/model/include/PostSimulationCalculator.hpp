@@ -28,7 +28,7 @@
 /// @brief Namespace for all Post Simulation Calculations
 namespace Calculator {
 
-    /// @brief Class used to Calculate Costs after the Simulation has been Run
+    /// @brief Class used to Calculate CostList after the Simulation has been Run
     class PostSimulationCalculator {
     public:
         /// @brief Main Constructor to create the cost calculator
@@ -41,7 +41,7 @@ namespace Calculator {
 
         /// @brief Main function to calculate the Cost
         /// @return Cost Struct filled with calculated Cost
-        Data::Costs calculateCosts(Data::ICostLoader const &costLoader) const;
+        Data::CostList calculateCosts(Data::ICostLoader const &costLoader) const;
 
         /// @brief Main function to calculate the Utility
         /// @return Cost Struct filled with calculated Utility
