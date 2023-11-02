@@ -109,46 +109,15 @@ namespace Data {
 
         this->loadPharmaceuticalCostMap(table);
 
-        for (std::string perspective : this->costPerspectives) {
-            this->pharmaceuticalCost[perspective] =
-                Utilities::Matrix3dFactory::Create(
-                    numOUDStates, numInterventions, numDemographicCombos);
+        this->loadCostViaPerspective(this->pharmaceuticalCost,
+                                     this->pharmaceuticalCostsMap);
 
-            std::vector<std::string> interventions =
-                this->Config.getInterventions();
-
-            for (int i = 0; i < numInterventions; ++i) {
-                Eigen::array<Eigen::Index, 3> offset = {0, 0, 0};
-                Eigen::array<Eigen::Index, 3> extent =
-                    this->pharmaceuticalCost[perspective].dimensions();
-                offset[Data::INTERVENTION] = i;
-                extent[Data::INTERVENTION] = 1;
-                Matrix3d slice =
-                    this->pharmaceuticalCost[perspective].slice(offset, extent);
-                if (this->pharmaceuticalCostsMap[perspective].find(
-                        interventions[i]) !=
-                    this->pharmaceuticalCostsMap[perspective].end()) {
-                    slice.setConstant(
-                        this->pharmaceuticalCostsMap[perspective]
-                                                    [interventions[i]]);
-                } else {
-                    slice.setConstant(0.0);
-                }
-                this->pharmaceuticalCost[perspective].slice(offset, extent) =
-                    slice;
-            }
-        }
         return this->pharmaceuticalCost;
     }
 
     std::unordered_map<std::string, Matrix3d>
     CostLoader::loadTreatmentUtilizationCost(std::string const &csvName) {
         InputTable table = loadTable(csvName);
-
-        size_t numOUDStates = this->Config.getOUDStates().size();
-        size_t numDemographicCombos = this->Config.getNumDemographicCombos();
-        size_t numInterventions = this->Config.getInterventions().size();
-
         ASSERTM(table.find("block") != table.end(),
                 "\'block\' Column Successfully Found");
 
@@ -160,37 +129,8 @@ namespace Data {
 
         this->loadTreatmentUtilizationCostMap(table);
 
-        for (std::string perspective : this->costPerspectives) {
-            this->treatmentUtilizationCost[perspective] =
-                Utilities::Matrix3dFactory::Create(
-                    numOUDStates, numInterventions, numDemographicCombos)
-                    .constant(0);
-
-            std::vector<std::string> interventions =
-                this->Config.getInterventions();
-
-            for (int i = 0; i < numInterventions; ++i) {
-                Eigen::array<Eigen::Index, 3> offset = {0, 0, 0};
-                Eigen::array<Eigen::Index, 3> extent =
-                    this->treatmentUtilizationCost[perspective].dimensions();
-                offset[Data::INTERVENTION] = i;
-                extent[Data::INTERVENTION] = 1;
-                Matrix3d slice =
-                    this->treatmentUtilizationCost[perspective].slice(offset,
-                                                                      extent);
-                if (this->treatmentUtilizationCostMap[perspective].find(
-                        interventions[i]) !=
-                    this->treatmentUtilizationCostMap[perspective].end()) {
-                    slice.setConstant(
-                        this->treatmentUtilizationCostMap[perspective]
-                                                         [interventions[i]]);
-                } else {
-                    slice.setConstant(0.0);
-                }
-                this->treatmentUtilizationCost[perspective].slice(
-                    offset, extent) = slice;
-            }
-        }
+        this->loadCostViaPerspective(this->treatmentUtilizationCost,
+                                     this->treatmentUtilizationCostMap);
         return this->treatmentUtilizationCost;
     }
 
@@ -221,6 +161,44 @@ namespace Data {
             }
         }
         return this->pharmaceuticalCostsMap;
+    }
+
+    void CostLoader::loadCostViaPerspective(
+        std::unordered_map<std::string, Matrix3d> &costParameter,
+        std::unordered_map<std::string, std::unordered_map<std::string, double>>
+            &costParameterMap) {
+
+        size_t numOUDStates = this->Config.getOUDStates().size();
+        size_t numDemographicCombos = this->Config.getNumDemographicCombos();
+        size_t numInterventions = this->Config.getInterventions().size();
+
+        for (std::string perspective : this->costPerspectives) {
+            costParameter[perspective] =
+                Utilities::Matrix3dFactory::Create(
+                    numOUDStates, numInterventions, numDemographicCombos)
+                    .constant(0);
+
+            std::vector<std::string> interventions =
+                this->Config.getInterventions();
+
+            for (int i = 0; i < numInterventions; ++i) {
+                Eigen::array<Eigen::Index, 3> offset = {0, 0, 0};
+                Eigen::array<Eigen::Index, 3> extent =
+                    costParameter[perspective].dimensions();
+                offset[Data::INTERVENTION] = i;
+                extent[Data::INTERVENTION] = 1;
+                Matrix3d slice =
+                    costParameter[perspective].slice(offset, extent);
+                if (costParameterMap[perspective].find(interventions[i]) !=
+                    costParameterMap[perspective].end()) {
+                    slice.setConstant(
+                        costParameterMap[perspective][interventions[i]]);
+                } else {
+                    slice.setConstant(0.0);
+                }
+                costParameter[perspective].slice(offset, extent) = slice;
+            }
+        }
     }
 
     std::unordered_map<std::string, std::unordered_map<std::string, double>>

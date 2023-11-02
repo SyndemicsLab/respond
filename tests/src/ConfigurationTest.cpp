@@ -16,24 +16,95 @@
 ///
 //===----------------------------------------------------------------------===//
 
+#include <boost/filesystem.hpp>
 #include <gtest/gtest.h>
 
 #include "Configuration.hpp"
 #include "DataTypes.hpp"
 
-using namespace Data;
+class ConfigurationTest : public ::testing::Test {
+protected:
+    boost::filesystem::path configFile;
+    std::ofstream configFileStream;
+    void SetUp() override {
+        tempRelativeFile =
+            boost::filesystem::unique_path("%%%%_%%%%_%%%%_%%%%.csv");
+        tempAbsoluteFile =
+            boost::filesystem::temp_directory_path() / tempRelativeFile;
+        configFile = boost::filesystem::temp_directory_path() /
+                     boost::filesystem::path("sim.conf");
+        configFileStream.open(configFile);
 
-TEST(ConfigurationTest, EmptyConstructor) {
+        // clang-format off
+        configFileStream << "[simulation]" 
+                            << std::endl << 
+                            "duration = 52" 
+                            << std::endl << 
+                            "aging_interval = 260" 
+                            << std::endl << 
+                            "intervention_change_times = 52" 
+                            << std::endl << 
+                            "entering_sample_change_times = 52" 
+                            << std::endl << 
+                            "overdose_change_times = 52" 
+                            << std::endl << std::endl << 
+                            "[state]" 
+                            << std::endl << 
+                            "interventions = No_Treatment, Buprenorphine,"
+                            "Naltrexone, Methadone, Detox, Post-Buprenorphine,"
+                            "Post-Naltrexone, Post-Methadone, Post-Detox" ""
+                            << std::endl << 
+                            "ouds = Active_Noninjection, Active_Injection," 
+                            "Nonactive_Noninjection, Nonactive_Injection" 
+                            << std::endl << std::endl << 
+                            "[demographic]" 
+                            << std::endl << 
+                            "age_groups = 10_14, 15_19, 20_24, 25_29, 30_34, "
+                            "35_39, 40_44, 45_49, 50_54, 55_59, 60_64, 65_69, "
+                            "70_74, 75_79, 80_84, 85_89, 90_94, 95_99 " 
+                            << std::endl << 
+                            "sex = Male, Female " 
+                            << std::endl << std::endl <<
+                            "[cost]" 
+                            << std::endl << 
+                            "cost_analysis = true" 
+                            << std::endl <<  
+                            "cost_perspectives = healthcare" 
+                            << std::endl << 
+                            "discount_rate = 0.0025 " 
+                            << std::endl << 
+                            "reporting_interval = 52 " 
+                            << std::endl << 
+                            "cost_category_outputs = false " 
+                            << std::endl << std::endl << 
+                            "[output] " 
+                            << std::endl <<
+                            "per_intervention_predictions = true " 
+                            << std::endl <<
+                            "general_outputs = false " 
+                            << std::endl << 
+                            "general_stats_output_timesteps = 52";
+        // clang-format on
+        configFileStream.close();
+    }
+    void TearDown() override {
+        if (configFileStream.is_open()) {
+            configFileStream.close();
+        }
+    }
+};
+
+TEST_F(ConfigurationTest, EmptyConstructor) {
     Configuration config;
     EXPECT_TRUE(&config != nullptr);
 }
 
-TEST(ConfigurationTest, GeneralConstructor) {
+TEST_F(ConfigurationTest, GeneralConstructor) {
     // Configuration config("TestInput/input1/sim.conf");
     // EXPECT_TRUE(&config != nullptr);
 }
 
-TEST(ConfigurationTest, getInterventions) {
+TEST_F(ConfigurationTest, getInterventions) {
     // std::vector<std::string> EXPECTED = {"No_Treatment", "Buprenorphine",
     //                                      "Naltrexone", "Post-Buprenorphine",
     //                                      "Post-Naltrexone"};
@@ -46,7 +117,7 @@ TEST(ConfigurationTest, getInterventions) {
     // }
 }
 
-TEST(ConfigurationTest, getOUDStates) {
+TEST_F(ConfigurationTest, getOUDStates) {
     // std::vector<std::string> EXPECTED = {
     //     "Active_Noninjection", "Active_Injection", "Nonactive_Noninjection",
     //     "Nonactive_Injection"};
@@ -59,7 +130,7 @@ TEST(ConfigurationTest, getOUDStates) {
     // }
 }
 
-TEST(ConfigurationTest, getNumDemographicCombos) {
+TEST_F(ConfigurationTest, getNumDemographicCombos) {
     // int EXPECTED = 6;
 
     // Configuration config("TestInput/input1/sim.conf");
@@ -68,7 +139,7 @@ TEST(ConfigurationTest, getNumDemographicCombos) {
     // EXPECT_EQ(EXPECTED, ACTUAL);
 }
 
-TEST(ConfigurationTest, getEnteringSampleChangeTimes) {
+TEST_F(ConfigurationTest, getEnteringSampleChangeTimes) {
     // std::vector<int> EXPECTED = {51, 103, 155};
 
     // Configuration config("TestInput/input1/sim.conf");
@@ -79,7 +150,7 @@ TEST(ConfigurationTest, getEnteringSampleChangeTimes) {
     // }
 }
 
-TEST(ConfigurationTest, getInterventionChangeTimes) {
+TEST_F(ConfigurationTest, getInterventionChangeTimes) {
     // std::vector<int> EXPECTED = {51, 103, 155};
 
     // Configuration config("TestInput/input1/sim.conf");
@@ -90,7 +161,7 @@ TEST(ConfigurationTest, getInterventionChangeTimes) {
     // }
 }
 
-TEST(ConfigurationTest, getOverdoseChangeTimes) {
+TEST_F(ConfigurationTest, getOverdoseChangeTimes) {
     // std::vector<int> EXPECTED = {51, 103, 155};
 
     // Configuration config("TestInput/input1/sim.conf");
@@ -101,7 +172,7 @@ TEST(ConfigurationTest, getOverdoseChangeTimes) {
     // }
 }
 
-TEST(ConfigurationTest, getDemographicCombos) {
+TEST_F(ConfigurationTest, getDemographicCombos) {
     // std::vector<std::string> EXPECTED = {" 10_14 male", " 10_14 female",
     //                                      " 15_19 male", " 15_19 female",
     //                                      " 20_24 male", " 20_24 female"};
@@ -114,7 +185,7 @@ TEST(ConfigurationTest, getDemographicCombos) {
     // }
 }
 
-TEST(ConfigurationTest, getAgingInterval) {
+TEST_F(ConfigurationTest, getAgingInterval) {
     // int EXPECTED = 260;
 
     // Configuration config("TestInput/input1/sim.conf");
@@ -123,7 +194,7 @@ TEST(ConfigurationTest, getAgingInterval) {
     // EXPECT_EQ(EXPECTED, ACTUAL);
 }
 
-TEST(ConfigurationTest, getDuration) {
+TEST_F(ConfigurationTest, getDuration) {
     // int EXPECTED = 156;
 
     // Configuration config("TestInput/input1/sim.conf");
@@ -132,7 +203,7 @@ TEST(ConfigurationTest, getDuration) {
     // EXPECT_EQ(EXPECTED, ACTUAL);
 }
 
-TEST(ConfigurationTest, getBool) {
+TEST_F(ConfigurationTest, getBool) {
     // Configuration TestConf("TestInput/input1/sim.conf");
     // std::vector<bool> EXPECTED_VALUES = {true, true, false, false};
     // std::vector<bool> REAL_VALUES = {
@@ -146,7 +217,7 @@ TEST(ConfigurationTest, getBool) {
     // }
 }
 
-TEST(ConfigurationTest, getInt) {
+TEST_F(ConfigurationTest, getInt) {
     // Configuration TestConf("TestInput/input1/sim.conf");
     // std::vector<int> EXPECTED_VALUES = {156, 260, 52};
     // std::vector<int> REAL_VALUES = {
@@ -161,7 +232,7 @@ TEST(ConfigurationTest, getInt) {
     // EXPECT_EQ(TestConf.get<double>("cost.discount_rate"), 0.0025);
 }
 
-TEST(ConfigurationTest, getVectorInt) {
+TEST_F(ConfigurationTest, getVectorInt) {
     // Configuration TestConf("TestInput/input1/sim.conf");
     // std::vector<std::vector<int>> EXPECTED_VALUES = {
     //     {51, 103, 155}, {51, 103, 155}, {51, 103, 155}, {51, 103, 155}};
@@ -177,7 +248,7 @@ TEST(ConfigurationTest, getVectorInt) {
     // }
 }
 
-TEST(ConfigurationTest, getVectorString) {
+TEST_F(ConfigurationTest, getVectorString) {
     // Configuration TestConf("TestInput/input1/sim.conf");
     // std::vector<std::vector<std::string>> EXPECTED_VALUES = {
     //     {"No_Treatment", "Buprenorphine", "Naltrexone", "Post-Buprenorphine",

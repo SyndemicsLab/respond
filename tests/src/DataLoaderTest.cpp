@@ -82,7 +82,7 @@ protected:
                             << std::endl << 
                             "cost_analysis = true" 
                             << std::endl <<  
-                            "cost_perspectives = Healthcare System, Societal, Policymakers" 
+                            "cost_perspectives = healthcare" 
                             << std::endl << 
                             "discount_rate = 0.0025 " 
                             << std::endl << 
@@ -413,7 +413,7 @@ TEST_F(DataLoaderTest, getCostSwitch) {
 
 TEST_F(DataLoaderTest, getCostPerspectives) {
     Data::DataLoader dl(boost::filesystem::temp_directory_path().string());
-    EXPECT_EQ(dl.getCostPerspectives().size(), 3);
+    EXPECT_EQ(dl.getCostPerspectives()[0], "healthcare");
 }
 
 TEST_F(DataLoaderTest, getDiscountRate) {
