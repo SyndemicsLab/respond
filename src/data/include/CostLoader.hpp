@@ -27,54 +27,91 @@
 #include "Matrix3dPrinter.hpp"
 
 namespace Data {
-    class CostLoader : public Loader {
+    class ICostLoader : public virtual ILoader {
     public:
-        CostLoader()
-            : Loader(){
-                  // healthcareUtilizationCost =
-                  //     Utilities::Matrix3dFactory::Create(0, 0, 0);
+        /// @brief Load Healthcare Utilization Cost from file
+        /// @param csvName filename for Healthcare Utilization Cost
+        /// @return Matrix3d containing the Healthcare Utilization Cost
+        virtual std::unordered_map<std::string, Matrix3d>
+        loadHealthcareUtilizationCost(std::string const &csvName) = 0;
 
-                  // pharmaceuticalCost = Utilities::Matrix3dFactory::Create(0,
-                  // 0, 0);
+        /// @brief Load Overdose Cost from file
+        /// @param csvName filename for Overdose Cost
+        /// @return unordered map for Overdose CostList, string to double
+        virtual std::unordered_map<std::string,
+                                   std::unordered_map<std::string, double>>
+        loadOverdoseCost(std::string const &csvName) = 0;
 
-                  // treatmentUtilizationCost =
-                  //     Utilities::Matrix3dFactory::Create(0, 0, 0);
-              };
+        /// @brief
+        /// @param csvName
+        /// @return
+        virtual std::unordered_map<std::string, Matrix3d>
+        loadPharmaceuticalCost(std::string const &csvName) = 0;
+
+        /// @brief
+        /// @param csvName
+        /// @return
+        virtual std::unordered_map<std::string, Matrix3d>
+        loadTreatmentUtilizationCost(std::string const &csvName) = 0;
+
+        /// @brief
+        virtual void populateCostParameters() = 0;
+
+        /// @brief
+        /// @return
+        virtual Matrix3d
+        getHealthcareUtilizationCost(std::string const &perspective) const = 0;
+
+        /// @brief
+        /// @return
+        virtual Matrix3d
+        getPharmaceuticalCost(std::string const &perspective) const = 0;
+
+        /// @brief
+        /// @return
+        virtual Matrix3d
+        getTreatmentUtilizationCost(std::string const &perspective) const = 0;
+
+        /// @brief
+        /// @return
+        virtual double
+        getNonFatalOverdoseCost(std::string const &perspective) const = 0;
+
+        /// @brief
+        /// @return
+        virtual double
+        getFatalOverdoseCost(std::string const &perspective) const = 0;
+
+        virtual std::vector<std::string> getCostPerspectives() const = 0;
+
+        virtual bool getCostSwitch() const = 0;
+
+        virtual double getDiscountRate() const = 0;
+    };
+
+    class CostLoader : public Loader, public ICostLoader {
+    public:
+        CostLoader(){};
         CostLoader(std::string const &inputDir);
 
         Configuration loadConfigurationFile(std::string const &configPath);
 
-        // SETTERS
-        /// @brief Load Healthcare Utilization Cost from file
-        /// @param csvName filename for Healthcare Utilization Cost
-        /// @return Matrix3d containing the Healthcare Utilization Cost
-        std::unordered_map<std::string, Matrix3d>
+        virtual std::unordered_map<std::string, Matrix3d>
         loadHealthcareUtilizationCost(std::string const &csvName);
 
-        /// @brief Load Overdose Cost from file
-        /// @param csvName filename for Overdose Cost
-        /// @return unordered map for Overdose Costs, string to double
-        std::unordered_map<std::string, std::unordered_map<std::string, double>>
+        virtual std::unordered_map<std::string,
+                                   std::unordered_map<std::string, double>>
         loadOverdoseCost(std::string const &csvName);
 
-        /// @brief
-        /// @param csvName
-        /// @return
-        std::unordered_map<std::string, Matrix3d>
+        virtual std::unordered_map<std::string, Matrix3d>
         loadPharmaceuticalCost(std::string const &csvName);
 
-        /// @brief
-        /// @param csvName
-        /// @return
-        std::unordered_map<std::string, Matrix3d>
+        virtual std::unordered_map<std::string, Matrix3d>
         loadTreatmentUtilizationCost(std::string const &csvName);
 
-        /// @brief
-        void populateCostParameters();
+        virtual void populateCostParameters();
 
-        /// @brief
-        /// @return
-        Matrix3d
+        virtual Matrix3d
         getHealthcareUtilizationCost(std::string const &perspective) const {
             if (this->healthcareUtilizationCost.find(perspective) !=
                 this->healthcareUtilizationCost.end()) {
@@ -85,9 +122,8 @@ namespace Data {
             return result;
         }
 
-        /// @brief
-        /// @return
-        Matrix3d getPharmaceuticalCost(std::string const &perspective) const {
+        virtual Matrix3d
+        getPharmaceuticalCost(std::string const &perspective) const {
             if (this->pharmaceuticalCost.find(perspective) !=
                 this->pharmaceuticalCost.end()) {
                 return this->pharmaceuticalCost.at(perspective);
@@ -97,9 +133,7 @@ namespace Data {
             return result;
         }
 
-        /// @brief
-        /// @return
-        Matrix3d
+        virtual Matrix3d
         getTreatmentUtilizationCost(std::string const &perspective) const {
             if (this->treatmentUtilizationCost.find(perspective) !=
                 this->treatmentUtilizationCost.end()) {
@@ -110,19 +144,19 @@ namespace Data {
             return result;
         }
 
-        /// @brief
-        /// @return
-        double getNonFatalOverdoseCost(std::string const &perspective) const;
+        virtual double
+        getNonFatalOverdoseCost(std::string const &perspective) const;
 
-        /// @brief
-        /// @return
-        double getFatalOverdoseCost(std::string const &perspective) const;
+        virtual double
+        getFatalOverdoseCost(std::string const &perspective) const;
 
-        std::vector<std::string> getCostPerspectives() const {
+        virtual std::vector<std::string> getCostPerspectives() const {
             return this->costPerspectives;
         }
 
-        bool getCostSwitch() const { return this->costSwitch; }
+        virtual bool getCostSwitch() const { return this->costSwitch; }
+
+        virtual double getDiscountRate() const { return this->discountRate; }
 
     private:
         std::unordered_map<std::string, Matrix3d> healthcareUtilizationCost;

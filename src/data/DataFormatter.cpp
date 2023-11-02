@@ -3,8 +3,8 @@
 namespace Data {
     void DataFormatter::extractTimesteps(std::vector<int> timesteps,
                                          Data::History &history,
-                                         Data::Costs &costs,
-                                         Data::Utility &utility,
+                                         Data::CostList &costs,
+                                         Data::UtilityList &utilities,
                                          bool costSwitch) {
         if (timesteps.size() == 0) {
             return;
@@ -41,12 +41,14 @@ namespace Data {
                     trimAndAddMatrix3dOverTime(timesteps, cost.treatmentCost);
             }
 
-            utility.backgroundUtility = trimAndAddMatrix3dOverTime(
-                timesteps, utility.backgroundUtility);
-            utility.oudUtility =
-                trimAndAddMatrix3dOverTime(timesteps, utility.oudUtility);
-            utility.settingUtility =
-                trimAndAddMatrix3dOverTime(timesteps, utility.settingUtility);
+            for (Data::Utility &utility : utilities) {
+                utility.backgroundUtility = trimAndAddMatrix3dOverTime(
+                    timesteps, utility.backgroundUtility);
+                utility.oudUtility =
+                    trimAndAddMatrix3dOverTime(timesteps, utility.oudUtility);
+                utility.settingUtility = trimAndAddMatrix3dOverTime(
+                    timesteps, utility.settingUtility);
+            }
         }
     }
 

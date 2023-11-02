@@ -47,7 +47,7 @@ namespace Simulation {
         this->agingSwitch = false;
     }
 
-    Sim::Sim(Data::DataLoader dataLoader) {
+    Sim::Sim(Data::IDataLoader &dataLoader) {
         boost::log::add_file_log("simulation.log");
         boost::log::core::get()->set_filter(boost::log::trivial::severity >=
                                             boost::log::trivial::info);
@@ -122,7 +122,7 @@ namespace Simulation {
         BOOST_LOG(this->lg) << "Mortality Transitions Loaded";
     }
 
-    void Sim::Load(Data::DataLoader const &dataLoader) {
+    void Sim::Load(Data::IDataLoader const &dataLoader) {
         this->loadInitialSample(dataLoader.getInitialSample());
         this->loadEnteringSamples(dataLoader.getEnteringSamples());
         this->loadOUDTransitionRates(dataLoader.getOUDTransitionRates());

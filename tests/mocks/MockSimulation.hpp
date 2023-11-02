@@ -16,8 +16,8 @@
 ///
 //===----------------------------------------------------------------------===//
 
-#ifndef TEST_MOCKSIMULATION_HPP_
-#define TEST_MOCKSIMULATION_HPP_
+#ifndef TESTS_MOCKSIMULATION_HPP_
+#define TESTS_MOCKSIMULATION_HPP_
 
 #include "DataTypes.hpp"
 #include "Simulation.hpp"

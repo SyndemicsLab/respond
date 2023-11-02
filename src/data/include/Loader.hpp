@@ -57,46 +57,64 @@ namespace Data {
         "setting_utility.csv",
         "treatment_utilization_cost.csv"};
 
-    class Loader {
+    class ILoader {
     public:
-        Loader(){};
-        Loader(std::string const &inputDir);
-
-        Configuration loadConfigurationFile(std::string const &configPath);
+        virtual Configuration
+        loadConfigurationFile(std::string const &configPath) = 0;
 
         /// @brief Reads a configuration file to a Configuration object
         /// @param inputFile path to the configuration file to be read
         /// @return
-        Configuration readConfigFile(std::string const &);
+        virtual Configuration readConfigFile(std::string const &) = 0;
         /// @brief Read a CSV-formatted file into a map object where the headers
         /// are keys and the rest of the columns are stored as vectors of
         /// strings
         /// @param inputFile path to the CSV to be read
         /// @return A map object containing columns stored as key-value pairs
-        InputTable readCSV(std::string const &);
+        virtual InputTable readCSV(std::string const &) = 0;
 
         /// @brief Reads typical RESPOND input files from the provided input
         /// directory
         /// @param inputDir the directory from which to read input files
         /// @return an unordered map whose keys are table names and values are
         /// CSV/InputTables
-        std::unordered_map<std::string, InputTable>
-        readInputDir(std::string const &);
+        virtual std::unordered_map<std::string, InputTable>
+        readInputDir(std::string const &) = 0;
 
         /// @brief Get the Configuration from the Loader
         /// @return Configuration
-        Configuration getConfiguration() { return this->Config; }
+        virtual Configuration getConfiguration() const = 0;
 
-    protected:
-        std::unordered_map<std::string, InputTable> inputTables;
-        Configuration Config;
+        virtual InputTable loadTable(std::string const &filename) = 0;
+    };
 
-        InputTable loadTable(std::string const &filename) {
+    class Loader : public virtual ILoader {
+    public:
+        Loader(){};
+        Loader(std::string const &inputDir);
+
+        virtual Configuration
+        loadConfigurationFile(std::string const &configPath);
+
+        virtual Configuration readConfigFile(std::string const &);
+
+        virtual InputTable readCSV(std::string const &);
+
+        virtual std::unordered_map<std::string, InputTable>
+        readInputDir(std::string const &);
+
+        virtual Configuration getConfiguration() const { return this->Config; }
+
+        virtual InputTable loadTable(std::string const &filename) {
             if (this->inputTables.find(filename) == this->inputTables.end()) {
                 this->inputTables[filename] = Loader::readCSV(filename);
             }
             return this->inputTables[filename];
         }
+
+    protected:
+        std::unordered_map<std::string, InputTable> inputTables;
+        Configuration Config;
     };
 
 } // namespace Data
