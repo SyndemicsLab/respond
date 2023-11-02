@@ -93,7 +93,7 @@ namespace Simulation {
         /// @brief Load Data to the Simulation
         /// @param dataLoader dataLoader containing necessary data for
         /// Simulations
-        virtual void Load(Data::DataLoader const &dataLoader) = 0;
+        virtual void Load(Data::IDataLoader const &dataLoader) = 0;
 
         /// @brief Load Aging Parameters
         /// @param shift Integer Value to offset aging
@@ -175,7 +175,7 @@ namespace Simulation {
 
         /// @brief
         /// @param dataLoader
-        Sim(Data::DataLoader dataLoader);
+        Sim(Data::IDataLoader &dataLoader);
 
         /// @brief
         void Run() override;
@@ -227,7 +227,7 @@ namespace Simulation {
 
         /// @brief
         /// @param dataLoader
-        void Load(Data::DataLoader const &dataLoader) override;
+        void Load(Data::IDataLoader const &dataLoader) override;
 
         /// @brief
         /// @param shift

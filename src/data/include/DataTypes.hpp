@@ -91,12 +91,15 @@ namespace Data {
         Matrix3dOverTime treatmentCost;
     };
 
+    /// @brief
     using Cost = Cost;
+
     /// @brief Struct defining Cost Matrices Across the Duration of the
     /// Simulation
-    using Costs = std::vector<Cost>;
+    using CostList = std::vector<Cost>;
 
     struct Utility {
+        std::string perspective;
         Matrix3dOverTime backgroundUtility;
         Matrix3dOverTime oudUtility;
         Matrix3dOverTime settingUtility;
@@ -105,6 +108,9 @@ namespace Data {
     /// @brief Struct defining Utilities Matrices Across the Duration of the
     /// Simulation
     using Utility = Utility;
+
+    /// @brief
+    using UtilityList = std::vector<Utility>;
 
 }; // namespace Data
 

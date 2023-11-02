@@ -71,7 +71,7 @@ protected:
                             << std::endl << 
                             "cost_analysis = true" 
                             << std::endl <<  
-                            "cost_perspectives = Healthcare System, Societal, Policymakers" 
+                            "cost_perspectives = healthcare" 
                             << std::endl << 
                             "discount_rate = 0.0025 " 
                             << std::endl << 
@@ -102,7 +102,7 @@ protected:
 
 TEST_F(UtilityLoaderTest, Constructor) {
     Data::UtilityLoader ul;
-    Data::Matrix3d result = ul.getBackgroundUtility();
+    Data::Matrix3d result = ul.getBackgroundUtility("healthcare");
     EXPECT_EQ(result.size(), 0);
 }
 
@@ -119,51 +119,48 @@ TEST_F(UtilityLoaderTest, loadConfigurationFile) {
 
 TEST_F(UtilityLoaderTest, backgroundUtility) {
     Data::UtilityLoader ul(boost::filesystem::temp_directory_path().string());
-    fileStream << "agegrp,sex,utility" << std::endl
+    fileStream << "agegrp,sex,healthcare" << std::endl
                << "10_14,Male,0.922" << std::endl
                << "10_14,Female,0.922" << std::endl
                << "15_19,Male,0.922";
 
     fileStream.close();
 
-    Data::Matrix3d output = ul.loadBackgroundUtility(tempAbsoluteFile.string());
+    ul.loadBackgroundUtility(tempAbsoluteFile.string());
 
-    Data::Matrix3d result = ul.getBackgroundUtility();
+    Data::Matrix3d result = ul.getBackgroundUtility("healthcare");
 
-    EXPECT_EQ(output(0, 0, 0), 0.922);
     EXPECT_EQ(result(0, 0, 0), 0.922);
 }
 
 TEST_F(UtilityLoaderTest, OUDUtility) {
     Data::UtilityLoader ul(boost::filesystem::temp_directory_path().string());
-    fileStream << "block,oud,utility" << std::endl
+    fileStream << "block,oud,healthcare" << std::endl
                << "No_Treatment,Active_Noninjection,0.626" << std::endl
                << "No_Treatment,Active_Injection,0.512" << std::endl
                << "No_Treatment,Nonactive_Noninjection,1";
 
     fileStream.close();
 
-    Data::Matrix3d output = ul.loadOUDUtility(tempAbsoluteFile.string());
+    ul.loadOUDUtility(tempAbsoluteFile.string());
 
-    Data::Matrix3d result = ul.getOUDUtility();
+    Data::Matrix3d result = ul.getOUDUtility("healthcare");
 
-    EXPECT_EQ(output(0, 0, 0), 0.626);
     EXPECT_EQ(result(0, 0, 0), 0.626);
 }
 
 TEST_F(UtilityLoaderTest, settingUtility) {
     Data::UtilityLoader ul(boost::filesystem::temp_directory_path().string());
-    fileStream << "block,utility" << std::endl
+    fileStream << "block,healthcare" << std::endl
                << "No_Treatment,1" << std::endl
                << "Buprenorphine,1" << std::endl
                << "Naltrexone,1";
 
     fileStream.close();
 
-    Data::Matrix3d output = ul.loadSettingUtility(tempAbsoluteFile.string());
+    ul.loadSettingUtility(tempAbsoluteFile.string());
 
-    Data::Matrix3d result = ul.getSettingUtility();
+    Data::Matrix3d result = ul.getSettingUtility("healthcare");
 
-    EXPECT_EQ(output(0, 0, 0), 1);
     EXPECT_EQ(result(0, 0, 0), 1);
 }

@@ -11,8 +11,8 @@ namespace Data {
         DataFormatter(){};
         ~DataFormatter(){};
         void extractTimesteps(std::vector<int> timesteps,
-                              Data::History &history, Data::Costs &costs,
-                              Data::Utility &utility, bool costSwitch);
+                              Data::History &history, Data::CostList &costs,
+                              Data::UtilityList &utilities, bool costSwitch);
 
     private:
         Data::Matrix3dOverTime

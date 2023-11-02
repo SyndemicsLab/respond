@@ -16,8 +16,8 @@
 ///
 //===----------------------------------------------------------------------===//
 
-#ifndef TEST_MOCKCONFIGURATION_HPP_
-#define TEST_MOCKCONFIGURATION_HPP_
+#ifndef TESTS_MOCKCONFIGURATION_HPP_
+#define TESTS_MOCKCONFIGURATION_HPP_
 
 #include "Configuration.hpp"
 #include "DataTypes.hpp"
