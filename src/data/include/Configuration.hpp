@@ -35,7 +35,6 @@
 namespace Data {
     class IConfiguration {
     public:
-        virtual ~IConfiguration(){};
         virtual std::vector<std::string> getInterventions() = 0;
         virtual std::vector<std::string> getOUDStates() = 0;
         virtual int getNumDemographicCombos() = 0;

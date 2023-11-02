@@ -163,9 +163,9 @@ namespace Data {
         for (int r : resVec) {
             ASSERTM(result.empty() || result.back() <= r,
                     "Cohort Change Times In Order");
-            result.push_back(r - 1);
+            result.push_back(r);
         }
-        ASSERTM(this->getDuration() <= (result.back() + 1),
+        ASSERTM(this->getDuration() <= (result.back()),
                 "Acceptable Entering Cohort Change Time");
 
         return result;
@@ -179,10 +179,10 @@ namespace Data {
         for (int r : resVec) {
             ASSERTM(result.empty() || result.back() <= r,
                     "Intervention Change Times In Order");
-            result.push_back(r - 1);
+            result.push_back(r);
         }
 
-        ASSERTM(this->getDuration() <= (result.back() + 1),
+        ASSERTM(this->getDuration() <= (result.back()),
                 "Acceptable Intervention Change Time");
 
         return result;
@@ -196,10 +196,10 @@ namespace Data {
         for (int r : resVec) {
             ASSERTM(result.empty() || result.back() <= r,
                     "Overdose Change Times In Order");
-            result.push_back(r - 1);
+            result.push_back(r);
         }
 
-        ASSERTM(this->getDuration() <= (result.back() + 1),
+        ASSERTM(this->getDuration() <= (result.back()),
                 "Acceptable Overdose Change Time");
 
         return result;
@@ -249,7 +249,7 @@ namespace Data {
             result.push_back(r);
         }
 
-        ASSERTM(this->getDuration() <= (result.back() + 1),
+        ASSERTM(this->getDuration() <= (result.back()),
                 "Successful General Stats Output Timesteps.");
 
         return result;
@@ -273,7 +273,7 @@ namespace Data {
         std::vector<int> resVec = this->parseString2VectorOfInts(res);
         std::vector<int> result;
         for (int r : resVec) {
-            result.push_back(r - 1);
+            result.push_back(r);
         }
         return result;
     }
