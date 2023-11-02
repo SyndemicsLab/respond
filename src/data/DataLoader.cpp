@@ -766,7 +766,7 @@ namespace Data {
         if (this->costSwitch) {
             this->costPerspectives = this->Config.getCostPerspectives();
             this->discountRate = this->Config.getDiscountRate();
-            this->reportingInterval = this->Config.getReportingInterval();
+            this->reportingInterval = this->Config.getCostUtilityOutputTimesteps();
             this->costCategoryOutputs = this->Config.getCostCategoryOutputs();
         }
     }
@@ -785,7 +785,7 @@ namespace Data {
         return this->discountRate;
     }
 
-    int DataLoader::getReportingInterval() const {
+    int DataLoader::getCostUtilityOutputTimesteps() const {
         if (!this->costSwitch) {
             return 0;
         }

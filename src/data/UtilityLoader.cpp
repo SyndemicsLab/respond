@@ -101,7 +101,7 @@ namespace Data {
         if (this->costSwitch) {
             this->costPerspectives = this->Config.getCostPerspectives();
             this->discountRate = this->Config.getDiscountRate();
-            this->reportingInterval = this->Config.getReportingInterval();
+            this->reportingInterval = this->Config.getCostUtilityOutputTimesteps();
             this->costCategoryOutputs = this->Config.getCostCategoryOutputs();
         }
     }

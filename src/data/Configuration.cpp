@@ -222,8 +222,8 @@ namespace Data {
         return this->ptree.get<double>("cost.discount_rate");
     }
 
-    int Configuration::getReportingInterval() {
-        return this->ptree.get<int>("cost.reporting_interval");
+    int Configuration::getCostUtilityOutputTimesteps() {
+        return this->ptree.get<int>("cost.cost_utility_output_timesteps");
     }
 
     bool Configuration::getCostCategoryOutputs() {

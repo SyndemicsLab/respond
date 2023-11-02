@@ -69,7 +69,7 @@ protected:
                             << std::endl << 
                             "discount_rate = 0.03 " 
                             << std::endl << 
-                            "reporting_interval = 52 " 
+                            "cost_utility_output_timesteps = 52 " 
                             << std::endl << 
                             "cost_category_outputs = false " 
                             << std::endl << std::endl << 
@@ -231,7 +231,7 @@ TEST_F(ConfigurationTest, getInt) {
     std::vector<int> REAL_VALUES = {
         TestConf.get<int>("simulation.duration"),
         TestConf.get<int>("simulation.aging_interval"),
-        TestConf.get<int>("cost.reporting_interval")};
+        TestConf.get<int>("cost.cost_utility_output_timesteps")};
 
     for (int i = 0; i < REAL_VALUES.size(); ++i) {
         EXPECT_EQ(REAL_VALUES[i], EXPECTED_VALUES[i]);

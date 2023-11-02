@@ -50,7 +50,7 @@ namespace Data {
         virtual bool getCostSwitch() = 0;
         virtual std::vector<std::string> getCostPerspectives() = 0;
         virtual double getDiscountRate() = 0;
-        virtual int getReportingInterval() = 0;
+        virtual int getCostUtilityOutputTimesteps() = 0;
         virtual bool getPerInterventionPredictions() = 0;
         virtual bool getGeneralOutputsSwitch() = 0;
         virtual std::vector<int> getGeneralStatsOutputTimesteps() = 0;
@@ -86,7 +86,7 @@ namespace Data {
     /// cost_analysis = true
     /// cost_perspectives = Healthcare System, Societal, Policymakers
     /// discount_rate = 0.0025
-    /// reporting_interval = 2
+    /// cost_utility_output_timesteps = 2
     /// cost_category_outputs = false
     ///
     /// [output]
@@ -181,7 +181,7 @@ namespace Data {
         double getDiscountRate() override;
         /// @brief
         /// @return
-        int getReportingInterval() override;
+        int getCostUtilityOutputTimesteps() override;
         /// @brief
         /// @return
         bool getPerInterventionPredictions() override;
