@@ -82,11 +82,11 @@ protected:
                             << std::endl << 
                             "cost_analysis = true" 
                             << std::endl <<  
-                            "cost_perspectives = Healthcare System, Societal, Policymakers" 
+                            "cost_perspectives = healthcare" 
                             << std::endl << 
                             "discount_rate = 0.0025 " 
                             << std::endl << 
-                            "reporting_interval = 52 " 
+                            "cost_utility_output_timesteps = 52 " 
                             << std::endl << 
                             "cost_category_outputs = false " 
                             << std::endl << std::endl << 
@@ -413,7 +413,7 @@ TEST_F(DataLoaderTest, getCostSwitch) {
 
 TEST_F(DataLoaderTest, getCostPerspectives) {
     Data::DataLoader dl(boost::filesystem::temp_directory_path().string());
-    EXPECT_EQ(dl.getCostPerspectives().size(), 3);
+    EXPECT_EQ(dl.getCostPerspectives()[0], "healthcare");
 }
 
 TEST_F(DataLoaderTest, getDiscountRate) {
@@ -421,9 +421,9 @@ TEST_F(DataLoaderTest, getDiscountRate) {
     EXPECT_EQ(dl.getDiscountRate(), 0.0025);
 }
 
-TEST_F(DataLoaderTest, getReportingInterval) {
+TEST_F(DataLoaderTest, getCostUtilityOutputTimesteps) {
     Data::DataLoader dl(boost::filesystem::temp_directory_path().string());
-    EXPECT_EQ(dl.getReportingInterval(), 52);
+    EXPECT_EQ(dl.getCostUtilityOutputTimesteps(), 52);
 }
 
 TEST_F(DataLoaderTest, getCostCategoryOutputs) {
