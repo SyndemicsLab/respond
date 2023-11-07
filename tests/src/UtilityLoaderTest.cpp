@@ -75,7 +75,7 @@ protected:
                             << std::endl << 
                             "discount_rate = 0.0025 " 
                             << std::endl << 
-                            "reporting_interval = 52 " 
+                            "cost_utility_output_timesteps = 52 " 
                             << std::endl << 
                             "cost_category_outputs = false " 
                             << std::endl << std::endl << 

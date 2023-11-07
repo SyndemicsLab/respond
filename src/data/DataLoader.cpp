@@ -209,7 +209,7 @@ namespace Data {
             this->Config.getEnteringSampleChangeTimes();
         int startTime = 0;
         for (int changepoint : changeTimes) {
-            std::string column = columnPrefix + std::to_string(changepoint + 1);
+            std::string column = columnPrefix + std::to_string(changepoint);
             ASSERTM(enteringSamplesTable.find(column) !=
                         enteringSamplesTable.end(),
                     (column + " Successfully Found"));
@@ -396,7 +396,7 @@ namespace Data {
         std::vector<int> oct = this->Config.getOverdoseChangeTimes();
         int startTime = 0;
         for (auto timestep : oct) {
-            std::string str_timestep = "cycle" + std::to_string(timestep + 1);
+            std::string str_timestep = "cycle" + std::to_string(timestep);
             InputTable currentTimeTable =
                 this->removeColumns(str_timestep, overdoseTransitionTable);
             for (auto kv : currentTimeTable) {
@@ -433,7 +433,7 @@ namespace Data {
                     .constant(0);
 
             std::string fodColumn = "fatal_to_all_types_overdose_ratio_cycle" +
-                                    std::to_string(timestep + 1);
+                                    std::to_string(timestep);
 
             Matrix3d temp = Utilities::Matrix3dFactory::Create(
                                 this->numOUDStates, this->numInterventions,
@@ -766,7 +766,7 @@ namespace Data {
         if (this->costSwitch) {
             this->costPerspectives = this->Config.getCostPerspectives();
             this->discountRate = this->Config.getDiscountRate();
-            this->reportingInterval = this->Config.getReportingInterval();
+            this->reportingInterval = this->Config.getCostUtilityOutputTimesteps();
             this->costCategoryOutputs = this->Config.getCostCategoryOutputs();
         }
     }
@@ -785,7 +785,7 @@ namespace Data {
         return this->discountRate;
     }
 
-    int DataLoader::getReportingInterval() const {
+    int DataLoader::getCostUtilityOutputTimesteps() const {
         if (!this->costSwitch) {
             return 0;
         }

@@ -179,6 +179,12 @@ namespace Data {
         loadTreatmentUtilizationCostMap(InputTable table);
         std::unordered_map<std::string, std::unordered_map<std::string, double>>
         loadPharmaceuticalCostMap(InputTable table);
+
+        void loadCostViaPerspective(
+            std::unordered_map<std::string, Matrix3d> &costParameter,
+            std::unordered_map<std::string,
+                               std::unordered_map<std::string, double>>
+                &costParameterMap);
     };
 } // namespace Data
 
