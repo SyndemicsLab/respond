@@ -135,7 +135,7 @@ namespace Data {
         bool costSwitch = true;
         std::vector<std::string> costPerspectives;
         double discountRate;
-        int reportingInterval;
+        std::vector<int> costUtilityOutputTimesteps;
         bool costCategoryOutputs;
 
         /// @brief

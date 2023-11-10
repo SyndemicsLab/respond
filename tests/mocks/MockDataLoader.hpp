@@ -55,7 +55,8 @@ public:
 
     MOCK_METHOD(double, getDiscountRate, (), (const, override));
 
-    MOCK_METHOD(int, getCostUtilityOutputTimesteps, (), (const, override));
+    MOCK_METHOD(std::vector<int>, getCostUtilityOutputTimesteps, (),
+                (const, override));
 
     MOCK_METHOD(bool, getCostCategoryOutputs, (), (const, override));
 

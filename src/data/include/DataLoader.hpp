@@ -130,7 +130,7 @@ namespace Data {
         /// @brief Get the bin size for cost reporting timesteps if cost
         /// analysis is enabled. Otherwise, get 0
         /// @return Integer cost reporting timestep bin size
-        virtual int getCostUtilityOutputTimesteps() const = 0;
+        virtual std::vector<int> getCostUtilityOutputTimesteps() const = 0;
 
         /// @brief Get the user config variable specifying whether the cost
         /// outputs should be broken down by cost perspective. Always returns
@@ -325,7 +325,7 @@ namespace Data {
 
         virtual double getDiscountRate() const;
 
-        virtual int getCostUtilityOutputTimesteps() const;
+        virtual std::vector<int> getCostUtilityOutputTimesteps() const;
 
         virtual bool getCostCategoryOutputs() const;
 
@@ -431,7 +431,7 @@ namespace Data {
         bool costSwitch;
         std::vector<std::string> costPerspectives;
         double discountRate;
-        int reportingInterval;
+        std::vector<int> costUtilityOutputTimesteps;
         bool costCategoryOutputs;
         // output parameters
         bool perInterventionPredictions;

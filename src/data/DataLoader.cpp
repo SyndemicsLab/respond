@@ -712,7 +712,7 @@ namespace Data {
         int startTime = 0;
         for (int timestep : ict) {
             // get rid of the pointless columns for this iteration
-            std::string str_timestep = "cycle" + std::to_string(timestep + 1);
+            std::string str_timestep = "cycle" + std::to_string(timestep);
             InputTable currentTimeTable =
                 this->removeColumns(str_timestep, table);
 
@@ -766,7 +766,8 @@ namespace Data {
         if (this->costSwitch) {
             this->costPerspectives = this->Config.getCostPerspectives();
             this->discountRate = this->Config.getDiscountRate();
-            this->reportingInterval = this->Config.getCostUtilityOutputTimesteps();
+            this->costUtilityOutputTimesteps =
+                this->Config.getCostUtilityOutputTimesteps();
             this->costCategoryOutputs = this->Config.getCostCategoryOutputs();
         }
     }
@@ -785,11 +786,11 @@ namespace Data {
         return this->discountRate;
     }
 
-    int DataLoader::getCostUtilityOutputTimesteps() const {
+    std::vector<int> DataLoader::getCostUtilityOutputTimesteps() const {
         if (!this->costSwitch) {
-            return 0;
+            return {0};
         }
-        return this->reportingInterval;
+        return this->costUtilityOutputTimesteps;
     }
 
     bool DataLoader::getCostCategoryOutputs() const {

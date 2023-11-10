@@ -50,7 +50,7 @@ namespace Data {
         virtual bool getCostSwitch() = 0;
         virtual std::vector<std::string> getCostPerspectives() = 0;
         virtual double getDiscountRate() = 0;
-        virtual int getCostUtilityOutputTimesteps() = 0;
+        virtual std::vector<int> getCostUtilityOutputTimesteps() = 0;
         virtual bool getPerInterventionPredictions() = 0;
         virtual bool getGeneralOutputsSwitch() = 0;
         virtual std::vector<int> getGeneralStatsOutputTimesteps() = 0;
@@ -181,7 +181,7 @@ namespace Data {
         double getDiscountRate() override;
         /// @brief
         /// @return
-        int getCostUtilityOutputTimesteps() override;
+        std::vector<int> getCostUtilityOutputTimesteps() override;
         /// @brief
         /// @return
         bool getPerInterventionPredictions() override;
