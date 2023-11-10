@@ -222,8 +222,18 @@ namespace Data {
         return this->ptree.get<double>("cost.discount_rate");
     }
 
-    int Configuration::getCostUtilityOutputTimesteps() {
-        return this->ptree.get<int>("cost.cost_utility_output_timesteps");
+    std::vector<int> Configuration::getCostUtilityOutputTimesteps() {
+        std::vector<int> result;
+        std::string res =
+            this->ptree.get<std::string>("cost.cost_utility_output_timesteps");
+        ASSERTM(!res.empty(), "Cost Utility Timesteps Successfully Provided.");
+
+        std::vector<int> resVec = this->parseString2VectorOfInts(res);
+        for (int r : resVec) {
+            result.push_back(r);
+        }
+
+        return result;
     }
 
     bool Configuration::getCostCategoryOutputs() {
