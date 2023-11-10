@@ -766,7 +766,7 @@ namespace Data {
         if (this->costSwitch) {
             this->costPerspectives = this->Config.getCostPerspectives();
             this->discountRate = this->Config.getDiscountRate();
-            this->reportingInterval =
+            this->costUtilityOutputTimesteps =
                 this->Config.getCostUtilityOutputTimesteps();
             this->costCategoryOutputs = this->Config.getCostCategoryOutputs();
         }
@@ -786,11 +786,11 @@ namespace Data {
         return this->discountRate;
     }
 
-    int DataLoader::getCostUtilityOutputTimesteps() const {
+    std::vector<int> DataLoader::getCostUtilityOutputTimesteps() const {
         if (!this->costSwitch) {
-            return 0;
+            return {0};
         }
-        return this->reportingInterval;
+        return this->costUtilityOutputTimesteps;
     }
 
     bool DataLoader::getCostCategoryOutputs() const {

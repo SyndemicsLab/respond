@@ -423,7 +423,7 @@ TEST_F(DataLoaderTest, getDiscountRate) {
 
 TEST_F(DataLoaderTest, getCostUtilityOutputTimesteps) {
     Data::DataLoader dl(boost::filesystem::temp_directory_path().string());
-    EXPECT_EQ(dl.getCostUtilityOutputTimesteps(), 52);
+    EXPECT_EQ(dl.getCostUtilityOutputTimesteps()[0], 52);
 }
 
 TEST_F(DataLoaderTest, getCostCategoryOutputs) {
