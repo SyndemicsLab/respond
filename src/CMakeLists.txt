@@ -9,6 +9,8 @@ project (
   DESCRIPTION "A Compartmental Simulation for Opioid Use Disorder"
 )
 
+find_package(spdlog REQUIRED)
+
 include(GNUInstallDirs)
 
 add_subdirectory(model)
@@ -20,6 +22,7 @@ add_executable(respond main.cpp)
 target_link_libraries(respond
   data
   model
+  spdlog::spdlog
 )
 
 include(GNUInstallDirs)

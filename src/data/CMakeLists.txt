@@ -10,6 +10,8 @@ find_package(Boost REQUIRED COMPONENTS
 # Find Eigen
 find_package (Eigen3 3.4 REQUIRED)
 
+find_package(spdlog REQUIRED)
+
 find_package(fmt REQUIRED)
 
 add_library(data
@@ -34,4 +36,5 @@ target_link_libraries(data
   model
   fmt::fmt
   Eigen3::Eigen
+  spdlog::spdlog
 )

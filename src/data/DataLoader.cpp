@@ -52,7 +52,9 @@ namespace Data {
         Loader::inputTables = {};
     }
 
-    DataLoader::DataLoader(std::string const &inputDir) : Loader(inputDir) {
+    DataLoader::DataLoader(std::string const &inputDir,
+                           std::shared_ptr<spdlog::logger> logger)
+        : Loader(inputDir) {
         this->dirName = inputDir;
         // SETTING STRING VECTORS FOR DATA WRITER
         this->interventions = this->Config.getInterventions();
@@ -85,9 +87,15 @@ namespace Data {
         this->generalOutputsSwitch = this->Config.getGeneralOutputsSwitch();
         this->generalStatsOutputTimesteps =
             this->Config.getGeneralStatsOutputTimesteps();
+
+        if (!logger) {
+            logger = spdlog::stdout_color_mt("console");
+        }
+        this->logger = logger;
     }
 
-    DataLoader::DataLoader(Configuration &config, std::string const &inputDir) {
+    DataLoader::DataLoader(Configuration &config, std::string const &inputDir,
+                           std::shared_ptr<spdlog::logger> logger) {
         this->Config = config;
         this->inputTables = this->readInputDir(inputDir);
 
@@ -115,6 +123,11 @@ namespace Data {
         this->generalOutputsSwitch = this->Config.getGeneralOutputsSwitch();
         this->generalStatsOutputTimesteps =
             this->Config.getGeneralStatsOutputTimesteps();
+
+        if (!logger) {
+            logger = spdlog::stdout_color_mt("console");
+        }
+        this->logger = logger;
     }
 
     /*********************************************************************
@@ -153,13 +166,27 @@ namespace Data {
 
         auto itr = initialCohort.find("counts");
 
-        ASSERTM(itr != initialCohort.end(),
-                "\'counts\' Column Successfully Found");
+        if (itr != initialCohort.end()) {
+            logger->info("Counts Column Found");
+        } else {
+            logger->error("Counts Column Not Found in init_cohorts.csv");
+            throw std::out_of_range("counts not in init_cohorts.csv");
+        }
 
-        ASSERTM(itr->second.size() <=
-                    (nonPostInterventions * this->numDemographicCombos *
-                     this->numOUDStates),
-                "Correct number of Counts Found");
+        if (itr->second.size() >
+            (nonPostInterventions * this->numDemographicCombos *
+             this->numOUDStates)) {
+            logger->error("Incorrect Number of Counts Found");
+            logger->info("Number of Counts Found: {}", itr->second.size());
+            logger->info("Number of Non-Post Interventions: {}",
+                         nonPostInterventions);
+            logger->info("Number of Demographic Combos: {}",
+                         this->numDemographicCombos);
+            logger->info("Number of OUD States {}", this->numOUDStates);
+            throw std::invalid_argument(
+                "Number of Counts Found in init_cohorts.csv Greater Than "
+                "Interventions * Demographics * OUDStates");
+        }
 
         this->initialSample = Utilities::Matrix3dFactory::Create(
                                   this->numOUDStates, this->numInterventions,
@@ -210,9 +237,15 @@ namespace Data {
         int startTime = 0;
         for (int changepoint : changeTimes) {
             std::string column = columnPrefix + std::to_string(changepoint);
-            ASSERTM(enteringSamplesTable.find(column) !=
-                        enteringSamplesTable.end(),
-                    (column + " Successfully Found"));
+
+            if (enteringSamplesTable.find(column) !=
+                enteringSamplesTable.end()) {
+                logger->info("{} Found", column);
+            } else {
+                logger->error("{} Column Not Found in entering_cohort.csv",
+                              column);
+                throw std::out_of_range(column + " not in entering_cohort.csv");
+            }
 
             Matrix3d enteringSample = Utilities::Matrix3dFactory::Create(
                 this->numOUDStates, this->numInterventions,
@@ -259,13 +292,28 @@ namespace Data {
                 for (int dem = 0; dem < this->numDemographicCombos; ++dem) {
                     for (int result_state = 0;
                          result_state < this->numOUDStates; ++result_state) {
+
                         std::string column =
                             "to_" + this->oudStates[result_state];
+
                         int idx = this->numOUDStates * row + initial_state;
+
+                        if (oudTransitionTable.find(column) !=
+                            oudTransitionTable.end()) {
+                            logger->info("{} Found", column);
+                        } else {
+                            logger->error(
+                                "{} Column Not Found in oud_trans.csv", column);
+                            throw std::out_of_range(column +
+                                                    " not in oud_trans.csv");
+                        }
+
                         if (idx < oudTransitionTable[column].size()) {
-                            tempOUDTransitions[initial_state](
-                                intervention, result_state, dem) =
+                            double val =
                                 std::stod(oudTransitionTable[column][idx]);
+
+                            tempOUDTransitions[initial_state](
+                                intervention, result_state, dem) = val;
                         } else {
                             tempOUDTransitions[initial_state](
                                 intervention, result_state, dem) = 0.0;
@@ -337,6 +385,16 @@ namespace Data {
                     currentIntervention.replace(pos, dash.length(), period);
                 }
                 currentIntervention = "to_" + currentIntervention;
+
+                if (interventionInitTable.find(currentIntervention) !=
+                    interventionInitTable.end()) {
+                    logger->info("{} Found", currentIntervention);
+                } else {
+                    logger->error("{} Column Not Found in block_trans.csv",
+                                  currentIntervention);
+                    throw std::out_of_range(currentIntervention +
+                                            " not in block_trans.csv");
+                }
 
                 double tableVal =
                     std::stod(interventionInitTable[currentIntervention][idx]);
@@ -435,6 +493,17 @@ namespace Data {
             std::string fodColumn = "fatal_to_all_types_overdose_ratio_cycle" +
                                     std::to_string(timestep);
 
+            if (fatalOverdoseTable.find(fodColumn) !=
+                fatalOverdoseTable.end()) {
+                this->logger->info("{} column found in fatal_overdose.csv",
+                                   fodColumn);
+            } else {
+                this->logger->error("{} column not found in fatal_overdose.csv",
+                                    fodColumn);
+                throw std::out_of_range(fodColumn +
+                                        " not in fatal_overdose.csv");
+            }
+
             Matrix3d temp = Utilities::Matrix3dFactory::Create(
                                 this->numOUDStates, this->numInterventions,
                                 this->numDemographicCombos)
@@ -482,11 +551,23 @@ namespace Data {
         // mortality here refers to death from reasons other than oud and is
         // calculated by combining the SMR and background mortality calculation
         // to combine these into the mortality is 1-exp(log(1-bg_mort)*SMR)
-        std::vector<std::string> smrColumn = loadTable(smrCSVName)["SMR"];
+        Data::InputTable temp = loadTable(smrCSVName);
+        if (temp.find("SMR") == temp.end()) {
+            this->logger->error("SMR column not found in SMR.csv");
+            throw std::out_of_range("SMR not in SMR.csv");
+        }
+        std::vector<std::string> smrColumn = temp["SMR"];
         // only stratified by the demographics, needs to be expanded for oud and
         // intervention
-        std::vector<std::string> backgroundMortalityColumn =
-            loadTable(bgmCSVName)["death_prob"];
+
+        temp = loadTable(bgmCSVName);
+        if (temp.find("death_prob") == temp.end()) {
+            this->logger->error(
+                "death_prob column not found in background_mortality.csv");
+            throw std::out_of_range(
+                "death_prob not in background_mortality.csv");
+        }
+        std::vector<std::string> backgroundMortalityColumn = temp["death_prob"];
 
         Matrix3d mortalityTransition = Utilities::Matrix3dFactory::Create(
             this->numOUDStates, this->numInterventions,
@@ -774,6 +855,8 @@ namespace Data {
 
     std::vector<std::string> DataLoader::getCostPerspectives() const {
         if (!this->costSwitch) {
+            this->logger->warn(
+                "Cost Switch is False, returning blank Cost Perspectives");
             return {};
         }
         return this->costPerspectives;
@@ -781,6 +864,8 @@ namespace Data {
 
     double DataLoader::getDiscountRate() const {
         if (!this->costSwitch) {
+            this->logger->warn(
+                "Cost Switch is False, returning 0.0 Discount Rate");
             return 0.0;
         }
         return this->discountRate;
@@ -788,6 +873,8 @@ namespace Data {
 
     std::vector<int> DataLoader::getCostUtilityOutputTimesteps() const {
         if (!this->costSwitch) {
+            this->logger->warn("Cost Switch is False, returning blank Cost "
+                               "Utility Output Timesteps");
             return {0};
         }
         return this->costUtilityOutputTimesteps;
@@ -795,6 +882,8 @@ namespace Data {
 
     bool DataLoader::getCostCategoryOutputs() const {
         if (!this->costSwitch) {
+            this->logger->warn(
+                "Cost Switch is False, returning blank Cost Categories");
             return false;
         }
         return this->costCategoryOutputs;
