@@ -26,9 +26,13 @@
 #include <fstream>
 #include <iostream>
 #include <map>
+#include <stdexcept>
 #include <string>
 #include <unordered_map>
 #include <vector>
+
+#include "spdlog/sinks/stdout_color_sinks.h"
+#include "spdlog/spdlog.h"
 
 #include "Configuration.hpp"
 #include "DataTypes.hpp"
@@ -247,7 +251,8 @@ namespace Data {
         /// objects based on the contents of the provided input directory
         /// @param inputDir the name of the directory where input files are
         /// stored
-        DataLoader(std::string const &inputDir);
+        DataLoader(std::string const &inputDir,
+                   std::shared_ptr<spdlog::logger> logger = {});
 
         /// @brief An alternative constructor for DataLoader for loading data
         /// when a Configuration object has already been created prior to
@@ -256,7 +261,8 @@ namespace Data {
         /// already-processed configuration file
         /// @param inputDir The name of the directory where input files are
         /// stored
-        DataLoader(Configuration &config, std::string const &inputDir);
+        DataLoader(Configuration &config, std::string const &inputDir,
+                   std::shared_ptr<spdlog::logger> logger = {});
 
         ~DataLoader(){};
 
@@ -419,6 +425,7 @@ namespace Data {
         /// @brief
         void populateCostParameters();
 
+        std::shared_ptr<spdlog::logger> logger;
         std::string dirName;
         int duration;
         int agingInterval;

@@ -20,6 +20,8 @@
 #include <gtest/gtest.h>
 #include <iostream>
 
+#include "spdlog/spdlog.h"
+
 #include "Configuration.hpp"
 #include "DataLoader.hpp"
 
@@ -33,7 +35,15 @@ protected:
     std::ofstream fileStream;
     std::ofstream fileStream2;
     std::ofstream configFileStream;
+    std::shared_ptr<spdlog::logger> logger;
     void SetUp() override {
+        if (!logger) {
+            if (spdlog::get("test")) {
+                logger = spdlog::get("test");
+            } else {
+                logger = spdlog::stdout_color_mt("test");
+            }
+        }
         tempRelativeFile =
             boost::filesystem::unique_path("%%%%_%%%%_%%%%_%%%%.csv");
         tempAbsoluteFile =
@@ -121,14 +131,15 @@ TEST_F(DataLoaderTest, Constructor) {
 }
 
 TEST_F(DataLoaderTest, ConstructorInputDirectory) {
-    Data::DataLoader dl(boost::filesystem::temp_directory_path().string());
+    Data::DataLoader dl(boost::filesystem::temp_directory_path().string(),
+                        logger);
     EXPECT_EQ(dl.getInterventions().size(), 9);
 }
 
 TEST_F(DataLoaderTest, ConstructorIDandConfig) {
     Data::Configuration config(configFile.string());
-    Data::DataLoader dl(config,
-                        boost::filesystem::temp_directory_path().string());
+    Data::DataLoader dl(
+        config, boost::filesystem::temp_directory_path().string(), logger);
     EXPECT_EQ(dl.getInterventions().size(), 9);
 }
 
@@ -140,33 +151,39 @@ TEST_F(DataLoaderTest, loadConfigurationFile) {
 }
 
 TEST_F(DataLoaderTest, getDirName) {
-    Data::DataLoader dl(boost::filesystem::temp_directory_path().string());
+    Data::DataLoader dl(boost::filesystem::temp_directory_path().string(),
+                        logger);
     EXPECT_EQ(dl.getDirName(),
               boost::filesystem::temp_directory_path().string());
 }
 
 TEST_F(DataLoaderTest, getDuration) {
-    Data::DataLoader dl(boost::filesystem::temp_directory_path().string());
+    Data::DataLoader dl(boost::filesystem::temp_directory_path().string(),
+                        logger);
     EXPECT_EQ(dl.getDuration(), 52);
 }
 
 TEST_F(DataLoaderTest, getNumOUDStates) {
-    Data::DataLoader dl(boost::filesystem::temp_directory_path().string());
+    Data::DataLoader dl(boost::filesystem::temp_directory_path().string(),
+                        logger);
     EXPECT_EQ(dl.getNumOUDStates(), 4);
 }
 
 TEST_F(DataLoaderTest, getNumInterventions) {
-    Data::DataLoader dl(boost::filesystem::temp_directory_path().string());
+    Data::DataLoader dl(boost::filesystem::temp_directory_path().string(),
+                        logger);
     EXPECT_EQ(dl.getNumInterventions(), 9);
 }
 
 TEST_F(DataLoaderTest, getNumDemographics) {
-    Data::DataLoader dl(boost::filesystem::temp_directory_path().string());
+    Data::DataLoader dl(boost::filesystem::temp_directory_path().string(),
+                        logger);
     EXPECT_EQ(dl.getNumDemographics(), 2);
 }
 
 TEST_F(DataLoaderTest, getNumDemographicCombos) {
-    Data::DataLoader dl(boost::filesystem::temp_directory_path().string());
+    Data::DataLoader dl(boost::filesystem::temp_directory_path().string(),
+                        logger);
     EXPECT_EQ(dl.getNumDemographicCombos(), 36);
 }
 
@@ -180,7 +197,8 @@ TEST_F(DataLoaderTest, initialSample) {
         << "No_Treatment,10_14,Male,Nonactive_Noninjection,288.995723856067";
     fileStream.close();
 
-    Data::DataLoader dl(boost::filesystem::temp_directory_path().string());
+    Data::DataLoader dl(boost::filesystem::temp_directory_path().string(),
+                        logger);
 
     dl.loadInitialSample(tempAbsoluteFile.string());
 
@@ -195,7 +213,8 @@ TEST_F(DataLoaderTest, enteringSamples) {
                << "15_19,male,12.0934754686572";
     fileStream.close();
 
-    Data::DataLoader dl(boost::filesystem::temp_directory_path().string());
+    Data::DataLoader dl(boost::filesystem::temp_directory_path().string(),
+                        logger);
 
     dl.loadEnteringSamples(tempAbsoluteFile.string(),
                            std::string("No_Treatment"),
@@ -220,7 +239,8 @@ TEST_F(DataLoaderTest, OUDTransitionRates) {
            "0564816594618387,0.635081603241549,0";
     fileStream.close();
 
-    Data::DataLoader dl(boost::filesystem::temp_directory_path().string());
+    Data::DataLoader dl(boost::filesystem::temp_directory_path().string(),
+                        logger);
 
     dl.loadOUDTransitionRates(tempAbsoluteFile.string());
 
@@ -244,7 +264,8 @@ TEST_F(DataLoaderTest, interventionTransitionRates) {
                   "88186832069196,0,0,0.11813167930804";
     fileStream.close();
 
-    Data::DataLoader dl(boost::filesystem::temp_directory_path().string());
+    Data::DataLoader dl(boost::filesystem::temp_directory_path().string(),
+                        logger);
 
     dl.loadInterventionTransitionRates(tempAbsoluteFile.string());
 
@@ -271,7 +292,8 @@ TEST_F(DataLoaderTest, overdoseRates) {
            "000348390775561181";
     fileStream.close();
 
-    Data::DataLoader dl(boost::filesystem::temp_directory_path().string());
+    Data::DataLoader dl(boost::filesystem::temp_directory_path().string(),
+                        logger);
 
     dl.loadOverdoseRates(tempAbsoluteFile.string());
 
@@ -289,7 +311,8 @@ TEST_F(DataLoaderTest, fatalOverdoseRates) {
                   "126092413319309,0.156049415151599";
     fileStream.close();
 
-    Data::DataLoader dl(boost::filesystem::temp_directory_path().string());
+    Data::DataLoader dl(boost::filesystem::temp_directory_path().string(),
+                        logger);
 
     dl.loadFatalOverdoseRates(tempAbsoluteFile.string());
 
@@ -332,7 +355,8 @@ TEST_F(DataLoaderTest, fatalOverdoseRatesBlocks) {
            "126092413319309,0.156049415151599";
     fileStream.close();
 
-    Data::DataLoader dl(boost::filesystem::temp_directory_path().string());
+    Data::DataLoader dl(boost::filesystem::temp_directory_path().string(),
+                        logger);
 
     dl.loadFatalOverdoseRates(tempAbsoluteFile.string());
 
@@ -359,7 +383,8 @@ TEST_F(DataLoaderTest, mortalityRates) {
                 << "15_19,Male,1.2191975906517E-05";
     fileStream2.close();
 
-    Data::DataLoader dl(boost::filesystem::temp_directory_path().string());
+    Data::DataLoader dl(boost::filesystem::temp_directory_path().string(),
+                        logger);
 
     dl.loadMortalityRates(tempAbsoluteFile.string(),
                           tempAbsoluteFile2.string());
@@ -378,7 +403,8 @@ TEST_F(DataLoaderTest, interventionInitRates) {
         << "No_Treatment,10_14,Male,Nonactive_Noninjection,288.995723856067";
     fileStream.close();
 
-    Data::DataLoader dl(boost::filesystem::temp_directory_path().string());
+    Data::DataLoader dl(boost::filesystem::temp_directory_path().string(),
+                        logger);
 
     dl.loadInitialSample(tempAbsoluteFile.string());
 
@@ -387,61 +413,73 @@ TEST_F(DataLoaderTest, interventionInitRates) {
 }
 
 TEST_F(DataLoaderTest, getInterventions) {
-    Data::DataLoader dl(boost::filesystem::temp_directory_path().string());
+    Data::DataLoader dl(boost::filesystem::temp_directory_path().string(),
+                        logger);
     EXPECT_EQ(dl.getInterventions().size(), 9);
 }
 
 TEST_F(DataLoaderTest, getOUDStates) {
-    Data::DataLoader dl(boost::filesystem::temp_directory_path().string());
+    Data::DataLoader dl(boost::filesystem::temp_directory_path().string(),
+                        logger);
     EXPECT_EQ(dl.getOUDStates().size(), 4);
 }
 
 TEST_F(DataLoaderTest, getAgingInterval) {
-    Data::DataLoader dl(boost::filesystem::temp_directory_path().string());
+    Data::DataLoader dl(boost::filesystem::temp_directory_path().string(),
+                        logger);
     EXPECT_EQ(dl.getAgingInterval(), 260);
 }
 
 TEST_F(DataLoaderTest, getAgeGroupShift) {
-    Data::DataLoader dl(boost::filesystem::temp_directory_path().string());
+    Data::DataLoader dl(boost::filesystem::temp_directory_path().string(),
+                        logger);
     EXPECT_EQ(dl.getAgeGroupShift(), 2);
 }
 
 TEST_F(DataLoaderTest, getCostSwitch) {
-    Data::DataLoader dl(boost::filesystem::temp_directory_path().string());
+    Data::DataLoader dl(boost::filesystem::temp_directory_path().string(),
+                        logger);
     EXPECT_TRUE(dl.getCostSwitch());
 }
 
 TEST_F(DataLoaderTest, getCostPerspectives) {
-    Data::DataLoader dl(boost::filesystem::temp_directory_path().string());
+    Data::DataLoader dl(boost::filesystem::temp_directory_path().string(),
+                        logger);
     EXPECT_EQ(dl.getCostPerspectives()[0], "healthcare");
 }
 
 TEST_F(DataLoaderTest, getDiscountRate) {
-    Data::DataLoader dl(boost::filesystem::temp_directory_path().string());
+    Data::DataLoader dl(boost::filesystem::temp_directory_path().string(),
+                        logger);
     EXPECT_EQ(dl.getDiscountRate(), 0.0025);
 }
 
 TEST_F(DataLoaderTest, getCostUtilityOutputTimesteps) {
-    Data::DataLoader dl(boost::filesystem::temp_directory_path().string());
+    Data::DataLoader dl(boost::filesystem::temp_directory_path().string(),
+                        logger);
     EXPECT_EQ(dl.getCostUtilityOutputTimesteps()[0], 52);
 }
 
 TEST_F(DataLoaderTest, getCostCategoryOutputs) {
-    Data::DataLoader dl(boost::filesystem::temp_directory_path().string());
+    Data::DataLoader dl(boost::filesystem::temp_directory_path().string(),
+                        logger);
     EXPECT_FALSE(dl.getCostCategoryOutputs());
 }
 
 TEST_F(DataLoaderTest, getPerInterventionPredictions) {
-    Data::DataLoader dl(boost::filesystem::temp_directory_path().string());
+    Data::DataLoader dl(boost::filesystem::temp_directory_path().string(),
+                        logger);
     EXPECT_TRUE(dl.getPerInterventionPredictions());
 }
 
 TEST_F(DataLoaderTest, getGeneralOutputsSwitch) {
-    Data::DataLoader dl(boost::filesystem::temp_directory_path().string());
+    Data::DataLoader dl(boost::filesystem::temp_directory_path().string(),
+                        logger);
     EXPECT_FALSE(dl.getGeneralOutputsSwitch());
 }
 
 TEST_F(DataLoaderTest, getGeneralStatsOutputTimesteps) {
-    Data::DataLoader dl(boost::filesystem::temp_directory_path().string());
+    Data::DataLoader dl(boost::filesystem::temp_directory_path().string(),
+                        logger);
     EXPECT_EQ(dl.getGeneralStatsOutputTimesteps().size(), 1);
 }

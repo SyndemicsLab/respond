@@ -24,6 +24,9 @@
 #include <numeric>
 #include <vector>
 
+#include "spdlog/sinks/basic_file_sink.h"
+#include "spdlog/spdlog.h"
+
 #include "CostLoader.hpp"
 #include "DataFormatter.hpp"
 #include "DataLoader.hpp"
@@ -31,16 +34,16 @@
 #include "PostSimulationCalculator.hpp"
 #include "Simulation.hpp"
 
-int main(int argc, char **argv) {
+bool argChecks(int argc, char **argv, std::string &rootInputDir, int &taskStart,
+               int &taskEnd) {
     if (argc > 1 && argc != 4) {
         std::cerr << "Usage: " << argv[0]
                   << "[INPUT FOLDER] [RUN START] [RUN END]\n\n"
                   << "RESPOND, a compartmental simulation of healthcare in "
                      "communities with high-risk opioid use";
+        return false;
     }
-    int taskStart;
-    int taskEnd;
-    std::string rootInputDir;
+
     if (argc == 1) {
         std::cout << "Please provide the input folder path: ";
         std::cin >> rootInputDir;
@@ -55,6 +58,17 @@ int main(int argc, char **argv) {
         taskEnd = std::stoi(argv[3]);
         rootInputDir = argv[1];
     }
+    return true;
+}
+
+int main(int argc, char **argv) {
+
+    int taskStart;
+    int taskEnd;
+    std::string rootInputDir;
+    if (!argChecks(argc, argv, rootInputDir, taskStart, taskEnd)) {
+        return 0;
+    }
 
     std::vector<int> runs((taskEnd + 1) - taskStart);
     std::iota(std::begin(runs), std::end(runs), taskStart);
@@ -67,10 +81,29 @@ int main(int argc, char **argv) {
                 inputDir / ("input" + std::to_string(i));
             std::filesystem::path outputDir =
                 inputDir / ("output" + std::to_string(i));
+            std::filesystem::create_directory(outputDir);
 
-            Data::DataLoader inputs(inputSet.string());
+            std::string log_path = outputDir.string() + "/log.txt";
+            std::shared_ptr<spdlog::logger> logger;
+
+            try {
+                logger = spdlog::basic_logger_mt("logger" + std::to_string(i),
+                                                 log_path);
+            } catch (const spdlog::spdlog_ex &ex) {
+                std::cout << "Log init failed: " << ex.what() << std::endl;
+                return;
+            }
+
+            logger->info("Logger Created");
+
+            Data::DataLoader inputs(inputSet.string(), logger);
+            logger->info("DataLoader Created");
+
             Data::CostLoader costLoader(inputSet.string());
+            logger->info("CostLoader Created");
+
             Data::UtilityLoader utilityLoader(inputSet.string());
+            logger->info("UtilityLoader Created");
 
             Data::CostList costs;
             Data::UtilityList utilities;
