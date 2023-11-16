@@ -15,6 +15,8 @@ include_directories(mocks)
 # Find Eigen
 find_package (Eigen3 3.4 REQUIRED)
 
+find_package(spdlog REQUIRED)
+
 add_executable(respondTest
   src/SimulationTest.cpp
   src/DataLoaderTest.cpp
@@ -39,6 +41,7 @@ target_link_libraries(respondTest
   GTest::gmock_main
   model
   data
+  spdlog::spdlog
 )
 
 # create the test data set in the build directory

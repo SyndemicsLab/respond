@@ -24,7 +24,8 @@ class RESPONDRecipe(ConanFile):
 
     def requirements(self):
         self.requires("eigen/3.4.0")
-        self.requires("fmt/10.0.0")
+        self.requires("spdlog/[>=1.11.0]")
+        self.requires("fmt/[>=10.0.0]")
         self.requires("boost/[>=1.79.0]")
         if self.options.with_api:
             self.requires("crowcpp-crow/1.0+5")
