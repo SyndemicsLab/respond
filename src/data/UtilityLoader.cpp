@@ -53,46 +53,38 @@ namespace Data {
     UtilityLoader::loadUtility(std::string const &csvName) {
         InputTable table = loadTable(csvName);
 
-        for (std::string perspective : this->costPerspectives) {
-            std::string message =
-                "\'" + perspective + "\' Column Successfully Found";
-
-            ASSERTM(table.find(perspective) != table.end(), message);
-        }
-
         size_t numOUDStates = this->Config.getOUDStates().size();
         size_t numDemographicCombos = this->Config.getNumDemographicCombos();
         size_t numInterventions = this->Config.getInterventions().size();
 
         std::unordered_map<std::string, Data::Matrix3d> result;
-        for (std::string perspective : this->costPerspectives) {
-            Data::Matrix3d utilMatrix =
-                Utilities::Matrix3dFactory::Create(
-                    numOUDStates, numInterventions, numDemographicCombos)
-                    .constant(0);
 
-            std::string message =
-                "\'" + perspective + "\' Column Successfully Found";
-            ASSERTM(table.find(perspective) != table.end(), message);
+        Data::Matrix3d utilMatrix =
+            Utilities::Matrix3dFactory::Create(numOUDStates, numInterventions,
+                                               numDemographicCombos)
+                .constant(0);
 
-            for (int intervention = 0; intervention < numInterventions;
-                 ++intervention) {
-                Eigen::array<Eigen::Index, 3> offset = {0, 0, 0};
-                Eigen::array<Eigen::Index, 3> extent = utilMatrix.dimensions();
-                offset[Data::INTERVENTION] = intervention;
-                extent[Data::INTERVENTION] = 1;
-                Matrix3d temp = utilMatrix.slice(offset, extent);
-                if (table[perspective].size() > intervention) {
-                    temp.setConstant(
-                        std::stod(table[perspective][intervention]));
-                } else {
-                    temp.setConstant(0.0);
-                }
+        std::string perspective("utility");
+        std::string message = "\'utility\' Column Successfully Found";
+        ASSERTM(table.find("utility") != table.end(), message);
 
-                utilMatrix.slice(offset, extent) = temp;
+        for (int intervention = 0; intervention < numInterventions;
+             ++intervention) {
+            Eigen::array<Eigen::Index, 3> offset = {0, 0, 0};
+            Eigen::array<Eigen::Index, 3> extent = utilMatrix.dimensions();
+            offset[Data::INTERVENTION] = intervention;
+            extent[Data::INTERVENTION] = 1;
+            Matrix3d temp = utilMatrix.slice(offset, extent);
+            if (table[perspective].size() > intervention) {
+                temp.setConstant(std::stod(table[perspective][intervention]));
+            } else {
+                temp.setConstant(0.0);
             }
-            result[perspective] = utilMatrix;
+
+            utilMatrix.slice(offset, extent) = temp;
         }
+        result[perspective] = utilMatrix;
+
         return result;
     }
 

@@ -1,7 +1,3 @@
-# project("GoogleTest")
-# enable_testing()
-# include(GoogleTest)
-
 cmake_minimum_required(VERSION 3.24)
 project(RESPONDTest CXX)
 
