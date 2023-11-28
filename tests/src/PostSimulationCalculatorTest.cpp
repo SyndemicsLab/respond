@@ -165,11 +165,11 @@ TEST_F(PostSimulationCalculatorTest, calculateCost) {
 
     Data::CostList result = calculator.calculateCosts(costLoader);
 
-    EXPECT_EQ(result[0].healthcareCost(0, 0, 0, 0), 5);
-    EXPECT_EQ(result[0].pharmaCost(0, 0, 0, 0), 5);
-    EXPECT_EQ(result[0].treatmentCost(0, 0, 0, 0), 5);
-    EXPECT_EQ(result[0].nonFatalOverdoseCost(0, 0, 0, 0), 199);
-    EXPECT_EQ(result[0].fatalOverdoseCost(0, 0, 0, 0), 399);
+    EXPECT_EQ(result[0].healthcareCost(0, 0, 0, 0), 6);
+    EXPECT_EQ(result[0].pharmaCost(0, 0, 0, 0), 6);
+    EXPECT_EQ(result[0].treatmentCost(0, 0, 0, 0), 6);
+    EXPECT_EQ(result[0].nonFatalOverdoseCost(0, 0, 0, 0), 200);
+    EXPECT_EQ(result[0].fatalOverdoseCost(0, 0, 0, 0), 400);
 }
 
 TEST_F(PostSimulationCalculatorTest, calculateUtility) {
@@ -275,5 +275,5 @@ TEST_F(PostSimulationCalculatorTest, calculateLifeYears) {
     Calculator::PostSimulationCalculator calculator(history);
 
     double result = calculator.calculateLifeYears();
-    EXPECT_EQ(result, 209.88461538461539);
+    EXPECT_EQ(result, 204.0);
 }

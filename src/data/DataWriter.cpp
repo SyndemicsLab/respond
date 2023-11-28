@@ -266,6 +266,56 @@ namespace Data {
         return stringstream.str();
     }
 
+    std::string DataWriter::writeTotals(OutputType outputType, Totals totals) {
+        std::ostringstream stringstream;
+
+        if (totals.baseCosts.empty() || totals.discCosts.empty()) {
+            // log error
+            std::ostringstream s;
+            return s.str();
+        }
+
+        if (outputType == FILE) {
+            if (!std::filesystem::exists(this->dirname)) {
+                std::filesystem::create_directory(this->dirname);
+            }
+
+            std::filesystem::path dir(this->dirname);
+            std::filesystem::path utilFile("totals.csv");
+            std::filesystem::path utilFullPath = dir / utilFile;
+
+            std::ofstream file;
+
+            file.open(utilFullPath.string());
+            file << "Name, Base, Discount" << std::endl;
+            for (int i = 0; i < totals.baseCosts.size(); ++i) {
+                file << "Perspective " << i << ", " << totals.baseCosts[i]
+                     << ", " << totals.discCosts[i] << std::endl;
+            }
+            file << "Life Years, " << totals.baseLifeYears << ", "
+                 << totals.discLifeYears << std::endl;
+            file << "Utility, " << totals.baseUtility << ", "
+                 << totals.discUtility << std::endl;
+
+            file.close();
+        }
+
+        stringstream << "Name, Base, Discount" << std::endl;
+        for (int i = 0; i < totals.baseCosts.size(); ++i) {
+            stringstream << "Perspective " << i << ", " << totals.baseCosts[i]
+                         << ", " << totals.discCosts[i] << std::endl;
+        }
+        stringstream << "Life Years, " << totals.baseLifeYears << ", "
+                     << totals.discLifeYears << std::endl;
+        stringstream << "Utility, " << totals.baseUtility << ", "
+                     << totals.discUtility << std::endl;
+
+        if (outputType == FILE) {
+            return "success";
+        }
+        return stringstream.str();
+    }
+
     /// @brief Helper function to write data to the specified stream
     /// @param stream Stream type to write data to
     /// @param historyToWrite Specific portion of history to save

@@ -135,6 +135,17 @@ namespace Data {
     /// Simulation
     using CostList = std::vector<Cost>;
 
+    struct Totals {
+        std::vector<double> baseCosts;
+        std::vector<double> discCosts;
+        double baseLifeYears = 0.0;
+        double discLifeYears = 0.0;
+        double baseUtility = 0.0;
+        double discUtility = 0.0;
+    };
+
+    using Totals = Totals;
+
 }; // namespace Data
 
 #endif
