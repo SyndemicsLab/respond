@@ -710,13 +710,13 @@ int main(int argc, char **argv) {
             });
 
     CROW_ROUTE(app, "/calculateUtil")
-        .methods(crow::HTTPMethod::Post)(
-            [&hist, &costs, &utils](const crow::request &req) {
-                Calculator::CostCalculator costCalculator(costs, utils, hist);
-                Data::Utility utility = costCalculator.calculateUtility();
+        .methods(crow::HTTPMethod::Post)([&hist, &costs,
+                                          &utils](const crow::request &req) {
+            Calculator::CostCalculator costCalculator(costs, utils, hist);
+            Data::Matrix3dOverTime utility = costCalculator.calculateUtility();
 
-                return crow::response(crow::status::OK);
-            });
+            return crow::response(crow::status::OK);
+        });
 
     CROW_ROUTE(app, "/download/writeHistory")
         .methods(crow::HTTPMethod::Get)([&hist, &inputs, &writer]() {
@@ -754,7 +754,7 @@ int main(int argc, char **argv) {
         .methods(crow::HTTPMethod::Post)([&hist, &inputs, &costs, &utils,
                                           &writer](const crow::request &req) {
             Calculator::CostCalculator costCalculator(costs, utils, hist);
-            Data::Utility utility = costCalculator.calculateUtility();
+            Data::Matrix3dOverTime utility = costCalculator.calculateUtility();
 
             writer.setInterventions(inputs.getInterventions());
             writer.setOUDStates(inputs.getOUDStates());

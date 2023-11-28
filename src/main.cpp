@@ -106,7 +106,7 @@ int main(int argc, char **argv) {
             logger->info("UtilityLoader Created");
 
             Data::CostList costs;
-            Data::UtilityList utilities;
+            Data::Matrix3dOverTime utilities;
 
             inputs.loadInitialSample("init_cohort.csv");
             inputs.loadEnteringSamples("entering_cohort.csv", "No_Treatment",
@@ -142,8 +142,8 @@ int main(int argc, char **argv) {
                 Calculator::PostSimulationCalculator PostSimulationCalculator(
                     history);
                 costs = PostSimulationCalculator.calculateCosts(costLoader);
-                utilities =
-                    PostSimulationCalculator.calculateUtilities(utilityLoader);
+                utilities = PostSimulationCalculator.calculateUtilities(
+                    utilityLoader, Calculator::UTILITY_TYPE::MIN);
             }
 
             std::vector<int> outputTimesteps =

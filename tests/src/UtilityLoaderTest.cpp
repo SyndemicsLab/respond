@@ -119,7 +119,7 @@ TEST_F(UtilityLoaderTest, loadConfigurationFile) {
 
 TEST_F(UtilityLoaderTest, backgroundUtility) {
     Data::UtilityLoader ul(boost::filesystem::temp_directory_path().string());
-    fileStream << "agegrp,sex,healthcare" << std::endl
+    fileStream << "agegrp,sex,utility" << std::endl
                << "10_14,Male,0.922" << std::endl
                << "10_14,Female,0.922" << std::endl
                << "15_19,Male,0.922";
@@ -128,14 +128,14 @@ TEST_F(UtilityLoaderTest, backgroundUtility) {
 
     ul.loadBackgroundUtility(tempAbsoluteFile.string());
 
-    Data::Matrix3d result = ul.getBackgroundUtility("healthcare");
+    Data::Matrix3d result = ul.getBackgroundUtility("utility");
 
     EXPECT_EQ(result(0, 0, 0), 0.922);
 }
 
 TEST_F(UtilityLoaderTest, OUDUtility) {
     Data::UtilityLoader ul(boost::filesystem::temp_directory_path().string());
-    fileStream << "block,oud,healthcare" << std::endl
+    fileStream << "block,oud,utility" << std::endl
                << "No_Treatment,Active_Noninjection,0.626" << std::endl
                << "No_Treatment,Active_Injection,0.512" << std::endl
                << "No_Treatment,Nonactive_Noninjection,1";
@@ -144,14 +144,14 @@ TEST_F(UtilityLoaderTest, OUDUtility) {
 
     ul.loadOUDUtility(tempAbsoluteFile.string());
 
-    Data::Matrix3d result = ul.getOUDUtility("healthcare");
+    Data::Matrix3d result = ul.getOUDUtility("utility");
 
     EXPECT_EQ(result(0, 0, 0), 0.626);
 }
 
 TEST_F(UtilityLoaderTest, settingUtility) {
     Data::UtilityLoader ul(boost::filesystem::temp_directory_path().string());
-    fileStream << "block,healthcare" << std::endl
+    fileStream << "block,utility" << std::endl
                << "No_Treatment,1" << std::endl
                << "Buprenorphine,1" << std::endl
                << "Naltrexone,1";
@@ -160,7 +160,7 @@ TEST_F(UtilityLoaderTest, settingUtility) {
 
     ul.loadSettingUtility(tempAbsoluteFile.string());
 
-    Data::Matrix3d result = ul.getSettingUtility("healthcare");
+    Data::Matrix3d result = ul.getSettingUtility("utility");
 
     EXPECT_EQ(result(0, 0, 0), 1);
 }

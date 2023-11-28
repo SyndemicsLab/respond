@@ -36,6 +36,41 @@ namespace Data {
     /// @brief Eigen 3d Tensor
     using Matrix3d = Eigen::Tensor<double, 3>;
 
+    inline Matrix3d vecMin(std::vector<Matrix3d> const &matrices) {
+        if (matrices.empty()) {
+            return {};
+        }
+        Matrix3d smallest = matrices[0];
+        auto dims = smallest.dimensions();
+        for (Matrix3d matrix : matrices) {
+            if (matrix.dimensions() != dims) {
+                // throw error
+                return {};
+            }
+            smallest = smallest.cwiseMin(matrix);
+        }
+        return smallest;
+    }
+
+    inline Matrix3d vecMult(std::vector<Matrix3d> const &matrices) {
+        if (matrices.empty()) {
+            return {};
+        }
+
+        auto dims = matrices[0].dimensions();
+        Matrix3d mult(dims);
+        mult.setConstant(1.0);
+
+        for (Matrix3d matrix : matrices) {
+            if (matrix.dimensions() != dims) {
+                // throw error
+                return {};
+            }
+            mult *= matrix;
+        }
+        return mult;
+    }
+
     /// @brief Eigen 3d Tensor maintaining Time Order
     class Matrix3dOverTime {
     public:
@@ -97,20 +132,6 @@ namespace Data {
     /// @brief Struct defining Cost Matrices Across the Duration of the
     /// Simulation
     using CostList = std::vector<Cost>;
-
-    struct Utility {
-        std::string perspective;
-        Matrix3dOverTime backgroundUtility;
-        Matrix3dOverTime oudUtility;
-        Matrix3dOverTime settingUtility;
-    };
-
-    /// @brief Struct defining Utilities Matrices Across the Duration of the
-    /// Simulation
-    using Utility = Utility;
-
-    /// @brief
-    using UtilityList = std::vector<Utility>;
 
 }; // namespace Data
 
