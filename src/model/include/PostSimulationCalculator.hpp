@@ -53,6 +53,9 @@ namespace Calculator {
         calculateUtilities(Data::IUtilityLoader const &utilityLoader,
                            UTILITY_TYPE utilType) const;
 
+        double calculateLifeYears(bool provideDiscount = false,
+                                  double discountRate = 0.0) const;
+
         Data::Matrix3d static provideDiscount(Data::Matrix3d data,
                                               double discountRate, int N,
                                               bool isDiscrete = true,

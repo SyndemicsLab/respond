@@ -85,6 +85,34 @@ namespace Calculator {
         return utilities;
     }
 
+    double
+    PostSimulationCalculator::calculateLifeYears(bool provideDiscount,
+                                                 double discountRate) const {
+        std::vector<Data::Matrix3d> stateVec =
+            this->history.stateHistory.getMatrices();
+        if (stateVec.size() <= 0) {
+            // log no state vector
+            return 0.0;
+        }
+
+        Data::Matrix3d runningSum(stateVec[0].dimensions());
+        runningSum = runningSum.setZero();
+
+        for (int t = 0; t < stateVec.size(); ++t) {
+            if (provideDiscount) {
+                runningSum +=
+                    this->provideDiscount(stateVec[t], discountRate, t);
+            } else {
+                runningSum += stateVec[t];
+            }
+        }
+
+        Eigen::Tensor<double, 0> result = runningSum.sum();
+
+        // dividing by 52 to switch from life weeks to life years
+        return result(0) / 52.0;
+    }
+
     Data::Matrix3dOverTime PostSimulationCalculator::multiplyDouble(
         Data::Matrix3dOverTime const &overdose, double const &value,
         bool provideDiscount, double discountRate) const {

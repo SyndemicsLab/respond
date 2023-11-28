@@ -101,6 +101,8 @@ namespace Data {
 
         std::map<int, Matrix3d> getMappedData() const { return this->data; }
 
+        Matrix3d sumOverTime() const;
+
     private:
         std::map<int, Matrix3d> data;
     };

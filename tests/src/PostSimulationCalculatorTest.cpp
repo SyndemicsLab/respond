@@ -259,3 +259,21 @@ TEST_F(PostSimulationCalculatorTest, calculateUtilityMult) {
 
     EXPECT_EQ(result(0, 0, 0, 0), 0.75);
 }
+
+TEST_F(PostSimulationCalculatorTest, calculateLifeYears) {
+    Data::History history;
+    Data::Matrix3d temp;
+    Data::Matrix3dOverTime stateHistory;
+    for (int i = 0; i < 52; ++i) {
+        temp =
+            Utilities::Matrix3dFactory::Create(2, 2, 2).setConstant(double(i));
+        stateHistory.insert(temp, i);
+    }
+
+    history.stateHistory = stateHistory;
+
+    Calculator::PostSimulationCalculator calculator(history);
+
+    double result = calculator.calculateLifeYears();
+    EXPECT_EQ(result, 209.88461538461539);
+}
