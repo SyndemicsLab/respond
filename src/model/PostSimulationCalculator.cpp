@@ -60,28 +60,28 @@ namespace Calculator {
         return costs;
     }
 
-    Data::UtilityList PostSimulationCalculator::calculateUtilities(
-        Data::IUtilityLoader const &utilityLoader) const {
-        Data::UtilityList utilities;
+    Data::Matrix3dOverTime PostSimulationCalculator::calculateUtilities(
+        Data::IUtilityLoader const &utilityLoader,
+        UTILITY_TYPE utilType) const {
+        Data::Matrix3dOverTime utilities;
 
-        std::vector<std::string> perspectives =
-            utilityLoader.getCostPerspectives();
+        std::string perspective = "utility";
 
-        for (std::string perspective : perspectives) {
-            Data::Utility util;
-            util.perspective = perspective;
-            util.backgroundUtility = this->multiplyMatrix(
-                this->history.stateHistory,
-                utilityLoader.getBackgroundUtility(perspective));
-            util.oudUtility =
-                this->multiplyMatrix(this->history.stateHistory,
-                                     utilityLoader.getOUDUtility(perspective));
-            util.settingUtility = this->multiplyMatrix(
-                this->history.stateHistory,
-                utilityLoader.getSettingUtility(perspective));
-            utilities.push_back(util);
+        Data::Matrix3d util;
+
+        std::vector<Data::Matrix3d> utilityMatrices;
+        utilityMatrices.push_back(
+            utilityLoader.getBackgroundUtility(perspective));
+        utilityMatrices.push_back(utilityLoader.getOUDUtility(perspective));
+        utilityMatrices.push_back(utilityLoader.getSettingUtility(perspective));
+
+        if (utilType == UTILITY_TYPE::MULT) {
+            util = Data::vecMult(utilityMatrices);
+        } else {
+            util = Data::vecMin(utilityMatrices);
         }
 
+        utilities = this->multiplyMatrix(this->history.stateHistory, util);
         return utilities;
     }
 

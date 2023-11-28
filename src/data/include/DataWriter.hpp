@@ -80,14 +80,15 @@ namespace Data {
         /// @param outputType Enum describing the output type. Defaults to FILE
         /// @param cost Cost struct containing the results of the simulation
         /// @return String depending on the output type
-        virtual std::string writeCosts(OutputType outputType, CostList costs) = 0;
+        virtual std::string writeCosts(OutputType outputType,
+                                       CostList costs) = 0;
 
         /// @brief Main function to write the Utilities
         /// @param outputType Enum describing the output type. Defaults to FILE
         /// @param util Utility struct containing the results of the simulation
         /// @return String depending on the output type
         virtual std::string writeUtilities(OutputType outputType,
-                                           UtilityList utilities) = 0;
+                                           Matrix3dOverTime utilities) = 0;
     };
 
     /// @brief Concrete DataWriter class implementing the corresponding
@@ -146,7 +147,7 @@ namespace Data {
         /// @param util
         /// @return
         std::string writeUtilities(OutputType outputType,
-                                   UtilityList utilities) override;
+                                   Matrix3dOverTime utilities) override;
 
     private:
         std::vector<std::string> interventions;
