@@ -44,14 +44,19 @@ namespace Calculator {
 
         /// @brief Main function to calculate the Cost
         /// @return Cost Struct filled with calculated Cost
-        Data::CostList
-        calculateCosts(Data::ICostLoader const &costLoader) const;
+        Data::CostList calculateCosts(Data::ICostLoader const &costLoader,
+                                      bool discount = false) const;
 
         /// @brief Main function to calculate the Utility
         /// @return Cost Struct filled with calculated Utility
         Data::Matrix3dOverTime
         calculateUtilities(Data::IUtilityLoader const &utilityLoader,
-                           UTILITY_TYPE utilType) const;
+                           UTILITY_TYPE utilType, bool discount = false) const;
+
+        double calculateLifeYears(bool provideDiscount = false,
+                                  double discountRate = 0.0) const;
+
+        double totalAcrossTimeAndDims(Data::Matrix3dOverTime const data) const;
 
         Data::Matrix3d static provideDiscount(Data::Matrix3d data,
                                               double discountRate, int N,

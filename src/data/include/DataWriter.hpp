@@ -89,6 +89,9 @@ namespace Data {
         /// @return String depending on the output type
         virtual std::string writeUtilities(OutputType outputType,
                                            Matrix3dOverTime utilities) = 0;
+
+        virtual std::string writeTotals(OutputType outputType,
+                                        Totals totals) = 0;
     };
 
     /// @brief Concrete DataWriter class implementing the corresponding
@@ -148,6 +151,8 @@ namespace Data {
         /// @return
         std::string writeUtilities(OutputType outputType,
                                    Matrix3dOverTime utilities) override;
+
+        std::string writeTotals(OutputType outputType, Totals totals) override;
 
     private:
         std::vector<std::string> interventions;

@@ -25,6 +25,8 @@ public:
     MOCK_METHOD(Data::Matrix3d, getSettingUtility,
                 (std::string const &perspective), (const, override));
 
+    MOCK_METHOD(double, getDiscountRate, (), (const, override));
+
     MOCK_METHOD(Data::Configuration, loadConfigurationFile,
                 (std::string const &configPath), (override));
 

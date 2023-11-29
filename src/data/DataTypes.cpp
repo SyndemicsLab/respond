@@ -84,4 +84,19 @@ namespace Data {
         }
     }
 
+    Matrix3d Matrix3dOverTime::sumOverTime() const {
+        std::vector<Matrix3d> matrices = this->getMatrices();
+        if (matrices.size() <= 0) {
+            // log empty data
+            return {};
+        }
+
+        Matrix3d runningSum(matrices[0].dimensions());
+
+        for (Matrix3d matrix : matrices) {
+            runningSum += matrix;
+        }
+        return runningSum;
+    }
+
 } // namespace Data

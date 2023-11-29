@@ -61,6 +61,21 @@ bool argChecks(int argc, char **argv, std::string &rootInputDir, int &taskStart,
     return true;
 }
 
+std::vector<double> calcCosts(Calculator::PostSimulationCalculator calc,
+                              Data::CostList costsList) {
+    std::vector<double> result;
+    for (Data::Cost cost : costsList) {
+        double totalCost = 0.0;
+        totalCost += calc.totalAcrossTimeAndDims(cost.healthcareCost);
+        totalCost += calc.totalAcrossTimeAndDims(cost.fatalOverdoseCost);
+        totalCost += calc.totalAcrossTimeAndDims(cost.nonFatalOverdoseCost);
+        totalCost += calc.totalAcrossTimeAndDims(cost.pharmaCost);
+        totalCost += calc.totalAcrossTimeAndDims(cost.treatmentCost);
+        result.push_back(totalCost);
+    }
+    return result;
+}
+
 int main(int argc, char **argv) {
 
     int taskStart;
@@ -105,9 +120,6 @@ int main(int argc, char **argv) {
             Data::UtilityLoader utilityLoader(inputSet.string());
             logger->info("UtilityLoader Created");
 
-            Data::CostList costs;
-            Data::Matrix3dOverTime utilities;
-
             inputs.loadInitialSample("init_cohort.csv");
             inputs.loadEnteringSamples("entering_cohort.csv", "No_Treatment",
                                        "Active_Noninjection");
@@ -138,12 +150,44 @@ int main(int argc, char **argv) {
             sim.Run();
             Data::History history = sim.getHistory();
 
+            Data::CostList basecosts;
+            Data::Matrix3dOverTime baseutilities;
+            double baselifeYears = 0.0;
+            std::vector<double> totalBaseCosts;
+            double totalBaseUtility = 0.0;
+
+            Data::CostList disccosts;
+            Data::Matrix3dOverTime discutilities;
+            double disclifeYears;
+            std::vector<double> totalDiscCosts;
+            double totalDiscUtility = 0.0;
+
             if (costLoader.getCostSwitch()) {
                 Calculator::PostSimulationCalculator PostSimulationCalculator(
                     history);
-                costs = PostSimulationCalculator.calculateCosts(costLoader);
-                utilities = PostSimulationCalculator.calculateUtilities(
+                basecosts = PostSimulationCalculator.calculateCosts(costLoader);
+                totalBaseCosts = calcCosts(PostSimulationCalculator, basecosts);
+
+                baseutilities = PostSimulationCalculator.calculateUtilities(
                     utilityLoader, Calculator::UTILITY_TYPE::MIN);
+                totalBaseUtility =
+                    PostSimulationCalculator.totalAcrossTimeAndDims(
+                        baseutilities);
+                baselifeYears = PostSimulationCalculator.calculateLifeYears();
+                if (costLoader.getDiscountRate() != 0.0) {
+                    disccosts =
+                        PostSimulationCalculator.calculateCosts(costLoader);
+
+                    totalDiscCosts =
+                        calcCosts(PostSimulationCalculator, disccosts);
+                    discutilities = PostSimulationCalculator.calculateUtilities(
+                        utilityLoader, Calculator::UTILITY_TYPE::MIN);
+                    totalDiscUtility =
+                        PostSimulationCalculator.totalAcrossTimeAndDims(
+                            discutilities);
+                    disclifeYears =
+                        PostSimulationCalculator.calculateLifeYears();
+                }
             }
 
             std::vector<int> outputTimesteps =
@@ -156,14 +200,24 @@ int main(int argc, char **argv) {
 
             Data::DataFormatter formatter;
 
-            formatter.extractTimesteps(outputTimesteps, history, costs,
-                                       utilities, costLoader.getCostSwitch());
+            formatter.extractTimesteps(outputTimesteps, history, basecosts,
+                                       baseutilities,
+                                       costLoader.getCostSwitch());
 
             writer.writeHistory(Data::FILE, history);
 
+            Data::Totals totals;
+            totals.baseCosts = totalBaseCosts;
+            totals.baseLifeYears = baselifeYears;
+            totals.baseUtility = totalBaseUtility;
+            totals.discCosts = totalDiscCosts;
+            totals.discLifeYears = disclifeYears;
+            totals.discUtility = totalDiscUtility;
+
             if (costLoader.getCostSwitch()) {
-                writer.writeCosts(Data::FILE, costs);
-                writer.writeUtilities(Data::FILE, utilities);
+                writer.writeCosts(Data::FILE, basecosts);
+                writer.writeUtilities(Data::FILE, baseutilities);
+                writer.writeTotals(Data::FILE, totals);
             }
 
             std::cout << "Output " << std::to_string(i) << " Complete"
