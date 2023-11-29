@@ -69,6 +69,10 @@ namespace Data {
         /// @brief
         /// @return
         virtual bool getCostSwitch() const = 0;
+
+        /// @brief
+        /// @return
+        virtual double getDiscountRate() const = 0;
     };
 
     class UtilityLoader : public Loader, public IUtilityLoader {
@@ -126,6 +130,8 @@ namespace Data {
         }
 
         virtual bool getCostSwitch() const { return this->costSwitch; }
+
+        virtual double getDiscountRate() const { return this->discountRate; }
 
     private:
         std::unordered_map<std::string, Matrix3d> backgroundUtility;

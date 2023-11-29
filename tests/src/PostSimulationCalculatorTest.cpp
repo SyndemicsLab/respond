@@ -165,11 +165,11 @@ TEST_F(PostSimulationCalculatorTest, calculateCost) {
 
     Data::CostList result = calculator.calculateCosts(costLoader);
 
-    EXPECT_EQ(result[0].healthcareCost(0, 0, 0, 0), 5);
-    EXPECT_EQ(result[0].pharmaCost(0, 0, 0, 0), 5);
-    EXPECT_EQ(result[0].treatmentCost(0, 0, 0, 0), 5);
-    EXPECT_EQ(result[0].nonFatalOverdoseCost(0, 0, 0, 0), 199);
-    EXPECT_EQ(result[0].fatalOverdoseCost(0, 0, 0, 0), 399);
+    EXPECT_EQ(result[0].healthcareCost(0, 0, 0, 0), 6);
+    EXPECT_EQ(result[0].pharmaCost(0, 0, 0, 0), 6);
+    EXPECT_EQ(result[0].treatmentCost(0, 0, 0, 0), 6);
+    EXPECT_EQ(result[0].nonFatalOverdoseCost(0, 0, 0, 0), 200);
+    EXPECT_EQ(result[0].fatalOverdoseCost(0, 0, 0, 0), 400);
 }
 
 TEST_F(PostSimulationCalculatorTest, calculateUtility) {
@@ -258,4 +258,22 @@ TEST_F(PostSimulationCalculatorTest, calculateUtilityMult) {
         utilityLoader, Calculator::UTILITY_TYPE::MULT);
 
     EXPECT_EQ(result(0, 0, 0, 0), 0.75);
+}
+
+TEST_F(PostSimulationCalculatorTest, calculateLifeYears) {
+    Data::History history;
+    Data::Matrix3d temp;
+    Data::Matrix3dOverTime stateHistory;
+    for (int i = 0; i < 52; ++i) {
+        temp =
+            Utilities::Matrix3dFactory::Create(2, 2, 2).setConstant(double(i));
+        stateHistory.insert(temp, i);
+    }
+
+    history.stateHistory = stateHistory;
+
+    Calculator::PostSimulationCalculator calculator(history);
+
+    double result = calculator.calculateLifeYears();
+    EXPECT_EQ(result, 204.0);
 }

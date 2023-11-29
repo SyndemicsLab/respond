@@ -25,7 +25,7 @@ namespace Calculator {
     }
 
     Data::CostList PostSimulationCalculator::calculateCosts(
-        Data::ICostLoader const &costLoader) const {
+        Data::ICostLoader const &costLoader, bool discount) const {
         Data::CostList costs;
         std::vector<std::string> perspectives =
             costLoader.getCostPerspectives();
@@ -33,36 +33,57 @@ namespace Calculator {
         for (std::string perspective : perspectives) {
             Data::Cost cost;
             cost.perspective = perspective;
-            cost.healthcareCost = this->multiplyMatrix(
-                this->history.stateHistory,
-                costLoader.getHealthcareUtilizationCost(perspective), true,
-                costLoader.getDiscountRate());
-            cost.pharmaCost = this->multiplyMatrix(
-                this->history.stateHistory,
-                costLoader.getPharmaceuticalCost(perspective), true,
-                costLoader.getDiscountRate());
+            if (discount) {
+                cost.healthcareCost = this->multiplyMatrix(
+                    this->history.stateHistory,
+                    costLoader.getHealthcareUtilizationCost(perspective), true,
+                    costLoader.getDiscountRate());
+                cost.pharmaCost = this->multiplyMatrix(
+                    this->history.stateHistory,
+                    costLoader.getPharmaceuticalCost(perspective), true,
+                    costLoader.getDiscountRate());
 
-            cost.treatmentCost = this->multiplyMatrix(
-                this->history.stateHistory,
-                costLoader.getTreatmentUtilizationCost(perspective), true,
-                costLoader.getDiscountRate());
-            cost.nonFatalOverdoseCost = this->multiplyDouble(
-                this->history.overdoseHistory,
-                costLoader.getNonFatalOverdoseCost(perspective), true,
-                costLoader.getDiscountRate());
+                cost.treatmentCost = this->multiplyMatrix(
+                    this->history.stateHistory,
+                    costLoader.getTreatmentUtilizationCost(perspective), true,
+                    costLoader.getDiscountRate());
+                cost.nonFatalOverdoseCost = this->multiplyDouble(
+                    this->history.overdoseHistory,
+                    costLoader.getNonFatalOverdoseCost(perspective), true,
+                    costLoader.getDiscountRate());
 
-            cost.fatalOverdoseCost = this->multiplyDouble(
-                this->history.fatalOverdoseHistory,
-                costLoader.getFatalOverdoseCost(perspective), true,
-                costLoader.getDiscountRate());
+                cost.fatalOverdoseCost = this->multiplyDouble(
+                    this->history.fatalOverdoseHistory,
+                    costLoader.getFatalOverdoseCost(perspective), true,
+                    costLoader.getDiscountRate());
+            } else {
+                cost.healthcareCost = this->multiplyMatrix(
+                    this->history.stateHistory,
+                    costLoader.getHealthcareUtilizationCost(perspective),
+                    false);
+                cost.pharmaCost = this->multiplyMatrix(
+                    this->history.stateHistory,
+                    costLoader.getPharmaceuticalCost(perspective), false);
+
+                cost.treatmentCost = this->multiplyMatrix(
+                    this->history.stateHistory,
+                    costLoader.getTreatmentUtilizationCost(perspective), false);
+                cost.nonFatalOverdoseCost = this->multiplyDouble(
+                    this->history.overdoseHistory,
+                    costLoader.getNonFatalOverdoseCost(perspective), false);
+
+                cost.fatalOverdoseCost = this->multiplyDouble(
+                    this->history.fatalOverdoseHistory,
+                    costLoader.getFatalOverdoseCost(perspective), false);
+            }
             costs.push_back(cost);
         }
         return costs;
     }
 
     Data::Matrix3dOverTime PostSimulationCalculator::calculateUtilities(
-        Data::IUtilityLoader const &utilityLoader,
-        UTILITY_TYPE utilType) const {
+        Data::IUtilityLoader const &utilityLoader, UTILITY_TYPE utilType,
+        bool discount) const {
         Data::Matrix3dOverTime utilities;
 
         std::string perspective = "utility";
@@ -81,8 +102,62 @@ namespace Calculator {
             util = Data::vecMin(utilityMatrices);
         }
 
-        utilities = this->multiplyMatrix(this->history.stateHistory, util);
+        if (discount) {
+            utilities =
+                this->multiplyMatrix(this->history.stateHistory, util, true,
+                                     utilityLoader.getDiscountRate());
+        } else {
+            utilities =
+                this->multiplyMatrix(this->history.stateHistory, util, false);
+        }
+
         return utilities;
+    }
+
+    double
+    PostSimulationCalculator::calculateLifeYears(bool provideDiscount,
+                                                 double discountRate) const {
+        std::vector<Data::Matrix3d> stateVec =
+            this->history.stateHistory.getMatrices();
+        if (stateVec.size() <= 0) {
+            // log no state vector
+            return 0.0;
+        }
+
+        Data::Matrix3d runningSum(stateVec[0].dimensions());
+        runningSum = runningSum.setZero();
+
+        for (int t = 0; t < stateVec.size(); ++t) {
+            if (provideDiscount) {
+                runningSum +=
+                    this->provideDiscount(stateVec[t], discountRate, t);
+            } else {
+                runningSum += stateVec[t];
+            }
+        }
+
+        Eigen::Tensor<double, 0> result = runningSum.sum();
+
+        // dividing by 52 to switch from life weeks to life years
+        return result(0) / 52.0;
+    }
+
+    double PostSimulationCalculator::totalAcrossTimeAndDims(
+        Data::Matrix3dOverTime const data) const {
+        std::vector<Data::Matrix3d> vec = data.getMatrices();
+        if (vec.size() <= 0) {
+            // log no vector
+            return 0.0;
+        }
+
+        Data::Matrix3d runningSum(vec[0].dimensions());
+        runningSum = runningSum.setZero();
+        for (Data::Matrix3d mat : vec) {
+            runningSum += mat;
+        }
+
+        Eigen::Tensor<double, 0> result = runningSum.sum();
+        return result(0);
     }
 
     Data::Matrix3dOverTime PostSimulationCalculator::multiplyDouble(
