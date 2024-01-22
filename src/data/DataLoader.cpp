@@ -172,7 +172,7 @@ namespace Data {
         auto itr = initialCohort.find("counts");
 
         if (itr != initialCohort.end()) {
-            logger->info("Counts Column Found");
+            // logger->info("Counts Column Found");
         } else {
             logger->error("Counts Column Not Found in init_cohorts.csv");
             throw std::out_of_range("counts not in init_cohorts.csv");
@@ -182,18 +182,18 @@ namespace Data {
             (nonPostInterventions * this->numDemographicCombos *
              this->numOUDStates)) {
             logger->error("Incorrect Number of Counts Found");
-            logger->info("Number of Counts Found: {}", itr->second.size());
-            logger->info("Number of Non-Post Interventions: {}",
-                         nonPostInterventions);
-            logger->info("Number of Demographic Combos: {}",
-                         this->numDemographicCombos);
-            logger->info("Number of OUD States {}", this->numOUDStates);
+            logger->error("Number of Counts Found: {}", itr->second.size());
+            logger->error("Number of Non-Post Interventions: {}",
+                          nonPostInterventions);
+            logger->error("Number of Demographic Combos: {}",
+                          this->numDemographicCombos);
+            logger->error("Number of OUD States {}", this->numOUDStates);
             throw std::invalid_argument(
                 "Number of Counts Found in init_cohorts.csv Greater Than "
                 "Interventions * Demographics * OUDStates");
         }
 
-        this->initialSample = Utilities::Matrix3dFactory::Create(
+        this->initialSample = Data::Matrix3dFactory::Create(
                                   this->numOUDStates, this->numInterventions,
                                   this->numDemographicCombos)
                                   .constant(0);
@@ -245,14 +245,14 @@ namespace Data {
 
             if (enteringSamplesTable.find(column) !=
                 enteringSamplesTable.end()) {
-                logger->info("{} Found", column);
+                // logger->info("{} Found", column);
             } else {
                 logger->error("{} Column Not Found in entering_cohort.csv",
                               column);
                 throw std::out_of_range(column + " not in entering_cohort.csv");
             }
 
-            Matrix3d enteringSample = Utilities::Matrix3dFactory::Create(
+            Matrix3d enteringSample = Data::Matrix3dFactory::Create(
                 this->numOUDStates, this->numInterventions,
                 this->numDemographicCombos);
 
@@ -282,7 +282,7 @@ namespace Data {
         // StateTensor-sized Matrix3d objects and stack at the end
         std::vector<Matrix3d> tempOUDTransitions;
         for (int i = 0; i < this->numOUDStates; ++i) {
-            tempOUDTransitions.push_back(Utilities::Matrix3dFactory::Create(
+            tempOUDTransitions.push_back(Data::Matrix3dFactory::Create(
                 this->numOUDStates, this->numInterventions,
                 this->numDemographicCombos));
         }
@@ -305,7 +305,7 @@ namespace Data {
 
                         if (oudTransitionTable.find(column) !=
                             oudTransitionTable.end()) {
-                            logger->info("{} Found", column);
+                            // logger->info("{} Found", column);
                         } else {
                             logger->error(
                                 "{} Column Not Found in oud_trans.csv", column);
@@ -356,7 +356,7 @@ namespace Data {
         std::vector<Matrix3d> tempinterventionInit;
         int activeNonActiveOffset = this->numOUDStates / 2;
         for (int i = 0; i < this->numOUDStates; ++i) {
-            tempinterventionInit.push_back(Utilities::Matrix3dFactory::Create(
+            tempinterventionInit.push_back(Data::Matrix3dFactory::Create(
                 this->numOUDStates, this->numInterventions,
                 this->numDemographicCombos));
         }
@@ -393,7 +393,7 @@ namespace Data {
 
                 if (interventionInitTable.find(currentIntervention) !=
                     interventionInitTable.end()) {
-                    logger->info("{} Found", currentIntervention);
+                    // logger->info("{} Found", currentIntervention);
                 } else {
                     logger->error("{} Column Not Found in block_trans.csv",
                                   currentIntervention);
@@ -490,9 +490,9 @@ namespace Data {
         int startTime = 0;
         for (int timestep : oct) {
             Matrix3d overdoseTransition =
-                Utilities::Matrix3dFactory::Create(this->numOUDStates,
-                                                   this->numInterventions,
-                                                   this->numDemographicCombos)
+                Data::Matrix3dFactory::Create(this->numOUDStates,
+                                              this->numInterventions,
+                                              this->numDemographicCombos)
                     .constant(0);
 
             std::string fodColumn = "fatal_to_all_types_overdose_ratio_cycle" +
@@ -500,8 +500,8 @@ namespace Data {
 
             if (fatalOverdoseTable.find(fodColumn) !=
                 fatalOverdoseTable.end()) {
-                this->logger->info("{} column found in fatal_overdose.csv",
-                                   fodColumn);
+                // this->logger->info("{} column found in fatal_overdose.csv",
+                //                    fodColumn);
             } else {
                 this->logger->error("{} column not found in fatal_overdose.csv",
                                     fodColumn);
@@ -509,7 +509,7 @@ namespace Data {
                                         " not in fatal_overdose.csv");
             }
 
-            Matrix3d temp = Utilities::Matrix3dFactory::Create(
+            Matrix3d temp = Data::Matrix3dFactory::Create(
                                 this->numOUDStates, this->numInterventions,
                                 this->numDemographicCombos)
                                 .setZero();
@@ -574,7 +574,7 @@ namespace Data {
         }
         std::vector<std::string> backgroundMortalityColumn = temp["death_prob"];
 
-        Matrix3d mortalityTransition = Utilities::Matrix3dFactory::Create(
+        Matrix3d mortalityTransition = Data::Matrix3dFactory::Create(
             this->numOUDStates, this->numInterventions,
             this->numDemographicCombos);
         // mortality is one element per stratum, no time variability
@@ -638,9 +638,9 @@ namespace Data {
     DataLoader::buildInterventionMatrix(std::vector<int> const &indices,
                                         InputTable const &table) {
         Data::Matrix3d transMat =
-            Utilities::Matrix3dFactory::Create(this->numOUDStates,
-                                               this->numInterventions,
-                                               this->numDemographicCombos)
+            Data::Matrix3dFactory::Create(this->numOUDStates,
+                                          this->numInterventions,
+                                          this->numDemographicCombos)
                 .constant(0);
 
         if (table.find("initial_block") == table.end()) {
@@ -722,10 +722,10 @@ namespace Data {
         InputTable const &table, Data::Dimension dimension) {
         if (dimension == Data::INTERVENTION) {
             Matrix3d stackingMatrices =
-                Utilities::Matrix3dFactory::Create(this->numOUDStates,
-                                                   this->numInterventions *
-                                                       this->numInterventions,
-                                                   this->numDemographicCombos)
+                Data::Matrix3dFactory::Create(this->numOUDStates,
+                                              this->numInterventions *
+                                                  this->numInterventions,
+                                              this->numDemographicCombos)
                     .constant(0);
             for (int i = 0; i < indicesVec.size(); i++) {
                 // assign to index + offset of numInterventions
@@ -742,16 +742,16 @@ namespace Data {
 
         } else if (dimension == Data::OUD) {
             Matrix3d stackingMatrices =
-                Utilities::Matrix3dFactory::Create(
+                Data::Matrix3dFactory::Create(
                     this->numOUDStates * this->numOUDStates,
                     this->numInterventions, this->numDemographicCombos)
                     .constant(0);
             return stackingMatrices;
         }
         Matrix3d stackingMatrices =
-            Utilities::Matrix3dFactory::Create(this->numOUDStates,
-                                               this->numInterventions,
-                                               this->numDemographicCombos)
+            Data::Matrix3dFactory::Create(this->numOUDStates,
+                                          this->numInterventions,
+                                          this->numDemographicCombos)
                 .constant(0);
         return stackingMatrices;
     }
@@ -821,9 +821,9 @@ namespace Data {
         std::vector<std::string> oudStates = this->Config.getOUDStates();
 
         Matrix3d overdoseTransitionsCycle =
-            Utilities::Matrix3dFactory::Create(this->numOUDStates,
-                                               this->numInterventions,
-                                               this->numDemographicCombos)
+            Data::Matrix3dFactory::Create(this->numOUDStates,
+                                          this->numInterventions,
+                                          this->numDemographicCombos)
                 .constant(0);
 
         int row = 0;

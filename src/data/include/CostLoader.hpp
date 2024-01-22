@@ -23,8 +23,6 @@
 
 #include "DataTypes.hpp"
 #include "Loader.hpp"
-#include "Matrix3dFactory.hpp"
-#include "Matrix3dPrinter.hpp"
 
 namespace Data {
     class ICostLoader : public virtual ILoader {

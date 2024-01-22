@@ -6,8 +6,6 @@ find_package(GTest REQUIRED CONFIG)
 # Link Boost
 find_package(Boost REQUIRED COMPONENTS filesystem)
 
-include_directories(mocks)
-
 # Find Eigen
 find_package (Eigen3 3.4 REQUIRED)
 
@@ -23,9 +21,11 @@ add_executable(respondTest
   src/PostSimulationCalculatorTest.cpp
 )
 
-target_include_directories(respondTest INTERFACE
+target_include_directories(respondTest PRIVATE
   ${CMAKE_CURRENT_SOURCE_DIR}
   "mocks/"
+  "../src/model/include/"
+  "../src/data/include/"
 )
 
 target_link_libraries(respondTest
@@ -40,11 +40,3 @@ target_link_libraries(respondTest
   spdlog::spdlog
 )
 
-# create the test data set in the build directory
-#add_custom_command(
-#        TARGET respondTest POST_BUILD
-#        COMMAND ${CMAKE_COMMAND} -E copy_directory
-#                ${CMAKE_SOURCE_DIR}/tests/TestInput
-#                ${CMAKE_BINARY_DIR}/TestInput)
-
-# gtest_discover_tests(respondTest)

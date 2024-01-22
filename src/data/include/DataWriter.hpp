@@ -32,7 +32,6 @@
 #include <fmt/core.h>
 
 #include "DataTypes.hpp"
-#include "Simulation.hpp"
 
 /// @brief Namespace Defining all Data Operations
 namespace Data {

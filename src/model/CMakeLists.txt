@@ -7,18 +7,12 @@ add_library(model
     PostSimulationCalculator.cpp
 )
 
-target_include_directories(model INTERFACE
-  "${CMAKE_CURRENT_SOURCE_DIR}/include/"
-  "${CMAKE_SOURCE_DIR}/src/data/include/"
-  "${CMAKE_SOURCE_DIR}/src/utilities/include/"
+target_include_directories(model PRIVATE
+  "include/"
+  "../data/include/"
 )
 
 target_link_libraries(model
   Eigen3::Eigen
   data
-  utilities
 )
-
-install(TARGETS model
-  LIBRARY DESTINATION lib
-  ARCHIVE DESTINATION lib)

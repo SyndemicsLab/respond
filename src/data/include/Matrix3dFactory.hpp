@@ -26,7 +26,7 @@
 #include "DataTypes.hpp"
 
 /// @brief Namespace containing all Helper Utility Classes
-namespace Utilities {
+namespace Data {
 
     /// @brief Factory to create a Matrix3d Object
     class Matrix3dFactory {
@@ -43,6 +43,6 @@ namespace Utilities {
                                      int numDemographics);
     };
 
-} // namespace Utilities
+} // namespace Data
 
 #endif

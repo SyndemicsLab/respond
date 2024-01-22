@@ -60,7 +60,7 @@ namespace Data {
         std::unordered_map<std::string, Data::Matrix3d> result;
 
         Data::Matrix3d utilMatrix =
-            Utilities::Matrix3dFactory::Create(numOUDStates, numInterventions,
+            Data::Matrix3dFactory::Create(numOUDStates, numInterventions,
                                                numDemographicCombos)
                 .constant(0);
 

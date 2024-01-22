@@ -168,7 +168,7 @@ namespace Calculator {
 
         for (int t = 0; t < overdoseVec.size(); t++) {
             Data::Matrix3d valueMatrix =
-                Utilities::Matrix3dFactory::Create(
+                Data::Matrix3dFactory::Create(
                     overdoseVec[t].dimension(Data::OUD),
                     overdoseVec[t].dimension(Data::INTERVENTION),
                     overdoseVec[t].dimension(Data::DEMOGRAPHIC_COMBO))
@@ -218,7 +218,7 @@ namespace Calculator {
         }
 
         Data::Matrix3d discount =
-            Utilities::Matrix3dFactory::Create(
+            Data::Matrix3dFactory::Create(
                 data.dimension(Data::OUD), data.dimension(Data::INTERVENTION),
                 data.dimension(Data::DEMOGRAPHIC_COMBO))
                 .setConstant(discountConstant);

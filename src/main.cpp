@@ -31,16 +31,17 @@
 #include "DataFormatter.hpp"
 #include "DataLoader.hpp"
 #include "DataWriter.hpp"
-#include "Helpers.hpp"
-#include "PostSimulationCalculator.hpp"
-#include "Simulation.hpp"
+#include "model/include/PostSimulationCalculator.hpp"
+#include "model/include/Simulation.hpp"
+
+#include "model/include/Helpers.hpp"
 
 int main(int argc, char **argv) {
 
     int taskStart;
     int taskEnd;
     std::string rootInputDir;
-    if (!Utilities::argChecks(argc, argv, rootInputDir, taskStart, taskEnd)) {
+    if (!Helpers::argChecks(argc, argv, rootInputDir, taskStart, taskEnd)) {
         return 0;
     }
 
@@ -126,7 +127,7 @@ int main(int argc, char **argv) {
                     history);
                 basecosts = PostSimulationCalculator.calculateCosts(costLoader);
                 totalBaseCosts =
-                    Utilities::calcCosts(PostSimulationCalculator, basecosts);
+                    Helpers::calcCosts(PostSimulationCalculator, basecosts);
 
                 baseutilities = PostSimulationCalculator.calculateUtilities(
                     utilityLoader, Calculator::UTILITY_TYPE::MIN);
@@ -138,8 +139,8 @@ int main(int argc, char **argv) {
                     disccosts =
                         PostSimulationCalculator.calculateCosts(costLoader);
 
-                    totalDiscCosts = Utilities::calcCosts(
-                        PostSimulationCalculator, disccosts);
+                    totalDiscCosts =
+                        Helpers::calcCosts(PostSimulationCalculator, disccosts);
                     discutilities = PostSimulationCalculator.calculateUtilities(
                         utilityLoader, Calculator::UTILITY_TYPE::MIN);
                     totalDiscUtility =

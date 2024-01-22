@@ -23,11 +23,7 @@ namespace Simulation {
 
     Sim::Sim(int duration, int numOUDStates, int numInterventions,
              int numDemographics) {
-        boost::log::add_file_log("simulation.log");
-        boost::log::core::get()->set_filter(boost::log::trivial::severity >=
-                                            boost::log::trivial::info);
 
-        BOOST_LOG(this->lg) << "Initialize Logging";
         const auto processor_count = std::thread::hardware_concurrency();
         Eigen::setNbThreads(processor_count);
         this->Duration = duration;
@@ -38,20 +34,16 @@ namespace Simulation {
 
         this->numDemographicCombos = numDemographics;
 
-        this->state = Utilities::Matrix3dFactory::Create(
+        this->state = Data::Matrix3dFactory::Create(
             this->numOUDStates, this->numInterventions, this->numDemographics);
         this->state.setZero();
-        this->transition = Utilities::Matrix3dFactory::Create(
+        this->transition = Data::Matrix3dFactory::Create(
             this->numOUDStates, this->numInterventions, this->numDemographics);
         this->transition.setZero();
         this->agingSwitch = false;
     }
 
     Sim::Sim(Data::IDataLoader &dataLoader) {
-        boost::log::add_file_log("simulation.log");
-        boost::log::core::get()->set_filter(boost::log::trivial::severity >=
-                                            boost::log::trivial::info);
-        BOOST_LOG(this->lg) << "Initialize Logging";
         const auto processor_count = std::thread::hardware_concurrency();
         Eigen::setNbThreads(processor_count);
         this->Duration = dataLoader.getDuration();
@@ -60,11 +52,11 @@ namespace Simulation {
         this->numInterventions = dataLoader.getNumInterventions();
         this->numDemographics = dataLoader.getNumDemographics();
         this->numDemographicCombos = dataLoader.getNumDemographicCombos();
-        this->state = Utilities::Matrix3dFactory::Create(
-            this->numOUDStates, this->numInterventions,
-            this->numDemographicCombos);
+        this->state = Data::Matrix3dFactory::Create(this->numOUDStates,
+                                                    this->numInterventions,
+                                                    this->numDemographicCombos);
         this->state.setZero();
-        this->transition = Utilities::Matrix3dFactory::Create(
+        this->transition = Data::Matrix3dFactory::Create(
             this->numOUDStates, this->numInterventions,
             this->numDemographicCombos);
         this->transition.setZero();
@@ -80,46 +72,38 @@ namespace Simulation {
 
     void Sim::loadInitialSample(Data::Matrix3d const &initialSample) {
         this->state = initialSample;
-        BOOST_LOG(this->lg) << "Initial Group Loaded";
     }
 
     void
     Sim::loadEnteringSamples(Data::Matrix3dOverTime const &enteringSamples) {
         this->enteringSamples = enteringSamples;
-        BOOST_LOG(this->lg) << "Entering Samples Loaded";
     }
 
     void Sim::loadOUDTransitionRates(Data::Matrix3d const &oudTransitionRates) {
         this->oudTransitionRates = oudTransitionRates;
-        BOOST_LOG(this->lg) << "OUD Transitions Loaded";
     }
 
     void Sim::loadInterventionInitRates(
         Data::Matrix3d const &interventionInitRates) {
         this->interventionInitRates = interventionInitRates;
-        BOOST_LOG(this->lg) << "Intervention Init Rates Loaded";
     }
 
     void Sim::loadInterventionTransitionRates(
         Data::Matrix3dOverTime const &interventionTransitionRates) {
         this->interventionTransitionRates = interventionTransitionRates;
-        BOOST_LOG(this->lg) << "Intervention Transitions Loaded";
     }
 
     void Sim::loadFatalOverdoseRates(
         Data::Matrix3dOverTime const &fatalOverdoseRates) {
         this->fatalOverdoseRates = fatalOverdoseRates;
-        BOOST_LOG(this->lg) << "Fatal Overdose Transitions Loaded";
     }
 
     void Sim::loadOverdoseRates(Data::Matrix3dOverTime const &overdoseRates) {
         this->overdoseRates = overdoseRates;
-        BOOST_LOG(this->lg) << "Overdose Transitions Loaded";
     }
 
     void Sim::loadMortalityRates(Data::Matrix3d const &mortalityRates) {
         this->mortalityRates = mortalityRates;
-        BOOST_LOG(this->lg) << "Mortality Transitions Loaded";
     }
 
     void Sim::Load(Data::IDataLoader const &dataLoader) {
@@ -138,7 +122,6 @@ namespace Simulation {
         this->ageGroupShift = shift;
         this->agingInterval = interval;
         this->agingSwitch = true;
-        BOOST_LOG(this->lg) << "Aging Parameters Loaded";
     }
 
     void Sim::LoadTransitionModules(
@@ -159,7 +142,7 @@ namespace Simulation {
     }
 
     void Sim::Run() {
-        Data::Matrix3d zeroMat = Utilities::Matrix3dFactory::Create(
+        Data::Matrix3d zeroMat = Data::Matrix3dFactory::Create(
                                      this->numOUDStates, this->numInterventions,
                                      this->numDemographicCombos)
                                      .constant(0);
@@ -171,9 +154,6 @@ namespace Simulation {
 
         for (this->currentTime = 0; this->currentTime < this->Duration;
              this->currentTime++) {
-            std::string fmt_string =
-                fmt::format("Running Timestep {}\n", this->currentTime);
-            BOOST_LOG(this->lg) << fmt_string;
             this->state = this->step();
             this->history.stateHistory.insert(this->state, currentTime + 1);
         }
@@ -275,9 +255,9 @@ namespace Simulation {
             return this->interventionTransitionRates(this->currentTime);
         case Data::DEMOGRAPHIC_COMBO:
         default:
-            return Utilities::Matrix3dFactory::Create(
-                this->numOUDStates, this->numInterventions,
-                this->numDemographicCombos);
+            return Data::Matrix3dFactory::Create(this->numOUDStates,
+                                                 this->numInterventions,
+                                                 this->numDemographicCombos);
         }
     }
 

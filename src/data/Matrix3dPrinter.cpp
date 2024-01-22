@@ -17,7 +17,7 @@
 
 #include "Matrix3dPrinter.hpp"
 
-namespace Utilities {
+namespace Data {
 
     void Matrix3dPrinter::Print(Data::Matrix3d mat, std::ostream &stream) {
         Data::Matrix3d::Dimensions dim = mat.dimensions();
@@ -45,4 +45,4 @@ namespace Utilities {
         }
     }
 
-} // namespace Utilities
+} // namespace Data

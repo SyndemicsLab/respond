@@ -25,7 +25,7 @@
 
 #include "DataTypes.hpp"
 
-namespace Utilities {
+namespace Data {
 
     /// @brief Helper Class to Cleanly Print Matrix3d Objects
     class Matrix3dPrinter {
@@ -44,6 +44,6 @@ namespace Utilities {
                                   std::ostream &stream);
     };
 
-} // namespace Utilities
+} // namespace Data
 
 #endif

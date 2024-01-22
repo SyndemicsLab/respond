@@ -25,15 +25,6 @@
 #include "Matrix3dFactory.hpp"
 #include <Eigen/Eigen>
 #include <algorithm>
-#include <boost/log/core.hpp>
-#include <boost/log/expressions.hpp>
-#include <boost/log/sinks/text_file_backend.hpp>
-#include <boost/log/sources/logger.hpp>
-#include <boost/log/sources/record_ostream.hpp>
-#include <boost/log/sources/severity_logger.hpp>
-#include <boost/log/trivial.hpp>
-#include <boost/log/utility/setup/common_attributes.hpp>
-#include <boost/log/utility/setup/file.hpp>
 #include <cmath>
 #include <cstdint>
 #include <fmt/core.h>
@@ -295,8 +286,6 @@ namespace Simulation {
         bool agingSwitch;
 
     private:
-        boost::log::sources::logger lg;
-
         bool interventionInitState = false;
 
         Data::Matrix3d state;

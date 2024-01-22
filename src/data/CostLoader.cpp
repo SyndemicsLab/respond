@@ -16,6 +16,8 @@
 //===----------------------------------------------------------------------===//
 
 #include "CostLoader.hpp"
+#include "Matrix3dFactory.hpp"
+#include "Matrix3dPrinter.hpp"
 
 namespace Data {
 
@@ -43,8 +45,8 @@ namespace Data {
             ASSERTM(table.find(perspective) != table.end(), message);
 
             this->healthcareUtilizationCost[perspective] =
-                Utilities::Matrix3dFactory::Create(
-                    numOUDStates, numInterventions, numDemographicCombos);
+                Data::Matrix3dFactory::Create(numOUDStates, numInterventions,
+                                              numDemographicCombos);
 
             std::vector<std::string> healthColumn = table[perspective];
 
@@ -174,8 +176,8 @@ namespace Data {
 
         for (std::string perspective : this->costPerspectives) {
             costParameter[perspective] =
-                Utilities::Matrix3dFactory::Create(
-                    numOUDStates, numInterventions, numDemographicCombos)
+                Data::Matrix3dFactory::Create(numOUDStates, numInterventions,
+                                              numDemographicCombos)
                     .constant(0);
 
             std::vector<std::string> interventions =

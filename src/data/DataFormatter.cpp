@@ -65,7 +65,7 @@ namespace Data {
 
         Data::Matrix3dOverTime trimmed;
         Data::Matrix3d running =
-            Utilities::Matrix3dFactory::Create(oudSize, interSize, demSize)
+            Data::Matrix3dFactory::Create(oudSize, interSize, demSize)
                 .setZero();
 
         std::vector<Data::Matrix3d> matrices = matrix.getMatrices();
@@ -77,7 +77,7 @@ namespace Data {
             running += matrices[i];
             if (i >= timesteps[timestepIdx]) {
                 trimmed.insert(running, timesteps[timestepIdx]);
-                running = Utilities::Matrix3dFactory::Create(oudSize, interSize,
+                running = Data::Matrix3dFactory::Create(oudSize, interSize,
                                                              demSize)
                               .setZero();
                 timestepIdx++;

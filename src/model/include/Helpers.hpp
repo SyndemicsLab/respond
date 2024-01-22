@@ -7,7 +7,7 @@
 
 #include "DataLoader.hpp"
 
-namespace Utilities {
+namespace Helpers {
     bool argChecks(int argc, char **argv, std::string &rootInputDir,
                    int &taskStart, int &taskEnd) {
         if (argc > 1 && argc != 4) {
@@ -49,6 +49,6 @@ namespace Utilities {
         }
         return result;
     }
-} // namespace Utilities
+} // namespace Helpers
 
 #endif

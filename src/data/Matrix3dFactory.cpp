@@ -17,7 +17,7 @@
 
 #include "Matrix3dFactory.hpp"
 
-namespace Utilities {
+namespace Data {
 
     Data::Matrix3d Matrix3dFactory::Create(int numOUDStates,
                                            int numInterventions,
@@ -31,4 +31,4 @@ namespace Utilities {
         return empty;
     }
 
-} // namespace Utilities
+} // namespace Data
