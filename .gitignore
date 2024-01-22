@@ -24,6 +24,8 @@ docs/images/drawio
 test/TestInput/*
 !test/TestInput/.gitkeep
 
+# Shared Libraries
+dminstall
 
 
 # External tool builders
