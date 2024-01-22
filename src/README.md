@@ -1,7 +1,9 @@
 # RESPOND
+
 In 2018, the [Syndemics Lab](https://www.syndemicslab.org) created the <b>R</b>esearching <b>E</b>ffective <b>S</b>trategies to <b>P</b>revent <b>O</b>pioid <b>D</b>eath (RESPOND) simulation model as a tool through which populations in jurisdictions experiencing high-risk opioid use and their care cascades could be studied.
 
 The structure of `RESPOND` can be broken down into the following pieces:
+
 1. Population Dynamics
 2. Opioid Use Disorder Progression
 3. Care Delivery
@@ -9,7 +11,10 @@ The structure of `RESPOND` can be broken down into the following pieces:
 
 These parameter sets were designed and made via expert opinion and general consensus. Future work plans to experiment with the general structure accuracy.
 
+[![CMake](https://github.com/SyndemicsLab/RESPONDSimulationv2/actions/workflows/cmake.yml/badge.svg)](https://github.com/SyndemicsLab/RESPONDSimulationv2/actions/workflows/cmake.yml)
+
 ## Implementation Details
+
 The original implementation of `RESPOND` was written in a combination of two programming languages--R and C++. `RESPONDv2.0` is a complete rewrite of `RESPOND`, written purely in C++, with the goals of improving the readability and maintainability of the model, improving the execution speed, and making the model calibration process easier.
 
 ## Dependencies
@@ -25,6 +30,7 @@ The original implementation of `RESPOND` was written in a combination of two pro
 </center>
 
 ## Build Instructions
+
 TODO
 
 ## What's New?

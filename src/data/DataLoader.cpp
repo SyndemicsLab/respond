@@ -16,6 +16,11 @@
 //===----------------------------------------------------------------------===//
 
 #include "DataLoader.hpp"
+#include "Matrix3dFactory.hpp"
+#include "Matrix3dPrinter.hpp"
+
+#include <cmath>
+#include <stdexcept>
 
 namespace Data {
 

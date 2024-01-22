@@ -18,17 +18,9 @@
 #ifndef DATA_DATALOADER_HPP_
 #define DATA_DATALOADER_HPP_
 
-#define FMT_HEADER_ONLY
-
-#include <boost/tokenizer.hpp>
-#include <cmath>
-#include <fmt/core.h>
-#include <fstream>
 #include <iostream>
 #include <map>
-#include <stdexcept>
 #include <string>
-#include <unordered_map>
 #include <vector>
 
 #include "spdlog/sinks/stdout_color_sinks.h"
@@ -37,8 +29,6 @@
 #include "Configuration.hpp"
 #include "DataTypes.hpp"
 #include "Loader.hpp"
-#include "Matrix3dFactory.hpp"
-#include "Matrix3dPrinter.hpp"
 
 namespace Data {
     class IDataLoader : public virtual ILoader {
