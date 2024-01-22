@@ -29,8 +29,6 @@
 #include <unsupported/Eigen/CXX11/Tensor>
 #include <vector>
 
-#include <fmt/core.h>
-
 #include "DataTypes.hpp"
 
 /// @brief Namespace Defining all Data Operations

@@ -355,10 +355,10 @@ namespace Data {
         std::string ret = "Interventions, OUD States,";
         for (int counter = 0; counter < this->demographics[0].size();
              counter++) {
-            ret += fmt::format("Demographic {},", counter);
+            ret += "Demographic " + std::to_string(counter) + ",";
         }
         for (int timestep : this->timesteps) {
-            ret += fmt::format("t+{},", timestep);
+            ret += "t+" + std::to_string(timestep) + ",";
         }
         return ret;
     }

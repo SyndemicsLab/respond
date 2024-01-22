@@ -27,7 +27,6 @@
 #include <algorithm>
 #include <cmath>
 #include <cstdint>
-#include <fmt/core.h>
 #include <iostream>
 #include <numeric>
 #include <string>
