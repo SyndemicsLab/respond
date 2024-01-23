@@ -12,6 +12,6 @@ add_executable(api main.cpp)
 
 target_link_libraries(api
   Crow::Crow
-  data
+  matrixify
   model
 )

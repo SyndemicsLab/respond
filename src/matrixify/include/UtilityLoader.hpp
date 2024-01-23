@@ -22,7 +22,7 @@
 #include "Loader.hpp"
 #include "Matrix3dFactory.hpp"
 
-namespace Data {
+namespace Matrixify {
     class IUtilityLoader : public virtual ILoader {
     public:
         /// @brief Load the Background Utilties from a File
@@ -151,6 +151,6 @@ namespace Data {
         std::unordered_map<std::string, Matrix3d>
         loadUtility(std::string const &csvName);
     };
-} // namespace Data
+} // namespace Matrixify
 
 #endif

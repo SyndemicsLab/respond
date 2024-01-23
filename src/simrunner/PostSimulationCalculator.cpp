@@ -20,18 +20,18 @@
 namespace Calculator {
 
     PostSimulationCalculator::PostSimulationCalculator(
-        Data::History const &history) {
+        Matrixify::History const &history) {
         this->history = history;
     }
 
-    Data::CostList PostSimulationCalculator::calculateCosts(
-        Data::ICostLoader const &costLoader, bool discount) const {
-        Data::CostList costs;
+    Matrixify::CostList PostSimulationCalculator::calculateCosts(
+        Matrixify::ICostLoader const &costLoader, bool discount) const {
+        Matrixify::CostList costs;
         std::vector<std::string> perspectives =
             costLoader.getCostPerspectives();
 
         for (std::string perspective : perspectives) {
-            Data::Cost cost;
+            Matrixify::Cost cost;
             cost.perspective = perspective;
             if (discount) {
                 cost.healthcareCost = this->multiplyMatrix(
@@ -81,25 +81,25 @@ namespace Calculator {
         return costs;
     }
 
-    Data::Matrix3dOverTime PostSimulationCalculator::calculateUtilities(
-        Data::IUtilityLoader const &utilityLoader, UTILITY_TYPE utilType,
+    Matrixify::Matrix3dOverTime PostSimulationCalculator::calculateUtilities(
+        Matrixify::IUtilityLoader const &utilityLoader, UTILITY_TYPE utilType,
         bool discount) const {
-        Data::Matrix3dOverTime utilities;
+        Matrixify::Matrix3dOverTime utilities;
 
         std::string perspective = "utility";
 
-        Data::Matrix3d util;
+        Matrixify::Matrix3d util;
 
-        std::vector<Data::Matrix3d> utilityMatrices;
+        std::vector<Matrixify::Matrix3d> utilityMatrices;
         utilityMatrices.push_back(
             utilityLoader.getBackgroundUtility(perspective));
         utilityMatrices.push_back(utilityLoader.getOUDUtility(perspective));
         utilityMatrices.push_back(utilityLoader.getSettingUtility(perspective));
 
         if (utilType == UTILITY_TYPE::MULT) {
-            util = Data::vecMult(utilityMatrices);
+            util = Matrixify::vecMult(utilityMatrices);
         } else {
-            util = Data::vecMin(utilityMatrices);
+            util = Matrixify::vecMin(utilityMatrices);
         }
 
         if (discount) {
@@ -117,14 +117,14 @@ namespace Calculator {
     double
     PostSimulationCalculator::calculateLifeYears(bool provideDiscount,
                                                  double discountRate) const {
-        std::vector<Data::Matrix3d> stateVec =
+        std::vector<Matrixify::Matrix3d> stateVec =
             this->history.stateHistory.getMatrices();
         if (stateVec.size() <= 0) {
             // log no state vector
             return 0.0;
         }
 
-        Data::Matrix3d runningSum(stateVec[0].dimensions());
+        Matrixify::Matrix3d runningSum(stateVec[0].dimensions());
         runningSum = runningSum.setZero();
 
         for (int t = 0; t < stateVec.size(); ++t) {
@@ -143,16 +143,16 @@ namespace Calculator {
     }
 
     double PostSimulationCalculator::totalAcrossTimeAndDims(
-        Data::Matrix3dOverTime const data) const {
-        std::vector<Data::Matrix3d> vec = data.getMatrices();
+        Matrixify::Matrix3dOverTime const data) const {
+        std::vector<Matrixify::Matrix3d> vec = data.getMatrices();
         if (vec.size() <= 0) {
             // log no vector
             return 0.0;
         }
 
-        Data::Matrix3d runningSum(vec[0].dimensions());
+        Matrixify::Matrix3d runningSum(vec[0].dimensions());
         runningSum = runningSum.setZero();
-        for (Data::Matrix3d mat : vec) {
+        for (Matrixify::Matrix3d mat : vec) {
             runningSum += mat;
         }
 
@@ -160,49 +160,50 @@ namespace Calculator {
         return result(0);
     }
 
-    Data::Matrix3dOverTime PostSimulationCalculator::multiplyDouble(
-        Data::Matrix3dOverTime const &overdose, double const &value,
+    Matrixify::Matrix3dOverTime PostSimulationCalculator::multiplyDouble(
+        Matrixify::Matrix3dOverTime const &overdose, double const &value,
         bool provideDiscount, double discountRate) const {
-        std::vector<Data::Matrix3d> overdoseVec = overdose.getMatrices();
-        std::vector<Data::Matrix3d> result;
+        std::vector<Matrixify::Matrix3d> overdoseVec = overdose.getMatrices();
+        std::vector<Matrixify::Matrix3d> result;
 
         for (int t = 0; t < overdoseVec.size(); t++) {
-            Data::Matrix3d valueMatrix =
-                Data::Matrix3dFactory::Create(
-                    overdoseVec[t].dimension(Data::OUD),
-                    overdoseVec[t].dimension(Data::INTERVENTION),
-                    overdoseVec[t].dimension(Data::DEMOGRAPHIC_COMBO))
+            Matrixify::Matrix3d valueMatrix =
+                Matrixify::Matrix3dFactory::Create(
+                    overdoseVec[t].dimension(Matrixify::OUD),
+                    overdoseVec[t].dimension(Matrixify::INTERVENTION),
+                    overdoseVec[t].dimension(Matrixify::DEMOGRAPHIC_COMBO))
                     .constant(value);
-            Data::Matrix3d temp = overdoseVec[t] * valueMatrix;
+            Matrixify::Matrix3d temp = overdoseVec[t] * valueMatrix;
             if (provideDiscount) {
                 temp = this->provideDiscount(temp, discountRate, t);
             }
             result.push_back(temp);
         }
 
-        Data::Matrix3dOverTime ret(result);
+        Matrixify::Matrix3dOverTime ret(result);
         return ret;
     }
 
-    Data::Matrix3dOverTime PostSimulationCalculator::multiplyMatrix(
-        Data::Matrix3dOverTime const &state, Data::Matrix3d const &value,
-        bool provideDiscount, double discountRate) const {
-        std::vector<Data::Matrix3d> result;
-        std::vector<Data::Matrix3d> stateVec = state.getMatrices();
+    Matrixify::Matrix3dOverTime PostSimulationCalculator::multiplyMatrix(
+        Matrixify::Matrix3dOverTime const &state,
+        Matrixify::Matrix3d const &value, bool provideDiscount,
+        double discountRate) const {
+        std::vector<Matrixify::Matrix3d> result;
+        std::vector<Matrixify::Matrix3d> stateVec = state.getMatrices();
         for (int t = 0; t < stateVec.size(); t++) {
-            Data::Matrix3d temp = stateVec[t] * value;
+            Matrixify::Matrix3d temp = stateVec[t] * value;
             if (provideDiscount) {
                 temp = this->provideDiscount(temp, discountRate, t);
             }
             result.push_back(temp);
         }
 
-        Data::Matrix3dOverTime ret(result);
+        Matrixify::Matrix3dOverTime ret(result);
         return ret;
     }
 
-    Data::Matrix3d PostSimulationCalculator::provideDiscount(
-        Data::Matrix3d data, double discountRate, int N, bool isDiscrete,
+    Matrixify::Matrix3d PostSimulationCalculator::provideDiscount(
+        Matrixify::Matrix3d data, double discountRate, int N, bool isDiscrete,
         bool weeklyTimestep) {
         if (!weeklyTimestep) {
             // notify we do not support this yet
@@ -217,12 +218,13 @@ namespace Calculator {
             discountConstant = exp(-discountRate * (N / 52));
         }
 
-        Data::Matrix3d discount =
-            Data::Matrix3dFactory::Create(
-                data.dimension(Data::OUD), data.dimension(Data::INTERVENTION),
-                data.dimension(Data::DEMOGRAPHIC_COMBO))
+        Matrixify::Matrix3d discount =
+            Matrixify::Matrix3dFactory::Create(
+                data.dimension(Matrixify::OUD),
+                data.dimension(Matrixify::INTERVENTION),
+                data.dimension(Matrixify::DEMOGRAPHIC_COMBO))
                 .setConstant(discountConstant);
-        Data::Matrix3d result = data - discount;
+        Matrixify::Matrix3d result = data - discount;
         return result;
     }
 } // namespace Calculator

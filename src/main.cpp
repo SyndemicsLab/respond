@@ -31,10 +31,10 @@
 #include "DataFormatter.hpp"
 #include "DataLoader.hpp"
 #include "DataWriter.hpp"
-#include "model/include/PostSimulationCalculator.hpp"
-#include "model/include/Simulation.hpp"
+#include "simrunner/include/PostSimulationCalculator.hpp"
+#include "simrunner/include/Simulation.hpp"
 
-#include "model/include/Helpers.hpp"
+#include "simrunner/include/Helpers.hpp"
 
 int main(int argc, char **argv) {
 
@@ -71,13 +71,13 @@ int main(int argc, char **argv) {
 
             logger->info("Logger Created");
 
-            Data::DataLoader inputs(inputSet.string(), logger);
+            Matrixify::DataLoader inputs(inputSet.string(), logger);
             logger->info("DataLoader Created");
 
-            Data::CostLoader costLoader(inputSet.string());
+            Matrixify::CostLoader costLoader(inputSet.string());
             logger->info("CostLoader Created");
 
-            Data::UtilityLoader utilityLoader(inputSet.string());
+            Matrixify::UtilityLoader utilityLoader(inputSet.string());
             logger->info("UtilityLoader Created");
 
             inputs.loadInitialSample("init_cohort.csv");
@@ -108,16 +108,16 @@ int main(int argc, char **argv) {
 
             Simulation::Sim sim(inputs);
             sim.Run();
-            Data::History history = sim.getHistory();
+            Matrixify::History history = sim.getHistory();
 
-            Data::CostList basecosts;
-            Data::Matrix3dOverTime baseutilities;
+            Matrixify::CostList basecosts;
+            Matrixify::Matrix3dOverTime baseutilities;
             double baselifeYears = 0.0;
             std::vector<double> totalBaseCosts;
             double totalBaseUtility = 0.0;
 
-            Data::CostList disccosts;
-            Data::Matrix3dOverTime discutilities;
+            Matrixify::CostList disccosts;
+            Matrixify::Matrix3dOverTime discutilities;
             double disclifeYears;
             std::vector<double> totalDiscCosts;
             double totalDiscUtility = 0.0;
@@ -154,20 +154,20 @@ int main(int argc, char **argv) {
             std::vector<int> outputTimesteps =
                 inputs.getGeneralStatsOutputTimesteps();
 
-            Data::DataWriter writer(
+            Matrixify::DataWriter writer(
                 outputDir.string(), inputs.getInterventions(),
                 inputs.getOUDStates(), demographics, outputTimesteps,
                 inputs.getGeneralOutputsSwitch());
 
-            Data::DataFormatter formatter;
+            Matrixify::DataFormatter formatter;
 
             formatter.extractTimesteps(outputTimesteps, history, basecosts,
                                        baseutilities,
                                        costLoader.getCostSwitch());
 
-            writer.writeHistory(Data::FILE, history);
+            writer.writeHistory(Matrixify::FILE, history);
 
-            Data::Totals totals;
+            Matrixify::Totals totals;
             totals.baseCosts = totalBaseCosts;
             totals.baseLifeYears = baselifeYears;
             totals.baseUtility = totalBaseUtility;
@@ -176,9 +176,9 @@ int main(int argc, char **argv) {
             totals.discUtility = totalDiscUtility;
 
             if (costLoader.getCostSwitch()) {
-                writer.writeCosts(Data::FILE, basecosts);
-                writer.writeUtilities(Data::FILE, baseutilities);
-                writer.writeTotals(Data::FILE, totals);
+                writer.writeCosts(Matrixify::FILE, basecosts);
+                writer.writeUtilities(Matrixify::FILE, baseutilities);
+                writer.writeTotals(Matrixify::FILE, totals);
             }
 
             std::cout << "Output " << std::to_string(i) << " Complete"

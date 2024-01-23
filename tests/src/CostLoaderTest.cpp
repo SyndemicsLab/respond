@@ -101,24 +101,24 @@ protected:
 };
 
 TEST_F(CostLoaderTest, Constructor) {
-    Data::CostLoader cl;
-    Data::Matrix3d result = cl.getHealthcareUtilizationCost("healthcare");
+    Matrixify::CostLoader cl;
+    Matrixify::Matrix3d result = cl.getHealthcareUtilizationCost("healthcare");
     EXPECT_EQ(result.size(), 0);
 }
 
 TEST_F(CostLoaderTest, ConstructorStr) {
-    Data::CostLoader cl(boost::filesystem::temp_directory_path().string());
+    Matrixify::CostLoader cl(boost::filesystem::temp_directory_path().string());
     EXPECT_EQ(cl.getConfiguration().getInterventions().size(), 9);
 }
 
 TEST_F(CostLoaderTest, loadConfigurationFile) {
-    Data::CostLoader cl;
+    Matrixify::CostLoader cl;
     cl.loadConfigurationFile(configFile.string());
     EXPECT_EQ(cl.getConfiguration().getInterventions().size(), 9);
 }
 
 TEST_F(CostLoaderTest, healthcareUtilizationCost) {
-    Data::CostLoader cl(boost::filesystem::temp_directory_path().string());
+    Matrixify::CostLoader cl(boost::filesystem::temp_directory_path().string());
     fileStream << "block,agegrp,sex,oud,healthcare" << std::endl
                << "No_Treatment,10_14,Male,Active_Noninjection,243" << std::endl
                << "No_Treatment,10_14,Male,Active_Injection,355.96" << std::endl
@@ -127,12 +127,12 @@ TEST_F(CostLoaderTest, healthcareUtilizationCost) {
     fileStream.close();
 
     cl.loadHealthcareUtilizationCost(tempAbsoluteFile.string());
-    Data::Matrix3d result = cl.getHealthcareUtilizationCost("healthcare");
+    Matrixify::Matrix3d result = cl.getHealthcareUtilizationCost("healthcare");
     EXPECT_EQ(result(0, 0, 0), 243);
 }
 
 TEST_F(CostLoaderTest, overdoseCost) {
-    Data::CostLoader cl(boost::filesystem::temp_directory_path().string());
+    Matrixify::CostLoader cl(boost::filesystem::temp_directory_path().string());
     fileStream << "X,healthcare" << std::endl
                << "non_fatal_overdose,4557.35" << std::endl
                << "fatal_overdose,857.97";
@@ -147,7 +147,7 @@ TEST_F(CostLoaderTest, overdoseCost) {
 }
 
 TEST_F(CostLoaderTest, pharmaceuticalCost) {
-    Data::CostLoader cl(boost::filesystem::temp_directory_path().string());
+    Matrixify::CostLoader cl(boost::filesystem::temp_directory_path().string());
     fileStream << "block,healthcare" << std::endl
                << "Buprenorphine,48.71" << std::endl
                << "Naltrexone,302.58" << std::endl
@@ -156,17 +156,17 @@ TEST_F(CostLoaderTest, pharmaceuticalCost) {
 
     fileStream.close();
 
-    std::unordered_map<std::string, Data::Matrix3d> output =
+    std::unordered_map<std::string, Matrixify::Matrix3d> output =
         cl.loadPharmaceuticalCost(tempAbsoluteFile.string());
 
-    Data::Matrix3d result = cl.getPharmaceuticalCost("healthcare");
+    Matrixify::Matrix3d result = cl.getPharmaceuticalCost("healthcare");
 
     EXPECT_EQ(output["healthcare"](1, 0, 0), 48.71);
     EXPECT_EQ(result(1, 0, 0), 48.71);
 }
 
 TEST_F(CostLoaderTest, treatmentUtilizationCost) {
-    Data::CostLoader cl(boost::filesystem::temp_directory_path().string());
+    Matrixify::CostLoader cl(boost::filesystem::temp_directory_path().string());
     fileStream << "block,healthcare" << std::endl
                << "Buprenorphine,65.24" << std::endl
                << "Naltrexone,24.36" << std::endl
@@ -175,17 +175,17 @@ TEST_F(CostLoaderTest, treatmentUtilizationCost) {
 
     fileStream.close();
 
-    std::unordered_map<std::string, Data::Matrix3d> output =
+    std::unordered_map<std::string, Matrixify::Matrix3d> output =
         cl.loadTreatmentUtilizationCost(tempAbsoluteFile.string());
 
-    Data::Matrix3d result = cl.getTreatmentUtilizationCost("healthcare");
+    Matrixify::Matrix3d result = cl.getTreatmentUtilizationCost("healthcare");
 
     EXPECT_EQ(output["healthcare"](1, 0, 0), 65.24);
     EXPECT_EQ(result(1, 0, 0), 65.24);
 }
 
 TEST_F(CostLoaderTest, getNonFatalOverdoseCost) {
-    Data::CostLoader cl(boost::filesystem::temp_directory_path().string());
+    Matrixify::CostLoader cl(boost::filesystem::temp_directory_path().string());
     fileStream << "X,healthcare" << std::endl
                << "non_fatal_overdose,4557.35" << std::endl
                << "fatal_overdose,857.97";
@@ -196,7 +196,7 @@ TEST_F(CostLoaderTest, getNonFatalOverdoseCost) {
 }
 
 TEST_F(CostLoaderTest, getFatalOverdoseCost) {
-    Data::CostLoader cl(boost::filesystem::temp_directory_path().string());
+    Matrixify::CostLoader cl(boost::filesystem::temp_directory_path().string());
     fileStream << "X,healthcare" << std::endl
                << "non_fatal_overdose,4557.35" << std::endl
                << "fatal_overdose,857.97";

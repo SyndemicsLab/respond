@@ -36,9 +36,9 @@ namespace Helpers {
     }
 
     std::vector<double> calcCosts(Calculator::PostSimulationCalculator calc,
-                                  Data::CostList costsList) {
+                                  Matrixify::CostList costsList) {
         std::vector<double> result;
-        for (Data::Cost cost : costsList) {
+        for (Matrixify::Cost cost : costsList) {
             double totalCost = 0.0;
             totalCost += calc.totalAcrossTimeAndDims(cost.healthcareCost);
             totalCost += calc.totalAcrossTimeAndDims(cost.fatalOverdoseCost);

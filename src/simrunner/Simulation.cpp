@@ -34,16 +34,16 @@ namespace Simulation {
 
         this->numDemographicCombos = numDemographics;
 
-        this->state = Data::Matrix3dFactory::Create(
+        this->state = Matrixify::Matrix3dFactory::Create(
             this->numOUDStates, this->numInterventions, this->numDemographics);
         this->state.setZero();
-        this->transition = Data::Matrix3dFactory::Create(
+        this->transition = Matrixify::Matrix3dFactory::Create(
             this->numOUDStates, this->numInterventions, this->numDemographics);
         this->transition.setZero();
         this->agingSwitch = false;
     }
 
-    Sim::Sim(Data::IDataLoader &dataLoader) {
+    Sim::Sim(Matrixify::IDataLoader &dataLoader) {
         const auto processor_count = std::thread::hardware_concurrency();
         Eigen::setNbThreads(processor_count);
         this->Duration = dataLoader.getDuration();
@@ -52,11 +52,11 @@ namespace Simulation {
         this->numInterventions = dataLoader.getNumInterventions();
         this->numDemographics = dataLoader.getNumDemographics();
         this->numDemographicCombos = dataLoader.getNumDemographicCombos();
-        this->state = Data::Matrix3dFactory::Create(this->numOUDStates,
-                                                    this->numInterventions,
-                                                    this->numDemographicCombos);
+        this->state = Matrixify::Matrix3dFactory::Create(
+            this->numOUDStates, this->numInterventions,
+            this->numDemographicCombos);
         this->state.setZero();
-        this->transition = Data::Matrix3dFactory::Create(
+        this->transition = Matrixify::Matrix3dFactory::Create(
             this->numOUDStates, this->numInterventions,
             this->numDemographicCombos);
         this->transition.setZero();
@@ -70,43 +70,45 @@ namespace Simulation {
         }
     }
 
-    void Sim::loadInitialSample(Data::Matrix3d const &initialSample) {
+    void Sim::loadInitialSample(Matrixify::Matrix3d const &initialSample) {
         this->state = initialSample;
     }
 
-    void
-    Sim::loadEnteringSamples(Data::Matrix3dOverTime const &enteringSamples) {
+    void Sim::loadEnteringSamples(
+        Matrixify::Matrix3dOverTime const &enteringSamples) {
         this->enteringSamples = enteringSamples;
     }
 
-    void Sim::loadOUDTransitionRates(Data::Matrix3d const &oudTransitionRates) {
+    void
+    Sim::loadOUDTransitionRates(Matrixify::Matrix3d const &oudTransitionRates) {
         this->oudTransitionRates = oudTransitionRates;
     }
 
     void Sim::loadInterventionInitRates(
-        Data::Matrix3d const &interventionInitRates) {
+        Matrixify::Matrix3d const &interventionInitRates) {
         this->interventionInitRates = interventionInitRates;
     }
 
     void Sim::loadInterventionTransitionRates(
-        Data::Matrix3dOverTime const &interventionTransitionRates) {
+        Matrixify::Matrix3dOverTime const &interventionTransitionRates) {
         this->interventionTransitionRates = interventionTransitionRates;
     }
 
     void Sim::loadFatalOverdoseRates(
-        Data::Matrix3dOverTime const &fatalOverdoseRates) {
+        Matrixify::Matrix3dOverTime const &fatalOverdoseRates) {
         this->fatalOverdoseRates = fatalOverdoseRates;
     }
 
-    void Sim::loadOverdoseRates(Data::Matrix3dOverTime const &overdoseRates) {
+    void
+    Sim::loadOverdoseRates(Matrixify::Matrix3dOverTime const &overdoseRates) {
         this->overdoseRates = overdoseRates;
     }
 
-    void Sim::loadMortalityRates(Data::Matrix3d const &mortalityRates) {
+    void Sim::loadMortalityRates(Matrixify::Matrix3d const &mortalityRates) {
         this->mortalityRates = mortalityRates;
     }
 
-    void Sim::Load(Data::IDataLoader const &dataLoader) {
+    void Sim::Load(Matrixify::IDataLoader const &dataLoader) {
         this->loadInitialSample(dataLoader.getInitialSample());
         this->loadEnteringSamples(dataLoader.getEnteringSamples());
         this->loadOUDTransitionRates(dataLoader.getOUDTransitionRates());
@@ -125,13 +127,13 @@ namespace Simulation {
     }
 
     void Sim::LoadTransitionModules(
-        Data::Matrix3dOverTime const &enteringSamples,
-        Data::Matrix3d const &oudTransitionRates,
-        Data::Matrix3d const &interventionInitRates,
-        Data::Matrix3dOverTime const &interventionTransitionRates,
-        Data::Matrix3dOverTime const &fatalOverdoseRates,
-        Data::Matrix3dOverTime const &overdoseRates,
-        Data::Matrix3d const &mortalityRates) {
+        Matrixify::Matrix3dOverTime const &enteringSamples,
+        Matrixify::Matrix3d const &oudTransitionRates,
+        Matrixify::Matrix3d const &interventionInitRates,
+        Matrixify::Matrix3dOverTime const &interventionTransitionRates,
+        Matrixify::Matrix3dOverTime const &fatalOverdoseRates,
+        Matrixify::Matrix3dOverTime const &overdoseRates,
+        Matrixify::Matrix3d const &mortalityRates) {
         this->loadEnteringSamples(enteringSamples);
         this->loadOUDTransitionRates(oudTransitionRates);
         this->loadInterventionInitRates(interventionInitRates);
@@ -142,10 +144,11 @@ namespace Simulation {
     }
 
     void Sim::Run() {
-        Data::Matrix3d zeroMat = Data::Matrix3dFactory::Create(
-                                     this->numOUDStates, this->numInterventions,
-                                     this->numDemographicCombos)
-                                     .constant(0);
+        Matrixify::Matrix3d zeroMat =
+            Matrixify::Matrix3dFactory::Create(this->numOUDStates,
+                                               this->numInterventions,
+                                               this->numDemographicCombos)
+                .constant(0);
         this->history.overdoseHistory.insert(zeroMat, 0);
         this->history.fatalOverdoseHistory.insert(zeroMat, 0);
         this->history.mortalityHistory.insert(zeroMat, 0);
@@ -160,18 +163,19 @@ namespace Simulation {
     }
 
     void Sim::raisePopulationAge() {
-        Data::Matrix3d tempState = this->state;
-        Data::Matrix3d::Dimensions dims = tempState.dimensions();
-        for (int intervention = 0; intervention < dims[Data::INTERVENTION];
+        Matrixify::Matrix3d tempState = this->state;
+        Matrixify::Matrix3d::Dimensions dims = tempState.dimensions();
+        for (int intervention = 0; intervention < dims[Matrixify::INTERVENTION];
              ++intervention) {
-            for (int oud = 0; oud < dims[Data::OUD]; ++oud) {
+            for (int oud = 0; oud < dims[Matrixify::OUD]; ++oud) {
                 // zero out the youngest age bracket
                 for (int demos = 0; demos < this->ageGroupShift; ++demos) {
                     this->state(intervention, oud, demos) = 0;
                 }
                 // move all remaining states
-                for (int demos = 0; demos < (dims[Data::DEMOGRAPHIC_COMBO] -
-                                             this->ageGroupShift);
+                for (int demos = 0;
+                     demos <
+                     (dims[Matrixify::DEMOGRAPHIC_COMBO] - this->ageGroupShift);
                      ++demos) {
                     this->state(intervention, oud,
                                 demos + this->ageGroupShift) =
@@ -181,7 +185,7 @@ namespace Simulation {
         }
     }
 
-    Data::Matrix3d Sim::step() {
+    Matrixify::Matrix3d Sim::step() {
         // AGING
         // needed for the half-cycle correction
         int agingReference = std::floor(this->agingInterval / 2);
@@ -192,31 +196,32 @@ namespace Simulation {
         }
 
         // STATE TRANSITION
-        Data::Matrix3d enterSampleState = this->addEnteringSamples(this->state);
+        Matrixify::Matrix3d enterSampleState =
+            this->addEnteringSamples(this->state);
 
-        Data::Matrix3d oudTransState =
+        Matrixify::Matrix3d oudTransState =
             this->multiplyOUDTransitions(enterSampleState);
 
-        Data::Matrix3d transitionedState =
+        Matrixify::Matrix3d transitionedState =
             this->multiplyInterventionTransitions(oudTransState);
 
         this->history.interventionAdmissionHistory.insert(transitionedState,
                                                           currentTime + 1);
 
-        Data::Matrix3d overdoses =
+        Matrixify::Matrix3d overdoses =
             this->multiplyOverdoseTransitions(transitionedState);
 
-        Data::Matrix3d fatalOverdoses =
+        Matrixify::Matrix3d fatalOverdoses =
             this->multiplyFatalOverdoseTransitions(overdoses);
 
-        Data::Matrix3d mortalities = this->multiplyMortalityTransitions(
+        Matrixify::Matrix3d mortalities = this->multiplyMortalityTransitions(
             transitionedState - fatalOverdoses);
 
         return (transitionedState - (mortalities + fatalOverdoses));
     }
 
-    Data::Matrix3d Sim::addEnteringSamples(Data::Matrix3d state) {
-        Data::Matrix3d es = this->enteringSamples(this->currentTime);
+    Matrixify::Matrix3d Sim::addEnteringSamples(Matrixify::Matrix3d state) {
+        Matrixify::Matrix3d es = this->enteringSamples(this->currentTime);
         ASSERTM(es.dimensions() == state.dimensions(),
                 "Entering Sample Dimensions is Correct");
 
@@ -224,49 +229,50 @@ namespace Simulation {
         // actual state reference
         Eigen::array<Eigen::Index, 3> offset = {0, 0, 0};
         Eigen::array<Eigen::Index, 3> extent = {state.dimensions()};
-        Data::Matrix3d ret = state.slice(offset, extent);
+        Matrixify::Matrix3d ret = state.slice(offset, extent);
 
         ret += es;
 
-        Data::Matrix3d roundingMatrix(ret.dimensions());
+        Matrixify::Matrix3d roundingMatrix(ret.dimensions());
         roundingMatrix.setZero();
         ret = ret.cwiseMax(roundingMatrix);
 
         return ret;
     }
 
-    Data::Matrix3d Sim::multiplyOUDTransitions(Data::Matrix3d state) {
-        return this->multiplyTransitions(state, Data::OUD);
+    Matrixify::Matrix3d Sim::multiplyOUDTransitions(Matrixify::Matrix3d state) {
+        return this->multiplyTransitions(state, Matrixify::OUD);
     }
 
-    Data::Matrix3d Sim::multiplyInterventionTransitions(Data::Matrix3d state) {
-        return this->multiplyTransitions(state, Data::INTERVENTION);
+    Matrixify::Matrix3d
+    Sim::multiplyInterventionTransitions(Matrixify::Matrix3d state) {
+        return this->multiplyTransitions(state, Matrixify::INTERVENTION);
     }
 
-    Data::Matrix3d Sim::getTransitionFromDim(Data::Dimension dim) {
+    Matrixify::Matrix3d Sim::getTransitionFromDim(Matrixify::Dimension dim) {
         switch (dim) {
-        case Data::OUD:
+        case Matrixify::OUD:
             if (this->interventionInitState) {
                 return this->interventionInitRates;
             } else {
                 return this->oudTransitionRates;
             }
-        case Data::INTERVENTION:
+        case Matrixify::INTERVENTION:
             return this->interventionTransitionRates(this->currentTime);
-        case Data::DEMOGRAPHIC_COMBO:
+        case Matrixify::DEMOGRAPHIC_COMBO:
         default:
-            return Data::Matrix3dFactory::Create(this->numOUDStates,
-                                                 this->numInterventions,
-                                                 this->numDemographicCombos);
+            return Matrixify::Matrix3dFactory::Create(
+                this->numOUDStates, this->numInterventions,
+                this->numDemographicCombos);
         }
     }
 
-    Data::Matrix3d Sim::multiplyTransitions(Data::Matrix3d state,
-                                            Data::Dimension dim) {
-        Data::Matrix3d ret(state.dimensions());
+    Matrixify::Matrix3d Sim::multiplyTransitions(Matrixify::Matrix3d state,
+                                                 Matrixify::Dimension dim) {
+        Matrixify::Matrix3d ret(state.dimensions());
         ret.setZero();
 
-        Data::Matrix3d transition = this->getTransitionFromDim(dim);
+        Matrixify::Matrix3d transition = this->getTransitionFromDim(dim);
         ASSERTM(transition.dimension(dim) == pow(state.dimension(dim), 2),
                 "Transition Dimensions are Correct");
         ASSERTM(transition.dimension(dim) != 0,
@@ -287,16 +293,18 @@ namespace Simulation {
             offsetState[dim] = i;
             extentState[dim] = 1;
 
-            Data::Matrix3d slicedState = state.slice(offsetState, extentState);
+            Matrixify::Matrix3d slicedState =
+                state.slice(offsetState, extentState);
 
             Eigen::array<Eigen::Index, 3> bcast = {1, 1, 1};
             bcast[dim] = state.dimension(dim);
 
-            Data::Matrix3d broadcastedTensor = slicedState.broadcast(bcast);
-            Data::Matrix3d slicedTransition =
+            Matrixify::Matrix3d broadcastedTensor =
+                slicedState.broadcast(bcast);
+            Matrixify::Matrix3d slicedTransition =
                 transition.slice(offsetTrans, extentTrans);
 
-            if (dim == Data::INTERVENTION) {
+            if (dim == Matrixify::INTERVENTION) {
                 this->interventionInitState = true;
                 ret += this->multiplyInterventionInit(
                     broadcastedTensor * slicedTransition, i);
@@ -308,50 +316,51 @@ namespace Simulation {
         return ret;
     }
 
-    Data::Matrix3d
-    Sim::multiplyInterventionInit(Data::Matrix3d interventionState, int i) {
-        Data::Matrix3d result(interventionState.dimensions());
+    Matrixify::Matrix3d
+    Sim::multiplyInterventionInit(Matrixify::Matrix3d interventionState,
+                                  int i) {
+        Matrixify::Matrix3d result(interventionState.dimensions());
         result.setZero();
 
         for (int j = 0; j < this->numInterventions; j++) {
 
             Eigen::array<Eigen::Index, 3> result_offset = {0, 0, 0};
             Eigen::array<Eigen::Index, 3> result_extent = result.dimensions();
-            result_offset[Data::INTERVENTION] = j;
-            result_extent[Data::INTERVENTION] = 1;
+            result_offset[Matrixify::INTERVENTION] = j;
+            result_extent[Matrixify::INTERVENTION] = 1;
             if (i == j) {
                 result.slice(result_offset, result_extent) +=
                     interventionState.slice(result_offset, result_extent);
             } else {
 
-                Data::Matrix3d oudMat(
-                    (Data::Matrix3d(result.slice(result_offset, result_extent)))
-                        .dimensions());
+                Matrixify::Matrix3d oudMat((Matrixify::Matrix3d(result.slice(
+                                                result_offset, result_extent)))
+                                               .dimensions());
 
                 for (int k = 0; k < this->numOUDStates; k++) {
                     Eigen::array<Eigen::Index, 3> intervention_offset = {0, 0,
                                                                          0};
                     Eigen::array<Eigen::Index, 3> intervention_extent =
                         interventionState.dimensions();
-                    intervention_offset[Data::INTERVENTION] = j;
-                    intervention_extent[Data::INTERVENTION] = 1;
-                    intervention_offset[Data::OUD] = k;
-                    intervention_extent[Data::OUD] = 1;
+                    intervention_offset[Matrixify::INTERVENTION] = j;
+                    intervention_extent[Matrixify::INTERVENTION] = 1;
+                    intervention_offset[Matrixify::OUD] = k;
+                    intervention_extent[Matrixify::OUD] = 1;
 
                     Eigen::array<Eigen::Index, 3> bcast = {1, 1, 1};
-                    bcast[Data::OUD] = this->numOUDStates;
-                    Data::Matrix3d slicedState = interventionState.slice(
+                    bcast[Matrixify::OUD] = this->numOUDStates;
+                    Matrixify::Matrix3d slicedState = interventionState.slice(
                         intervention_offset, intervention_extent);
-                    Data::Matrix3d broadcastedTensor =
+                    Matrixify::Matrix3d broadcastedTensor =
                         slicedState.broadcast(bcast);
 
                     Eigen::array<Eigen::Index, 3> rates_offset = {0, 0, 0};
                     Eigen::array<Eigen::Index, 3> rates_extent =
                         this->interventionInitRates.dimensions();
-                    rates_offset[Data::INTERVENTION] = j;
-                    rates_extent[Data::INTERVENTION] = 1;
-                    rates_offset[Data::OUD] = (k * this->numOUDStates);
-                    rates_extent[Data::OUD] = this->numOUDStates;
+                    rates_offset[Matrixify::INTERVENTION] = j;
+                    rates_extent[Matrixify::INTERVENTION] = 1;
+                    rates_offset[Matrixify::OUD] = (k * this->numOUDStates);
+                    rates_extent[Matrixify::OUD] = this->numOUDStates;
 
                     result.slice(result_offset, result_extent) +=
                         broadcastedTensor * this->interventionInitRates.slice(
@@ -362,38 +371,42 @@ namespace Simulation {
         return result;
     }
 
-    Data::Matrix3d Sim::multiplyFatalOverdoseTransitions(Data::Matrix3d state) {
-        Data::Matrix3d fatalOverdoseMatrix =
+    Matrixify::Matrix3d
+    Sim::multiplyFatalOverdoseTransitions(Matrixify::Matrix3d state) {
+        Matrixify::Matrix3d fatalOverdoseMatrix =
             this->fatalOverdoseRates(this->currentTime);
         ASSERTM(fatalOverdoseMatrix.dimensions() == state.dimensions(),
                 "Fatal Overdose Dimensions are Correct");
 
-        Data::Matrix3d mult = fatalOverdoseMatrix * state;
+        Matrixify::Matrix3d mult = fatalOverdoseMatrix * state;
 
         this->history.fatalOverdoseHistory.insert(mult, this->currentTime + 1);
 
         return mult;
     }
 
-    Data::Matrix3d Sim::multiplyOverdoseTransitions(Data::Matrix3d state) {
-        Data::Matrix3d overdoseMatrix = this->overdoseRates(this->currentTime);
+    Matrixify::Matrix3d
+    Sim::multiplyOverdoseTransitions(Matrixify::Matrix3d state) {
+        Matrixify::Matrix3d overdoseMatrix =
+            this->overdoseRates(this->currentTime);
 
         ASSERTM(overdoseMatrix.dimensions() == state.dimensions(),
                 "Overdose Dimensions equal State Dimensions");
 
-        Data::Matrix3d mult = overdoseMatrix * state;
+        Matrixify::Matrix3d mult = overdoseMatrix * state;
         this->history.overdoseHistory.insert(mult, this->currentTime + 1);
         return mult;
     }
 
-    Data::Matrix3d Sim::multiplyMortalityTransitions(Data::Matrix3d state) {
-        Data::Matrix3d mortalityMatrix = this->mortalityRates;
+    Matrixify::Matrix3d
+    Sim::multiplyMortalityTransitions(Matrixify::Matrix3d state) {
+        Matrixify::Matrix3d mortalityMatrix = this->mortalityRates;
 
         ASSERTM(mortalityMatrix.dimensions() == state.dimensions(),
                 "Mortality Dimensions equal State Dimensions");
 
-        Data::Matrix3d ret(state.dimensions());
-        Data::Matrix3d mor = (state * mortalityMatrix);
+        Matrixify::Matrix3d ret(state.dimensions());
+        Matrixify::Matrix3d mor = (state * mortalityMatrix);
 
         this->history.mortalityHistory.insert(mor, this->currentTime + 1);
         return mor;

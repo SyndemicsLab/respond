@@ -17,18 +17,18 @@
 
 #include "Matrix3dFactory.hpp"
 
-namespace Data {
+namespace Matrixify {
 
-    Data::Matrix3d Matrix3dFactory::Create(int numOUDStates,
-                                           int numInterventions,
-                                           int numDemographics) {
+    Matrixify::Matrix3d Matrix3dFactory::Create(int numOUDStates,
+                                                int numInterventions,
+                                                int numDemographics) {
         Eigen::array<Eigen::Index, 3> order = {0, 0, 0};
-        order[Data::OUD] = numOUDStates;
-        order[Data::INTERVENTION] = numInterventions;
-        order[Data::DEMOGRAPHIC_COMBO] = numDemographics;
-        Data::Matrix3d empty(order);
+        order[Matrixify::OUD] = numOUDStates;
+        order[Matrixify::INTERVENTION] = numInterventions;
+        order[Matrixify::DEMOGRAPHIC_COMBO] = numDemographics;
+        Matrixify::Matrix3d empty(order);
         empty.setZero();
         return empty;
     }
 
-} // namespace Data
+} // namespace Matrixify

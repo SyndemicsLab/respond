@@ -18,8 +18,6 @@
 #ifndef MODEL_SIMULATION_HPP_
 #define MODEL_SIMULATION_HPP_
 
-#define FMT_HEADER_ONLY
-
 #include "DataLoader.hpp"
 #include "DataTypes.hpp"
 #include "Matrix3dFactory.hpp"
@@ -41,49 +39,50 @@ namespace Simulation {
 
         /// @brief Load the Initial Sample
         /// @param initialSample Matrix3d of InitialSample
-        virtual void loadInitialSample(Data::Matrix3d const &initialSample) = 0;
+        virtual void
+        loadInitialSample(Matrixify::Matrix3d const &initialSample) = 0;
 
         /// @brief Load the Entering Samples
         /// @param enteringSamples Matrix3dOverTime of Entering Samples
-        virtual void
-        loadEnteringSamples(Data::Matrix3dOverTime const &enteringSamples) = 0;
+        virtual void loadEnteringSamples(
+            Matrixify::Matrix3dOverTime const &enteringSamples) = 0;
 
         /// @brief Load the OUD Transition Rates
         /// @param oudTransitionRates Matrix3d of OUD Transition Rates
-        virtual void
-        loadOUDTransitionRates(Data::Matrix3d const &oudTransitionRates) = 0;
+        virtual void loadOUDTransitionRates(
+            Matrixify::Matrix3d const &oudTransitionRates) = 0;
 
         /// @brief Load the Intervention Initialization Rates
         /// @param interventionInitRates Matrix3d of Intervention Initialization
         /// Rates
         virtual void loadInterventionInitRates(
-            Data::Matrix3d const &interventionInitRates) = 0;
+            Matrixify::Matrix3d const &interventionInitRates) = 0;
 
         /// @brief Load the Intervention Transition Rates
         /// @param interventionTransitionRates Matrix3dOverTime of Intervention
         /// Transition Rates
         virtual void loadInterventionTransitionRates(
-            Data::Matrix3dOverTime const &interventionTransitionRates) = 0;
+            Matrixify::Matrix3dOverTime const &interventionTransitionRates) = 0;
 
         /// @brief Load the Overdose Rates
         /// @param overdoseRates Matrix3dOverTime of Overdose Rates
         virtual void
-        loadOverdoseRates(Data::Matrix3dOverTime const &overdoseRates) = 0;
+        loadOverdoseRates(Matrixify::Matrix3dOverTime const &overdoseRates) = 0;
 
         /// @brief Load the Fatal Overdose Rates
         /// @param fatalOverdoseRates Matrix3dOverTime of Fatal Overdose Rates
         virtual void loadFatalOverdoseRates(
-            Data::Matrix3dOverTime const &fatalOverdoseRates) = 0;
+            Matrixify::Matrix3dOverTime const &fatalOverdoseRates) = 0;
 
         /// @brief Load the Mortality Rates
         /// @param mortalityRates Matrix3d of Mortality Rates
         virtual void
-        loadMortalityRates(Data::Matrix3d const &mortalityRates) = 0;
+        loadMortalityRates(Matrixify::Matrix3d const &mortalityRates) = 0;
 
-        /// @brief Load Data to the Simulation
+        /// @brief Load Matrixify to the Simulation
         /// @param dataLoader dataLoader containing necessary data for
         /// Simulations
-        virtual void Load(Data::IDataLoader const &dataLoader) = 0;
+        virtual void Load(Matrixify::IDataLoader const &dataLoader) = 0;
 
         /// @brief Load Aging Parameters
         /// @param shift Integer Value to offset aging
@@ -93,27 +92,29 @@ namespace Simulation {
 
         /// @brief Get the Entering Samples
         /// @return Matrix3dOverTime of Entering Samples
-        virtual Data::Matrix3dOverTime GetEnteringSamples() const = 0;
+        virtual Matrixify::Matrix3dOverTime GetEnteringSamples() const = 0;
 
         /// @brief Get the OUD Transitions
         /// @return Matrix3d of OUD Transitions
-        virtual Data::Matrix3d GetOUDTransitions() const = 0;
+        virtual Matrixify::Matrix3d GetOUDTransitions() const = 0;
 
         /// @brief Get the Intervention Transitions
         /// @return Matrix3dOverTime of Intervention Transitions
-        virtual Data::Matrix3dOverTime GetInterventionTransitions() const = 0;
+        virtual Matrixify::Matrix3dOverTime
+        GetInterventionTransitions() const = 0;
 
         /// @brief Get the Overdose Transactions
         /// @return Matrix3dOverTime of Overdose Transitions
-        virtual Data::Matrix3dOverTime GetOverdoseTransitions() const = 0;
+        virtual Matrixify::Matrix3dOverTime GetOverdoseTransitions() const = 0;
 
         /// @brief Get the Fatal Overdose Transitions
         /// @return Matrix3dOverTime of Fatal Overdose Transitions
-        virtual Data::Matrix3dOverTime GetFatalOverdoseTransitions() const = 0;
+        virtual Matrixify::Matrix3dOverTime
+        GetFatalOverdoseTransitions() const = 0;
 
         /// @brief Get the Mortality Transitions
         /// @return Matrix3d of Mortality Transitions
-        virtual Data::Matrix3d GetMortalityTransitions() const = 0;
+        virtual Matrixify::Matrix3d GetMortalityTransitions() const = 0;
 
         /// @brief Load all Modules
         /// @param enteringSamples Matrix3dOverTime of Entering Samples
@@ -126,13 +127,13 @@ namespace Simulation {
         /// @param overdoseRates Matrix3dOverTime of Overdose Rates
         /// @param mortalityRates Matrix3d of Mortality Rates
         virtual void LoadTransitionModules(
-            Data::Matrix3dOverTime const &enteringSamples,
-            Data::Matrix3d const &oudTransitionRates,
-            Data::Matrix3d const &interventionInitRates,
-            Data::Matrix3dOverTime const &interventionTransitionRates,
-            Data::Matrix3dOverTime const &fatalOverdoseRates,
-            Data::Matrix3dOverTime const &overdoseRates,
-            Data::Matrix3d const &mortalityRates) = 0;
+            Matrixify::Matrix3dOverTime const &enteringSamples,
+            Matrixify::Matrix3d const &oudTransitionRates,
+            Matrixify::Matrix3d const &interventionInitRates,
+            Matrixify::Matrix3dOverTime const &interventionTransitionRates,
+            Matrixify::Matrix3dOverTime const &fatalOverdoseRates,
+            Matrixify::Matrix3dOverTime const &overdoseRates,
+            Matrixify::Matrix3d const &mortalityRates) = 0;
 
         /// @brief Core Run Function
         virtual void Run() = 0;
@@ -142,7 +143,7 @@ namespace Simulation {
 
         /// @brief Return the History generated in the Simulation
         /// @return History struct
-        virtual Data::History getHistory() const = 0;
+        virtual Matrixify::History getHistory() const = 0;
     };
 
     /*! Concrete Class for Sim implementing the ISim interface
@@ -165,7 +166,7 @@ namespace Simulation {
 
         /// @brief
         /// @param dataLoader
-        Sim(Data::IDataLoader &dataLoader);
+        Sim(Matrixify::IDataLoader &dataLoader);
 
         /// @brief
         void Run() override;
@@ -175,49 +176,52 @@ namespace Simulation {
 
         /// @brief
         /// @return
-        Data::History getHistory() const override { return this->history; }
+        Matrixify::History getHistory() const override { return this->history; }
 
         /// @brief
         /// @param initialSample
-        void loadInitialSample(Data::Matrix3d const &initialSample) override;
+        void
+        loadInitialSample(Matrixify::Matrix3d const &initialSample) override;
 
         /// @brief
         /// @param enteringSamples
         void loadEnteringSamples(
-            Data::Matrix3dOverTime const &enteringSamples) override;
+            Matrixify::Matrix3dOverTime const &enteringSamples) override;
 
         /// @brief
         /// @param oudTransitionRates
         void loadOUDTransitionRates(
-            Data::Matrix3d const &oudTransitionRates) override;
+            Matrixify::Matrix3d const &oudTransitionRates) override;
 
         /// @brief
         /// @param interventionInitRates
         void loadInterventionInitRates(
-            Data::Matrix3d const &interventionInitRates) override;
+            Matrixify::Matrix3d const &interventionInitRates) override;
 
         /// @brief
         /// @param interventionTransitionRates
         void loadInterventionTransitionRates(
-            Data::Matrix3dOverTime const &interventionTransitionRates) override;
+            Matrixify::Matrix3dOverTime const &interventionTransitionRates)
+            override;
 
         /// @brief
         /// @param overdoseRates
-        void
-        loadOverdoseRates(Data::Matrix3dOverTime const &overdoseRates) override;
+        void loadOverdoseRates(
+            Matrixify::Matrix3dOverTime const &overdoseRates) override;
 
         /// @brief
         /// @param fatalOverdoseRates
         void loadFatalOverdoseRates(
-            Data::Matrix3dOverTime const &fatalOverdoseRates) override;
+            Matrixify::Matrix3dOverTime const &fatalOverdoseRates) override;
 
         /// @brief
         /// @param mortalityRates
-        void loadMortalityRates(Data::Matrix3d const &mortalityRates) override;
+        void
+        loadMortalityRates(Matrixify::Matrix3d const &mortalityRates) override;
 
         /// @brief
         /// @param dataLoader
-        void Load(Data::IDataLoader const &dataLoader) override;
+        void Load(Matrixify::IDataLoader const &dataLoader) override;
 
         /// @brief
         /// @param shift
@@ -234,47 +238,49 @@ namespace Simulation {
         /// @param overdoseRates
         /// @param mortalityRates
         void LoadTransitionModules(
-            Data::Matrix3dOverTime const &enteringSamples,
-            Data::Matrix3d const &oudTransitionRates,
-            Data::Matrix3d const &interventionInitRates,
-            Data::Matrix3dOverTime const &interventionTransitionRates,
-            Data::Matrix3dOverTime const &fatalOverdoseRates,
-            Data::Matrix3dOverTime const &overdoseRates,
-            Data::Matrix3d const &mortalityRates) override;
+            Matrixify::Matrix3dOverTime const &enteringSamples,
+            Matrixify::Matrix3d const &oudTransitionRates,
+            Matrixify::Matrix3d const &interventionInitRates,
+            Matrixify::Matrix3dOverTime const &interventionTransitionRates,
+            Matrixify::Matrix3dOverTime const &fatalOverdoseRates,
+            Matrixify::Matrix3dOverTime const &overdoseRates,
+            Matrixify::Matrix3d const &mortalityRates) override;
 
         /// @brief
         /// @return
-        Data::Matrix3dOverTime GetEnteringSamples() const override {
+        Matrixify::Matrix3dOverTime GetEnteringSamples() const override {
             return this->enteringSamples;
         }
 
         /// @brief
         /// @return
-        Data::Matrix3d GetOUDTransitions() const override {
+        Matrixify::Matrix3d GetOUDTransitions() const override {
             return this->oudTransitionRates;
         }
 
         /// @brief
         /// @return
-        Data::Matrix3dOverTime GetInterventionTransitions() const override {
+        Matrixify::Matrix3dOverTime
+        GetInterventionTransitions() const override {
             return this->interventionTransitionRates;
         }
 
         /// @brief
         /// @return
-        Data::Matrix3dOverTime GetOverdoseTransitions() const override {
+        Matrixify::Matrix3dOverTime GetOverdoseTransitions() const override {
             return this->overdoseRates;
         }
 
         /// @brief
         /// @return
-        Data::Matrix3dOverTime GetFatalOverdoseTransitions() const override {
+        Matrixify::Matrix3dOverTime
+        GetFatalOverdoseTransitions() const override {
             return this->fatalOverdoseRates;
         }
 
         /// @brief
         /// @return
-        Data::Matrix3d GetMortalityTransitions() const override {
+        Matrixify::Matrix3d GetMortalityTransitions() const override {
             return this->mortalityRates;
         }
 
@@ -287,74 +293,78 @@ namespace Simulation {
     private:
         bool interventionInitState = false;
 
-        Data::Matrix3d state;
-        Data::Matrix3d transition;
+        Matrixify::Matrix3d state;
+        Matrixify::Matrix3d transition;
         int currentTime;
         int numOUDStates;
         int numInterventions;
         int numDemographics;
         int numDemographicCombos;
-        Data::History history;
-        Data::Matrix3dOverTime enteringSamples;
-        Data::Matrix3d oudTransitionRates;
-        Data::Matrix3d interventionInitRates;
-        Data::Matrix3dOverTime interventionTransitionRates;
-        Data::Matrix3dOverTime fatalOverdoseRates;
-        Data::Matrix3dOverTime overdoseRates;
-        Data::Matrix3d mortalityRates;
+        Matrixify::History history;
+        Matrixify::Matrix3dOverTime enteringSamples;
+        Matrixify::Matrix3d oudTransitionRates;
+        Matrixify::Matrix3d interventionInitRates;
+        Matrixify::Matrix3dOverTime interventionTransitionRates;
+        Matrixify::Matrix3dOverTime fatalOverdoseRates;
+        Matrixify::Matrix3dOverTime overdoseRates;
+        Matrixify::Matrix3d mortalityRates;
 
         /// @brief
         /// @return
-        Data::Matrix3d step();
+        Matrixify::Matrix3d step();
 
         /// @brief
         /// @param interventionState
         /// @param i
         /// @return
-        Data::Matrix3d
-        multiplyInterventionInit(Data::Matrix3d interventionState, int i);
+        Matrixify::Matrix3d
+        multiplyInterventionInit(Matrixify::Matrix3d interventionState, int i);
 
         /// @brief
         /// @param state
         /// @return
-        Data::Matrix3d addEnteringSamples(Data::Matrix3d state);
+        Matrixify::Matrix3d addEnteringSamples(Matrixify::Matrix3d state);
 
         /// @brief
         /// @param state
         /// @return
-        Data::Matrix3d multiplyOUDTransitions(Data::Matrix3d state);
+        Matrixify::Matrix3d multiplyOUDTransitions(Matrixify::Matrix3d state);
 
         /// @brief
         /// @param state
         /// @return
-        Data::Matrix3d multiplyInterventionTransitions(Data::Matrix3d state);
+        Matrixify::Matrix3d
+        multiplyInterventionTransitions(Matrixify::Matrix3d state);
 
         /// @brief
         /// @param state
         /// @return
-        Data::Matrix3d multiplyFatalOverdoseTransitions(Data::Matrix3d state);
+        Matrixify::Matrix3d
+        multiplyFatalOverdoseTransitions(Matrixify::Matrix3d state);
 
         /// @brief
         /// @param state
         /// @return
-        Data::Matrix3d multiplyOverdoseTransitions(Data::Matrix3d state);
+        Matrixify::Matrix3d
+        multiplyOverdoseTransitions(Matrixify::Matrix3d state);
 
         /// @brief
         /// @param state
         /// @return
-        Data::Matrix3d multiplyMortalityTransitions(Data::Matrix3d state);
+        Matrixify::Matrix3d
+        multiplyMortalityTransitions(Matrixify::Matrix3d state);
 
         /// @brief
         /// @param dim
         /// @return
-        Data::Matrix3d getTransitionFromDim(Data::Dimension dim);
+        Matrixify::Matrix3d getTransitionFromDim(Matrixify::Dimension dim);
 
         /// @brief
         /// @param state
         /// @param dim
         /// @return
-        Data::Matrix3d multiplyTransitions(Data::Matrix3d state,
-                                           Data::Dimension dim);
+        Matrixify::Matrix3d multiplyTransitions(Matrixify::Matrix3d state,
+                                                Matrixify::Dimension dim);
     };
 } // namespace Simulation
 #endif // MODEL_SIMULATION_HPP_

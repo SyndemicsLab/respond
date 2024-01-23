@@ -17,7 +17,7 @@
 
 #include "Configuration.hpp"
 
-namespace Data {
+namespace Matrixify {
 
     /**************************************************
      *
@@ -350,4 +350,4 @@ namespace Data {
         }
         return res;
     }
-} // namespace Data
+} // namespace Matrixify

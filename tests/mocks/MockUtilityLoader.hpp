@@ -4,43 +4,45 @@
 #include "UtilityLoader.hpp"
 #include "gmock/gmock.h"
 
-class MockUtilityLoader : public Data::IUtilityLoader {
+class MockUtilityLoader : public Matrixify::IUtilityLoader {
 public:
-    MOCK_METHOD((std::unordered_map<std::string, Data::Matrix3d>),
+    MOCK_METHOD((std::unordered_map<std::string, Matrixify::Matrix3d>),
                 loadBackgroundUtility, (std::string const &csvName),
                 (override));
 
-    MOCK_METHOD((std::unordered_map<std::string, Data::Matrix3d>),
+    MOCK_METHOD((std::unordered_map<std::string, Matrixify::Matrix3d>),
                 loadOUDUtility, (std::string const &csvName), (override));
 
-    MOCK_METHOD((std::unordered_map<std::string, Data::Matrix3d>),
+    MOCK_METHOD((std::unordered_map<std::string, Matrixify::Matrix3d>),
                 loadSettingUtility, (std::string const &csvName), (override));
 
-    MOCK_METHOD(Data::Matrix3d, getBackgroundUtility,
+    MOCK_METHOD(Matrixify::Matrix3d, getBackgroundUtility,
                 (std::string const &perspective), (const, override));
 
-    MOCK_METHOD(Data::Matrix3d, getOUDUtility, (std::string const &perspective),
-                (const, override));
+    MOCK_METHOD(Matrixify::Matrix3d, getOUDUtility,
+                (std::string const &perspective), (const, override));
 
-    MOCK_METHOD(Data::Matrix3d, getSettingUtility,
+    MOCK_METHOD(Matrixify::Matrix3d, getSettingUtility,
                 (std::string const &perspective), (const, override));
 
     MOCK_METHOD(double, getDiscountRate, (), (const, override));
 
-    MOCK_METHOD(Data::Configuration, loadConfigurationFile,
+    MOCK_METHOD(Matrixify::Configuration, loadConfigurationFile,
                 (std::string const &configPath), (override));
 
-    MOCK_METHOD(Data::Configuration, readConfigFile, (std::string const &),
+    MOCK_METHOD(Matrixify::Configuration, readConfigFile, (std::string const &),
                 (override));
 
-    MOCK_METHOD(Data::InputTable, readCSV, (std::string const &), (override));
+    MOCK_METHOD(Matrixify::InputTable, readCSV, (std::string const &),
+                (override));
 
-    MOCK_METHOD((std::unordered_map<std::string, Data::InputTable>),
+    MOCK_METHOD((std::unordered_map<std::string, Matrixify::InputTable>),
                 readInputDir, (std::string const &), (override));
 
-    MOCK_METHOD(Data::Configuration, getConfiguration, (), (const, override));
+    MOCK_METHOD(Matrixify::Configuration, getConfiguration, (),
+                (const, override));
 
-    MOCK_METHOD(Data::InputTable, loadTable, (std::string const &filename),
+    MOCK_METHOD(Matrixify::InputTable, loadTable, (std::string const &filename),
                 (override));
 
     MOCK_METHOD(void, populateCostParameters, (), (override));

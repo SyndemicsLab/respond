@@ -19,7 +19,7 @@
 #include "Matrix3dFactory.hpp"
 #include "Matrix3dPrinter.hpp"
 
-namespace Data {
+namespace Matrixify {
 
     CostLoader::CostLoader(std::string const &inputDir) : Loader(inputDir) {
         this->populateCostParameters();
@@ -45,8 +45,8 @@ namespace Data {
             ASSERTM(table.find(perspective) != table.end(), message);
 
             this->healthcareUtilizationCost[perspective] =
-                Data::Matrix3dFactory::Create(numOUDStates, numInterventions,
-                                              numDemographicCombos);
+                Matrixify::Matrix3dFactory::Create(
+                    numOUDStates, numInterventions, numDemographicCombos);
 
             std::vector<std::string> healthColumn = table[perspective];
 
@@ -176,8 +176,8 @@ namespace Data {
 
         for (std::string perspective : this->costPerspectives) {
             costParameter[perspective] =
-                Data::Matrix3dFactory::Create(numOUDStates, numInterventions,
-                                              numDemographicCombos)
+                Matrixify::Matrix3dFactory::Create(
+                    numOUDStates, numInterventions, numDemographicCombos)
                     .constant(0);
 
             std::vector<std::string> interventions =
@@ -187,8 +187,8 @@ namespace Data {
                 Eigen::array<Eigen::Index, 3> offset = {0, 0, 0};
                 Eigen::array<Eigen::Index, 3> extent =
                     costParameter[perspective].dimensions();
-                offset[Data::INTERVENTION] = i;
-                extent[Data::INTERVENTION] = 1;
+                offset[Matrixify::INTERVENTION] = i;
+                extent[Matrixify::INTERVENTION] = 1;
                 Matrix3d slice =
                     costParameter[perspective].slice(offset, extent);
                 if (costParameterMap[perspective].find(interventions[i]) !=
@@ -226,4 +226,4 @@ namespace Data {
         }
     }
 
-} // namespace Data
+} // namespace Matrixify

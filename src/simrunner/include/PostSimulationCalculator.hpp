@@ -40,40 +40,40 @@ namespace Calculator {
         /// @param utilityLoader Utility Loader Class containing Information to
         /// calculate the Utility
         /// @param history History Class containing Simulation State History
-        PostSimulationCalculator(Data::History const &history);
+        PostSimulationCalculator(Matrixify::History const &history);
 
         /// @brief Main function to calculate the Cost
         /// @return Cost Struct filled with calculated Cost
-        Data::CostList calculateCosts(Data::ICostLoader const &costLoader,
+        Matrixify::CostList calculateCosts(Matrixify::ICostLoader const &costLoader,
                                       bool discount = false) const;
 
         /// @brief Main function to calculate the Utility
         /// @return Cost Struct filled with calculated Utility
-        Data::Matrix3dOverTime
-        calculateUtilities(Data::IUtilityLoader const &utilityLoader,
+        Matrixify::Matrix3dOverTime
+        calculateUtilities(Matrixify::IUtilityLoader const &utilityLoader,
                            UTILITY_TYPE utilType, bool discount = false) const;
 
         double calculateLifeYears(bool provideDiscount = false,
                                   double discountRate = 0.0) const;
 
-        double totalAcrossTimeAndDims(Data::Matrix3dOverTime const data) const;
+        double totalAcrossTimeAndDims(Matrixify::Matrix3dOverTime const data) const;
 
-        Data::Matrix3d static provideDiscount(Data::Matrix3d data,
+        Matrixify::Matrix3d static provideDiscount(Matrixify::Matrix3d data,
                                               double discountRate, int N,
                                               bool isDiscrete = true,
                                               bool weeklyTimestep = true);
 
-        Data::History getHistory() const { return this->history; }
+        Matrixify::History getHistory() const { return this->history; }
 
     private:
-        Data::History history;
+        Matrixify::History history;
 
         /// @brief
         /// @param overdose
         /// @param cost
         /// @return
-        Data::Matrix3dOverTime
-        multiplyDouble(Data::Matrix3dOverTime const &overdose,
+        Matrixify::Matrix3dOverTime
+        multiplyDouble(Matrixify::Matrix3dOverTime const &overdose,
                        double const &cost, bool provideDiscount = false,
                        double discountRate = 0.0) const;
 
@@ -81,9 +81,9 @@ namespace Calculator {
         /// @param state
         /// @param cost
         /// @return
-        Data::Matrix3dOverTime
-        multiplyMatrix(Data::Matrix3dOverTime const &state,
-                       Data::Matrix3d const &cost, bool provideDiscount = false,
+        Matrixify::Matrix3dOverTime
+        multiplyMatrix(Matrixify::Matrix3dOverTime const &state,
+                       Matrixify::Matrix3d const &cost, bool provideDiscount = false,
                        double discountRate = 0.0) const;
     };
 } // namespace Calculator

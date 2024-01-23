@@ -29,7 +29,7 @@
 
 #include "Configuration.hpp"
 
-namespace Data {
+namespace Matrixify {
     /// @brief The object in which values from CSV files are stored
     ///
     /// InputTable stores the tables as key, value pairs where the keys are
@@ -117,5 +117,5 @@ namespace Data {
         Configuration Config;
     };
 
-} // namespace Data
+} // namespace Matrixify
 #endif

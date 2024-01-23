@@ -31,8 +31,8 @@
 
 #include "DataTypes.hpp"
 
-/// @brief Namespace Defining all Data Operations
-namespace Data {
+/// @brief Namespace Defining all Matrixify Operations
+namespace Matrixify {
 
     /// @brief Type used to determine the output expected, used primarily in
     /// testing
@@ -169,6 +169,6 @@ namespace Data {
         /// @param historyToWrite
         void writer(std::ostream &stream, Matrix3dOverTime historyToWrite);
     };
-} // namespace Data
+} // namespace Matrixify
 
 #endif

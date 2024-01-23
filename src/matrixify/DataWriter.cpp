@@ -17,7 +17,7 @@
 
 #include "DataWriter.hpp"
 
-namespace Data {
+namespace Matrixify {
 
     /// @brief Default Constructor creating a completely empty DataWriter Object
     DataWriter::DataWriter() : DataWriter("", {}, {}, {}, {}, false) {}
@@ -74,9 +74,9 @@ namespace Data {
     }
 
     /// @brief Main Operation of Class, write data to output
-    /// @param outputType Output Enum, generally Data::FILE
-    /// @return string containing the result if output enum is Data::STRING or
-    /// description of status otherwise
+    /// @param outputType Output Enum, generally Matrixify::FILE
+    /// @return string containing the result if output enum is Matrixify::STRING
+    /// or description of status otherwise
     std::string DataWriter::writeHistory(OutputType outputType,
                                          History history) {
         if (history.stateHistory.getMatrices().empty() ||
@@ -150,9 +150,9 @@ namespace Data {
     }
 
     /// @brief Main Operation of Class, write data to output
-    /// @param outputType Output Enum, generally Data::FILE
-    /// @return string containing the result if output enum is Data::STRING or
-    /// description of status otherwise
+    /// @param outputType Output Enum, generally Matrixify::FILE
+    /// @return string containing the result if output enum is Matrixify::STRING
+    /// or description of status otherwise
     std::string DataWriter::writeCosts(OutputType outputType, CostList costs) {
         std::ostringstream stringstream;
 
@@ -230,11 +230,12 @@ namespace Data {
     }
 
     /// @brief Main Operation of Class, write data to output
-    /// @param outputType Output Enum, generally Data::FILE
-    /// @return string containing the result if output enum is Data::STRING or
-    /// description of status otherwise
-    std::string DataWriter::writeUtilities(OutputType outputType,
-                                           Data::Matrix3dOverTime utilities) {
+    /// @param outputType Output Enum, generally Matrixify::FILE
+    /// @return string containing the result if output enum is Matrixify::STRING
+    /// or description of status otherwise
+    std::string
+    DataWriter::writeUtilities(OutputType outputType,
+                               Matrixify::Matrix3dOverTime utilities) {
         std::ostringstream stringstream;
 
         if (utilities.getMatrices().empty()) {
@@ -334,9 +335,9 @@ namespace Data {
                     }
                     for (Matrix3d dm : Matrix3dVec) {
                         std::array<long int, 3> index = {0, 0, 0};
-                        index[Data::INTERVENTION] = i;
-                        index[Data::OUD] = j;
-                        index[Data::DEMOGRAPHIC_COMBO] = k;
+                        index[Matrixify::INTERVENTION] = i;
+                        index[Matrixify::OUD] = j;
+                        index[Matrixify::DEMOGRAPHIC_COMBO] = k;
                         ASSERTM(dm.NumDimensions == 3,
                                 "3 Dimensions Found in Matrix3d");
                         double value = dm(index[0], index[1], index[2]);
@@ -362,4 +363,4 @@ namespace Data {
         }
         return ret;
     }
-} // namespace Data
+} // namespace Matrixify

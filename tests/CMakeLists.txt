@@ -24,8 +24,8 @@ add_executable(respondTest
 target_include_directories(respondTest PRIVATE
   ${CMAKE_CURRENT_SOURCE_DIR}
   "mocks/"
-  "../src/model/include/"
-  "../src/data/include/"
+  "../src/simrunner/include/"
+  "../src/matrixify/include/"
 )
 
 target_link_libraries(respondTest
@@ -35,8 +35,8 @@ target_link_libraries(respondTest
   GTest::gtest_main
   GTest::gmock
   GTest::gmock_main
-  model
-  data
+  simrunner
+  matrixify
   spdlog::spdlog
 )
 

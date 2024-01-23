@@ -113,12 +113,12 @@ protected:
 };
 
 TEST_F(PostSimulationCalculatorTest, constructor) {
-    Data::History history;
+    Matrixify::History history;
 
-    Data::Matrix3d temp =
-        Data::Matrix3dFactory::Create(1, 1, 1).setConstant(2.0);
+    Matrixify::Matrix3d temp =
+        Matrixify::Matrix3dFactory::Create(1, 1, 1).setConstant(2.0);
 
-    Data::Matrix3dOverTime stateHistory({temp});
+    Matrixify::Matrix3dOverTime stateHistory({temp});
 
     history.stateHistory = stateHistory;
     Calculator::PostSimulationCalculator calculator(history);
@@ -127,10 +127,10 @@ TEST_F(PostSimulationCalculatorTest, constructor) {
 }
 
 TEST_F(PostSimulationCalculatorTest, calculateCost) {
-    Data::History history;
-    Data::Matrix3d temp =
-        Data::Matrix3dFactory::Create(1, 1, 1).setConstant(2.0);
-    Data::Matrix3dOverTime stateHistory({temp});
+    Matrixify::History history;
+    Matrixify::Matrix3d temp =
+        Matrixify::Matrix3dFactory::Create(1, 1, 1).setConstant(2.0);
+    Matrixify::Matrix3dOverTime stateHistory({temp});
     history.stateHistory = stateHistory;
     history.overdoseHistory = stateHistory;
     history.fatalOverdoseHistory = stateHistory;
@@ -144,8 +144,8 @@ TEST_F(PostSimulationCalculatorTest, calculateCost) {
 
     EXPECT_CALL(costLoader, getDiscountRate()).WillRepeatedly(Return(0.03));
 
-    Data::Matrix3d retCost =
-        Data::Matrix3dFactory::Create(1, 1, 1).setConstant(3.0);
+    Matrixify::Matrix3d retCost =
+        Matrixify::Matrix3dFactory::Create(1, 1, 1).setConstant(3.0);
     EXPECT_CALL(costLoader, getHealthcareUtilizationCost("healthcare"))
         .WillRepeatedly(Return(retCost));
 
@@ -163,7 +163,7 @@ TEST_F(PostSimulationCalculatorTest, calculateCost) {
     EXPECT_CALL(costLoader, getFatalOverdoseCost("healthcare"))
         .WillRepeatedly(Return(retFODCost));
 
-    Data::CostList result = calculator.calculateCosts(costLoader);
+    Matrixify::CostList result = calculator.calculateCosts(costLoader);
 
     EXPECT_EQ(result[0].healthcareCost(0, 0, 0, 0), 6);
     EXPECT_EQ(result[0].pharmaCost(0, 0, 0, 0), 6);
@@ -173,18 +173,18 @@ TEST_F(PostSimulationCalculatorTest, calculateCost) {
 }
 
 TEST_F(PostSimulationCalculatorTest, calculateUtility) {
-    Data::History history;
-    Data::Matrix3d temp =
-        Data::Matrix3dFactory::Create(1, 1, 1).setConstant(2.0);
-    Data::Matrix3dOverTime stateHistory({temp});
+    Matrixify::History history;
+    Matrixify::Matrix3d temp =
+        Matrixify::Matrix3dFactory::Create(1, 1, 1).setConstant(2.0);
+    Matrixify::Matrix3dOverTime stateHistory({temp});
     history.stateHistory = stateHistory;
 
     Calculator::PostSimulationCalculator calculator(history);
 
     MockUtilityLoader utilityLoader;
 
-    Data::Matrix3d retUtility =
-        Data::Matrix3dFactory::Create(1, 1, 1).setConstant(3.0);
+    Matrixify::Matrix3d retUtility =
+        Matrixify::Matrix3dFactory::Create(1, 1, 1).setConstant(3.0);
     EXPECT_CALL(utilityLoader, getBackgroundUtility("utility"))
         .WillRepeatedly(Return(retUtility));
 
@@ -194,79 +194,79 @@ TEST_F(PostSimulationCalculatorTest, calculateUtility) {
     EXPECT_CALL(utilityLoader, getSettingUtility("utility"))
         .WillRepeatedly(Return(retUtility));
 
-    Data::Matrix3dOverTime result = calculator.calculateUtilities(
+    Matrixify::Matrix3dOverTime result = calculator.calculateUtilities(
         utilityLoader, Calculator::UTILITY_TYPE::MIN);
 
     EXPECT_EQ(result(0, 0, 0, 0), 6);
 }
 
 TEST_F(PostSimulationCalculatorTest, calculateUtilityMin) {
-    Data::History history;
-    Data::Matrix3d temp =
-        Data::Matrix3dFactory::Create(1, 1, 1).setConstant(2.0);
-    Data::Matrix3dOverTime stateHistory({temp});
+    Matrixify::History history;
+    Matrixify::Matrix3d temp =
+        Matrixify::Matrix3dFactory::Create(1, 1, 1).setConstant(2.0);
+    Matrixify::Matrix3dOverTime stateHistory({temp});
     history.stateHistory = stateHistory;
 
     Calculator::PostSimulationCalculator calculator(history);
 
     MockUtilityLoader utilityLoader;
 
-    Data::Matrix3d retUtility =
-        Data::Matrix3dFactory::Create(1, 1, 1).setConstant(1.0);
+    Matrixify::Matrix3d retUtility =
+        Matrixify::Matrix3dFactory::Create(1, 1, 1).setConstant(1.0);
     EXPECT_CALL(utilityLoader, getBackgroundUtility("utility"))
         .WillRepeatedly(Return(retUtility));
 
-    retUtility = Data::Matrix3dFactory::Create(1, 1, 1).setConstant(0.75);
+    retUtility = Matrixify::Matrix3dFactory::Create(1, 1, 1).setConstant(0.75);
     EXPECT_CALL(utilityLoader, getOUDUtility("utility"))
         .WillRepeatedly(Return(retUtility));
 
-    retUtility = Data::Matrix3dFactory::Create(1, 1, 1).setConstant(0.5);
+    retUtility = Matrixify::Matrix3dFactory::Create(1, 1, 1).setConstant(0.5);
     EXPECT_CALL(utilityLoader, getSettingUtility("utility"))
         .WillRepeatedly(Return(retUtility));
 
-    Data::Matrix3dOverTime result = calculator.calculateUtilities(
+    Matrixify::Matrix3dOverTime result = calculator.calculateUtilities(
         utilityLoader, Calculator::UTILITY_TYPE::MIN);
 
     EXPECT_EQ(result(0, 0, 0, 0), 1);
 }
 
 TEST_F(PostSimulationCalculatorTest, calculateUtilityMult) {
-    Data::History history;
-    Data::Matrix3d temp =
-        Data::Matrix3dFactory::Create(1, 1, 1).setConstant(2.0);
-    Data::Matrix3dOverTime stateHistory({temp});
+    Matrixify::History history;
+    Matrixify::Matrix3d temp =
+        Matrixify::Matrix3dFactory::Create(1, 1, 1).setConstant(2.0);
+    Matrixify::Matrix3dOverTime stateHistory({temp});
     history.stateHistory = stateHistory;
 
     Calculator::PostSimulationCalculator calculator(history);
 
     MockUtilityLoader utilityLoader;
 
-    Data::Matrix3d retUtility =
-        Data::Matrix3dFactory::Create(1, 1, 1).setConstant(1.0);
+    Matrixify::Matrix3d retUtility =
+        Matrixify::Matrix3dFactory::Create(1, 1, 1).setConstant(1.0);
     EXPECT_CALL(utilityLoader, getBackgroundUtility("utility"))
         .WillRepeatedly(Return(retUtility));
 
-    retUtility = Data::Matrix3dFactory::Create(1, 1, 1).setConstant(0.75);
+    retUtility = Matrixify::Matrix3dFactory::Create(1, 1, 1).setConstant(0.75);
     EXPECT_CALL(utilityLoader, getOUDUtility("utility"))
         .WillRepeatedly(Return(retUtility));
 
-    retUtility = Data::Matrix3dFactory::Create(1, 1, 1).setConstant(0.5);
+    retUtility = Matrixify::Matrix3dFactory::Create(1, 1, 1).setConstant(0.5);
     EXPECT_CALL(utilityLoader, getSettingUtility("utility"))
         .WillRepeatedly(Return(retUtility));
 
-    Data::Matrix3dOverTime result = calculator.calculateUtilities(
+    Matrixify::Matrix3dOverTime result = calculator.calculateUtilities(
         utilityLoader, Calculator::UTILITY_TYPE::MULT);
 
     EXPECT_EQ(result(0, 0, 0, 0), 0.75);
 }
 
 TEST_F(PostSimulationCalculatorTest, calculateLifeYears) {
-    Data::History history;
-    Data::Matrix3d temp;
-    Data::Matrix3dOverTime stateHistory;
+    Matrixify::History history;
+    Matrixify::Matrix3d temp;
+    Matrixify::Matrix3dOverTime stateHistory;
     for (int i = 0; i < 52; ++i) {
         temp =
-            Data::Matrix3dFactory::Create(2, 2, 2).setConstant(double(i));
+            Matrixify::Matrix3dFactory::Create(2, 2, 2).setConstant(double(i));
         stateHistory.insert(temp, i);
     }
 

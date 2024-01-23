@@ -26,7 +26,7 @@
 #include "DataTypes.hpp"
 
 /// @brief Namespace containing all Helper Utility Classes
-namespace Data {
+namespace Matrixify {
 
     /// @brief Factory to create a Matrix3d Object
     class Matrix3dFactory {
@@ -39,10 +39,10 @@ namespace Data {
         /// @param numDemographics Integer specifying number of Demographic
         /// Combinations
         /// @return New Matrix3d Object of specified dimensions
-        static Data::Matrix3d Create(int numOUDStates, int numInterventions,
-                                     int numDemographics);
+        static Matrixify::Matrix3d
+        Create(int numOUDStates, int numInterventions, int numDemographics);
     };
 
-} // namespace Data
+} // namespace Matrixify
 
 #endif

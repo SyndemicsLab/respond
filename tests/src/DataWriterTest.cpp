@@ -22,7 +22,7 @@
 
 #include "DataWriter.hpp"
 
-using namespace Data;
+using namespace Matrixify;
 
 TEST(DataWriterCreation, DefaultConstructor) {
     DataWriter writer;
@@ -187,7 +187,7 @@ TEST(SimpleWriteTest, MultiTimestep) {
 
     DataWriter writer(dirname, interventions, oudStates, demographics,
                       timesteps, true);
-    std::string result = writer.writeHistory(Data::STRING, history);
+    std::string result = writer.writeHistory(Matrixify::STRING, history);
 
     std::string expected =
         "Interventions, OUD States,Demographic 0,Demographic 1,t+0,t+1,\n"

@@ -24,7 +24,7 @@
 #include "DataTypes.hpp"
 #include "Loader.hpp"
 
-namespace Data {
+namespace Matrixify {
     class ICostLoader : public virtual ILoader {
     public:
         /// @brief Load Healthcare Utilization Cost from file
@@ -184,6 +184,6 @@ namespace Data {
                                std::unordered_map<std::string, double>>
                 &costParameterMap);
     };
-} // namespace Data
+} // namespace Matrixify
 
 #endif

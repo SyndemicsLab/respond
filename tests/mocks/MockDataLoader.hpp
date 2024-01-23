@@ -4,7 +4,7 @@
 #include "DataLoader.hpp"
 #include "gmock/gmock.h"
 
-class MockDataLoader : public Data::IDataLoader {
+class MockDataLoader : public Matrixify::IDataLoader {
 public:
     MOCK_METHOD(std::string, getDirName, (), (const, override));
 
@@ -18,25 +18,26 @@ public:
 
     MOCK_METHOD(int, getNumDemographicCombos, (), (const, override));
 
-    MOCK_METHOD(Data::Matrix3d, getInitialSample, (), (const, override));
+    MOCK_METHOD(Matrixify::Matrix3d, getInitialSample, (), (const, override));
 
-    MOCK_METHOD(Data::Matrix3dOverTime, getEnteringSamples, (),
+    MOCK_METHOD(Matrixify::Matrix3dOverTime, getEnteringSamples, (),
                 (const, override));
 
-    MOCK_METHOD(Data::Matrix3d, getOUDTransitionRates, (), (const, override));
-
-    MOCK_METHOD(Data::Matrix3dOverTime, getInterventionTransitionRates, (),
+    MOCK_METHOD(Matrixify::Matrix3d, getOUDTransitionRates, (),
                 (const, override));
 
-    MOCK_METHOD(Data::Matrix3dOverTime, getOverdoseRates, (),
+    MOCK_METHOD(Matrixify::Matrix3dOverTime, getInterventionTransitionRates, (),
                 (const, override));
 
-    MOCK_METHOD(Data::Matrix3dOverTime, getFatalOverdoseRates, (),
+    MOCK_METHOD(Matrixify::Matrix3dOverTime, getOverdoseRates, (),
                 (const, override));
 
-    MOCK_METHOD(Data::Matrix3d, getMortalityRates, (), (const, override));
+    MOCK_METHOD(Matrixify::Matrix3dOverTime, getFatalOverdoseRates, (),
+                (const, override));
 
-    MOCK_METHOD(Data::Matrix3d, getInterventionInitRates, (),
+    MOCK_METHOD(Matrixify::Matrix3d, getMortalityRates, (), (const, override));
+
+    MOCK_METHOD(Matrixify::Matrix3d, getInterventionInitRates, (),
                 (const, override));
 
     MOCK_METHOD(std::vector<std::string>, getInterventions, (),
@@ -67,31 +68,31 @@ public:
     MOCK_METHOD(std::vector<int>, getGeneralStatsOutputTimesteps, (),
                 (const, override));
 
-    MOCK_METHOD(Data::Matrix3d, loadInitialSample, (std::string const &csvName),
-                (override));
+    MOCK_METHOD(Matrixify::Matrix3d, loadInitialSample,
+                (std::string const &csvName), (override));
 
-    MOCK_METHOD(Data::Matrix3dOverTime, loadEnteringSamples,
+    MOCK_METHOD(Matrixify::Matrix3dOverTime, loadEnteringSamples,
                 (std::string const &csvName,
                  std::string const &enteringSampleIntervention,
                  std::string const &enteringSampleOUD),
                 (override));
 
-    MOCK_METHOD(Data::Matrix3d, loadOUDTransitionRates,
+    MOCK_METHOD(Matrixify::Matrix3d, loadOUDTransitionRates,
                 (std::string const &csvName), (override));
 
-    MOCK_METHOD(Data::Matrix3d, loadInterventionInitRates,
+    MOCK_METHOD(Matrixify::Matrix3d, loadInterventionInitRates,
                 (std::string const &csvName), (override));
 
-    MOCK_METHOD(Data::Matrix3dOverTime, loadInterventionTransitionRates,
+    MOCK_METHOD(Matrixify::Matrix3dOverTime, loadInterventionTransitionRates,
                 (std::string const &csvName), (override));
 
-    MOCK_METHOD(Data::Matrix3dOverTime, loadOverdoseRates,
+    MOCK_METHOD(Matrixify::Matrix3dOverTime, loadOverdoseRates,
                 (std::string const &csvName), (override));
 
-    MOCK_METHOD(Data::Matrix3dOverTime, loadFatalOverdoseRates,
+    MOCK_METHOD(Matrixify::Matrix3dOverTime, loadFatalOverdoseRates,
                 (std::string const &csvName), (override));
 
-    MOCK_METHOD(Data::Matrix3d, loadMortalityRates,
+    MOCK_METHOD(Matrixify::Matrix3d, loadMortalityRates,
                 (std::string const &smrCSVName, std::string const &bgmCSVName),
                 (override));
 };

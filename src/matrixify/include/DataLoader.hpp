@@ -30,7 +30,7 @@
 #include "DataTypes.hpp"
 #include "Loader.hpp"
 
-namespace Data {
+namespace Matrixify {
     class IDataLoader : public virtual ILoader {
     public:
         /// @brief Get the Directory Name
@@ -374,7 +374,7 @@ namespace Data {
         /// @return
         Matrix3d createTransitionMatrix3d(
             std::vector<std::vector<int>> const &indicesVec,
-            InputTable const &table, Data::Dimension dimension);
+            InputTable const &table, Matrixify::Dimension dimension);
 
         /// @brief
         /// @param indices
@@ -449,5 +449,5 @@ namespace Data {
         Matrix3dOverTime fatalOverdoseRates;
         Matrix3d mortalityRates;
     };
-} // namespace Data
+} // namespace Matrixify
 #endif // DATA_DATALOADER_HPP_

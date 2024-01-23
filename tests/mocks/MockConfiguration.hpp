@@ -23,7 +23,7 @@
 #include "DataTypes.hpp"
 #include "gmock/gmock.h"
 
-using namespace Data;
+using namespace Matrixify;
 
 class MockConfiguration : public IConfiguration {
     MOCK_METHOD(std::vector<std::string>, getInterventions, (), (override));

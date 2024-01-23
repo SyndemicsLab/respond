@@ -22,7 +22,7 @@
 #include <cmath>
 #include <stdexcept>
 
-namespace Data {
+namespace Matrixify {
 
     /*********************************************************************
      *
@@ -193,7 +193,7 @@ namespace Data {
                 "Interventions * Demographics * OUDStates");
         }
 
-        this->initialSample = Data::Matrix3dFactory::Create(
+        this->initialSample = Matrixify::Matrix3dFactory::Create(
                                   this->numOUDStates, this->numInterventions,
                                   this->numDemographicCombos)
                                   .constant(0);
@@ -252,7 +252,7 @@ namespace Data {
                 throw std::out_of_range(column + " not in entering_cohort.csv");
             }
 
-            Matrix3d enteringSample = Data::Matrix3dFactory::Create(
+            Matrix3d enteringSample = Matrixify::Matrix3dFactory::Create(
                 this->numOUDStates, this->numInterventions,
                 this->numDemographicCombos);
 
@@ -282,7 +282,7 @@ namespace Data {
         // StateTensor-sized Matrix3d objects and stack at the end
         std::vector<Matrix3d> tempOUDTransitions;
         for (int i = 0; i < this->numOUDStates; ++i) {
-            tempOUDTransitions.push_back(Data::Matrix3dFactory::Create(
+            tempOUDTransitions.push_back(Matrixify::Matrix3dFactory::Create(
                 this->numOUDStates, this->numInterventions,
                 this->numDemographicCombos));
         }
@@ -334,7 +334,7 @@ namespace Data {
         for (int i = 1; i < tempOUDTransitions.size(); ++i) {
             Matrix3d temp =
                 this->oudTransitionRates
-                    .concatenate(tempOUDTransitions[i], Data::OUD)
+                    .concatenate(tempOUDTransitions[i], Matrixify::OUD)
                     .eval()
                     .reshape(Matrix3d::Dimensions(this->numInterventions,
                                                   (i + 1) * this->numOUDStates,
@@ -356,7 +356,7 @@ namespace Data {
         std::vector<Matrix3d> tempinterventionInit;
         int activeNonActiveOffset = this->numOUDStates / 2;
         for (int i = 0; i < this->numOUDStates; ++i) {
-            tempinterventionInit.push_back(Data::Matrix3dFactory::Create(
+            tempinterventionInit.push_back(Matrixify::Matrix3dFactory::Create(
                 this->numOUDStates, this->numInterventions,
                 this->numDemographicCombos));
         }
@@ -420,7 +420,7 @@ namespace Data {
         for (int i = 1; i < tempinterventionInit.size(); ++i) {
             Matrix3d temp =
                 this->interventionInitRates
-                    .concatenate(tempinterventionInit[i], Data::OUD)
+                    .concatenate(tempinterventionInit[i], Matrixify::OUD)
                     .eval()
                     .reshape(Matrix3d::Dimensions(this->numInterventions,
                                                   (i + 1) * this->numOUDStates,
@@ -490,9 +490,9 @@ namespace Data {
         int startTime = 0;
         for (int timestep : oct) {
             Matrix3d overdoseTransition =
-                Data::Matrix3dFactory::Create(this->numOUDStates,
-                                              this->numInterventions,
-                                              this->numDemographicCombos)
+                Matrixify::Matrix3dFactory::Create(this->numOUDStates,
+                                                   this->numInterventions,
+                                                   this->numDemographicCombos)
                     .constant(0);
 
             std::string fodColumn = "fatal_to_all_types_overdose_ratio_cycle" +
@@ -509,7 +509,7 @@ namespace Data {
                                         " not in fatal_overdose.csv");
             }
 
-            Matrix3d temp = Data::Matrix3dFactory::Create(
+            Matrix3d temp = Matrixify::Matrix3dFactory::Create(
                                 this->numOUDStates, this->numInterventions,
                                 this->numDemographicCombos)
                                 .setZero();
@@ -556,7 +556,7 @@ namespace Data {
         // mortality here refers to death from reasons other than oud and is
         // calculated by combining the SMR and background mortality calculation
         // to combine these into the mortality is 1-exp(log(1-bg_mort)*SMR)
-        Data::InputTable temp = loadTable(smrCSVName);
+        Matrixify::InputTable temp = loadTable(smrCSVName);
         if (temp.find("SMR") == temp.end()) {
             this->logger->error("SMR column not found in SMR.csv");
             throw std::out_of_range("SMR not in SMR.csv");
@@ -574,7 +574,7 @@ namespace Data {
         }
         std::vector<std::string> backgroundMortalityColumn = temp["death_prob"];
 
-        Matrix3d mortalityTransition = Data::Matrix3dFactory::Create(
+        Matrix3d mortalityTransition = Matrixify::Matrix3dFactory::Create(
             this->numOUDStates, this->numInterventions,
             this->numDemographicCombos);
         // mortality is one element per stratum, no time variability
@@ -634,13 +634,13 @@ namespace Data {
     /// @param indices
     /// @param table
     /// @return
-    Data::Matrix3d
+    Matrixify::Matrix3d
     DataLoader::buildInterventionMatrix(std::vector<int> const &indices,
                                         InputTable const &table) {
-        Data::Matrix3d transMat =
-            Data::Matrix3dFactory::Create(this->numOUDStates,
-                                          this->numInterventions,
-                                          this->numDemographicCombos)
+        Matrixify::Matrix3d transMat =
+            Matrixify::Matrix3dFactory::Create(this->numOUDStates,
+                                               this->numInterventions,
+                                               this->numDemographicCombos)
                 .constant(0);
 
         if (table.find("initial_block") == table.end()) {
@@ -717,15 +717,15 @@ namespace Data {
     /// @param table
     /// @param dimension
     /// @return
-    Data::Matrix3d DataLoader::createTransitionMatrix3d(
+    Matrixify::Matrix3d DataLoader::createTransitionMatrix3d(
         std::vector<std::vector<int>> const &indicesVec,
-        InputTable const &table, Data::Dimension dimension) {
-        if (dimension == Data::INTERVENTION) {
+        InputTable const &table, Matrixify::Dimension dimension) {
+        if (dimension == Matrixify::INTERVENTION) {
             Matrix3d stackingMatrices =
-                Data::Matrix3dFactory::Create(this->numOUDStates,
-                                              this->numInterventions *
-                                                  this->numInterventions,
-                                              this->numDemographicCombos)
+                Matrixify::Matrix3dFactory::Create(this->numOUDStates,
+                                                   this->numInterventions *
+                                                       this->numInterventions,
+                                                   this->numDemographicCombos)
                     .constant(0);
             for (int i = 0; i < indicesVec.size(); i++) {
                 // assign to index + offset of numInterventions
@@ -734,24 +734,24 @@ namespace Data {
                 Eigen::array<Eigen::Index, 3> extents = {
                     this->numInterventions, this->numOUDStates,
                     this->numDemographicCombos};
-                Data::Matrix3d temp =
+                Matrixify::Matrix3d temp =
                     this->buildInterventionMatrix(indicesVec[i], table);
                 stackingMatrices.slice(offsets, extents) = temp;
             }
             return stackingMatrices;
 
-        } else if (dimension == Data::OUD) {
+        } else if (dimension == Matrixify::OUD) {
             Matrix3d stackingMatrices =
-                Data::Matrix3dFactory::Create(
+                Matrixify::Matrix3dFactory::Create(
                     this->numOUDStates * this->numOUDStates,
                     this->numInterventions, this->numDemographicCombos)
                     .constant(0);
             return stackingMatrices;
         }
         Matrix3d stackingMatrices =
-            Data::Matrix3dFactory::Create(this->numOUDStates,
-                                          this->numInterventions,
-                                          this->numDemographicCombos)
+            Matrixify::Matrix3dFactory::Create(this->numOUDStates,
+                                               this->numInterventions,
+                                               this->numDemographicCombos)
                 .constant(0);
         return stackingMatrices;
     }
@@ -803,7 +803,7 @@ namespace Data {
                 this->removeColumns(str_timestep, table);
 
             Matrix3d transMat = this->createTransitionMatrix3d(
-                indicesVec, currentTimeTable, Data::INTERVENTION);
+                indicesVec, currentTimeTable, Matrixify::INTERVENTION);
             while (startTime <= timestep) {
                 m3dot.insert(transMat, startTime);
                 startTime++;
@@ -821,9 +821,9 @@ namespace Data {
         std::vector<std::string> oudStates = this->Config.getOUDStates();
 
         Matrix3d overdoseTransitionsCycle =
-            Data::Matrix3dFactory::Create(this->numOUDStates,
-                                          this->numInterventions,
-                                          this->numDemographicCombos)
+            Matrixify::Matrix3dFactory::Create(this->numOUDStates,
+                                               this->numInterventions,
+                                               this->numDemographicCombos)
                 .constant(0);
 
         int row = 0;
@@ -893,4 +893,4 @@ namespace Data {
         }
         return this->costCategoryOutputs;
     }
-} // namespace Data
+} // namespace Matrixify

@@ -17,7 +17,7 @@
 
 #include "UtilityLoader.hpp"
 
-namespace Data {
+namespace Matrixify {
 
     UtilityLoader::UtilityLoader(std::string const &inputDir)
         : Loader(inputDir) {
@@ -57,10 +57,10 @@ namespace Data {
         size_t numDemographicCombos = this->Config.getNumDemographicCombos();
         size_t numInterventions = this->Config.getInterventions().size();
 
-        std::unordered_map<std::string, Data::Matrix3d> result;
+        std::unordered_map<std::string, Matrixify::Matrix3d> result;
 
-        Data::Matrix3d utilMatrix =
-            Data::Matrix3dFactory::Create(numOUDStates, numInterventions,
+        Matrixify::Matrix3d utilMatrix =
+            Matrixify::Matrix3dFactory::Create(numOUDStates, numInterventions,
                                                numDemographicCombos)
                 .constant(0);
 
@@ -72,8 +72,8 @@ namespace Data {
              ++intervention) {
             Eigen::array<Eigen::Index, 3> offset = {0, 0, 0};
             Eigen::array<Eigen::Index, 3> extent = utilMatrix.dimensions();
-            offset[Data::INTERVENTION] = intervention;
-            extent[Data::INTERVENTION] = 1;
+            offset[Matrixify::INTERVENTION] = intervention;
+            extent[Matrixify::INTERVENTION] = 1;
             Matrix3d temp = utilMatrix.slice(offset, extent);
             if (table[perspective].size() > intervention) {
                 temp.setConstant(std::stod(table[perspective][intervention]));
@@ -98,4 +98,4 @@ namespace Data {
             this->costCategoryOutputs = this->Config.getCostCategoryOutputs();
         }
     }
-} // namespace Data
+} // namespace Matrixify

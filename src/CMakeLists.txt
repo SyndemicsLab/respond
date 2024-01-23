@@ -11,8 +11,8 @@ project (
   DESCRIPTION "A Compartmental Simulation for Opioid Use Disorder"
 )
 
-add_subdirectory(model)
-add_subdirectory(data)
+add_subdirectory(simrunner)
+add_subdirectory(matrixify)
 
 option(BUILD_API "enable RESPOND API" OFF)
 if(NOT BUILD_API STREQUAL OFF)
@@ -22,12 +22,12 @@ endif()
 add_executable(respond main.cpp)
 
 target_include_directories(respond PRIVATE
-  "data/include"
-  "model/include"
+  "matrixify/include"
+  "simrunner/include"
   )
 
 target_link_libraries(respond
-  data
-  model
+  matrixify
+  simrunner
   spdlog::spdlog
 )

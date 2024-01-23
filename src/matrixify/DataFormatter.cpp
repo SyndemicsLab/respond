@@ -1,10 +1,10 @@
 #include "DataFormatter.hpp"
 
-namespace Data {
+namespace Matrixify {
     void DataFormatter::extractTimesteps(std::vector<int> timesteps,
-                                         Data::History &history,
-                                         Data::CostList &costs,
-                                         Data::Matrix3dOverTime &utilities,
+                                         Matrixify::History &history,
+                                         Matrixify::CostList &costs,
+                                         Matrixify::Matrix3dOverTime &utilities,
                                          bool costSwitch) {
         if (timesteps.size() == 0) {
             return;
@@ -28,7 +28,7 @@ namespace Data {
             trimAndAddMatrix3dOverTime(timesteps, history.overdoseHistory);
 
         if (costSwitch) {
-            for (Data::Cost &cost : costs) {
+            for (Matrixify::Cost &cost : costs) {
                 cost.fatalOverdoseCost = trimAndAddMatrix3dOverTime(
                     timesteps, cost.fatalOverdoseCost);
                 cost.healthcareCost =
@@ -45,30 +45,29 @@ namespace Data {
         }
     }
 
-    Data::Matrix3dOverTime
+    Matrixify::Matrix3dOverTime
     DataFormatter::trimMatrix3dOverTime(std::vector<int> timesteps,
-                                        Data::Matrix3dOverTime matrix) {
-        Data::Matrix3dOverTime trimmed;
+                                        Matrixify::Matrix3dOverTime matrix) {
+        Matrixify::Matrix3dOverTime trimmed;
         for (int timestep : timesteps) {
             trimmed.insert(matrix.getMappedData()[timestep], timestep);
         }
         return trimmed;
     }
 
-    Data::Matrix3dOverTime
-    DataFormatter::trimAndAddMatrix3dOverTime(std::vector<int> timesteps,
-                                              Data::Matrix3dOverTime matrix) {
-        Data::Matrix3d temp = matrix.getMatrix3dAtTimestep(0);
-        int oudSize = temp.dimension(Data::OUD);
-        int interSize = temp.dimension(Data::INTERVENTION);
-        int demSize = temp.dimension(Data::DEMOGRAPHIC_COMBO);
+    Matrixify::Matrix3dOverTime DataFormatter::trimAndAddMatrix3dOverTime(
+        std::vector<int> timesteps, Matrixify::Matrix3dOverTime matrix) {
+        Matrixify::Matrix3d temp = matrix.getMatrix3dAtTimestep(0);
+        int oudSize = temp.dimension(Matrixify::OUD);
+        int interSize = temp.dimension(Matrixify::INTERVENTION);
+        int demSize = temp.dimension(Matrixify::DEMOGRAPHIC_COMBO);
 
-        Data::Matrix3dOverTime trimmed;
-        Data::Matrix3d running =
-            Data::Matrix3dFactory::Create(oudSize, interSize, demSize)
+        Matrixify::Matrix3dOverTime trimmed;
+        Matrixify::Matrix3d running =
+            Matrixify::Matrix3dFactory::Create(oudSize, interSize, demSize)
                 .setZero();
 
-        std::vector<Data::Matrix3d> matrices = matrix.getMatrices();
+        std::vector<Matrixify::Matrix3d> matrices = matrix.getMatrices();
         int timestepIdx = 0;
         for (int i = 0; i < matrices.size(); ++i) {
             if (timesteps.size() <= timestepIdx) {
@@ -77,7 +76,7 @@ namespace Data {
             running += matrices[i];
             if (i >= timesteps[timestepIdx]) {
                 trimmed.insert(running, timesteps[timestepIdx]);
-                running = Data::Matrix3dFactory::Create(oudSize, interSize,
+                running = Matrixify::Matrix3dFactory::Create(oudSize, interSize,
                                                              demSize)
                               .setZero();
                 timestepIdx++;
@@ -86,4 +85,4 @@ namespace Data {
 
         return trimmed;
     }
-} // namespace Data
+} // namespace Matrixify

@@ -17,10 +17,10 @@
 
 #include "Matrix3dPrinter.hpp"
 
-namespace Data {
+namespace Matrixify {
 
-    void Matrix3dPrinter::Print(Data::Matrix3d mat, std::ostream &stream) {
-        Data::Matrix3d::Dimensions dim = mat.dimensions();
+    void Matrix3dPrinter::Print(Matrixify::Matrix3d mat, std::ostream &stream) {
+        Matrixify::Matrix3d::Dimensions dim = mat.dimensions();
         for (int i = 0; i < dim[2]; ++i) {
             // intervention iterated along columns
             for (int j = 0; j < dim[0]; ++j) {
@@ -36,13 +36,13 @@ namespace Data {
         }
     }
 
-    void Matrix3dPrinter::PrintOverTime(Data::Matrix3dOverTime matOverTime,
+    void Matrix3dPrinter::PrintOverTime(Matrixify::Matrix3dOverTime matOverTime,
                                         std::ostream &stream) {
-        std::vector<Data::Matrix3d> matrices = matOverTime.getMatrices();
-        for (Data::Matrix3d mat : matrices) {
+        std::vector<Matrixify::Matrix3d> matrices = matOverTime.getMatrices();
+        for (Matrixify::Matrix3d mat : matrices) {
             stream << "++++++++ NEW TIMESTEP ++++++++" << std::endl;
             Matrix3dPrinter::Print(mat, stream);
         }
     }
 
-} // namespace Data
+} // namespace Matrixify

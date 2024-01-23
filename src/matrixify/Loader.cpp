@@ -17,7 +17,7 @@
 
 #include "Loader.hpp"
 
-namespace Data {
+namespace Matrixify {
     Loader::Loader(std::string const &inputDir) {
         // PROCESSING INPUT FILES
         std::filesystem::path configPath =
@@ -79,4 +79,4 @@ namespace Data {
         Configuration config(inputFile);
         return config;
     }
-} // namespace Data
+} // namespace Matrixify

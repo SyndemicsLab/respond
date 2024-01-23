@@ -22,7 +22,7 @@
 #include <gtest/gtest.h>
 
 using namespace Simulation;
-using namespace Data;
+using namespace Matrixify;
 
 TEST(SimulationCreation, DefaultConstructor) {
     Sim sim;

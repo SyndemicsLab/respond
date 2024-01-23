@@ -32,7 +32,7 @@
 
 #include "DataTypes.hpp"
 
-namespace Data {
+namespace Matrixify {
     class IConfiguration {
     public:
         virtual std::vector<std::string> getInterventions() = 0;
@@ -211,5 +211,5 @@ namespace Data {
         std::vector<int> updateIndices(std::vector<int> indices,
                                        std::vector<int> maxIndices);
     };
-} // namespace Data
+} // namespace Matrixify
 #endif // DATA_CONFIGURATION_HPP_

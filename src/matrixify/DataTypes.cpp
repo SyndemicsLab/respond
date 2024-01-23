@@ -17,7 +17,7 @@
 
 #include "DataTypes.hpp"
 
-namespace Data {
+namespace Matrixify {
     Matrix3dOverTime::Matrix3dOverTime(std::vector<Matrix3d> data) {
         for (int i = 0; i < data.size(); i++) {
             this->data.insert({i, data[i]});
@@ -99,4 +99,4 @@ namespace Data {
         return runningSum;
     }
 
-} // namespace Data
+} // namespace Matrixify

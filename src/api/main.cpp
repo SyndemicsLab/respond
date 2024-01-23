@@ -8,12 +8,12 @@
 int main(int argc, char **argv) {
     crow::SimpleApp app;
 
-    Data::DataLoader inputs;
-    Data::CostLoader costs;
-    Data::UtilityLoader utils;
-    Data::DataWriter writer;
+    Matrixify::DataLoader inputs;
+    Matrixify::CostLoader costs;
+    Matrixify::UtilityLoader utils;
+    Matrixify::DataWriter writer;
 
-    Data::History hist;
+    Matrixify::History hist;
 
     // I hate this route and lambda. I really want to clean it up when I have
     // time
@@ -704,19 +704,20 @@ int main(int argc, char **argv) {
         .methods(crow::HTTPMethod::Post)(
             [&hist, &costs, &utils](const crow::request &req) {
                 Calculator::CostCalculator costCalculator(costs, utils, hist);
-                Data::Cost cost = costCalculator.calculateCost();
+                Matrixify::Cost cost = costCalculator.calculateCost();
 
                 return crow::response(crow::status::OK);
             });
 
     CROW_ROUTE(app, "/calculateUtil")
-        .methods(crow::HTTPMethod::Post)([&hist, &costs,
-                                          &utils](const crow::request &req) {
-            Calculator::CostCalculator costCalculator(costs, utils, hist);
-            Data::Matrix3dOverTime utility = costCalculator.calculateUtility();
+        .methods(crow::HTTPMethod::Post)(
+            [&hist, &costs, &utils](const crow::request &req) {
+                Calculator::CostCalculator costCalculator(costs, utils, hist);
+                Matrixify::Matrix3dOverTime utility =
+                    costCalculator.calculateUtility();
 
-            return crow::response(crow::status::OK);
-        });
+                return crow::response(crow::status::OK);
+            });
 
     CROW_ROUTE(app, "/download/writeHistory")
         .methods(crow::HTTPMethod::Get)([&hist, &inputs, &writer]() {
@@ -725,7 +726,7 @@ int main(int argc, char **argv) {
             writer.setDemographics(
                 inputs.getConfiguration().getDemographicCombosVecOfVec());
             writer.addDirname("output");
-            writer.writeHistory(Data::FILE, hist);
+            writer.writeHistory(Matrixify::FILE, hist);
             crow::response response;
             response.set_static_file_info("output/stateHistory.csv");
             return response;
@@ -735,7 +736,7 @@ int main(int argc, char **argv) {
         .methods(crow::HTTPMethod::Post)([&hist, &inputs, &costs, &utils,
                                           &writer](const crow::request &req) {
             Calculator::CostCalculator costCalculator(costs, utils, hist);
-            Data::Cost cost = costCalculator.calculateCost();
+            Matrixify::Cost cost = costCalculator.calculateCost();
 
             writer.setInterventions(inputs.getInterventions());
             writer.setOUDStates(inputs.getOUDStates());
@@ -743,7 +744,7 @@ int main(int argc, char **argv) {
                 inputs.getConfiguration().getDemographicCombosVecOfVec());
             writer.addDirname("output");
 
-            writer.writeCost(Data::STRING, cost);
+            writer.writeCost(Matrixify::STRING, cost);
             crow::response response;
             response.set_static_file_info("output/healthcareCost.csv");
 
@@ -754,7 +755,8 @@ int main(int argc, char **argv) {
         .methods(crow::HTTPMethod::Post)([&hist, &inputs, &costs, &utils,
                                           &writer](const crow::request &req) {
             Calculator::CostCalculator costCalculator(costs, utils, hist);
-            Data::Matrix3dOverTime utility = costCalculator.calculateUtility();
+            Matrixify::Matrix3dOverTime utility =
+                costCalculator.calculateUtility();
 
             writer.setInterventions(inputs.getInterventions());
             writer.setOUDStates(inputs.getOUDStates());
@@ -762,7 +764,7 @@ int main(int argc, char **argv) {
                 inputs.getConfiguration().getDemographicCombosVecOfVec());
             writer.addDirname("output");
 
-            writer.writeUtility(Data::FILE, utility);
+            writer.writeUtility(Matrixify::FILE, utility);
             crow::response response;
             response.set_static_file_info("output/backgroundUtility.csv");
 
