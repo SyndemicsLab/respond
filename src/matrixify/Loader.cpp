@@ -18,65 +18,46 @@
 #include "Loader.hpp"
 
 namespace Matrixify {
-    Loader::Loader(std::string const &inputDir) {
-        // PROCESSING INPUT FILES
-        std::filesystem::path configPath =
-            (std::filesystem::path)inputDir / "sim.conf";
-        this->Config = readConfigFile(configPath.string());
-        this->inputTables = readInputDir(inputDir);
+    Loader::Loader(std::string const &inputDir) : Loader(inputDir, nullptr) {}
+
+    Loader::Loader(std::shared_ptr<spdlog::logger> logger)
+        : Loader("", logger) {}
+
+    Loader::Loader(std::string const &inputDir,
+                   std::shared_ptr<spdlog::logger> logger) {
+        if (!inputDir.empty()) {
+            this->Config = std::make_shared<Data::Configuration>(inputDir);
+        }
+
+        if (!logger) {
+            logger = spdlog::stdout_color_mt("console");
+        }
+        this->logger = logger;
     }
 
-    Configuration Loader::loadConfigurationFile(std::string const &configPath) {
-        this->Config = readConfigFile(configPath);
+    Data::IConfigurationPtr
+    Loader::loadConfigurationFile(std::string const &configPath) {
+        if (!configPath.empty()) {
+            this->Config = std::make_shared<Data::Configuration>(configPath);
+        }
         return this->Config;
     }
 
-    InputTable Loader::readCSV(std::string const &inputFile) {
-        using boost::tokenizer;
-
-        std::string inputContents;
-        std::ifstream inputStream(inputFile);
-        InputTable toReturn;
-
-        // use the headers of the csv table to create keys for the unordered map
-        std::getline(inputStream, inputContents);
-        std::vector<std::string> headerNames;
-        tokenizer<boost::escaped_list_separator<char>> token(inputContents);
-        for (tokenizer<boost::escaped_list_separator<char>>::iterator beg =
-                 token.begin();
-             beg != token.end(); ++beg) {
-            headerNames.push_back(*beg);
-            toReturn[*beg] = {};
-        }
-        // populate the keys/headers with values
-        int i = 0;
-        while (std::getline(inputStream, inputContents)) {
-            tokenizer<boost::escaped_list_separator<char>> token(inputContents);
-            for (tokenizer<boost::escaped_list_separator<char>>::iterator beg =
-                     token.begin();
-                 beg != token.end(); ++beg) {
-                toReturn[headerNames[i % headerNames.size()]].push_back(*beg);
-                ++i;
-            }
-        }
-        inputStream.close();
-        return toReturn;
+    Data::IDataTablePtr Loader::readCSV(std::string const &inputFile) {
+        Data::IDataTablePtr table =
+            std::make_shared<Data::DataTable>(inputFile);
+        return table;
     }
 
-    std::unordered_map<std::string, InputTable>
+    std::unordered_map<std::string, Data::IDataTablePtr>
     Loader::readInputDir(std::string const &inputDir) {
         std::filesystem::path inputDirFixed = inputDir;
-        std::unordered_map<std::string, InputTable> toReturn;
+        std::unordered_map<std::string, Data::IDataTablePtr> toReturn;
 
         for (std::string inputFile : INPUT_FILES) {
             std::filesystem::path filePath = inputDirFixed / inputFile;
             toReturn[inputFile] = readCSV(filePath.string());
         }
         return toReturn;
-    }
-
-    Configuration Loader::readConfigFile(std::string const &inputFile) {
-        Configuration config(inputFile);
-        return config;
     }
 } // namespace Matrixify

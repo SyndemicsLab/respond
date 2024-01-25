@@ -25,7 +25,7 @@ namespace Matrixify {
         this->populateCostParameters();
     }
 
-    Configuration
+    Data::IConfigurationPtr
     CostLoader::loadConfigurationFile(std::string const &configPath) {
         Loader::loadConfigurationFile(configPath);
         this->populateCostParameters();
@@ -34,21 +34,28 @@ namespace Matrixify {
 
     std::unordered_map<std::string, Matrix3d>
     CostLoader::loadHealthcareUtilizationCost(std::string const &csvName) {
-        InputTable table = loadTable(csvName);
-        size_t numOUDStates = this->Config.getOUDStates().size();
-        size_t numDemographicCombos = this->Config.getNumDemographicCombos();
-        size_t numInterventions = this->Config.getInterventions().size();
+        Data::IDataTablePtr table = loadTable(csvName);
+        size_t numOUDStates =
+            this->Config->getStringVector("state.ouds").size();
+        size_t numSexes =
+            this->Config->getStringVector("demographic.sex").size();
+        size_t numAgeGrps =
+            this->Config->getStringVector("demographic.age_groups").size();
+        size_t numDemographicCombos = numSexes * numAgeGrps;
+        size_t numInterventions =
+            this->Config->getStringVector("state.interventions").size();
 
         for (std::string perspective : this->costPerspectives) {
+
+            std::vector<std::string> healthColumn =
+                table->getColumn(perspective);
             std::string message =
                 "\'" + perspective + "\' Column Successfully Found";
-            ASSERTM(table.find(perspective) != table.end(), message);
+            ASSERTM(!healthColumn.empty(), message);
 
             this->healthcareUtilizationCost[perspective] =
                 Matrixify::Matrix3dFactory::Create(
                     numOUDStates, numInterventions, numDemographicCombos);
-
-            std::vector<std::string> healthColumn = table[perspective];
 
             int rowIdx = 0;
             for (int intervention = 0; intervention < numInterventions;
@@ -71,22 +78,20 @@ namespace Matrixify {
 
     std::unordered_map<std::string, std::unordered_map<std::string, double>>
     CostLoader::loadOverdoseCost(std::string const &csvName) {
-        InputTable table = loadTable(csvName);
+        Data::IDataTablePtr table = loadTable(csvName);
+
+        std::vector<std::string> xCol = table->getColumn("X");
 
         for (std::string perspective : this->costPerspectives) {
-            std::string message =
-                "\'" + perspective + "\' Column Successfully Found";
-
-            ASSERTM(table.find(perspective) != table.end(), message);
-        }
-
-        ASSERTM(table.find("X") != table.end(),
-                "\'X\' Column Successfully Found");
-
-        for (std::string perspective : this->costPerspectives) {
-            for (size_t i = 0; i < table["X"].size(); i++) {
-                this->overdoseCostsMap[perspective][table["X"][i]] =
-                    std::stod(table[perspective][i]);
+            for (size_t i = 0; i < xCol.size(); i++) {
+                std::vector<std::string> persCol =
+                    table->getColumn(perspective);
+                if (persCol.empty()) {
+                    this->logger->error(
+                        "Cost perspective {} not found in table", perspective);
+                }
+                this->overdoseCostsMap[perspective][xCol[i]] =
+                    std::stod(persCol[i]);
             }
         }
         return this->overdoseCostsMap;
@@ -94,20 +99,17 @@ namespace Matrixify {
 
     std::unordered_map<std::string, Matrix3d>
     CostLoader::loadPharmaceuticalCost(std::string const &csvName) {
-        InputTable table = loadTable(csvName);
+        Data::IDataTablePtr table = loadTable(csvName);
 
-        size_t numOUDStates = this->Config.getOUDStates().size();
-        size_t numDemographicCombos = this->Config.getNumDemographicCombos();
-        size_t numInterventions = this->Config.getInterventions().size();
-
-        ASSERTM(table.find("block") != table.end(),
-                "\'block\' Column Successfully Found");
-
-        for (std::string perspective : this->costPerspectives) {
-            std::string message =
-                "\'" + perspective + "\' Column Successfully Found";
-            ASSERTM(table.find(perspective) != table.end(), message);
-        }
+        size_t numOUDStates =
+            this->Config->getStringVector("state.ouds").size();
+        size_t numSexes =
+            this->Config->getStringVector("demographic.sex").size();
+        size_t numAgeGrps =
+            this->Config->getStringVector("demographic.age_groups").size();
+        size_t numDemographicCombos = numSexes * numAgeGrps;
+        size_t numInterventions =
+            this->Config->getStringVector("state.interventions").size();
 
         this->loadPharmaceuticalCostMap(table);
 
@@ -119,16 +121,7 @@ namespace Matrixify {
 
     std::unordered_map<std::string, Matrix3d>
     CostLoader::loadTreatmentUtilizationCost(std::string const &csvName) {
-        InputTable table = loadTable(csvName);
-        ASSERTM(table.find("block") != table.end(),
-                "\'block\' Column Successfully Found");
-
-        for (std::string perspective : this->costPerspectives) {
-            std::string message =
-                "\'" + perspective + "\' Column Successfully Found";
-            ASSERTM(table.find(perspective) != table.end(), message);
-        }
-
+        Data::IDataTablePtr table = loadTable(csvName);
         this->loadTreatmentUtilizationCostMap(table);
 
         this->loadCostViaPerspective(this->treatmentUtilizationCost,
@@ -155,11 +148,12 @@ namespace Matrixify {
     }
 
     std::unordered_map<std::string, std::unordered_map<std::string, double>>
-    CostLoader::loadPharmaceuticalCostMap(InputTable table) {
+    CostLoader::loadPharmaceuticalCostMap(Data::IDataTablePtr table) {
+        std::vector<std::string> blockCol = table->getColumn("block");
         for (std::string perspective : this->costPerspectives) {
-            for (size_t i = 0; i < table["block"].size(); i++) {
-                this->pharmaceuticalCostsMap[perspective][table["block"][i]] =
-                    std::stod(table[perspective][i]);
+            for (size_t i = 0; i < blockCol.size(); i++) {
+                this->pharmaceuticalCostsMap[perspective][blockCol[i]] =
+                    std::stod(blockCol[i]);
             }
         }
         return this->pharmaceuticalCostsMap;
@@ -170,18 +164,23 @@ namespace Matrixify {
         std::unordered_map<std::string, std::unordered_map<std::string, double>>
             &costParameterMap) {
 
-        size_t numOUDStates = this->Config.getOUDStates().size();
-        size_t numDemographicCombos = this->Config.getNumDemographicCombos();
-        size_t numInterventions = this->Config.getInterventions().size();
+        size_t numOUDStates =
+            this->Config->getStringVector("state.ouds").size();
+        size_t numSexes =
+            this->Config->getStringVector("demographic.sex").size();
+        size_t numAgeGrps =
+            this->Config->getStringVector("demographic.age_groups").size();
+        size_t numDemographicCombos = numSexes * numAgeGrps;
+
+        std::vector<std::string> interventions =
+            this->Config->getStringVector("state.interventions");
+        size_t numInterventions = interventions.size();
 
         for (std::string perspective : this->costPerspectives) {
             costParameter[perspective] =
                 Matrixify::Matrix3dFactory::Create(
                     numOUDStates, numInterventions, numDemographicCombos)
                     .constant(0);
-
-            std::vector<std::string> interventions =
-                this->Config.getInterventions();
 
             for (int i = 0; i < numInterventions; ++i) {
                 Eigen::array<Eigen::Index, 3> offset = {0, 0, 0};
@@ -204,25 +203,30 @@ namespace Matrixify {
     }
 
     std::unordered_map<std::string, std::unordered_map<std::string, double>>
-    CostLoader::loadTreatmentUtilizationCostMap(InputTable table) {
+    CostLoader::loadTreatmentUtilizationCostMap(Data::IDataTablePtr table) {
+        std::vector<std::string> blockCol = table->getColumn("block");
         for (std::string perspective : this->costPerspectives) {
-            for (size_t i = 0; i < table["block"].size(); i++) {
-                this->treatmentUtilizationCostMap[perspective]
-                                                 [table["block"][i]] =
-                    std::stod(table[perspective][i]);
+            for (size_t i = 0; i < blockCol.size(); i++) {
+                this->treatmentUtilizationCostMap[perspective][blockCol[i]] =
+                    std::stod(blockCol[i]);
             }
         }
         return this->treatmentUtilizationCostMap;
     }
 
     void CostLoader::populateCostParameters() {
-        this->costSwitch = this->Config.getCostSwitch();
+        std::shared_ptr<Data::Configuration> derivedConfig =
+            std::dynamic_pointer_cast<Data::Configuration>(this->Config);
+        this->costSwitch = derivedConfig->get<bool>("cost.cost_analysis");
         if (this->costSwitch) {
-            this->costPerspectives = this->Config.getCostPerspectives();
-            this->discountRate = this->Config.getDiscountRate();
-            this->costUtilityOutputTimesteps =
-                this->Config.getCostUtilityOutputTimesteps();
-            this->costCategoryOutputs = this->Config.getCostCategoryOutputs();
+            this->costPerspectives =
+                derivedConfig->getStringVector("cost.cost_perspectives");
+            this->discountRate =
+                derivedConfig->get<double>("cost.discount_rate");
+            this->costUtilityOutputTimesteps = derivedConfig->getIntVector(
+                "cost.cost_utility_output_timesteps");
+            this->costCategoryOutputs =
+                derivedConfig->get<bool>("cost.cost_category_outputs");
         }
     }
 

@@ -9,12 +9,7 @@ add_library(simrunner
     PostSimulationCalculator.cpp
 )
 
-target_include_directories(simrunner PRIVATE
-  "include/"
-  "../matrixify/include/"
-)
+target_link_libraries(simrunner PUBLIC Eigen3::Eigen)
+target_link_libraries(simrunner PUBLIC matrixify)
 
-target_link_libraries(simrunner
-  Eigen3::Eigen
-  matrixify
-)
+target_include_directories(simrunner PUBLIC "include/")

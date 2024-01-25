@@ -4,6 +4,8 @@
 #include "UtilityLoader.hpp"
 #include "gmock/gmock.h"
 
+#include <DataManagement.hpp>
+
 class MockUtilityLoader : public Matrixify::IUtilityLoader {
 public:
     MOCK_METHOD((std::unordered_map<std::string, Matrixify::Matrix3d>),
@@ -33,16 +35,16 @@ public:
     MOCK_METHOD(Matrixify::Configuration, readConfigFile, (std::string const &),
                 (override));
 
-    MOCK_METHOD(Matrixify::InputTable, readCSV, (std::string const &),
+    MOCK_METHOD(Data::IDataTablePtr, readCSV, (std::string const &),
                 (override));
 
-    MOCK_METHOD((std::unordered_map<std::string, Matrixify::InputTable>),
+    MOCK_METHOD((std::unordered_map<std::string, Data::IDataTablePtr>),
                 readInputDir, (std::string const &), (override));
 
     MOCK_METHOD(Matrixify::Configuration, getConfiguration, (),
                 (const, override));
 
-    MOCK_METHOD(Matrixify::InputTable, loadTable, (std::string const &filename),
+    MOCK_METHOD(Data::IDataTablePtr, loadTable, (std::string const &filename),
                 (override));
 
     MOCK_METHOD(void, populateCostParameters, (), (override));

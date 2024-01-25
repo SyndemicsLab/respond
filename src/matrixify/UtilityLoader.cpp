@@ -24,7 +24,7 @@ namespace Matrixify {
         this->populateCostParameters();
     }
 
-    Configuration
+    Data::IConfigurationPtr
     UtilityLoader::loadConfigurationFile(std::string const &configPath) {
         Loader::loadConfigurationFile(configPath);
         this->populateCostParameters();
@@ -51,7 +51,7 @@ namespace Matrixify {
 
     std::unordered_map<std::string, Matrix3d>
     UtilityLoader::loadUtility(std::string const &csvName) {
-        InputTable table = loadTable(csvName);
+        Data::IDataTablePtr table = loadTable(csvName);
 
         size_t numOUDStates = this->Config.getOUDStates().size();
         size_t numDemographicCombos = this->Config.getNumDemographicCombos();
@@ -64,9 +64,7 @@ namespace Matrixify {
                                                numDemographicCombos)
                 .constant(0);
 
-        std::string perspective("utility");
-        std::string message = "\'utility\' Column Successfully Found";
-        ASSERTM(table.find("utility") != table.end(), message);
+        std::vector<std::string> utilCol = table->getColumn("utility");
 
         for (int intervention = 0; intervention < numInterventions;
              ++intervention) {
@@ -75,15 +73,15 @@ namespace Matrixify {
             offset[Matrixify::INTERVENTION] = intervention;
             extent[Matrixify::INTERVENTION] = 1;
             Matrix3d temp = utilMatrix.slice(offset, extent);
-            if (table[perspective].size() > intervention) {
-                temp.setConstant(std::stod(table[perspective][intervention]));
+            if (utilCol.size() > intervention) {
+                temp.setConstant(std::stod(utilCol[intervention]));
             } else {
                 temp.setConstant(0.0);
             }
 
             utilMatrix.slice(offset, extent) = temp;
         }
-        result[perspective] = utilMatrix;
+        result["utility"] = utilMatrix;
 
         return result;
     }

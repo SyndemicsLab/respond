@@ -91,12 +91,12 @@ protected:
 };
 
 TEST_F(ConfigurationTest, EmptyConstructor) {
-    Matrixify::Configuration config;
+    Data::IConfigurationPtr config;
     EXPECT_TRUE(&config != nullptr);
 }
 
 TEST_F(ConfigurationTest, GeneralConstructor) {
-    Matrixify::Configuration config(configFile.string());
+    Data::IConfigurationPtr config(configFile.string());
     EXPECT_EQ(config.getDiscountRate(), 0.03);
 }
 
@@ -106,7 +106,7 @@ TEST_F(ConfigurationTest, getInterventions) {
         "Methadone",       "Detox",          "Post-Buprenorphine",
         "Post-Naltrexone", "Post-Methadone", "Post-Detox"};
 
-    Matrixify::Configuration config(configFile.string());
+    Data::IConfigurationPtr config(configFile.string());
 
     std::vector<std::string> ACTUAL = config.getInterventions();
     for (int i = 0; i < ACTUAL.size(); i++) {
@@ -119,7 +119,7 @@ TEST_F(ConfigurationTest, getOUDStates) {
         "Active_Noninjection", "Active_Injection", "Nonactive_Noninjection",
         "Nonactive_Injection"};
 
-    Matrixify::Configuration config(configFile.string());
+    Data::IConfigurationPtr config(configFile.string());
 
     std::vector<std::string> ACTUAL = config.getOUDStates();
     for (int i = 0; i < ACTUAL.size(); i++) {
@@ -130,7 +130,7 @@ TEST_F(ConfigurationTest, getOUDStates) {
 TEST_F(ConfigurationTest, getNumDemographicCombos) {
     int EXPECTED = 36;
 
-    Matrixify::Configuration config(configFile.string());
+    Data::IConfigurationPtr config(configFile.string());
 
     int ACTUAL = config.getNumDemographicCombos();
     EXPECT_EQ(EXPECTED, ACTUAL);
@@ -139,7 +139,7 @@ TEST_F(ConfigurationTest, getNumDemographicCombos) {
 TEST_F(ConfigurationTest, getEnteringSampleChangeTimes) {
     std::vector<int> EXPECTED = {52};
 
-    Matrixify::Configuration config(configFile.string());
+    Data::IConfigurationPtr config(configFile.string());
 
     std::vector<int> ACTUAL = config.getEnteringSampleChangeTimes();
     for (int i = 0; i < ACTUAL.size(); i++) {
@@ -150,7 +150,7 @@ TEST_F(ConfigurationTest, getEnteringSampleChangeTimes) {
 TEST_F(ConfigurationTest, getInterventionChangeTimes) {
     std::vector<int> EXPECTED = {52};
 
-    Matrixify::Configuration config(configFile.string());
+    Data::IConfigurationPtr config(configFile.string());
 
     std::vector<int> ACTUAL = config.getInterventionChangeTimes();
     for (int i = 0; i < ACTUAL.size(); i++) {
@@ -161,7 +161,7 @@ TEST_F(ConfigurationTest, getInterventionChangeTimes) {
 TEST_F(ConfigurationTest, getOverdoseChangeTimes) {
     std::vector<int> EXPECTED = {52};
 
-    Matrixify::Configuration config(configFile.string());
+    Data::IConfigurationPtr config(configFile.string());
 
     std::vector<int> ACTUAL = config.getOverdoseChangeTimes();
     for (int i = 0; i < ACTUAL.size(); i++) {
@@ -181,7 +181,7 @@ TEST_F(ConfigurationTest, getDemographicCombos) {
         " 80_84 male", " 80_84 female", " 85_89 male", " 85_89 female",
         " 90_94 male", " 90_94 female", " 95_99 male", " 95_99 female"};
 
-    Matrixify::Configuration config(configFile.string());
+    Data::IConfigurationPtr config(configFile.string());
 
     std::vector<std::string> ACTUAL = config.getDemographicCombos();
     for (int i = 0; i < ACTUAL.size(); i++) {
@@ -192,7 +192,7 @@ TEST_F(ConfigurationTest, getDemographicCombos) {
 TEST_F(ConfigurationTest, getAgingInterval) {
     int EXPECTED = 260;
 
-    Matrixify::Configuration config(configFile.string());
+    Data::IConfigurationPtr config(configFile.string());
 
     int ACTUAL = config.getAgingInterval();
     EXPECT_EQ(EXPECTED, ACTUAL);
@@ -201,7 +201,7 @@ TEST_F(ConfigurationTest, getAgingInterval) {
 TEST_F(ConfigurationTest, getDuration) {
     int EXPECTED = 52;
 
-    Matrixify::Configuration config(configFile.string());
+    Data::IConfigurationPtr config(configFile.string());
 
     int ACTUAL = config.getDuration();
     EXPECT_EQ(EXPECTED, ACTUAL);
@@ -210,7 +210,7 @@ TEST_F(ConfigurationTest, getDuration) {
 TEST_F(ConfigurationTest, getBool) {
     std::vector<bool> EXPECTED_VALUES = {true, true, false, false};
 
-    Matrixify::Configuration TestConf(configFile.string());
+    Data::IConfigurationPtr TestConf(configFile.string());
 
     std::vector<bool> REAL_VALUES = {
         TestConf.get<bool>("cost.cost_analysis"),
@@ -226,7 +226,7 @@ TEST_F(ConfigurationTest, getBool) {
 TEST_F(ConfigurationTest, getInt) {
     std::vector<int> EXPECTED_VALUES = {52, 260, 52};
 
-    Matrixify::Configuration TestConf(configFile.string());
+    Data::IConfigurationPtr TestConf(configFile.string());
 
     std::vector<int> REAL_VALUES = {
         TestConf.get<int>("simulation.duration"),
@@ -243,7 +243,7 @@ TEST_F(ConfigurationTest, getInt) {
 TEST_F(ConfigurationTest, getVectorInt) {
     std::vector<std::vector<int>> EXPECTED_VALUES = {{52}, {52}, {52}, {52}};
 
-    Matrixify::Configuration TestConf(configFile.string());
+    Data::IConfigurationPtr TestConf(configFile.string());
 
     std::vector<std::vector<int>> REAL_VALUES = {
         TestConf.get<std::vector<int>>("simulation.intervention_change_times"),
@@ -269,7 +269,7 @@ TEST_F(ConfigurationTest, getVectorString) {
         {"Active_Noninjection", "Active_Injection", "Nonactive_Noninjection",
          "Nonactive_Injection"}};
 
-    Matrixify::Configuration TestConf(configFile.string());
+    Data::IConfigurationPtr TestConf(configFile.string());
 
     std::vector<std::vector<std::string>> REAL_VALUES = {
         TestConf.get<std::vector<std::string>>("state.interventions"),

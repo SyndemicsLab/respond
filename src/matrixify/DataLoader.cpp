@@ -99,8 +99,10 @@ namespace Matrixify {
         this->logger = logger;
     }
 
-    DataLoader::DataLoader(Configuration &config, std::string const &inputDir,
-                           std::shared_ptr<spdlog::logger> logger) {
+    DataLoader::DataLoader(Data::IConfigurationPtr &config,
+                           std::string const &inputDir,
+                           std::shared_ptr<spdlog::logger> logger)
+        : Loader(inputDir, logger) {
         this->Config = config;
         this->inputTables = this->readInputDir(inputDir);
 
@@ -128,11 +130,6 @@ namespace Matrixify {
         this->generalOutputsSwitch = this->Config.getGeneralOutputsSwitch();
         this->generalStatsOutputTimesteps =
             this->Config.getGeneralStatsOutputTimesteps();
-
-        if (!logger) {
-            logger = spdlog::stdout_color_mt("console");
-        }
-        this->logger = logger;
     }
 
     /*********************************************************************
@@ -141,7 +138,7 @@ namespace Matrixify {
      *
      *********************************************************************/
 
-    Configuration
+    Data::IConfigurationPtr
     DataLoader::loadConfigurationFile(std::string const &configPath) {
         Loader::loadConfigurationFile(configPath);
         this->inputTables[configPath] = Loader::readCSV(configPath);
@@ -165,24 +162,21 @@ namespace Matrixify {
     Matrix3d DataLoader::loadInitialSample(std::string const &csvName) {
         // INITIAL GROUP
 
-        InputTable initialCohort = loadTable(csvName);
+        Data::IDataTablePtr initialCohort = loadTable(csvName);
 
         int nonPostInterventions = ((this->numInterventions - 1) / 2 + 1);
 
-        auto itr = initialCohort.find("counts");
+        std::vector<std::string> counts = initialCohort->getColumn("counts");
 
-        if (itr != initialCohort.end()) {
-            // logger->info("Counts Column Found");
-        } else {
+        if (counts.empty()) {
             logger->error("Counts Column Not Found in init_cohorts.csv");
             throw std::out_of_range("counts not in init_cohorts.csv");
         }
 
-        if (itr->second.size() >
-            (nonPostInterventions * this->numDemographicCombos *
-             this->numOUDStates)) {
+        if (counts.size() > (nonPostInterventions * this->numDemographicCombos *
+                             this->numOUDStates)) {
             logger->error("Incorrect Number of Counts Found");
-            logger->error("Number of Counts Found: {}", itr->second.size());
+            logger->error("Number of Counts Found: {}", counts.size());
             logger->error("Number of Non-Post Interventions: {}",
                           nonPostInterventions);
             logger->error("Number of Demographic Combos: {}",
@@ -207,8 +201,7 @@ namespace Matrixify {
                     // have to use the row counter here because
                     // nonPostInterventions != numInterventions
                     this->initialSample(intervention, oud_state, dem) =
-                        (row < itr->second.size()) ? std::stod(itr->second[row])
-                                                   : 0.0;
+                        (row < counts.size()) ? std::stod(counts[row]) : 0.0;
                     ++row;
                 }
             }
@@ -224,7 +217,7 @@ namespace Matrixify {
         std::string const &enteringSampleOUD) {
 
         // ENTERING SAMPLES
-        InputTable enteringSamplesTable = loadTable(csvName);
+        Data::IDataTablePtr enteringSamplesTable = loadTable(csvName);
 
         std::vector<std::string> vec = this->Config.getInterventions();
         auto itr = find(vec.begin(), vec.end(), enteringSampleIntervention);
@@ -242,11 +235,9 @@ namespace Matrixify {
         int startTime = 0;
         for (int changepoint : changeTimes) {
             std::string column = columnPrefix + std::to_string(changepoint);
-
-            if (enteringSamplesTable.find(column) !=
-                enteringSamplesTable.end()) {
-                // logger->info("{} Found", column);
-            } else {
+            std::vector<std::string> col =
+                enteringSamplesTable->getColumn(column);
+            if (col.empty()) {
                 logger->error("{} Column Not Found in entering_cohort.csv",
                               column);
                 throw std::out_of_range(column + " not in entering_cohort.csv");
@@ -258,8 +249,8 @@ namespace Matrixify {
 
             for (int dem = 0; dem < this->numDemographicCombos; ++dem) {
                 enteringSample(esiIdx, esoIdx, dem) =
-                    (dem < enteringSamplesTable[column].size())
-                        ? std::stod(enteringSamplesTable[column][dem])
+                    (dem < col.size())
+                        ? std::stod(col[dem])
                         : enteringSample(esiIdx, esoIdx, dem) = 0.0;
             }
             while (startTime <= changepoint) {
@@ -276,7 +267,7 @@ namespace Matrixify {
     Matrix3d DataLoader::loadOUDTransitionRates(std::string const &csvName) {
 
         // OUD TRANSITIONS
-        InputTable oudTransitionTable = loadTable(csvName);
+        Data::IDataTablePtr oudTransitionTable = loadTable(csvName);
         // end dimensions of oudTransitionRates are this->numInterventions x
         // this->numOUDStates^2 x demographics start with a vector of
         // StateTensor-sized Matrix3d objects and stack at the end
@@ -302,20 +293,17 @@ namespace Matrixify {
                             "to_" + this->oudStates[result_state];
 
                         int idx = this->numOUDStates * row + initial_state;
-
-                        if (oudTransitionTable.find(column) !=
-                            oudTransitionTable.end()) {
-                            // logger->info("{} Found", column);
-                        } else {
+                        std::vector<std::string> col =
+                            oudTransitionTable->getColumn(column);
+                        if (col.empty()) {
                             logger->error(
                                 "{} Column Not Found in oud_trans.csv", column);
                             throw std::out_of_range(column +
                                                     " not in oud_trans.csv");
                         }
 
-                        if (idx < oudTransitionTable[column].size()) {
-                            double val =
-                                std::stod(oudTransitionTable[column][idx]);
+                        if (idx < col.size()) {
+                            double val = std::stod(col[idx]);
 
                             tempOUDTransitions[initial_state](
                                 intervention, result_state, dem) = val;
@@ -349,7 +337,7 @@ namespace Matrixify {
     Matrix3d DataLoader::loadInterventionInitRates(std::string const &csvName) {
 
         // OUD TRANSITIONS
-        InputTable interventionInitTable = loadTable(csvName);
+        Data::IDataTablePtr interventionInitTable = loadTable(csvName);
         // end dimensions of oudTransitionRates are this->numInterventions x
         // this->numOUDStates^2 x demographics start with a vector of
         // StateTensor-sized Matrix3d objects and stack at the end
@@ -366,13 +354,14 @@ namespace Matrixify {
         for (int initial_state = 0; initial_state < this->numOUDStates;
              ++initial_state) {
             std::string currentOUDState = this->oudStates[initial_state];
-            auto beginIterator =
-                interventionInitTable["initial_oud_state"].begin();
-            auto endIterator = interventionInitTable["initial_oud_state"].end();
-            auto iterator =
-                std::find(beginIterator, endIterator, currentOUDState);
+            std::vector<std::string> column =
+                interventionInitTable->getColumn("initial_oud_state");
 
-            int idx = (iterator != endIterator) ? iterator - beginIterator : 0;
+            auto iterator =
+                std::find(column.begin(), column.end(), currentOUDState);
+
+            int idx =
+                (iterator != column.end()) ? iterator - column.begin() : 0;
 
             bool nonactiveFlag =
                 (currentOUDState.find("Nonactive") != std::string::npos)
@@ -391,18 +380,16 @@ namespace Matrixify {
                 }
                 currentIntervention = "to_" + currentIntervention;
 
-                if (interventionInitTable.find(currentIntervention) !=
-                    interventionInitTable.end()) {
-                    // logger->info("{} Found", currentIntervention);
-                } else {
+                std::vector<std::string> col =
+                    interventionInitTable->getColumn(currentIntervention);
+                if (col.empty()) {
                     logger->error("{} Column Not Found in block_trans.csv",
                                   currentIntervention);
                     throw std::out_of_range(currentIntervention +
                                             " not in block_trans.csv");
                 }
 
-                double tableVal =
-                    std::stod(interventionInitTable[currentIntervention][idx]);
+                double tableVal = std::stod(col[idx]);
                 double oppVal = 1 - tableVal;
                 int oppValIdx = (nonactiveFlag) ? idx - activeNonActiveOffset
                                                 : idx + activeNonActiveOffset;
@@ -437,12 +424,12 @@ namespace Matrixify {
     DataLoader::loadInterventionTransitionRates(std::string const &csvName) {
 
         // INTERVENTION TRANSITIONS
-        InputTable interventionTransitionTable = loadTable(csvName);
+        Data::IDataTablePtr interventionTransitionTable = loadTable(csvName);
         std::vector<int> ict = this->Config.getInterventionChangeTimes();
 
         std::vector<std::vector<int>> indicesVec =
             this->getIndicesByIntervention(
-                interventionTransitionTable["initial_block"]);
+                interventionTransitionTable->getColumn("initial_block"));
         this->interventionTransitionRates = this->buildTransitionRatesOverTime(
             ict, interventionTransitionTable, indicesVec);
         return this->interventionTransitionRates;
@@ -455,18 +442,19 @@ namespace Matrixify {
         loadTable(csvName);
 
         // OVERDOSE
-        InputTable overdoseTransitionTable = loadTable(csvName);
+        Data::IDataTablePtr overdoseTransitionTable = loadTable(csvName);
         std::vector<int> oct = this->Config.getOverdoseChangeTimes();
         int startTime = 0;
         for (auto timestep : oct) {
             std::string str_timestep = "cycle" + std::to_string(timestep);
-            InputTable currentTimeTable =
+            Data::IDataTablePtr currentTimeTable =
                 this->removeColumns(str_timestep, overdoseTransitionTable);
-            for (auto kv : currentTimeTable) {
-                std::string str = kv.first;
-                if (str.find("overdose_cycle") != std::string::npos) {
-                    Matrix3d temp =
-                        this->buildOverdoseTransitions(currentTimeTable, str);
+            std::vector<std::string> headers = currentTimeTable->getHeaders();
+
+            for (std::string header : headers) {
+                if (header.find("overdose_cycle") != std::string::npos) {
+                    Matrix3d temp = this->buildOverdoseTransitions(
+                        currentTimeTable, header);
                     while (startTime <= timestep) {
                         this->overdoseRates.insert(temp, startTime);
                         startTime++;
@@ -485,7 +473,7 @@ namespace Matrixify {
 
         std::vector<Matrix3d> tempFatalOverdoseTransitions;
 
-        InputTable fatalOverdoseTable = loadTable(csvName);
+        Data::IDataTablePtr fatalOverdoseTable = loadTable(csvName);
         std::vector<int> oct = this->Config.getOverdoseChangeTimes();
         int startTime = 0;
         for (int timestep : oct) {
@@ -498,11 +486,10 @@ namespace Matrixify {
             std::string fodColumn = "fatal_to_all_types_overdose_ratio_cycle" +
                                     std::to_string(timestep);
 
-            if (fatalOverdoseTable.find(fodColumn) !=
-                fatalOverdoseTable.end()) {
-                // this->logger->info("{} column found in fatal_overdose.csv",
-                //                    fodColumn);
-            } else {
+            std::vector<std::string> col =
+                fatalOverdoseTable->getColumn(fodColumn);
+
+            if (col.empty()) {
                 this->logger->error("{} column not found in fatal_overdose.csv",
                                     fodColumn);
                 throw std::out_of_range(fodColumn +
@@ -514,15 +501,13 @@ namespace Matrixify {
                                 this->numDemographicCombos)
                                 .setZero();
 
-            if (fatalOverdoseTable.find("block") != fatalOverdoseTable.end()) {
+            if (!fatalOverdoseTable->getColumn("block").empty()) {
                 for (int intervention = 0;
                      intervention < this->getNumInterventions();
                      ++intervention) {
-                    double t =
-                        (fatalOverdoseTable[fodColumn][intervention].size() > 0)
-                            ? std::stod(
-                                  fatalOverdoseTable[fodColumn][intervention])
-                            : 0.0;
+                    double t = (col[intervention].size() > 0)
+                                   ? std::stod(col[intervention])
+                                   : 0.0;
 
                     Eigen::array<Eigen::Index, 3> offsets = {intervention, 0,
                                                              0};
@@ -532,9 +517,7 @@ namespace Matrixify {
                         temp.slice(offsets, extents).setConstant(t);
                 }
             } else {
-                double t = (fatalOverdoseTable[fodColumn].size() > 0)
-                               ? std::stod(fatalOverdoseTable[fodColumn][0])
-                               : 0.0;
+                double t = (col.size() > 0) ? std::stod(col[0]) : 0.0;
 
                 temp = temp.constant(t);
             }
@@ -556,23 +539,26 @@ namespace Matrixify {
         // mortality here refers to death from reasons other than oud and is
         // calculated by combining the SMR and background mortality calculation
         // to combine these into the mortality is 1-exp(log(1-bg_mort)*SMR)
-        Matrixify::InputTable temp = loadTable(smrCSVName);
-        if (temp.find("SMR") == temp.end()) {
+        Data::IDataTablePtr temp = loadTable(smrCSVName);
+        std::vector<std::string> smrColumn = temp->getColumn("SMR");
+        if (smrColumn.empty()) {
             this->logger->error("SMR column not found in SMR.csv");
             throw std::out_of_range("SMR not in SMR.csv");
         }
-        std::vector<std::string> smrColumn = temp["SMR"];
+
         // only stratified by the demographics, needs to be expanded for oud and
         // intervention
 
         temp = loadTable(bgmCSVName);
-        if (temp.find("death_prob") == temp.end()) {
+        std::vector<std::string> backgroundMortalityColumn =
+            temp->getColumn("death_prob");
+
+        if (backgroundMortalityColumn.empty()) {
             this->logger->error(
                 "death_prob column not found in background_mortality.csv");
             throw std::out_of_range(
                 "death_prob not in background_mortality.csv");
         }
-        std::vector<std::string> backgroundMortalityColumn = temp["death_prob"];
 
         Matrix3d mortalityTransition = Matrixify::Matrix3dFactory::Create(
             this->numOUDStates, this->numInterventions,
@@ -611,23 +597,12 @@ namespace Matrixify {
     /// @param colString
     /// @param ogTable
     /// @return
-    InputTable DataLoader::removeColumns(std::string const &colString,
-                                         InputTable const &ogTable) {
-        InputTable res = ogTable;
-        std::vector<std::string> keys;
-        for (auto i : res) {
-            if ((i.first.find(colString) == std::string::npos) &&
-                (i.first.find("cycle") != std::string::npos)) {
-                std::string temp = i.first;
-                keys.push_back(temp);
-            }
-        }
+    Data::IDataTablePtr
+    DataLoader::removeColumns(std::string const &colString,
+                              Data::IDataTablePtr const &ogTable) {
 
-        for (auto i : keys) {
-            res.erase(i);
-        }
-
-        return res;
+        ogTable->dropColumn(colString);
+        return ogTable;
     }
 
     /// @brief
@@ -636,18 +611,19 @@ namespace Matrixify {
     /// @return
     Matrixify::Matrix3d
     DataLoader::buildInterventionMatrix(std::vector<int> const &indices,
-                                        InputTable const &table) {
+                                        Data::IDataTablePtr const &table) {
         Matrixify::Matrix3d transMat =
             Matrixify::Matrix3dFactory::Create(this->numOUDStates,
                                                this->numInterventions,
                                                this->numDemographicCombos)
                 .constant(0);
 
-        if (table.find("initial_block") == table.end()) {
+        std::vector<std::string> t1 = table->getColumn("initial_block");
+
+        if (t1.empty()) {
             return transMat;
         }
 
-        std::vector<std::string> t1 = table.at("initial_block");
         if (indices.size() == 0 || indices[0] >= t1.size()) {
             return transMat;
         }
@@ -662,16 +638,11 @@ namespace Matrixify {
         std::vector<std::string> interventions =
             this->Config.getInterventions();
         for (std::string inter : interventions) {
-            InputTable tempTable = table;
-            for (auto kv : tempTable) {
-                if (kv.first.find(inter) != std::string::npos) {
-                    std::string key = kv.first;
-                    keys.push_back(key);
-                } else if ((inter.find("Post") != std::string::npos) &&
-                           (kv.first.find("post") != std::string::npos) &&
-                           !postFlag) {
-                    std::string key = kv.first;
-                    keys.push_back(key);
+            std::vector<std::string> headers = table->getHeaders();
+            for (std::string header : headers) {
+                keys.push_back(header);
+                if ((inter.find("Post") != std::string::npos) &&
+                    (header.find("post") != std::string::npos) && !postFlag) {
                     postFlag = true; // only assumes one
                                      // "to_corresponding_post_trt column"
                 }
@@ -698,7 +669,7 @@ namespace Matrixify {
             int oudIdx = 0;
             int demIdx = 0;
             for (int idx : indices) {
-                std::vector<std::string> t2 = table.at(key);
+                std::vector<std::string> t2 = table->getColumn(key);
                 std::string val = t2[idx];
                 double v = std::stod(val);
                 transMat(interventionOffset, oudIdx, demIdx) = v;
@@ -719,7 +690,7 @@ namespace Matrixify {
     /// @return
     Matrixify::Matrix3d DataLoader::createTransitionMatrix3d(
         std::vector<std::vector<int>> const &indicesVec,
-        InputTable const &table, Matrixify::Dimension dimension) {
+        Data::IDataTablePtr const &table, Matrixify::Dimension dimension) {
         if (dimension == Matrixify::INTERVENTION) {
             Matrix3d stackingMatrices =
                 Matrixify::Matrix3dFactory::Create(this->numOUDStates,
@@ -791,7 +762,7 @@ namespace Matrixify {
     /// @param indicesVec
     /// @return
     Matrix3dOverTime DataLoader::buildTransitionRatesOverTime(
-        std::vector<int> const &ict, InputTable const &table,
+        std::vector<int> const &ict, Data::IDataTablePtr const &table,
         std::vector<std::vector<int>> const &indicesVec) {
         Matrix3dOverTime m3dot;
 
@@ -799,7 +770,7 @@ namespace Matrixify {
         for (int timestep : ict) {
             // get rid of the pointless columns for this iteration
             std::string str_timestep = "cycle" + std::to_string(timestep);
-            InputTable currentTimeTable =
+            Data::IDataTablePtr currentTimeTable =
                 this->removeColumns(str_timestep, table);
 
             Matrix3d transMat = this->createTransitionMatrix3d(
@@ -816,8 +787,9 @@ namespace Matrixify {
     /// @param table
     /// @param key
     /// @return
-    Matrix3d DataLoader::buildOverdoseTransitions(InputTable const &table,
-                                                  std::string const &key) {
+    Matrix3d
+    DataLoader::buildOverdoseTransitions(Data::IDataTablePtr const &table,
+                                         std::string const &key) {
         std::vector<std::string> oudStates = this->Config.getOUDStates();
 
         Matrix3d overdoseTransitionsCycle =
@@ -834,12 +806,12 @@ namespace Matrixify {
                      ++oud_state) {
                     if (oudStates[oud_state].find("Nonactive") !=
                             std::string::npos ||
-                        row >= table.at(key).size()) {
+                        row >= table->getColumn(key).size()) {
                         overdoseTransitionsCycle(intervention, oud_state, dem) =
                             0.0f;
                     } else {
                         overdoseTransitionsCycle(intervention, oud_state, dem) =
-                            std::stod((table.at(key))[row]);
+                            std::stod((table->getColumn(key))[row]);
                         ++row;
                     }
                 }

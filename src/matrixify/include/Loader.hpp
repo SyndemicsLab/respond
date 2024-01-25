@@ -25,18 +25,12 @@
 #include <unordered_map>
 #include <vector>
 
+#include "spdlog/sinks/stdout_color_sinks.h"
+#include "spdlog/spdlog.h"
+#include <DataManagement.hpp>
 #include <boost/tokenizer.hpp>
 
-#include "Configuration.hpp"
-
 namespace Matrixify {
-    /// @brief The object in which values from CSV files are stored
-    ///
-    /// InputTable stores the tables as key, value pairs where the keys are
-    /// column headers and the values are vectors containing entire columns.
-    using InputTable =
-        std::unordered_map<std::string, std::vector<std::string>>;
-
     // tabular files from the current RESPOND directory structure, as of
     // [2023-04-06]
     static std::vector<std::string> INPUT_FILES = {
@@ -59,53 +53,56 @@ namespace Matrixify {
 
     class ILoader {
     public:
-        virtual Configuration
+        virtual Data::IConfigurationPtr
         loadConfigurationFile(std::string const &configPath) = 0;
 
         /// @brief Reads a configuration file to a Configuration object
         /// @param inputFile path to the configuration file to be read
         /// @return
-        virtual Configuration readConfigFile(std::string const &) = 0;
+        virtual Data::IConfigurationPtr readConfigFile(std::string const &) = 0;
         /// @brief Read a CSV-formatted file into a map object where the headers
         /// are keys and the rest of the columns are stored as vectors of
         /// strings
         /// @param inputFile path to the CSV to be read
         /// @return A map object containing columns stored as key-value pairs
-        virtual InputTable readCSV(std::string const &) = 0;
+        virtual Data::IDataTablePtr readCSV(std::string const &) = 0;
 
         /// @brief Reads typical RESPOND input files from the provided input
         /// directory
         /// @param inputDir the directory from which to read input files
         /// @return an unordered map whose keys are table names and values are
-        /// CSV/InputTables
-        virtual std::unordered_map<std::string, InputTable>
+        /// CSV/Data::IDataTablePtrs
+        virtual std::unordered_map<std::string, Data::IDataTablePtr>
         readInputDir(std::string const &) = 0;
 
         /// @brief Get the Configuration from the Loader
         /// @return Configuration
-        virtual Configuration getConfiguration() const = 0;
+        virtual Data::IConfigurationPtr getConfiguration() const = 0;
 
-        virtual InputTable loadTable(std::string const &filename) = 0;
+        virtual Data::IDataTablePtr loadTable(std::string const &filename) = 0;
     };
 
     class Loader : public virtual ILoader {
     public:
-        Loader(){};
+        Loader() : Loader("", nullptr){};
         Loader(std::string const &inputDir);
+        Loader(std::shared_ptr<spdlog::logger> logger);
+        Loader(std::string const &inputDir,
+               std::shared_ptr<spdlog::logger> logger);
 
-        virtual Configuration
+        virtual Data::IConfigurationPtr
         loadConfigurationFile(std::string const &configPath);
 
-        virtual Configuration readConfigFile(std::string const &);
+        virtual Data::IDataTablePtr readCSV(std::string const &);
 
-        virtual InputTable readCSV(std::string const &);
-
-        virtual std::unordered_map<std::string, InputTable>
+        virtual std::unordered_map<std::string, Data::IDataTablePtr>
         readInputDir(std::string const &);
 
-        virtual Configuration getConfiguration() const { return this->Config; }
+        virtual Data::IConfigurationPtr getConfiguration() const {
+            return Config;
+        }
 
-        virtual InputTable loadTable(std::string const &filename) {
+        virtual Data::IDataTablePtr loadTable(std::string const &filename) {
             if (this->inputTables.find(filename) == this->inputTables.end()) {
                 this->inputTables[filename] = Loader::readCSV(filename);
             }
@@ -113,8 +110,9 @@ namespace Matrixify {
         }
 
     protected:
-        std::unordered_map<std::string, InputTable> inputTables;
-        Configuration Config;
+        std::unordered_map<std::string, Data::IDataTablePtr> inputTables;
+        Data::IConfigurationPtr Config;
+        std::shared_ptr<spdlog::logger> logger;
     };
 
 } // namespace Matrixify

@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.24)
-project(RESPONDTest CXX)
+project(respondTest CXX)
 
 find_package(GTest REQUIRED CONFIG)
 
@@ -11,7 +11,11 @@ find_package (Eigen3 3.4 REQUIRED)
 
 find_package(spdlog REQUIRED)
 
-add_executable(respondTest
+find_package(DataManagement 1 REQUIRED
+  HINTS "${CMAKE_SOURCE_DIR}/lib/dminstall"
+)
+
+add_executable(${PROJECT_NAME}
   src/SimulationTest.cpp
   src/DataLoaderTest.cpp
   src/CostLoaderTest.cpp
@@ -21,22 +25,15 @@ add_executable(respondTest
   src/PostSimulationCalculatorTest.cpp
 )
 
-target_include_directories(respondTest PRIVATE
-  ${CMAKE_CURRENT_SOURCE_DIR}
-  "mocks/"
-  "../src/simrunner/include/"
-  "../src/matrixify/include/"
-)
+target_link_libraries(${PROJECT_NAME} PUBLIC Boost::filesystem)
+target_link_libraries(${PROJECT_NAME} PUBLIC Eigen3::Eigen)
+target_link_libraries(${PROJECT_NAME} PUBLIC GTest::gtest)
+target_link_libraries(${PROJECT_NAME} PUBLIC GTest::gtest_main)
+target_link_libraries(${PROJECT_NAME} PUBLIC GTest::gmock)
+target_link_libraries(${PROJECT_NAME} PUBLIC GTest::gmock_main)
+target_link_libraries(${PROJECT_NAME} PUBLIC simrunner)
+target_link_libraries(${PROJECT_NAME} PUBLIC matrixify)
+target_link_libraries(${PROJECT_NAME} PUBLIC spdlog::spdlog)
+target_link_libraries(${PROJECT_NAME} PUBLIC DataManagement::DataManagement)
 
-target_link_libraries(respondTest
-  Boost::filesystem
-  Eigen3::Eigen
-  GTest::gtest
-  GTest::gtest_main
-  GTest::gmock
-  GTest::gmock_main
-  simrunner
-  matrixify
-  spdlog::spdlog
-)
-
+target_include_directories(${PROJECT_NAME} PUBLIC "mocks/")

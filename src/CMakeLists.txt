@@ -2,8 +2,6 @@ cmake_minimum_required(VERSION 3.20)
 
 find_package(spdlog REQUIRED)
 
-include(GNUInstallDirs)
-
 # Set some basic project attributes
 project (
   respond

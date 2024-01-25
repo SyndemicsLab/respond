@@ -22,8 +22,8 @@
 
 #include "spdlog/spdlog.h"
 
-#include "Configuration.hpp"
 #include "DataLoader.hpp"
+#include <DataManagement.hpp>
 
 class DataLoaderTest : public ::testing::Test {
 protected:
@@ -132,12 +132,12 @@ TEST_F(DataLoaderTest, Constructor) {
 
 TEST_F(DataLoaderTest, ConstructorInputDirectory) {
     Matrixify::DataLoader dl(boost::filesystem::temp_directory_path().string(),
-                        logger);
+                             logger);
     EXPECT_EQ(dl.getInterventions().size(), 9);
 }
 
 TEST_F(DataLoaderTest, ConstructorIDandConfig) {
-    Matrixify::Configuration config(configFile.string());
+    Data::IConfigurationPtr config(configFile.string());
     Matrixify::DataLoader dl(
         config, boost::filesystem::temp_directory_path().string(), logger);
     EXPECT_EQ(dl.getInterventions().size(), 9);
@@ -152,38 +152,38 @@ TEST_F(DataLoaderTest, loadConfigurationFile) {
 
 TEST_F(DataLoaderTest, getDirName) {
     Matrixify::DataLoader dl(boost::filesystem::temp_directory_path().string(),
-                        logger);
+                             logger);
     EXPECT_EQ(dl.getDirName(),
               boost::filesystem::temp_directory_path().string());
 }
 
 TEST_F(DataLoaderTest, getDuration) {
     Matrixify::DataLoader dl(boost::filesystem::temp_directory_path().string(),
-                        logger);
+                             logger);
     EXPECT_EQ(dl.getDuration(), 52);
 }
 
 TEST_F(DataLoaderTest, getNumOUDStates) {
     Matrixify::DataLoader dl(boost::filesystem::temp_directory_path().string(),
-                        logger);
+                             logger);
     EXPECT_EQ(dl.getNumOUDStates(), 4);
 }
 
 TEST_F(DataLoaderTest, getNumInterventions) {
     Matrixify::DataLoader dl(boost::filesystem::temp_directory_path().string(),
-                        logger);
+                             logger);
     EXPECT_EQ(dl.getNumInterventions(), 9);
 }
 
 TEST_F(DataLoaderTest, getNumDemographics) {
     Matrixify::DataLoader dl(boost::filesystem::temp_directory_path().string(),
-                        logger);
+                             logger);
     EXPECT_EQ(dl.getNumDemographics(), 2);
 }
 
 TEST_F(DataLoaderTest, getNumDemographicCombos) {
     Matrixify::DataLoader dl(boost::filesystem::temp_directory_path().string(),
-                        logger);
+                             logger);
     EXPECT_EQ(dl.getNumDemographicCombos(), 36);
 }
 
@@ -198,7 +198,7 @@ TEST_F(DataLoaderTest, initialSample) {
     fileStream.close();
 
     Matrixify::DataLoader dl(boost::filesystem::temp_directory_path().string(),
-                        logger);
+                             logger);
 
     dl.loadInitialSample(tempAbsoluteFile.string());
 
@@ -214,7 +214,7 @@ TEST_F(DataLoaderTest, enteringSamples) {
     fileStream.close();
 
     Matrixify::DataLoader dl(boost::filesystem::temp_directory_path().string(),
-                        logger);
+                             logger);
 
     dl.loadEnteringSamples(tempAbsoluteFile.string(),
                            std::string("No_Treatment"),
@@ -240,7 +240,7 @@ TEST_F(DataLoaderTest, OUDTransitionRates) {
     fileStream.close();
 
     Matrixify::DataLoader dl(boost::filesystem::temp_directory_path().string(),
-                        logger);
+                             logger);
 
     dl.loadOUDTransitionRates(tempAbsoluteFile.string());
 
@@ -265,7 +265,7 @@ TEST_F(DataLoaderTest, interventionTransitionRates) {
     fileStream.close();
 
     Matrixify::DataLoader dl(boost::filesystem::temp_directory_path().string(),
-                        logger);
+                             logger);
 
     dl.loadInterventionTransitionRates(tempAbsoluteFile.string());
 
@@ -293,7 +293,7 @@ TEST_F(DataLoaderTest, overdoseRates) {
     fileStream.close();
 
     Matrixify::DataLoader dl(boost::filesystem::temp_directory_path().string(),
-                        logger);
+                             logger);
 
     dl.loadOverdoseRates(tempAbsoluteFile.string());
 
@@ -312,7 +312,7 @@ TEST_F(DataLoaderTest, fatalOverdoseRates) {
     fileStream.close();
 
     Matrixify::DataLoader dl(boost::filesystem::temp_directory_path().string(),
-                        logger);
+                             logger);
 
     dl.loadFatalOverdoseRates(tempAbsoluteFile.string());
 
@@ -356,7 +356,7 @@ TEST_F(DataLoaderTest, fatalOverdoseRatesBlocks) {
     fileStream.close();
 
     Matrixify::DataLoader dl(boost::filesystem::temp_directory_path().string(),
-                        logger);
+                             logger);
 
     dl.loadFatalOverdoseRates(tempAbsoluteFile.string());
 
@@ -384,7 +384,7 @@ TEST_F(DataLoaderTest, mortalityRates) {
     fileStream2.close();
 
     Matrixify::DataLoader dl(boost::filesystem::temp_directory_path().string(),
-                        logger);
+                             logger);
 
     dl.loadMortalityRates(tempAbsoluteFile.string(),
                           tempAbsoluteFile2.string());
@@ -404,7 +404,7 @@ TEST_F(DataLoaderTest, interventionInitRates) {
     fileStream.close();
 
     Matrixify::DataLoader dl(boost::filesystem::temp_directory_path().string(),
-                        logger);
+                             logger);
 
     dl.loadInitialSample(tempAbsoluteFile.string());
 
@@ -414,72 +414,72 @@ TEST_F(DataLoaderTest, interventionInitRates) {
 
 TEST_F(DataLoaderTest, getInterventions) {
     Matrixify::DataLoader dl(boost::filesystem::temp_directory_path().string(),
-                        logger);
+                             logger);
     EXPECT_EQ(dl.getInterventions().size(), 9);
 }
 
 TEST_F(DataLoaderTest, getOUDStates) {
     Matrixify::DataLoader dl(boost::filesystem::temp_directory_path().string(),
-                        logger);
+                             logger);
     EXPECT_EQ(dl.getOUDStates().size(), 4);
 }
 
 TEST_F(DataLoaderTest, getAgingInterval) {
     Matrixify::DataLoader dl(boost::filesystem::temp_directory_path().string(),
-                        logger);
+                             logger);
     EXPECT_EQ(dl.getAgingInterval(), 260);
 }
 
 TEST_F(DataLoaderTest, getAgeGroupShift) {
     Matrixify::DataLoader dl(boost::filesystem::temp_directory_path().string(),
-                        logger);
+                             logger);
     EXPECT_EQ(dl.getAgeGroupShift(), 2);
 }
 
 TEST_F(DataLoaderTest, getCostSwitch) {
     Matrixify::DataLoader dl(boost::filesystem::temp_directory_path().string(),
-                        logger);
+                             logger);
     EXPECT_TRUE(dl.getCostSwitch());
 }
 
 TEST_F(DataLoaderTest, getCostPerspectives) {
     Matrixify::DataLoader dl(boost::filesystem::temp_directory_path().string(),
-                        logger);
+                             logger);
     EXPECT_EQ(dl.getCostPerspectives()[0], "healthcare");
 }
 
 TEST_F(DataLoaderTest, getDiscountRate) {
     Matrixify::DataLoader dl(boost::filesystem::temp_directory_path().string(),
-                        logger);
+                             logger);
     EXPECT_EQ(dl.getDiscountRate(), 0.0025);
 }
 
 TEST_F(DataLoaderTest, getCostUtilityOutputTimesteps) {
     Matrixify::DataLoader dl(boost::filesystem::temp_directory_path().string(),
-                        logger);
+                             logger);
     EXPECT_EQ(dl.getCostUtilityOutputTimesteps()[0], 52);
 }
 
 TEST_F(DataLoaderTest, getCostCategoryOutputs) {
     Matrixify::DataLoader dl(boost::filesystem::temp_directory_path().string(),
-                        logger);
+                             logger);
     EXPECT_FALSE(dl.getCostCategoryOutputs());
 }
 
 TEST_F(DataLoaderTest, getPerInterventionPredictions) {
     Matrixify::DataLoader dl(boost::filesystem::temp_directory_path().string(),
-                        logger);
+                             logger);
     EXPECT_TRUE(dl.getPerInterventionPredictions());
 }
 
 TEST_F(DataLoaderTest, getGeneralOutputsSwitch) {
     Matrixify::DataLoader dl(boost::filesystem::temp_directory_path().string(),
-                        logger);
+                             logger);
     EXPECT_FALSE(dl.getGeneralOutputsSwitch());
 }
 
 TEST_F(DataLoaderTest, getGeneralStatsOutputTimesteps) {
     Matrixify::DataLoader dl(boost::filesystem::temp_directory_path().string(),
-                        logger);
+                             logger);
     EXPECT_EQ(dl.getGeneralStatsOutputTimesteps().size(), 1);
 }

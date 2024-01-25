@@ -92,7 +92,8 @@ namespace Matrixify {
         CostLoader(){};
         CostLoader(std::string const &inputDir);
 
-        Configuration loadConfigurationFile(std::string const &configPath);
+        Data::IConfigurationPtr
+        loadConfigurationFile(std::string const &configPath);
 
         virtual std::unordered_map<std::string, Matrix3d>
         loadHealthcareUtilizationCost(std::string const &csvName);
@@ -174,9 +175,9 @@ namespace Matrixify {
         bool costCategoryOutputs;
 
         std::unordered_map<std::string, std::unordered_map<std::string, double>>
-        loadTreatmentUtilizationCostMap(InputTable table);
+        loadTreatmentUtilizationCostMap(Data::IDataTablePtr table);
         std::unordered_map<std::string, std::unordered_map<std::string, double>>
-        loadPharmaceuticalCostMap(InputTable table);
+        loadPharmaceuticalCostMap(Data::IDataTablePtr table);
 
         void loadCostViaPerspective(
             std::unordered_map<std::string, Matrix3d> &costParameter,

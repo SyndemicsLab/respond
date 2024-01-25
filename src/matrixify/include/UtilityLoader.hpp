@@ -80,7 +80,8 @@ namespace Matrixify {
         UtilityLoader(){};
         UtilityLoader(std::string const &inputDir);
 
-        Configuration loadConfigurationFile(std::string const &configPath);
+        Data::IConfigurationPtr
+        loadConfigurationFile(std::string const &configPath);
 
         virtual std::unordered_map<std::string, Matrix3d>
         loadBackgroundUtility(std::string const &csvName);

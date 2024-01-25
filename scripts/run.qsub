@@ -32,7 +32,7 @@
 
 # Request multiple slots for multithreaded or large-memory processes
 # Values here may range from 1-28 or 36
-#$ -pe omp 12
+#$ -pe omp 1
 
 # Use "tasks", also known as array jobs, to run multiple copies of
 # the same or nearly the same job, to reduce the number of required

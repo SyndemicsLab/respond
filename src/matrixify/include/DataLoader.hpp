@@ -23,10 +23,6 @@
 #include <string>
 #include <vector>
 
-#include "spdlog/sinks/stdout_color_sinks.h"
-#include "spdlog/spdlog.h"
-
-#include "Configuration.hpp"
 #include "DataTypes.hpp"
 #include "Loader.hpp"
 
@@ -251,7 +247,7 @@ namespace Matrixify {
         /// already-processed configuration file
         /// @param inputDir The name of the directory where input files are
         /// stored
-        DataLoader(Configuration &config, std::string const &inputDir,
+        DataLoader(Data::IConfigurationPtr &config, std::string const &inputDir,
                    std::shared_ptr<spdlog::logger> logger = {});
 
         ~DataLoader(){};
@@ -259,7 +255,8 @@ namespace Matrixify {
         /// @brief
         /// @param configPath
         /// @return
-        Configuration loadConfigurationFile(std::string const &configPath);
+        Data::IConfigurationPtr
+        loadConfigurationFile(std::string const &configPath);
 
         virtual std::string getDirName() const { return dirName; }
 
@@ -364,8 +361,8 @@ namespace Matrixify {
         /// @param colString
         /// @param ogTable
         /// @return
-        InputTable removeColumns(std::string const &colString,
-                                 InputTable const &ogTable);
+        Data::IDataTablePtr removeColumns(std::string const &colString,
+                                          Data::IDataTablePtr const &ogTable);
 
         /// @brief
         /// @param indicesVec
@@ -374,20 +371,20 @@ namespace Matrixify {
         /// @return
         Matrix3d createTransitionMatrix3d(
             std::vector<std::vector<int>> const &indicesVec,
-            InputTable const &table, Matrixify::Dimension dimension);
+            Data::IDataTablePtr const &table, Matrixify::Dimension dimension);
 
         /// @brief
         /// @param indices
         /// @param table
         /// @return
         Matrix3d buildInterventionMatrix(std::vector<int> const &indices,
-                                         InputTable const &table);
+                                         Data::IDataTablePtr const &table);
 
         /// @brief
         /// @param table
         /// @param key
         /// @return
-        Matrix3d buildOverdoseTransitions(InputTable const &table,
+        Matrix3d buildOverdoseTransitions(Data::IDataTablePtr const &table,
                                           std::string const &key);
 
         /// @brief
@@ -409,13 +406,12 @@ namespace Matrixify {
         /// @param indicesVec
         /// @return
         Matrix3dOverTime buildTransitionRatesOverTime(
-            std::vector<int> const &ict, InputTable const &table,
+            std::vector<int> const &ict, Data::IDataTablePtr const &table,
             std::vector<std::vector<int>> const &indicesVec);
 
         /// @brief
         void populateCostParameters();
 
-        std::shared_ptr<spdlog::logger> logger;
         std::string dirName;
         int duration;
         int agingInterval;
