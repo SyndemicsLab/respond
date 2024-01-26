@@ -58,30 +58,12 @@ namespace Matrixify {
         /// @return Matrix3d of Setting Utility
         virtual Matrix3d
         getSettingUtility(std::string const &perspective) const = 0;
-
-        /// @brief
-        virtual void populateCostParameters() = 0;
-
-        /// @brief
-        /// @return
-        virtual std::vector<std::string> getCostPerspectives() const = 0;
-
-        /// @brief
-        /// @return
-        virtual bool getCostSwitch() const = 0;
-
-        /// @brief
-        /// @return
-        virtual double getDiscountRate() const = 0;
     };
 
     class UtilityLoader : public Loader, public IUtilityLoader {
     public:
         UtilityLoader(){};
         UtilityLoader(std::string const &inputDir);
-
-        Data::IConfigurationPtr
-        loadConfigurationFile(std::string const &configPath);
 
         virtual std::unordered_map<std::string, Matrix3d>
         loadBackgroundUtility(std::string const &csvName);
@@ -124,26 +106,10 @@ namespace Matrixify {
             return result;
         }
 
-        virtual void populateCostParameters();
-
-        virtual std::vector<std::string> getCostPerspectives() const {
-            return this->costPerspectives;
-        }
-
-        virtual bool getCostSwitch() const { return this->costSwitch; }
-
-        virtual double getDiscountRate() const { return this->discountRate; }
-
     private:
         std::unordered_map<std::string, Matrix3d> backgroundUtility;
         std::unordered_map<std::string, Matrix3d> oudUtility;
         std::unordered_map<std::string, Matrix3d> settingUtility;
-
-        bool costSwitch = true;
-        std::vector<std::string> costPerspectives;
-        double discountRate;
-        std::vector<int> costUtilityOutputTimesteps;
-        bool costCategoryOutputs;
 
         /// @brief
         /// @param csvName

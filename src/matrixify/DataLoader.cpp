@@ -33,18 +33,12 @@ namespace Matrixify {
         this->duration = 0;
         this->agingInterval = 0;
         this->ageGroupShift = 0;
-        this->numOUDStates = 0;
-        this->numInterventions = 0;
-        this->numDemographics = 0;
-        this->numDemographicCombos = 0;
         this->costSwitch = false;
 
         this->interventions = {};
         this->oudStates = {};
         this->demographicCounts = {};
         this->simulationParameters = {};
-
-        this->Config;
 
         this->initialSample;
         this->enteringSamples;
@@ -60,76 +54,17 @@ namespace Matrixify {
     DataLoader::DataLoader(std::string const &inputDir,
                            std::shared_ptr<spdlog::logger> logger)
         : Loader(inputDir) {
-        this->dirName = inputDir;
-        // SETTING STRING VECTORS FOR DATA WRITER
-        this->interventions = this->Config.getInterventions();
-        this->oudStates = this->Config.getOUDStates();
-        this->demographicCounts = this->Config.getDemographicCounts();
-
-        // SETTING SIMULATION CONSTANTS
-        this->numInterventions = this->interventions.size();
-        this->numOUDStates = this->oudStates.size();
-
-        this->duration = this->Config.getDuration();
-        this->numDemographics = this->demographicCounts.size();
-        this->numDemographicCombos = this->Config.getNumDemographicCombos();
-        this->agingInterval = this->Config.getAgingInterval();
-        // forcing the convention that age is the first demographic specified in
-        // the simulation config; needed for aging the population
-        this->ageGroupShift =
-            this->numDemographicCombos / this->demographicCounts[0];
-
-        std::vector<std::string> demographicCombos =
-            this->Config.getDemographicCombos();
-
-        // COST VARIABLES
-        this->costSwitch = this->Config.getCostSwitch();
-        this->populateCostParameters();
-
-        // OUTPUT VARIABLES
-        this->perInterventionPredictions =
-            this->Config.getPerInterventionPredictions();
-        this->generalOutputsSwitch = this->Config.getGeneralOutputsSwitch();
-        this->generalStatsOutputTimesteps =
-            this->Config.getGeneralStatsOutputTimesteps();
-
-        if (!logger) {
-            logger = spdlog::stdout_color_mt("console");
-        }
-        this->logger = logger;
+        loadFromConfig();
+        this->inputTables = this->readInputDir(inputDir);
     }
 
     DataLoader::DataLoader(Data::IConfigurationPtr &config,
                            std::string const &inputDir,
                            std::shared_ptr<spdlog::logger> logger)
         : Loader(inputDir, logger) {
-        this->Config = config;
+        loadConfigurationPointer(config);
+        loadFromConfig();
         this->inputTables = this->readInputDir(inputDir);
-
-        // SETTING STRING VECTORS FOR DATA WRITER
-        this->interventions = this->Config.getInterventions();
-        this->oudStates = this->Config.getOUDStates();
-        this->demographicCounts = this->Config.getDemographicCounts();
-
-        // SETTING SIMULATION CONSTANTS
-        this->numInterventions = this->interventions.size();
-        this->numOUDStates = this->oudStates.size();
-
-        this->duration = this->Config.getDuration();
-        this->numDemographics = this->demographicCounts.size();
-        this->numDemographicCombos = this->Config.getNumDemographicCombos();
-        this->agingInterval = this->Config.getAgingInterval();
-
-        // COST VARIABLES
-        this->costSwitch = this->Config.getCostSwitch();
-        this->populateCostParameters();
-
-        // OUTPUT VARIABLES
-        this->perInterventionPredictions =
-            this->Config.getPerInterventionPredictions();
-        this->generalOutputsSwitch = this->Config.getGeneralOutputsSwitch();
-        this->generalStatsOutputTimesteps =
-            this->Config.getGeneralStatsOutputTimesteps();
     }
 
     /*********************************************************************
@@ -137,26 +72,6 @@ namespace Matrixify {
      * Public Methods
      *
      *********************************************************************/
-
-    Data::IConfigurationPtr
-    DataLoader::loadConfigurationFile(std::string const &configPath) {
-        Loader::loadConfigurationFile(configPath);
-        this->inputTables[configPath] = Loader::readCSV(configPath);
-        this->interventions = this->Config.getInterventions();
-        this->oudStates = this->Config.getOUDStates();
-        this->demographicCounts = this->Config.getDemographicCounts();
-
-        // SETTING SIMULATION CONSTANTS
-        this->numInterventions = this->interventions.size();
-        this->numOUDStates = this->oudStates.size();
-
-        this->duration = this->Config.getDuration();
-        this->numDemographics = this->demographicCounts.size();
-        this->numDemographicCombos = this->Config.getNumDemographicCombos();
-        this->agingInterval = this->Config.getAgingInterval();
-        return this->Config;
-    }
-
     /// @brief
     /// @param csvName
     Matrix3d DataLoader::loadInitialSample(std::string const &csvName) {
@@ -164,7 +79,7 @@ namespace Matrixify {
 
         Data::IDataTablePtr initialCohort = loadTable(csvName);
 
-        int nonPostInterventions = ((this->numInterventions - 1) / 2 + 1);
+        int nonPostInterventions = ((getNumInterventions() - 1) / 2 + 1);
 
         std::vector<std::string> counts = initialCohort->getColumn("counts");
 
@@ -173,30 +88,30 @@ namespace Matrixify {
             throw std::out_of_range("counts not in init_cohorts.csv");
         }
 
-        if (counts.size() > (nonPostInterventions * this->numDemographicCombos *
-                             this->numOUDStates)) {
+        if (counts.size() > (nonPostInterventions * getNumDemographicCombos() *
+                             getNumOUDStates())) {
             logger->error("Incorrect Number of Counts Found");
             logger->error("Number of Counts Found: {}", counts.size());
             logger->error("Number of Non-Post Interventions: {}",
                           nonPostInterventions);
             logger->error("Number of Demographic Combos: {}",
-                          this->numDemographicCombos);
-            logger->error("Number of OUD States {}", this->numOUDStates);
+                          getNumDemographicCombos());
+            logger->error("Number of OUD States {}", getNumOUDStates());
             throw std::invalid_argument(
                 "Number of Counts Found in init_cohorts.csv Greater Than "
                 "Interventions * Demographics * OUDStates");
         }
 
         this->initialSample = Matrixify::Matrix3dFactory::Create(
-                                  this->numOUDStates, this->numInterventions,
-                                  this->numDemographicCombos)
+                                  getNumOUDStates(), getNumInterventions(),
+                                  getNumDemographicCombos())
                                   .constant(0);
 
         int row = 0;
         for (int intervention = 0; intervention < nonPostInterventions;
              ++intervention) {
-            for (int dem = 0; dem < this->numDemographicCombos; ++dem) {
-                for (int oud_state = 0; oud_state < this->numOUDStates;
+            for (int dem = 0; dem < getNumDemographicCombos(); ++dem) {
+                for (int oud_state = 0; oud_state < getNumOUDStates();
                      ++oud_state) {
                     // have to use the row counter here because
                     // nonPostInterventions != numInterventions
@@ -219,21 +134,21 @@ namespace Matrixify {
         // ENTERING SAMPLES
         Data::IDataTablePtr enteringSamplesTable = loadTable(csvName);
 
-        std::vector<std::string> vec = this->Config.getInterventions();
-        auto itr = find(vec.begin(), vec.end(), enteringSampleIntervention);
-        int esiIdx = (itr != vec.end()) ? itr - vec.begin() : 0;
+        auto itr = find(this->interventions.begin(), this->interventions.end(),
+                        enteringSampleIntervention);
+        int esiIdx = (itr != this->interventions.end())
+                         ? itr - this->interventions.begin()
+                         : 0;
 
-        vec = this->Config.getOUDStates();
-        itr = find(vec.begin(), vec.end(), enteringSampleOUD);
-        int esoIdx = (itr != vec.end()) ? itr - vec.begin() : 0;
+        itr = find(this->oudStates.begin(), this->oudStates.end(),
+                   enteringSampleOUD);
+        int esoIdx =
+            (itr != this->oudStates.end()) ? itr - this->oudStates.begin() : 0;
 
         std::string columnPrefix = "number_of_new_comers_cycle";
 
-        // generate each unique `Matrix3d enteringSamples`
-        std::vector<int> changeTimes =
-            this->Config.getEnteringSampleChangeTimes();
         int startTime = 0;
-        for (int changepoint : changeTimes) {
+        for (int changepoint : this->enteringSampleChangeTimes) {
             std::string column = columnPrefix + std::to_string(changepoint);
             std::vector<std::string> col =
                 enteringSamplesTable->getColumn(column);
@@ -244,10 +159,10 @@ namespace Matrixify {
             }
 
             Matrix3d enteringSample = Matrixify::Matrix3dFactory::Create(
-                this->numOUDStates, this->numInterventions,
-                this->numDemographicCombos);
+                getNumOUDStates(), getNumInterventions(),
+                getNumDemographicCombos());
 
-            for (int dem = 0; dem < this->numDemographicCombos; ++dem) {
+            for (int dem = 0; dem < getNumDemographicCombos(); ++dem) {
                 enteringSample(esiIdx, esoIdx, dem) =
                     (dem < col.size())
                         ? std::stod(col[dem])
@@ -268,31 +183,31 @@ namespace Matrixify {
 
         // OUD TRANSITIONS
         Data::IDataTablePtr oudTransitionTable = loadTable(csvName);
-        // end dimensions of oudTransitionRates are this->numInterventions x
-        // this->numOUDStates^2 x demographics start with a vector of
+        // end dimensions of oudTransitionRates are getNumInterventions() x
+        // getNumOUDStates()^2 x demographics start with a vector of
         // StateTensor-sized Matrix3d objects and stack at the end
         std::vector<Matrix3d> tempOUDTransitions;
-        for (int i = 0; i < this->numOUDStates; ++i) {
+        for (int i = 0; i < getNumOUDStates(); ++i) {
             tempOUDTransitions.push_back(Matrixify::Matrix3dFactory::Create(
-                this->numOUDStates, this->numInterventions,
-                this->numDemographicCombos));
+                getNumOUDStates(), getNumInterventions(),
+                getNumDemographicCombos()));
         }
         // Matrix3d objects in the vector are matched with the order that oud
         // states are specified in the Config file. the order represents the
         // "initial oud state"
-        for (int initial_state = 0; initial_state < this->numOUDStates;
+        for (int initial_state = 0; initial_state < getNumOUDStates();
              ++initial_state) {
             int row = 0;
-            for (int intervention = 0; intervention < this->numInterventions;
+            for (int intervention = 0; intervention < getNumInterventions();
                  ++intervention) {
-                for (int dem = 0; dem < this->numDemographicCombos; ++dem) {
-                    for (int result_state = 0;
-                         result_state < this->numOUDStates; ++result_state) {
+                for (int dem = 0; dem < getNumDemographicCombos(); ++dem) {
+                    for (int result_state = 0; result_state < getNumOUDStates();
+                         ++result_state) {
 
                         std::string column =
                             "to_" + this->oudStates[result_state];
 
-                        int idx = this->numOUDStates * row + initial_state;
+                        int idx = getNumOUDStates() * row + initial_state;
                         std::vector<std::string> col =
                             oudTransitionTable->getColumn(column);
                         if (col.empty()) {
@@ -324,9 +239,9 @@ namespace Matrixify {
                 this->oudTransitionRates
                     .concatenate(tempOUDTransitions[i], Matrixify::OUD)
                     .eval()
-                    .reshape(Matrix3d::Dimensions(this->numInterventions,
-                                                  (i + 1) * this->numOUDStates,
-                                                  this->numDemographicCombos));
+                    .reshape(Matrix3d::Dimensions(getNumInterventions(),
+                                                  (i + 1) * getNumOUDStates(),
+                                                  getNumDemographicCombos()));
             this->oudTransitionRates = std::move(temp);
         }
         return this->oudTransitionRates;
@@ -338,20 +253,20 @@ namespace Matrixify {
 
         // OUD TRANSITIONS
         Data::IDataTablePtr interventionInitTable = loadTable(csvName);
-        // end dimensions of oudTransitionRates are this->numInterventions x
-        // this->numOUDStates^2 x demographics start with a vector of
+        // end dimensions of oudTransitionRates are getNumInterventions() x
+        // getNumOUDStates()^2 x demographics start with a vector of
         // StateTensor-sized Matrix3d objects and stack at the end
         std::vector<Matrix3d> tempinterventionInit;
-        int activeNonActiveOffset = this->numOUDStates / 2;
-        for (int i = 0; i < this->numOUDStates; ++i) {
+        int activeNonActiveOffset = getNumOUDStates() / 2;
+        for (int i = 0; i < getNumOUDStates(); ++i) {
             tempinterventionInit.push_back(Matrixify::Matrix3dFactory::Create(
-                this->numOUDStates, this->numInterventions,
-                this->numDemographicCombos));
+                getNumOUDStates(), getNumInterventions(),
+                getNumDemographicCombos()));
         }
         // Matrix3d objects in the vector are matched with the order that oud
         // states are specified in the Config file. the order represents the
         // "initial oud state"
-        for (int initial_state = 0; initial_state < this->numOUDStates;
+        for (int initial_state = 0; initial_state < getNumOUDStates();
              ++initial_state) {
             std::string currentOUDState = this->oudStates[initial_state];
             std::vector<std::string> column =
@@ -368,7 +283,7 @@ namespace Matrixify {
                     ? true
                     : false;
 
-            for (int intervention = 0; intervention < this->numInterventions;
+            for (int intervention = 0; intervention < getNumInterventions();
                  ++intervention) {
                 std::string currentIntervention =
                     this->interventions[intervention];
@@ -393,7 +308,7 @@ namespace Matrixify {
                 double oppVal = 1 - tableVal;
                 int oppValIdx = (nonactiveFlag) ? idx - activeNonActiveOffset
                                                 : idx + activeNonActiveOffset;
-                for (int dem = 0; dem < this->numDemographicCombos; ++dem) {
+                for (int dem = 0; dem < getNumDemographicCombos(); ++dem) {
                     tempinterventionInit[initial_state](intervention, idx,
                                                         dem) = tableVal;
                     tempinterventionInit[initial_state](intervention, oppValIdx,
@@ -409,9 +324,9 @@ namespace Matrixify {
                 this->interventionInitRates
                     .concatenate(tempinterventionInit[i], Matrixify::OUD)
                     .eval()
-                    .reshape(Matrix3d::Dimensions(this->numInterventions,
-                                                  (i + 1) * this->numOUDStates,
-                                                  this->numDemographicCombos));
+                    .reshape(Matrix3d::Dimensions(getNumInterventions(),
+                                                  (i + 1) * getNumOUDStates(),
+                                                  getNumDemographicCombos()));
             this->interventionInitRates = std::move(temp);
         }
 
@@ -425,13 +340,13 @@ namespace Matrixify {
 
         // INTERVENTION TRANSITIONS
         Data::IDataTablePtr interventionTransitionTable = loadTable(csvName);
-        std::vector<int> ict = this->Config.getInterventionChangeTimes();
 
         std::vector<std::vector<int>> indicesVec =
             this->getIndicesByIntervention(
                 interventionTransitionTable->getColumn("initial_block"));
         this->interventionTransitionRates = this->buildTransitionRatesOverTime(
-            ict, interventionTransitionTable, indicesVec);
+            this->interventionChangeTimes, interventionTransitionTable,
+            indicesVec);
         return this->interventionTransitionRates;
     }
 
@@ -443,9 +358,8 @@ namespace Matrixify {
 
         // OVERDOSE
         Data::IDataTablePtr overdoseTransitionTable = loadTable(csvName);
-        std::vector<int> oct = this->Config.getOverdoseChangeTimes();
         int startTime = 0;
-        for (auto timestep : oct) {
+        for (auto timestep : this->overdoseChangeTimes) {
             std::string str_timestep = "cycle" + std::to_string(timestep);
             Data::IDataTablePtr currentTimeTable =
                 this->removeColumns(str_timestep, overdoseTransitionTable);
@@ -474,13 +388,12 @@ namespace Matrixify {
         std::vector<Matrix3d> tempFatalOverdoseTransitions;
 
         Data::IDataTablePtr fatalOverdoseTable = loadTable(csvName);
-        std::vector<int> oct = this->Config.getOverdoseChangeTimes();
         int startTime = 0;
-        for (int timestep : oct) {
+        for (int timestep : this->overdoseChangeTimes) {
             Matrix3d overdoseTransition =
-                Matrixify::Matrix3dFactory::Create(this->numOUDStates,
-                                                   this->numInterventions,
-                                                   this->numDemographicCombos)
+                Matrixify::Matrix3dFactory::Create(getNumOUDStates(),
+                                                   getNumInterventions(),
+                                                   getNumDemographicCombos())
                     .constant(0);
 
             std::string fodColumn = "fatal_to_all_types_overdose_ratio_cycle" +
@@ -497,8 +410,8 @@ namespace Matrixify {
             }
 
             Matrix3d temp = Matrixify::Matrix3dFactory::Create(
-                                this->numOUDStates, this->numInterventions,
-                                this->numDemographicCombos)
+                                getNumOUDStates(), getNumInterventions(),
+                                getNumDemographicCombos())
                                 .setZero();
 
             if (!fatalOverdoseTable->getColumn("block").empty()) {
@@ -512,7 +425,7 @@ namespace Matrixify {
                     Eigen::array<Eigen::Index, 3> offsets = {intervention, 0,
                                                              0};
                     Eigen::array<Eigen::Index, 3> extents = {
-                        1, this->numOUDStates, this->numDemographicCombos};
+                        1, getNumOUDStates(), getNumDemographicCombos()};
                     temp.slice(offsets, extents) =
                         temp.slice(offsets, extents).setConstant(t);
                 }
@@ -561,14 +474,14 @@ namespace Matrixify {
         }
 
         Matrix3d mortalityTransition = Matrixify::Matrix3dFactory::Create(
-            this->numOUDStates, this->numInterventions,
-            this->numDemographicCombos);
+            getNumOUDStates(), getNumInterventions(),
+            getNumDemographicCombos());
         // mortality is one element per stratum, no time variability
         int smrIndex = 0;
-        for (int intervention = 0; intervention < this->numInterventions;
+        for (int intervention = 0; intervention < getNumInterventions();
              ++intervention) {
-            for (int dem = 0; dem < this->numDemographicCombos; dem++) {
-                for (int oud = 0; oud < this->numOUDStates; ++oud) {
+            for (int dem = 0; dem < getNumDemographicCombos(); dem++) {
+                for (int oud = 0; oud < getNumOUDStates(); ++oud) {
                     if (backgroundMortalityColumn.size() > dem &&
                         smrColumn.size() > smrIndex) {
                         mortalityTransition(intervention, oud, dem) =
@@ -613,9 +526,9 @@ namespace Matrixify {
     DataLoader::buildInterventionMatrix(std::vector<int> const &indices,
                                         Data::IDataTablePtr const &table) {
         Matrixify::Matrix3d transMat =
-            Matrixify::Matrix3dFactory::Create(this->numOUDStates,
-                                               this->numInterventions,
-                                               this->numDemographicCombos)
+            Matrixify::Matrix3dFactory::Create(getNumOUDStates(),
+                                               getNumInterventions(),
+                                               getNumDemographicCombos())
                 .constant(0);
 
         std::vector<std::string> t1 = table->getColumn("initial_block");
@@ -635,9 +548,7 @@ namespace Matrixify {
         bool postFlag = false;
         int idx = 0;
         int offset = 0;
-        std::vector<std::string> interventions =
-            this->Config.getInterventions();
-        for (std::string inter : interventions) {
+        for (std::string inter : this->interventions) {
             std::vector<std::string> headers = table->getHeaders();
             for (std::string header : headers) {
                 keys.push_back(header);
@@ -661,7 +572,7 @@ namespace Matrixify {
             } else if (keys[i].find("post") != std::string::npos) {
                 interventionOffset = i + offset - 1;
                 if (currentIntervention.find("Post") != std::string::npos) {
-                    interventionOffset -= ((this->numInterventions - 1) / 2);
+                    interventionOffset -= ((getNumInterventions() - 1) / 2);
                 }
             }
 
@@ -674,7 +585,7 @@ namespace Matrixify {
                 double v = std::stod(val);
                 transMat(interventionOffset, oudIdx, demIdx) = v;
                 oudIdx++;
-                if (oudIdx % this->numOUDStates == 0) {
+                if (oudIdx % getNumOUDStates() == 0) {
                     oudIdx = 0;
                     demIdx++;
                 }
@@ -693,18 +604,18 @@ namespace Matrixify {
         Data::IDataTablePtr const &table, Matrixify::Dimension dimension) {
         if (dimension == Matrixify::INTERVENTION) {
             Matrix3d stackingMatrices =
-                Matrixify::Matrix3dFactory::Create(this->numOUDStates,
-                                                   this->numInterventions *
-                                                       this->numInterventions,
-                                                   this->numDemographicCombos)
+                Matrixify::Matrix3dFactory::Create(getNumOUDStates(),
+                                                   getNumInterventions() *
+                                                       getNumInterventions(),
+                                                   getNumDemographicCombos())
                     .constant(0);
             for (int i = 0; i < indicesVec.size(); i++) {
                 // assign to index + offset of numInterventions
                 Eigen::array<Eigen::Index, 3> offsets = {
-                    i * this->numInterventions, 0, 0};
+                    i * getNumInterventions(), 0, 0};
                 Eigen::array<Eigen::Index, 3> extents = {
-                    this->numInterventions, this->numOUDStates,
-                    this->numDemographicCombos};
+                    getNumInterventions(), getNumOUDStates(),
+                    getNumDemographicCombos()};
                 Matrixify::Matrix3d temp =
                     this->buildInterventionMatrix(indicesVec[i], table);
                 stackingMatrices.slice(offsets, extents) = temp;
@@ -714,15 +625,15 @@ namespace Matrixify {
         } else if (dimension == Matrixify::OUD) {
             Matrix3d stackingMatrices =
                 Matrixify::Matrix3dFactory::Create(
-                    this->numOUDStates * this->numOUDStates,
-                    this->numInterventions, this->numDemographicCombos)
+                    getNumOUDStates() * getNumOUDStates(),
+                    getNumInterventions(), getNumDemographicCombos())
                     .constant(0);
             return stackingMatrices;
         }
         Matrix3d stackingMatrices =
-            Matrixify::Matrix3dFactory::Create(this->numOUDStates,
-                                               this->numInterventions,
-                                               this->numDemographicCombos)
+            Matrixify::Matrix3dFactory::Create(getNumOUDStates(),
+                                               getNumInterventions(),
+                                               getNumDemographicCombos())
                 .constant(0);
         return stackingMatrices;
     }
@@ -750,7 +661,7 @@ namespace Matrixify {
     std::vector<std::vector<int>>
     DataLoader::getIndicesByIntervention(std::vector<std::string> const &col) {
         std::vector<std::vector<int>> indicesVec;
-        for (std::string in : this->Config.getInterventions()) {
+        for (std::string in : this->interventions) {
             indicesVec.push_back(this->findIndices(col, in));
         }
         return indicesVec;
@@ -790,21 +701,19 @@ namespace Matrixify {
     Matrix3d
     DataLoader::buildOverdoseTransitions(Data::IDataTablePtr const &table,
                                          std::string const &key) {
-        std::vector<std::string> oudStates = this->Config.getOUDStates();
-
         Matrix3d overdoseTransitionsCycle =
-            Matrixify::Matrix3dFactory::Create(this->numOUDStates,
-                                               this->numInterventions,
-                                               this->numDemographicCombos)
+            Matrixify::Matrix3dFactory::Create(getNumOUDStates(),
+                                               getNumInterventions(),
+                                               getNumDemographicCombos())
                 .constant(0);
 
         int row = 0;
-        for (int intervention = 0; intervention < this->numInterventions;
+        for (int intervention = 0; intervention < getNumInterventions();
              ++intervention) {
-            for (int dem = 0; dem < this->numDemographicCombos; ++dem) {
-                for (int oud_state = 0; oud_state < this->numOUDStates;
+            for (int dem = 0; dem < getNumDemographicCombos(); ++dem) {
+                for (int oud_state = 0; oud_state < getNumOUDStates();
                      ++oud_state) {
-                    if (oudStates[oud_state].find("Nonactive") !=
+                    if (this->oudStates[oud_state].find("Nonactive") !=
                             std::string::npos ||
                         row >= table->getColumn(key).size()) {
                         overdoseTransitionsCycle(intervention, oud_state, dem) =
@@ -818,51 +727,5 @@ namespace Matrixify {
             }
         }
         return overdoseTransitionsCycle;
-    }
-
-    void DataLoader::populateCostParameters() {
-        if (this->costSwitch) {
-            this->costPerspectives = this->Config.getCostPerspectives();
-            this->discountRate = this->Config.getDiscountRate();
-            this->costUtilityOutputTimesteps =
-                this->Config.getCostUtilityOutputTimesteps();
-            this->costCategoryOutputs = this->Config.getCostCategoryOutputs();
-        }
-    }
-
-    std::vector<std::string> DataLoader::getCostPerspectives() const {
-        if (!this->costSwitch) {
-            this->logger->warn(
-                "Cost Switch is False, returning blank Cost Perspectives");
-            return {};
-        }
-        return this->costPerspectives;
-    }
-
-    double DataLoader::getDiscountRate() const {
-        if (!this->costSwitch) {
-            this->logger->warn(
-                "Cost Switch is False, returning 0.0 Discount Rate");
-            return 0.0;
-        }
-        return this->discountRate;
-    }
-
-    std::vector<int> DataLoader::getCostUtilityOutputTimesteps() const {
-        if (!this->costSwitch) {
-            this->logger->warn("Cost Switch is False, returning blank Cost "
-                               "Utility Output Timesteps");
-            return {0};
-        }
-        return this->costUtilityOutputTimesteps;
-    }
-
-    bool DataLoader::getCostCategoryOutputs() const {
-        if (!this->costSwitch) {
-            this->logger->warn(
-                "Cost Switch is False, returning blank Cost Categories");
-            return false;
-        }
-        return this->costCategoryOutputs;
     }
 } // namespace Matrixify

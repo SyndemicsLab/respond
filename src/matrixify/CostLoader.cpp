@@ -22,28 +22,16 @@
 namespace Matrixify {
 
     CostLoader::CostLoader(std::string const &inputDir) : Loader(inputDir) {
-        this->populateCostParameters();
-    }
-
-    Data::IConfigurationPtr
-    CostLoader::loadConfigurationFile(std::string const &configPath) {
-        Loader::loadConfigurationFile(configPath);
-        this->populateCostParameters();
-        return this->Config;
+        loadFromConfig();
     }
 
     std::unordered_map<std::string, Matrix3d>
     CostLoader::loadHealthcareUtilizationCost(std::string const &csvName) {
         Data::IDataTablePtr table = loadTable(csvName);
-        size_t numOUDStates =
-            this->Config->getStringVector("state.ouds").size();
-        size_t numSexes =
-            this->Config->getStringVector("demographic.sex").size();
-        size_t numAgeGrps =
-            this->Config->getStringVector("demographic.age_groups").size();
-        size_t numDemographicCombos = numSexes * numAgeGrps;
-        size_t numInterventions =
-            this->Config->getStringVector("state.interventions").size();
+        size_t numOUDStates = this->oudStates.size();
+
+        size_t numDemographicCombos = this->demographicCombos.size();
+        size_t numInterventions = interventions.size();
 
         for (std::string perspective : this->costPerspectives) {
 
@@ -101,15 +89,9 @@ namespace Matrixify {
     CostLoader::loadPharmaceuticalCost(std::string const &csvName) {
         Data::IDataTablePtr table = loadTable(csvName);
 
-        size_t numOUDStates =
-            this->Config->getStringVector("state.ouds").size();
-        size_t numSexes =
-            this->Config->getStringVector("demographic.sex").size();
-        size_t numAgeGrps =
-            this->Config->getStringVector("demographic.age_groups").size();
-        size_t numDemographicCombos = numSexes * numAgeGrps;
-        size_t numInterventions =
-            this->Config->getStringVector("state.interventions").size();
+        size_t numOUDStates = this->oudStates.size();
+        size_t numDemographicCombos = this->demographicCombos.size();
+        size_t numInterventions = interventions.size();
 
         this->loadPharmaceuticalCostMap(table);
 
@@ -164,17 +146,10 @@ namespace Matrixify {
         std::unordered_map<std::string, std::unordered_map<std::string, double>>
             &costParameterMap) {
 
-        size_t numOUDStates =
-            this->Config->getStringVector("state.ouds").size();
-        size_t numSexes =
-            this->Config->getStringVector("demographic.sex").size();
-        size_t numAgeGrps =
-            this->Config->getStringVector("demographic.age_groups").size();
-        size_t numDemographicCombos = numSexes * numAgeGrps;
+        size_t numOUDStates = oudStates.size();
+        size_t numDemographicCombos = this->demographicCombos.size();
 
-        std::vector<std::string> interventions =
-            this->Config->getStringVector("state.interventions");
-        size_t numInterventions = interventions.size();
+        size_t numInterventions = this->interventions.size();
 
         for (std::string perspective : this->costPerspectives) {
             costParameter[perspective] =
@@ -212,22 +187,6 @@ namespace Matrixify {
             }
         }
         return this->treatmentUtilizationCostMap;
-    }
-
-    void CostLoader::populateCostParameters() {
-        std::shared_ptr<Data::Configuration> derivedConfig =
-            std::dynamic_pointer_cast<Data::Configuration>(this->Config);
-        this->costSwitch = derivedConfig->get<bool>("cost.cost_analysis");
-        if (this->costSwitch) {
-            this->costPerspectives =
-                derivedConfig->getStringVector("cost.cost_perspectives");
-            this->discountRate =
-                derivedConfig->get<double>("cost.discount_rate");
-            this->costUtilityOutputTimesteps = derivedConfig->getIntVector(
-                "cost.cost_utility_output_timesteps");
-            this->costCategoryOutputs =
-                derivedConfig->get<bool>("cost.cost_category_outputs");
-        }
     }
 
 } // namespace Matrixify

@@ -71,40 +71,43 @@ int main(int argc, char **argv) {
 
             logger->info("Logger Created");
 
-            Matrixify::DataLoader inputs(inputSet.string(), logger);
+            std::shared_ptr<Matrixify::IDataLoader> inputs =
+                std::make_shared<Matrixify::DataLoader>(inputSet.string(),
+                                                        logger);
             logger->info("DataLoader Created");
 
-            Matrixify::CostLoader costLoader(inputSet.string());
+            std::shared_ptr<Matrixify::ICostLoader> costLoader =
+                std::make_shared<Matrixify::CostLoader>(inputSet.string());
             logger->info("CostLoader Created");
 
-            Matrixify::UtilityLoader utilityLoader(inputSet.string());
+            std::shared_ptr<Matrixify::IUtilityLoader> utilityLoader =
+                std::make_shared<Matrixify::IUtilityLoader>(inputSet.string());
             logger->info("UtilityLoader Created");
 
-            inputs.loadInitialSample("init_cohort.csv");
-            inputs.loadEnteringSamples("entering_cohort.csv", "No_Treatment",
-                                       "Active_Noninjection");
-            inputs.loadOUDTransitionRates("oud_trans.csv");
-            inputs.loadInterventionInitRates("block_init_effect.csv");
-            inputs.loadInterventionTransitionRates("block_trans.csv");
-            inputs.loadOverdoseRates("all_types_overdose.csv");
-            inputs.loadFatalOverdoseRates("fatal_overdose.csv");
-            inputs.loadMortalityRates("SMR.csv", "background_mortality.csv");
+            inputs->loadInitialSample("init_cohort.csv");
+            inputs->loadEnteringSamples("entering_cohort.csv", "No_Treatment",
+                                        "Active_Noninjection");
+            inputs->loadOUDTransitionRates("oud_trans.csv");
+            inputs->loadInterventionInitRates("block_init_effect.csv");
+            inputs->loadInterventionTransitionRates("block_trans.csv");
+            inputs->loadOverdoseRates("all_types_overdose.csv");
+            inputs->loadFatalOverdoseRates("fatal_overdose.csv");
+            inputs->loadMortalityRates("SMR.csv", "background_mortality.csv");
 
-            if (costLoader.getCostSwitch()) {
-                costLoader.loadHealthcareUtilizationCost(
+            if (costLoader->getCostSwitch()) {
+                costLoader->loadHealthcareUtilizationCost(
                     "healthcare_utilization_cost.csv");
-                costLoader.loadOverdoseCost("overdose_cost.csv");
-                costLoader.loadPharmaceuticalCost("pharmaceutical_cost.csv");
-                costLoader.loadTreatmentUtilizationCost(
+                costLoader->loadOverdoseCost("overdose_cost.csv");
+                costLoader->loadPharmaceuticalCost("pharmaceutical_cost.csv");
+                costLoader->loadTreatmentUtilizationCost(
                     "treatment_utilization_cost.csv");
 
-                utilityLoader.loadBackgroundUtility("bg_utility.csv");
-                utilityLoader.loadOUDUtility("oud_utility.csv");
-                utilityLoader.loadSettingUtility("setting_utility.csv");
+                utilityLoader->loadBackgroundUtility("bg_utility.csv");
+                utilityLoader->loadOUDUtility("oud_utility.csv");
+                utilityLoader->loadSettingUtility("setting_utility.csv");
             }
 
-            std::vector<std::vector<std::string>> demographics =
-                inputs.getConfiguration().getDemographicCombosVecOfVec();
+            std::vector<std::string> demographics = inputs->getDemographics();
 
             Simulation::Sim sim(inputs);
             sim.Run();
@@ -122,7 +125,7 @@ int main(int argc, char **argv) {
             std::vector<double> totalDiscCosts;
             double totalDiscUtility = 0.0;
 
-            if (costLoader.getCostSwitch()) {
+            if (costLoader->getCostSwitch()) {
                 Calculator::PostSimulationCalculator PostSimulationCalculator(
                     history);
                 basecosts = PostSimulationCalculator.calculateCosts(costLoader);
@@ -135,7 +138,7 @@ int main(int argc, char **argv) {
                     PostSimulationCalculator.totalAcrossTimeAndDims(
                         baseutilities);
                 baselifeYears = PostSimulationCalculator.calculateLifeYears();
-                if (costLoader.getDiscountRate() != 0.0) {
+                if (costLoader->getDiscountRate() != 0.0) {
                     disccosts =
                         PostSimulationCalculator.calculateCosts(costLoader);
 
@@ -152,18 +155,18 @@ int main(int argc, char **argv) {
             }
 
             std::vector<int> outputTimesteps =
-                inputs.getGeneralStatsOutputTimesteps();
+                inputs->getGeneralStatsOutputTimesteps();
 
             Matrixify::DataWriter writer(
-                outputDir.string(), inputs.getInterventions(),
-                inputs.getOUDStates(), demographics, outputTimesteps,
-                inputs.getGeneralOutputsSwitch());
+                outputDir.string(), inputs->getInterventions(),
+                inputs->getOUDStates(), demographics, outputTimesteps,
+                inputs->getGeneralOutputsSwitch());
 
             Matrixify::DataFormatter formatter;
 
             formatter.extractTimesteps(outputTimesteps, history, basecosts,
                                        baseutilities,
-                                       costLoader.getCostSwitch());
+                                       costLoader->getCostSwitch());
 
             writer.writeHistory(Matrixify::FILE, history);
 
@@ -175,7 +178,7 @@ int main(int argc, char **argv) {
             totals.discLifeYears = disclifeYears;
             totals.discUtility = totalDiscUtility;
 
-            if (costLoader.getCostSwitch()) {
+            if (costLoader->getCostSwitch()) {
                 writer.writeCosts(Matrixify::FILE, basecosts);
                 writer.writeUtilities(Matrixify::FILE, baseutilities);
                 writer.writeTotals(Matrixify::FILE, totals);

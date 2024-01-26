@@ -29,30 +29,6 @@
 namespace Matrixify {
     class IDataLoader : public virtual ILoader {
     public:
-        /// @brief Get the Directory Name
-        /// @return String Directory Name
-        virtual std::string getDirName() const = 0;
-
-        /// @brief Get the Simulation Duration
-        /// @return Integer Duration
-        virtual int getDuration() const = 0;
-
-        /// @brief Get Number of OUD States
-        /// @return Integer Number of OUD States
-        virtual int getNumOUDStates() const = 0;
-
-        /// @brief Get Number of Integerventions
-        /// @return Integer Number of Interventions
-        virtual int getNumInterventions() const = 0;
-
-        /// @brief Get the Number of Demographics
-        /// @return Integer Number of Demographics
-        virtual int getNumDemographics() const = 0;
-
-        /// @brief Get the Number of Demographics
-        /// @return Integer Number of Demographics
-        virtual int getNumDemographicCombos() const = 0;
-
         /// @brief Get the Initial Sample
         /// @return Matrix3d Initial Sample
         virtual Matrix3d getInitialSample() const = 0;
@@ -84,65 +60,6 @@ namespace Matrixify {
         /// @brief Get the Intervention Initialization Rates
         /// @return Matrix3d Intervention Initialization Rates
         virtual Matrix3d getInterventionInitRates() const = 0;
-
-        /// @brief Get the Interventions
-        /// @return Vector of Strings Interventions
-        virtual std::vector<std::string> getInterventions() const = 0;
-
-        /// @brief Get the OUD States
-        /// @return Vector of Strings OUD States
-        virtual std::vector<std::string> getOUDStates() const = 0;
-
-        /// @brief Get the Aging Interval
-        /// @return Integer Aging Interval
-        virtual int getAgingInterval() const = 0;
-
-        /// @brief Get the Age Group Shift
-        /// @return Integer Age Group Shift
-        virtual int getAgeGroupShift() const = 0;
-
-        /// @brief Determine if cost analysis is on or off
-        /// @return Boolean true if user config specifies to include cost
-        /// analysis, otherwise false
-        virtual bool getCostSwitch() const = 0;
-
-        /// @brief Get the vector of cost perspectives if cost analysis is on,
-        /// otherwise, get an empty vector
-        /// @return Vector of Strings representing perspectives from which to
-        /// consider costs
-        virtual std::vector<std::string> getCostPerspectives() const = 0;
-
-        /// @brief Get the decimal representation of the discount rate applied
-        /// to cost, provided that cost analysis is enabled. Otherwise, get 0.0
-        /// @return Double Discount Rate
-        virtual double getDiscountRate() const = 0;
-
-        /// @brief Get the bin size for cost reporting timesteps if cost
-        /// analysis is enabled. Otherwise, get 0
-        /// @return Integer cost reporting timestep bin size
-        virtual std::vector<int> getCostUtilityOutputTimesteps() const = 0;
-
-        /// @brief Get the user config variable specifying whether the cost
-        /// outputs should be broken down by cost perspective. Always returns
-        /// false if cost analysis is disabled.
-        /// @return Boolean cost category breakdown switch
-        virtual bool getCostCategoryOutputs() const = 0;
-
-        /// @brief Get a boolean which represents whether to break down outputs
-        /// by interventions or to group all interventions in a single output
-        /// @return Boolean per intervention outputs
-        virtual bool getPerInterventionPredictions() const = 0;
-
-        /// @brief Get a boolean which represents whether to generate an output
-        /// file that contains the entire state tensor object across all
-        /// timesteps
-        /// @return Boolean general outputs switch
-        virtual bool getGeneralOutputsSwitch() const = 0;
-
-        /// @brief Select which timesteps to provide general statistics output
-        /// @return Vector of Integers representing the timesteps at which to
-        /// print output
-        virtual std::vector<int> getGeneralStatsOutputTimesteps() const = 0;
 
         /// @brief Load the Initial Sample from a File
         /// @param csvName Filename to the Initial Sample
@@ -252,26 +169,6 @@ namespace Matrixify {
 
         ~DataLoader(){};
 
-        /// @brief
-        /// @param configPath
-        /// @return
-        Data::IConfigurationPtr
-        loadConfigurationFile(std::string const &configPath);
-
-        virtual std::string getDirName() const { return dirName; }
-
-        virtual int getDuration() const { return duration; }
-
-        virtual int getNumOUDStates() const { return numOUDStates; }
-
-        virtual int getNumInterventions() const { return numInterventions; }
-
-        virtual int getNumDemographics() const { return numDemographics; }
-
-        virtual int getNumDemographicCombos() const {
-            return numDemographicCombos;
-        }
-
         virtual Matrix3d getInitialSample() const { return initialSample; }
 
         virtual Matrix3dOverTime getEnteringSamples() const {
@@ -298,40 +195,6 @@ namespace Matrixify {
 
         virtual Matrix3d getInterventionInitRates() const {
             return interventionInitRates;
-        }
-
-        virtual std::vector<std::string> getInterventions() const {
-            return interventions;
-        }
-
-        virtual std::vector<std::string> getOUDStates() const {
-            return oudStates;
-        }
-
-        virtual int getAgingInterval() const { return agingInterval; }
-
-        virtual int getAgeGroupShift() const { return ageGroupShift; }
-
-        virtual bool getCostSwitch() const { return costSwitch; }
-
-        virtual std::vector<std::string> getCostPerspectives() const;
-
-        virtual double getDiscountRate() const;
-
-        virtual std::vector<int> getCostUtilityOutputTimesteps() const;
-
-        virtual bool getCostCategoryOutputs() const;
-
-        virtual bool getPerInterventionPredictions() const {
-            return perInterventionPredictions;
-        }
-
-        virtual bool getGeneralOutputsSwitch() const {
-            return generalOutputsSwitch;
-        }
-
-        virtual std::vector<int> getGeneralStatsOutputTimesteps() const {
-            return generalStatsOutputTimesteps;
         }
 
         virtual Matrix3d loadInitialSample(std::string const &csvName);
@@ -409,30 +272,6 @@ namespace Matrixify {
             std::vector<int> const &ict, Data::IDataTablePtr const &table,
             std::vector<std::vector<int>> const &indicesVec);
 
-        /// @brief
-        void populateCostParameters();
-
-        std::string dirName;
-        int duration;
-        int agingInterval;
-        int ageGroupShift;
-        int numOUDStates;
-        int numInterventions;
-        int numDemographics;
-        int numDemographicCombos;
-        // cost parameters
-        bool costSwitch;
-        std::vector<std::string> costPerspectives;
-        double discountRate;
-        std::vector<int> costUtilityOutputTimesteps;
-        bool costCategoryOutputs;
-        // output parameters
-        bool perInterventionPredictions;
-        bool generalOutputsSwitch;
-        std::vector<int> generalStatsOutputTimesteps;
-
-        std::vector<std::string> interventions;
-        std::vector<std::string> oudStates;
         std::vector<int> demographicCounts;
         std::map<std::string, std::vector<int>> simulationParameters;
 

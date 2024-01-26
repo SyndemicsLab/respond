@@ -53,13 +53,11 @@ namespace Matrixify {
 
     class ILoader {
     public:
-        virtual Data::IConfigurationPtr
-        loadConfigurationFile(std::string const &configPath) = 0;
+        virtual bool loadConfigurationFile(std::string const &configPath) = 0;
 
-        /// @brief Reads a configuration file to a Configuration object
-        /// @param inputFile path to the configuration file to be read
-        /// @return
-        virtual Data::IConfigurationPtr readConfigFile(std::string const &) = 0;
+        virtual bool
+        loadConfigurationPointer(Data::IConfigurationPtr configPtr) = 0;
+
         /// @brief Read a CSV-formatted file into a map object where the headers
         /// are keys and the rest of the columns are stored as vectors of
         /// strings
@@ -80,6 +78,37 @@ namespace Matrixify {
         virtual Data::IConfigurationPtr getConfiguration() const = 0;
 
         virtual Data::IDataTablePtr loadTable(std::string const &filename) = 0;
+
+        // simulation
+        virtual int getDuration() const = 0;
+        virtual int getAgingInterval() const = 0;
+        virtual std::vector<int> getInterventionChangeTimes() const = 0;
+        virtual std::vector<int> getEnteringSampleChangeTimes() const = 0;
+        virtual std::vector<int> getOverdoseChangeTimes() const = 0;
+
+        // state
+        virtual std::vector<std::string> getInterventions() const = 0;
+        virtual std::vector<std::string> getOUDStates() const = 0;
+        virtual int getNumOUDStates() const = 0;
+        virtual int getNumInterventions() const = 0;
+
+        // demographic
+        virtual std::vector<std::string> getDemographics() const = 0;
+        virtual int getNumDemographics() const = 0;
+        virtual int getNumDemographicCombos() const = 0;
+        virtual int getAgeGroupShift() const = 0;
+
+        // cost
+        virtual bool getCostSwitch() const = 0;
+        virtual std::vector<std::string> getCostPerspectives() const = 0;
+        virtual double getDiscountRate() const = 0;
+        virtual bool getCostCategoryOutputs() const = 0;
+        virtual std::vector<int> getCostUtilityOutputTimesteps() const = 0;
+
+        // output
+        virtual bool getPerInterventionPredictions() const = 0;
+        virtual bool getGeneralOutputsSwitch() const = 0;
+        virtual std::vector<int> getGeneralStatsOutputTimesteps() const = 0;
     };
 
     class Loader : public virtual ILoader {
@@ -90,8 +119,9 @@ namespace Matrixify {
         Loader(std::string const &inputDir,
                std::shared_ptr<spdlog::logger> logger);
 
-        virtual Data::IConfigurationPtr
-        loadConfigurationFile(std::string const &configPath);
+        bool loadConfigurationFile(std::string const &configPath);
+
+        bool loadConfigurationPointer(Data::IConfigurationPtr configPtr);
 
         virtual Data::IDataTablePtr readCSV(std::string const &);
 
@@ -109,10 +139,109 @@ namespace Matrixify {
             return this->inputTables[filename];
         }
 
+        // simulation
+        virtual int getDuration() const { return duration; }
+        virtual int getAgingInterval() const { return agingInterval; }
+        virtual std::vector<int> getInterventionChangeTimes() const {
+            return interventionChangeTimes;
+        }
+        virtual std::vector<int> getEnteringSampleChangeTimes() const {
+            return enteringSampleChangeTimes;
+        }
+        virtual std::vector<int> getOverdoseChangeTimes() const {
+            return overdoseChangeTimes;
+        }
+
+        // state
+        virtual std::vector<std::string> getInterventions() const {
+            return interventions;
+        }
+        virtual std::vector<std::string> getOUDStates() const {
+            return oudStates;
+        }
+        virtual int getNumOUDStates() const { return this->oudStates.size(); }
+        virtual int getNumInterventions() const {
+            return this->interventions.size();
+        }
+
+        // demographic
+        virtual std::vector<std::string> getDemographics() const {
+            return this->demographics;
+        }
+        virtual int getNumDemographics() const {
+            return this->demographics.size();
+        }
+        virtual int getNumDemographicCombos() const {
+            return this->demographicCombos.size();
+        }
+        virtual int getAgeGroupShift() const { return ageGroupShift; }
+
+        // cost
+        virtual bool getCostSwitch() const { return costSwitch; }
+        virtual std::vector<std::string> getCostPerspectives() const {
+            return costPerspectives;
+        }
+        virtual double getDiscountRate() const { return discountRate; }
+        virtual bool getCostCategoryOutputs() const {
+            return costCategoryOutputs;
+        }
+        virtual std::vector<int> getCostUtilityOutputTimesteps() const {
+            return costUtilityOutputTimesteps;
+        }
+
+        // output
+        virtual bool getPerInterventionPredictions() const {
+            return perInterventionPredictions;
+        }
+        virtual bool getGeneralOutputsSwitch() const {
+            return generalOutputsSwitch;
+        }
+        virtual std::vector<int> getGeneralStatsOutputTimesteps() const {
+            return generalStatsOutputTimesteps;
+        }
+
     protected:
         std::unordered_map<std::string, Data::IDataTablePtr> inputTables;
-        Data::IConfigurationPtr Config;
         std::shared_ptr<spdlog::logger> logger;
+
+        // simulation
+        int duration;
+        int agingInterval;
+        std::vector<int> interventionChangeTimes;
+        std::vector<int> enteringSampleChangeTimes;
+        std::vector<int> overdoseChangeTimes;
+
+        // state
+        std::vector<std::string> interventions;
+        std::vector<std::string> oudStates;
+
+        // demographic
+        int ageGroupShift;
+        std::vector<std::string> demographics;
+        std::vector<std::string> demographicCombos = {};
+
+        // cost
+        bool costSwitch = false;
+        std::vector<std::string> costPerspectives = {};
+        double discountRate = 0.0;
+        int reportingInterval = 1;
+        bool costCategoryOutputs = false;
+        std::vector<int> costUtilityOutputTimesteps = {};
+
+        // output
+        bool perInterventionPredictions;
+        bool generalOutputsSwitch;
+        std::vector<int> generalStatsOutputTimesteps;
+
+        void loadFromConfig();
+
+    private:
+        Data::IConfigurationPtr Config;
+        void recursiveHelper(
+            std::vector<std::vector<std::string>> &finalResultVector,
+            std::vector<std::string> &currentResultVector,
+            std::vector<std::vector<std::string>>::const_iterator currentInput,
+            std::vector<std::vector<std::string>>::const_iterator finalInput);
     };
 
 } // namespace Matrixify

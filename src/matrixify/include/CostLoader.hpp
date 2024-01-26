@@ -53,9 +53,6 @@ namespace Matrixify {
         loadTreatmentUtilizationCost(std::string const &csvName) = 0;
 
         /// @brief
-        virtual void populateCostParameters() = 0;
-
-        /// @brief
         /// @return
         virtual Matrix3d
         getHealthcareUtilizationCost(std::string const &perspective) const = 0;
@@ -92,9 +89,6 @@ namespace Matrixify {
         CostLoader(){};
         CostLoader(std::string const &inputDir);
 
-        Data::IConfigurationPtr
-        loadConfigurationFile(std::string const &configPath);
-
         virtual std::unordered_map<std::string, Matrix3d>
         loadHealthcareUtilizationCost(std::string const &csvName);
 
@@ -107,8 +101,6 @@ namespace Matrixify {
 
         virtual std::unordered_map<std::string, Matrix3d>
         loadTreatmentUtilizationCost(std::string const &csvName);
-
-        virtual void populateCostParameters();
 
         virtual Matrix3d
         getHealthcareUtilizationCost(std::string const &perspective) const {

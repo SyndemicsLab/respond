@@ -21,14 +21,7 @@ namespace Matrixify {
 
     UtilityLoader::UtilityLoader(std::string const &inputDir)
         : Loader(inputDir) {
-        this->populateCostParameters();
-    }
-
-    Data::IConfigurationPtr
-    UtilityLoader::loadConfigurationFile(std::string const &configPath) {
-        Loader::loadConfigurationFile(configPath);
-        this->populateCostParameters();
-        return this->Config;
+        loadFromConfig();
     }
 
     std::unordered_map<std::string, Matrix3d>
@@ -52,21 +45,17 @@ namespace Matrixify {
     std::unordered_map<std::string, Matrix3d>
     UtilityLoader::loadUtility(std::string const &csvName) {
         Data::IDataTablePtr table = loadTable(csvName);
-
-        size_t numOUDStates = this->Config.getOUDStates().size();
-        size_t numDemographicCombos = this->Config.getNumDemographicCombos();
-        size_t numInterventions = this->Config.getInterventions().size();
-
         std::unordered_map<std::string, Matrixify::Matrix3d> result;
 
         Matrixify::Matrix3d utilMatrix =
-            Matrixify::Matrix3dFactory::Create(numOUDStates, numInterventions,
-                                               numDemographicCombos)
+            Matrixify::Matrix3dFactory::Create(getNumOUDStates(),
+                                               getNumInterventions(),
+                                               getNumDemographicCombos())
                 .constant(0);
 
         std::vector<std::string> utilCol = table->getColumn("utility");
 
-        for (int intervention = 0; intervention < numInterventions;
+        for (int intervention = 0; intervention < getNumInterventions();
              ++intervention) {
             Eigen::array<Eigen::Index, 3> offset = {0, 0, 0};
             Eigen::array<Eigen::Index, 3> extent = utilMatrix.dimensions();
@@ -84,16 +73,5 @@ namespace Matrixify {
         result["utility"] = utilMatrix;
 
         return result;
-    }
-
-    void UtilityLoader::populateCostParameters() {
-        this->costSwitch = this->Config.getCostSwitch();
-        if (this->costSwitch) {
-            this->costPerspectives = this->Config.getCostPerspectives();
-            this->discountRate = this->Config.getDiscountRate();
-            this->costUtilityOutputTimesteps =
-                this->Config.getCostUtilityOutputTimesteps();
-            this->costCategoryOutputs = this->Config.getCostCategoryOutputs();
-        }
     }
 } // namespace Matrixify
