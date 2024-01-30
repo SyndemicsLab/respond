@@ -75,6 +75,8 @@ protected:
                             << std::endl << 
                             "discount_rate = 0.0025 " 
                             << std::endl << 
+                            "reporting_interval = 1"
+                            << std::endl << 
                             "cost_utility_output_timesteps = 52 " 
                             << std::endl << 
                             "cost_category_outputs = false " 
@@ -108,13 +110,17 @@ TEST_F(CostLoaderTest, Constructor) {
 
 TEST_F(CostLoaderTest, ConstructorStr) {
     Matrixify::CostLoader cl(boost::filesystem::temp_directory_path().string());
-    EXPECT_EQ(cl.getConfiguration().getInterventions().size(), 9);
+    EXPECT_EQ(
+        cl.getConfiguration()->getStringVector("state.interventions").size(),
+        9);
 }
 
 TEST_F(CostLoaderTest, loadConfigurationFile) {
     Matrixify::CostLoader cl;
     cl.loadConfigurationFile(configFile.string());
-    EXPECT_EQ(cl.getConfiguration().getInterventions().size(), 9);
+    EXPECT_EQ(
+        cl.getConfiguration()->getStringVector("state.interventions").size(),
+        9);
 }
 
 TEST_F(CostLoaderTest, healthcareUtilizationCost) {

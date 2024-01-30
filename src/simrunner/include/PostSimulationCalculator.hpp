@@ -44,24 +44,26 @@ namespace Calculator {
 
         /// @brief Main function to calculate the Cost
         /// @return Cost Struct filled with calculated Cost
-        Matrixify::CostList calculateCosts(Matrixify::ICostLoader const &costLoader,
-                                      bool discount = false) const;
+        Matrixify::CostList
+        calculateCosts(std::shared_ptr<Matrixify::ICostLoader> const costLoader,
+                       bool discount = false) const;
 
         /// @brief Main function to calculate the Utility
         /// @return Cost Struct filled with calculated Utility
-        Matrixify::Matrix3dOverTime
-        calculateUtilities(Matrixify::IUtilityLoader const &utilityLoader,
-                           UTILITY_TYPE utilType, bool discount = false) const;
+        Matrixify::Matrix4d calculateUtilities(
+            std::shared_ptr<Matrixify::IUtilityLoader> const utilityLoader,
+            UTILITY_TYPE utilType, bool discount = false) const;
 
         double calculateLifeYears(bool provideDiscount = false,
                                   double discountRate = 0.0) const;
 
-        double totalAcrossTimeAndDims(Matrixify::Matrix3dOverTime const data) const;
+        double
+        totalAcrossTimeAndDims(Matrixify::Matrix4d const data) const;
 
         Matrixify::Matrix3d static provideDiscount(Matrixify::Matrix3d data,
-                                              double discountRate, int N,
-                                              bool isDiscrete = true,
-                                              bool weeklyTimestep = true);
+                                                   double discountRate, int N,
+                                                   bool isDiscrete = true,
+                                                   bool weeklyTimestep = true);
 
         Matrixify::History getHistory() const { return this->history; }
 
@@ -72,8 +74,8 @@ namespace Calculator {
         /// @param overdose
         /// @param cost
         /// @return
-        Matrixify::Matrix3dOverTime
-        multiplyDouble(Matrixify::Matrix3dOverTime const &overdose,
+        Matrixify::Matrix4d
+        multiplyDouble(Matrixify::Matrix4d const &overdose,
                        double const &cost, bool provideDiscount = false,
                        double discountRate = 0.0) const;
 
@@ -81,9 +83,10 @@ namespace Calculator {
         /// @param state
         /// @param cost
         /// @return
-        Matrixify::Matrix3dOverTime
-        multiplyMatrix(Matrixify::Matrix3dOverTime const &state,
-                       Matrixify::Matrix3d const &cost, bool provideDiscount = false,
+        Matrixify::Matrix4d
+        multiplyMatrix(Matrixify::Matrix4d const &state,
+                       Matrixify::Matrix3d const &cost,
+                       bool provideDiscount = false,
                        double discountRate = 0.0) const;
     };
 } // namespace Calculator

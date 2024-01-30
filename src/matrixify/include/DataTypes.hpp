@@ -72,12 +72,11 @@ namespace Matrixify {
     }
 
     /// @brief Eigen 3d Tensor maintaining Time Order
-    class Matrix3dOverTime {
+    class Matrix4d {
     public:
-        Matrix3dOverTime() {}
-        Matrix3dOverTime(std::vector<Matrix3d> data);
-        Matrix3dOverTime(std::vector<Matrix3d> data,
-                         std::vector<int> timestepChanges);
+        Matrix4d() {}
+        Matrix4d(std::vector<Matrix3d> data);
+        Matrix4d(std::vector<Matrix3d> data, std::vector<int> timestepChanges);
 
         /// @brief Get the Matrix3d at the Specified Timestep
         /// @param timestep Timestep to retrieve the Matrix3d
@@ -108,11 +107,11 @@ namespace Matrixify {
     };
 
     struct History {
-        Matrix3dOverTime stateHistory;
-        Matrix3dOverTime overdoseHistory;
-        Matrix3dOverTime fatalOverdoseHistory;
-        Matrix3dOverTime mortalityHistory;
-        Matrix3dOverTime interventionAdmissionHistory;
+        Matrix4d stateHistory;
+        Matrix4d overdoseHistory;
+        Matrix4d fatalOverdoseHistory;
+        Matrix4d mortalityHistory;
+        Matrix4d interventionAdmissionHistory;
     };
 
     /// @brief Struct defining all the History Matrices Across the Duration of
@@ -121,11 +120,11 @@ namespace Matrixify {
 
     struct Cost {
         std::string perspective;
-        Matrix3dOverTime healthcareCost;
-        Matrix3dOverTime nonFatalOverdoseCost;
-        Matrix3dOverTime fatalOverdoseCost;
-        Matrix3dOverTime pharmaCost;
-        Matrix3dOverTime treatmentCost;
+        Matrix4d healthcareCost;
+        Matrix4d nonFatalOverdoseCost;
+        Matrix4d fatalOverdoseCost;
+        Matrix4d pharmaCost;
+        Matrix4d treatmentCost;
     };
 
     /// @brief

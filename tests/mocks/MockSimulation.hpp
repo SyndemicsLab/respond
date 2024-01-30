@@ -29,35 +29,35 @@ class MockSimulation : public ISim {
     MOCK_METHOD(void, loadInitialSample,
                 (Matrixify::Matrix3d const &initialSample), (override));
     MOCK_METHOD(void, loadEnteringSamples,
-                (Matrixify::Matrix3dOverTime const &enteringSamples),
+                (Matrixify::Matrix4d const &enteringSamples),
                 (override));
     MOCK_METHOD(void, loadOUDTransitionRates,
                 (Matrixify::Matrix3d const &oudTransitionRates), (override));
     MOCK_METHOD(void, loadInterventionTransitionRates,
-                (Matrixify::Matrix3dOverTime const &InterventionTransitions),
+                (Matrixify::Matrix4d const &InterventionTransitions),
                 (override));
     MOCK_METHOD(void, loadOverdoseRates,
-                (Matrixify::Matrix3dOverTime const &overdoseRates), (override));
+                (Matrixify::Matrix4d const &overdoseRates), (override));
     MOCK_METHOD(void, loadMortalityRates,
                 (Matrixify::Matrix3d const &mortalityRates), (override));
 
-    MOCK_METHOD(Matrixify::Matrix3dOverTime, GetEnteringSamples, (),
+    MOCK_METHOD(Matrixify::Matrix4d, GetEnteringSamples, (),
                 (const, override));
     MOCK_METHOD(Matrixify::Matrix3d, GetOUDTransitions, (), (const, override));
-    MOCK_METHOD(Matrixify::Matrix3dOverTime, GetInterventionTransitions, (),
+    MOCK_METHOD(Matrixify::Matrix4d, GetInterventionTransitions, (),
                 (const, override));
-    MOCK_METHOD(Matrixify::Matrix3dOverTime, GetOverdoseTransitions, (),
+    MOCK_METHOD(Matrixify::Matrix4d, GetOverdoseTransitions, (),
                 (const, override));
     MOCK_METHOD(Matrixify::Matrix3d, GetMortalityTransitions, (),
                 (const, override));
 
     MOCK_METHOD(void, LoadTransitionModules,
-                (Matrixify::Matrix3dOverTime const &enteringSamples,
+                (Matrixify::Matrix4d const &enteringSamples,
                  Matrixify::Matrix3d const &oudTransitionRates,
                  Matrixify::Matrix3d const &interventionInitRates,
-                 Matrixify::Matrix3dOverTime const &interventionTransitionRates,
-                 Matrixify::Matrix3dOverTime const &fatalOverdoseRates,
-                 Matrixify::Matrix3dOverTime const &overdoseRates,
+                 Matrixify::Matrix4d const &interventionTransitionRates,
+                 Matrixify::Matrix4d const &fatalOverdoseRates,
+                 Matrixify::Matrix4d const &overdoseRates,
                  Matrixify::Matrix3d const &mortalityRates),
                 (override));
     MOCK_METHOD(void, Run, (), (override));

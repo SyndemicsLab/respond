@@ -62,8 +62,10 @@ namespace Matrixify {
 
         /// @brief Specify the Demographics
         /// @param demographics Vector of Vector of Strings of Demographics
+        virtual void setDemographics(std::vector<std::string> demographics) = 0;
+
         virtual void
-        setDemographics(std::vector<std::vector<std::string>> demographics) = 0;
+        setDemographicCombos(std::vector<std::string> demographicCombos) = 0;
 
         /// @brief Main function to write the history
         /// @param outputType Enum describing the output type. Defaults to FILE
@@ -85,7 +87,7 @@ namespace Matrixify {
         /// @param util Utility struct containing the results of the simulation
         /// @return String depending on the output type
         virtual std::string writeUtilities(OutputType outputType,
-                                           Matrix3dOverTime utilities) = 0;
+                                           Matrix4d utilities) = 0;
 
         virtual std::string writeTotals(OutputType outputType,
                                         Totals totals) = 0;
@@ -105,7 +107,8 @@ namespace Matrixify {
         /// @param demographics
         DataWriter(std::string dirname, std::vector<std::string> interventions,
                    std::vector<std::string> oudStates,
-                   std::vector<std::vector<std::string>> demographics,
+                   std::vector<std::string> demographics,
+                   std::vector<std::string> demographicCombos,
                    std::vector<int> timesteps, bool writeState);
 
         /// @brief
@@ -126,8 +129,12 @@ namespace Matrixify {
 
         /// @brief
         /// @param demographics
-        void setDemographics(
-            std::vector<std::vector<std::string>> demographics) override;
+        void setDemographics(std::vector<std::string> demographics) override;
+
+        void setDemographicCombos(
+            std::vector<std::string> demographicCombos) override {
+            this->demographicCombos = demographicCombos;
+        }
 
         /// @brief
         /// @param outputType
@@ -147,14 +154,15 @@ namespace Matrixify {
         /// @param util
         /// @return
         std::string writeUtilities(OutputType outputType,
-                                   Matrix3dOverTime utilities) override;
+                                   Matrix4d utilities) override;
 
         std::string writeTotals(OutputType outputType, Totals totals) override;
 
     private:
         std::vector<std::string> interventions;
         std::vector<std::string> oudStates;
-        std::vector<std::vector<std::string>> demographics;
+        std::vector<std::string> demographics;
+        std::vector<std::string> demographicCombos;
         std::string dirname;
         std::vector<int> timesteps;
         bool writeState;
@@ -167,7 +175,7 @@ namespace Matrixify {
         /// @brief
         /// @param stream
         /// @param historyToWrite
-        void writer(std::ostream &stream, Matrix3dOverTime historyToWrite);
+        void writer(std::ostream &stream, Matrix4d historyToWrite);
     };
 } // namespace Matrixify
 

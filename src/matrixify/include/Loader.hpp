@@ -31,26 +31,6 @@
 #include <boost/tokenizer.hpp>
 
 namespace Matrixify {
-    // tabular files from the current RESPOND directory structure, as of
-    // [2023-04-06]
-    static std::vector<std::string> INPUT_FILES = {
-        "all_types_overdose.csv",
-        "background_mortality.csv",
-        "block_init_effect.csv",
-        "block_trans.csv",
-        "entering_cohort.csv",
-        "fatal_overdose.csv",
-        "init_cohort.csv",
-        "oud_trans.csv",
-        "SMR.csv",
-        "bg_utility.csv",
-        "healthcare_utilization_cost.csv",
-        "oud_utility.csv",
-        "overdose_cost.csv",
-        "pharmaceutical_cost.csv",
-        "setting_utility.csv",
-        "treatment_utilization_cost.csv"};
-
     class ILoader {
     public:
         virtual bool loadConfigurationFile(std::string const &configPath) = 0;
@@ -95,6 +75,7 @@ namespace Matrixify {
         // demographic
         virtual std::vector<std::string> getDemographics() const = 0;
         virtual int getNumDemographics() const = 0;
+        virtual std::vector<std::string> getDemographicCombos() const = 0;
         virtual int getNumDemographicCombos() const = 0;
         virtual int getAgeGroupShift() const = 0;
 
@@ -113,6 +94,7 @@ namespace Matrixify {
 
     class Loader : public virtual ILoader {
     public:
+        static const std::vector<std::string> INPUT_FILES;
         Loader() : Loader("", nullptr){};
         Loader(std::string const &inputDir);
         Loader(std::shared_ptr<spdlog::logger> logger);
@@ -170,6 +152,9 @@ namespace Matrixify {
         }
         virtual int getNumDemographics() const {
             return this->demographics.size();
+        }
+        virtual std::vector<std::string> getDemographicCombos() const {
+            return this->demographicCombos;
         }
         virtual int getNumDemographicCombos() const {
             return this->demographicCombos.size();
@@ -243,6 +228,5 @@ namespace Matrixify {
             std::vector<std::vector<std::string>>::const_iterator currentInput,
             std::vector<std::vector<std::string>>::const_iterator finalInput);
     };
-
 } // namespace Matrixify
 #endif

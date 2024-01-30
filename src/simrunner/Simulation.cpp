@@ -43,15 +43,15 @@ namespace Simulation {
         this->agingSwitch = false;
     }
 
-    Sim::Sim(Matrixify::IDataLoader &dataLoader) {
+    Sim::Sim(std::shared_ptr<Matrixify::IDataLoader> dataLoader) {
         const auto processor_count = std::thread::hardware_concurrency();
         Eigen::setNbThreads(processor_count);
-        this->Duration = dataLoader.getDuration();
+        this->Duration = dataLoader->getDuration();
         this->currentTime = 0;
-        this->numOUDStates = dataLoader.getNumOUDStates();
-        this->numInterventions = dataLoader.getNumInterventions();
-        this->numDemographics = dataLoader.getNumDemographics();
-        this->numDemographicCombos = dataLoader.getNumDemographicCombos();
+        this->numOUDStates = dataLoader->getNumOUDStates();
+        this->numInterventions = dataLoader->getNumInterventions();
+        this->numDemographics = dataLoader->getNumDemographics();
+        this->numDemographicCombos = dataLoader->getNumDemographicCombos();
         this->state = Matrixify::Matrix3dFactory::Create(
             this->numOUDStates, this->numInterventions,
             this->numDemographicCombos);
@@ -60,8 +60,8 @@ namespace Simulation {
             this->numOUDStates, this->numInterventions,
             this->numDemographicCombos);
         this->transition.setZero();
-        this->agingInterval = dataLoader.getAgingInterval();
-        this->ageGroupShift = dataLoader.getAgeGroupShift();
+        this->agingInterval = dataLoader->getAgingInterval();
+        this->ageGroupShift = dataLoader->getAgeGroupShift();
 
         this->Load(dataLoader);
         // if the aging interval is non-zero, activate aging
@@ -75,7 +75,7 @@ namespace Simulation {
     }
 
     void Sim::loadEnteringSamples(
-        Matrixify::Matrix3dOverTime const &enteringSamples) {
+        Matrixify::Matrix4d const &enteringSamples) {
         this->enteringSamples = enteringSamples;
     }
 
@@ -90,17 +90,17 @@ namespace Simulation {
     }
 
     void Sim::loadInterventionTransitionRates(
-        Matrixify::Matrix3dOverTime const &interventionTransitionRates) {
+        Matrixify::Matrix4d const &interventionTransitionRates) {
         this->interventionTransitionRates = interventionTransitionRates;
     }
 
     void Sim::loadFatalOverdoseRates(
-        Matrixify::Matrix3dOverTime const &fatalOverdoseRates) {
+        Matrixify::Matrix4d const &fatalOverdoseRates) {
         this->fatalOverdoseRates = fatalOverdoseRates;
     }
 
     void
-    Sim::loadOverdoseRates(Matrixify::Matrix3dOverTime const &overdoseRates) {
+    Sim::loadOverdoseRates(Matrixify::Matrix4d const &overdoseRates) {
         this->overdoseRates = overdoseRates;
     }
 
@@ -108,16 +108,16 @@ namespace Simulation {
         this->mortalityRates = mortalityRates;
     }
 
-    void Sim::Load(Matrixify::IDataLoader const &dataLoader) {
-        this->loadInitialSample(dataLoader.getInitialSample());
-        this->loadEnteringSamples(dataLoader.getEnteringSamples());
-        this->loadOUDTransitionRates(dataLoader.getOUDTransitionRates());
-        this->loadInterventionInitRates(dataLoader.getInterventionInitRates());
+    void Sim::Load(std::shared_ptr<Matrixify::IDataLoader> const dataLoader) {
+        this->loadInitialSample(dataLoader->getInitialSample());
+        this->loadEnteringSamples(dataLoader->getEnteringSamples());
+        this->loadOUDTransitionRates(dataLoader->getOUDTransitionRates());
+        this->loadInterventionInitRates(dataLoader->getInterventionInitRates());
         this->loadInterventionTransitionRates(
-            dataLoader.getInterventionTransitionRates());
-        this->loadFatalOverdoseRates(dataLoader.getFatalOverdoseRates());
-        this->loadOverdoseRates(dataLoader.getOverdoseRates());
-        this->loadMortalityRates(dataLoader.getMortalityRates());
+            dataLoader->getInterventionTransitionRates());
+        this->loadFatalOverdoseRates(dataLoader->getFatalOverdoseRates());
+        this->loadOverdoseRates(dataLoader->getOverdoseRates());
+        this->loadMortalityRates(dataLoader->getMortalityRates());
     }
 
     void Sim::LoadAgingParameters(int const &shift, int const &interval) {
@@ -127,12 +127,12 @@ namespace Simulation {
     }
 
     void Sim::LoadTransitionModules(
-        Matrixify::Matrix3dOverTime const &enteringSamples,
+        Matrixify::Matrix4d const &enteringSamples,
         Matrixify::Matrix3d const &oudTransitionRates,
         Matrixify::Matrix3d const &interventionInitRates,
-        Matrixify::Matrix3dOverTime const &interventionTransitionRates,
-        Matrixify::Matrix3dOverTime const &fatalOverdoseRates,
-        Matrixify::Matrix3dOverTime const &overdoseRates,
+        Matrixify::Matrix4d const &interventionTransitionRates,
+        Matrixify::Matrix4d const &fatalOverdoseRates,
+        Matrixify::Matrix4d const &overdoseRates,
         Matrixify::Matrix3d const &mortalityRates) {
         this->loadEnteringSamples(enteringSamples);
         this->loadOUDTransitionRates(oudTransitionRates);

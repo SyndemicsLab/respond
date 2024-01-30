@@ -81,7 +81,7 @@ int main(int argc, char **argv) {
             logger->info("CostLoader Created");
 
             std::shared_ptr<Matrixify::IUtilityLoader> utilityLoader =
-                std::make_shared<Matrixify::IUtilityLoader>(inputSet.string());
+                std::make_shared<Matrixify::UtilityLoader>(inputSet.string());
             logger->info("UtilityLoader Created");
 
             inputs->loadInitialSample("init_cohort.csv");
@@ -107,20 +107,18 @@ int main(int argc, char **argv) {
                 utilityLoader->loadSettingUtility("setting_utility.csv");
             }
 
-            std::vector<std::string> demographics = inputs->getDemographics();
-
             Simulation::Sim sim(inputs);
             sim.Run();
             Matrixify::History history = sim.getHistory();
 
             Matrixify::CostList basecosts;
-            Matrixify::Matrix3dOverTime baseutilities;
+            Matrixify::Matrix4d baseutilities;
             double baselifeYears = 0.0;
             std::vector<double> totalBaseCosts;
             double totalBaseUtility = 0.0;
 
             Matrixify::CostList disccosts;
-            Matrixify::Matrix3dOverTime discutilities;
+            Matrixify::Matrix4d discutilities;
             double disclifeYears;
             std::vector<double> totalDiscCosts;
             double totalDiscUtility = 0.0;
@@ -159,7 +157,8 @@ int main(int argc, char **argv) {
 
             Matrixify::DataWriter writer(
                 outputDir.string(), inputs->getInterventions(),
-                inputs->getOUDStates(), demographics, outputTimesteps,
+                inputs->getOUDStates(), inputs->getDemographics(),
+                inputs->getDemographicCombos(), outputTimesteps,
                 inputs->getGeneralOutputsSwitch());
 
             Matrixify::DataFormatter formatter;

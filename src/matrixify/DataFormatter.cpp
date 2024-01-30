@@ -4,7 +4,7 @@ namespace Matrixify {
     void DataFormatter::extractTimesteps(std::vector<int> timesteps,
                                          Matrixify::History &history,
                                          Matrixify::CostList &costs,
-                                         Matrixify::Matrix3dOverTime &utilities,
+                                         Matrixify::Matrix4d &utilities,
                                          bool costSwitch) {
         if (timesteps.size() == 0) {
             return;
@@ -12,57 +12,57 @@ namespace Matrixify {
 
         std::sort(timesteps.begin(), timesteps.end());
 
-        history.stateHistory =
-            trimMatrix3dOverTime(timesteps, history.stateHistory);
+        history.stateHistory = trimMatrix4d(timesteps, history.stateHistory);
 
         history.fatalOverdoseHistory =
-            trimAndAddMatrix3dOverTime(timesteps, history.fatalOverdoseHistory);
+            trimAndAddMatrix4d(timesteps, history.fatalOverdoseHistory);
 
-        history.interventionAdmissionHistory = trimAndAddMatrix3dOverTime(
-            timesteps, history.interventionAdmissionHistory);
+        history.interventionAdmissionHistory =
+            trimAndAddMatrix4d(timesteps, history.interventionAdmissionHistory);
 
         history.mortalityHistory =
-            trimAndAddMatrix3dOverTime(timesteps, history.mortalityHistory);
+            trimAndAddMatrix4d(timesteps, history.mortalityHistory);
 
         history.overdoseHistory =
-            trimAndAddMatrix3dOverTime(timesteps, history.overdoseHistory);
+            trimAndAddMatrix4d(timesteps, history.overdoseHistory);
 
         if (costSwitch) {
             for (Matrixify::Cost &cost : costs) {
-                cost.fatalOverdoseCost = trimAndAddMatrix3dOverTime(
-                    timesteps, cost.fatalOverdoseCost);
+                cost.fatalOverdoseCost =
+                    trimAndAddMatrix4d(timesteps, cost.fatalOverdoseCost);
                 cost.healthcareCost =
-                    trimAndAddMatrix3dOverTime(timesteps, cost.healthcareCost);
-                cost.nonFatalOverdoseCost = trimAndAddMatrix3dOverTime(
-                    timesteps, cost.nonFatalOverdoseCost);
+                    trimAndAddMatrix4d(timesteps, cost.healthcareCost);
+                cost.nonFatalOverdoseCost =
+                    trimAndAddMatrix4d(timesteps, cost.nonFatalOverdoseCost);
                 cost.pharmaCost =
-                    trimAndAddMatrix3dOverTime(timesteps, cost.pharmaCost);
+                    trimAndAddMatrix4d(timesteps, cost.pharmaCost);
                 cost.treatmentCost =
-                    trimAndAddMatrix3dOverTime(timesteps, cost.treatmentCost);
+                    trimAndAddMatrix4d(timesteps, cost.treatmentCost);
             }
 
-            utilities = trimAndAddMatrix3dOverTime(timesteps, utilities);
+            utilities = trimAndAddMatrix4d(timesteps, utilities);
         }
     }
 
-    Matrixify::Matrix3dOverTime
-    DataFormatter::trimMatrix3dOverTime(std::vector<int> timesteps,
-                                        Matrixify::Matrix3dOverTime matrix) {
-        Matrixify::Matrix3dOverTime trimmed;
+    Matrixify::Matrix4d
+    DataFormatter::trimMatrix4d(std::vector<int> timesteps,
+                                Matrixify::Matrix4d matrix) {
+        Matrixify::Matrix4d trimmed;
         for (int timestep : timesteps) {
             trimmed.insert(matrix.getMappedData()[timestep], timestep);
         }
         return trimmed;
     }
 
-    Matrixify::Matrix3dOverTime DataFormatter::trimAndAddMatrix3dOverTime(
-        std::vector<int> timesteps, Matrixify::Matrix3dOverTime matrix) {
+    Matrixify::Matrix4d
+    DataFormatter::trimAndAddMatrix4d(std::vector<int> timesteps,
+                                      Matrixify::Matrix4d matrix) {
         Matrixify::Matrix3d temp = matrix.getMatrix3dAtTimestep(0);
         int oudSize = temp.dimension(Matrixify::OUD);
         int interSize = temp.dimension(Matrixify::INTERVENTION);
         int demSize = temp.dimension(Matrixify::DEMOGRAPHIC_COMBO);
 
-        Matrixify::Matrix3dOverTime trimmed;
+        Matrixify::Matrix4d trimmed;
         Matrixify::Matrix3d running =
             Matrixify::Matrix3dFactory::Create(oudSize, interSize, demSize)
                 .setZero();

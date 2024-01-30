@@ -33,7 +33,11 @@ namespace Matrixify {
         }
 
         if (!logger) {
-            logger = spdlog::stdout_color_mt("console");
+            if (!spdlog::get("console")) {
+                logger = spdlog::stdout_color_mt("console");
+            } else {
+                logger = spdlog::get("console");
+            }
         }
         this->logger = logger;
     }
@@ -42,11 +46,13 @@ namespace Matrixify {
         if (!configPath.empty()) {
             this->Config = std::make_shared<Data::Configuration>(configPath);
         }
+        loadFromConfig();
         return true;
     }
 
     bool Loader::loadConfigurationPointer(Data::IConfigurationPtr configPtr) {
         this->Config = configPtr;
+        loadFromConfig();
         return true;
     }
 
@@ -61,8 +67,13 @@ namespace Matrixify {
         std::filesystem::path inputDirFixed = inputDir;
         std::unordered_map<std::string, Data::IDataTablePtr> toReturn;
 
-        for (std::string inputFile : INPUT_FILES) {
+        for (std::string inputFile : Matrixify::Loader::INPUT_FILES) {
             std::filesystem::path filePath = inputDirFixed / inputFile;
+            if (!std::filesystem::exists(filePath)) {
+                // this->logger->warn("File " + filePath.string() +
+                //                    " does not exist!");
+                continue;
+            }
             toReturn[inputFile] = readCSV(filePath.string());
         }
         return toReturn;
@@ -164,5 +175,25 @@ namespace Matrixify {
         this->generalStatsOutputTimesteps =
             this->Config->getIntVector("output.general_stats_output_timesteps");
     }
+
+    // tabular files from the current RESPOND directory structure, as of
+    // [2023-04-06]
+    const std::vector<std::string> Loader::INPUT_FILES = {
+        "all_types_overdose.csv",
+        "background_mortality.csv",
+        "block_init_effect.csv",
+        "block_trans.csv",
+        "entering_cohort.csv",
+        "fatal_overdose.csv",
+        "init_cohort.csv",
+        "oud_trans.csv",
+        "SMR.csv",
+        "bg_utility.csv",
+        "healthcare_utilization_cost.csv",
+        "oud_utility.csv",
+        "overdose_cost.csv",
+        "pharmaceutical_cost.csv",
+        "setting_utility.csv",
+        "treatment_utilization_cost.csv"};
 
 } // namespace Matrixify

@@ -43,9 +43,9 @@ namespace Simulation {
         loadInitialSample(Matrixify::Matrix3d const &initialSample) = 0;
 
         /// @brief Load the Entering Samples
-        /// @param enteringSamples Matrix3dOverTime of Entering Samples
+        /// @param enteringSamples Matrix4d of Entering Samples
         virtual void loadEnteringSamples(
-            Matrixify::Matrix3dOverTime const &enteringSamples) = 0;
+            Matrixify::Matrix4d const &enteringSamples) = 0;
 
         /// @brief Load the OUD Transition Rates
         /// @param oudTransitionRates Matrix3d of OUD Transition Rates
@@ -59,20 +59,20 @@ namespace Simulation {
             Matrixify::Matrix3d const &interventionInitRates) = 0;
 
         /// @brief Load the Intervention Transition Rates
-        /// @param interventionTransitionRates Matrix3dOverTime of Intervention
+        /// @param interventionTransitionRates Matrix4d of Intervention
         /// Transition Rates
         virtual void loadInterventionTransitionRates(
-            Matrixify::Matrix3dOverTime const &interventionTransitionRates) = 0;
+            Matrixify::Matrix4d const &interventionTransitionRates) = 0;
 
         /// @brief Load the Overdose Rates
-        /// @param overdoseRates Matrix3dOverTime of Overdose Rates
+        /// @param overdoseRates Matrix4d of Overdose Rates
         virtual void
-        loadOverdoseRates(Matrixify::Matrix3dOverTime const &overdoseRates) = 0;
+        loadOverdoseRates(Matrixify::Matrix4d const &overdoseRates) = 0;
 
         /// @brief Load the Fatal Overdose Rates
-        /// @param fatalOverdoseRates Matrix3dOverTime of Fatal Overdose Rates
+        /// @param fatalOverdoseRates Matrix4d of Fatal Overdose Rates
         virtual void loadFatalOverdoseRates(
-            Matrixify::Matrix3dOverTime const &fatalOverdoseRates) = 0;
+            Matrixify::Matrix4d const &fatalOverdoseRates) = 0;
 
         /// @brief Load the Mortality Rates
         /// @param mortalityRates Matrix3d of Mortality Rates
@@ -82,7 +82,8 @@ namespace Simulation {
         /// @brief Load Matrixify to the Simulation
         /// @param dataLoader dataLoader containing necessary data for
         /// Simulations
-        virtual void Load(Matrixify::IDataLoader const &dataLoader) = 0;
+        virtual void
+        Load(std::shared_ptr<Matrixify::IDataLoader> const dataLoader) = 0;
 
         /// @brief Load Aging Parameters
         /// @param shift Integer Value to offset aging
@@ -91,25 +92,25 @@ namespace Simulation {
                                          int const &interval) = 0;
 
         /// @brief Get the Entering Samples
-        /// @return Matrix3dOverTime of Entering Samples
-        virtual Matrixify::Matrix3dOverTime GetEnteringSamples() const = 0;
+        /// @return Matrix4d of Entering Samples
+        virtual Matrixify::Matrix4d GetEnteringSamples() const = 0;
 
         /// @brief Get the OUD Transitions
         /// @return Matrix3d of OUD Transitions
         virtual Matrixify::Matrix3d GetOUDTransitions() const = 0;
 
         /// @brief Get the Intervention Transitions
-        /// @return Matrix3dOverTime of Intervention Transitions
-        virtual Matrixify::Matrix3dOverTime
+        /// @return Matrix4d of Intervention Transitions
+        virtual Matrixify::Matrix4d
         GetInterventionTransitions() const = 0;
 
         /// @brief Get the Overdose Transactions
-        /// @return Matrix3dOverTime of Overdose Transitions
-        virtual Matrixify::Matrix3dOverTime GetOverdoseTransitions() const = 0;
+        /// @return Matrix4d of Overdose Transitions
+        virtual Matrixify::Matrix4d GetOverdoseTransitions() const = 0;
 
         /// @brief Get the Fatal Overdose Transitions
-        /// @return Matrix3dOverTime of Fatal Overdose Transitions
-        virtual Matrixify::Matrix3dOverTime
+        /// @return Matrix4d of Fatal Overdose Transitions
+        virtual Matrixify::Matrix4d
         GetFatalOverdoseTransitions() const = 0;
 
         /// @brief Get the Mortality Transitions
@@ -117,22 +118,22 @@ namespace Simulation {
         virtual Matrixify::Matrix3d GetMortalityTransitions() const = 0;
 
         /// @brief Load all Modules
-        /// @param enteringSamples Matrix3dOverTime of Entering Samples
+        /// @param enteringSamples Matrix4d of Entering Samples
         /// @param oudTransitionRates Matrix3d of OUD Transition Rates
         /// @param interventionInitRates Matrix3d of Intervention Initialization
         /// Rates
-        /// @param interventionTransitionRates Matrix3dOverTime of Intervention
+        /// @param interventionTransitionRates Matrix4d of Intervention
         /// Transition Rates
-        /// @param fatalOverdoseRates Matrix3dOverTime of Fatal Overdose Rates
-        /// @param overdoseRates Matrix3dOverTime of Overdose Rates
+        /// @param fatalOverdoseRates Matrix4d of Fatal Overdose Rates
+        /// @param overdoseRates Matrix4d of Overdose Rates
         /// @param mortalityRates Matrix3d of Mortality Rates
         virtual void LoadTransitionModules(
-            Matrixify::Matrix3dOverTime const &enteringSamples,
+            Matrixify::Matrix4d const &enteringSamples,
             Matrixify::Matrix3d const &oudTransitionRates,
             Matrixify::Matrix3d const &interventionInitRates,
-            Matrixify::Matrix3dOverTime const &interventionTransitionRates,
-            Matrixify::Matrix3dOverTime const &fatalOverdoseRates,
-            Matrixify::Matrix3dOverTime const &overdoseRates,
+            Matrixify::Matrix4d const &interventionTransitionRates,
+            Matrixify::Matrix4d const &fatalOverdoseRates,
+            Matrixify::Matrix4d const &overdoseRates,
             Matrixify::Matrix3d const &mortalityRates) = 0;
 
         /// @brief Core Run Function
@@ -166,7 +167,7 @@ namespace Simulation {
 
         /// @brief
         /// @param dataLoader
-        Sim(Matrixify::IDataLoader &dataLoader);
+        Sim(std::shared_ptr<Matrixify::IDataLoader> dataLoader);
 
         /// @brief
         void Run() override;
@@ -186,7 +187,7 @@ namespace Simulation {
         /// @brief
         /// @param enteringSamples
         void loadEnteringSamples(
-            Matrixify::Matrix3dOverTime const &enteringSamples) override;
+            Matrixify::Matrix4d const &enteringSamples) override;
 
         /// @brief
         /// @param oudTransitionRates
@@ -201,18 +202,18 @@ namespace Simulation {
         /// @brief
         /// @param interventionTransitionRates
         void loadInterventionTransitionRates(
-            Matrixify::Matrix3dOverTime const &interventionTransitionRates)
+            Matrixify::Matrix4d const &interventionTransitionRates)
             override;
 
         /// @brief
         /// @param overdoseRates
         void loadOverdoseRates(
-            Matrixify::Matrix3dOverTime const &overdoseRates) override;
+            Matrixify::Matrix4d const &overdoseRates) override;
 
         /// @brief
         /// @param fatalOverdoseRates
         void loadFatalOverdoseRates(
-            Matrixify::Matrix3dOverTime const &fatalOverdoseRates) override;
+            Matrixify::Matrix4d const &fatalOverdoseRates) override;
 
         /// @brief
         /// @param mortalityRates
@@ -221,7 +222,8 @@ namespace Simulation {
 
         /// @brief
         /// @param dataLoader
-        void Load(Matrixify::IDataLoader const &dataLoader) override;
+        void
+        Load(std::shared_ptr<Matrixify::IDataLoader> const dataLoader) override;
 
         /// @brief
         /// @param shift
@@ -238,17 +240,17 @@ namespace Simulation {
         /// @param overdoseRates
         /// @param mortalityRates
         void LoadTransitionModules(
-            Matrixify::Matrix3dOverTime const &enteringSamples,
+            Matrixify::Matrix4d const &enteringSamples,
             Matrixify::Matrix3d const &oudTransitionRates,
             Matrixify::Matrix3d const &interventionInitRates,
-            Matrixify::Matrix3dOverTime const &interventionTransitionRates,
-            Matrixify::Matrix3dOverTime const &fatalOverdoseRates,
-            Matrixify::Matrix3dOverTime const &overdoseRates,
+            Matrixify::Matrix4d const &interventionTransitionRates,
+            Matrixify::Matrix4d const &fatalOverdoseRates,
+            Matrixify::Matrix4d const &overdoseRates,
             Matrixify::Matrix3d const &mortalityRates) override;
 
         /// @brief
         /// @return
-        Matrixify::Matrix3dOverTime GetEnteringSamples() const override {
+        Matrixify::Matrix4d GetEnteringSamples() const override {
             return this->enteringSamples;
         }
 
@@ -260,20 +262,20 @@ namespace Simulation {
 
         /// @brief
         /// @return
-        Matrixify::Matrix3dOverTime
+        Matrixify::Matrix4d
         GetInterventionTransitions() const override {
             return this->interventionTransitionRates;
         }
 
         /// @brief
         /// @return
-        Matrixify::Matrix3dOverTime GetOverdoseTransitions() const override {
+        Matrixify::Matrix4d GetOverdoseTransitions() const override {
             return this->overdoseRates;
         }
 
         /// @brief
         /// @return
-        Matrixify::Matrix3dOverTime
+        Matrixify::Matrix4d
         GetFatalOverdoseTransitions() const override {
             return this->fatalOverdoseRates;
         }
@@ -301,12 +303,12 @@ namespace Simulation {
         int numDemographics;
         int numDemographicCombos;
         Matrixify::History history;
-        Matrixify::Matrix3dOverTime enteringSamples;
+        Matrixify::Matrix4d enteringSamples;
         Matrixify::Matrix3d oudTransitionRates;
         Matrixify::Matrix3d interventionInitRates;
-        Matrixify::Matrix3dOverTime interventionTransitionRates;
-        Matrixify::Matrix3dOverTime fatalOverdoseRates;
-        Matrixify::Matrix3dOverTime overdoseRates;
+        Matrixify::Matrix4d interventionTransitionRates;
+        Matrixify::Matrix4d fatalOverdoseRates;
+        Matrixify::Matrix4d overdoseRates;
         Matrixify::Matrix3d mortalityRates;
 
         /// @brief

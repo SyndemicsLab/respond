@@ -55,7 +55,7 @@ TEST(Loading, EnteringSamples) {
     t1.setRandom();
     t2.setRandom();
     std::vector<Matrix3d> agg{t1, t2};
-    Matrix3dOverTime samples(agg);
+    Matrix4d samples(agg);
     sim.loadEnteringSamples(samples);
     Eigen::Tensor<bool, 0> eq =
         (samples(0) == sim.GetEnteringSamples()(0)).all();
@@ -80,7 +80,7 @@ TEST(Loading, InterventionTransitions) {
     t1.setRandom();
     t2.setRandom();
     std::vector<Matrix3d> agg{t1, t2};
-    Matrix3dOverTime samples(agg);
+    Matrix4d samples(agg);
     sim.loadInterventionTransitionRates(samples);
     Eigen::Tensor<bool, 0> eq =
         (samples(0) == sim.GetInterventionTransitions()(0)).all();
@@ -95,7 +95,7 @@ TEST(Loading, OverdoseTransitions) {
     t1.setRandom();
     t2.setRandom();
     std::vector<Matrix3d> agg{t1, t2};
-    Matrix3dOverTime samples(agg);
+    Matrix4d samples(agg);
     sim.loadOverdoseRates(samples);
     Eigen::Tensor<bool, 0> eq =
         (samples(0) == sim.GetOverdoseTransitions()(0)).all();
@@ -120,7 +120,7 @@ TEST(Loading, TransitionModules) {
     e1.setRandom();
     e2.setRandom();
     std::vector<Matrix3d> es{e1, e2};
-    Matrix3dOverTime eVec(es);
+    Matrix4d eVec(es);
 
     Matrix3d o1(2, 2, 2);
     o1.setRandom();
@@ -133,21 +133,21 @@ TEST(Loading, TransitionModules) {
     t1.setRandom();
     t2.setRandom();
     std::vector<Matrix3d> ts{t1, t2};
-    Matrix3dOverTime tVec(ts);
+    Matrix4d tVec(ts);
 
     Matrix3d d1(2, 2, 2);
     Matrix3d d2(2, 2, 2);
     d1.setRandom();
     d2.setRandom();
     std::vector<Matrix3d> ds{d1, d2};
-    Matrix3dOverTime dVec(ds);
+    Matrix4d dVec(ds);
 
     Matrix3d fod1(2, 2, 2);
     Matrix3d fod2(2, 2, 2);
     fod1.setRandom();
     fod2.setRandom();
     std::vector<Matrix3d> fods{fod1, fod2};
-    Matrix3dOverTime fodVec(fods);
+    Matrix4d fodVec(fods);
 
     Matrix3d m1(2, 2, 2);
     m1.setRandom();
@@ -184,7 +184,7 @@ TEST(Run, SingleStepRun) {
     Matrix3d e1(2, 2, 2);
     e1.setValues({{{1, 1}, {1, 1}}, {{1, 1}, {1, 1}}});
     std::vector<Matrix3d> es{e1};
-    Matrix3dOverTime eVec(es);
+    Matrix4d eVec(es);
 
     Matrix3d o1(2, 4, 2);
     o1.setValues({{{.85, .9}, {.15, .1}, {.1, .2}, {.9, .8}},
@@ -201,17 +201,17 @@ TEST(Run, SingleStepRun) {
                   {{.05, .95}, {.15, .85}},
                   {{.05, .95}, {.15, .85}}});
     std::vector<Matrix3d> ts{t1};
-    Matrix3dOverTime tVec(ts);
+    Matrix4d tVec(ts);
 
     Matrix3d fod1(2, 2, 2);
     fod1.setValues({{{.0, .0}, {.0, .0}}, {{.0, .0}, {.0, .0}}});
     std::vector<Matrix3d> fods{fod1};
-    Matrix3dOverTime fodVec(fods);
+    Matrix4d fodVec(fods);
 
     Matrix3d d1(2, 2, 2);
     d1.setValues({{{.25, .25}, {.25, .25}}, {{.25, .25}, {.25, .25}}});
     std::vector<Matrix3d> ds{d1};
-    Matrix3dOverTime dVec(ds);
+    Matrix4d dVec(ds);
 
     Matrix3d m1(2, 2, 2);
     m1.setValues({{{.01, .01}, {.01, .01}}, {{.01, .01}, {.01, .01}}});
@@ -253,7 +253,7 @@ TEST(Run, MultiStepRun) {
     Matrix3d e3(2, 2, 2);
     e3.setValues({{{1, 1}, {1, 1}}, {{1, 1}, {1, 1}}});
     std::vector<Matrix3d> es{e1, e2, e3};
-    Matrix3dOverTime eVec(es);
+    Matrix4d eVec(es);
 
     Matrix3d o1(2, 4, 2);
     o1.setValues({{{.85, .9}, {.15, .1}, {.1, .2}, {.9, .8}},
@@ -280,7 +280,7 @@ TEST(Run, MultiStepRun) {
                   {{.05, .95}, {.15, .85}},
                   {{.05, .95}, {.15, .85}}});
     std::vector<Matrix3d> ts{t1, t2, t3};
-    Matrix3dOverTime tVec(ts);
+    Matrix4d tVec(ts);
 
     Matrix3d fod1(2, 2, 2);
     fod1.setValues({{{.0, .0}, {.0, .0}}, {{.0, .0}, {.0, .0}}});
@@ -289,7 +289,7 @@ TEST(Run, MultiStepRun) {
     Matrix3d fod3(2, 2, 2);
     fod3.setValues({{{.0, .0}, {.0, .0}}, {{.0, .0}, {.0, .0}}});
     std::vector<Matrix3d> fods{fod1, fod2, fod3};
-    Matrix3dOverTime fodVec(fods);
+    Matrix4d fodVec(fods);
 
     Matrix3d d1(2, 2, 2);
     d1.setValues({{{.25, .25}, {.25, .25}}, {{.25, .25}, {.25, .25}}});
@@ -298,7 +298,7 @@ TEST(Run, MultiStepRun) {
     Matrix3d d3(2, 2, 2);
     d3.setValues({{{.25, .25}, {.25, .25}}, {{.25, .25}, {.25, .25}}});
     std::vector<Matrix3d> ds{d1, d2, d3};
-    Matrix3dOverTime dVec(ds);
+    Matrix4d dVec(ds);
 
     Matrix3d m1(2, 2, 2);
     m1.setValues({{{.01, .01}, {.01, .01}}, {{.01, .01}, {.01, .01}}});

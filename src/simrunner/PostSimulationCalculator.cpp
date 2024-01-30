@@ -25,10 +25,11 @@ namespace Calculator {
     }
 
     Matrixify::CostList PostSimulationCalculator::calculateCosts(
-        Matrixify::ICostLoader const &costLoader, bool discount) const {
+        std::shared_ptr<Matrixify::ICostLoader> const costLoader,
+        bool discount) const {
         Matrixify::CostList costs;
         std::vector<std::string> perspectives =
-            costLoader.getCostPerspectives();
+            costLoader->getCostPerspectives();
 
         for (std::string perspective : perspectives) {
             Matrixify::Cost cost;
@@ -36,55 +37,56 @@ namespace Calculator {
             if (discount) {
                 cost.healthcareCost = this->multiplyMatrix(
                     this->history.stateHistory,
-                    costLoader.getHealthcareUtilizationCost(perspective), true,
-                    costLoader.getDiscountRate());
+                    costLoader->getHealthcareUtilizationCost(perspective), true,
+                    costLoader->getDiscountRate());
                 cost.pharmaCost = this->multiplyMatrix(
                     this->history.stateHistory,
-                    costLoader.getPharmaceuticalCost(perspective), true,
-                    costLoader.getDiscountRate());
+                    costLoader->getPharmaceuticalCost(perspective), true,
+                    costLoader->getDiscountRate());
 
                 cost.treatmentCost = this->multiplyMatrix(
                     this->history.stateHistory,
-                    costLoader.getTreatmentUtilizationCost(perspective), true,
-                    costLoader.getDiscountRate());
+                    costLoader->getTreatmentUtilizationCost(perspective), true,
+                    costLoader->getDiscountRate());
                 cost.nonFatalOverdoseCost = this->multiplyDouble(
                     this->history.overdoseHistory,
-                    costLoader.getNonFatalOverdoseCost(perspective), true,
-                    costLoader.getDiscountRate());
+                    costLoader->getNonFatalOverdoseCost(perspective), true,
+                    costLoader->getDiscountRate());
 
                 cost.fatalOverdoseCost = this->multiplyDouble(
                     this->history.fatalOverdoseHistory,
-                    costLoader.getFatalOverdoseCost(perspective), true,
-                    costLoader.getDiscountRate());
+                    costLoader->getFatalOverdoseCost(perspective), true,
+                    costLoader->getDiscountRate());
             } else {
                 cost.healthcareCost = this->multiplyMatrix(
                     this->history.stateHistory,
-                    costLoader.getHealthcareUtilizationCost(perspective),
+                    costLoader->getHealthcareUtilizationCost(perspective),
                     false);
                 cost.pharmaCost = this->multiplyMatrix(
                     this->history.stateHistory,
-                    costLoader.getPharmaceuticalCost(perspective), false);
+                    costLoader->getPharmaceuticalCost(perspective), false);
 
                 cost.treatmentCost = this->multiplyMatrix(
                     this->history.stateHistory,
-                    costLoader.getTreatmentUtilizationCost(perspective), false);
+                    costLoader->getTreatmentUtilizationCost(perspective),
+                    false);
                 cost.nonFatalOverdoseCost = this->multiplyDouble(
                     this->history.overdoseHistory,
-                    costLoader.getNonFatalOverdoseCost(perspective), false);
+                    costLoader->getNonFatalOverdoseCost(perspective), false);
 
                 cost.fatalOverdoseCost = this->multiplyDouble(
                     this->history.fatalOverdoseHistory,
-                    costLoader.getFatalOverdoseCost(perspective), false);
+                    costLoader->getFatalOverdoseCost(perspective), false);
             }
             costs.push_back(cost);
         }
         return costs;
     }
 
-    Matrixify::Matrix3dOverTime PostSimulationCalculator::calculateUtilities(
-        Matrixify::IUtilityLoader const &utilityLoader, UTILITY_TYPE utilType,
-        bool discount) const {
-        Matrixify::Matrix3dOverTime utilities;
+    Matrixify::Matrix4d PostSimulationCalculator::calculateUtilities(
+        std::shared_ptr<Matrixify::IUtilityLoader> const utilityLoader,
+        UTILITY_TYPE utilType, bool discount) const {
+        Matrixify::Matrix4d utilities;
 
         std::string perspective = "utility";
 
@@ -92,9 +94,10 @@ namespace Calculator {
 
         std::vector<Matrixify::Matrix3d> utilityMatrices;
         utilityMatrices.push_back(
-            utilityLoader.getBackgroundUtility(perspective));
-        utilityMatrices.push_back(utilityLoader.getOUDUtility(perspective));
-        utilityMatrices.push_back(utilityLoader.getSettingUtility(perspective));
+            utilityLoader->getBackgroundUtility(perspective));
+        utilityMatrices.push_back(utilityLoader->getOUDUtility(perspective));
+        utilityMatrices.push_back(
+            utilityLoader->getSettingUtility(perspective));
 
         if (utilType == UTILITY_TYPE::MULT) {
             util = Matrixify::vecMult(utilityMatrices);
@@ -105,7 +108,7 @@ namespace Calculator {
         if (discount) {
             utilities =
                 this->multiplyMatrix(this->history.stateHistory, util, true,
-                                     utilityLoader.getDiscountRate());
+                                     utilityLoader->getDiscountRate());
         } else {
             utilities =
                 this->multiplyMatrix(this->history.stateHistory, util, false);
@@ -143,7 +146,7 @@ namespace Calculator {
     }
 
     double PostSimulationCalculator::totalAcrossTimeAndDims(
-        Matrixify::Matrix3dOverTime const data) const {
+        Matrixify::Matrix4d const data) const {
         std::vector<Matrixify::Matrix3d> vec = data.getMatrices();
         if (vec.size() <= 0) {
             // log no vector
@@ -160,8 +163,8 @@ namespace Calculator {
         return result(0);
     }
 
-    Matrixify::Matrix3dOverTime PostSimulationCalculator::multiplyDouble(
-        Matrixify::Matrix3dOverTime const &overdose, double const &value,
+    Matrixify::Matrix4d PostSimulationCalculator::multiplyDouble(
+        Matrixify::Matrix4d const &overdose, double const &value,
         bool provideDiscount, double discountRate) const {
         std::vector<Matrixify::Matrix3d> overdoseVec = overdose.getMatrices();
         std::vector<Matrixify::Matrix3d> result;
@@ -180,12 +183,12 @@ namespace Calculator {
             result.push_back(temp);
         }
 
-        Matrixify::Matrix3dOverTime ret(result);
+        Matrixify::Matrix4d ret(result);
         return ret;
     }
 
-    Matrixify::Matrix3dOverTime PostSimulationCalculator::multiplyMatrix(
-        Matrixify::Matrix3dOverTime const &state,
+    Matrixify::Matrix4d PostSimulationCalculator::multiplyMatrix(
+        Matrixify::Matrix4d const &state,
         Matrixify::Matrix3d const &value, bool provideDiscount,
         double discountRate) const {
         std::vector<Matrixify::Matrix3d> result;
@@ -198,7 +201,7 @@ namespace Calculator {
             result.push_back(temp);
         }
 
-        Matrixify::Matrix3dOverTime ret(result);
+        Matrixify::Matrix4d ret(result);
         return ret;
     }
 

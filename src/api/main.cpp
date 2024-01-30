@@ -713,7 +713,7 @@ int main(int argc, char **argv) {
         .methods(crow::HTTPMethod::Post)(
             [&hist, &costs, &utils](const crow::request &req) {
                 Calculator::CostCalculator costCalculator(costs, utils, hist);
-                Matrixify::Matrix3dOverTime utility =
+                Matrixify::Matrix4d utility =
                     costCalculator.calculateUtility();
 
                 return crow::response(crow::status::OK);
@@ -755,7 +755,7 @@ int main(int argc, char **argv) {
         .methods(crow::HTTPMethod::Post)([&hist, &inputs, &costs, &utils,
                                           &writer](const crow::request &req) {
             Calculator::CostCalculator costCalculator(costs, utils, hist);
-            Matrixify::Matrix3dOverTime utility =
+            Matrixify::Matrix4d utility =
                 costCalculator.calculateUtility();
 
             writer.setInterventions(inputs.getInterventions());

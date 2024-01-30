@@ -34,24 +34,24 @@ namespace Matrixify {
         virtual Matrix3d getInitialSample() const = 0;
 
         /// @brief Get the Entering Samples
-        /// @return Matrix3dOverTime Entering Samples
-        virtual Matrix3dOverTime getEnteringSamples() const = 0;
+        /// @return Matrix4d Entering Samples
+        virtual Matrix4d getEnteringSamples() const = 0;
 
         /// @brief Get the OUD Transition Rates
         /// @return Matrix3d OUD Transition Rates
         virtual Matrix3d getOUDTransitionRates() const = 0;
 
         /// @brief Get the Intervention Transition Rates
-        /// @return Matrix3dOverTime Intervention Transition Rates
-        virtual Matrix3dOverTime getInterventionTransitionRates() const = 0;
+        /// @return Matrix4d Intervention Transition Rates
+        virtual Matrix4d getInterventionTransitionRates() const = 0;
 
         /// @brief Get the Overdose Rates
-        /// @return Matrix3dOverTime Overdose Rates
-        virtual Matrix3dOverTime getOverdoseRates() const = 0;
+        /// @return Matrix4d Overdose Rates
+        virtual Matrix4d getOverdoseRates() const = 0;
 
         /// @brief Get the Fatal Overdose Rates
-        /// @return Matrix3dOverTime Fatal Overdose Rates
-        virtual Matrix3dOverTime getFatalOverdoseRates() const = 0;
+        /// @return Matrix4d Fatal Overdose Rates
+        virtual Matrix4d getFatalOverdoseRates() const = 0;
 
         /// @brief Get the Mortality Rates
         /// @return Matrix3d Mortality Rates
@@ -71,8 +71,8 @@ namespace Matrixify {
         /// @param enteringSampleIntervention The Intervention to Load Entering
         /// Samples Into
         /// @param enteringSampleOUD The OUD State to Load Entering Samples Into
-        /// @return Matrix3dOverTime Entering Samples
-        virtual Matrix3dOverTime
+        /// @return Matrix4d Entering Samples
+        virtual Matrix4d
         loadEnteringSamples(std::string const &csvName,
                             std::string const &enteringSampleIntervention,
                             std::string const &enteringSampleOUD) = 0;
@@ -90,21 +90,19 @@ namespace Matrixify {
 
         /// @brief Load the Intervention Transition Rates
         /// @param csvName Filename to the Intervention Transition Rates
-        /// @return Matrix3dOverTime Intervention Transition Rates
-        virtual Matrix3dOverTime
+        /// @return Matrix4d Intervention Transition Rates
+        virtual Matrix4d
         loadInterventionTransitionRates(std::string const &csvName) = 0;
 
         /// @brief Load the Overdose Rates
         /// @param csvName Filename to the Overdose Rates
-        /// @return Matrix3dOverTime Overdose Rates
-        virtual Matrix3dOverTime
-        loadOverdoseRates(std::string const &csvName) = 0;
+        /// @return Matrix4d Overdose Rates
+        virtual Matrix4d loadOverdoseRates(std::string const &csvName) = 0;
 
         /// @brief Load the Fatal Overdose Rates
         /// @param csvName Filename to the Fatal Overdose Rates
-        /// @return Matrix3dOverTime Fatal Overdose Rates
-        virtual Matrix3dOverTime
-        loadFatalOverdoseRates(std::string const &csvName) = 0;
+        /// @return Matrix4d Fatal Overdose Rates
+        virtual Matrix4d loadFatalOverdoseRates(std::string const &csvName) = 0;
 
         /// @brief Load the Mortality Rates
         /// @param smrCSVName Filename to the SMR File
@@ -171,23 +169,19 @@ namespace Matrixify {
 
         virtual Matrix3d getInitialSample() const { return initialSample; }
 
-        virtual Matrix3dOverTime getEnteringSamples() const {
-            return enteringSamples;
-        }
+        virtual Matrix4d getEnteringSamples() const { return enteringSamples; }
 
         virtual Matrix3d getOUDTransitionRates() const {
             return oudTransitionRates;
         }
 
-        virtual Matrix3dOverTime getInterventionTransitionRates() const {
+        virtual Matrix4d getInterventionTransitionRates() const {
             return interventionTransitionRates;
         }
 
-        virtual Matrix3dOverTime getOverdoseRates() const {
-            return overdoseRates;
-        }
+        virtual Matrix4d getOverdoseRates() const { return overdoseRates; }
 
-        virtual Matrix3dOverTime getFatalOverdoseRates() const {
+        virtual Matrix4d getFatalOverdoseRates() const {
             return fatalOverdoseRates;
         }
 
@@ -199,7 +193,7 @@ namespace Matrixify {
 
         virtual Matrix3d loadInitialSample(std::string const &csvName);
 
-        virtual Matrix3dOverTime
+        virtual Matrix4d
         loadEnteringSamples(std::string const &csvName,
                             std::string const &enteringSampleIntervention,
                             std::string const &enteringSampleOUD);
@@ -208,25 +202,17 @@ namespace Matrixify {
 
         virtual Matrix3d loadInterventionInitRates(std::string const &csvName);
 
-        virtual Matrix3dOverTime
+        virtual Matrix4d
         loadInterventionTransitionRates(std::string const &csvName);
 
-        virtual Matrix3dOverTime loadOverdoseRates(std::string const &csvName);
+        virtual Matrix4d loadOverdoseRates(std::string const &csvName);
 
-        virtual Matrix3dOverTime
-        loadFatalOverdoseRates(std::string const &csvName);
+        virtual Matrix4d loadFatalOverdoseRates(std::string const &csvName);
 
         virtual Matrix3d loadMortalityRates(std::string const &smrCSVName,
                                             std::string const &bgmCSVName);
 
     private:
-        /// @brief
-        /// @param colString
-        /// @param ogTable
-        /// @return
-        Data::IDataTablePtr removeColumns(std::string const &colString,
-                                          Data::IDataTablePtr const &ogTable);
-
         /// @brief
         /// @param indicesVec
         /// @param table
@@ -268,7 +254,7 @@ namespace Matrixify {
         /// @param table
         /// @param indicesVec
         /// @return
-        Matrix3dOverTime buildTransitionRatesOverTime(
+        Matrix4d buildTransitionRatesOverTime(
             std::vector<int> const &ict, Data::IDataTablePtr const &table,
             std::vector<std::vector<int>> const &indicesVec);
 
@@ -276,12 +262,12 @@ namespace Matrixify {
         std::map<std::string, std::vector<int>> simulationParameters;
 
         Matrix3d initialSample;
-        Matrix3dOverTime enteringSamples;
+        Matrix4d enteringSamples;
         Matrix3d oudTransitionRates;
         Matrix3d interventionInitRates;
-        Matrix3dOverTime interventionTransitionRates;
-        Matrix3dOverTime overdoseRates;
-        Matrix3dOverTime fatalOverdoseRates;
+        Matrix4d interventionTransitionRates;
+        Matrix4d overdoseRates;
+        Matrix4d fatalOverdoseRates;
         Matrix3d mortalityRates;
     };
 } // namespace Matrixify

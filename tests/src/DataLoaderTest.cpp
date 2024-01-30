@@ -96,6 +96,8 @@ protected:
                             << std::endl << 
                             "discount_rate = 0.0025 " 
                             << std::endl << 
+                            "reporting_interval = 1"
+                            << std::endl << 
                             "cost_utility_output_timesteps = 52 " 
                             << std::endl << 
                             "cost_category_outputs = false " 
@@ -137,7 +139,8 @@ TEST_F(DataLoaderTest, ConstructorInputDirectory) {
 }
 
 TEST_F(DataLoaderTest, ConstructorIDandConfig) {
-    Data::IConfigurationPtr config(configFile.string());
+    Data::IConfigurationPtr config =
+        std::make_shared<Data::Configuration>(configFile.string());
     Matrixify::DataLoader dl(
         config, boost::filesystem::temp_directory_path().string(), logger);
     EXPECT_EQ(dl.getInterventions().size(), 9);
@@ -148,13 +151,6 @@ TEST_F(DataLoaderTest, loadConfigurationFile) {
     EXPECT_EQ(dl.getInterventions().size(), 0);
     dl.loadConfigurationFile(configFile.string());
     EXPECT_EQ(dl.getInterventions().size(), 9);
-}
-
-TEST_F(DataLoaderTest, getDirName) {
-    Matrixify::DataLoader dl(boost::filesystem::temp_directory_path().string(),
-                             logger);
-    EXPECT_EQ(dl.getDirName(),
-              boost::filesystem::temp_directory_path().string());
 }
 
 TEST_F(DataLoaderTest, getDuration) {
@@ -220,7 +216,7 @@ TEST_F(DataLoaderTest, enteringSamples) {
                            std::string("No_Treatment"),
                            std::string("Active_Noninjection"));
 
-    Matrixify::Matrix3dOverTime result = dl.getEnteringSamples();
+    Matrixify::Matrix4d result = dl.getEnteringSamples();
     EXPECT_EQ(result(0, 0, 0, 0), 11.4389540364826);
 }
 
@@ -249,9 +245,10 @@ TEST_F(DataLoaderTest, OUDTransitionRates) {
 }
 
 TEST_F(DataLoaderTest, interventionTransitionRates) {
-    fileStream << "agegrp,sex,oud,initial_block,to_No_Treatment260,to_"
-                  "Buprenorphine260,to_Naltrexone260,to_Methadone260,to_"
-                  "Detox260,to_corresponding_post_trt260"
+    fileStream << "agegrp,sex,oud,initial_block,to_No_Treatment_cycle260,to_"
+                  "Buprenorphine_cycle260,to_Naltrexone_cycle260,to_Methadone_"
+                  "cycle260,to_"
+                  "Detox_cycle260,to_corresponding_post_trt_cycle260"
                << std::endl
                << "10_14,male,Active_Noninjection,No_Treatment,0."
                   "625523912484771,0.101388565684697,0.0472664681057711,0."
@@ -269,7 +266,7 @@ TEST_F(DataLoaderTest, interventionTransitionRates) {
 
     dl.loadInterventionTransitionRates(tempAbsoluteFile.string());
 
-    Matrixify::Matrix3dOverTime result = dl.getInterventionTransitionRates();
+    Matrixify::Matrix4d result = dl.getInterventionTransitionRates();
     EXPECT_EQ(result(0, 0, 0, 0), 0.625523912484771);
 }
 
@@ -297,7 +294,7 @@ TEST_F(DataLoaderTest, overdoseRates) {
 
     dl.loadOverdoseRates(tempAbsoluteFile.string());
 
-    Matrixify::Matrix3dOverTime result = dl.getOverdoseRates();
+    Matrixify::Matrix4d result = dl.getOverdoseRates();
     EXPECT_EQ(result(0, 0, 0, 0), 0.00059346577560159);
 }
 
@@ -316,7 +313,7 @@ TEST_F(DataLoaderTest, fatalOverdoseRates) {
 
     dl.loadFatalOverdoseRates(tempAbsoluteFile.string());
 
-    Matrixify::Matrix3dOverTime result = dl.getFatalOverdoseRates();
+    Matrixify::Matrix4d result = dl.getFatalOverdoseRates();
     EXPECT_EQ(result(0, 0, 0, 0), 0.216540329711774);
 }
 
@@ -360,7 +357,7 @@ TEST_F(DataLoaderTest, fatalOverdoseRatesBlocks) {
 
     dl.loadFatalOverdoseRates(tempAbsoluteFile.string());
 
-    Matrixify::Matrix3dOverTime result = dl.getFatalOverdoseRates();
+    Matrixify::Matrix4d result = dl.getFatalOverdoseRates();
     EXPECT_EQ(result(0, 0, 0, 0), 0.216540329711774);
     EXPECT_EQ(result(0, 1, 0, 0), 0.2);
     EXPECT_EQ(result(0, 0, 1, 0), 0.216540329711774);

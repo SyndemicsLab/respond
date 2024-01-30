@@ -107,18 +107,24 @@ TEST_F(UtilityLoaderTest, Constructor) {
 }
 
 TEST_F(UtilityLoaderTest, ConstructorStr) {
-    Matrixify::UtilityLoader ul(boost::filesystem::temp_directory_path().string());
-    EXPECT_EQ(ul.getConfiguration().getInterventions().size(), 9);
+    Matrixify::UtilityLoader ul(
+        boost::filesystem::temp_directory_path().string());
+    EXPECT_EQ(
+        ul.getConfiguration()->getStringVector("state.interventions").size(),
+        9);
 }
 
 TEST_F(UtilityLoaderTest, loadConfigurationFile) {
     Matrixify::UtilityLoader ul;
     ul.loadConfigurationFile(configFile.string());
-    EXPECT_EQ(ul.getConfiguration().getInterventions().size(), 9);
+    EXPECT_EQ(
+        ul.getConfiguration()->getStringVector("state.interventions").size(),
+        9);
 }
 
 TEST_F(UtilityLoaderTest, backgroundUtility) {
-    Matrixify::UtilityLoader ul(boost::filesystem::temp_directory_path().string());
+    Matrixify::UtilityLoader ul(
+        boost::filesystem::temp_directory_path().string());
     fileStream << "agegrp,sex,utility" << std::endl
                << "10_14,Male,0.922" << std::endl
                << "10_14,Female,0.922" << std::endl
@@ -134,7 +140,8 @@ TEST_F(UtilityLoaderTest, backgroundUtility) {
 }
 
 TEST_F(UtilityLoaderTest, OUDUtility) {
-    Matrixify::UtilityLoader ul(boost::filesystem::temp_directory_path().string());
+    Matrixify::UtilityLoader ul(
+        boost::filesystem::temp_directory_path().string());
     fileStream << "block,oud,utility" << std::endl
                << "No_Treatment,Active_Noninjection,0.626" << std::endl
                << "No_Treatment,Active_Injection,0.512" << std::endl
@@ -150,7 +157,8 @@ TEST_F(UtilityLoaderTest, OUDUtility) {
 }
 
 TEST_F(UtilityLoaderTest, settingUtility) {
-    Matrixify::UtilityLoader ul(boost::filesystem::temp_directory_path().string());
+    Matrixify::UtilityLoader ul(
+        boost::filesystem::temp_directory_path().string());
     fileStream << "block,utility" << std::endl
                << "No_Treatment,1" << std::endl
                << "Buprenorphine,1" << std::endl

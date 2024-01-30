@@ -20,7 +20,7 @@
 namespace Matrixify {
 
     /// @brief Default Constructor creating a completely empty DataWriter Object
-    DataWriter::DataWriter() : DataWriter("", {}, {}, {}, {}, false) {}
+    DataWriter::DataWriter() : DataWriter("", {}, {}, {}, {}, {}, false) {}
 
     /// @brief The main Constructor for DataWriter, it fills the object with the
     /// given parameters
@@ -34,12 +34,14 @@ namespace Matrixify {
     DataWriter::DataWriter(std::string dirname,
                            std::vector<std::string> interventions,
                            std::vector<std::string> oudStates,
-                           std::vector<std::vector<std::string>> demographics,
+                           std::vector<std::string> demographics,
+                           std::vector<std::string> demographicCombos,
                            std::vector<int> timesteps, bool writeState) {
         this->dirname = dirname;
         this->interventions = interventions;
         this->oudStates = oudStates;
         this->demographics = demographics;
+        this->demographicCombos = demographicCombos;
         this->timesteps = timesteps;
         this->writeState = writeState;
     }
@@ -68,8 +70,7 @@ namespace Matrixify {
 
     /// @brief Setter for List of Demographic Lists
     /// @param demographics List of List of Demographic Names
-    void DataWriter::setDemographics(
-        std::vector<std::vector<std::string>> demographics) {
+    void DataWriter::setDemographics(std::vector<std::string> demographics) {
         this->demographics = demographics;
     }
 
@@ -233,9 +234,8 @@ namespace Matrixify {
     /// @param outputType Output Enum, generally Matrixify::FILE
     /// @return string containing the result if output enum is Matrixify::STRING
     /// or description of status otherwise
-    std::string
-    DataWriter::writeUtilities(OutputType outputType,
-                               Matrixify::Matrix3dOverTime utilities) {
+    std::string DataWriter::writeUtilities(OutputType outputType,
+                                           Matrixify::Matrix4d utilities) {
         std::ostringstream stringstream;
 
         if (utilities.getMatrices().empty()) {
@@ -320,19 +320,18 @@ namespace Matrixify {
     /// @brief Helper function to write data to the specified stream
     /// @param stream Stream type to write data to
     /// @param historyToWrite Specific portion of history to save
-    void DataWriter::writer(std::ostream &stream,
-                            Matrix3dOverTime historyToWrite) {
+    void DataWriter::writer(std::ostream &stream, Matrix4d historyToWrite) {
         std::vector<Matrix3d> Matrix3dVec = historyToWrite.getMatrices();
         stream << writeColumnHeaders() << std::endl;
         for (long int i = 0; i < this->interventions.size(); i++) {
             for (long int j = 0; j < this->oudStates.size(); j++) {
-                for (long int k = 0; k < this->demographics.size(); k++) {
+                for (long int k = 0; k < this->demographicCombos.size(); k++) {
                     stream << this->interventions[i] << ",";
                     stream << this->oudStates[j] << ",";
-                    for (int dem = 0; dem < this->demographics[k].size();
-                         dem++) {
-                        stream << this->demographics[k][dem] << ",";
-                    }
+                    std::string temp = demographicCombos[k];
+                    std::replace(temp.begin(), temp.end(), ' ', ',');
+                    stream << temp << ",";
+
                     for (Matrix3d dm : Matrix3dVec) {
                         std::array<long int, 3> index = {0, 0, 0};
                         index[Matrixify::INTERVENTION] = i;
@@ -354,9 +353,8 @@ namespace Matrixify {
     /// @return String containing the CSV Column Headers
     std::string DataWriter::writeColumnHeaders() {
         std::string ret = "Interventions, OUD States,";
-        for (int counter = 0; counter < this->demographics[0].size();
-             counter++) {
-            ret += "Demographic " + std::to_string(counter) + ",";
+        for (std::string demographic : this->demographics) {
+            ret += demographic + ",";
         }
         for (int timestep : this->timesteps) {
             ret += "t+" + std::to_string(timestep) + ",";

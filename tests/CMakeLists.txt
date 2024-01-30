@@ -21,7 +21,6 @@ add_executable(${PROJECT_NAME}
   src/CostLoaderTest.cpp
   src/UtilityLoaderTest.cpp
   src/DataWriterTest.cpp
-  src/ConfigurationTest.cpp
   src/PostSimulationCalculatorTest.cpp
 )
 

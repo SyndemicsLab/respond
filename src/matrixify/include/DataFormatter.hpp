@@ -13,17 +13,17 @@ namespace Matrixify {
         void extractTimesteps(std::vector<int> timesteps,
                               Matrixify::History &history,
                               Matrixify::CostList &costs,
-                              Matrixify::Matrix3dOverTime &utilities,
+                              Matrixify::Matrix4d &utilities,
                               bool costSwitch);
 
     private:
-        Matrixify::Matrix3dOverTime
-        trimMatrix3dOverTime(std::vector<int> timesteps,
-                             Matrixify::Matrix3dOverTime matrix);
+        Matrixify::Matrix4d
+        trimMatrix4d(std::vector<int> timesteps,
+                             Matrixify::Matrix4d matrix);
 
-        Matrixify::Matrix3dOverTime
-        trimAndAddMatrix3dOverTime(std::vector<int> timesteps,
-                                   Matrixify::Matrix3dOverTime matrix);
+        Matrixify::Matrix4d
+        trimAndAddMatrix4d(std::vector<int> timesteps,
+                                   Matrixify::Matrix4d matrix);
     };
 } // namespace Matrixify
 

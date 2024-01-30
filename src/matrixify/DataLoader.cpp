@@ -126,7 +126,7 @@ namespace Matrixify {
 
     /// @brief
     /// @param csvName
-    Matrix3dOverTime DataLoader::loadEnteringSamples(
+    Matrix4d DataLoader::loadEnteringSamples(
         std::string const &csvName,
         std::string const &enteringSampleIntervention,
         std::string const &enteringSampleOUD) {
@@ -335,15 +335,18 @@ namespace Matrixify {
 
     /// @brief
     /// @param csvName
-    Matrix3dOverTime
+    Matrix4d
     DataLoader::loadInterventionTransitionRates(std::string const &csvName) {
 
         // INTERVENTION TRANSITIONS
         Data::IDataTablePtr interventionTransitionTable = loadTable(csvName);
 
+        std::vector<std::string> column =
+            interventionTransitionTable->getColumn("initial_block");
+
         std::vector<std::vector<int>> indicesVec =
-            this->getIndicesByIntervention(
-                interventionTransitionTable->getColumn("initial_block"));
+            this->getIndicesByIntervention(column);
+
         this->interventionTransitionRates = this->buildTransitionRatesOverTime(
             this->interventionChangeTimes, interventionTransitionTable,
             indicesVec);
@@ -352,23 +355,23 @@ namespace Matrixify {
 
     /// @brief
     /// @param csvName
-    Matrix3dOverTime DataLoader::loadOverdoseRates(std::string const &csvName) {
+    Matrix4d DataLoader::loadOverdoseRates(std::string const &csvName) {
 
-        loadTable(csvName);
+        // loadTable(csvName);
 
         // OVERDOSE
         Data::IDataTablePtr overdoseTransitionTable = loadTable(csvName);
         int startTime = 0;
         for (auto timestep : this->overdoseChangeTimes) {
             std::string str_timestep = "cycle" + std::to_string(timestep);
-            Data::IDataTablePtr currentTimeTable =
-                this->removeColumns(str_timestep, overdoseTransitionTable);
-            std::vector<std::string> headers = currentTimeTable->getHeaders();
+            overdoseTransitionTable->dropColumn(str_timestep);
+            std::vector<std::string> headers =
+                overdoseTransitionTable->getHeaders();
 
             for (std::string header : headers) {
                 if (header.find("overdose_cycle") != std::string::npos) {
                     Matrix3d temp = this->buildOverdoseTransitions(
-                        currentTimeTable, header);
+                        overdoseTransitionTable, header);
                     while (startTime <= timestep) {
                         this->overdoseRates.insert(temp, startTime);
                         startTime++;
@@ -382,8 +385,7 @@ namespace Matrixify {
     /// @brief
     /// @param csvName
     /// @return
-    Matrix3dOverTime
-    DataLoader::loadFatalOverdoseRates(std::string const &csvName) {
+    Matrix4d DataLoader::loadFatalOverdoseRates(std::string const &csvName) {
 
         std::vector<Matrix3d> tempFatalOverdoseTransitions;
 
@@ -498,24 +500,6 @@ namespace Matrixify {
         }
         this->mortalityRates = mortalityTransition;
         return this->mortalityRates;
-    }
-
-    /*********************************************************************
-     *
-     * Private Methods
-     *
-     *********************************************************************/
-
-    /// @brief
-    /// @param colString
-    /// @param ogTable
-    /// @return
-    Data::IDataTablePtr
-    DataLoader::removeColumns(std::string const &colString,
-                              Data::IDataTablePtr const &ogTable) {
-
-        ogTable->dropColumn(colString);
-        return ogTable;
     }
 
     /// @brief
@@ -644,13 +628,11 @@ namespace Matrixify {
     /// @return
     std::vector<int> DataLoader::findIndices(std::vector<std::string> const &v,
                                              std::string const &target) {
-        std::vector<int> indices;
-        auto it = v.begin();
-        while ((it = std::find_if(it, v.end(), [&](std::string const &e) {
-                    return e.compare(target) == 0;
-                })) != v.end()) {
-            indices.push_back(std::distance(v.begin(), it));
-            it++;
+        std::vector<int> indices = {};
+        for (int i = 0; i < v.size(); ++i) {
+            if (v[i].compare(target) == 0) {
+                indices.push_back(i);
+            }
         }
         return indices;
     }
@@ -660,7 +642,7 @@ namespace Matrixify {
     /// @return
     std::vector<std::vector<int>>
     DataLoader::getIndicesByIntervention(std::vector<std::string> const &col) {
-        std::vector<std::vector<int>> indicesVec;
+        std::vector<std::vector<int>> indicesVec = {};
         for (std::string in : this->interventions) {
             indicesVec.push_back(this->findIndices(col, in));
         }
@@ -672,20 +654,24 @@ namespace Matrixify {
     /// @param table
     /// @param indicesVec
     /// @return
-    Matrix3dOverTime DataLoader::buildTransitionRatesOverTime(
+    Matrix4d DataLoader::buildTransitionRatesOverTime(
         std::vector<int> const &ict, Data::IDataTablePtr const &table,
         std::vector<std::vector<int>> const &indicesVec) {
-        Matrix3dOverTime m3dot;
+        Matrix4d m3dot;
 
         int startTime = 0;
         for (int timestep : ict) {
             // get rid of the pointless columns for this iteration
+            // std::vector<std::string> columnNames = {};
+            // for(std::string in : this->interventions){
+            //     columnNames.push_back("to_" + in + "_cycle" +
+            //     std::to_string(timestep));
+            // }
             std::string str_timestep = "cycle" + std::to_string(timestep);
-            Data::IDataTablePtr currentTimeTable =
-                this->removeColumns(str_timestep, table);
+            table->dropColumn(str_timestep);
 
             Matrix3d transMat = this->createTransitionMatrix3d(
-                indicesVec, currentTimeTable, Matrixify::INTERVENTION);
+                indicesVec, table, Matrixify::INTERVENTION);
             while (startTime <= timestep) {
                 m3dot.insert(transMat, startTime);
                 startTime++;

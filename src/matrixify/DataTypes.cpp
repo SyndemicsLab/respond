@@ -18,14 +18,14 @@
 #include "DataTypes.hpp"
 
 namespace Matrixify {
-    Matrix3dOverTime::Matrix3dOverTime(std::vector<Matrix3d> data) {
+    Matrix4d::Matrix4d(std::vector<Matrix3d> data) {
         for (int i = 0; i < data.size(); i++) {
             this->data.insert({i, data[i]});
         }
     }
 
-    Matrix3dOverTime::Matrix3dOverTime(std::vector<Matrix3d> data,
-                                       std::vector<int> timestepChanges) {
+    Matrix4d::Matrix4d(std::vector<Matrix3d> data,
+                       std::vector<int> timestepChanges) {
         ASSERTM(data.size() == timestepChanges.size(), "Vector Sizes Correct");
 
         for (int i = 0; i < data.size(); i++) {
@@ -33,7 +33,7 @@ namespace Matrixify {
         }
     }
 
-    Matrix3d &Matrix3dOverTime::getMatrix3dAtTimestep(int timestep) {
+    Matrix3d &Matrix4d::getMatrix3dAtTimestep(int timestep) {
         if (this->data.find(timestep) == this->data.end()) {
             // std::cout << this->data.end()->first << std::endl;
             // return this->data.end()->second;
@@ -43,11 +43,11 @@ namespace Matrixify {
         }
     }
 
-    void Matrix3dOverTime::insert(Matrix3d const &datapoint, int timestep) {
+    void Matrix4d::insert(Matrix3d const &datapoint, int timestep) {
         this->data.insert({timestep, datapoint});
     }
 
-    std::vector<Matrix3d> Matrix3dOverTime::getMatrices() const {
+    std::vector<Matrix3d> Matrix4d::getMatrices() const {
         std::vector<Matrix3d> values;
         for (auto const &x : this->data) {
             Matrix3d mat = x.second;
@@ -56,11 +56,11 @@ namespace Matrixify {
         return values;
     }
 
-    Matrix3d &Matrix3dOverTime::operator()(int timestep) {
+    Matrix3d &Matrix4d::operator()(int timestep) {
         return this->getMatrix3dAtTimestep(timestep);
     }
 
-    Matrix3d Matrix3dOverTime::operator()(int timestep) const {
+    Matrix3d Matrix4d::operator()(int timestep) const {
         if (this->data.find(timestep) == this->data.end()) {
             throw std::invalid_argument("The Provided Timestep Does Not Exist");
         } else {
@@ -69,13 +69,12 @@ namespace Matrixify {
         }
     }
 
-    double &Matrix3dOverTime::operator()(int timestep, int idx1, int idx2,
-                                         int idx3) {
+    double &Matrix4d::operator()(int timestep, int idx1, int idx2, int idx3) {
         return this->getMatrix3dAtTimestep(timestep)(idx1, idx2, idx3);
     }
 
-    double Matrix3dOverTime::operator()(int timestep, int idx1, int idx2,
-                                        int idx3) const {
+    double Matrix4d::operator()(int timestep, int idx1, int idx2,
+                                int idx3) const {
         if (this->data.find(timestep) == this->data.end()) {
             throw std::invalid_argument("The Provided Timestep Does Not Exist");
         } else {
@@ -84,7 +83,7 @@ namespace Matrixify {
         }
     }
 
-    Matrix3d Matrix3dOverTime::sumOverTime() const {
+    Matrix3d Matrix4d::sumOverTime() const {
         std::vector<Matrix3d> matrices = this->getMatrices();
         if (matrices.size() <= 0) {
             // log empty data

@@ -37,10 +37,10 @@ namespace Matrixify {
         /// @param stream Stream to Print to
         static void Print(Matrixify::Matrix3d mat, std::ostream &stream);
 
-        /// @brief Static Function to Print Matrix3dOverTime object
-        /// @param matOverTime Matrix3dOverTime to Print
+        /// @brief Static Function to Print Matrix4d object
+        /// @param matOverTime Matrix4d to Print
         /// @param stream Stream to Print to
-        static void PrintOverTime(Matrixify::Matrix3dOverTime matOverTime,
+        static void PrintOverTime(Matrixify::Matrix4d matOverTime,
                                   std::ostream &stream);
     };
 

@@ -36,7 +36,7 @@ namespace Matrixify {
         }
     }
 
-    void Matrix3dPrinter::PrintOverTime(Matrixify::Matrix3dOverTime matOverTime,
+    void Matrix3dPrinter::PrintOverTime(Matrixify::Matrix4d matOverTime,
                                         std::ostream &stream) {
         std::vector<Matrixify::Matrix3d> matrices = matOverTime.getMatrices();
         for (Matrixify::Matrix3d mat : matrices) {
