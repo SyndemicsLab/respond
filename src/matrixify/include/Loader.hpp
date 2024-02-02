@@ -198,12 +198,15 @@ namespace Matrixify {
 
         // state
         std::vector<std::string> interventions;
+        std::map<std::string, int> interventionsIndices;
         std::vector<std::string> oudStates;
+        std::map<std::string, int> oudIndices;
 
         // demographic
         int ageGroupShift;
         std::vector<std::string> demographics;
         std::vector<std::string> demographicCombos = {};
+        std::map<std::string, int> demographicComboIndices;
 
         // cost
         bool costSwitch = false;
@@ -218,10 +221,13 @@ namespace Matrixify {
         bool generalOutputsSwitch;
         std::vector<int> generalStatsOutputTimesteps;
 
-        void loadFromConfig();
+        void loadObjectData();
 
     private:
         Data::IConfigurationPtr Config;
+        void loadFromConfig();
+        std::map<std::string, int>
+        buildIndiceMaps(std::vector<std::string> keys) const;
         void recursiveHelper(
             std::vector<std::vector<std::string>> &finalResultVector,
             std::vector<std::string> &currentResultVector,

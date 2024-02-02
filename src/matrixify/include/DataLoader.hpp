@@ -214,20 +214,20 @@ namespace Matrixify {
 
     private:
         /// @brief
-        /// @param indicesVec
         /// @param table
         /// @param dimension
         /// @return
-        Matrix3d createTransitionMatrix3d(
-            std::vector<std::vector<int>> const &indicesVec,
-            Data::IDataTablePtr const &table, Matrixify::Dimension dimension);
+        Matrix3d createTransitionMatrix3d(Data::IDataTablePtr const &table,
+                                          Matrixify::Dimension dimension,
+                                          int timestep);
 
         /// @brief
         /// @param indices
         /// @param table
         /// @return
-        Matrix3d buildInterventionMatrix(std::vector<int> const &indices,
-                                         Data::IDataTablePtr const &table);
+        Matrix3d buildInterventionMatrix(Data::IDataTablePtr const &table,
+                                         std::string interventionName,
+                                         int timestep);
 
         /// @brief
         /// @param table
@@ -237,26 +237,11 @@ namespace Matrixify {
                                           std::string const &key);
 
         /// @brief
-        /// @param v
-        /// @param target
-        /// @return
-        std::vector<int> findIndices(std::vector<std::string> const &v,
-                                     std::string const &target);
-
-        /// @brief
-        /// @param col
-        /// @return
-        std::vector<std::vector<int>>
-        getIndicesByIntervention(std::vector<std::string> const &col);
-
-        /// @brief
         /// @param ict
         /// @param table
-        /// @param indicesVec
         /// @return
-        Matrix4d buildTransitionRatesOverTime(
-            std::vector<int> const &ict, Data::IDataTablePtr const &table,
-            std::vector<std::vector<int>> const &indicesVec);
+        Matrix4d buildTransitionRatesOverTime(std::vector<int> const &ict,
+                                              Data::IDataTablePtr const &table);
 
         std::vector<int> demographicCounts;
         std::map<std::string, std::vector<int>> simulationParameters;

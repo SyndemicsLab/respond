@@ -25,13 +25,6 @@ namespace Matrixify {
 
     Loader::Loader(std::string const &inputDir,
                    std::shared_ptr<spdlog::logger> logger) {
-        if (!inputDir.empty()) {
-            std::filesystem::path inputPath = inputDir;
-            inputPath = inputPath / "sim.conf";
-            this->Config =
-                std::make_shared<Data::Configuration>(inputPath.string());
-        }
-
         if (!logger) {
             if (!spdlog::get("console")) {
                 logger = spdlog::stdout_color_mt("console");
@@ -40,19 +33,30 @@ namespace Matrixify {
             }
         }
         this->logger = logger;
+
+        if (!inputDir.empty()) {
+            std::filesystem::path inputPath = inputDir;
+            inputPath = inputPath / "sim.conf";
+            this->Config =
+                std::make_shared<Data::Configuration>(inputPath.string());
+            loadObjectData();
+        } else {
+            this->logger->warn("Loader created without a specified input path. "
+                               "Please ensure this is expected behavior!");
+        }
     }
 
     bool Loader::loadConfigurationFile(std::string const &configPath) {
         if (!configPath.empty()) {
             this->Config = std::make_shared<Data::Configuration>(configPath);
         }
-        loadFromConfig();
+        loadObjectData();
         return true;
     }
 
     bool Loader::loadConfigurationPointer(Data::IConfigurationPtr configPtr) {
         this->Config = configPtr;
-        loadFromConfig();
+        loadObjectData();
         return true;
     }
 
@@ -147,7 +151,9 @@ namespace Matrixify {
         for (std::vector<std::string> strList : temp1) {
             std::string group = "";
             for (std::string st : strList) {
-                group += st;
+                std::transform(st.begin(), st.end(), st.begin(),
+                               [](unsigned char c) { return std::tolower(c); });
+                group += " " + st;
             }
             this->demographicCombos.push_back(group);
         }
@@ -174,6 +180,24 @@ namespace Matrixify {
             derivedConfig->get<bool>("output.general_outputs");
         this->generalStatsOutputTimesteps =
             this->Config->getIntVector("output.general_stats_output_timesteps");
+    }
+
+    std::map<std::string, int>
+    Loader::buildIndiceMaps(std::vector<std::string> keys) const {
+        std::map<std::string, int> idxMap = {};
+        if (!keys.empty()) {
+            for (int i = 0; i < keys.size(); ++i) {
+                idxMap[keys[i]] = i;
+            }
+        }
+        return idxMap;
+    }
+
+    void Loader::loadObjectData() {
+        loadFromConfig();
+        this->interventionsIndices = buildIndiceMaps(getInterventions());
+        this->oudIndices = buildIndiceMaps(getOUDStates());
+        this->demographicComboIndices = buildIndiceMaps(getDemographicCombos());
     }
 
     // tabular files from the current RESPOND directory structure, as of

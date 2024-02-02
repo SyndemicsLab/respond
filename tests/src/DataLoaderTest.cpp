@@ -245,10 +245,10 @@ TEST_F(DataLoaderTest, OUDTransitionRates) {
 }
 
 TEST_F(DataLoaderTest, interventionTransitionRates) {
-    fileStream << "agegrp,sex,oud,initial_block,to_No_Treatment_cycle260,to_"
-                  "Buprenorphine_cycle260,to_Naltrexone_cycle260,to_Methadone_"
-                  "cycle260,to_"
-                  "Detox_cycle260,to_corresponding_post_trt_cycle260"
+    fileStream << "agegrp,sex,oud,initial_block,to_No_Treatment_cycle52,to_"
+                  "Buprenorphine_cycle52,to_Naltrexone_cycle52,to_Methadone_"
+                  "cycle52,to_"
+                  "Detox_cycle52,to_corresponding_post_trt_cycle52"
                << std::endl
                << "10_14,male,Active_Noninjection,No_Treatment,0."
                   "625523912484771,0.101388565684697,0.0472664681057711,0."

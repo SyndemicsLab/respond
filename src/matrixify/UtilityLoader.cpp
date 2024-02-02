@@ -21,7 +21,7 @@ namespace Matrixify {
 
     UtilityLoader::UtilityLoader(std::string const &inputDir)
         : Loader(inputDir) {
-        loadFromConfig();
+        loadObjectData();
     }
 
     std::unordered_map<std::string, Matrix3d>

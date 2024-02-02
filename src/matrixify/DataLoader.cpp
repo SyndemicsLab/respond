@@ -21,6 +21,7 @@
 
 #include <cmath>
 #include <stdexcept>
+#include <unordered_map>
 
 namespace Matrixify {
 
@@ -29,7 +30,7 @@ namespace Matrixify {
      * Constructors
      *
      *********************************************************************/
-    DataLoader::DataLoader() {
+    DataLoader::DataLoader() : Loader() {
         this->duration = 0;
         this->agingInterval = 0;
         this->ageGroupShift = 0;
@@ -54,7 +55,6 @@ namespace Matrixify {
     DataLoader::DataLoader(std::string const &inputDir,
                            std::shared_ptr<spdlog::logger> logger)
         : Loader(inputDir) {
-        loadFromConfig();
         this->inputTables = this->readInputDir(inputDir);
     }
 
@@ -63,7 +63,6 @@ namespace Matrixify {
                            std::shared_ptr<spdlog::logger> logger)
         : Loader(inputDir, logger) {
         loadConfigurationPointer(config);
-        loadFromConfig();
         this->inputTables = this->readInputDir(inputDir);
     }
 
@@ -341,15 +340,14 @@ namespace Matrixify {
         // INTERVENTION TRANSITIONS
         Data::IDataTablePtr interventionTransitionTable = loadTable(csvName);
 
-        std::vector<std::string> column =
-            interventionTransitionTable->getColumn("initial_block");
+        try {
+            this->interventionTransitionRates =
+                this->buildTransitionRatesOverTime(
+                    this->interventionChangeTimes, interventionTransitionTable);
+        } catch (const std::exception &e) {
+            this->logger->error(e.what());
+        }
 
-        std::vector<std::vector<int>> indicesVec =
-            this->getIndicesByIntervention(column);
-
-        this->interventionTransitionRates = this->buildTransitionRatesOverTime(
-            this->interventionChangeTimes, interventionTransitionTable,
-            indicesVec);
         return this->interventionTransitionRates;
     }
 
@@ -507,71 +505,67 @@ namespace Matrixify {
     /// @param table
     /// @return
     Matrixify::Matrix3d
-    DataLoader::buildInterventionMatrix(std::vector<int> const &indices,
-                                        Data::IDataTablePtr const &table) {
+    DataLoader::buildInterventionMatrix(Data::IDataTablePtr const &table,
+                                        std::string interventionName,
+                                        int timestep) {
         Matrixify::Matrix3d transMat =
             Matrixify::Matrix3dFactory::Create(getNumOUDStates(),
                                                getNumInterventions(),
                                                getNumDemographicCombos())
                 .constant(0);
 
-        std::vector<std::string> t1 = table->getColumn("initial_block");
+        std::unordered_map<std::string, std::string> selectConditions;
 
-        if (t1.empty()) {
-            return transMat;
-        }
-
-        if (indices.size() == 0 || indices[0] >= t1.size()) {
-            return transMat;
-        }
-
-        std::string currentIntervention = t1[indices[0]];
-        std::vector<std::string> keys;
-
-        // reconstructing order of interventions based on column keys
-        bool postFlag = false;
-        int idx = 0;
-        int offset = 0;
-        for (std::string inter : this->interventions) {
-            std::vector<std::string> headers = table->getHeaders();
-            for (std::string header : headers) {
-                keys.push_back(header);
-                if ((inter.find("Post") != std::string::npos) &&
-                    (header.find("post") != std::string::npos) && !postFlag) {
-                    postFlag = true; // only assumes one
-                                     // "to_corresponding_post_trt column"
+        for (std::string oudState : getOUDStates()) {
+            for (std::string demographicCombo : getDemographicCombos()) {
+                selectConditions.clear();
+                selectConditions["oud"] = oudState;
+                std::stringstream ss(demographicCombo);
+                std::string word;
+                std::vector<std::string> v;
+                while (ss >> word) {
+                    v.push_back(word);
                 }
-            }
-            if (currentIntervention.compare(inter) == 0) {
-                offset = idx;
-            }
-            idx++;
-        }
-
-        for (int i = 0; i < keys.size(); i++) {
-            int interventionOffset = i;
-
-            if (currentIntervention.compare("No_Treatment") == 0) {
-                interventionOffset = i;
-            } else if (keys[i].find("post") != std::string::npos) {
-                interventionOffset = i + offset - 1;
-                if (currentIntervention.find("Post") != std::string::npos) {
-                    interventionOffset -= ((getNumInterventions() - 1) / 2);
+                selectConditions["agegrp"] = v[0];
+                selectConditions["sex"] = v[1];
+                selectConditions["initial_block"] = interventionName;
+                Data::IDataTablePtr temp = table->selectWhere(selectConditions);
+                if (temp->getShape().getNRows() == 0) {
+                    continue;
                 }
-            }
 
-            std::string key = keys[i];
-            int oudIdx = 0;
-            int demIdx = 0;
-            for (int idx : indices) {
-                std::vector<std::string> t2 = table->getColumn(key);
-                std::string val = t2[idx];
-                double v = std::stod(val);
-                transMat(interventionOffset, oudIdx, demIdx) = v;
-                oudIdx++;
-                if (oudIdx % getNumOUDStates() == 0) {
-                    oudIdx = 0;
-                    demIdx++;
+                for (std::string intervention : getInterventions()) {
+                    std::string header = "";
+                    if (intervention.find("Post") != std::string::npos) {
+                        if (intervention.find(interventionName) !=
+                            std::string::npos) {
+                            header = "to_corresponding_post_trt_cycle" +
+                                     std::to_string(timestep);
+                            std::vector<std::string> value =
+                                temp->getColumn(header);
+                            transMat(
+                                oudIndices[oudState],
+                                interventionsIndices[intervention],
+                                demographicComboIndices[demographicCombo]) =
+                                stod(value[0]);
+
+                        } else {
+                            transMat(
+                                oudIndices[oudState],
+                                interventionsIndices[intervention],
+                                demographicComboIndices[demographicCombo]) =
+                                0.0;
+                        }
+                    } else {
+                        header = "to_" + intervention + "_cycle" +
+                                 std::to_string(timestep);
+                        std::vector<std::string> value =
+                            temp->getColumn(header);
+                        transMat(oudIndices[oudState],
+                                 interventionsIndices[intervention],
+                                 demographicComboIndices[demographicCombo]) =
+                            stod(value[0]);
+                    }
                 }
             }
         }
@@ -583,9 +577,18 @@ namespace Matrixify {
     /// @param table
     /// @param dimension
     /// @return
-    Matrixify::Matrix3d DataLoader::createTransitionMatrix3d(
-        std::vector<std::vector<int>> const &indicesVec,
-        Data::IDataTablePtr const &table, Matrixify::Dimension dimension) {
+    Matrixify::Matrix3d
+    DataLoader::createTransitionMatrix3d(Data::IDataTablePtr const &table,
+                                         Matrixify::Dimension dimension,
+                                         int timestep) {
+
+        std::shared_ptr<Data::DataTable> dynaCast =
+            std::dynamic_pointer_cast<Data::DataTable>(table);
+
+        Data::DataTable temp(*dynaCast);
+        Data::IDataTablePtr tempPtr =
+            std::make_shared<Data::DataTable>(std::move(temp));
+
         if (dimension == Matrixify::INTERVENTION) {
             Matrix3d stackingMatrices =
                 Matrixify::Matrix3dFactory::Create(getNumOUDStates(),
@@ -593,15 +596,19 @@ namespace Matrixify {
                                                        getNumInterventions(),
                                                    getNumDemographicCombos())
                     .constant(0);
-            for (int i = 0; i < indicesVec.size(); i++) {
+            for (int i = 0; i < this->interventions.size(); i++) {
                 // assign to index + offset of numInterventions
-                Eigen::array<Eigen::Index, 3> offsets = {
-                    i * getNumInterventions(), 0, 0};
-                Eigen::array<Eigen::Index, 3> extents = {
-                    getNumInterventions(), getNumOUDStates(),
-                    getNumDemographicCombos()};
-                Matrixify::Matrix3d temp =
-                    this->buildInterventionMatrix(indicesVec[i], table);
+                Eigen::array<Eigen::Index, 3> offsets = {0, 0, 0};
+                offsets[Matrixify::INTERVENTION] = i * getNumInterventions();
+                offsets[Matrixify::OUD] = i * 0;
+                offsets[Matrixify::DEMOGRAPHIC_COMBO] = 0;
+                Eigen::array<Eigen::Index, 3> extents = {0, 0, 0};
+                extents[Matrixify::INTERVENTION] = getNumInterventions();
+                extents[Matrixify::OUD] = getNumOUDStates();
+                extents[Matrixify::DEMOGRAPHIC_COMBO] =
+                    getNumDemographicCombos();
+                Matrixify::Matrix3d temp = this->buildInterventionMatrix(
+                    table, this->interventions[i], timestep);
                 stackingMatrices.slice(offsets, extents) = temp;
             }
             return stackingMatrices;
@@ -623,55 +630,17 @@ namespace Matrixify {
     }
 
     /// @brief
-    /// @param v
-    /// @param target
-    /// @return
-    std::vector<int> DataLoader::findIndices(std::vector<std::string> const &v,
-                                             std::string const &target) {
-        std::vector<int> indices = {};
-        for (int i = 0; i < v.size(); ++i) {
-            if (v[i].compare(target) == 0) {
-                indices.push_back(i);
-            }
-        }
-        return indices;
-    }
-
-    /// @brief
-    /// @param col
-    /// @return
-    std::vector<std::vector<int>>
-    DataLoader::getIndicesByIntervention(std::vector<std::string> const &col) {
-        std::vector<std::vector<int>> indicesVec = {};
-        for (std::string in : this->interventions) {
-            indicesVec.push_back(this->findIndices(col, in));
-        }
-        return indicesVec;
-    }
-
-    /// @brief
     /// @param ict
     /// @param table
-    /// @param indicesVec
     /// @return
-    Matrix4d DataLoader::buildTransitionRatesOverTime(
-        std::vector<int> const &ict, Data::IDataTablePtr const &table,
-        std::vector<std::vector<int>> const &indicesVec) {
+    Matrix4d
+    DataLoader::buildTransitionRatesOverTime(std::vector<int> const &ict,
+                                             Data::IDataTablePtr const &table) {
         Matrix4d m3dot;
-
         int startTime = 0;
         for (int timestep : ict) {
-            // get rid of the pointless columns for this iteration
-            // std::vector<std::string> columnNames = {};
-            // for(std::string in : this->interventions){
-            //     columnNames.push_back("to_" + in + "_cycle" +
-            //     std::to_string(timestep));
-            // }
-            std::string str_timestep = "cycle" + std::to_string(timestep);
-            table->dropColumn(str_timestep);
-
             Matrix3d transMat = this->createTransitionMatrix3d(
-                indicesVec, table, Matrixify::INTERVENTION);
+                table, Matrixify::INTERVENTION, timestep);
             while (startTime <= timestep) {
                 m3dot.insert(transMat, startTime);
                 startTime++;
