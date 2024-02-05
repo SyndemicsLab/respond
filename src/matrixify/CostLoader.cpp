@@ -21,8 +21,17 @@
 
 namespace Matrixify {
 
-    CostLoader::CostLoader(std::string const &inputDir) : Loader(inputDir) {
-        loadObjectData();
+    CostLoader::CostLoader() : Loader() {}
+
+    CostLoader::CostLoader(std::string const &inputDir,
+                           std::shared_ptr<spdlog::logger> logger)
+        : Loader(inputDir, logger) {}
+
+    CostLoader::CostLoader(Data::IConfigurationPtr &config,
+                           std::string const &inputDir,
+                           std::shared_ptr<spdlog::logger> logger)
+        : Loader(inputDir, logger) {
+        loadConfigurationPointer(config);
     }
 
     std::unordered_map<std::string, Matrix3d>
@@ -133,9 +142,11 @@ namespace Matrixify {
     CostLoader::loadPharmaceuticalCostMap(Data::IDataTablePtr table) {
         std::vector<std::string> blockCol = table->getColumn("block");
         for (std::string perspective : this->costPerspectives) {
+            std::vector<std::string> perspectiveCol =
+                table->getColumn(perspective);
             for (size_t i = 0; i < blockCol.size(); i++) {
                 this->pharmaceuticalCostsMap[perspective][blockCol[i]] =
-                    std::stod(blockCol[i]);
+                    std::stod(perspectiveCol[i]);
             }
         }
         return this->pharmaceuticalCostsMap;
@@ -181,9 +192,11 @@ namespace Matrixify {
     CostLoader::loadTreatmentUtilizationCostMap(Data::IDataTablePtr table) {
         std::vector<std::string> blockCol = table->getColumn("block");
         for (std::string perspective : this->costPerspectives) {
+            std::vector<std::string> perspectiveCol =
+                table->getColumn(perspective);
             for (size_t i = 0; i < blockCol.size(); i++) {
                 this->treatmentUtilizationCostMap[perspective][blockCol[i]] =
-                    std::stod(blockCol[i]);
+                    std::stod(perspectiveCol[i]);
             }
         }
         return this->treatmentUtilizationCostMap;

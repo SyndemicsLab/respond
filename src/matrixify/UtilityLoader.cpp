@@ -19,9 +19,17 @@
 
 namespace Matrixify {
 
-    UtilityLoader::UtilityLoader(std::string const &inputDir)
-        : Loader(inputDir) {
-        loadObjectData();
+    UtilityLoader::UtilityLoader() : Loader() {}
+
+    UtilityLoader::UtilityLoader(std::string const &inputDir,
+                                 std::shared_ptr<spdlog::logger> logger)
+        : Loader(inputDir, logger) {}
+
+    UtilityLoader::UtilityLoader(Data::IConfigurationPtr &config,
+                                 std::string const &inputDir,
+                                 std::shared_ptr<spdlog::logger> logger)
+        : Loader(inputDir, logger) {
+        loadConfigurationPointer(config);
     }
 
     std::unordered_map<std::string, Matrix3d>

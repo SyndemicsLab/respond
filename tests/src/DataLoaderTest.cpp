@@ -430,7 +430,7 @@ TEST_F(DataLoaderTest, getAgingInterval) {
 TEST_F(DataLoaderTest, getAgeGroupShift) {
     Matrixify::DataLoader dl(boost::filesystem::temp_directory_path().string(),
                              logger);
-    EXPECT_EQ(dl.getAgeGroupShift(), 2);
+    EXPECT_EQ(dl.getAgeGroupShift(), 5);
 }
 
 TEST_F(DataLoaderTest, getCostSwitch) {

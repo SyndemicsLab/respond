@@ -28,7 +28,16 @@ protected:
     boost::filesystem::path configFile;
     std::ofstream configFileStream;
     std::ofstream fileStream;
+    std::shared_ptr<spdlog::logger> logger;
+
     void SetUp() override {
+        if (!logger) {
+            if (spdlog::get("test")) {
+                logger = spdlog::get("test");
+            } else {
+                logger = spdlog::stdout_color_mt("test");
+            }
+        }
         tempRelativeFile =
             boost::filesystem::unique_path("%%%%_%%%%_%%%%_%%%%.csv");
         tempAbsoluteFile =
@@ -75,6 +84,8 @@ protected:
                             << std::endl << 
                             "discount_rate = 0.0025 " 
                             << std::endl << 
+                            "reporting_interval = 1"
+                            << std::endl << 
                             "cost_utility_output_timesteps = 52 " 
                             << std::endl << 
                             "cost_category_outputs = false " 
@@ -108,7 +119,7 @@ TEST_F(UtilityLoaderTest, Constructor) {
 
 TEST_F(UtilityLoaderTest, ConstructorStr) {
     Matrixify::UtilityLoader ul(
-        boost::filesystem::temp_directory_path().string());
+        boost::filesystem::temp_directory_path().string(), logger);
     EXPECT_EQ(
         ul.getConfiguration()->getStringVector("state.interventions").size(),
         9);

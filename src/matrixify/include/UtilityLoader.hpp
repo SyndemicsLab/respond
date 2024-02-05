@@ -62,8 +62,15 @@ namespace Matrixify {
 
     class UtilityLoader : public Loader, public IUtilityLoader {
     public:
-        UtilityLoader(){};
-        UtilityLoader(std::string const &inputDir);
+        UtilityLoader();
+        UtilityLoader(std::string const &inputDir,
+                      std::shared_ptr<spdlog::logger> logger = {});
+
+        UtilityLoader(Data::IConfigurationPtr &config,
+                      std::string const &inputDir,
+                      std::shared_ptr<spdlog::logger> logger = {});
+
+        ~UtilityLoader(){};
 
         virtual std::unordered_map<std::string, Matrix3d>
         loadBackgroundUtility(std::string const &csvName);

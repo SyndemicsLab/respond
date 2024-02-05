@@ -131,9 +131,11 @@ namespace Matrixify {
             this->Config->getStringVector("demographic.age_groups");
         std::string firstAgeGroup = ages[0];
         std::string ageDelimiter = "_";
-        int firstAge = std::stoi(
-            firstAgeGroup.substr(0, firstAgeGroup.find(ageDelimiter)));
-        firstAgeGroup.erase(0, ageDelimiter.length());
+        std::string firstAgeGroupStr =
+            firstAgeGroup.substr(0, firstAgeGroup.find(ageDelimiter));
+        int firstAge = std::stoi(firstAgeGroupStr);
+        firstAgeGroup.erase(0,
+                            firstAgeGroupStr.length() + ageDelimiter.length());
         int secondAge = std::stoi(firstAgeGroup);
 
         // have to add 1 for inclusive first value

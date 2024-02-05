@@ -18,6 +18,7 @@
 #ifndef DATA_COSTLOADER_HPP_
 #define DATA_COSTLOADER_HPP_
 
+#include <DataManagement.hpp>
 #include <string>
 #include <unordered_map>
 
@@ -86,8 +87,14 @@ namespace Matrixify {
 
     class CostLoader : public Loader, public ICostLoader {
     public:
-        CostLoader(){};
-        CostLoader(std::string const &inputDir);
+        CostLoader();
+        CostLoader(std::string const &inputDir,
+                   std::shared_ptr<spdlog::logger> logger = {});
+
+        CostLoader(Data::IConfigurationPtr &config, std::string const &inputDir,
+                   std::shared_ptr<spdlog::logger> logger = {});
+
+        ~CostLoader(){};
 
         virtual std::unordered_map<std::string, Matrix3d>
         loadHealthcareUtilizationCost(std::string const &csvName);
@@ -159,12 +166,6 @@ namespace Matrixify {
             pharmaceuticalCostsMap;
         std::unordered_map<std::string, std::unordered_map<std::string, double>>
             treatmentUtilizationCostMap;
-
-        bool costSwitch = true;
-        std::vector<std::string> costPerspectives;
-        double discountRate;
-        std::vector<int> costUtilityOutputTimesteps;
-        bool costCategoryOutputs;
 
         std::unordered_map<std::string, std::unordered_map<std::string, double>>
         loadTreatmentUtilizationCostMap(Data::IDataTablePtr table);

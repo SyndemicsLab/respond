@@ -54,7 +54,7 @@ namespace Matrixify {
 
     DataLoader::DataLoader(std::string const &inputDir,
                            std::shared_ptr<spdlog::logger> logger)
-        : Loader(inputDir) {
+        : Loader(inputDir, logger) {
         this->inputTables = this->readInputDir(inputDir);
     }
 
@@ -355,19 +355,18 @@ namespace Matrixify {
     /// @param csvName
     Matrix4d DataLoader::loadOverdoseRates(std::string const &csvName) {
 
-        // loadTable(csvName);
-
         // OVERDOSE
         Data::IDataTablePtr overdoseTransitionTable = loadTable(csvName);
+
         int startTime = 0;
         for (auto timestep : this->overdoseChangeTimes) {
-            std::string str_timestep = "cycle" + std::to_string(timestep);
-            overdoseTransitionTable->dropColumn(str_timestep);
             std::vector<std::string> headers =
                 overdoseTransitionTable->getHeaders();
 
             for (std::string header : headers) {
-                if (header.find("overdose_cycle") != std::string::npos) {
+                if (header.find("all_types_overdose_cycle" +
+                                std::to_string(timestep)) !=
+                    std::string::npos) {
                     Matrix3d temp = this->buildOverdoseTransitions(
                         overdoseTransitionTable, header);
                     while (startTime <= timestep) {
@@ -414,7 +413,7 @@ namespace Matrixify {
                                 getNumDemographicCombos())
                                 .setZero();
 
-            if (!fatalOverdoseTable->getColumn("block").empty()) {
+            if (fatalOverdoseTable->checkColumnExists("block")) {
                 for (int intervention = 0;
                      intervention < this->getNumInterventions();
                      ++intervention) {
