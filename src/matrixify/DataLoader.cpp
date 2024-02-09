@@ -254,7 +254,7 @@ namespace Matrixify {
         Data::IDataTablePtr interventionInitTable = loadTable(csvName);
 
         Matrix3d tempinterventionInit = Matrixify::Matrix3dFactory::Create(
-            getNumOUDStates() * 2, getNumInterventions(),
+            getNumOUDStates() * getNumOUDStates(), getNumInterventions(),
             getNumDemographicCombos());
 
         // Matrix3d objects in the vector are matched with the order that
@@ -282,7 +282,7 @@ namespace Matrixify {
                 }
 
                 double retentionRate = std::stod(col[0]);
-                double activeTransitionRate = 1 - retentionRate;
+                double transitionRate = 1 - retentionRate;
 
                 // Slice for setting matrix values. We select a single value and
                 // set that constant
@@ -292,30 +292,14 @@ namespace Matrixify {
                 Eigen::array<Eigen::Index, 3> extents = {
                     1, 1, getNumDemographicCombos()};
 
-                int oppValIdx = (nonactiveFlag) ? idx - activeNonActiveOffset
-                                                : idx + activeNonActiveOffset;
-                for (int dem = 0; dem < getNumDemographicCombos(); ++dem) {
-                    tempinterventionInit[initial_state](intervention, idx,
-                                                        dem) = tableVal;
-                    tempinterventionInit[initial_state](intervention, oppValIdx,
-                                                        dem) = oppVal;
-                }
+                tempinterventionInit.slice(offsets1, extents)
+                    .setConstant(retentionRate);
+                tempinterventionInit.slice(offsets2, extents)
+                    .setConstant(transitionRate);
             }
         }
 
-        // stack the Matrix3d objects along the OUD axis
-        this->interventionInitRates = tempinterventionInit[0];
-        for (int i = 1; i < tempinterventionInit.size(); ++i) {
-            Matrix3d temp =
-                this->interventionInitRates
-                    .concatenate(tempinterventionInit[i], Matrixify::OUD)
-                    .eval()
-                    .reshape(Matrix3d::Dimensions(getNumInterventions(),
-                                                  (i + 1) * getNumOUDStates(),
-                                                  getNumDemographicCombos()));
-            this->interventionInitRates = std::move(temp);
-        }
-
+        this->interventionInitRates = std::move(tempinterventionInit);
         return this->interventionInitRates;
     }
 
