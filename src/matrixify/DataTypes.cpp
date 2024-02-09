@@ -44,7 +44,7 @@ namespace Matrixify {
     }
 
     void Matrix4d::insert(Matrix3d const &datapoint, int timestep) {
-        this->data.insert({timestep, datapoint});
+        this->data[timestep] = datapoint;
     }
 
     std::vector<Matrix3d> Matrix4d::getMatrices() const {

@@ -252,59 +252,46 @@ namespace Matrixify {
 
         // OUD TRANSITIONS
         Data::IDataTablePtr interventionInitTable = loadTable(csvName);
-        // end dimensions of oudTransitionRates are getNumInterventions() x
-        // getNumOUDStates()^2 x demographics start with a vector of
-        // StateTensor-sized Matrix3d objects and stack at the end
-        std::vector<Matrix3d> tempinterventionInit;
-        int activeNonActiveOffset = getNumOUDStates() / 2;
+
+        Matrix3d tempinterventionInit = Matrixify::Matrix3dFactory::Create(
+            getNumOUDStates() * 2, getNumInterventions(),
+            getNumDemographicCombos());
+
+        // Matrix3d objects in the vector are matched with the order that
+        // oud states are specified in the Config file. the order represents
+        // the "initial oud state"
+        std::vector<std::string> oudStates = getOUDStates();
+        std::vector<std::string> interventions = getInterventions();
         for (int i = 0; i < getNumOUDStates(); ++i) {
-            tempinterventionInit.push_back(Matrixify::Matrix3dFactory::Create(
-                getNumOUDStates(), getNumInterventions(),
-                getNumDemographicCombos()));
-        }
-        // Matrix3d objects in the vector are matched with the order that oud
-        // states are specified in the Config file. the order represents the
-        // "initial oud state"
-        for (int initial_state = 0; initial_state < getNumOUDStates();
-             ++initial_state) {
-            std::string currentOUDState = this->oudStates[initial_state];
-            std::vector<std::string> column =
-                interventionInitTable->getColumn("initial_oud_state");
+            std::unordered_map<std::string, std::string> selectConditions;
+            selectConditions["initial_oud_state"] = oudStates[i];
 
-            auto iterator =
-                std::find(column.begin(), column.end(), currentOUDState);
-
-            int idx =
-                (iterator != column.end()) ? iterator - column.begin() : 0;
-
-            bool nonactiveFlag =
-                (currentOUDState.find("Nonactive") != std::string::npos)
-                    ? true
-                    : false;
-
-            for (int intervention = 0; intervention < getNumInterventions();
-                 ++intervention) {
-                std::string currentIntervention =
-                    this->interventions[intervention];
-                std::string dash("-");
-                std::string period(".");
-                size_t pos = currentIntervention.find(dash);
-                if (pos != std::string::npos) {
-                    currentIntervention.replace(pos, dash.length(), period);
-                }
-                currentIntervention = "to_" + currentIntervention;
-
+            for (int j = 0; j < getNumInterventions(); ++j) {
+                selectConditions["to_intervention"] = interventions[j];
+                Data::IDataTablePtr temp =
+                    interventionInitTable->selectWhere(selectConditions);
                 std::vector<std::string> col =
-                    interventionInitTable->getColumn(currentIntervention);
+                    temp->getColumn("retention_rate");
+
                 if (col.empty()) {
-                    logger->error("{} Column Not Found in block_trans.csv",
-                                  currentIntervention);
-                    throw std::out_of_range(currentIntervention +
+                    logger->error("Rention Rate Not Found in "
+                                  "block_trans.csv for {} {}",
+                                  oudStates[i], interventions[j]);
+                    throw std::out_of_range(interventions[j] +
                                             " not in block_trans.csv");
                 }
 
-                double tableVal = std::stod(col[idx]);
-                double oppVal = 1 - tableVal;
+                double retentionRate = std::stod(col[0]);
+                double activeTransitionRate = 1 - retentionRate;
+
+                // Slice for setting matrix values. We select a single value and
+                // set that constant
+                Eigen::array<Eigen::Index, 3> offsets1 = {j, i, 0};
+                Eigen::array<Eigen::Index, 3> offsets2 = {
+                    j, i + getNumOUDStates(), 0};
+                Eigen::array<Eigen::Index, 3> extents = {
+                    1, 1, getNumDemographicCombos()};
+
                 int oppValIdx = (nonactiveFlag) ? idx - activeNonActiveOffset
                                                 : idx + activeNonActiveOffset;
                 for (int dem = 0; dem < getNumDemographicCombos(); ++dem) {
