@@ -17,6 +17,8 @@
 
 #include "Simulation.hpp"
 
+#include "Matrix3dPrinter.hpp"
+
 namespace Simulation {
 
     Sim::Sim() : Sim::Sim(0, 0, 0, 0) {}
@@ -74,8 +76,7 @@ namespace Simulation {
         this->state = initialSample;
     }
 
-    void Sim::loadEnteringSamples(
-        Matrixify::Matrix4d const &enteringSamples) {
+    void Sim::loadEnteringSamples(Matrixify::Matrix4d const &enteringSamples) {
         this->enteringSamples = enteringSamples;
     }
 
@@ -94,13 +95,12 @@ namespace Simulation {
         this->interventionTransitionRates = interventionTransitionRates;
     }
 
-    void Sim::loadFatalOverdoseRates(
-        Matrixify::Matrix4d const &fatalOverdoseRates) {
+    void
+    Sim::loadFatalOverdoseRates(Matrixify::Matrix4d const &fatalOverdoseRates) {
         this->fatalOverdoseRates = fatalOverdoseRates;
     }
 
-    void
-    Sim::loadOverdoseRates(Matrixify::Matrix4d const &overdoseRates) {
+    void Sim::loadOverdoseRates(Matrixify::Matrix4d const &overdoseRates) {
         this->overdoseRates = overdoseRates;
     }
 
@@ -144,11 +144,9 @@ namespace Simulation {
     }
 
     void Sim::Run() {
-        Matrixify::Matrix3d zeroMat =
-            Matrixify::Matrix3dFactory::Create(this->numOUDStates,
-                                               this->numInterventions,
-                                               this->numDemographicCombos)
-                .constant(0);
+        Matrixify::Matrix3d zeroMat = Matrixify::Matrix3dFactory::Create(
+            this->numOUDStates, this->numInterventions,
+            this->numDemographicCombos);
         this->history.overdoseHistory.insert(zeroMat, 0);
         this->history.fatalOverdoseHistory.insert(zeroMat, 0);
         this->history.mortalityHistory.insert(zeroMat, 0);

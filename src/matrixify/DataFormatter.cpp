@@ -64,8 +64,7 @@ namespace Matrixify {
 
         Matrixify::Matrix4d trimmed;
         Matrixify::Matrix3d running =
-            Matrixify::Matrix3dFactory::Create(oudSize, interSize, demSize)
-                .setZero();
+            Matrixify::Matrix3dFactory::Create(oudSize, interSize, demSize);
 
         std::vector<Matrixify::Matrix3d> matrices = matrix.getMatrices();
         int timestepIdx = 0;
@@ -77,8 +76,7 @@ namespace Matrixify {
             if (i >= timesteps[timestepIdx]) {
                 trimmed.insert(running, timesteps[timestepIdx]);
                 running = Matrixify::Matrix3dFactory::Create(oudSize, interSize,
-                                                             demSize)
-                              .setZero();
+                                                             demSize);
                 timestepIdx++;
             }
         }

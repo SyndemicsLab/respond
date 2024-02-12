@@ -25,13 +25,16 @@ namespace Matrixify {
 
     CostLoader::CostLoader(std::string const &inputDir,
                            std::shared_ptr<spdlog::logger> logger)
-        : Loader(inputDir, logger) {}
+        : Loader(inputDir, logger) {
+        this->inputTables = this->readInputDir(inputDir);
+    }
 
     CostLoader::CostLoader(Data::IConfigurationPtr &config,
                            std::string const &inputDir,
                            std::shared_ptr<spdlog::logger> logger)
         : Loader(inputDir, logger) {
         loadConfigurationPointer(config);
+        this->inputTables = this->readInputDir(inputDir);
     }
 
     std::unordered_map<std::string, Matrix3d>

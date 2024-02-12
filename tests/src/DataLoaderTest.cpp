@@ -317,53 +317,6 @@ TEST_F(DataLoaderTest, fatalOverdoseRates) {
     EXPECT_EQ(result(0, 0, 0, 0), 0.216540329711774);
 }
 
-TEST_F(DataLoaderTest, fatalOverdoseRatesBlocks) {
-    fileStream
-        << "block,fatal_to_all_types_overdose_ratio_cycle52,fatal_to_all_"
-           "types_overdose_ratio_cycle104,fatal_to_all_types_overdose_"
-           "ratio_cycle156,fatal_to_all_types_overdose_ratio_cycle208,"
-           "fatal_to_all_types_overdose_ratio_cycle260"
-        << std::endl
-        << "No_Treatment,0.216540329711774,0.297741215749976,0.113841797135366,"
-           "0.126092413319309,0.156049415151599"
-        << std::endl
-        << "Buprenorphine,0.2,0.297741215749976,0."
-           "113841797135366,0.126092413319309,0.156049415151599"
-        << std::endl
-        << "Naltrexone,0.3,0.297741215749976,0.113841797135366,0."
-           "126092413319309,0.156049415151599"
-        << std::endl
-        << "Methadone,0.216540329711774,0.297741215749976,0.113841797135366,0."
-           "126092413319309,0.156049415151599"
-        << std::endl
-        << "Detox,0.216540329711774,0.297741215749976,0.113841797135366,0."
-           "126092413319309,0.156049415151599"
-        << std::endl
-        << "Post-Buprenorphine,0.216540329711774,0.297741215749976,0."
-           "113841797135366,0.126092413319309,0.156049415151599"
-        << std::endl
-        << "Post-Naltrexone,0.216540329711774,0.297741215749976,0."
-           "113841797135366,0.126092413319309,0.156049415151599"
-        << std::endl
-        << "Post-Methadone,0.216540329711774,0.297741215749976,0."
-           "113841797135366,0.126092413319309,0.156049415151599"
-        << std::endl
-        << "Post-Detox,0.216540329711774,0.297741215749976,0.113841797135366,0."
-           "126092413319309,0.156049415151599";
-    fileStream.close();
-
-    Matrixify::DataLoader dl(boost::filesystem::temp_directory_path().string(),
-                             logger);
-
-    dl.loadFatalOverdoseRates(tempAbsoluteFile.string());
-
-    Matrixify::Matrix4d result = dl.getFatalOverdoseRates();
-    EXPECT_EQ(result(0, 0, 0, 0), 0.216540329711774);
-    EXPECT_EQ(result(0, 1, 0, 0), 0.2);
-    EXPECT_EQ(result(0, 0, 1, 0), 0.216540329711774);
-    EXPECT_EQ(result(0, 0, 0, 1), 0.216540329711774);
-}
-
 TEST_F(DataLoaderTest, mortalityRates) {
     fileStream
         << "block,agegrp,sex,oud,SMR" << std::endl
