@@ -102,9 +102,8 @@ namespace Matrixify {
         }
 
         this->initialSample = Matrixify::Matrix3dFactory::Create(
-                                  getNumOUDStates(), getNumInterventions(),
-                                  getNumDemographicCombos())
-                                  .constant(0);
+            getNumOUDStates(), getNumInterventions(),
+            getNumDemographicCombos());
 
         int row = 0;
         for (int intervention = 0; intervention < nonPostInterventions;
@@ -161,12 +160,23 @@ namespace Matrixify {
                 getNumOUDStates(), getNumInterventions(),
                 getNumDemographicCombos());
 
-            for (int dem = 0; dem < getNumDemographicCombos(); ++dem) {
-                enteringSample(esiIdx, esoIdx, dem) =
-                    (dem < col.size())
-                        ? std::stod(col[dem])
-                        : enteringSample(esiIdx, esoIdx, dem) = 0.0;
-            }
+            std::vector<double> doubleVector(col.size());
+            std::transform(
+                col.begin(), col.end(), doubleVector.begin(),
+                [](const std::string &val) { return std::stod(val); });
+
+            // Slice for setting matrix values. We select a single
+            // value and
+            // set that constant
+            Eigen::array<Eigen::Index, 3> offsets = {esiIdx, esoIdx, 0};
+            Eigen::array<Eigen::Index, 3> extents = {1, 1,
+                                                     getNumDemographicCombos()};
+
+            Eigen::TensorMap<Eigen::Tensor<double, 3>> writingTensor(
+                doubleVector.data(), 1, 1, getNumDemographicCombos());
+
+            enteringSample.slice(offsets, extents) = writingTensor;
+
             while (startTime <= changepoint) {
                 this->enteringSamples.insert(enteringSample, startTime);
                 startTime++;
@@ -622,11 +632,9 @@ namespace Matrixify {
     Matrix3d
     DataLoader::buildOverdoseTransitions(Data::IDataTablePtr const &table,
                                          std::string const &key) {
-        Matrix3d overdoseTransitionsCycle =
-            Matrixify::Matrix3dFactory::Create(getNumOUDStates(),
-                                               getNumInterventions(),
-                                               getNumDemographicCombos())
-                .constant(0);
+        Matrix3d overdoseTransitionsCycle = Matrixify::Matrix3dFactory::Create(
+            getNumOUDStates(), getNumInterventions(),
+            getNumDemographicCombos());
 
         int row = 0;
         for (int intervention = 0; intervention < getNumInterventions();

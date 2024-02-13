@@ -16,6 +16,7 @@
 //===----------------------------------------------------------------------===//
 
 #include "DataWriter.hpp"
+#include <regex>
 
 namespace Matrixify {
 
@@ -329,6 +330,8 @@ namespace Matrixify {
                     stream << this->interventions[i] << ",";
                     stream << this->oudStates[j] << ",";
                     std::string temp = demographicCombos[k];
+                    temp = std::regex_replace(temp, std::regex("^ +| +$|( ) +"),
+                                              "$1");
                     std::replace(temp.begin(), temp.end(), ' ', ',');
                     stream << temp << ",";
 
