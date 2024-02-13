@@ -213,6 +213,15 @@ namespace Matrixify {
                                             std::string const &bgmCSVName);
 
     private:
+        void fillTime(int &start, int const end, Matrix3d data,
+                      Matrix4d &storage);
+
+        Matrix3d strVecToMatrix3d(std::vector<std::string> strVec, int matD1,
+                                  int matD2, int matD3);
+
+        Matrix3d doubleToMatrix3d(double value, int matD1, int matD2,
+                                  int matD3);
+
         /// @brief
         /// @param table
         /// @param dimension

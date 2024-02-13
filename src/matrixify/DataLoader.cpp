@@ -71,65 +71,63 @@ namespace Matrixify {
      * Public Methods
      *
      *********************************************************************/
-    /// @brief
-    /// @param csvName
     Matrix3d DataLoader::loadInitialSample(std::string const &csvName) {
         // INITIAL GROUP
 
         Data::IDataTablePtr initialCohort = loadTable(csvName);
 
-        int nonPostInterventions = ((getNumInterventions() - 1) / 2 + 1);
-
-        std::vector<std::string> counts = initialCohort->getColumn("counts");
-
-        if (counts.empty()) {
-            logger->error("Counts Column Not Found in init_cohorts.csv");
-            throw std::out_of_range("counts not in init_cohorts.csv");
-        }
-
-        if (counts.size() > (nonPostInterventions * getNumDemographicCombos() *
-                             getNumOUDStates())) {
-            logger->error("Incorrect Number of Counts Found");
-            logger->error("Number of Counts Found: {}", counts.size());
-            logger->error("Number of Non-Post Interventions: {}",
-                          nonPostInterventions);
-            logger->error("Number of Demographic Combos: {}",
-                          getNumDemographicCombos());
-            logger->error("Number of OUD States {}", getNumOUDStates());
-            throw std::invalid_argument(
-                "Number of Counts Found in init_cohorts.csv Greater Than "
-                "Interventions * Demographics * OUDStates");
-        }
-
         this->initialSample = Matrixify::Matrix3dFactory::Create(
             getNumOUDStates(), getNumInterventions(),
             getNumDemographicCombos());
 
-        int row = 0;
-        for (int intervention = 0; intervention < nonPostInterventions;
+        for (int intervention = 0; intervention < getNumInterventions();
              ++intervention) {
-            for (int dem = 0; dem < getNumDemographicCombos(); ++dem) {
-                for (int oud_state = 0; oud_state < getNumOUDStates();
-                     ++oud_state) {
-                    // have to use the row counter here because
-                    // nonPostInterventions != numInterventions
-                    this->initialSample(intervention, oud_state, dem) =
-                        (row < counts.size()) ? std::stod(counts[row]) : 0.0;
-                    ++row;
+
+            std::string testStr = interventions[intervention];
+            std::transform(testStr.begin(), testStr.end(), testStr.begin(),
+                           [](unsigned char c) { return std::tolower(c); });
+            if (testStr.rfind("post", 0) == 0) {
+                continue;
+            }
+
+            std::unordered_map<std::string, std::string>
+                interventionSelectCriteria = {};
+            interventionSelectCriteria["block"] =
+                this->interventions[intervention];
+            Data::IDataTablePtr interventionDT =
+                initialCohort->selectWhere(interventionSelectCriteria);
+
+            for (int oudState = 0; oudState < getNumOUDStates(); ++oudState) {
+                std::unordered_map<std::string, std::string> oudSelectCriteria =
+                    {};
+                oudSelectCriteria["oud"] = this->oudStates[oudState];
+                Data::IDataTablePtr oudDT =
+                    interventionDT->selectWhere(oudSelectCriteria);
+                std::vector<std::string> values = oudDT->getColumn("counts");
+                if (values.size() == 0) {
+                    logger->warn("counts column has no record for {} and {}",
+                                 this->oudStates[oudState],
+                                 this->interventions[intervention]);
+                    continue;
                 }
+
+                Eigen::array<Eigen::Index, 3> offsets = {intervention, oudState,
+                                                         0};
+                Eigen::array<Eigen::Index, 3> extents = {
+                    1, 1, getNumDemographicCombos()};
+
+                initialSample.slice(offsets, extents) =
+                    strVecToMatrix3d(values, 1, 1, getNumDemographicCombos());
             }
         }
         return this->initialSample;
     }
 
-    /// @brief
-    /// @param csvName
     Matrix4d DataLoader::loadEnteringSamples(
         std::string const &csvName,
         std::string const &enteringSampleIntervention,
         std::string const &enteringSampleOUD) {
 
-        // ENTERING SAMPLES
         Data::IDataTablePtr enteringSamplesTable = loadTable(csvName);
 
         auto itr = find(this->interventions.begin(), this->interventions.end(),
@@ -150,47 +148,28 @@ namespace Matrixify {
             std::string column = columnPrefix + std::to_string(changepoint);
             std::vector<std::string> col =
                 enteringSamplesTable->getColumn(column);
-            if (col.empty()) {
-                logger->error("{} Column Not Found in entering_cohort.csv",
-                              column);
-                throw std::out_of_range(column + " not in entering_cohort.csv");
-            }
 
             Matrix3d enteringSample = Matrixify::Matrix3dFactory::Create(
                 getNumOUDStates(), getNumInterventions(),
                 getNumDemographicCombos());
 
-            std::vector<double> doubleVector(col.size());
-            std::transform(
-                col.begin(), col.end(), doubleVector.begin(),
-                [](const std::string &val) { return std::stod(val); });
-
             // Slice for setting matrix values. We select a single
-            // value and
-            // set that constant
+            // value and set that constant
             Eigen::array<Eigen::Index, 3> offsets = {esiIdx, esoIdx, 0};
             Eigen::array<Eigen::Index, 3> extents = {1, 1,
                                                      getNumDemographicCombos()};
 
-            Eigen::TensorMap<Eigen::Tensor<double, 3>> writingTensor(
-                doubleVector.data(), 1, 1, getNumDemographicCombos());
+            enteringSample.slice(offsets, extents) =
+                strVecToMatrix3d(col, 1, 1, getNumDemographicCombos());
 
-            enteringSample.slice(offsets, extents) = writingTensor;
-
-            while (startTime <= changepoint) {
-                this->enteringSamples.insert(enteringSample, startTime);
-                startTime++;
-            }
-            startTime = changepoint;
+            fillTime(startTime, changepoint, enteringSample,
+                     this->enteringSamples);
         }
         return this->enteringSamples;
     }
 
-    /// @brief
-    /// @param csvName
     Matrix3d DataLoader::loadOUDTransitionRates(std::string const &csvName) {
 
-        // OUD TRANSITIONS
         Data::IDataTablePtr oudTransitionTable = loadTable(csvName);
         // end dimensions of oudTransitionRates are getNumInterventions() x
         // getNumOUDStates()^2 x demographics start with a vector of
@@ -224,30 +203,22 @@ namespace Matrixify {
 
                     std::vector<std::string> col =
                         interventionSelectedTable->getColumn(column);
-                    if (col.empty()) {
-                        logger->warn("{} Column Not Found in oud_trans.csv",
-                                     column);
+                    if (col.size() == 0) {
+                        logger->warn("{} column has no record for {}", column,
+                                     this->interventions[intervention]);
                         continue;
                     }
 
-                    std::vector<double> doubleVector(col.size());
-                    std::transform(
-                        col.begin(), col.end(), doubleVector.begin(),
-                        [](const std::string &val) { return std::stod(val); });
-
                     // Slice for setting matrix values. We select a single
-                    // value and
-                    // set that constant
+                    // value and set that constant
                     Eigen::array<Eigen::Index, 3> offsets1 = {
                         intervention,
                         (initial_state * getNumOUDStates()) + result_state, 0};
                     Eigen::array<Eigen::Index, 3> extents = {
                         1, 1, getNumDemographicCombos()};
 
-                    Eigen::TensorMap<Eigen::Tensor<double, 3>> writingTensor(
-                        doubleVector.data(), 1, 1, getNumDemographicCombos());
-
-                    tempOUDTransitions.slice(offsets1, extents) = writingTensor;
+                    tempOUDTransitions.slice(offsets1, extents) =
+                        strVecToMatrix3d(col, 1, 1, getNumDemographicCombos());
                 }
             }
         }
@@ -256,11 +227,8 @@ namespace Matrixify {
         return this->oudTransitionRates;
     }
 
-    /// @brief
-    /// @param csvName
     Matrix3d DataLoader::loadInterventionInitRates(std::string const &csvName) {
 
-        // OUD TRANSITIONS
         Data::IDataTablePtr interventionInitTable = loadTable(csvName);
 
         Matrix3d tempinterventionInit = Matrixify::Matrix3dFactory::Create(
@@ -292,29 +260,25 @@ namespace Matrixify {
                 }
 
                 double retentionRate = std::stod(col[0]);
-                std::vector<double> rateVector(getNumDemographicCombos());
-                std::fill(rateVector.begin(), rateVector.end(), retentionRate);
-                Eigen::TensorMap<Eigen::Tensor<double, 3>> writingTensor(
-                    rateVector.data(), 1, 1, getNumDemographicCombos());
+                double transitionRate = 1 - retentionRate;
 
                 // Slice for setting matrix values. We select a single value and
                 // set that constant
                 Eigen::array<Eigen::Index, 3> offsets1 = {j, i, 0};
 
+                Eigen::array<Eigen::Index, 3> offsets2 = {
+                    j, i + getNumOUDStates(), 0};
+
                 Eigen::array<Eigen::Index, 3> extents = {
                     1, 1, getNumDemographicCombos()};
 
                 tempinterventionInit.slice(offsets1, extents) =
-                    writingTensor.eval();
-
-                double transitionRate = 1 - retentionRate;
-                std::fill(rateVector.begin(), rateVector.end(), transitionRate);
-
-                Eigen::array<Eigen::Index, 3> offsets2 = {
-                    j, i + getNumOUDStates(), 0};
+                    doubleToMatrix3d(retentionRate, 1, 1,
+                                     getNumDemographicCombos());
 
                 tempinterventionInit.slice(offsets2, extents) =
-                    writingTensor.eval();
+                    doubleToMatrix3d(transitionRate, 1, 1,
+                                     getNumDemographicCombos());
             }
         }
 
@@ -322,8 +286,6 @@ namespace Matrixify {
         return this->interventionInitRates;
     }
 
-    /// @brief
-    /// @param csvName
     Matrix4d
     DataLoader::loadInterventionTransitionRates(std::string const &csvName) {
 
@@ -341,8 +303,6 @@ namespace Matrixify {
         return this->interventionTransitionRates;
     }
 
-    /// @brief
-    /// @param csvName
     Matrix4d DataLoader::loadOverdoseRates(std::string const &csvName) {
 
         // OVERDOSE
@@ -359,19 +319,13 @@ namespace Matrixify {
                     std::string::npos) {
                     Matrix3d temp = this->buildOverdoseTransitions(
                         overdoseTransitionTable, header);
-                    while (startTime <= timestep) {
-                        this->overdoseRates.insert(temp, startTime);
-                        startTime++;
-                    }
+                    fillTime(startTime, timestep, temp, this->overdoseRates);
                 }
             }
         }
         return this->overdoseRates;
     }
 
-    /// @brief
-    /// @param csvName
-    /// @return
     Matrix4d DataLoader::loadFatalOverdoseRates(std::string const &csvName) {
 
         std::vector<Matrix3d> tempFatalOverdoseTransitions;
@@ -404,16 +358,11 @@ namespace Matrixify {
             double t = (col.size() > 0) ? std::stod(col[0]) : 0.0;
             temp = temp.constant(t);
 
-            while (startTime <= timestep) {
-                this->fatalOverdoseRates.insert(temp, startTime);
-                startTime++;
-            }
+            fillTime(startTime, timestep, temp, this->fatalOverdoseRates);
         }
         return this->fatalOverdoseRates;
     }
 
-    /// @brief
-    /// @param csvName
     Matrix3d DataLoader::loadMortalityRates(std::string const &smrCSVName,
                                             std::string const &bgmCSVName) {
 
@@ -469,10 +418,6 @@ namespace Matrixify {
         return this->mortalityRates;
     }
 
-    /// @brief
-    /// @param indices
-    /// @param table
-    /// @return
     Matrixify::Matrix3d
     DataLoader::buildInterventionMatrix(Data::IDataTablePtr const &table,
                                         std::string interventionName,
@@ -511,53 +456,26 @@ namespace Matrixify {
                         std::vector<std::string> value =
                             temp->getColumn(header);
 
-                        std::vector<double> doubleVector(value.size());
-                        std::transform(value.begin(), value.end(),
-                                       doubleVector.begin(),
-                                       [](const std::string &val) {
-                                           return std::stod(val);
-                                       });
-
-                        Eigen::TensorMap<Eigen::Tensor<double, 3>>
-                            writingTensor(doubleVector.data(), 1, 1,
-                                          getNumDemographicCombos());
-
-                        transMat.slice(offsets, extents) = writingTensor.eval();
+                        transMat.slice(offsets, extents) = strVecToMatrix3d(
+                            value, 1, 1, getNumDemographicCombos());
 
                     } else {
-                        std::vector<double> rateVector(
-                            getNumDemographicCombos());
-                        std::fill(rateVector.begin(), rateVector.end(), 0.0);
-                        Eigen::TensorMap<Eigen::Tensor<double, 3>>
-                            writingTensor(rateVector.data(), 1, 1,
-                                          getNumDemographicCombos());
-                        transMat.slice(offsets, extents) = writingTensor.eval();
+                        transMat.slice(offsets, extents) = doubleToMatrix3d(
+                            0.0, 1, 1, getNumDemographicCombos());
                     }
                 } else {
                     header = "to_" + interventions[interven] + "_cycle" +
                              std::to_string(timestep);
                     std::vector<std::string> value = temp->getColumn(header);
 
-                    std::vector<double> doubleVector(value.size());
-                    std::transform(
-                        value.begin(), value.end(), doubleVector.begin(),
-                        [](const std::string &val) { return std::stod(val); });
-
-                    Eigen::TensorMap<Eigen::Tensor<double, 3>> writingTensor(
-                        doubleVector.data(), 1, 1, getNumDemographicCombos());
-
-                    transMat.slice(offsets, extents) = writingTensor.eval();
+                    transMat.slice(offsets, extents) = strVecToMatrix3d(
+                        value, 1, 1, getNumDemographicCombos());
                 }
             }
         }
         return transMat;
     }
 
-    /// @brief
-    /// @param indicesVec
-    /// @param table
-    /// @param dimension
-    /// @return
     Matrixify::Matrix3d
     DataLoader::createTransitionMatrix3d(Data::IDataTablePtr const &table,
                                          Matrixify::Dimension dimension,
@@ -605,10 +523,6 @@ namespace Matrixify {
         return stackingMatrices;
     }
 
-    /// @brief
-    /// @param ict
-    /// @param table
-    /// @return
     Matrix4d
     DataLoader::buildTransitionRatesOverTime(std::vector<int> const &ict,
                                              Data::IDataTablePtr const &table) {
@@ -617,18 +531,11 @@ namespace Matrixify {
         for (int timestep : ict) {
             Matrix3d transMat = this->createTransitionMatrix3d(
                 table, Matrixify::INTERVENTION, timestep);
-            while (startTime <= timestep) {
-                m3dot.insert(transMat, startTime);
-                startTime++;
-            }
+            fillTime(startTime, timestep, transMat, m3dot);
         }
         return m3dot;
     }
 
-    /// @brief
-    /// @param table
-    /// @param key
-    /// @return
     Matrix3d
     DataLoader::buildOverdoseTransitions(Data::IDataTablePtr const &table,
                                          std::string const &key) {
@@ -656,5 +563,37 @@ namespace Matrixify {
             }
         }
         return overdoseTransitionsCycle;
+    }
+
+    void DataLoader::fillTime(int &start, int const end, Matrix3d data,
+                              Matrix4d &storage) {
+        while (start <= end) {
+            storage.insert(data, start);
+            start++;
+        }
+    }
+
+    Matrix3d DataLoader::strVecToMatrix3d(std::vector<std::string> strVec,
+                                          int matD1, int matD2, int matD3) {
+        std::vector<double> doubleVector(strVec.size());
+        std::transform(strVec.begin(), strVec.end(), doubleVector.begin(),
+                       [](const std::string &val) { return std::stod(val); });
+
+        Eigen::TensorMap<Eigen::Tensor<double, 3>> writingTensor(
+            doubleVector.data(), matD1, matD2, matD3);
+
+        Matrix3d ret = writingTensor;
+        return ret;
+    }
+
+    Matrix3d DataLoader::doubleToMatrix3d(double value, int matD1, int matD2,
+                                          int matD3) {
+        std::vector<double> rateVector(matD1 * matD2 * matD3);
+        std::fill(rateVector.begin(), rateVector.end(), value);
+        Eigen::TensorMap<Eigen::Tensor<double, 3>> writingTensor(
+            rateVector.data(), matD1, matD2, matD3);
+
+        Matrix3d ret = writingTensor;
+        return ret;
     }
 } // namespace Matrixify
