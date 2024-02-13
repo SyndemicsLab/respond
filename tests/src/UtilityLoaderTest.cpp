@@ -16,16 +16,16 @@
 ///
 //===----------------------------------------------------------------------===//
 
-#include <boost/filesystem.hpp>
+#include <filesystem>
 #include <gtest/gtest.h>
 
 #include "UtilityLoader.hpp"
 
 class UtilityLoaderTest : public ::testing::Test {
 protected:
-    boost::filesystem::path tempRelativeFile;
-    boost::filesystem::path tempAbsoluteFile;
-    boost::filesystem::path configFile;
+    std::filesystem::path tempRelativeFile;
+    std::filesystem::path tempAbsoluteFile;
+    std::filesystem::path configFile;
     std::ofstream configFileStream;
     std::ofstream fileStream;
     std::shared_ptr<spdlog::logger> logger;
@@ -38,12 +38,11 @@ protected:
                 logger = spdlog::stdout_color_mt("test");
             }
         }
-        tempRelativeFile =
-            boost::filesystem::unique_path("%%%%_%%%%_%%%%_%%%%.csv");
+        tempRelativeFile = std::tmpnam(nullptr) + std::string(".csv");
         tempAbsoluteFile =
-            boost::filesystem::temp_directory_path() / tempRelativeFile;
-        configFile = boost::filesystem::temp_directory_path() /
-                     boost::filesystem::path("sim.conf");
+            std::filesystem::temp_directory_path() / tempRelativeFile;
+        configFile = std::filesystem::temp_directory_path() /
+                     std::filesystem::path("sim.conf");
         configFileStream.open(configFile);
 
         // clang-format off
@@ -118,8 +117,8 @@ TEST_F(UtilityLoaderTest, Constructor) {
 }
 
 TEST_F(UtilityLoaderTest, ConstructorStr) {
-    Matrixify::UtilityLoader ul(
-        boost::filesystem::temp_directory_path().string(), logger);
+    Matrixify::UtilityLoader ul(std::filesystem::temp_directory_path().string(),
+                                logger);
     EXPECT_EQ(
         ul.getConfiguration()->getStringVector("state.interventions").size(),
         9);
@@ -135,7 +134,7 @@ TEST_F(UtilityLoaderTest, loadConfigurationFile) {
 
 TEST_F(UtilityLoaderTest, backgroundUtility) {
     Matrixify::UtilityLoader ul(
-        boost::filesystem::temp_directory_path().string());
+        std::filesystem::temp_directory_path().string());
     fileStream << "agegrp,sex,utility" << std::endl
                << "10_14,Male,0.922" << std::endl
                << "10_14,Female,0.922" << std::endl
@@ -152,7 +151,7 @@ TEST_F(UtilityLoaderTest, backgroundUtility) {
 
 TEST_F(UtilityLoaderTest, OUDUtility) {
     Matrixify::UtilityLoader ul(
-        boost::filesystem::temp_directory_path().string());
+        std::filesystem::temp_directory_path().string());
     fileStream << "block,oud,utility" << std::endl
                << "No_Treatment,Active_Noninjection,0.626" << std::endl
                << "No_Treatment,Active_Injection,0.512" << std::endl
@@ -169,7 +168,7 @@ TEST_F(UtilityLoaderTest, OUDUtility) {
 
 TEST_F(UtilityLoaderTest, settingUtility) {
     Matrixify::UtilityLoader ul(
-        boost::filesystem::temp_directory_path().string());
+        std::filesystem::temp_directory_path().string());
     fileStream << "block,utility" << std::endl
                << "No_Treatment,1" << std::endl
                << "Buprenorphine,1" << std::endl

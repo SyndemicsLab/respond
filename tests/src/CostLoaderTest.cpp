@@ -16,16 +16,16 @@
 ///
 //===----------------------------------------------------------------------===//
 
-#include <boost/filesystem.hpp>
+#include <filesystem>
 #include <gtest/gtest.h>
 
 #include "CostLoader.hpp"
 
 class CostLoaderTest : public ::testing::Test {
 protected:
-    boost::filesystem::path tempRelativeFile;
-    boost::filesystem::path tempAbsoluteFile;
-    boost::filesystem::path configFile;
+    std::filesystem::path tempRelativeFile;
+    std::filesystem::path tempAbsoluteFile;
+    std::filesystem::path configFile;
     std::ofstream configFileStream;
     std::ofstream fileStream;
     std::shared_ptr<spdlog::logger> logger;
@@ -38,12 +38,11 @@ protected:
                 logger = spdlog::stdout_color_mt("test");
             }
         }
-        tempRelativeFile =
-            boost::filesystem::unique_path("%%%%_%%%%_%%%%_%%%%.csv");
+        tempRelativeFile = std::tmpnam(nullptr) + std::string(".csv");
         tempAbsoluteFile =
-            boost::filesystem::temp_directory_path() / tempRelativeFile;
-        configFile = boost::filesystem::temp_directory_path() /
-                     boost::filesystem::path("sim.conf");
+            std::filesystem::temp_directory_path() / tempRelativeFile;
+        configFile = std::filesystem::temp_directory_path() /
+                     std::filesystem::path("sim.conf");
         configFileStream.open(configFile);
 
         // clang-format off
@@ -118,7 +117,7 @@ TEST_F(CostLoaderTest, Constructor) {
 }
 
 TEST_F(CostLoaderTest, ConstructorStr) {
-    Matrixify::CostLoader cl(boost::filesystem::temp_directory_path().string(),
+    Matrixify::CostLoader cl(std::filesystem::temp_directory_path().string(),
                              logger);
     EXPECT_EQ(
         cl.getConfiguration()->getStringVector("state.interventions").size(),
@@ -141,7 +140,7 @@ TEST_F(CostLoaderTest, healthcareUtilizationCost) {
 
     fileStream.close();
 
-    Matrixify::CostLoader cl(boost::filesystem::temp_directory_path().string(),
+    Matrixify::CostLoader cl(std::filesystem::temp_directory_path().string(),
                              logger);
     cl.loadHealthcareUtilizationCost(tempAbsoluteFile.string());
     Matrixify::Matrix3d result = cl.getHealthcareUtilizationCost("healthcare");
@@ -149,7 +148,7 @@ TEST_F(CostLoaderTest, healthcareUtilizationCost) {
 }
 
 TEST_F(CostLoaderTest, overdoseCost) {
-    Matrixify::CostLoader cl(boost::filesystem::temp_directory_path().string(),
+    Matrixify::CostLoader cl(std::filesystem::temp_directory_path().string(),
                              logger);
     fileStream << "X,healthcare" << std::endl
                << "non_fatal_overdose,4557.35" << std::endl
@@ -165,7 +164,7 @@ TEST_F(CostLoaderTest, overdoseCost) {
 }
 
 TEST_F(CostLoaderTest, pharmaceuticalCost) {
-    Matrixify::CostLoader cl(boost::filesystem::temp_directory_path().string(),
+    Matrixify::CostLoader cl(std::filesystem::temp_directory_path().string(),
                              logger);
     fileStream << "block,healthcare" << std::endl
                << "Buprenorphine,48.71" << std::endl
@@ -186,7 +185,7 @@ TEST_F(CostLoaderTest, pharmaceuticalCost) {
 }
 
 TEST_F(CostLoaderTest, treatmentUtilizationCost) {
-    Matrixify::CostLoader cl(boost::filesystem::temp_directory_path().string(),
+    Matrixify::CostLoader cl(std::filesystem::temp_directory_path().string(),
                              logger);
     fileStream << "block,healthcare" << std::endl
                << "Buprenorphine,65.24" << std::endl
@@ -206,7 +205,7 @@ TEST_F(CostLoaderTest, treatmentUtilizationCost) {
 }
 
 TEST_F(CostLoaderTest, getNonFatalOverdoseCost) {
-    Matrixify::CostLoader cl(boost::filesystem::temp_directory_path().string(),
+    Matrixify::CostLoader cl(std::filesystem::temp_directory_path().string(),
                              logger);
     fileStream << "X,healthcare" << std::endl
                << "non_fatal_overdose,4557.35" << std::endl
@@ -218,7 +217,7 @@ TEST_F(CostLoaderTest, getNonFatalOverdoseCost) {
 }
 
 TEST_F(CostLoaderTest, getFatalOverdoseCost) {
-    Matrixify::CostLoader cl(boost::filesystem::temp_directory_path().string(),
+    Matrixify::CostLoader cl(std::filesystem::temp_directory_path().string(),
                              logger);
     fileStream << "X,healthcare" << std::endl
                << "non_fatal_overdose,4557.35" << std::endl

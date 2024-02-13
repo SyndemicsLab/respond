@@ -17,7 +17,7 @@
 //===----------------------------------------------------------------------===//
 
 #include "gmock/gmock.h"
-#include <boost/filesystem.hpp>
+#include <filesystem>
 #include <gtest/gtest.h>
 #include <iostream>
 #include <string>
@@ -35,19 +35,18 @@ using ::testing::Return;
 
 class PostSimulationCalculatorTest : public ::testing::Test {
 protected:
-    boost::filesystem::path tempRelativeFile;
-    boost::filesystem::path tempAbsoluteFile;
+    std::filesystem::path tempRelativeFile;
+    std::filesystem::path tempAbsoluteFile;
     std::ofstream outputFileStream;
-    boost::filesystem::path configFile;
+    std::filesystem::path configFile;
     std::ofstream configFileStream;
     void SetUp() override {
-        tempRelativeFile =
-            boost::filesystem::unique_path("%%%%_%%%%_%%%%_%%%%.csv");
+        tempRelativeFile = std::tmpnam(nullptr) + std::string(".csv");
         tempAbsoluteFile =
-            boost::filesystem::temp_directory_path() / tempRelativeFile;
+            std::filesystem::temp_directory_path() / tempRelativeFile;
 
-        configFile = boost::filesystem::temp_directory_path() /
-                     boost::filesystem::path("sim.conf");
+        configFile = std::filesystem::temp_directory_path() /
+                     std::filesystem::path("sim.conf");
         configFileStream.open(configFile);
 
         // clang-format off

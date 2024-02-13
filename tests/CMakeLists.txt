@@ -3,9 +3,6 @@ project(respondTest CXX)
 
 find_package(GTest REQUIRED CONFIG)
 
-# Link Boost
-find_package(Boost REQUIRED COMPONENTS filesystem)
-
 # Find Eigen
 find_package (Eigen3 3.4 REQUIRED)
 
@@ -24,7 +21,6 @@ add_executable(${PROJECT_NAME}
   src/PostSimulationCalculatorTest.cpp
 )
 
-target_link_libraries(${PROJECT_NAME} PUBLIC Boost::filesystem)
 target_link_libraries(${PROJECT_NAME} PUBLIC Eigen3::Eigen)
 target_link_libraries(${PROJECT_NAME} PUBLIC GTest::gtest)
 target_link_libraries(${PROJECT_NAME} PUBLIC GTest::gtest_main)

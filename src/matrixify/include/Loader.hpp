@@ -28,7 +28,6 @@
 #include "spdlog/sinks/stdout_color_sinks.h"
 #include "spdlog/spdlog.h"
 #include <DataManagement.hpp>
-#include <boost/tokenizer.hpp>
 
 namespace Matrixify {
     class ILoader {
