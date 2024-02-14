@@ -32,7 +32,7 @@
 
 # Request multiple slots for multithreaded or large-memory processes
 # Values here may range from 1-28 or 36
-#$ -pe omp 12
+#$ -pe omp 1
 
 # Use "tasks", also known as array jobs, to run multiple copies of
 # the same or nearly the same job, to reduce the number of required
@@ -78,7 +78,7 @@ INPUT_PATH="/projectnb/respond/matt/RESPONDCalibrationv2/inputs/"
 # used when running the model with many input sets per task/node
 RUNS_PER_TASK=1000
 TASKSTART=$(( (SGE_TASK_ID - 1) * RUNS_PER_TASK + 1 ))
-TASKSEND=$(( (SGE_TASK_ID * RUNS_PER_TASK))
+TASKSEND=$(( (SGE_TASK_ID * RUNS_PER_TASK) ))
 
 # run the model in a subshell
 (

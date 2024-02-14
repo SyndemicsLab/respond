@@ -22,7 +22,7 @@
 
 #include "DataWriter.hpp"
 
-using namespace Data;
+using namespace Matrixify;
 
 TEST(DataWriterCreation, DefaultConstructor) {
     DataWriter writer;
@@ -35,13 +35,14 @@ TEST(DataWriterCreation, MainConstructor) {
     std::vector<std::string> interventions;
     std::vector<std::string> oudStates;
     std::vector<std::string> demo;
-    std::vector<std::vector<std::string>> demographics;
+    std::vector<std::string> demographics;
+    std::vector<std::string> demographicCombos;
     std::vector<int> timesteps;
     bool stateOutput;
     History history;
 
     DataWriter writer(dirname, interventions, oudStates, demographics,
-                      timesteps, stateOutput);
+                      demographicCombos, timesteps, stateOutput);
     EXPECT_EQ(writer.getDirname(), dirname);
 }
 
@@ -66,10 +67,10 @@ TEST(SimpleWriteTest, SingleValueDimensions) {
     std::vector<Matrix3d> fovec{fatalOverdoseHistoryMatrix};
     std::vector<Matrix3d> mvec{mortalityHistoryMatrix};
 
-    Matrix3dOverTime stateHistory(svec);
-    Matrix3dOverTime overdoseHistory(ovec);
-    Matrix3dOverTime fatalOverdoseHistory(fovec);
-    Matrix3dOverTime mortalityHistory(mvec);
+    Matrix4d stateHistory(svec);
+    Matrix4d overdoseHistory(ovec);
+    Matrix4d fatalOverdoseHistory(fovec);
+    Matrix4d mortalityHistory(mvec);
 
     History history;
     history.stateHistory = stateHistory;
@@ -79,54 +80,52 @@ TEST(SimpleWriteTest, SingleValueDimensions) {
 
     std::vector<std::string> interventions = {"inter1", "inter2"};
     std::vector<std::string> oudStates = {"oud1", "oud2"};
-    std::vector<std::string> demo1 = {"10_14", "Male"};
-    std::vector<std::string> demo2 = {"10_14", "Female"};
-    std::vector<std::vector<std::string>> demographics = {demo1, demo2};
+    std::vector<std::string> demographicCombos = {"10_14 Male", "10_14 Female"};
+    std::vector<std::string> demographics = {"agegrp", "sex"};
     std::vector<int> timesteps = {0};
 
     std::string dirname = "build/test/TestDir";
 
     DataWriter writer(dirname, interventions, oudStates, demographics,
-                      timesteps, true);
+                      demographicCombos, timesteps, true);
     std::string result = writer.writeHistory(STRING, history);
 
-    std::string expected =
-        "Interventions, OUD States,Demographic 0,Demographic 1,t+0,\n"
-        "inter1,oud1,10_14,Male,0.000000,\n"
-        "inter1,oud1,10_14,Female,0.000000,\n"
-        "inter1,oud2,10_14,Male,0.000000,\n"
-        "inter1,oud2,10_14,Female,0.000000,\n"
-        "inter2,oud1,10_14,Male,0.000000,\n"
-        "inter2,oud1,10_14,Female,0.000000,\n"
-        "inter2,oud2,10_14,Male,0.000000,\n"
-        "inter2,oud2,10_14,Female,1.000000,\n"
-        "Interventions, OUD States,Demographic 0,Demographic 1,t+0,\n"
-        "inter1,oud1,10_14,Male,1.000000,\n"
-        "inter1,oud1,10_14,Female,0.000000,\n"
-        "inter1,oud2,10_14,Male,0.000000,\n"
-        "inter1,oud2,10_14,Female,0.000000,\n"
-        "inter2,oud1,10_14,Male,0.000000,\n"
-        "inter2,oud1,10_14,Female,0.000000,\n"
-        "inter2,oud2,10_14,Male,0.000000,\n"
-        "inter2,oud2,10_14,Female,0.000000,\n"
-        "Interventions, OUD States,Demographic 0,Demographic 1,t+0,\n"
-        "inter1,oud1,10_14,Male,0.000000,\n"
-        "inter1,oud1,10_14,Female,0.000000,\n"
-        "inter1,oud2,10_14,Male,0.000000,\n"
-        "inter1,oud2,10_14,Female,0.000000,\n"
-        "inter2,oud1,10_14,Male,0.000000,\n"
-        "inter2,oud1,10_14,Female,0.000000,\n"
-        "inter2,oud2,10_14,Male,0.000000,\n"
-        "inter2,oud2,10_14,Female,0.000000,\n"
-        "Interventions, OUD States,Demographic 0,Demographic 1,t+0,\n"
-        "inter1,oud1,10_14,Male,0.000000,\n"
-        "inter1,oud1,10_14,Female,1.000000,\n"
-        "inter1,oud2,10_14,Male,0.000000,\n"
-        "inter1,oud2,10_14,Female,0.000000,\n"
-        "inter2,oud1,10_14,Male,0.000000,\n"
-        "inter2,oud1,10_14,Female,0.000000,\n"
-        "inter2,oud2,10_14,Male,0.000000,\n"
-        "inter2,oud2,10_14,Female,0.000000,\n";
+    std::string expected = "Interventions, OUD States,agegrp,sex,t+0,\n"
+                           "inter1,oud1,10_14,Male,0.000000,\n"
+                           "inter1,oud1,10_14,Female,0.000000,\n"
+                           "inter1,oud2,10_14,Male,0.000000,\n"
+                           "inter1,oud2,10_14,Female,0.000000,\n"
+                           "inter2,oud1,10_14,Male,0.000000,\n"
+                           "inter2,oud1,10_14,Female,0.000000,\n"
+                           "inter2,oud2,10_14,Male,0.000000,\n"
+                           "inter2,oud2,10_14,Female,1.000000,\n"
+                           "Interventions, OUD States,agegrp,sex,t+0,\n"
+                           "inter1,oud1,10_14,Male,1.000000,\n"
+                           "inter1,oud1,10_14,Female,0.000000,\n"
+                           "inter1,oud2,10_14,Male,0.000000,\n"
+                           "inter1,oud2,10_14,Female,0.000000,\n"
+                           "inter2,oud1,10_14,Male,0.000000,\n"
+                           "inter2,oud1,10_14,Female,0.000000,\n"
+                           "inter2,oud2,10_14,Male,0.000000,\n"
+                           "inter2,oud2,10_14,Female,0.000000,\n"
+                           "Interventions, OUD States,agegrp,sex,t+0,\n"
+                           "inter1,oud1,10_14,Male,0.000000,\n"
+                           "inter1,oud1,10_14,Female,0.000000,\n"
+                           "inter1,oud2,10_14,Male,0.000000,\n"
+                           "inter1,oud2,10_14,Female,0.000000,\n"
+                           "inter2,oud1,10_14,Male,0.000000,\n"
+                           "inter2,oud1,10_14,Female,0.000000,\n"
+                           "inter2,oud2,10_14,Male,0.000000,\n"
+                           "inter2,oud2,10_14,Female,0.000000,\n"
+                           "Interventions, OUD States,agegrp,sex,t+0,\n"
+                           "inter1,oud1,10_14,Male,0.000000,\n"
+                           "inter1,oud1,10_14,Female,1.000000,\n"
+                           "inter1,oud2,10_14,Male,0.000000,\n"
+                           "inter1,oud2,10_14,Female,0.000000,\n"
+                           "inter2,oud1,10_14,Male,0.000000,\n"
+                           "inter2,oud1,10_14,Female,0.000000,\n"
+                           "inter2,oud2,10_14,Male,0.000000,\n"
+                           "inter2,oud2,10_14,Female,0.000000,\n";
 
     EXPECT_EQ(result, expected);
 }
@@ -165,10 +164,10 @@ TEST(SimpleWriteTest, MultiTimestep) {
     std::vector<Matrix3d> mvec{mortalityHistoryMatrix1,
                                mortalityHistoryMatrix2};
 
-    Matrix3dOverTime stateHistory(svec);
-    Matrix3dOverTime overdoseHistory(ovec);
-    Matrix3dOverTime fatalOverdoseHistory(fovec);
-    Matrix3dOverTime mortalityHistory(mvec);
+    Matrix4d stateHistory(svec);
+    Matrix4d overdoseHistory(ovec);
+    Matrix4d fatalOverdoseHistory(fovec);
+    Matrix4d mortalityHistory(mvec);
 
     History history;
     history.stateHistory = stateHistory;
@@ -178,54 +177,52 @@ TEST(SimpleWriteTest, MultiTimestep) {
 
     std::vector<std::string> interventions = {"inter1", "inter2"};
     std::vector<std::string> oudStates = {"oud1", "oud2"};
-    std::vector<std::string> demo1 = {"10_14", "Male"};
-    std::vector<std::string> demo2 = {"10_14", "Female"};
-    std::vector<std::vector<std::string>> demographics = {demo1, demo2};
+    std::vector<std::string> demographicCombos = {"10_14 Male", "10_14 Female"};
+    std::vector<std::string> demographics = {"agegrp", "sex"};
     std::vector<int> timesteps = {0, 1};
 
     std::string dirname = "build/test/TestDir";
 
     DataWriter writer(dirname, interventions, oudStates, demographics,
-                      timesteps, true);
-    std::string result = writer.writeHistory(Data::STRING, history);
+                      demographicCombos, timesteps, true);
+    std::string result = writer.writeHistory(Matrixify::STRING, history);
 
-    std::string expected =
-        "Interventions, OUD States,Demographic 0,Demographic 1,t+0,t+1,\n"
-        "inter1,oud1,10_14,Male,1.000000,0.000000,\n"
-        "inter1,oud1,10_14,Female,0.000000,0.000000,\n"
-        "inter1,oud2,10_14,Male,0.000000,0.000000,\n"
-        "inter1,oud2,10_14,Female,0.000000,0.000000,\n"
-        "inter2,oud1,10_14,Male,0.000000,0.000000,\n"
-        "inter2,oud1,10_14,Female,0.000000,0.000000,\n"
-        "inter2,oud2,10_14,Male,0.000000,0.000000,\n"
-        "inter2,oud2,10_14,Female,0.000000,1.000000,\n"
-        "Interventions, OUD States,Demographic 0,Demographic 1,t+0,t+1,\n"
-        "inter1,oud1,10_14,Male,0.000000,1.000000,\n"
-        "inter1,oud1,10_14,Female,0.000000,0.000000,\n"
-        "inter1,oud2,10_14,Male,0.000000,0.000000,\n"
-        "inter1,oud2,10_14,Female,0.000000,0.000000,\n"
-        "inter2,oud1,10_14,Male,0.000000,0.000000,\n"
-        "inter2,oud1,10_14,Female,0.000000,0.000000,\n"
-        "inter2,oud2,10_14,Male,0.000000,0.000000,\n"
-        "inter2,oud2,10_14,Female,1.000000,0.000000,\n"
-        "Interventions, OUD States,Demographic 0,Demographic 1,t+0,t+1,\n"
-        "inter1,oud1,10_14,Male,0.000000,0.000000,\n"
-        "inter1,oud1,10_14,Female,0.000000,0.000000,\n"
-        "inter1,oud2,10_14,Male,0.000000,0.000000,\n"
-        "inter1,oud2,10_14,Female,0.000000,0.000000,\n"
-        "inter2,oud1,10_14,Male,0.000000,0.000000,\n"
-        "inter2,oud1,10_14,Female,0.000000,0.000000,\n"
-        "inter2,oud2,10_14,Male,0.000000,0.000000,\n"
-        "inter2,oud2,10_14,Female,0.000000,0.000000,\n"
-        "Interventions, OUD States,Demographic 0,Demographic 1,t+0,t+1,\n"
-        "inter1,oud1,10_14,Male,0.000000,0.000000,\n"
-        "inter1,oud1,10_14,Female,0.000000,1.000000,\n"
-        "inter1,oud2,10_14,Male,0.000000,0.000000,\n"
-        "inter1,oud2,10_14,Female,0.000000,0.000000,\n"
-        "inter2,oud1,10_14,Male,1.000000,0.000000,\n"
-        "inter2,oud1,10_14,Female,0.000000,0.000000,\n"
-        "inter2,oud2,10_14,Male,0.000000,0.000000,\n"
-        "inter2,oud2,10_14,Female,0.000000,0.000000,\n";
+    std::string expected = "Interventions, OUD States,agegrp,sex,t+0,t+1,\n"
+                           "inter1,oud1,10_14,Male,1.000000,0.000000,\n"
+                           "inter1,oud1,10_14,Female,0.000000,0.000000,\n"
+                           "inter1,oud2,10_14,Male,0.000000,0.000000,\n"
+                           "inter1,oud2,10_14,Female,0.000000,0.000000,\n"
+                           "inter2,oud1,10_14,Male,0.000000,0.000000,\n"
+                           "inter2,oud1,10_14,Female,0.000000,0.000000,\n"
+                           "inter2,oud2,10_14,Male,0.000000,0.000000,\n"
+                           "inter2,oud2,10_14,Female,0.000000,1.000000,\n"
+                           "Interventions, OUD States,agegrp,sex,t+0,t+1,\n"
+                           "inter1,oud1,10_14,Male,0.000000,1.000000,\n"
+                           "inter1,oud1,10_14,Female,0.000000,0.000000,\n"
+                           "inter1,oud2,10_14,Male,0.000000,0.000000,\n"
+                           "inter1,oud2,10_14,Female,0.000000,0.000000,\n"
+                           "inter2,oud1,10_14,Male,0.000000,0.000000,\n"
+                           "inter2,oud1,10_14,Female,0.000000,0.000000,\n"
+                           "inter2,oud2,10_14,Male,0.000000,0.000000,\n"
+                           "inter2,oud2,10_14,Female,1.000000,0.000000,\n"
+                           "Interventions, OUD States,agegrp,sex,t+0,t+1,\n"
+                           "inter1,oud1,10_14,Male,0.000000,0.000000,\n"
+                           "inter1,oud1,10_14,Female,0.000000,0.000000,\n"
+                           "inter1,oud2,10_14,Male,0.000000,0.000000,\n"
+                           "inter1,oud2,10_14,Female,0.000000,0.000000,\n"
+                           "inter2,oud1,10_14,Male,0.000000,0.000000,\n"
+                           "inter2,oud1,10_14,Female,0.000000,0.000000,\n"
+                           "inter2,oud2,10_14,Male,0.000000,0.000000,\n"
+                           "inter2,oud2,10_14,Female,0.000000,0.000000,\n"
+                           "Interventions, OUD States,agegrp,sex,t+0,t+1,\n"
+                           "inter1,oud1,10_14,Male,0.000000,0.000000,\n"
+                           "inter1,oud1,10_14,Female,0.000000,1.000000,\n"
+                           "inter1,oud2,10_14,Male,0.000000,0.000000,\n"
+                           "inter1,oud2,10_14,Female,0.000000,0.000000,\n"
+                           "inter2,oud1,10_14,Male,1.000000,0.000000,\n"
+                           "inter2,oud1,10_14,Female,0.000000,0.000000,\n"
+                           "inter2,oud2,10_14,Male,0.000000,0.000000,\n"
+                           "inter2,oud2,10_14,Female,0.000000,0.000000,\n";
 
     EXPECT_EQ(result, expected);
 }

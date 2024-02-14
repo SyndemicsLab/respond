@@ -1,60 +1,31 @@
-cmake_minimum_required(VERSION 3.19)
+cmake_minimum_required(VERSION 3.20)
 
-set (CMAKE_CXX_STANDARD 20)
+find_package(spdlog REQUIRED)
 
 # Set some basic project attributes
 project (
-  RESPOND
+  respond
   VERSION 2.0.0
   DESCRIPTION "A Compartmental Simulation for Opioid Use Disorder"
 )
 
-find_package(spdlog REQUIRED)
+add_subdirectory(simrunner)
+add_subdirectory(matrixify)
 
-include(GNUInstallDirs)
-
-add_subdirectory(model)
-add_subdirectory(data)
-add_subdirectory(utilities)
+option(BUILD_API "enable RESPOND API" OFF)
+if(NOT BUILD_API STREQUAL OFF)
+  add_subdirectory(api)
+endif()
 
 add_executable(respond main.cpp)
 
+target_include_directories(respond PRIVATE
+  "matrixify/include"
+  "simrunner/include"
+  )
+
 target_link_libraries(respond
-  data
-  model
+  matrixify
+  simrunner
   spdlog::spdlog
 )
-
-include(GNUInstallDirs)
-install(TARGETS 
-          respond
-          model
-          data
-          utilities
-        CONFIGURATIONS Debug
-        RUNTIME
-          DESTINATION Debug/bin
-)
-
-install(TARGETS 
-          respond
-          model
-          data
-          utilities
-        CONFIGURATIONS Release
-        RUNTIME
-          DESTINATION Release/bin
-)
-
-include(InstallRequiredSystemLibraries)
-
-set(CPACK_PACKAGE_NAME "respond")
-set(CPACK_PACKAGE_VENDOR "SyndemicsLab")
-set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "RESPOND - Opioid Use Disorder Population Based Simulation")
-# set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/LICENSE.txt")
-set(CPACK_PACKAGE_VERSION_MAJOR "2")
-set(CPACK_PACKAGE_VERSION_MINOR "0")
-set(CPACK_PACKAGE_VERSION_PATCH "0")
-
-set(CPACK_SOURCE_GENERATOR "ZIP")
-include(CPack)

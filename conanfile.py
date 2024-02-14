@@ -23,13 +23,11 @@ class RESPONDRecipe(ConanFile):
     generators = "CMakeDeps"
 
     def requirements(self):
-        self.requires("eigen/3.4.0")
+        self.requires("eigen/[>=3.4.0]")
         self.requires("spdlog/[>=1.11.0]")
-        self.requires("fmt/[>=10.0.0]")
-        self.requires("boost/[>=1.79.0]")
         if self.options.with_api:
             self.requires("crowcpp-crow/1.0+5")
-        self.test_requires("gtest/1.13.0")
+        self.test_requires("gtest/[>=1.13.0]")
 
     def validate(self):
         check_min_cppstd(self, "17")
