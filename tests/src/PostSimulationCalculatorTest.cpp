@@ -17,7 +17,7 @@
 //===----------------------------------------------------------------------===//
 
 #include "gmock/gmock.h"
-#include <boost/filesystem.hpp>
+#include <filesystem>
 #include <gtest/gtest.h>
 #include <iostream>
 #include <string>
@@ -35,19 +35,18 @@ using ::testing::Return;
 
 class PostSimulationCalculatorTest : public ::testing::Test {
 protected:
-    boost::filesystem::path tempRelativeFile;
-    boost::filesystem::path tempAbsoluteFile;
+    std::filesystem::path tempRelativeFile;
+    std::filesystem::path tempAbsoluteFile;
     std::ofstream outputFileStream;
-    boost::filesystem::path configFile;
+    std::filesystem::path configFile;
     std::ofstream configFileStream;
     void SetUp() override {
-        tempRelativeFile =
-            boost::filesystem::unique_path("%%%%_%%%%_%%%%_%%%%.csv");
+        tempRelativeFile = std::tmpnam(nullptr) + std::string(".csv");
         tempAbsoluteFile =
-            boost::filesystem::temp_directory_path() / tempRelativeFile;
+            std::filesystem::temp_directory_path() / tempRelativeFile;
 
-        configFile = boost::filesystem::temp_directory_path() /
-                     boost::filesystem::path("sim.conf");
+        configFile = std::filesystem::temp_directory_path() /
+                     std::filesystem::path("sim.conf");
         configFileStream.open(configFile);
 
         // clang-format off
@@ -113,12 +112,12 @@ protected:
 };
 
 TEST_F(PostSimulationCalculatorTest, constructor) {
-    Data::History history;
+    Matrixify::History history;
 
-    Data::Matrix3d temp =
-        Utilities::Matrix3dFactory::Create(1, 1, 1).setConstant(2.0);
+    Matrixify::Matrix3d temp =
+        Matrixify::Matrix3dFactory::Create(1, 1, 1).setConstant(2.0);
 
-    Data::Matrix3dOverTime stateHistory({temp});
+    Matrixify::Matrix4d stateHistory({temp});
 
     history.stateHistory = stateHistory;
     Calculator::PostSimulationCalculator calculator(history);
@@ -127,43 +126,48 @@ TEST_F(PostSimulationCalculatorTest, constructor) {
 }
 
 TEST_F(PostSimulationCalculatorTest, calculateCost) {
-    Data::History history;
-    Data::Matrix3d temp =
-        Utilities::Matrix3dFactory::Create(1, 1, 1).setConstant(2.0);
-    Data::Matrix3dOverTime stateHistory({temp});
+    Matrixify::History history;
+    Matrixify::Matrix3d temp =
+        Matrixify::Matrix3dFactory::Create(1, 1, 1).setConstant(2.0);
+    Matrixify::Matrix4d stateHistory({temp});
     history.stateHistory = stateHistory;
     history.overdoseHistory = stateHistory;
     history.fatalOverdoseHistory = stateHistory;
     Calculator::PostSimulationCalculator calculator(history);
 
-    MockCostLoader costLoader;
+    std::shared_ptr<Matrixify::ICostLoader> costLoader =
+        std::make_shared<MockCostLoader>();
+
+    std::shared_ptr<MockCostLoader> mockedCostLoader =
+        std::dynamic_pointer_cast<MockCostLoader>(costLoader);
 
     std::vector<std::string> retPerspectiveValue{"healthcare"};
-    EXPECT_CALL(costLoader, getCostPerspectives())
+    EXPECT_CALL(*mockedCostLoader, getCostPerspectives())
         .WillOnce(Return(retPerspectiveValue));
 
-    EXPECT_CALL(costLoader, getDiscountRate()).WillRepeatedly(Return(0.03));
+    EXPECT_CALL(*mockedCostLoader, getDiscountRate())
+        .WillRepeatedly(Return(0.03));
 
-    Data::Matrix3d retCost =
-        Utilities::Matrix3dFactory::Create(1, 1, 1).setConstant(3.0);
-    EXPECT_CALL(costLoader, getHealthcareUtilizationCost("healthcare"))
+    Matrixify::Matrix3d retCost =
+        Matrixify::Matrix3dFactory::Create(1, 1, 1).setConstant(3.0);
+    EXPECT_CALL(*mockedCostLoader, getHealthcareUtilizationCost("healthcare"))
         .WillRepeatedly(Return(retCost));
 
-    EXPECT_CALL(costLoader, getPharmaceuticalCost("healthcare"))
+    EXPECT_CALL(*mockedCostLoader, getPharmaceuticalCost("healthcare"))
         .WillRepeatedly(Return(retCost));
 
-    EXPECT_CALL(costLoader, getTreatmentUtilizationCost("healthcare"))
+    EXPECT_CALL(*mockedCostLoader, getTreatmentUtilizationCost("healthcare"))
         .WillRepeatedly(Return(retCost));
 
     double retNonFODCost = 100.0;
-    EXPECT_CALL(costLoader, getNonFatalOverdoseCost("healthcare"))
+    EXPECT_CALL(*mockedCostLoader, getNonFatalOverdoseCost("healthcare"))
         .WillRepeatedly(Return(retNonFODCost));
 
     double retFODCost = 200.0;
-    EXPECT_CALL(costLoader, getFatalOverdoseCost("healthcare"))
+    EXPECT_CALL(*mockedCostLoader, getFatalOverdoseCost("healthcare"))
         .WillRepeatedly(Return(retFODCost));
 
-    Data::CostList result = calculator.calculateCosts(costLoader);
+    Matrixify::CostList result = calculator.calculateCosts(costLoader);
 
     EXPECT_EQ(result[0].healthcareCost(0, 0, 0, 0), 6);
     EXPECT_EQ(result[0].pharmaCost(0, 0, 0, 0), 6);
@@ -173,100 +177,112 @@ TEST_F(PostSimulationCalculatorTest, calculateCost) {
 }
 
 TEST_F(PostSimulationCalculatorTest, calculateUtility) {
-    Data::History history;
-    Data::Matrix3d temp =
-        Utilities::Matrix3dFactory::Create(1, 1, 1).setConstant(2.0);
-    Data::Matrix3dOverTime stateHistory({temp});
+    Matrixify::History history;
+    Matrixify::Matrix3d temp =
+        Matrixify::Matrix3dFactory::Create(1, 1, 1).setConstant(2.0);
+    Matrixify::Matrix4d stateHistory({temp});
     history.stateHistory = stateHistory;
 
     Calculator::PostSimulationCalculator calculator(history);
 
-    MockUtilityLoader utilityLoader;
+    std::shared_ptr<Matrixify::IUtilityLoader> utilityLoader =
+        std::make_shared<MockUtilityLoader>();
 
-    Data::Matrix3d retUtility =
-        Utilities::Matrix3dFactory::Create(1, 1, 1).setConstant(3.0);
-    EXPECT_CALL(utilityLoader, getBackgroundUtility("utility"))
+    std::shared_ptr<MockUtilityLoader> mockedUtilityLoader =
+        std::dynamic_pointer_cast<MockUtilityLoader>(utilityLoader);
+
+    Matrixify::Matrix3d retUtility =
+        Matrixify::Matrix3dFactory::Create(1, 1, 1).setConstant(3.0);
+    EXPECT_CALL(*mockedUtilityLoader, getBackgroundUtility("utility"))
         .WillRepeatedly(Return(retUtility));
 
-    EXPECT_CALL(utilityLoader, getOUDUtility("utility"))
+    EXPECT_CALL(*mockedUtilityLoader, getOUDUtility("utility"))
         .WillRepeatedly(Return(retUtility));
 
-    EXPECT_CALL(utilityLoader, getSettingUtility("utility"))
+    EXPECT_CALL(*mockedUtilityLoader, getSettingUtility("utility"))
         .WillRepeatedly(Return(retUtility));
 
-    Data::Matrix3dOverTime result = calculator.calculateUtilities(
+    Matrixify::Matrix4d result = calculator.calculateUtilities(
         utilityLoader, Calculator::UTILITY_TYPE::MIN);
 
     EXPECT_EQ(result(0, 0, 0, 0), 6);
 }
 
 TEST_F(PostSimulationCalculatorTest, calculateUtilityMin) {
-    Data::History history;
-    Data::Matrix3d temp =
-        Utilities::Matrix3dFactory::Create(1, 1, 1).setConstant(2.0);
-    Data::Matrix3dOverTime stateHistory({temp});
+    Matrixify::History history;
+    Matrixify::Matrix3d temp =
+        Matrixify::Matrix3dFactory::Create(1, 1, 1).setConstant(2.0);
+    Matrixify::Matrix4d stateHistory({temp});
     history.stateHistory = stateHistory;
 
     Calculator::PostSimulationCalculator calculator(history);
 
-    MockUtilityLoader utilityLoader;
+    std::shared_ptr<Matrixify::IUtilityLoader> utilityLoader =
+        std::make_shared<MockUtilityLoader>();
 
-    Data::Matrix3d retUtility =
-        Utilities::Matrix3dFactory::Create(1, 1, 1).setConstant(1.0);
-    EXPECT_CALL(utilityLoader, getBackgroundUtility("utility"))
+    std::shared_ptr<MockUtilityLoader> mockedUtilityLoader =
+        std::dynamic_pointer_cast<MockUtilityLoader>(utilityLoader);
+
+    Matrixify::Matrix3d retUtility =
+        Matrixify::Matrix3dFactory::Create(1, 1, 1).setConstant(1.0);
+    EXPECT_CALL(*mockedUtilityLoader, getBackgroundUtility("utility"))
         .WillRepeatedly(Return(retUtility));
 
-    retUtility = Utilities::Matrix3dFactory::Create(1, 1, 1).setConstant(0.75);
-    EXPECT_CALL(utilityLoader, getOUDUtility("utility"))
+    retUtility = Matrixify::Matrix3dFactory::Create(1, 1, 1).setConstant(0.75);
+    EXPECT_CALL(*mockedUtilityLoader, getOUDUtility("utility"))
         .WillRepeatedly(Return(retUtility));
 
-    retUtility = Utilities::Matrix3dFactory::Create(1, 1, 1).setConstant(0.5);
-    EXPECT_CALL(utilityLoader, getSettingUtility("utility"))
+    retUtility = Matrixify::Matrix3dFactory::Create(1, 1, 1).setConstant(0.5);
+    EXPECT_CALL(*mockedUtilityLoader, getSettingUtility("utility"))
         .WillRepeatedly(Return(retUtility));
 
-    Data::Matrix3dOverTime result = calculator.calculateUtilities(
+    Matrixify::Matrix4d result = calculator.calculateUtilities(
         utilityLoader, Calculator::UTILITY_TYPE::MIN);
 
     EXPECT_EQ(result(0, 0, 0, 0), 1);
 }
 
 TEST_F(PostSimulationCalculatorTest, calculateUtilityMult) {
-    Data::History history;
-    Data::Matrix3d temp =
-        Utilities::Matrix3dFactory::Create(1, 1, 1).setConstant(2.0);
-    Data::Matrix3dOverTime stateHistory({temp});
+    Matrixify::History history;
+    Matrixify::Matrix3d temp =
+        Matrixify::Matrix3dFactory::Create(1, 1, 1).setConstant(2.0);
+    Matrixify::Matrix4d stateHistory({temp});
     history.stateHistory = stateHistory;
 
     Calculator::PostSimulationCalculator calculator(history);
 
-    MockUtilityLoader utilityLoader;
+    std::shared_ptr<Matrixify::IUtilityLoader> utilityLoader =
+        std::make_shared<MockUtilityLoader>();
 
-    Data::Matrix3d retUtility =
-        Utilities::Matrix3dFactory::Create(1, 1, 1).setConstant(1.0);
-    EXPECT_CALL(utilityLoader, getBackgroundUtility("utility"))
+    std::shared_ptr<MockUtilityLoader> mockedUtilityLoader =
+        std::dynamic_pointer_cast<MockUtilityLoader>(utilityLoader);
+
+    Matrixify::Matrix3d retUtility =
+        Matrixify::Matrix3dFactory::Create(1, 1, 1).setConstant(1.0);
+    EXPECT_CALL(*mockedUtilityLoader, getBackgroundUtility("utility"))
         .WillRepeatedly(Return(retUtility));
 
-    retUtility = Utilities::Matrix3dFactory::Create(1, 1, 1).setConstant(0.75);
-    EXPECT_CALL(utilityLoader, getOUDUtility("utility"))
+    retUtility = Matrixify::Matrix3dFactory::Create(1, 1, 1).setConstant(0.75);
+    EXPECT_CALL(*mockedUtilityLoader, getOUDUtility("utility"))
         .WillRepeatedly(Return(retUtility));
 
-    retUtility = Utilities::Matrix3dFactory::Create(1, 1, 1).setConstant(0.5);
-    EXPECT_CALL(utilityLoader, getSettingUtility("utility"))
+    retUtility = Matrixify::Matrix3dFactory::Create(1, 1, 1).setConstant(0.5);
+    EXPECT_CALL(*mockedUtilityLoader, getSettingUtility("utility"))
         .WillRepeatedly(Return(retUtility));
 
-    Data::Matrix3dOverTime result = calculator.calculateUtilities(
+    Matrixify::Matrix4d result = calculator.calculateUtilities(
         utilityLoader, Calculator::UTILITY_TYPE::MULT);
 
     EXPECT_EQ(result(0, 0, 0, 0), 0.75);
 }
 
 TEST_F(PostSimulationCalculatorTest, calculateLifeYears) {
-    Data::History history;
-    Data::Matrix3d temp;
-    Data::Matrix3dOverTime stateHistory;
+    Matrixify::History history;
+    Matrixify::Matrix3d temp;
+    Matrixify::Matrix4d stateHistory;
     for (int i = 0; i < 52; ++i) {
         temp =
-            Utilities::Matrix3dFactory::Create(2, 2, 2).setConstant(double(i));
+            Matrixify::Matrix3dFactory::Create(2, 2, 2).setConstant(double(i));
         stateHistory.insert(temp, i);
     }
 
