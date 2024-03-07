@@ -201,7 +201,7 @@ TEST_F(DataLoaderTest, initialSample) {
 }
 
 TEST_F(DataLoaderTest, enteringSamples) {
-    fileStream << "agegrp,sex,number_of_new_comers_cycle52" << std::endl
+    fileStream << "agegrp,sex,cohort_size_change_1_52" << std::endl
                << "10_14,male,11.4389540364826" << std::endl
                << "10_14,female,7.10870959447953" << std::endl
                << "15_19,male,12.0934754686572";
@@ -220,8 +220,9 @@ TEST_F(DataLoaderTest, enteringSamples) {
 
 TEST_F(DataLoaderTest, OUDTransitionRates) {
     fileStream
-        << "block,agegrp,sex,initial_status,to_Active_Noninjection,to_Active_"
-           "Injection,to_Nonactive_Noninjection,to_Nonactive_Injection"
+        << "intervention,agegrp,sex,initial_oud,Active_Noninjection,"
+           "Active_"
+           "Injection,Nonactive_Noninjection,Nonactive_Injection"
         << std::endl
         << "No_Treatment,10_14,male,Active_Noninjection,0.560720353446504,0."
            "406726715244475,0.0325529313090211,0"
@@ -243,20 +244,21 @@ TEST_F(DataLoaderTest, OUDTransitionRates) {
 }
 
 TEST_F(DataLoaderTest, interventionTransitionRates) {
-    fileStream << "agegrp,sex,oud,initial_block,to_No_Treatment_cycle52,to_"
-                  "Buprenorphine_cycle52,to_Naltrexone_cycle52,to_Methadone_"
-                  "cycle52,to_"
-                  "Detox_cycle52,to_corresponding_post_trt_cycle52"
+    fileStream << "agegrp,sex,oud,initial_intervention,No_Treatment_1_52,"
+                  "Buprenorphine_1_52,Naltrexone_1_52,Methadone"
+                  "_1_52,"
+                  "Detox_1_52,Post-Buprenorphine_1_52,Post-Naltrexone_1_52,"
+                  "Post-Methadone_1_52,Post-Detox_1_52"
                << std::endl
                << "10_14,male,Active_Noninjection,No_Treatment,0."
                   "625523912484771,0.101388565684697,0.0472664681057711,0."
-                  "178570136497494,0.0472509172272673,0"
+                  "178570136497494,0.0472509172272673,0,0,0,0"
                << std::endl
                << "10_14,male,Active_Noninjection,Buprenorphine,0,0."
-                  "996990941661389,0,0,0,0.0030090583386112"
+                  "996990941661389,0,0,0,0.0030090583386112,0,0,0"
                << std::endl
                << "10_14,male,Active_Noninjection,Naltrexone,0,0,0."
-                  "88186832069196,0,0,0.11813167930804";
+                  "88186832069196,0,0,0,0.11813167930804,0,0";
     fileStream.close();
 
     Matrixify::DataLoader dl(std::filesystem::temp_directory_path().string(),
@@ -270,9 +272,9 @@ TEST_F(DataLoaderTest, interventionTransitionRates) {
 
 TEST_F(DataLoaderTest, overdoseRates) {
     fileStream
-        << "block,agegrp,sex,oud,all_types_overdose_cycle52,all_types_overdose_"
-           "cycle104,all_types_overdose_cycle156,all_types_overdose_cycle208,"
-           "all_types_overdose_cycle260"
+        << "block,agegrp,sex,oud,overdose_1_52,overdose_52_104,overdose_104_"
+           "156,overdose_156_208,"
+           "overdose_208_260"
         << std::endl
         << "No_Treatment,10_14,male,Active_Noninjection,0.00059346577560159,0."
            "000895542690723513,0.000780514937366773,0.000510919750042232,0."
@@ -297,13 +299,13 @@ TEST_F(DataLoaderTest, overdoseRates) {
 }
 
 TEST_F(DataLoaderTest, fatalOverdoseRates) {
-    fileStream << "fatal_to_all_types_overdose_ratio_cycle52,fatal_to_all_"
-                  "types_overdose_ratio_cycle104,fatal_to_all_types_overdose_"
-                  "ratio_cycle156,fatal_to_all_types_overdose_ratio_cycle208,"
-                  "fatal_to_all_types_overdose_ratio_cycle260"
-               << std::endl
-               << "0.216540329711774,0.297741215749976,0.113841797135366,0."
-                  "126092413319309,0.156049415151599";
+    fileStream
+        << "percent_overdoses_fatal_1_52,percent_overdoses_fatal_52_104,"
+           "percent_overdoses_fatal_104_156,percent_overdoses_fatal_156_208,"
+           "percent_overdoses_fatal_208_260"
+        << std::endl
+        << "0.216540329711774,0.297741215749976,0.113841797135366,0."
+           "126092413319309,0.156049415151599";
     fileStream.close();
 
     Matrixify::DataLoader dl(std::filesystem::temp_directory_path().string(),
