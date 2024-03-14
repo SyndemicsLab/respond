@@ -141,11 +141,20 @@ namespace Matrixify {
         int esoIdx =
             (itr != this->oudStates.end()) ? itr - this->oudStates.begin() : 0;
 
-        std::string columnPrefix = "number_of_new_comers_cycle";
+        std::string columnPrefix = "cohort_size_change_";
 
         int startTime = 0;
-        for (int changepoint : this->enteringSampleChangeTimes) {
-            std::string column = columnPrefix + std::to_string(changepoint);
+        for (int i = 0; i < this->enteringSampleChangeTimes.size(); ++i) {
+            int changepoint = this->enteringSampleChangeTimes[i];
+            std::string column = columnPrefix;
+            if (i == 0) {
+                column += "1_";
+            } else {
+                column += (std::to_string(
+                               this->enteringSampleChangeTimes[i - 1] + 1) +
+                           "_");
+            }
+            column += std::to_string(changepoint);
             std::vector<std::string> col =
                 enteringSamplesTable->getColumn(column);
 
@@ -184,22 +193,21 @@ namespace Matrixify {
         for (int initial_state = 0; initial_state < getNumOUDStates();
              ++initial_state) {
             std::unordered_map<std::string, std::string> oudSelectCriteria = {};
-            oudSelectCriteria["initial_status"] =
-                this->oudStates[initial_state];
+            oudSelectCriteria["initial_oud"] = this->oudStates[initial_state];
             Data::IDataTablePtr oudSelectedTable =
                 oudTransitionTable->selectWhere(oudSelectCriteria);
             for (int intervention = 0; intervention < getNumInterventions();
                  ++intervention) {
                 std::unordered_map<std::string, std::string>
                     interventionSelectCriteria = {};
-                interventionSelectCriteria["block"] =
+                interventionSelectCriteria["intervention"] =
                     this->interventions[intervention];
                 Data::IDataTablePtr interventionSelectedTable =
                     oudSelectedTable->selectWhere(interventionSelectCriteria);
                 for (int result_state = 0; result_state < getNumOUDStates();
                      ++result_state) {
 
-                    std::string column = "to_" + this->oudStates[result_state];
+                    std::string column = this->oudStates[result_state];
 
                     std::vector<std::string> col =
                         interventionSelectedTable->getColumn(column);
@@ -309,14 +317,20 @@ namespace Matrixify {
         Data::IDataTablePtr overdoseTransitionTable = loadTable(csvName);
 
         int startTime = 0;
-        for (auto timestep : this->overdoseChangeTimes) {
+        for (int i = 0; i < this->overdoseChangeTimes.size(); ++i) {
+            int timestep = this->overdoseChangeTimes[i];
+            std::string odcolumn = "overdose_";
+            if (i == 0) {
+                odcolumn += "1_" + std::to_string(timestep);
+            } else {
+                odcolumn += std::to_string(this->overdoseChangeTimes[i - 1]) +
+                            "_" + std::to_string(timestep);
+            }
             std::vector<std::string> headers =
                 overdoseTransitionTable->getHeaders();
 
             for (std::string header : headers) {
-                if (header.find("all_types_overdose_cycle" +
-                                std::to_string(timestep)) !=
-                    std::string::npos) {
+                if (header.find(odcolumn) != std::string::npos) {
                     Matrix3d temp = this->buildOverdoseTransitions(
                         overdoseTransitionTable, header);
                     fillTime(startTime, timestep, temp, this->overdoseRates);
@@ -338,8 +352,8 @@ namespace Matrixify {
                 getNumOUDStates(), getNumInterventions(),
                 getNumDemographicCombos());
 
-            std::string fodColumn = "fatal_to_all_types_overdose_ratio_cycle" +
-                                    std::to_string(timestep);
+            std::string fodColumn =
+                "percent_overdoses_fatal_1_" + std::to_string(timestep);
 
             std::vector<std::string> col =
                 fatalOverdoseTable->getColumn(fodColumn);
@@ -431,7 +445,7 @@ namespace Matrixify {
         for (int oudCtr = 0; oudCtr < getNumOUDStates(); ++oudCtr) {
             selectConditions.clear();
             selectConditions["oud"] = oudStates[oudCtr];
-            selectConditions["initial_block"] = interventionName;
+            selectConditions["initial_intervention"] = interventionName;
             Data::IDataTablePtr temp = table->selectWhere(selectConditions);
             if (temp->getShape().getNRows() == 0) {
                 continue;
@@ -448,29 +462,13 @@ namespace Matrixify {
                     1, 1, getNumDemographicCombos()};
 
                 std::string header = "";
-                if (interventions[interven].find("Post") != std::string::npos) {
-                    if (interventions[interven].find(interventionName) !=
-                        std::string::npos) {
-                        header = "to_corresponding_post_trt_cycle" +
-                                 std::to_string(timestep);
-                        std::vector<std::string> value =
-                            temp->getColumn(header);
 
-                        transMat.slice(offsets, extents) = strVecToMatrix3d(
-                            value, 1, 1, getNumDemographicCombos());
+                header =
+                    interventions[interven] + "_1_" + std::to_string(timestep);
+                std::vector<std::string> value = temp->getColumn(header);
 
-                    } else {
-                        transMat.slice(offsets, extents) = doubleToMatrix3d(
-                            0.0, 1, 1, getNumDemographicCombos());
-                    }
-                } else {
-                    header = "to_" + interventions[interven] + "_cycle" +
-                             std::to_string(timestep);
-                    std::vector<std::string> value = temp->getColumn(header);
-
-                    transMat.slice(offsets, extents) = strVecToMatrix3d(
-                        value, 1, 1, getNumDemographicCombos());
-                }
+                transMat.slice(offsets, extents) =
+                    strVecToMatrix3d(value, 1, 1, getNumDemographicCombos());
             }
         }
         return transMat;
