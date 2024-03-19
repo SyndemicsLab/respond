@@ -4,7 +4,7 @@
 using namespace boost::python;
 using namespace Simulation;
 
-BOOST_PYTHON_MODULE(sim) {
+BOOST_PYTHON_MODULE(libSimulation) {
     class_<Sim>("Sim", init<std::shared_ptr<Matrixify::IDataLoader>>())
         .def("Run", &Sim::Run);
 }

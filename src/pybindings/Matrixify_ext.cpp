@@ -4,7 +4,7 @@
 using namespace boost::python;
 using namespace Matrixify;
 
-BOOST_PYTHON_MODULE(dataloader) {
+BOOST_PYTHON_MODULE(libMatrixify) {
     class_<DataLoader>("DataLoader",
                        init<Data::IConfigurationPtr &, std::string const &,
                             std::shared_ptr<spdlog::logger>>())
