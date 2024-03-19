@@ -6,12 +6,9 @@ find_package(PythonLibs REQUIRED)
 
 find_package(Boost COMPONENTS python310 REQUIRED)
 
-# Without this, any build libraries automatically have names "lib{x}.so"
-set(CMAKE_SHARED_MODULE_PREFIX "")
-
 # Add a shared module - modules are intended to be imported at runtime.
 # - This is where you add the source files
-add_library(${PROJECT_NAME} Matrixify_ext.cpp Simrunner_ext.cpp)
+add_library(${PROJECT_NAME} SHARED Matrixify_ext.cpp Simrunner_ext.cpp)
 
 # Set up the libraries and header search paths for this target
 target_link_libraries(${PROJECT_NAME} PUBLIC ${Boost_LIBRARIES})
