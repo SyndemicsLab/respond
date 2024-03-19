@@ -19,6 +19,15 @@
 
 #include "Matrix3dPrinter.hpp"
 
+#include <Eigen/Eigen>
+#include <algorithm>
+#include <cmath>
+#include <cstdint>
+#include <iostream>
+#include <numeric>
+#include <string>
+#include <unsupported/Eigen/CXX11/Tensor>
+
 namespace Simulation {
 
     Sim::Sim() : Sim::Sim(0, 0, 0, 0) {}
