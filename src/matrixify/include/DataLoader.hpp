@@ -61,6 +61,30 @@ namespace Matrixify {
         /// @return Matrix3d Intervention Initialization Rates
         virtual Matrix3d getInterventionInitRates() const = 0;
 
+        /// @brief set the Initial Sample
+        virtual void setInitialSample(Matrix3d mat) = 0;
+
+        /// @brief set the Entering Samples
+        virtual void setEnteringSamples(Matrix4d mat) = 0;
+
+        /// @brief set the OUD Transition Rates
+        virtual void setOUDTransitionRates(Matrix3d mat) = 0;
+
+        /// @brief set the Intervention Transition Rates
+        virtual void setInterventionTransitionRates(Matrix4d mat) = 0;
+
+        /// @brief set the Overdose Rates
+        virtual void setOverdoseRates(Matrix4d mat) = 0;
+
+        /// @brief set the Fatal Overdose Rates
+        virtual void setFatalOverdoseRates(Matrix4d mat) = 0;
+
+        /// @brief set the Mortality Rates
+        virtual void setMortalityRates(Matrix3d mat) = 0;
+
+        /// @brief set the Intervention Initialization Rates
+        virtual void setInterventionInitRates(Matrix3d mat) = 0;
+
         /// @brief Load the Initial Sample from a File
         /// @param csvName Filename to the Initial Sample
         /// @return Matrix3d Initial Sample
@@ -189,6 +213,38 @@ namespace Matrixify {
 
         virtual Matrix3d getInterventionInitRates() const {
             return interventionInitRates;
+        }
+
+        virtual void setInitialSample(Matrix3d mat) {
+            this->initialSample = mat;
+        }
+
+        virtual void setEnteringSamples(Matrix4d mat) {
+            this->enteringSamples = mat;
+        }
+
+        virtual void setOUDTransitionRates(Matrix3d mat) {
+            this->oudTransitionRates = mat;
+        }
+
+        virtual void setInterventionTransitionRates(Matrix4d mat) {
+            this->interventionTransitionRates = mat;
+        }
+
+        virtual void setOverdoseRates(Matrix4d mat) {
+            this->overdoseRates = mat;
+        }
+
+        virtual void setFatalOverdoseRates(Matrix4d mat) {
+            this->fatalOverdoseRates = mat;
+        }
+
+        virtual void setMortalityRates(Matrix3d mat) {
+            this->mortalityRates = mat;
+        }
+
+        virtual void setInterventionInitRates(Matrix3d mat) {
+            this->interventionInitRates = mat;
         }
 
         virtual Matrix3d loadInitialSample(std::string const &csvName);

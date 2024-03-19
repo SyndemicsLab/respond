@@ -41,6 +41,27 @@ public:
 
     MOCK_METHOD(std::vector<std::string>, getOUDStates, (), (const, override));
 
+    MOCK_METHOD(void, setInitialSample, (Matrixify::Matrix3d mat), (override));
+
+    MOCK_METHOD(void, setEnteringSamples, (Matrixify::Matrix4d mat),
+                (override));
+
+    MOCK_METHOD(void, setOUDTransitionRates, (Matrixify::Matrix3d mat),
+                (override));
+
+    MOCK_METHOD(void, setInterventionTransitionRates, (Matrixify::Matrix4d mat),
+                (override));
+
+    MOCK_METHOD(void, setOverdoseRates, (Matrixify::Matrix4d mat), (override));
+
+    MOCK_METHOD(void, setFatalOverdoseRates, (Matrixify::Matrix4d mat),
+                (override));
+
+    MOCK_METHOD(void, setMortalityRates, (Matrixify::Matrix3d mat), (override));
+
+    MOCK_METHOD(void, setInterventionInitRates, (Matrixify::Matrix3d mat),
+                (override));
+
     MOCK_METHOD(int, getAgingInterval, (), (const, override));
 
     MOCK_METHOD(int, getAgeGroupShift, (), (const, override));
