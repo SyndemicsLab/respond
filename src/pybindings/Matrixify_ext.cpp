@@ -1,4 +1,7 @@
 #include "DataLoader.hpp"
+#include <DataTypes.hpp>
+#include <pybind11/eigen.h>
+#include <pybind11/numpy.h>
 #include <pybind11/pybind11.h>
 
 namespace py = pybind11;
@@ -27,4 +30,9 @@ PYBIND11_MODULE(Matrixify, m) {
         .def("setFatalOverdoseRates", &DataLoader::setFatalOverdoseRates)
         .def("setMortalityRates", &DataLoader::setMortalityRates)
         .def("setInterventionInitRates", &DataLoader::setInterventionInitRates);
+
+    py::class_<Matrix4d>(m, "Matrix4d")
+        .def(py::init<std::vector<Matrix3d>>())
+        .def(py::init<std::vector<Matrix3d>, std::vector<int>>())
+        .def(py::init<>());
 }
