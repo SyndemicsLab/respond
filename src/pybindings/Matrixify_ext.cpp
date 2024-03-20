@@ -1,15 +1,15 @@
 #include "DataLoader.hpp"
-#include <boost/python.hpp>
+#include <pybind11/pybind11.h>
 
-using namespace boost::python;
+namespace py = pybind11;
 using namespace Matrixify;
 
-BOOST_PYTHON_MODULE(libMatrixify) {
-    class_<DataLoader>("DataLoader",
-                       init<Data::IConfigurationPtr &, std::string const &,
-                            std::shared_ptr<spdlog::logger>>())
-        .def(init<std::string const &, std::shared_ptr<spdlog::logger>>())
-        .def(init<>())
+PYBIND11_MODULE(Matrixify, m) {
+    py::class_<DataLoader>(m, "DataLoader")
+        .def(py::init<Data::IConfigurationPtr &, std::string const &,
+                      std::shared_ptr<spdlog::logger>>())
+        .def(py::init<std::string const &, std::shared_ptr<spdlog::logger>>())
+        .def(py::init<>())
         .def("getInitialSample", &DataLoader::getInitialSample)
         .def("getEnteringSamples", &DataLoader::getEnteringSamples)
         .def("getOUDTransitionRates", &DataLoader::getOUDTransitionRates)

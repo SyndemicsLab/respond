@@ -1,10 +1,11 @@
 #include "Simulation.hpp"
-#include <boost/python.hpp>
+#include <pybind11/pybind11.h>
 
-using namespace boost::python;
+namespace py = pybind11;
 using namespace Simulation;
 
-BOOST_PYTHON_MODULE(libSimulation) {
-    class_<Sim>("Sim", init<std::shared_ptr<Matrixify::IDataLoader>>())
+PYBIND11_MODULE(Simulation, m) {
+    py::class_<Sim>(m, "Sim")
+        .def(py::init<std::shared_ptr<Matrixify::IDataLoader>>())
         .def("Run", &Sim::Run);
 }
