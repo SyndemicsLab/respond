@@ -105,7 +105,8 @@ namespace Matrixify {
                     interventionDT->selectWhere(oudSelectCriteria);
                 std::vector<std::string> values = oudDT->getColumn("counts");
                 if (values.size() == 0) {
-                    logger->warn("counts column has no record for {} and {}",
+                    logger->warn("init_cohort.csv counts column has no record "
+                                 "for {} and {}",
                                  this->oudStates[oudState],
                                  this->interventions[intervention]);
                     continue;
@@ -212,8 +213,9 @@ namespace Matrixify {
                     std::vector<std::string> col =
                         interventionSelectedTable->getColumn(column);
                     if (col.size() == 0) {
-                        logger->warn("{} column has no record for {}", column,
-                                     this->interventions[intervention]);
+                        logger->warn(
+                            "oud_trans.csv {} column has no record for {}",
+                            column, this->interventions[intervention]);
                         continue;
                     }
 
@@ -456,23 +458,37 @@ namespace Matrixify {
             selectConditions["initial_intervention"] = interventionName;
             Data::IDataTablePtr temp = table->selectWhere(selectConditions);
             if (temp->getShape().getNRows() == 0) {
+                logger->warn("block_trans.csv counts column has error with "
+                             "{} and {}",
+                             oudStates[oudCtr], interventionName);
                 continue;
             }
 
-            for (int interven = 0; interven < getNumInterventions();
-                 ++interven) {
+            for (int i = 0; i < getNumInterventions(); ++i) {
 
                 // Slice for setting matrix values. We select a single
                 // value and set that constant
-                Eigen::array<Eigen::Index, 3> offsets = {interven, oudCtr, 0};
+                Eigen::array<Eigen::Index, 3> offsets = {i, oudCtr, 0};
 
                 Eigen::array<Eigen::Index, 3> extents = {
                     1, 1, getNumDemographicCombos()};
 
-                std::string header = "";
+                std::string header = interventions[i] + "_";
 
-                header =
-                    interventions[interven] + "_1_" + std::to_string(timestep);
+                auto it =
+                    std::find(this->interventionChangeTimes.begin(),
+                              this->interventionChangeTimes.end(), timestep);
+
+                int idx = it - this->interventionChangeTimes.begin();
+
+                if (idx == 0) {
+                    header += "1_" + std::to_string(timestep);
+                } else {
+                    header += std::to_string(
+                                  this->interventionChangeTimes[idx - 1] + 1) +
+                              "_" + std::to_string(timestep);
+                }
+
                 std::vector<std::string> value = temp->getColumn(header);
 
                 transMat.slice(offsets, extents) =
@@ -512,7 +528,6 @@ namespace Matrixify {
                     getNumDemographicCombos();
                 Matrixify::Matrix3d temp = this->buildInterventionMatrix(
                     table, this->interventions[i], timestep);
-
                 stackingMatrices.slice(offsets, extents) = temp;
             }
             return stackingMatrices;
