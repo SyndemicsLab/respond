@@ -261,10 +261,10 @@ namespace Matrixify {
 
                 if (col.empty()) {
                     logger->error("Rention Rate Not Found in "
-                                  "block_trans.csv for {} {}",
+                                  "block_init_effect.csv for {} {}",
                                   oudStates[i], interventions[j]);
                     throw std::out_of_range(interventions[j] +
-                                            " not in block_trans.csv");
+                                            " not in block_init_effect.csv");
                 }
 
                 double retentionRate = std::stod(col[0]);
@@ -323,8 +323,9 @@ namespace Matrixify {
             if (i == 0) {
                 odcolumn += "1_" + std::to_string(timestep);
             } else {
-                odcolumn += std::to_string(this->overdoseChangeTimes[i - 1]) +
-                            "_" + std::to_string(timestep);
+                odcolumn +=
+                    std::to_string(this->overdoseChangeTimes[i - 1] + 1) + "_" +
+                    std::to_string(timestep);
             }
             std::vector<std::string> headers =
                 overdoseTransitionTable->getHeaders();
@@ -347,13 +348,20 @@ namespace Matrixify {
         Data::IDataTablePtr fatalOverdoseTable = loadTable(csvName);
 
         int startTime = 0;
-        for (int timestep : this->overdoseChangeTimes) {
+        for (int i = 0; i < this->overdoseChangeTimes.size(); ++i) {
             Matrix3d overdoseTransition = Matrixify::Matrix3dFactory::Create(
                 getNumOUDStates(), getNumInterventions(),
                 getNumDemographicCombos());
 
-            std::string fodColumn =
-                "percent_overdoses_fatal_1_" + std::to_string(timestep);
+            int timestep = this->overdoseChangeTimes[i];
+            std::string fodColumn = "percent_overdoses_fatal_";
+            if (i == 0) {
+                fodColumn += "1_" + std::to_string(timestep);
+            } else {
+                fodColumn +=
+                    std::to_string(this->overdoseChangeTimes[i - 1] + 1) + "_" +
+                    std::to_string(timestep);
+            }
 
             std::vector<std::string> col =
                 fatalOverdoseTable->getColumn(fodColumn);
