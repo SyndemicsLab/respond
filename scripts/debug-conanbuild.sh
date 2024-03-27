@@ -14,9 +14,15 @@
 #    # run code tests if they built
 #    [[ -f test/respondTest ]] && test/respondTest
 # )
-cd ../
+if ([ ! -d build ]); then
+    cd ..
+fi
+([[ -d build ]] && rm -rf build/*) || mkdir build
+rm -rf build/*
+rm -rf bin/*
 conan install . --build=missing --settings=build_type=Debug
 cd build
+pwd
 source Debug/generators/conanbuild.sh
 cmake .. -DCMAKE_TOOLCHAIN_FILE=Debug/generators/conan_toolchain.cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_POSITION_INDEPENDENT_CODE=ON -DBUILD_TESTS=ON -DBUILD_PYBINDINGS=ON
 cmake --build . 

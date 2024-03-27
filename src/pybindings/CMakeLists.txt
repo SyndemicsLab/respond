@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.20)
 project(respondpy CXX)
 
 # Find python and Boost - both are required dependencies
-find_package(Python REQUIRED COMPONENTS Interpreter Development.Module)
+find_package(Python 3.11 REQUIRED COMPONENTS Interpreter Development.Module)
 find_package(pybind11 CONFIG REQUIRED)
 
 # Add a shared module - modules are intended to be imported at runtime.
