@@ -41,8 +41,9 @@ namespace Matrixify {
                 std::make_shared<Data::Configuration>(inputPath.string());
             loadObjectData();
         } else {
-            this->logger->warn("Loader created without a specified input path. "
-                               "Please ensure this is expected behavior!");
+            // this->logger->warn("Loader created without a specified input
+            // path. "
+            //                    "Please ensure this is expected behavior!");
         }
     }
 
