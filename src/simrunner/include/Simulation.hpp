@@ -21,6 +21,9 @@
 #include "DataLoader.hpp"
 #include "DataTypes.hpp"
 #include "Matrix3dFactory.hpp"
+#include "spdlog/sinks/basic_file_sink.h"
+#include "spdlog/spdlog.h"
+#include <memory>
 
 /// @brief Namespace defining all Simulation Operations
 namespace Simulation {
@@ -297,6 +300,7 @@ namespace Simulation {
         Matrixify::Matrix4d fatalOverdoseRates;
         Matrixify::Matrix4d overdoseRates;
         Matrixify::Matrix3d mortalityRates;
+        std::shared_ptr<spdlog::logger> logger;
 
         /// @brief
         /// @return

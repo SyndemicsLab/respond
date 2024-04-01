@@ -85,6 +85,9 @@ public:
     MOCK_METHOD(std::vector<int>, getGeneralStatsOutputTimesteps, (),
                 (const, override));
 
+    MOCK_METHOD((std::shared_ptr<spdlog::logger>), getLogger, (),
+                (const, override));
+
     MOCK_METHOD(Matrixify::Matrix3d, loadInitialSample,
                 (std::string const &csvName), (override));
 

@@ -37,7 +37,9 @@ namespace Matrixify {
         if (this->data.find(timestep) == this->data.end()) {
             // std::cout << this->data.end()->first << std::endl;
             // return this->data.end()->second;
-            throw std::invalid_argument("The Provided Timestep Does Not Exist");
+            throw std::invalid_argument("The Provided Timestep " +
+                                        std::to_string(timestep) +
+                                        " Does Not Exist");
         } else {
             return this->data.at(timestep);
         }
@@ -62,7 +64,9 @@ namespace Matrixify {
 
     Matrix3d Matrix4d::operator()(int timestep) const {
         if (this->data.find(timestep) == this->data.end()) {
-            throw std::invalid_argument("The Provided Timestep Does Not Exist");
+            throw std::invalid_argument("The Provided Timestep " +
+                                        std::to_string(timestep) +
+                                        " Does Not Exist");
         } else {
             Matrix3d temp = this->data.at(timestep);
             return temp;
@@ -76,7 +80,9 @@ namespace Matrixify {
     double Matrix4d::operator()(int timestep, int idx1, int idx2,
                                 int idx3) const {
         if (this->data.find(timestep) == this->data.end()) {
-            throw std::invalid_argument("The Provided Timestep Does Not Exist");
+            throw std::invalid_argument("The Provided Timestep " +
+                                        std::to_string(timestep) +
+                                        " Does Not Exist");
         } else {
             Matrix3d temp = this->data.at(timestep);
             return temp(idx1, idx2, idx3);

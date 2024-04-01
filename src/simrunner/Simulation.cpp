@@ -19,6 +19,7 @@
 
 #include "Matrix3dPrinter.hpp"
 
+#include "spdlog/fmt/ostr.h"
 #include <Eigen/Eigen>
 #include <algorithm>
 #include <cmath>
@@ -52,6 +53,13 @@ namespace Simulation {
             this->numOUDStates, this->numInterventions, this->numDemographics);
         this->transition.setZero();
         this->agingSwitch = false;
+        if (!this->logger) {
+            if (!spdlog::get("console")) {
+                this->logger = spdlog::stdout_color_mt("console");
+            } else {
+                this->logger = spdlog::get("console");
+            }
+        }
     }
 
     Sim::Sim(std::shared_ptr<Matrixify::IDataLoader> dataLoader) {
@@ -78,6 +86,16 @@ namespace Simulation {
         // if the aging interval is non-zero, activate aging
         if (this->agingInterval) {
             this->agingSwitch = true;
+        }
+
+        this->logger = dataLoader->getLogger();
+
+        if (!this->logger) {
+            if (!spdlog::get("console")) {
+                this->logger = spdlog::stdout_color_mt("console");
+            } else {
+                this->logger = spdlog::get("console");
+            }
         }
     }
 
@@ -201,16 +219,29 @@ namespace Simulation {
             ((this->currentTime - agingReference) % this->agingInterval == 0)) {
             this->raisePopulationAge();
         }
-
         // STATE TRANSITION
         Matrixify::Matrix3d enterSampleState =
             this->addEnteringSamples(this->state);
 
+#ifndef NDEBUG
+        std::cout << "Entering Samples: " + std::to_string(this->currentTime)
+                  << std::endl;
+#endif
         Matrixify::Matrix3d oudTransState =
             this->multiplyOUDTransitions(enterSampleState);
 
+#ifndef NDEBUG
+        std::cout << "OUD Transitions: " + std::to_string(this->currentTime)
+                  << std::endl;
+#endif
+
         Matrixify::Matrix3d transitionedState =
             this->multiplyInterventionTransitions(oudTransState);
+
+#ifndef NDEBUG
+        std::cout << "Interventions: " + std::to_string(this->currentTime)
+                  << std::endl;
+#endif
 
         this->history.interventionAdmissionHistory.insert(transitionedState,
                                                           currentTime + 1);
@@ -218,16 +249,34 @@ namespace Simulation {
         Matrixify::Matrix3d overdoses =
             this->multiplyOverdoseTransitions(transitionedState);
 
+#ifndef NDEBUG
+        std::cout << "Overdoses: " + std::to_string(this->currentTime)
+                  << std::endl;
+#endif
+
         Matrixify::Matrix3d fatalOverdoses =
             this->multiplyFatalOverdoseTransitions(overdoses);
 
+#ifndef NDEBUG
+        std::cout << "Fatal Overdoses: " + std::to_string(this->currentTime)
+                  << std::endl;
+#endif
+
         Matrixify::Matrix3d mortalities = this->multiplyMortalityTransitions(
             transitionedState - fatalOverdoses);
+
+#ifndef NDEBUG
+        std::cout << "Mortalities: " + std::to_string(this->currentTime)
+                  << std::endl;
+#endif
 
         return (transitionedState - (mortalities + fatalOverdoses));
     }
 
     Matrixify::Matrix3d Sim::addEnteringSamples(Matrixify::Matrix3d state) {
+#ifndef NDEBUG
+        std::cout << this->enteringSamples.getMatrices().size() << std::endl;
+#endif
         Matrixify::Matrix3d es = this->enteringSamples(this->currentTime);
         ASSERTM(es.dimensions() == state.dimensions(),
                 "Entering Sample Dimensions is Correct");
