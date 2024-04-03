@@ -262,7 +262,7 @@ namespace Matrixify {
                     temp->getColumn("retention_rate");
 
                 if (col.empty()) {
-                    logger->error("Rention Rate Not Found in "
+                    logger->error("Retention Rate Not Found in "
                                   "block_init_effect.csv for {} {}",
                                   oudStates[i], interventions[j]);
                     throw std::out_of_range(interventions[j] +
