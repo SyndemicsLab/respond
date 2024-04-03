@@ -23,119 +23,11 @@
 #include <string>
 #include <vector>
 
+#include "BaseLoader.hpp"
 #include "DataTypes.hpp"
-#include "Loader.hpp"
+#include "InterfaceLoaders.hpp"
 
 namespace Matrixify {
-    class IDataLoader : public virtual ILoader {
-    public:
-        /// @brief Get the Initial Sample
-        /// @return Matrix3d Initial Sample
-        virtual Matrix3d getInitialSample() const = 0;
-
-        /// @brief Get the Entering Samples
-        /// @return Matrix4d Entering Samples
-        virtual Matrix4d getEnteringSamples() const = 0;
-
-        /// @brief Get the OUD Transition Rates
-        /// @return Matrix3d OUD Transition Rates
-        virtual Matrix3d getOUDTransitionRates() const = 0;
-
-        /// @brief Get the Intervention Transition Rates
-        /// @return Matrix4d Intervention Transition Rates
-        virtual Matrix4d getInterventionTransitionRates() const = 0;
-
-        /// @brief Get the Overdose Rates
-        /// @return Matrix4d Overdose Rates
-        virtual Matrix4d getOverdoseRates() const = 0;
-
-        /// @brief Get the Fatal Overdose Rates
-        /// @return Matrix4d Fatal Overdose Rates
-        virtual Matrix4d getFatalOverdoseRates() const = 0;
-
-        /// @brief Get the Mortality Rates
-        /// @return Matrix3d Mortality Rates
-        virtual Matrix3d getMortalityRates() const = 0;
-
-        /// @brief Get the Intervention Initialization Rates
-        /// @return Matrix3d Intervention Initialization Rates
-        virtual Matrix3d getInterventionInitRates() const = 0;
-
-        /// @brief set the Initial Sample
-        virtual void setInitialSample(Matrix3d mat) = 0;
-
-        /// @brief set the Entering Samples
-        virtual void setEnteringSamples(Matrix4d mat) = 0;
-
-        /// @brief set the OUD Transition Rates
-        virtual void setOUDTransitionRates(Matrix3d mat) = 0;
-
-        /// @brief set the Intervention Transition Rates
-        virtual void setInterventionTransitionRates(Matrix4d mat) = 0;
-
-        /// @brief set the Overdose Rates
-        virtual void setOverdoseRates(Matrix4d mat) = 0;
-
-        /// @brief set the Fatal Overdose Rates
-        virtual void setFatalOverdoseRates(Matrix4d mat) = 0;
-
-        /// @brief set the Mortality Rates
-        virtual void setMortalityRates(Matrix3d mat) = 0;
-
-        /// @brief set the Intervention Initialization Rates
-        virtual void setInterventionInitRates(Matrix3d mat) = 0;
-
-        /// @brief Load the Initial Sample from a File
-        /// @param csvName Filename to the Initial Sample
-        /// @return Matrix3d Initial Sample
-        virtual Matrix3d loadInitialSample(std::string const &csvName) = 0;
-
-        /// @brief Load the Entering Samples from a File
-        /// @param csvName Filename to the Entering Samples
-        /// @param enteringSampleIntervention The Intervention to Load Entering
-        /// Samples Into
-        /// @param enteringSampleOUD The OUD State to Load Entering Samples Into
-        /// @return Matrix4d Entering Samples
-        virtual Matrix4d
-        loadEnteringSamples(std::string const &csvName,
-                            std::string const &enteringSampleIntervention,
-                            std::string const &enteringSampleOUD) = 0;
-
-        /// @brief Load the OUD Transition Rates
-        /// @param csvName Filename to the OUD Transition Rates
-        /// @return Matrix3d OUD Transition Rates
-        virtual Matrix3d loadOUDTransitionRates(std::string const &csvName) = 0;
-
-        /// @brief Load the Intervention Initialization Rates
-        /// @param csvName Filename to the Intervention Initialization Rates
-        /// @return Matrix3d Intervention Initialization Rates
-        virtual Matrix3d
-        loadInterventionInitRates(std::string const &csvName) = 0;
-
-        /// @brief Load the Intervention Transition Rates
-        /// @param csvName Filename to the Intervention Transition Rates
-        /// @return Matrix4d Intervention Transition Rates
-        virtual Matrix4d
-        loadInterventionTransitionRates(std::string const &csvName) = 0;
-
-        /// @brief Load the Overdose Rates
-        /// @param csvName Filename to the Overdose Rates
-        /// @return Matrix4d Overdose Rates
-        virtual Matrix4d loadOverdoseRates(std::string const &csvName) = 0;
-
-        /// @brief Load the Fatal Overdose Rates
-        /// @param csvName Filename to the Fatal Overdose Rates
-        /// @return Matrix4d Fatal Overdose Rates
-        virtual Matrix4d loadFatalOverdoseRates(std::string const &csvName) = 0;
-
-        /// @brief Load the Mortality Rates
-        /// @param smrCSVName Filename to the SMR File
-        /// @param bgmCSVName Filename to the Background Mortality File
-        /// @return Matrix3d Mortality Rates
-        virtual Matrix3d loadMortalityRates(std::string const &smrCSVName,
-                                            std::string const &bgmCSVName) = 0;
-    };
-
     /*!
      * @brief The object that processes model inputs
      *
@@ -165,20 +57,8 @@ namespace Matrixify {
      * - `setting_utility.csv`
      * - `treatment_utilization_cost.csv`
      */
-    class DataLoader : public Loader, public IDataLoader {
+    class DataLoader : public BaseLoader, public virtual IDataLoader {
     public:
-        /// @brief The default constructor for DataLoader.
-        /// This constructor initializes all members to zero or to empty
-        /// objects.
-        DataLoader();
-
-        /// @brief A constructor for DataLoader that generates necessary model
-        /// objects based on the contents of the provided input directory
-        /// @param inputDir the name of the directory where input files are
-        /// stored
-        DataLoader(std::string const &inputDir,
-                   std::shared_ptr<spdlog::logger> logger = {});
-
         /// @brief An alternative constructor for DataLoader for loading data
         /// when a Configuration object has already been created prior to
         /// specifying the directory containing tabular inputs
@@ -186,7 +66,8 @@ namespace Matrixify {
         /// already-processed configuration file
         /// @param inputDir The name of the directory where input files are
         /// stored
-        DataLoader(Data::IConfigurationPtr &config, std::string const &inputDir,
+        DataLoader(Data::IConfigurationPtr config = {},
+                   std::string const &inputDir = "",
                    std::shared_ptr<spdlog::logger> logger = {});
 
         ~DataLoader(){};
@@ -295,8 +176,8 @@ namespace Matrixify {
         Matrix4d buildTransitionRatesOverTime(std::vector<int> const &ict,
                                               Data::IDataTablePtr const &table);
 
-        std::vector<int> demographicCounts;
-        std::map<std::string, std::vector<int>> simulationParameters;
+        std::vector<int> demographicCounts{};
+        std::map<std::string, std::vector<int>> simulationParameters = {};
 
         Matrix3d initialSample;
         Matrix4d enteringSamples;

@@ -30,82 +30,15 @@
 #include <DataManagement.hpp>
 
 namespace Matrixify {
-    class ILoader {
+    class BaseLoader {
     public:
-        virtual bool loadConfigurationFile(std::string const &configPath) = 0;
+        BaseLoader(std::string const &inputDir = "",
+                   std::shared_ptr<spdlog::logger> logger = nullptr);
+
+        virtual bool loadConfigurationFile(std::string const &configPath);
 
         virtual bool
-        loadConfigurationPointer(Data::IConfigurationPtr configPtr) = 0;
-
-        /// @brief Read a CSV-formatted file into a map object where the headers
-        /// are keys and the rest of the columns are stored as vectors of
-        /// strings
-        /// @param inputFile path to the CSV to be read
-        /// @return A map object containing columns stored as key-value pairs
-        virtual Data::IDataTablePtr readCSV(std::string const &) = 0;
-
-        /// @brief Reads typical RESPOND input files from the provided input
-        /// directory
-        /// @param inputDir the directory from which to read input files
-        /// @return an unordered map whose keys are table names and values are
-        /// CSV/Data::IDataTablePtrs
-        virtual std::unordered_map<std::string, Data::IDataTablePtr>
-        readInputDir(std::string const &) = 0;
-
-        /// @brief Get the Configuration from the Loader
-        /// @return Configuration
-        virtual Data::IConfigurationPtr getConfiguration() const = 0;
-
-        virtual Data::IDataTablePtr loadTable(std::string const &filename) = 0;
-
-        // simulation
-        virtual int getDuration() const = 0;
-        virtual int getAgingInterval() const = 0;
-        virtual std::vector<int> getInterventionChangeTimes() const = 0;
-        virtual std::vector<int> getEnteringSampleChangeTimes() const = 0;
-        virtual std::vector<int> getOverdoseChangeTimes() const = 0;
-
-        // state
-        virtual std::vector<std::string> getInterventions() const = 0;
-        virtual std::vector<std::string> getOUDStates() const = 0;
-        virtual int getNumOUDStates() const = 0;
-        virtual int getNumInterventions() const = 0;
-
-        // demographic
-        virtual std::vector<std::string> getDemographics() const = 0;
-        virtual int getNumDemographics() const = 0;
-        virtual std::vector<std::string> getDemographicCombos() const = 0;
-        virtual int getNumDemographicCombos() const = 0;
-        virtual int getAgeGroupShift() const = 0;
-
-        // cost
-        virtual bool getCostSwitch() const = 0;
-        virtual std::vector<std::string> getCostPerspectives() const = 0;
-        virtual double getDiscountRate() const = 0;
-        virtual bool getCostCategoryOutputs() const = 0;
-        virtual std::vector<int> getCostUtilityOutputTimesteps() const = 0;
-
-        // output
-        virtual bool getPerInterventionPredictions() const = 0;
-        virtual bool getGeneralOutputsSwitch() const = 0;
-        virtual std::vector<int> getGeneralStatsOutputTimesteps() const = 0;
-
-        // logger
-        virtual std::shared_ptr<spdlog::logger> getLogger() const = 0;
-    };
-
-    class Loader : public virtual ILoader {
-    public:
-        static const std::vector<std::string> INPUT_FILES;
-        Loader() : Loader("", nullptr){};
-        Loader(std::string const &inputDir);
-        Loader(std::shared_ptr<spdlog::logger> logger);
-        Loader(std::string const &inputDir,
-               std::shared_ptr<spdlog::logger> logger);
-
-        bool loadConfigurationFile(std::string const &configPath);
-
-        bool loadConfigurationPointer(Data::IConfigurationPtr configPtr);
+        loadConfigurationPointer(Data::IConfigurationPtr configPtr);
 
         virtual Data::IDataTablePtr readCSV(std::string const &);
 
@@ -118,7 +51,7 @@ namespace Matrixify {
 
         virtual Data::IDataTablePtr loadTable(std::string const &filename) {
             if (this->inputTables.find(filename) == this->inputTables.end()) {
-                this->inputTables[filename] = Loader::readCSV(filename);
+                this->inputTables[filename] = BaseLoader::readCSV(filename);
             }
             return this->inputTables[filename];
         }
@@ -192,20 +125,21 @@ namespace Matrixify {
         }
 
     protected:
-        std::unordered_map<std::string, Data::IDataTablePtr> inputTables;
+        static const std::vector<std::string> INPUT_FILES;
+        std::unordered_map<std::string, Data::IDataTablePtr> inputTables = {};
         std::shared_ptr<spdlog::logger> logger;
 
         // simulation
-        int duration;
-        int agingInterval;
-        std::vector<int> interventionChangeTimes;
-        std::vector<int> enteringSampleChangeTimes;
-        std::vector<int> overdoseChangeTimes;
+        int duration = 0;
+        int agingInterval = 0;
+        std::vector<int> interventionChangeTimes = {};
+        std::vector<int> enteringSampleChangeTimes = {};
+        std::vector<int> overdoseChangeTimes = {};
 
         // state
-        std::vector<std::string> interventions;
+        std::vector<std::string> interventions = {};
         std::map<std::string, int> interventionsIndices;
-        std::vector<std::string> oudStates;
+        std::vector<std::string> oudStates = {};
         std::map<std::string, int> oudIndices;
 
         // demographic

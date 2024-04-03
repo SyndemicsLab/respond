@@ -1,4 +1,5 @@
-//===-- Loader.cpp - Loader class definition --------------------*- C++ -*-===//
+//===-- BaseLoader.cpp - BaseLoader class definition --------------------*- C++
+//-*-===//
 //
 // Part of the RESPOND - Researching Effective Strategies to Prevent Opioid
 // Death Project, under the AGPLv3 License. See https://www.gnu.org/licenses/
@@ -8,23 +9,18 @@
 //===----------------------------------------------------------------------===//
 ///
 /// \file
-/// This file contains the declaration of the Loader class.
+/// This file contains the declaration of the BaseLoader class.
 ///
 /// Created Date: Tuesday, June 27th 2023, 10:20:34 am
 /// Contact: Benjamin.Linas@bmc.org
 ///
 //===----------------------------------------------------------------------===//
 
-#include "Loader.hpp"
+#include "BaseLoader.hpp"
 
 namespace Matrixify {
-    Loader::Loader(std::string const &inputDir) : Loader(inputDir, nullptr) {}
-
-    Loader::Loader(std::shared_ptr<spdlog::logger> logger)
-        : Loader("", logger) {}
-
-    Loader::Loader(std::string const &inputDir,
-                   std::shared_ptr<spdlog::logger> logger) {
+    BaseLoader::BaseLoader(std::string const &inputDir,
+                           std::shared_ptr<spdlog::logger> logger) {
         if (!logger) {
             if (!spdlog::get("console")) {
                 logger = spdlog::stdout_color_mt("console");
@@ -43,7 +39,7 @@ namespace Matrixify {
         }
     }
 
-    bool Loader::loadConfigurationFile(std::string const &configPath) {
+    bool BaseLoader::loadConfigurationFile(std::string const &configPath) {
         if (!configPath.empty()) {
             this->Config = std::make_shared<Data::Configuration>(configPath);
         }
@@ -51,24 +47,25 @@ namespace Matrixify {
         return true;
     }
 
-    bool Loader::loadConfigurationPointer(Data::IConfigurationPtr configPtr) {
+    bool
+    BaseLoader::loadConfigurationPointer(Data::IConfigurationPtr configPtr) {
         this->Config = configPtr;
         loadObjectData();
         return true;
     }
 
-    Data::IDataTablePtr Loader::readCSV(std::string const &inputFile) {
+    Data::IDataTablePtr BaseLoader::readCSV(std::string const &inputFile) {
         Data::IDataTablePtr table =
             std::make_shared<Data::DataTable>(inputFile);
         return table;
     }
 
     std::unordered_map<std::string, Data::IDataTablePtr>
-    Loader::readInputDir(std::string const &inputDir) {
+    BaseLoader::readInputDir(std::string const &inputDir) {
         std::filesystem::path inputDirFixed = inputDir;
         std::unordered_map<std::string, Data::IDataTablePtr> toReturn;
 
-        for (std::string inputFile : Matrixify::Loader::INPUT_FILES) {
+        for (std::string inputFile : Matrixify::BaseLoader::INPUT_FILES) {
             std::filesystem::path filePath = inputDirFixed / inputFile;
             if (!std::filesystem::exists(filePath)) {
                 // this->logger->warn("File " + filePath.string() +
@@ -80,7 +77,7 @@ namespace Matrixify {
         return toReturn;
     }
 
-    void Loader::recursiveHelper(
+    void BaseLoader::recursiveHelper(
         std::vector<std::vector<std::string>> &finalResultVector,
         std::vector<std::string> &currentResultVector,
         std::vector<std::vector<std::string>>::const_iterator currentInput,
@@ -99,7 +96,7 @@ namespace Matrixify {
         }
     }
 
-    void Loader::loadFromConfig() {
+    void BaseLoader::loadFromConfig() {
         if (!this->Config) {
             return; // do we want to throw an error or warn the user?
         }
@@ -182,7 +179,7 @@ namespace Matrixify {
     }
 
     std::map<std::string, int>
-    Loader::buildIndiceMaps(std::vector<std::string> keys) const {
+    BaseLoader::buildIndiceMaps(std::vector<std::string> keys) const {
         std::map<std::string, int> idxMap = {};
         if (!keys.empty()) {
             for (int i = 0; i < keys.size(); ++i) {
@@ -192,7 +189,7 @@ namespace Matrixify {
         return idxMap;
     }
 
-    void Loader::loadObjectData() {
+    void BaseLoader::loadObjectData() {
         loadFromConfig();
         this->interventionsIndices = buildIndiceMaps(getInterventions());
         this->oudIndices = buildIndiceMaps(getOUDStates());
@@ -201,7 +198,7 @@ namespace Matrixify {
 
     // tabular files from the current RESPOND directory structure, as of
     // [2023-04-06]
-    const std::vector<std::string> Loader::INPUT_FILES = {
+    const std::vector<std::string> BaseLoader::INPUT_FILES = {
         "all_types_overdose.csv",
         "background_mortality.csv",
         "block_init_effect.csv",

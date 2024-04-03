@@ -24,46 +24,17 @@
 #include <unordered_map>
 
 namespace Matrixify {
-
-    /*********************************************************************
-     *
-     * Constructors
-     *
-     *********************************************************************/
-    DataLoader::DataLoader() : Loader() {
-        this->duration = 0;
-        this->agingInterval = 0;
-        this->ageGroupShift = 0;
-        this->costSwitch = false;
-
-        this->interventions = {};
-        this->oudStates = {};
-        this->demographicCounts = {};
-        this->simulationParameters = {};
-
-        this->initialSample;
-        this->enteringSamples;
-        this->oudTransitionRates;
-        this->interventionTransitionRates;
-        this->overdoseRates;
-        this->fatalOverdoseRates;
-        this->mortalityRates;
-
-        Loader::inputTables = {};
-    }
-
-    DataLoader::DataLoader(std::string const &inputDir,
-                           std::shared_ptr<spdlog::logger> logger)
-        : Loader(inputDir, logger) {
-        this->inputTables = this->readInputDir(inputDir);
-    }
-
-    DataLoader::DataLoader(Data::IConfigurationPtr &config,
+    DataLoader::DataLoader(Data::IConfigurationPtr config,
                            std::string const &inputDir,
                            std::shared_ptr<spdlog::logger> logger)
-        : Loader(inputDir, logger) {
-        loadConfigurationPointer(config);
-        this->inputTables = this->readInputDir(inputDir);
+        : BaseLoader(inputDir, logger) {
+        if (!config) {
+            loadConfigurationPointer(config);
+        }
+
+        if (inputDir.empty()) {
+            this->inputTables = this->readInputDir(inputDir);
+        }
     }
 
     /*********************************************************************
