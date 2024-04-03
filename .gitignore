@@ -26,6 +26,8 @@ test/TestInput/*
 
 # Shared Libraries
 dminstall
+*.so
+*.a
 
 
 # External tool builders
