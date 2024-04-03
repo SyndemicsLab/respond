@@ -5,6 +5,18 @@ if command -v module &>/dev/null; then
     module load gcc/12.2.0
 fi
 
+if [[ -z "$1" ]]; then
+    BUILDTYPE="Debug"
+else
+    case "$1" in
+	"Debug"|"Release"|"Build")
+	    BUILDTYPE="$1"
+	    ;;
+	*)
+	    echo "Specified build type is invalid\!"
+	    ;;
+    esac
+
 # change to the top-level git folder
 cd "$(git rev-parse --show-toplevel)"
 CONANPATH=$(command -v conan)
@@ -31,13 +43,13 @@ fi
 
 # install dependencies via conan
 $CONANPATH profile detect --force
-$CONANPATH install . --build=missing --settings=build_type=Debug
+$CONANPATH install . --build=missing --settings=build_type="$BUILDTYPE"
 
 (
     cd "build" || exit
     # check if the conan generator file was generated successfully
-    if [[ -f "Debug/generators/conanbuild.sh" ]]; then
-	source "Debug/generators/conanbuild.sh"
+    if [[ -f "$BUILDTYPE/generators/conanbuild.sh" ]]; then
+	source "$BUILDTYPE/generators/conanbuild.sh"
     else
 	echo "\`conan\` generator failed. Terminating."
 	exit 1
@@ -50,5 +62,5 @@ $CONANPATH install . --build=missing --settings=build_type=Debug
 	([[ -n "$CORES" ]] && cmake --build . -j"$CORES") || cmake --build .
     )
     # deactivate the conan virtual environment
-    source "Debug/generators/deactivate_conanbuild.sh"
+    source "$BUILDTYPE/generators/deactivate_conanbuild.sh"
 )
