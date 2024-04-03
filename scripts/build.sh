@@ -16,6 +16,7 @@ else
 	    echo "Specified build type is invalid\!"
 	    ;;
     esac
+fi
 
 # change to the top-level git folder
 cd "$(git rev-parse --show-toplevel)"
