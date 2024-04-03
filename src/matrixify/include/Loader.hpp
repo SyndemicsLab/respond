@@ -89,6 +89,9 @@ namespace Matrixify {
         virtual bool getPerInterventionPredictions() const = 0;
         virtual bool getGeneralOutputsSwitch() const = 0;
         virtual std::vector<int> getGeneralStatsOutputTimesteps() const = 0;
+
+        // logger
+        virtual std::shared_ptr<spdlog::logger> getLogger() const = 0;
     };
 
     class Loader : public virtual ILoader {
@@ -182,6 +185,10 @@ namespace Matrixify {
         }
         virtual std::vector<int> getGeneralStatsOutputTimesteps() const {
             return generalStatsOutputTimesteps;
+        }
+
+        virtual std::shared_ptr<spdlog::logger> getLogger() const {
+            return logger;
         }
 
     protected:

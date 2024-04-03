@@ -61,6 +61,30 @@ namespace Matrixify {
         /// @return Matrix3d Intervention Initialization Rates
         virtual Matrix3d getInterventionInitRates() const = 0;
 
+        /// @brief set the Initial Sample
+        virtual void setInitialSample(Matrix3d mat) = 0;
+
+        /// @brief set the Entering Samples
+        virtual void setEnteringSamples(Matrix4d mat) = 0;
+
+        /// @brief set the OUD Transition Rates
+        virtual void setOUDTransitionRates(Matrix3d mat) = 0;
+
+        /// @brief set the Intervention Transition Rates
+        virtual void setInterventionTransitionRates(Matrix4d mat) = 0;
+
+        /// @brief set the Overdose Rates
+        virtual void setOverdoseRates(Matrix4d mat) = 0;
+
+        /// @brief set the Fatal Overdose Rates
+        virtual void setFatalOverdoseRates(Matrix4d mat) = 0;
+
+        /// @brief set the Mortality Rates
+        virtual void setMortalityRates(Matrix3d mat) = 0;
+
+        /// @brief set the Intervention Initialization Rates
+        virtual void setInterventionInitRates(Matrix3d mat) = 0;
+
         /// @brief Load the Initial Sample from a File
         /// @param csvName Filename to the Initial Sample
         /// @return Matrix3d Initial Sample
@@ -167,50 +191,69 @@ namespace Matrixify {
 
         ~DataLoader(){};
 
-        virtual Matrix3d getInitialSample() const { return initialSample; }
+        Matrix3d getInitialSample() const { return initialSample; }
 
-        virtual Matrix4d getEnteringSamples() const { return enteringSamples; }
+        Matrix4d getEnteringSamples() const { return enteringSamples; }
 
-        virtual Matrix3d getOUDTransitionRates() const {
-            return oudTransitionRates;
-        }
+        Matrix3d getOUDTransitionRates() const { return oudTransitionRates; }
 
-        virtual Matrix4d getInterventionTransitionRates() const {
+        Matrix4d getInterventionTransitionRates() const {
             return interventionTransitionRates;
         }
 
-        virtual Matrix4d getOverdoseRates() const { return overdoseRates; }
+        Matrix4d getOverdoseRates() const { return overdoseRates; }
 
-        virtual Matrix4d getFatalOverdoseRates() const {
-            return fatalOverdoseRates;
-        }
+        Matrix4d getFatalOverdoseRates() const { return fatalOverdoseRates; }
 
-        virtual Matrix3d getMortalityRates() const { return mortalityRates; }
+        Matrix3d getMortalityRates() const { return mortalityRates; }
 
-        virtual Matrix3d getInterventionInitRates() const {
+        Matrix3d getInterventionInitRates() const {
             return interventionInitRates;
         }
 
-        virtual Matrix3d loadInitialSample(std::string const &csvName);
+        void setInitialSample(Matrix3d mat) { this->initialSample = mat; }
 
-        virtual Matrix4d
+        void setEnteringSamples(Matrix4d mat) { this->enteringSamples = mat; }
+
+        void setOUDTransitionRates(Matrix3d mat) {
+            this->oudTransitionRates = mat;
+        }
+
+        void setInterventionTransitionRates(Matrix4d mat) {
+            this->interventionTransitionRates = mat;
+        }
+
+        void setOverdoseRates(Matrix4d mat) { this->overdoseRates = mat; }
+
+        void setFatalOverdoseRates(Matrix4d mat) {
+            this->fatalOverdoseRates = mat;
+        }
+
+        void setMortalityRates(Matrix3d mat) { this->mortalityRates = mat; }
+
+        void setInterventionInitRates(Matrix3d mat) {
+            this->interventionInitRates = mat;
+        }
+
+        Matrix3d loadInitialSample(std::string const &csvName);
+
+        Matrix4d
         loadEnteringSamples(std::string const &csvName,
                             std::string const &enteringSampleIntervention,
                             std::string const &enteringSampleOUD);
 
-        virtual Matrix3d loadOUDTransitionRates(std::string const &csvName);
+        Matrix3d loadOUDTransitionRates(std::string const &csvName);
 
-        virtual Matrix3d loadInterventionInitRates(std::string const &csvName);
+        Matrix3d loadInterventionInitRates(std::string const &csvName);
 
-        virtual Matrix4d
-        loadInterventionTransitionRates(std::string const &csvName);
+        Matrix4d loadInterventionTransitionRates(std::string const &csvName);
 
-        virtual Matrix4d loadOverdoseRates(std::string const &csvName);
+        Matrix4d loadOverdoseRates(std::string const &csvName);
 
-        virtual Matrix4d loadFatalOverdoseRates(std::string const &csvName);
+        Matrix4d loadFatalOverdoseRates(std::string const &csvName);
 
-        virtual Matrix3d loadMortalityRates(std::string const &smrCSVName,
-                                            std::string const &bgmCSVName);
+        Matrix3d loadMortalityRates(std::string const &smrCSVName,
+                                    std::string const &bgmCSVName);
 
     private:
         void fillTime(int &start, int const end, Matrix3d data,

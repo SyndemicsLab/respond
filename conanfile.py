@@ -11,12 +11,14 @@ class RESPONDRecipe(ConanFile):
 
     options = {
         "shared": [True, False],
-        "with_api": [True, False]
+        "with_api": [True, False],
+        "python_module": [True, False]
     }
 
     default_options = {
         "shared": False,
-        "with_api": False
+        "with_api": False,
+        "python_module": True
     }
 
     settings = "os", "compiler", "build_type", "arch"
@@ -27,6 +29,8 @@ class RESPONDRecipe(ConanFile):
         self.requires("spdlog/[>=1.11.0]")
         if self.options.with_api:
             self.requires("crowcpp-crow/1.0+5")
+        if self.options.python_module:
+            self.requires("pybind11/[>=2.11.1]")
         self.test_requires("gtest/[>=1.13.0]")
 
     def validate(self):

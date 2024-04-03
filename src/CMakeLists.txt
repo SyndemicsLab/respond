@@ -17,6 +17,11 @@ if(NOT BUILD_API STREQUAL OFF)
   add_subdirectory(api)
 endif()
 
+option(BUILD_PYBINDINGS "enable RESPOND Python Bindings" OFF)
+if (NOT BUILD_PYBINDINGS STREQUAL OFF)
+  add_subdirectory(pybindings)
+endif()
+
 add_executable(respond main.cpp)
 
 target_include_directories(respond PRIVATE
