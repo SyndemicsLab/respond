@@ -54,7 +54,7 @@ $CONANPATH install . --build=missing --settings=build_type="$BUILDTYPE"
 	echo "\`conan\` generator failed. Terminating."
 	exit 1
     fi
-    cmake .. -DCMAKE_TOOLCHAIN_FILE=Debug/generators/conan_toolchain.cmake -DCMAKE_BUILD_TYPE=Debug
+    cmake .. -DCMAKE_TOOLCHAIN_FILE="$BUILDTYPE"/generators/conan_toolchain.cmake -DCMAKE_BUILD_TYPE="$BUILDTYPE"
     (
 	# determine the number of processing units available
 	CORES="$(nproc --all)"
