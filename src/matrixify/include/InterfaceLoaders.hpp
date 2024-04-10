@@ -8,56 +8,82 @@
 #include <DataManagement.hpp>
 
 namespace Matrixify {
-    class IBaseLoader {
+    class ILoggable {
+    public:
+        virtual std::shared_ptr<spdlog::logger> getLogger() const = 0;
+    };
+
+    class IOutputer {
+    public:
+        virtual bool getPerInterventionPredictions() const = 0;
+        virtual bool getGeneralOutputsSwitch() const = 0;
+        virtual std::vector<int> getGeneralStatsOutputTimesteps() const = 0;
+    };
+
+    class IConfigurable {
     public:
         virtual bool loadConfigurationFile(std::string const &configPath) = 0;
-
         virtual bool
         loadConfigurationPointer(Data::IConfigurationPtr configPtr) = 0;
+        virtual Data::IConfigurationPtr getConfiguration() const = 0;
+    };
 
+    class ISimulatable {
+    public:
+        virtual int getDuration() const = 0;
+    };
+
+    class ITableable {
+    public:
         virtual Data::IDataTablePtr readCSV(std::string const &) = 0;
-
         virtual std::unordered_map<std::string, Data::IDataTablePtr>
         readInputDir(std::string const &) = 0;
-
-        virtual Data::IConfigurationPtr getConfiguration() const = 0;
-
         virtual Data::IDataTablePtr loadTable(std::string const &filename) = 0;
+    };
 
-        // simulation
-        virtual int getDuration() const = 0;
-        virtual int getAgingInterval() const = 0;
-        virtual std::vector<int> getInterventionChangeTimes() const = 0;
-        virtual std::vector<int> getEnteringSampleChangeTimes() const = 0;
-        virtual std::vector<int> getOverdoseChangeTimes() const = 0;
-
-        // state
+    class IIntervention {
+    public:
         virtual std::vector<std::string> getInterventions() const = 0;
+        virtual int getNumInterventions() const = 0;
+        virtual std::vector<int> getInterventionChangeTimes() const = 0;
+    };
+
+    class IBehavior {
+    public:
         virtual std::vector<std::string> getOUDStates() const = 0;
         virtual int getNumOUDStates() const = 0;
-        virtual int getNumInterventions() const = 0;
+    };
 
-        // demographic
+    class IDemographics {
+    public:
         virtual std::vector<std::string> getDemographics() const = 0;
         virtual int getNumDemographics() const = 0;
         virtual std::vector<std::string> getDemographicCombos() const = 0;
         virtual int getNumDemographicCombos() const = 0;
         virtual int getAgeGroupShift() const = 0;
+        virtual int getAgingInterval() const = 0;
+        virtual std::vector<int> getEnteringSampleChangeTimes() const = 0;
+        virtual std::vector<int> getOverdoseChangeTimes() const = 0;
+    };
 
-        // cost
+    class ICosting {
+    public:
         virtual bool getCostSwitch() const = 0;
         virtual std::vector<std::string> getCostPerspectives() const = 0;
         virtual double getDiscountRate() const = 0;
         virtual bool getCostCategoryOutputs() const = 0;
         virtual std::vector<int> getCostUtilityOutputTimesteps() const = 0;
-
-        // output
-        virtual bool getPerInterventionPredictions() const = 0;
-        virtual bool getGeneralOutputsSwitch() const = 0;
-        virtual std::vector<int> getGeneralStatsOutputTimesteps() const = 0;
-
-        virtual std::shared_ptr<spdlog::logger> getLogger() const = 0;
     };
+
+    class IBaseLoader : public virtual ILoggable,
+                        public virtual IOutputer,
+                        public virtual IConfigurable,
+                        public virtual ISimulatable,
+                        public virtual ITableable,
+                        public virtual IIntervention,
+                        public virtual IBehavior,
+                        public virtual IDemographics,
+                        public virtual ICosting {};
 
     class IDataLoader : public virtual IBaseLoader {
     public:

@@ -30,7 +30,8 @@
 namespace Matrixify {
     class BaseLoader : public virtual IBaseLoader {
     public:
-        BaseLoader(std::string const &inputDir = "",
+        BaseLoader(Data::IConfigurationPtr config = nullptr,
+                   std::string const &inputDir = "",
                    std::shared_ptr<spdlog::logger> logger = nullptr);
 
         bool loadConfigurationFile(std::string const &configPath) override;
@@ -125,6 +126,7 @@ namespace Matrixify {
     protected:
         static const std::vector<std::string> INPUT_FILES;
         std::unordered_map<std::string, Data::IDataTablePtr> inputTables = {};
+        Data::IConfigurationPtr Config;
         std::shared_ptr<spdlog::logger> logger;
 
         // simulation
@@ -162,7 +164,6 @@ namespace Matrixify {
         void loadObjectData();
 
     private:
-        Data::IConfigurationPtr Config;
         void loadFromConfig();
         std::map<std::string, int>
         buildIndiceMaps(std::vector<std::string> keys) const;

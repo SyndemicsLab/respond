@@ -19,9 +19,28 @@
 #include "BaseLoader.hpp"
 
 namespace Matrixify {
-    BaseLoader::BaseLoader(std::string const &inputDir,
+    BaseLoader::BaseLoader(Data::IConfigurationPtr config,
+                           std::string const &inputDir,
                            std::shared_ptr<spdlog::logger> logger) {
-        if (!logger) {
+
+        if (config != nullptr) {
+            loadConfigurationPointer(config);
+        }
+
+        if (!inputDir.empty()) {
+            std::filesystem::path inputPath = inputDir;
+            this->inputTables = this->readInputDir(inputDir);
+            if (this->Config == nullptr) {
+                if (inputPath.filename().string().compare("sim.conf") != 0) {
+                    inputPath = inputPath / "sim.conf";
+                }
+                if (!loadConfigurationFile(inputPath.string())) {
+                    // error on config file being found
+                }
+            }
+        }
+
+        if (logger == nullptr) {
             if (!spdlog::get("console")) {
                 logger = spdlog::stdout_color_mt("console");
             } else {
@@ -29,23 +48,13 @@ namespace Matrixify {
             }
         }
         this->logger = logger;
-
-        if (!inputDir.empty()) {
-            std::filesystem::path inputPath = inputDir;
-            if (inputPath.filename().string().compare("sim.conf") != 0) {
-                inputPath = inputPath / "sim.conf";
-            }
-
-            this->Config =
-                std::make_shared<Data::Configuration>(inputPath.string());
-            loadObjectData();
-        }
     }
 
     bool BaseLoader::loadConfigurationFile(std::string const &configPath) {
-        if (!configPath.empty()) {
-            this->Config = std::make_shared<Data::Configuration>(configPath);
+        if (configPath.empty() || !std::filesystem::exists(configPath)) {
+            return false;
         }
+        this->Config = std::make_shared<Data::Configuration>(configPath);
         loadObjectData();
         return true;
     }

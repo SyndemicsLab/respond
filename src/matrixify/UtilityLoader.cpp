@@ -21,14 +21,7 @@ namespace Matrixify {
     UtilityLoader::UtilityLoader(Data::IConfigurationPtr config,
                                  std::string const &inputDir,
                                  std::shared_ptr<spdlog::logger> logger)
-        : BaseLoader(inputDir, logger) {
-        if (config != nullptr) {
-            loadConfigurationPointer(config);
-        }
-        if (inputDir.empty()) {
-            this->inputTables = this->readInputDir(inputDir);
-        }
-    }
+        : BaseLoader(config, inputDir, logger) {}
 
     std::unordered_map<std::string, Matrix3d>
     UtilityLoader::loadBackgroundUtility(std::string const &csvName) {
