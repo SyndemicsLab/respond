@@ -32,7 +32,10 @@ namespace Matrixify {
 
         if (!inputDir.empty()) {
             std::filesystem::path inputPath = inputDir;
-            inputPath = inputPath / "sim.conf";
+            if (inputPath.filename().string().compare("sim.conf") != 0) {
+                inputPath = inputPath / "sim.conf";
+            }
+
             this->Config =
                 std::make_shared<Data::Configuration>(inputPath.string());
             loadObjectData();

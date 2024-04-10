@@ -119,9 +119,7 @@ TEST_F(CostLoaderTest, Constructor) {
 TEST_F(CostLoaderTest, ConstructorStr) {
     Matrixify::CostLoader cl(std::filesystem::temp_directory_path().string(),
                              logger);
-    EXPECT_EQ(
-        cl.getConfiguration()->getStringVector("state.interventions").size(),
-        9);
+    EXPECT_EQ(cl.getInterventions().size(), 9);
 }
 
 TEST_F(CostLoaderTest, loadConfigurationFile) {

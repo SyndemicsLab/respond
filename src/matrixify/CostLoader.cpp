@@ -24,10 +24,12 @@ namespace Matrixify {
                            std::string const &inputDir,
                            std::shared_ptr<spdlog::logger> logger)
         : BaseLoader(inputDir, logger) {
-        if (!config) {
+        if (config != nullptr) {
             loadConfigurationPointer(config);
         }
-        this->inputTables = this->readInputDir(inputDir);
+        if (inputDir.empty()) {
+            this->inputTables = this->readInputDir(inputDir);
+        }
     }
 
     std::unordered_map<std::string, Matrix3d>

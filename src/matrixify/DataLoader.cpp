@@ -28,7 +28,7 @@ namespace Matrixify {
                            std::string const &inputDir,
                            std::shared_ptr<spdlog::logger> logger)
         : BaseLoader(inputDir, logger) {
-        if (!config) {
+        if (config != nullptr) {
             loadConfigurationPointer(config);
         }
 

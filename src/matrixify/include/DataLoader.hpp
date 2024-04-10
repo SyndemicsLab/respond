@@ -25,7 +25,6 @@
 
 #include "BaseLoader.hpp"
 #include "DataTypes.hpp"
-#include "InterfaceLoaders.hpp"
 
 namespace Matrixify {
     /*!
@@ -66,9 +65,20 @@ namespace Matrixify {
         /// already-processed configuration file
         /// @param inputDir The name of the directory where input files are
         /// stored
-        DataLoader(Data::IConfigurationPtr config = {},
-                   std::string const &inputDir = "",
-                   std::shared_ptr<spdlog::logger> logger = {});
+        DataLoader(Data::IConfigurationPtr config, std::string const &inputDir,
+                   std::shared_ptr<spdlog::logger> logger);
+
+        // delegating constructors
+        DataLoader() : DataLoader(nullptr, "", nullptr) {}
+        DataLoader(Data::IConfigurationPtr config)
+            : DataLoader(config, "", nullptr) {}
+        DataLoader(Data::IConfigurationPtr config, std::string const &inputDir)
+            : DataLoader(config, inputDir, nullptr) {}
+        DataLoader(std::string const &inputDir,
+                   std::shared_ptr<spdlog::logger> logger)
+            : DataLoader(nullptr, inputDir, logger) {}
+        DataLoader(std::string const &inputDir)
+            : DataLoader(nullptr, inputDir, nullptr) {}
 
         ~DataLoader(){};
 

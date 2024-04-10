@@ -29,9 +29,20 @@
 namespace Matrixify {
     class CostLoader : public BaseLoader, public virtual ICostLoader {
     public:
-        CostLoader(Data::IConfigurationPtr config = {},
-                   std::string const &inputDir = "",
-                   std::shared_ptr<spdlog::logger> logger = {});
+        CostLoader(Data::IConfigurationPtr config, std::string const &inputDir,
+                   std::shared_ptr<spdlog::logger> logger);
+
+        // delegating constructors
+        CostLoader() : CostLoader(nullptr, "", nullptr) {}
+        CostLoader(Data::IConfigurationPtr config)
+            : CostLoader(config, "", nullptr) {}
+        CostLoader(Data::IConfigurationPtr config, std::string const &inputDir)
+            : CostLoader(config, inputDir, nullptr) {}
+        CostLoader(std::string const &inputDir,
+                   std::shared_ptr<spdlog::logger> logger)
+            : CostLoader(nullptr, inputDir, logger) {}
+        CostLoader(std::string const &inputDir)
+            : CostLoader(nullptr, inputDir, nullptr) {}
 
         ~CostLoader(){};
 

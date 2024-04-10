@@ -75,8 +75,8 @@ int main(int argc, char **argv) {
             logger->info("Logger Created");
 
             std::shared_ptr<Matrixify::IDataLoader> inputs =
-                std::make_shared<Matrixify::DataLoader>(inputSet.string(),
-                                                        logger);
+                std::make_shared<Matrixify::DataLoader>(
+                    nullptr, inputSet.string(), logger);
             logger->info("DataLoader Created");
 
             std::shared_ptr<Matrixify::ICostLoader> costLoader =

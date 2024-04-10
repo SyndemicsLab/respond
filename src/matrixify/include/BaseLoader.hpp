@@ -25,31 +25,29 @@
 #include <unordered_map>
 #include <vector>
 
-#include "spdlog/sinks/stdout_color_sinks.h"
-#include "spdlog/spdlog.h"
-#include <DataManagement.hpp>
+#include "InterfaceLoaders.hpp"
 
 namespace Matrixify {
-    class BaseLoader {
+    class BaseLoader : public virtual IBaseLoader {
     public:
         BaseLoader(std::string const &inputDir = "",
                    std::shared_ptr<spdlog::logger> logger = nullptr);
 
-        virtual bool loadConfigurationFile(std::string const &configPath);
+        bool loadConfigurationFile(std::string const &configPath) override;
 
-        virtual bool
-        loadConfigurationPointer(Data::IConfigurationPtr configPtr);
+        bool
+        loadConfigurationPointer(Data::IConfigurationPtr configPtr) override;
 
-        virtual Data::IDataTablePtr readCSV(std::string const &);
+        Data::IDataTablePtr readCSV(std::string const &) override;
 
-        virtual std::unordered_map<std::string, Data::IDataTablePtr>
-        readInputDir(std::string const &);
+        std::unordered_map<std::string, Data::IDataTablePtr>
+        readInputDir(std::string const &) override;
 
-        virtual Data::IConfigurationPtr getConfiguration() const {
+        Data::IConfigurationPtr getConfiguration() const override {
             return Config;
         }
 
-        virtual Data::IDataTablePtr loadTable(std::string const &filename) {
+        Data::IDataTablePtr loadTable(std::string const &filename) override {
             if (this->inputTables.find(filename) == this->inputTables.end()) {
                 this->inputTables[filename] = BaseLoader::readCSV(filename);
             }
@@ -57,70 +55,70 @@ namespace Matrixify {
         }
 
         // simulation
-        virtual int getDuration() const { return duration; }
-        virtual int getAgingInterval() const { return agingInterval; }
-        virtual std::vector<int> getInterventionChangeTimes() const {
+        int getDuration() const override { return duration; }
+        int getAgingInterval() const override { return agingInterval; }
+        std::vector<int> getInterventionChangeTimes() const override {
             return interventionChangeTimes;
         }
-        virtual std::vector<int> getEnteringSampleChangeTimes() const {
+        std::vector<int> getEnteringSampleChangeTimes() const override {
             return enteringSampleChangeTimes;
         }
-        virtual std::vector<int> getOverdoseChangeTimes() const {
+        std::vector<int> getOverdoseChangeTimes() const override {
             return overdoseChangeTimes;
         }
 
         // state
-        virtual std::vector<std::string> getInterventions() const {
+        std::vector<std::string> getInterventions() const override {
             return interventions;
         }
-        virtual std::vector<std::string> getOUDStates() const {
+        std::vector<std::string> getOUDStates() const override {
             return oudStates;
         }
-        virtual int getNumOUDStates() const { return this->oudStates.size(); }
-        virtual int getNumInterventions() const {
+        int getNumOUDStates() const override { return this->oudStates.size(); }
+        int getNumInterventions() const override {
             return this->interventions.size();
         }
 
         // demographic
-        virtual std::vector<std::string> getDemographics() const {
+        std::vector<std::string> getDemographics() const override {
             return this->demographics;
         }
-        virtual int getNumDemographics() const {
+        int getNumDemographics() const override {
             return this->demographics.size();
         }
-        virtual std::vector<std::string> getDemographicCombos() const {
+        std::vector<std::string> getDemographicCombos() const override {
             return this->demographicCombos;
         }
-        virtual int getNumDemographicCombos() const {
+        int getNumDemographicCombos() const override {
             return this->demographicCombos.size();
         }
-        virtual int getAgeGroupShift() const { return ageGroupShift; }
+        int getAgeGroupShift() const override { return ageGroupShift; }
 
         // cost
-        virtual bool getCostSwitch() const { return costSwitch; }
-        virtual std::vector<std::string> getCostPerspectives() const {
+        bool getCostSwitch() const override { return costSwitch; }
+        std::vector<std::string> getCostPerspectives() const override {
             return costPerspectives;
         }
-        virtual double getDiscountRate() const { return discountRate; }
-        virtual bool getCostCategoryOutputs() const {
+        double getDiscountRate() const override { return discountRate; }
+        bool getCostCategoryOutputs() const override {
             return costCategoryOutputs;
         }
-        virtual std::vector<int> getCostUtilityOutputTimesteps() const {
+        std::vector<int> getCostUtilityOutputTimesteps() const override {
             return costUtilityOutputTimesteps;
         }
 
         // output
-        virtual bool getPerInterventionPredictions() const {
+        bool getPerInterventionPredictions() const override {
             return perInterventionPredictions;
         }
-        virtual bool getGeneralOutputsSwitch() const {
+        bool getGeneralOutputsSwitch() const override {
             return generalOutputsSwitch;
         }
-        virtual std::vector<int> getGeneralStatsOutputTimesteps() const {
+        std::vector<int> getGeneralStatsOutputTimesteps() const override {
             return generalStatsOutputTimesteps;
         }
 
-        virtual std::shared_ptr<spdlog::logger> getLogger() const {
+        std::shared_ptr<spdlog::logger> getLogger() const override {
             return logger;
         }
 

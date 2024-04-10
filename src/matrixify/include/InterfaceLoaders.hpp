@@ -3,9 +3,63 @@
 #define DATA_INTERFACELOADERS_HPP_
 
 #include "DataTypes.hpp"
+#include "spdlog/sinks/stdout_color_sinks.h"
+#include "spdlog/spdlog.h"
+#include <DataManagement.hpp>
 
 namespace Matrixify {
-    class IDataLoader {
+    class IBaseLoader {
+    public:
+        virtual bool loadConfigurationFile(std::string const &configPath) = 0;
+
+        virtual bool
+        loadConfigurationPointer(Data::IConfigurationPtr configPtr) = 0;
+
+        virtual Data::IDataTablePtr readCSV(std::string const &) = 0;
+
+        virtual std::unordered_map<std::string, Data::IDataTablePtr>
+        readInputDir(std::string const &) = 0;
+
+        virtual Data::IConfigurationPtr getConfiguration() const = 0;
+
+        virtual Data::IDataTablePtr loadTable(std::string const &filename) = 0;
+
+        // simulation
+        virtual int getDuration() const = 0;
+        virtual int getAgingInterval() const = 0;
+        virtual std::vector<int> getInterventionChangeTimes() const = 0;
+        virtual std::vector<int> getEnteringSampleChangeTimes() const = 0;
+        virtual std::vector<int> getOverdoseChangeTimes() const = 0;
+
+        // state
+        virtual std::vector<std::string> getInterventions() const = 0;
+        virtual std::vector<std::string> getOUDStates() const = 0;
+        virtual int getNumOUDStates() const = 0;
+        virtual int getNumInterventions() const = 0;
+
+        // demographic
+        virtual std::vector<std::string> getDemographics() const = 0;
+        virtual int getNumDemographics() const = 0;
+        virtual std::vector<std::string> getDemographicCombos() const = 0;
+        virtual int getNumDemographicCombos() const = 0;
+        virtual int getAgeGroupShift() const = 0;
+
+        // cost
+        virtual bool getCostSwitch() const = 0;
+        virtual std::vector<std::string> getCostPerspectives() const = 0;
+        virtual double getDiscountRate() const = 0;
+        virtual bool getCostCategoryOutputs() const = 0;
+        virtual std::vector<int> getCostUtilityOutputTimesteps() const = 0;
+
+        // output
+        virtual bool getPerInterventionPredictions() const = 0;
+        virtual bool getGeneralOutputsSwitch() const = 0;
+        virtual std::vector<int> getGeneralStatsOutputTimesteps() const = 0;
+
+        virtual std::shared_ptr<spdlog::logger> getLogger() const = 0;
+    };
+
+    class IDataLoader : public virtual IBaseLoader {
     public:
         /// @brief Get the Initial Sample
         /// @return Matrix3d Initial Sample
@@ -114,7 +168,7 @@ namespace Matrixify {
                                             std::string const &bgmCSVName) = 0;
     };
 
-    class ICostLoader {
+    class ICostLoader : public virtual IBaseLoader {
     public:
         /// @brief Load Healthcare Utilization Cost from file
         /// @param csvName filename for Healthcare Utilization Cost
@@ -173,7 +227,7 @@ namespace Matrixify {
         virtual double getDiscountRate() const = 0;
     };
 
-    class IUtilityLoader {
+    class IUtilityLoader : public virtual IBaseLoader {
     public:
         /// @brief Load the Background Utilties from a File
         /// @param csvName Filename containing Background Utility
