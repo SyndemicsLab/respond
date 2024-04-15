@@ -10,22 +10,25 @@
 namespace Matrixify {
     class ILoggable {
     public:
+        virtual void setLogger(std::shared_ptr<spdlog::logger> const) = 0;
         virtual std::shared_ptr<spdlog::logger> getLogger() const = 0;
+
+    private:
+        std::shared_ptr<spdlog::logger> logger;
     };
 
-    class IOutputer {
+    class IOutputable {
     public:
         virtual bool getPerInterventionPredictions() const = 0;
         virtual bool getGeneralOutputsSwitch() const = 0;
         virtual std::vector<int> getGeneralStatsOutputTimesteps() const = 0;
     };
 
-    class IConfigurable {
+    class IConfigable {
     public:
-        virtual bool loadConfigurationFile(std::string const &configPath) = 0;
-        virtual bool
-        loadConfigurationPointer(Data::IConfigurationPtr configPtr) = 0;
-        virtual Data::IConfigurationPtr getConfiguration() const = 0;
+        virtual bool loadConfigFile(std::string const &configPath) = 0;
+        virtual bool loadConfigPtr(Data::IConfigablePtr configPtr) = 0;
+        virtual Data::IConfigablePtr getConfig() const = 0;
     };
 
     class ISimulatable {
@@ -76,8 +79,8 @@ namespace Matrixify {
     };
 
     class IBaseLoader : public virtual ILoggable,
-                        public virtual IOutputer,
-                        public virtual IConfigurable,
+                        public virtual IOutputable,
+                        public virtual IConfigable,
                         public virtual ISimulatable,
                         public virtual ITableable,
                         public virtual IIntervention,

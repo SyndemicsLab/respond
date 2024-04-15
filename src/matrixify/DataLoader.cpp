@@ -24,7 +24,7 @@
 #include <unordered_map>
 
 namespace Matrixify {
-    DataLoader::DataLoader(Data::IConfigurationPtr config,
+    DataLoader::DataLoader(Data::IConfigablePtr config,
                            std::string const &inputDir,
                            std::shared_ptr<spdlog::logger> logger)
         : BaseLoader(config, inputDir, logger) {}

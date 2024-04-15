@@ -18,7 +18,7 @@
 #include "UtilityLoader.hpp"
 
 namespace Matrixify {
-    UtilityLoader::UtilityLoader(Data::IConfigurationPtr config,
+    UtilityLoader::UtilityLoader(Data::IConfigablePtr config,
                                  std::string const &inputDir,
                                  std::shared_ptr<spdlog::logger> logger)
         : BaseLoader(config, inputDir, logger) {}

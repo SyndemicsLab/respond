@@ -30,23 +30,20 @@
 namespace Matrixify {
     class BaseLoader : public virtual IBaseLoader {
     public:
-        BaseLoader(Data::IConfigurationPtr config = nullptr,
+        BaseLoader(Data::IConfigablePtr config = nullptr,
                    std::string const &inputDir = "",
                    std::shared_ptr<spdlog::logger> logger = nullptr);
 
-        bool loadConfigurationFile(std::string const &configPath) override;
+        bool loadConfigFile(std::string const &configPath) override;
 
-        bool
-        loadConfigurationPointer(Data::IConfigurationPtr configPtr) override;
+        bool loadConfigPtr(Data::IConfigablePtr configPtr) override;
 
         Data::IDataTablePtr readCSV(std::string const &) override;
 
         std::unordered_map<std::string, Data::IDataTablePtr>
         readInputDir(std::string const &) override;
 
-        Data::IConfigurationPtr getConfiguration() const override {
-            return Config;
-        }
+        Data::IConfigablePtr getConfig() const override { return Config; }
 
         Data::IDataTablePtr loadTable(std::string const &filename) override {
             if (this->inputTables.find(filename) == this->inputTables.end()) {
@@ -123,10 +120,22 @@ namespace Matrixify {
             return logger;
         }
 
+        void setLogger(std::shared_ptr<spdlog::logger> const log) {
+            if (log == nullptr) {
+                if (!spdlog::get("console")) {
+                    this->logger = spdlog::stdout_color_mt("console");
+                } else {
+                    this->logger = spdlog::get("console");
+                }
+            } else {
+                this->logger = log;
+            }
+        }
+
     protected:
         static const std::vector<std::string> INPUT_FILES;
         std::unordered_map<std::string, Data::IDataTablePtr> inputTables = {};
-        Data::IConfigurationPtr Config;
+        Data::IConfigablePtr Config;
         std::shared_ptr<spdlog::logger> logger;
 
         // simulation

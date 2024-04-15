@@ -19,12 +19,12 @@
 #include "BaseLoader.hpp"
 
 namespace Matrixify {
-    BaseLoader::BaseLoader(Data::IConfigurationPtr config,
+    BaseLoader::BaseLoader(Data::IConfigablePtr config,
                            std::string const &inputDir,
                            std::shared_ptr<spdlog::logger> logger) {
 
         if (config != nullptr) {
-            loadConfigurationPointer(config);
+            loadConfigPtr(config);
         }
 
         if (!inputDir.empty()) {
@@ -34,33 +34,25 @@ namespace Matrixify {
                 if (inputPath.filename().string().compare("sim.conf") != 0) {
                     inputPath = inputPath / "sim.conf";
                 }
-                if (!loadConfigurationFile(inputPath.string())) {
+                if (!loadConfigFile(inputPath.string())) {
                     // error on config file being found
                 }
             }
         }
 
-        if (logger == nullptr) {
-            if (!spdlog::get("console")) {
-                logger = spdlog::stdout_color_mt("console");
-            } else {
-                logger = spdlog::get("console");
-            }
-        }
-        this->logger = logger;
+        setLogger(logger);
     }
 
-    bool BaseLoader::loadConfigurationFile(std::string const &configPath) {
+    bool BaseLoader::loadConfigFile(std::string const &configPath) {
         if (configPath.empty() || !std::filesystem::exists(configPath)) {
             return false;
         }
-        this->Config = std::make_shared<Data::Configuration>(configPath);
+        this->Config = std::make_shared<Data::Config>(configPath);
         loadObjectData();
         return true;
     }
 
-    bool
-    BaseLoader::loadConfigurationPointer(Data::IConfigurationPtr configPtr) {
+    bool BaseLoader::loadConfigPtr(Data::IConfigablePtr configPtr) {
         this->Config = configPtr;
         loadObjectData();
         return true;
@@ -112,22 +104,27 @@ namespace Matrixify {
         if (!this->Config) {
             return; // do we want to throw an error or warn the user?
         }
-        std::shared_ptr<Data::Configuration> derivedConfig =
-            std::dynamic_pointer_cast<Data::Configuration>(this->Config);
+        Data::IConfigablePtr derivedConfig =
+            std::dynamic_pointer_cast<Data::Config>(this->Config);
 
         // simulation
-        this->duration = derivedConfig->get<int>("simulation.duration");
-        this->agingInterval =
-            derivedConfig->get<int>("simulation.aging_interval");
+        this->duration =
+            std::get<int>(derivedConfig->get("simulation.duration", (int)0));
+        this->agingInterval = std::get<int>(
+            derivedConfig->get("simulation.aging_interval", (int)0));
+
         this->interventionChangeTimes =
             this->Config->getIntVector("simulation.intervention_change_times");
+
         this->enteringSampleChangeTimes = this->Config->getIntVector(
             "simulation.entering_sample_change_times");
+
         this->overdoseChangeTimes =
             this->Config->getIntVector("simulation.overdose_change_times");
 
         // state
         this->oudStates = this->Config->getStringVector("state.ouds");
+
         this->interventions =
             this->Config->getStringVector("state.interventions");
 
@@ -167,25 +164,26 @@ namespace Matrixify {
         }
 
         // cost
-        this->costSwitch = derivedConfig->get<bool>("cost.cost_analysis");
+        this->costSwitch =
+            std::get<bool>(derivedConfig->get("cost.cost_analysis", false));
         if (this->costSwitch) {
             this->costPerspectives =
                 this->Config->getStringVector("cost.cost_perspectives");
             this->discountRate =
-                derivedConfig->get<double>("cost.discount_rate");
+                std::get<double>(derivedConfig->get("cost.discount_rate", 0.0));
             this->reportingInterval =
-                derivedConfig->get<int>("cost.reporting_interval");
-            this->costCategoryOutputs =
-                derivedConfig->get<bool>("cost.cost_category_outputs");
+                std::get<int>(derivedConfig->get("cost.reporting_interval", 0));
+            this->costCategoryOutputs = std::get<bool>(
+                derivedConfig->get("cost.cost_category_outputs", false));
             this->costUtilityOutputTimesteps = this->Config->getIntVector(
                 "cost.cost_utility_output_timesteps");
         }
 
         // output
-        this->perInterventionPredictions =
-            derivedConfig->get<bool>("output.per_intervention_predictions");
+        this->perInterventionPredictions = std::get<bool>(
+            derivedConfig->get("output.per_intervention_predictions", false));
         this->generalOutputsSwitch =
-            derivedConfig->get<bool>("output.general_outputs");
+            std::get<bool>(derivedConfig->get("output.general_outputs", false));
         this->generalStatsOutputTimesteps =
             this->Config->getIntVector("output.general_stats_output_timesteps");
     }

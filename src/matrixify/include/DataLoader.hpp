@@ -65,14 +65,14 @@ namespace Matrixify {
         /// already-processed configuration file
         /// @param inputDir The name of the directory where input files are
         /// stored
-        DataLoader(Data::IConfigurationPtr config, std::string const &inputDir,
+        DataLoader(Data::IConfigablePtr config, std::string const &inputDir,
                    std::shared_ptr<spdlog::logger> logger);
 
         // delegating constructors
         DataLoader() : DataLoader(nullptr, "", nullptr) {}
-        DataLoader(Data::IConfigurationPtr config)
+        DataLoader(Data::IConfigablePtr config)
             : DataLoader(config, "", nullptr) {}
-        DataLoader(Data::IConfigurationPtr config, std::string const &inputDir)
+        DataLoader(Data::IConfigablePtr config, std::string const &inputDir)
             : DataLoader(config, inputDir, nullptr) {}
         DataLoader(std::string const &inputDir,
                    std::shared_ptr<spdlog::logger> logger)

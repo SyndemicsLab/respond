@@ -15,7 +15,7 @@ PYBIND11_MODULE(Matrixify, m) {
 
     py::class_<BaseLoader, std::shared_ptr<BaseLoader>, IBaseLoader>(
         m, "BaseLoader")
-        .def("loadConfigurationFile", &BaseLoader::loadConfigurationFile)
+        .def("loadConfigFile", &BaseLoader::loadConfigFile)
         .def("getDuration", &BaseLoader::getDuration)
         .def("getAgingInterval", &BaseLoader::getAgingInterval)
         .def("getInterventionChangeTimes",
@@ -32,7 +32,7 @@ PYBIND11_MODULE(Matrixify, m) {
 
     py::class_<DataLoader, std::shared_ptr<DataLoader>, BaseLoader,
                IDataLoader>(m, "DataLoader")
-        .def(py::init<Data::IConfigurationPtr &, std::string const &,
+        .def(py::init<Data::IConfigablePtr &, std::string const &,
                       std::shared_ptr<spdlog::logger>>())
         .def(py::init<std::string const &, std::shared_ptr<spdlog::logger>>())
         .def(py::init<>())

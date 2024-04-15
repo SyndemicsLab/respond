@@ -26,16 +26,14 @@
 namespace Matrixify {
     class UtilityLoader : public BaseLoader, public virtual IUtilityLoader {
     public:
-        UtilityLoader(Data::IConfigurationPtr config,
-                      std::string const &inputDir,
+        UtilityLoader(Data::IConfigablePtr config, std::string const &inputDir,
                       std::shared_ptr<spdlog::logger> logger);
 
         // delegating constructors
         UtilityLoader() : UtilityLoader(nullptr, "", nullptr) {}
-        UtilityLoader(Data::IConfigurationPtr config)
+        UtilityLoader(Data::IConfigablePtr config)
             : UtilityLoader(config, "", nullptr) {}
-        UtilityLoader(Data::IConfigurationPtr config,
-                      std::string const &inputDir)
+        UtilityLoader(Data::IConfigablePtr config, std::string const &inputDir)
             : UtilityLoader(config, inputDir, nullptr) {}
         UtilityLoader(std::string const &inputDir,
                       std::shared_ptr<spdlog::logger> logger)

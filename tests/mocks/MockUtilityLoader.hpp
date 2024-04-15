@@ -8,11 +8,11 @@
 
 class MockUtilityLoader : public Matrixify::IUtilityLoader {
 public:
-    MOCK_METHOD(bool, loadConfigurationFile, (std::string const &configPath),
+    MOCK_METHOD(bool, loadConfigFile, (std::string const &configPath),
                 (override));
 
-    MOCK_METHOD(bool, loadConfigurationPointer,
-                (Data::IConfigurationPtr configPtr), (override));
+    MOCK_METHOD(bool, loadConfigPtr, (Data::IConfigablePtr configPtr),
+                (override));
 
     MOCK_METHOD((Data::IDataTablePtr), readCSV, (std::string const &),
                 (override));
@@ -20,8 +20,7 @@ public:
     MOCK_METHOD((std::unordered_map<std::string, Data::IDataTablePtr>),
                 readInputDir, (std::string const &), (override));
 
-    MOCK_METHOD(Data::IConfigurationPtr, getConfiguration, (),
-                (const, override));
+    MOCK_METHOD(Data::IConfigablePtr, getConfig, (), (const, override));
 
     MOCK_METHOD((Data::IDataTablePtr), loadTable, (std::string const &filename),
                 (override));
@@ -82,6 +81,9 @@ public:
 
     MOCK_METHOD((std::shared_ptr<spdlog::logger>), getLogger, (),
                 (const, override));
+
+    MOCK_METHOD((void), setLogger,
+                (std::shared_ptr<spdlog::logger> const logger), (override));
 
     MOCK_METHOD((std::unordered_map<std::string, Matrixify::Matrix3d>),
                 loadBackgroundUtility, (std::string const &csvName),

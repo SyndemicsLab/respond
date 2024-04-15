@@ -122,12 +122,10 @@ TEST_F(CostLoaderTest, ConstructorStr) {
     EXPECT_EQ(cl.getInterventions().size(), 9);
 }
 
-TEST_F(CostLoaderTest, loadConfigurationFile) {
+TEST_F(CostLoaderTest, loadConfigFile) {
     Matrixify::CostLoader cl;
-    cl.loadConfigurationFile(configFile.string());
-    EXPECT_EQ(
-        cl.getConfiguration()->getStringVector("state.interventions").size(),
-        9);
+    cl.loadConfigFile(configFile.string());
+    EXPECT_EQ(cl.getConfig()->getStringVector("state.interventions").size(), 9);
 }
 
 TEST_F(CostLoaderTest, healthcareUtilizationCost) {

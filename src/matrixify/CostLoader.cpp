@@ -20,7 +20,7 @@
 #include "Matrix3dPrinter.hpp"
 
 namespace Matrixify {
-    CostLoader::CostLoader(Data::IConfigurationPtr config,
+    CostLoader::CostLoader(Data::IConfigablePtr config,
                            std::string const &inputDir,
                            std::shared_ptr<spdlog::logger> logger)
         : BaseLoader(config, inputDir, logger) {}
