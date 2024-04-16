@@ -211,6 +211,12 @@ namespace Simulation {
     }
 
     Matrixify::Matrix3d Sim::step() {
+#ifndef NDEBUG
+        std::cout << "Timestep: " << this->currentTime << std::endl;
+        std::cout << "Total Population: ";
+        std::cout << this->state.sum() << std::endl;
+#endif
+
         // AGING
         // needed for the half-cycle correction
         int agingReference = std::floor(this->agingInterval / 2);
@@ -224,23 +230,23 @@ namespace Simulation {
             this->addEnteringSamples(this->state);
 
 #ifndef NDEBUG
-        std::cout << "Entering Samples: " + std::to_string(this->currentTime)
-                  << std::endl;
+        std::cout << "Post Entering Sample Population State: ";
+        std::cout << enterSampleState.sum() << std::endl;
 #endif
         Matrixify::Matrix3d oudTransState =
             this->multiplyOUDTransitions(enterSampleState);
 
 #ifndef NDEBUG
-        std::cout << "OUD Transitions: " + std::to_string(this->currentTime)
-                  << std::endl;
+        std::cout << "POst OUD Transition Population State: ";
+        std::cout << oudTransState.sum() << std::endl;
 #endif
 
         Matrixify::Matrix3d transitionedState =
             this->multiplyInterventionTransitions(oudTransState);
 
 #ifndef NDEBUG
-        std::cout << "Interventions: " + std::to_string(this->currentTime)
-                  << std::endl;
+        std::cout << "Post Intervention Transition Population State: ";
+        std::cout << transitionedState.sum() << std::endl;
 #endif
 
         this->history.interventionAdmissionHistory.insert(transitionedState,
@@ -249,27 +255,20 @@ namespace Simulation {
         Matrixify::Matrix3d overdoses =
             this->multiplyOverdoseTransitions(transitionedState);
 
-#ifndef NDEBUG
-        std::cout << "Overdoses: " + std::to_string(this->currentTime)
-                  << std::endl;
-#endif
-
         Matrixify::Matrix3d fatalOverdoses =
             this->multiplyFatalOverdoseTransitions(overdoses);
-
-#ifndef NDEBUG
-        std::cout << "Fatal Overdoses: " + std::to_string(this->currentTime)
-                  << std::endl;
-#endif
 
         Matrixify::Matrix3d mortalities = this->multiplyMortalityTransitions(
             transitionedState - fatalOverdoses);
 
 #ifndef NDEBUG
-        std::cout << "Mortalities: " + std::to_string(this->currentTime)
+        std::cout << "Mortalities + FODs Sum: "
+                  << (mortalities + fatalOverdoses).sum() << std::endl;
+
+        std::cout << "Final Step Population: "
+                  << (transitionedState - (mortalities + fatalOverdoses)).sum()
                   << std::endl;
 #endif
-
         return (transitionedState - (mortalities + fatalOverdoses));
     }
 
