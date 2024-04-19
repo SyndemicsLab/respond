@@ -1,7 +1,7 @@
 #ifndef TESTS_MOCKCOSTLOADER_HPP_
 #define TESTS_MOCKCOSTLOADER_HPP_
 
-#include "CostLoader.hpp"
+#include "InterfaceLoaders.hpp"
 #include "gmock/gmock.h"
 
 #include <DataManagement.hpp>

@@ -694,7 +694,7 @@ int main(int argc, char **argv) {
     CROW_ROUTE(app, "/run")
         .methods(crow::HTTPMethod::Post)(
             [&hist, &inputs](const crow::request &req) {
-                Simulation::Sim sim(inputs);
+                Simulation::Respond sim(inputs);
                 sim.Run();
                 hist = sim.getHistory();
                 return crow::response(crow::status::OK);

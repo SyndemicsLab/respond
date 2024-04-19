@@ -25,43 +25,35 @@
 
 using namespace Simulation;
 
-class MockSimulation : public ISim {
-    MOCK_METHOD(void, loadInitialSample,
-                (Matrixify::Matrix3d const &initialSample), (override));
-    MOCK_METHOD(void, loadEnteringSamples,
-                (Matrixify::Matrix4d const &enteringSamples),
-                (override));
-    MOCK_METHOD(void, loadOUDTransitionRates,
-                (Matrixify::Matrix3d const &oudTransitionRates), (override));
-    MOCK_METHOD(void, loadInterventionTransitionRates,
-                (Matrixify::Matrix4d const &InterventionTransitions),
-                (override));
-    MOCK_METHOD(void, loadOverdoseRates,
-                (Matrixify::Matrix4d const &overdoseRates), (override));
-    MOCK_METHOD(void, loadMortalityRates,
-                (Matrixify::Matrix3d const &mortalityRates), (override));
+class MockSimulation : public IRespond {
+    MOCK_METHOD((Matrixify::Matrix3d), getState, (), (const, override));
+    MOCK_METHOD((std::shared_ptr<Matrixify::IDataLoader>), getDataLoader, (),
+                (const, override));
+    MOCK_METHOD((std::shared_ptr<Matrixify::ICostLoader>), getCostLoader, (),
+                (const, override));
+    MOCK_METHOD((std::shared_ptr<Matrixify::IUtilityLoader>), getUtilityLoader,
+                (), (const, override));
+    MOCK_METHOD(void, ageUp, (), (override));
+    MOCK_METHOD((Matrixify::History), getHistory, (), (const, override));
 
-    MOCK_METHOD(Matrixify::Matrix4d, GetEnteringSamples, (),
-                (const, override));
-    MOCK_METHOD(Matrixify::Matrix3d, GetOUDTransitions, (), (const, override));
-    MOCK_METHOD(Matrixify::Matrix4d, GetInterventionTransitions, (),
-                (const, override));
-    MOCK_METHOD(Matrixify::Matrix4d, GetOverdoseTransitions, (),
-                (const, override));
-    MOCK_METHOD(Matrixify::Matrix3d, GetMortalityTransitions, (),
-                (const, override));
-
-    MOCK_METHOD(void, LoadTransitionModules,
-                (Matrixify::Matrix4d const &enteringSamples,
-                 Matrixify::Matrix3d const &oudTransitionRates,
-                 Matrixify::Matrix3d const &interventionInitRates,
-                 Matrixify::Matrix4d const &interventionTransitionRates,
-                 Matrixify::Matrix4d const &fatalOverdoseRates,
-                 Matrixify::Matrix4d const &overdoseRates,
-                 Matrixify::Matrix3d const &mortalityRates),
+    MOCK_METHOD(void, run,
+                ((std::shared_ptr<Matrixify::IDataLoader> const &),
+                 (std::shared_ptr<Matrixify::ICostLoader> const &),
+                 (std::shared_ptr<Matrixify::IUtilityLoader> const &)),
                 (override));
-    MOCK_METHOD(void, Run, (), (override));
-    MOCK_METHOD(Matrixify::History, getHistory, (), (const, override));
+    MOCK_METHOD(std::uint64_t, getCurrentTime, (), (const, override));
+    MOCK_METHOD(void, setDuration, (std::uint64_t const), (override));
+    MOCK_METHOD(std::uint64_t, getDuration, (), (const, override));
+
+    MOCK_METHOD(void, setData,
+                ((std::shared_ptr<Matrixify::IDataLoader> const &)),
+                (override));
+    MOCK_METHOD(void, setCost,
+                ((std::shared_ptr<Matrixify::ICostLoader> const &)),
+                (override));
+    MOCK_METHOD(void, setUtility,
+                ((std::shared_ptr<Matrixify::IUtilityLoader> const &)),
+                (override));
 };
 
 #endif

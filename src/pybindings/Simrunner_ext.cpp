@@ -9,14 +9,21 @@ namespace py = pybind11;
 using namespace Simulation;
 
 PYBIND11_MODULE(Simulation, m) {
-    py::class_<Sim>(m, "Sim")
+    py::class_<Respond>(m, "Respond")
         .def(py::init<std::shared_ptr<Matrixify::IDataLoader>>())
-        .def("RunRESPOND", &Sim::Run)
-        .def("getHistory", &Sim::getHistory)
-        .def("GetEnteringSamples", &Sim::GetEnteringSamples)
-        .def("GetOUDTransitions", &Sim::GetOUDTransitions)
-        .def("GetInterventionTransitions", &Sim::GetInterventionTransitions)
-        .def("GetOverdoseTransitions", &Sim::GetOverdoseTransitions)
-        .def("GetFatalOverdoseTransitions", &Sim::GetFatalOverdoseTransitions)
-        .def("GetMortalityTransitions", &Sim::GetMortalityTransitions);
+        .def("RunRESPOND", &Respond::run)
+        .def("getHistory", &Respond::getHistory)
+        .def("ageUp", &Respond::ageUp)
+        .def("setData", &Respond::setData)
+        .def("setCost", &Respond::setCost)
+        .def("setUtility", &Respond::setUtility)
+        .def("setLogger", &Respond::setLogger)
+        .def("setDuration", &Respond::setDuration)
+        .def("getCurrentTime", &Respond::getCurrentTime)
+        .def("getDuration", &Respond::getDuration)
+        .def("getState", &Respond::getState)
+        .def("getDataLoader", &Respond::getDataLoader)
+        .def("getCostLoader", &Respond::getCostLoader)
+        .def("getUtilityLoader", &Respond::getUtilityLoader)
+        .def("getLogger", &Respond::getLogger);
 }

@@ -1,10 +1,8 @@
 #ifndef TESTS_MOCKUTILITYLOADER_HPP_
 #define TESTS_MOCKUTILITYLOADER_HPP_
 
-#include "UtilityLoader.hpp"
+#include "InterfaceLoaders.hpp"
 #include "gmock/gmock.h"
-
-#include <DataManagement.hpp>
 
 class MockUtilityLoader : public Matrixify::IUtilityLoader {
 public:

@@ -188,6 +188,14 @@ namespace Matrixify {
             this->Config->getIntVector("output.general_stats_output_timesteps");
     }
 
+    std::vector<std::string> BaseLoader::getAgeGroupBins() const {
+        if (!this->Config) {
+            logger->error("No Configuration File Found!");
+            return {};
+        }
+        return this->Config->getStringVector("demographic.age_groups");
+    }
+
     std::map<std::string, int>
     BaseLoader::buildIndiceMaps(std::vector<std::string> keys) const {
         std::map<std::string, int> idxMap = {};

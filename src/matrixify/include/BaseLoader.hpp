@@ -77,6 +77,8 @@ namespace Matrixify {
             return this->interventions.size();
         }
 
+        std::vector<std::string> getAgeGroupBins() const override;
+
         // demographic
         std::vector<std::string> getDemographics() const override {
             return this->demographics;

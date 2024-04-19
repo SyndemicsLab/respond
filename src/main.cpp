@@ -110,8 +110,8 @@ int main(int argc, char **argv) {
                 utilityLoader->loadSettingUtility("setting_utility.csv");
             }
 
-            Simulation::Sim sim(inputs);
-            sim.Run();
+            Simulation::Respond sim(inputs);
+            sim.run();
             Matrixify::History history = sim.getHistory();
 
             Matrixify::CostList basecosts;

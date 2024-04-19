@@ -65,6 +65,7 @@ namespace Matrixify {
         virtual int getNumDemographicCombos() const = 0;
         virtual int getAgeGroupShift() const = 0;
         virtual int getAgingInterval() const = 0;
+        virtual std::vector<std::string> getAgeGroupBins() const = 0;
         virtual std::vector<int> getEnteringSampleChangeTimes() const = 0;
         virtual std::vector<int> getOverdoseChangeTimes() const = 0;
     };
