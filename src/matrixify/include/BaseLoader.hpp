@@ -123,7 +123,7 @@ namespace Matrixify {
         }
 
         void setLogger(std::shared_ptr<spdlog::logger> const log) {
-            if (log == nullptr) {
+            if (!log) {
                 if (!spdlog::get("console")) {
                     this->logger = spdlog::stdout_color_mt("console");
                 } else {

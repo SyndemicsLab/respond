@@ -23,14 +23,14 @@ namespace Matrixify {
                            std::string const &inputDir,
                            std::shared_ptr<spdlog::logger> logger) {
 
-        if (config != nullptr) {
+        if (config) {
             loadConfigPtr(config);
         }
 
         if (!inputDir.empty()) {
             std::filesystem::path inputPath = inputDir;
             this->inputTables = this->readInputDir(inputDir);
-            if (this->Config == nullptr) {
+            if (!this->Config) {
                 if (inputPath.filename().string().compare("sim.conf") != 0) {
                     inputPath = inputPath / "sim.conf";
                 }
