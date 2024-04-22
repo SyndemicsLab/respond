@@ -32,13 +32,15 @@
 namespace Simulation {
 
     Respond::Respond(std::shared_ptr<Matrixify::IDataLoader> dataLoader) {
+        if (!dataLoader) {
+            return;
+        }
+        this->setData(dataLoader);
         const auto processor_count = std::thread::hardware_concurrency();
         Eigen::setNbThreads(processor_count);
         this->setDuration(dataLoader->getDuration());
         this->currentTime = 0;
         this->state = createStandardMatrix3d();
-
-        this->setData(dataLoader);
 
         this->logger = dataLoader->getLogger();
 

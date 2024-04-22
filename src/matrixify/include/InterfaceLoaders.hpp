@@ -251,10 +251,6 @@ namespace Matrixify {
         getFatalOverdoseCost(std::string const &perspective) const = 0;
 
         virtual std::vector<std::string> getCostPerspectives() const = 0;
-
-        virtual bool getCostSwitch() const = 0;
-
-        virtual double getDiscountRate() const = 0;
     };
 
     class IUtilityLoader : public virtual IBaseLoader {
