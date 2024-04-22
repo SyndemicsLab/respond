@@ -66,8 +66,7 @@ namespace Simulation {
         if (utilloader) {
             this->setUtility(utilloader);
         }
-        if (!(this->getDataLoader()) || !(this->getCostLoader()) ||
-            !(this->getUtilityLoader())) {
+        if (!this->getDataLoader()) {
             this->getLogger()->error(
                 "There is no data Loaded to the Simulation!");
             return;

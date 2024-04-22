@@ -67,6 +67,9 @@ int main(int argc, char **argv) {
             try {
                 logger = spdlog::basic_logger_mt("logger" + std::to_string(i),
                                                  log_path);
+#ifndef NDEBUG
+                spdlog::set_level(spdlog::level::debug);
+#endif
             } catch (const spdlog::spdlog_ex &ex) {
                 std::cout << "Log init failed: " << ex.what() << std::endl;
                 return;
