@@ -53,6 +53,9 @@ namespace Matrixify {
     }
 
     bool BaseLoader::loadConfigPtr(Data::IConfigablePtr configPtr) {
+        if (!configPtr) {
+            return false;
+        }
         this->Config = configPtr;
         loadObjectData();
         return true;
@@ -172,7 +175,7 @@ namespace Matrixify {
             this->discountRate =
                 std::get<double>(derivedConfig->get("cost.discount_rate", 0.0));
             this->reportingInterval =
-                std::get<int>(derivedConfig->get("cost.reporting_interval", 0));
+                std::get<int>(derivedConfig->get("cost.reporting_interval", 1));
             this->costCategoryOutputs = std::get<bool>(
                 derivedConfig->get("cost.cost_category_outputs", false));
             this->costUtilityOutputTimesteps = this->Config->getIntVector(
