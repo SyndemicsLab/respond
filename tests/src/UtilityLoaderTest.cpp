@@ -119,17 +119,13 @@ TEST_F(UtilityLoaderTest, Constructor) {
 TEST_F(UtilityLoaderTest, ConstructorStr) {
     Matrixify::UtilityLoader ul(std::filesystem::temp_directory_path().string(),
                                 logger);
-    EXPECT_EQ(
-        ul.getConfiguration()->getStringVector("state.interventions").size(),
-        9);
+    EXPECT_EQ(ul.getConfig()->getStringVector("state.interventions").size(), 9);
 }
 
-TEST_F(UtilityLoaderTest, loadConfigurationFile) {
+TEST_F(UtilityLoaderTest, loadConfigFile) {
     Matrixify::UtilityLoader ul;
-    ul.loadConfigurationFile(configFile.string());
-    EXPECT_EQ(
-        ul.getConfiguration()->getStringVector("state.interventions").size(),
-        9);
+    ul.loadConfigFile(configFile.string());
+    EXPECT_EQ(ul.getConfig()->getStringVector("state.interventions").size(), 9);
 }
 
 TEST_F(UtilityLoaderTest, backgroundUtility) {

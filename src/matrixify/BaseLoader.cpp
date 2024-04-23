@@ -1,4 +1,5 @@
-//===-- Loader.cpp - Loader class definition --------------------*- C++ -*-===//
+//===-- BaseLoader.cpp - BaseLoader class definition --------------------*- C++
+//-*-===//
 //
 // Part of the RESPOND - Researching Effective Strategies to Prevent Opioid
 // Death Project, under the AGPLv3 License. See https://www.gnu.org/licenses/
@@ -8,67 +9,70 @@
 //===----------------------------------------------------------------------===//
 ///
 /// \file
-/// This file contains the declaration of the Loader class.
+/// This file contains the declaration of the BaseLoader class.
 ///
 /// Created Date: Tuesday, June 27th 2023, 10:20:34 am
 /// Contact: Benjamin.Linas@bmc.org
 ///
 //===----------------------------------------------------------------------===//
 
-#include "Loader.hpp"
+#include "BaseLoader.hpp"
 
 namespace Matrixify {
-    Loader::Loader(std::string const &inputDir) : Loader(inputDir, nullptr) {}
+    BaseLoader::BaseLoader(Data::IConfigablePtr config,
+                           std::string const &inputDir,
+                           std::shared_ptr<spdlog::logger> logger) {
 
-    Loader::Loader(std::shared_ptr<spdlog::logger> logger)
-        : Loader("", logger) {}
-
-    Loader::Loader(std::string const &inputDir,
-                   std::shared_ptr<spdlog::logger> logger) {
-        if (!logger) {
-            if (!spdlog::get("console")) {
-                logger = spdlog::stdout_color_mt("console");
-            } else {
-                logger = spdlog::get("console");
-            }
+        if (config) {
+            loadConfigPtr(config);
         }
-        this->logger = logger;
 
         if (!inputDir.empty()) {
             std::filesystem::path inputPath = inputDir;
-            inputPath = inputPath / "sim.conf";
-            this->Config =
-                std::make_shared<Data::Configuration>(inputPath.string());
-            loadObjectData();
+            this->inputTables = this->readInputDir(inputDir);
+            if (!this->Config) {
+                if (inputPath.filename().string().compare("sim.conf") != 0) {
+                    inputPath = inputPath / "sim.conf";
+                }
+                if (!loadConfigFile(inputPath.string())) {
+                    // error on config file being found
+                }
+            }
         }
+
+        setLogger(logger);
     }
 
-    bool Loader::loadConfigurationFile(std::string const &configPath) {
-        if (!configPath.empty()) {
-            this->Config = std::make_shared<Data::Configuration>(configPath);
+    bool BaseLoader::loadConfigFile(std::string const &configPath) {
+        if (configPath.empty() || !std::filesystem::exists(configPath)) {
+            return false;
         }
+        this->Config = std::make_shared<Data::Config>(configPath);
         loadObjectData();
         return true;
     }
 
-    bool Loader::loadConfigurationPointer(Data::IConfigurationPtr configPtr) {
+    bool BaseLoader::loadConfigPtr(Data::IConfigablePtr configPtr) {
+        if (!configPtr) {
+            return false;
+        }
         this->Config = configPtr;
         loadObjectData();
         return true;
     }
 
-    Data::IDataTablePtr Loader::readCSV(std::string const &inputFile) {
+    Data::IDataTablePtr BaseLoader::readCSV(std::string const &inputFile) {
         Data::IDataTablePtr table =
             std::make_shared<Data::DataTable>(inputFile);
         return table;
     }
 
     std::unordered_map<std::string, Data::IDataTablePtr>
-    Loader::readInputDir(std::string const &inputDir) {
+    BaseLoader::readInputDir(std::string const &inputDir) {
         std::filesystem::path inputDirFixed = inputDir;
         std::unordered_map<std::string, Data::IDataTablePtr> toReturn;
 
-        for (std::string inputFile : Matrixify::Loader::INPUT_FILES) {
+        for (std::string inputFile : Matrixify::BaseLoader::INPUT_FILES) {
             std::filesystem::path filePath = inputDirFixed / inputFile;
             if (!std::filesystem::exists(filePath)) {
                 // this->logger->warn("File " + filePath.string() +
@@ -80,7 +84,7 @@ namespace Matrixify {
         return toReturn;
     }
 
-    void Loader::recursiveHelper(
+    void BaseLoader::recursiveHelper(
         std::vector<std::vector<std::string>> &finalResultVector,
         std::vector<std::string> &currentResultVector,
         std::vector<std::vector<std::string>>::const_iterator currentInput,
@@ -99,26 +103,31 @@ namespace Matrixify {
         }
     }
 
-    void Loader::loadFromConfig() {
+    void BaseLoader::loadFromConfig() {
         if (!this->Config) {
             return; // do we want to throw an error or warn the user?
         }
-        std::shared_ptr<Data::Configuration> derivedConfig =
-            std::dynamic_pointer_cast<Data::Configuration>(this->Config);
+        Data::IConfigablePtr derivedConfig =
+            std::dynamic_pointer_cast<Data::Config>(this->Config);
 
         // simulation
-        this->duration = derivedConfig->get<int>("simulation.duration");
-        this->agingInterval =
-            derivedConfig->get<int>("simulation.aging_interval");
+        this->duration =
+            std::get<int>(derivedConfig->get("simulation.duration", (int)0));
+        this->agingInterval = std::get<int>(
+            derivedConfig->get("simulation.aging_interval", (int)0));
+
         this->interventionChangeTimes =
             this->Config->getIntVector("simulation.intervention_change_times");
+
         this->enteringSampleChangeTimes = this->Config->getIntVector(
             "simulation.entering_sample_change_times");
+
         this->overdoseChangeTimes =
             this->Config->getIntVector("simulation.overdose_change_times");
 
         // state
         this->oudStates = this->Config->getStringVector("state.ouds");
+
         this->interventions =
             this->Config->getStringVector("state.interventions");
 
@@ -158,31 +167,40 @@ namespace Matrixify {
         }
 
         // cost
-        this->costSwitch = derivedConfig->get<bool>("cost.cost_analysis");
+        this->costSwitch =
+            std::get<bool>(derivedConfig->get("cost.cost_analysis", false));
         if (this->costSwitch) {
             this->costPerspectives =
                 this->Config->getStringVector("cost.cost_perspectives");
             this->discountRate =
-                derivedConfig->get<double>("cost.discount_rate");
+                std::get<double>(derivedConfig->get("cost.discount_rate", 0.0));
             this->reportingInterval =
-                derivedConfig->get<int>("cost.reporting_interval");
-            this->costCategoryOutputs =
-                derivedConfig->get<bool>("cost.cost_category_outputs");
+                std::get<int>(derivedConfig->get("cost.reporting_interval", 1));
+            this->costCategoryOutputs = std::get<bool>(
+                derivedConfig->get("cost.cost_category_outputs", false));
             this->costUtilityOutputTimesteps = this->Config->getIntVector(
                 "cost.cost_utility_output_timesteps");
         }
 
         // output
-        this->perInterventionPredictions =
-            derivedConfig->get<bool>("output.per_intervention_predictions");
+        this->perInterventionPredictions = std::get<bool>(
+            derivedConfig->get("output.per_intervention_predictions", false));
         this->generalOutputsSwitch =
-            derivedConfig->get<bool>("output.general_outputs");
+            std::get<bool>(derivedConfig->get("output.general_outputs", false));
         this->generalStatsOutputTimesteps =
             this->Config->getIntVector("output.general_stats_output_timesteps");
     }
 
+    std::vector<std::string> BaseLoader::getAgeGroupBins() const {
+        if (!this->Config) {
+            logger->error("No Configuration File Found!");
+            return {};
+        }
+        return this->Config->getStringVector("demographic.age_groups");
+    }
+
     std::map<std::string, int>
-    Loader::buildIndiceMaps(std::vector<std::string> keys) const {
+    BaseLoader::buildIndiceMaps(std::vector<std::string> keys) const {
         std::map<std::string, int> idxMap = {};
         if (!keys.empty()) {
             for (int i = 0; i < keys.size(); ++i) {
@@ -192,7 +210,7 @@ namespace Matrixify {
         return idxMap;
     }
 
-    void Loader::loadObjectData() {
+    void BaseLoader::loadObjectData() {
         loadFromConfig();
         this->interventionsIndices = buildIndiceMaps(getInterventions());
         this->oudIndices = buildIndiceMaps(getOUDStates());
@@ -201,7 +219,7 @@ namespace Matrixify {
 
     // tabular files from the current RESPOND directory structure, as of
     // [2023-04-06]
-    const std::vector<std::string> Loader::INPUT_FILES = {
+    const std::vector<std::string> BaseLoader::INPUT_FILES = {
         "all_types_overdose.csv",
         "background_mortality.csv",
         "block_init_effect.csv",
