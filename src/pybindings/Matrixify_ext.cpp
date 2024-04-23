@@ -11,24 +11,28 @@ namespace py = pybind11;
 using namespace Matrixify;
 
 PYBIND11_MODULE(Matrixify, m) {
-    py::class_<Loader, std::shared_ptr<Loader>>(m, "Loader")
-        .def("loadConfigurationFile", &Loader::loadConfigurationFile)
-        .def("getDuration", &Loader::getDuration)
-        .def("getAgingInterval", &Loader::getAgingInterval)
-        .def("getInterventionChangeTimes", &Loader::getInterventionChangeTimes)
+    py::class_<IBaseLoader, std::shared_ptr<IBaseLoader>>(m, "IBaseLoader");
+
+    py::class_<BaseLoader, std::shared_ptr<BaseLoader>, IBaseLoader>(
+        m, "BaseLoader")
+        .def("loadConfigFile", &BaseLoader::loadConfigFile)
+        .def("getDuration", &BaseLoader::getDuration)
+        .def("getAgingInterval", &BaseLoader::getAgingInterval)
+        .def("getInterventionChangeTimes",
+             &BaseLoader::getInterventionChangeTimes)
         .def("getEnteringSampleChangeTimes",
-             &Loader::getEnteringSampleChangeTimes)
-        .def("getOverdoseChangeTimes", &Loader::getOverdoseChangeTimes)
-        .def("getInterventions", &Loader::getInterventions)
-        .def("getOUDStates", &Loader::getOUDStates)
-        .def("getDemographics", &Loader::getDemographics)
-        .def("getDemographicCombos", &Loader::getDemographicCombos);
+             &BaseLoader::getEnteringSampleChangeTimes)
+        .def("getOverdoseChangeTimes", &BaseLoader::getOverdoseChangeTimes)
+        .def("getInterventions", &BaseLoader::getInterventions)
+        .def("getOUDStates", &BaseLoader::getOUDStates)
+        .def("getDemographics", &BaseLoader::getDemographics)
+        .def("getDemographicCombos", &BaseLoader::getDemographicCombos);
 
     py::class_<IDataLoader, std::shared_ptr<IDataLoader>>(m, "IDataLoader");
 
-    py::class_<DataLoader, std::shared_ptr<DataLoader>, Loader, IDataLoader>(
-        m, "DataLoader")
-        .def(py::init<Data::IConfigurationPtr &, std::string const &,
+    py::class_<DataLoader, std::shared_ptr<DataLoader>, BaseLoader,
+               IDataLoader>(m, "DataLoader")
+        .def(py::init<Data::IConfigablePtr &, std::string const &,
                       std::shared_ptr<spdlog::logger>>())
         .def(py::init<std::string const &, std::shared_ptr<spdlog::logger>>())
         .def(py::init<>())

@@ -12,7 +12,7 @@ find_package(DataManagement 1 REQUIRED
 )
 
 add_library(${PROJECT_NAME}
-  Loader.cpp
+  BaseLoader.cpp
   CostLoader.cpp
   UtilityLoader.cpp
   DataLoader.cpp

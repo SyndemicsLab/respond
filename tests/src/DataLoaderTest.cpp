@@ -137,17 +137,17 @@ TEST_F(DataLoaderTest, ConstructorInputDirectory) {
 }
 
 TEST_F(DataLoaderTest, ConstructorIDandConfig) {
-    Data::IConfigurationPtr config =
-        std::make_shared<Data::Configuration>(configFile.string());
+    Data::IConfigablePtr config =
+        std::make_shared<Data::Config>(configFile.string());
     Matrixify::DataLoader dl(
         config, std::filesystem::temp_directory_path().string(), logger);
     EXPECT_EQ(dl.getInterventions().size(), 9);
 }
 
-TEST_F(DataLoaderTest, loadConfigurationFile) {
+TEST_F(DataLoaderTest, loadConfigFile) {
     Matrixify::DataLoader dl;
     EXPECT_EQ(dl.getInterventions().size(), 0);
-    dl.loadConfigurationFile(configFile.string());
+    dl.loadConfigFile(configFile.string());
     EXPECT_EQ(dl.getInterventions().size(), 9);
 }
 

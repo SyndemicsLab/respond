@@ -239,7 +239,7 @@ int main(int argc, char **argv) {
                 }
             }
 
-            inputs.loadConfigurationFile(config_file);
+            inputs.loadConfigFile(config_file);
             inputs.loadInitialSample(init_cohort);
 
             std::string enteringSampleIntervention =
@@ -255,13 +255,13 @@ int main(int argc, char **argv) {
             inputs.loadFatalOverdoseRates(fod_rates);
             inputs.loadMortalityRates(smr_rates, bgm_rates);
 
-            costs.loadConfigurationFile(config_file);
+            costs.loadConfigFile(config_file);
             costs.loadHealthcareUtilizationCost(health_costs);
             costs.loadOverdoseCost(od_costs);
             costs.loadPharmaceuticalCost(pharma_costs);
             costs.loadTreatmentUtilizationCost(treat_costs);
 
-            utils.loadConfigurationFile(config_file);
+            utils.loadConfigFile(config_file);
             utils.loadBackgroundUtility(bg_utils);
             utils.loadOUDUtility(oud_utils);
             utils.loadSettingUtility(setting_utils);
@@ -291,9 +291,9 @@ int main(int argc, char **argv) {
                     }
                 }
 
-                inputs.loadConfigurationFile(uploaded_file_name);
-                costs.loadConfigurationFile(uploaded_file_name);
-                utils.loadConfigurationFile(uploaded_file_name);
+                inputs.loadConfigFile(uploaded_file_name);
+                costs.loadConfigFile(uploaded_file_name);
+                utils.loadConfigFile(uploaded_file_name);
 
                 return crow::response(crow::status::OK);
             });
@@ -694,7 +694,7 @@ int main(int argc, char **argv) {
     CROW_ROUTE(app, "/run")
         .methods(crow::HTTPMethod::Post)(
             [&hist, &inputs](const crow::request &req) {
-                Simulation::Sim sim(inputs);
+                Simulation::Respond sim(inputs);
                 sim.Run();
                 hist = sim.getHistory();
                 return crow::response(crow::status::OK);
@@ -713,8 +713,7 @@ int main(int argc, char **argv) {
         .methods(crow::HTTPMethod::Post)(
             [&hist, &costs, &utils](const crow::request &req) {
                 Calculator::CostCalculator costCalculator(costs, utils, hist);
-                Matrixify::Matrix4d utility =
-                    costCalculator.calculateUtility();
+                Matrixify::Matrix4d utility = costCalculator.calculateUtility();
 
                 return crow::response(crow::status::OK);
             });
@@ -724,7 +723,7 @@ int main(int argc, char **argv) {
             writer.setInterventions(inputs.getInterventions());
             writer.setOUDStates(inputs.getOUDStates());
             writer.setDemographics(
-                inputs.getConfiguration().getDemographicCombosVecOfVec());
+                inputs.getConfig().getDemographicCombosVecOfVec());
             writer.addDirname("output");
             writer.writeHistory(Matrixify::FILE, hist);
             crow::response response;
@@ -741,7 +740,7 @@ int main(int argc, char **argv) {
             writer.setInterventions(inputs.getInterventions());
             writer.setOUDStates(inputs.getOUDStates());
             writer.setDemographics(
-                inputs.getConfiguration().getDemographicCombosVecOfVec());
+                inputs.getConfig().getDemographicCombosVecOfVec());
             writer.addDirname("output");
 
             writer.writeCost(Matrixify::STRING, cost);
@@ -755,13 +754,12 @@ int main(int argc, char **argv) {
         .methods(crow::HTTPMethod::Post)([&hist, &inputs, &costs, &utils,
                                           &writer](const crow::request &req) {
             Calculator::CostCalculator costCalculator(costs, utils, hist);
-            Matrixify::Matrix4d utility =
-                costCalculator.calculateUtility();
+            Matrixify::Matrix4d utility = costCalculator.calculateUtility();
 
             writer.setInterventions(inputs.getInterventions());
             writer.setOUDStates(inputs.getOUDStates());
             writer.setDemographics(
-                inputs.getConfiguration().getDemographicCombosVecOfVec());
+                inputs.getConfig().getDemographicCombosVecOfVec());
             writer.addDirname("output");
 
             writer.writeUtility(Matrixify::FILE, utility);

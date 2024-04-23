@@ -67,6 +67,9 @@ int main(int argc, char **argv) {
             try {
                 logger = spdlog::basic_logger_mt("logger" + std::to_string(i),
                                                  log_path);
+#ifndef NDEBUG
+                spdlog::set_level(spdlog::level::debug);
+#endif
             } catch (const spdlog::spdlog_ex &ex) {
                 std::cout << "Log init failed: " << ex.what() << std::endl;
                 return;
@@ -75,8 +78,8 @@ int main(int argc, char **argv) {
             logger->info("Logger Created");
 
             std::shared_ptr<Matrixify::IDataLoader> inputs =
-                std::make_shared<Matrixify::DataLoader>(inputSet.string(),
-                                                        logger);
+                std::make_shared<Matrixify::DataLoader>(
+                    nullptr, inputSet.string(), logger);
             logger->info("DataLoader Created");
 
             std::shared_ptr<Matrixify::ICostLoader> costLoader =
@@ -110,8 +113,8 @@ int main(int argc, char **argv) {
                 utilityLoader->loadSettingUtility("setting_utility.csv");
             }
 
-            Simulation::Sim sim(inputs);
-            sim.Run();
+            Simulation::Respond sim(inputs);
+            sim.run();
             Matrixify::History history = sim.getHistory();
 
             Matrixify::CostList basecosts;

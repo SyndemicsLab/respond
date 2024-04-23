@@ -20,22 +20,10 @@
 #include "Matrix3dPrinter.hpp"
 
 namespace Matrixify {
-
-    CostLoader::CostLoader() : Loader() {}
-
-    CostLoader::CostLoader(std::string const &inputDir,
-                           std::shared_ptr<spdlog::logger> logger)
-        : Loader(inputDir, logger) {
-        this->inputTables = this->readInputDir(inputDir);
-    }
-
-    CostLoader::CostLoader(Data::IConfigurationPtr &config,
+    CostLoader::CostLoader(Data::IConfigablePtr config,
                            std::string const &inputDir,
                            std::shared_ptr<spdlog::logger> logger)
-        : Loader(inputDir, logger) {
-        loadConfigurationPointer(config);
-        this->inputTables = this->readInputDir(inputDir);
-    }
+        : BaseLoader(config, inputDir, logger) {}
 
     std::unordered_map<std::string, Matrix3d>
     CostLoader::loadHealthcareUtilizationCost(std::string const &csvName) {
