@@ -208,50 +208,47 @@ namespace Matrixify {
             getNumOUDStates() * getNumOUDStates(), getNumInterventions(),
             getNumDemographicCombos());
 
-        // Matrix3d objects in the vector are matched with the order that
-        // oud states are specified in the Config file. the order represents
-        // the "initial oud state"
-        std::vector<std::string> oudStates = getOUDStates();
-        std::vector<std::string> interventions = getInterventions();
-        for (int i = 0; i < getNumOUDStates(); ++i) {
-            std::unordered_map<std::string, std::string> selectConditions;
-            selectConditions["initial_oud_state"] = oudStates[i];
+        for (int initial_state = 0; initial_state < getNumOUDStates();
+             ++initial_state) {
+            std::unordered_map<std::string, std::string> oudSelectCriteria = {};
+            oudSelectCriteria["initial_oud_state"] =
+                this->oudStates[initial_state];
+            Data::IDataTablePtr oudSelectedTable =
+                interventionInitTable->selectWhere(oudSelectCriteria);
+            for (int intervention = 0; intervention < getNumInterventions();
+                 ++intervention) {
+                std::unordered_map<std::string, std::string>
+                    interventionSelectCriteria = {};
+                interventionSelectCriteria["to_intervention"] =
+                    this->interventions[intervention];
+                Data::IDataTablePtr interventionSelectedTable =
+                    oudSelectedTable->selectWhere(interventionSelectCriteria);
+                for (int result_state = 0; result_state < getNumOUDStates();
+                     ++result_state) {
 
-            for (int j = 0; j < getNumInterventions(); ++j) {
-                selectConditions["to_intervention"] = interventions[j];
-                Data::IDataTablePtr temp =
-                    interventionInitTable->selectWhere(selectConditions);
-                std::vector<std::string> col =
-                    temp->getColumn("retention_rate");
+                    std::string column = this->oudStates[result_state];
 
-                if (col.empty()) {
-                    logger->error("Retention Rate Not Found in "
-                                  "block_init_effect.csv for {} {}",
-                                  oudStates[i], interventions[j]);
-                    throw std::out_of_range(interventions[j] +
-                                            " not in block_init_effect.csv");
+                    std::vector<std::string> col =
+                        interventionSelectedTable->getColumn(column);
+                    if (col.size() == 0) {
+                        logger->warn(
+                            "oud_trans.csv {} column has no record for {}",
+                            column, this->interventions[intervention]);
+                        continue;
+                    }
+
+                    // Slice for setting matrix values. We select a single
+                    // value and set that constant
+                    Eigen::array<Eigen::Index, 3> offsets1 = {
+                        intervention,
+                        (initial_state * getNumOUDStates()) + result_state, 0};
+                    Eigen::array<Eigen::Index, 3> extents = {
+                        1, 1, getNumDemographicCombos()};
+
+                    tempinterventionInit.slice(offsets1, extents) =
+                        doubleToMatrix3d(std::stod(col[0]), 1, 1,
+                                         getNumDemographicCombos());
                 }
-
-                double retentionRate = std::stod(col[0]);
-                double transitionRate = 1 - retentionRate;
-
-                // Slice for setting matrix values. We select a single value and
-                // set that constant
-                Eigen::array<Eigen::Index, 3> offsets1 = {j, i, 0};
-
-                Eigen::array<Eigen::Index, 3> offsets2 = {
-                    j, i + getNumOUDStates(), 0};
-
-                Eigen::array<Eigen::Index, 3> extents = {
-                    1, 1, getNumDemographicCombos()};
-
-                tempinterventionInit.slice(offsets1, extents) =
-                    doubleToMatrix3d(retentionRate, 1, 1,
-                                     getNumDemographicCombos());
-
-                tempinterventionInit.slice(offsets2, extents) =
-                    doubleToMatrix3d(transitionRate, 1, 1,
-                                     getNumDemographicCombos());
             }
         }
 

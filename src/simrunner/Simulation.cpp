@@ -95,8 +95,9 @@ namespace Simulation {
 
     Matrixify::Matrix3d Respond::step() {
 #ifndef NDEBUG
-        this->getLogger()->debug("Timestep: ", this->currentTime);
-        auto sum1 = this->state.sum().eval();
+        this->getLogger()->debug("Timestep: {}", this->currentTime);
+        Eigen::Tensor<double, 0> sum1 = this->state.sum();
+        this->getLogger()->debug("State Sum: {}", sum1(0));
 #endif
 
         int agingReference =
@@ -111,24 +112,26 @@ namespace Simulation {
             this->addEnteringSample(this->state);
 
 #ifndef NDEBUG
-        this->getLogger()->debug("Post Entering Sample Population State:");
-        auto sum2 = enterSampleState.sum().eval();
+        Eigen::Tensor<double, 0> sum2 = enterSampleState.sum();
+        this->getLogger()->debug(
+            "Post Entering Sample Population State Sum: {}", sum2(0));
 #endif
         Matrixify::Matrix3d oudTransState =
             this->multBehaviorTransition(enterSampleState);
 
 #ifndef NDEBUG
-        this->getLogger()->debug("Post OUD Transition Population State:");
-        auto sum3 = oudTransState.sum().eval();
+        Eigen::Tensor<double, 0> sum3 = oudTransState.sum().eval();
+        this->getLogger()->debug("Post OUD Transition Population State Sum: {}",
+                                 sum3(0));
 #endif
 
         Matrixify::Matrix3d transitionedState =
             this->multInterventionTransition(oudTransState);
 
 #ifndef NDEBUG
+        Eigen::Tensor<double, 0> sum4 = transitionedState.sum();
         this->getLogger()->debug(
-            "Post Intervention Transition Population State:");
-        auto sum4 = transitionedState.sum().eval();
+            "Post Intervention Transition Population State Sum: {}", sum4(0));
 #endif
 
         Matrixify::Matrix3d overdoses = this->multOD(transitionedState);
@@ -141,10 +144,10 @@ namespace Simulation {
         auto new_state = (transitionedState - (mortalities + fatalOverdoses));
 
 #ifndef NDEBUG
-        this->getLogger()->debug("Mortalities + FODs Sum:");
-        auto sum5 = (mortalities + fatalOverdoses).sum().eval();
-        this->getLogger()->debug("Final Step Population:");
-        auto t = new_state.sum().eval();
+        Eigen::Tensor<double, 0> sum5 = (mortalities + fatalOverdoses).sum();
+        this->getLogger()->debug("Mortalities + FODs Sum: {}", sum5(0));
+        Eigen::Tensor<double, 0> t = new_state.sum();
+        this->getLogger()->debug("Final Step Population Sum: {}", t(0));
 #endif
 
         this->history.interventionAdmissionHistory.insert(transitionedState,
