@@ -231,9 +231,9 @@ namespace Matrixify {
                     std::vector<std::string> col =
                         interventionSelectedTable->getColumn(column);
                     if (col.size() == 0) {
-                        logger->warn(
-                            "oud_trans.csv {} column has no record for {}",
-                            column, this->interventions[intervention]);
+                        logger->warn("block_init_effect.csv {} column has no "
+                                     "record for {}",
+                                     column, this->interventions[intervention]);
                         continue;
                     }
 
