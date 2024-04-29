@@ -1,4 +1,6 @@
+#include "CostLoader.hpp"
 #include "DataLoader.hpp"
+#include "UtilityLoader.hpp"
 #include <DataTypes.hpp>
 #include <memory>
 #include <pybind11/eigen.h>
@@ -54,6 +56,46 @@ PYBIND11_MODULE(Matrixify, m) {
         .def("setMortalityRates", &DataLoader::setMortalityRates)
         .def("setInterventionInitRates", &DataLoader::setInterventionInitRates)
         .def("loadMortalityRates", &DataLoader::loadMortalityRates);
+
+    py::class_<ICostLoader, std::shared_ptr<ICostLoader>>(m, "ICostLoader");
+
+    py::class_<CostLoader, std::shared_ptr<CostLoader>, BaseLoader,
+               ICostLoader>(m, "CostLoader")
+        .def(py::init<Data::IConfigablePtr &, std::string const &,
+                      std::shared_ptr<spdlog::logger>>())
+        .def(py::init<std::string const &, std::shared_ptr<spdlog::logger>>())
+        .def(py::init<>())
+        .def("loadHealthcareUtilizationCost",
+             &CostLoader::loadHealthcareUtilizationCost)
+        .def("loadOverdoseCost", &CostLoader::loadOverdoseCost)
+        .def("loadPharmaceuticalCost", &CostLoader::loadPharmaceuticalCost)
+        .def("loadTreatmentUtilizationCost",
+             &CostLoader::loadTreatmentUtilizationCost)
+        .def("getHealthcareUtilizationCost",
+             &CostLoader::getHealthcareUtilizationCost)
+        .def("getPharmaceuticalCost", &CostLoader::getPharmaceuticalCost)
+        .def("getTreatmentUtilizationCost",
+             &CostLoader::getTreatmentUtilizationCost)
+        .def("getNonFatalOverdoseCost", &CostLoader::getNonFatalOverdoseCost)
+        .def("getFatalOverdoseCost", &CostLoader::getFatalOverdoseCost)
+        .def("getCostSwitch", &CostLoader::getCostSwitch)
+        .def("getDiscountRate", &CostLoader::getDiscountRate);
+
+    py::class_<IUtilityLoader, std::shared_ptr<IUtilityLoader>>(
+        m, "IUtilityLoader");
+
+    py::class_<UtilityLoader, std::shared_ptr<UtilityLoader>, BaseLoader,
+               IUtilityLoader>(m, "UtilityLoader")
+        .def(py::init<Data::IConfigablePtr &, std::string const &,
+                      std::shared_ptr<spdlog::logger>>())
+        .def(py::init<std::string const &, std::shared_ptr<spdlog::logger>>())
+        .def(py::init<>())
+        .def("loadBackgroundUtility", &UtilityLoader::loadBackgroundUtility)
+        .def("loadOUDUtility", &UtilityLoader::loadOUDUtility)
+        .def("loadSettingUtility", &UtilityLoader::loadSettingUtility)
+        .def("getBackgroundUtility", &UtilityLoader::getBackgroundUtility)
+        .def("getOUDUtility", &UtilityLoader::getOUDUtility)
+        .def("getSettingUtility", &UtilityLoader::getSettingUtility);
 
     py::class_<Matrix4d>(m, "Matrix4d")
         .def(py::init<std::vector<Matrix3d>>())
