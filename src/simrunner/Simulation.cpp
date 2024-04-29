@@ -175,7 +175,7 @@ namespace Simulation {
         this->state.slice(offset, extent) = rolling_state;
         offset = {0, 0, 0};
         extent = {state.dimensions()};
-        extent[Matrixify::DEMOGRAPHIC_COMBO] = 1;
+        extent[Matrixify::DEMOGRAPHIC_COMBO] = shift_val;
         this->state.slice(offset, extent).setConstant(0);
     }
 
