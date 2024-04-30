@@ -128,7 +128,7 @@ namespace Simulation {
     private:
         Matrixify::Matrix3d state;
         std::uint64_t duration = 0;
-        std::uint64_t currentTime = 0;
+        int currentTime = 0;
         Matrixify::History history;
         std::shared_ptr<Matrixify::IDataLoader> dataLoader = nullptr;
         std::shared_ptr<Matrixify::ICostLoader> costLoader = nullptr;
