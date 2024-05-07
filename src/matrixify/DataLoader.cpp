@@ -141,6 +141,61 @@ namespace Matrixify {
         return this->enteringSamples;
     }
 
+    Matrix4d DataLoader::loadEnteringSamples(std::string const &csvName) {
+        // ENTERING GROUP Stratified by OUD
+
+        Data::IDataTablePtr enteringCohort = loadTable(csvName);
+
+        std::string columnPrefix = "cohort_size_change_";
+
+        int startTime = 0;
+        for (int i = 0; i < this->enteringSampleChangeTimes.size(); ++i) {
+            int changepoint = this->enteringSampleChangeTimes[i];
+            std::string column = columnPrefix;
+            if (i == 0) {
+                column += "1_";
+            } else {
+                column += (std::to_string(
+                               this->enteringSampleChangeTimes[i - 1] + 1) +
+                           "_");
+            }
+            column += std::to_string(changepoint);
+            std::vector<std::string> col = enteringCohort->getColumn(column);
+
+            for (int oudState = 0; oudState < getNumOUDStates(); ++oudState) {
+                std::unordered_map<std::string, std::string> oudSelectCriteria =
+                    {};
+                oudSelectCriteria["oud"] = this->oudStates[oudState];
+                Data::IDataTablePtr oudDT =
+                    enteringCohort->selectWhere(oudSelectCriteria);
+                std::vector<std::string> values = oudDT->getColumn("counts");
+                if (values.size() == 0) {
+                    logger->warn(
+                        "entering_cohort.csv counts column has no record "
+                        "for {}",
+                        this->oudStates[oudState]);
+                    continue;
+                }
+
+                Matrix3d enteringSample = Matrixify::Matrix3dFactory::Create(
+                    getNumOUDStates(), getNumInterventions(),
+                    getNumDemographicCombos());
+
+                Eigen::array<Eigen::Index, 3> offsets = {0, oudState, 0};
+                Eigen::array<Eigen::Index, 3> extents = {
+                    getNumInterventions(), 1, getNumDemographicCombos()};
+
+                enteringSample.slice(offsets, extents) =
+                    strVecToMatrix3d(values, getNumInterventions(), 1,
+                                     getNumDemographicCombos());
+                fillTime(startTime, changepoint, enteringSample,
+                         this->enteringSamples);
+            }
+        }
+
+        return this->enteringSamples;
+    }
+
     Matrix3d DataLoader::loadOUDTransitionRates(std::string const &csvName) {
 
         Data::IDataTablePtr oudTransitionTable = loadTable(csvName);

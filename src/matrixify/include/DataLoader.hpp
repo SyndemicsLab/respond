@@ -133,6 +133,8 @@ namespace Matrixify {
                             std::string const &enteringSampleIntervention,
                             std::string const &enteringSampleOUD);
 
+        Matrix4d loadEnteringSamples(std::string const &csvName);
+
         Matrix3d loadOUDTransitionRates(std::string const &csvName);
 
         Matrix3d loadInterventionInitRates(std::string const &csvName);
