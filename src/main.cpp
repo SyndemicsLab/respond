@@ -91,8 +91,10 @@ int main(int argc, char **argv) {
             logger->info("UtilityLoader Created");
 
             inputs->loadInitialSample("init_cohort.csv");
-            inputs->loadEnteringSamples("entering_cohort.csv", "No_Treatment",
-                                        "Active_Noninjection");
+            // inputs->loadEnteringSamples("entering_cohort.csv",
+            // "No_Treatment",
+            //                             "Active_Noninjection");
+            inputs->loadEnteringSamples("entering_cohort.csv");
             inputs->loadOUDTransitionRates("oud_trans.csv");
             inputs->loadInterventionInitRates("block_init_effect.csv");
             inputs->loadInterventionTransitionRates("block_trans.csv");
