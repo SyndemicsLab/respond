@@ -55,7 +55,9 @@ PYBIND11_MODULE(Matrixify, m) {
         .def("setFatalOverdoseRates", &DataLoader::setFatalOverdoseRates)
         .def("setMortalityRates", &DataLoader::setMortalityRates)
         .def("setInterventionInitRates", &DataLoader::setInterventionInitRates)
-        .def("loadMortalityRates", &DataLoader::loadMortalityRates);
+        .def("loadMortalityRates", &DataLoader::loadMortalityRates)
+        .def("loadOverdoseRates", &DataLoader::loadOverdoseRates)
+        .def("loadFatalOverdoseRates", &DataLoader::loadFatalOverdoseRates);
 
     py::class_<ICostLoader, std::shared_ptr<ICostLoader>>(m, "ICostLoader");
 

@@ -34,6 +34,7 @@ namespace Matrixify {
     class ISimulatable {
     public:
         virtual int getDuration() const = 0;
+        virtual bool getEnteringCohortToggle() const = 0;
     };
 
     class ITableable {
