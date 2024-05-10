@@ -113,6 +113,8 @@ namespace Matrixify {
         // simulation
         this->duration =
             std::get<int>(derivedConfig->get("simulation.duration", (int)0));
+        this->enterCohortToggle = std::get<bool>(
+            derivedConfig->get("simulation.stratified_entering_cohort", false));
         this->agingInterval = std::get<int>(
             derivedConfig->get("simulation.aging_interval", (int)0));
 
