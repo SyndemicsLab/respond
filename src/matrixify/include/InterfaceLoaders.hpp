@@ -163,6 +163,8 @@ namespace Matrixify {
                             std::string const &enteringSampleIntervention,
                             std::string const &enteringSampleOUD) = 0;
 
+        virtual Matrix4d loadEnteringSamples(std::string const &csvName) = 0;
+
         /// @brief Load the OUD Transition Rates
         /// @param csvName Filename to the OUD Transition Rates
         /// @return Matrix3d OUD Transition Rates

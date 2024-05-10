@@ -105,6 +105,8 @@ public:
                 ((std::string const &), (std::string const &),
                  (std::string const &)),
                 (override));
+    MOCK_METHOD((Matrixify::Matrix4d), loadEnteringSamples,
+                ((std::string const &)), (override));
     MOCK_METHOD((Matrixify::Matrix3d), loadOUDTransitionRates,
                 ((std::string const &)), (override));
     MOCK_METHOD((Matrixify::Matrix3d), loadInterventionInitRates,
