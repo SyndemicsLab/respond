@@ -54,6 +54,9 @@ namespace Matrixify {
 
         // simulation
         int getDuration() const override { return duration; }
+        bool getEnteringCohortToggle() const override {
+            return enterCohortToggle;
+        }
         int getAgingInterval() const override { return agingInterval; }
         std::vector<int> getInterventionChangeTimes() const override {
             return interventionChangeTimes;
@@ -142,6 +145,7 @@ namespace Matrixify {
 
         // simulation
         int duration = 0;
+        bool enterCohortToggle = false;
         int agingInterval = 0;
         std::vector<int> interventionChangeTimes = {};
         std::vector<int> enteringSampleChangeTimes = {};

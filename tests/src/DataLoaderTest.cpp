@@ -68,6 +68,8 @@ protected:
                             "entering_sample_change_times = 52" 
                             << std::endl << 
                             "overdose_change_times = 52" 
+                            << std::endl << 
+                            "stratified_entering_cohort = false" 
                             << std::endl << std::endl << 
                             "[state]" 
                             << std::endl << 

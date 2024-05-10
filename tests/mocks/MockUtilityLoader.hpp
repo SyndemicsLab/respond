@@ -25,6 +25,7 @@ public:
 
     // ISimulatable
     MOCK_METHOD((int), getDuration, (), (const, override));
+    MOCK_METHOD((bool), getEnteringCohortToggle, (), (const, override));
 
     // ITableable
     MOCK_METHOD((Data::IDataTablePtr), readCSV, ((std::string const &)),
