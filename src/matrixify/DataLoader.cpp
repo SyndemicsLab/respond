@@ -141,6 +141,80 @@ namespace Matrixify {
         return this->enteringSamples;
     }
 
+    Matrix4d DataLoader::loadEnteringSamples(std::string const &csvName) {
+        // ENTERING GROUP Stratified by OUD
+
+        Data::IDataTablePtr enteringCohort = loadTable(csvName);
+
+        std::string columnPrefix = "cohort_size_change_";
+        int startTime = 0;
+        for (int i = 0; i < this->enteringSampleChangeTimes.size(); ++i) {
+            int changepoint = this->enteringSampleChangeTimes[i];
+            std::string column = columnPrefix;
+            if (i == 0) {
+                column += "1_";
+            } else {
+                column += (std::to_string(
+                               this->enteringSampleChangeTimes[i - 1] + 1) +
+                           "_");
+            }
+            column += std::to_string(changepoint);
+            std::vector<std::string> col = enteringCohort->getColumn(column);
+
+            Matrix3d enteringSample = Matrixify::Matrix3dFactory::Create(
+                getNumOUDStates(), getNumInterventions(),
+                getNumDemographicCombos());
+
+            for (int intervention = 0; intervention < getNumInterventions();
+                 ++intervention) {
+
+                std::string testStr = interventions[intervention];
+                std::transform(testStr.begin(), testStr.end(), testStr.begin(),
+                               [](unsigned char c) { return std::tolower(c); });
+                if (testStr.rfind("post", 0) == 0) {
+                    continue;
+                }
+
+                std::unordered_map<std::string, std::string>
+                    interventionSelectCriteria = {};
+                interventionSelectCriteria["block"] =
+                    this->interventions[intervention];
+                Data::IDataTablePtr interventionDT =
+                    enteringCohort->selectWhere(interventionSelectCriteria);
+
+                for (int oudState = 0; oudState < getNumOUDStates();
+                     ++oudState) {
+                    std::unordered_map<std::string, std::string>
+                        oudSelectCriteria = {};
+                    oudSelectCriteria["oud"] = this->oudStates[oudState];
+                    Data::IDataTablePtr oudDT =
+                        interventionDT->selectWhere(oudSelectCriteria);
+                    std::vector<std::string> values = oudDT->getColumn(column);
+                    if (values.size() == 0) {
+                        logger->warn(
+                            "entering_cohort.csv {} column has no record "
+                            "for {} and {}",
+                            column, this->oudStates[oudState],
+                            this->interventions[intervention]);
+                        continue;
+                    }
+
+                    Eigen::array<Eigen::Index, 3> offsets = {intervention,
+                                                             oudState, 0};
+                    Eigen::array<Eigen::Index, 3> extents = {
+                        1, 1, getNumDemographicCombos()};
+
+                    enteringSample.slice(offsets, extents) = strVecToMatrix3d(
+                        values, 1, 1, getNumDemographicCombos());
+                }
+            }
+            fillTime(startTime, changepoint, enteringSample,
+                     this->enteringSamples);
+        }
+
+        return this->enteringSamples;
+    }
+
     Matrix3d DataLoader::loadOUDTransitionRates(std::string const &csvName) {
 
         Data::IDataTablePtr oudTransitionTable = loadTable(csvName);
