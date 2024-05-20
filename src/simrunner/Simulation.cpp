@@ -150,7 +150,14 @@ namespace Simulation {
         this->getLogger()->debug("Final Step Population Sum: {}", t(0));
 #endif
 
-        this->history.interventionAdmissionHistory.insert(transitionedState,
+        Matrixify::Matrix3d admissions = this->state - transitionedState;
+
+        Matrixify::Matrix3d mat(admissions.dimensions());
+        mat.setZero();
+
+        admissions = admissions.cwiseMax(mat);
+
+        this->history.interventionAdmissionHistory.insert(admissions,
                                                           currentTime + 1);
         this->history.overdoseHistory.insert(overdoses, this->currentTime + 1);
         this->history.fatalOverdoseHistory.insert(fatalOverdoses,
