@@ -27,6 +27,7 @@
 #include <iostream>
 #include <string>
 #include <unsupported/Eigen/CXX11/Tensor>
+#include <variant>
 #include <vector>
 
 #include "DataTypes.hpp"
@@ -38,34 +39,80 @@ namespace Matrixify {
     /// testing
     enum OutputType { FILE = 0, STRING = 1 };
 
+    class IWritable {
+    public:
+        virtual void write(std::string) const = 0;
+    };
+
+    class IFileable {
+    public:
+        virtual void addDirname(std::string dirname) = 0;
+        virtual std::string getDirname() = 0;
+    };
+
+    class IStratifiable {
+    public:
+        virtual void
+        setInterventions(std::vector<std::string> interventions) = 0;
+        virtual void setOUDStates(std::vector<std::string> oudStates) = 0;
+        virtual void setDemographics(std::vector<std::string> demographics) = 0;
+        virtual void
+        setDemographicCombos(std::vector<std::string> demographicCombos) = 0;
+    };
+
+    class ICostable {};
+
+    class IUtilityable {};
+
+    class IWriter : public virtual IWritable,
+                    public virtual IFileable,
+                    public virtual IStratifiable {
+    protected:
+        std::vector<std::string> interventions;
+        std::vector<std::string> oudStates;
+        std::vector<std::string> demographics;
+        std::vector<std::string> demographicCombos;
+        std::string dirname;
+        std::vector<int> timesteps;
+        bool writeState;
+        OutputType outputType;
+    };
+
+    class IInputWriter : public virtual IWriter {
+    public:
+    };
+
+    class IHistoryWriter : public virtual IWriter {};
+
     /// @brief Interface for DataWriter Object
     class IDataWriter {
     public:
         virtual ~IDataWriter(){};
 
-        /// @brief Specify the Directory Name
-        /// @param dirname Directory location to write files
-        virtual void addDirname(std::string dirname) = 0;
+        // /// @brief Specify the Directory Name
+        // /// @param dirname Directory location to write files
+        // virtual void addDirname(std::string dirname) = 0;
 
-        /// @brief Get the Directory Name
-        /// @return String specifying directory
-        virtual std::string getDirname() = 0;
+        // /// @brief Get the Directory Name
+        // /// @return String specifying directory
+        // virtual std::string getDirname() = 0;
 
         /// @brief Specify the Interventions
         /// @param interventions Vector of Strings of Interventions
-        virtual void
-        setInterventions(std::vector<std::string> interventions) = 0;
+        // virtual void
+        // setInterventions(std::vector<std::string> interventions) = 0;
 
-        /// @brief Specify the OUD States
-        /// @param oudStates Vector of Strings of OUD States
-        virtual void setOUDStates(std::vector<std::string> oudStates) = 0;
+        // /// @brief Specify the OUD States
+        // /// @param oudStates Vector of Strings of OUD States
+        // virtual void setOUDStates(std::vector<std::string> oudStates) = 0;
 
-        /// @brief Specify the Demographics
-        /// @param demographics Vector of Vector of Strings of Demographics
-        virtual void setDemographics(std::vector<std::string> demographics) = 0;
+        // /// @brief Specify the Demographics
+        // /// @param demographics Vector of Vector of Strings of Demographics
+        // virtual void setDemographics(std::vector<std::string> demographics) =
+        // 0;
 
-        virtual void
-        setDemographicCombos(std::vector<std::string> demographicCombos) = 0;
+        // virtual void
+        // setDemographicCombos(std::vector<std::string> demographicCombos) = 0;
 
         /// @brief Main function to write the history
         /// @param outputType Enum describing the output type. Defaults to FILE
