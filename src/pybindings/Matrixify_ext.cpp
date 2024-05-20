@@ -1,5 +1,7 @@
 #include "CostLoader.hpp"
+#include "DataFormatter.hpp"
 #include "DataLoader.hpp"
+#include "DataWriter.hpp"
 #include "UtilityLoader.hpp"
 #include <DataTypes.hpp>
 #include <memory>
@@ -28,7 +30,10 @@ PYBIND11_MODULE(Matrixify, m) {
         .def("getInterventions", &BaseLoader::getInterventions)
         .def("getOUDStates", &BaseLoader::getOUDStates)
         .def("getDemographics", &BaseLoader::getDemographics)
-        .def("getDemographicCombos", &BaseLoader::getDemographicCombos);
+        .def("getDemographicCombos", &BaseLoader::getDemographicCombos)
+        .def("getGeneralStatsOutputTimesteps",
+             &BaseLoader::getGeneralStatsOutputTimesteps)
+        .def("getGeneralOutputsSwitch", &BaseLoader::getGeneralOutputsSwitch);
 
     py::class_<IDataLoader, std::shared_ptr<IDataLoader>>(m, "IDataLoader");
 
@@ -57,7 +62,9 @@ PYBIND11_MODULE(Matrixify, m) {
         .def("setInterventionInitRates", &DataLoader::setInterventionInitRates)
         .def("loadMortalityRates", &DataLoader::loadMortalityRates)
         .def("loadOverdoseRates", &DataLoader::loadOverdoseRates)
-        .def("loadFatalOverdoseRates", &DataLoader::loadFatalOverdoseRates);
+        .def("loadFatalOverdoseRates", &DataLoader::loadFatalOverdoseRates)
+        .def("loadInterventionInitRates",
+             &DataLoader::loadInterventionInitRates);
 
     py::class_<ICostLoader, std::shared_ptr<ICostLoader>>(m, "ICostLoader");
 
@@ -112,4 +119,41 @@ PYBIND11_MODULE(Matrixify, m) {
         .def_readwrite("mortalityHistory", &History::mortalityHistory)
         .def_readwrite("interventionAdmissionHistory",
                        &History::interventionAdmissionHistory);
+
+    py::class_<DataWriter>(m, "DataWriter")
+        .def(py::init<std::string, std::vector<std::string>,
+                      std::vector<std::string>, std::vector<std::string>,
+                      std::vector<std::string>, std::vector<int>, bool>())
+        .def(py::init<>())
+        .def("addDirname", &DataWriter::addDirname)
+        .def("getDirname", &DataWriter::getDirname)
+        .def("setInterventions", &DataWriter::setInterventions)
+        .def("setOUDStates", &DataWriter::setOUDStates)
+        .def("setDemographics", &DataWriter::setDemographics)
+        .def("setDemographicCombos", &DataWriter::setDemographicCombos)
+        .def("writeHistory", &DataWriter::writeHistory)
+        .def("writeCosts", &DataWriter::writeCosts)
+        .def("writeUtilities", &DataWriter::writeUtilities)
+        .def("writeTotals", &DataWriter::writeTotals);
+
+    py::class_<Cost>(m, "Cost")
+        .def(py::init<>())
+        .def_readwrite("perspective", &Cost::perspective)
+        .def_readwrite("healthcareCost", &Cost::healthcareCost)
+        .def_readwrite("nonFatalOverdoseCost", &Cost::nonFatalOverdoseCost)
+        .def_readwrite("fatalOverdoseCost", &Cost::fatalOverdoseCost)
+        .def_readwrite("pharmaCost", &Cost::pharmaCost)
+        .def_readwrite("treatmentCost", &Cost::treatmentCost);
+
+    py::class_<DataFormatter>(m, "DataFormatter")
+        .def(py::init<>())
+        .def("extractTimesteps", &DataFormatter::extractTimesteps,
+             py::arg("timesteps"), py::arg("history"),
+             py::arg("costs") = py::none(), py::arg("utilities") = py::none(),
+             py::arg("costSwitch") = false);
+
+    py::enum_<OutputType>(m, "OutputType")
+        .value("FILE", OutputType::FILE)
+        .value("STRING", OutputType::STRING)
+        .export_values();
 }
