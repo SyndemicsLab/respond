@@ -19,4 +19,3 @@ source Release/generators/conanbuild.sh
 cmake .. -DCMAKE_TOOLCHAIN_FILE=Release/generators/conan_toolchain.cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_POSITION_INDEPENDENT_CODE=ON -DBUILD_TESTS=OFF -DBUILD_PYBINDINGS=ON
 cmake --build . 
 source Release/generators/deactivate_conanbuild.sh
-./../bin/respondTest
