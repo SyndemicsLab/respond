@@ -1,7 +1,7 @@
 #ifndef TESTS_MOCKCOSTLOADER_HPP_
 #define TESTS_MOCKCOSTLOADER_HPP_
 
-#include "InterfaceLoaders.hpp"
+#include "Interfaces.hpp"
 #include "gmock/gmock.h"
 
 class MockCostLoader : public Matrixify::ICostLoader {

@@ -16,7 +16,7 @@ add_library(${PROJECT_NAME}
   CostLoader.cpp
   UtilityLoader.cpp
   DataLoader.cpp
-  DataWriter.cpp
+  Writer.cpp
   DataFormatter.cpp
   DataTypes.cpp
   Matrix3dFactory.cpp

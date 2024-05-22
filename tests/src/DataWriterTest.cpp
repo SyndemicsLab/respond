@@ -20,12 +20,12 @@
 #include <gtest/gtest.h>
 #include <unsupported/Eigen/CXX11/Tensor>
 
-#include "DataWriter.hpp"
+#include "Writer.hpp"
 
 using namespace Matrixify;
 
 TEST(DataWriterCreation, DefaultConstructor) {
-    DataWriter writer;
+    Writer writer;
     std::string expected = "";
     EXPECT_EQ(writer.getDirname(), expected); // comparing two std::strings
 }
@@ -41,8 +41,8 @@ TEST(DataWriterCreation, MainConstructor) {
     bool stateOutput;
     History history;
 
-    DataWriter writer(dirname, interventions, oudStates, demographics,
-                      demographicCombos, timesteps, stateOutput);
+    Writer writer(dirname, interventions, oudStates, demographics,
+                  demographicCombos, timesteps, stateOutput);
     EXPECT_EQ(writer.getDirname(), dirname);
 }
 
@@ -86,8 +86,8 @@ TEST(SimpleWriteTest, SingleValueDimensions) {
 
     std::string dirname = "build/test/TestDir";
 
-    DataWriter writer(dirname, interventions, oudStates, demographics,
-                      demographicCombos, timesteps, true);
+    Writer writer(dirname, interventions, oudStates, demographics,
+                  demographicCombos, timesteps, true);
     std::string result = writer.writeHistory(STRING, history);
 
     std::string expected = "Interventions, OUD States,agegrp,sex,t+0,\n"
@@ -183,8 +183,8 @@ TEST(SimpleWriteTest, MultiTimestep) {
 
     std::string dirname = "build/test/TestDir";
 
-    DataWriter writer(dirname, interventions, oudStates, demographics,
-                      demographicCombos, timesteps, true);
+    Writer writer(dirname, interventions, oudStates, demographics,
+                  demographicCombos, timesteps, true);
     std::string result = writer.writeHistory(Matrixify::STRING, history);
 
     std::string expected = "Interventions, OUD States,agegrp,sex,t+0,t+1,\n"

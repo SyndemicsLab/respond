@@ -27,6 +27,117 @@
 #include "DataTypes.hpp"
 
 namespace Matrixify {
+    class IDataLoader : public virtual IBaseLoader {
+    public:
+        /// @brief Get the Initial Sample
+        /// @return Matrix3d Initial Sample
+        virtual Matrix3d getInitialSample() const = 0;
+
+        /// @brief Get the Entering Samples
+        /// @return Matrix4d Entering Samples
+        virtual Matrix4d getEnteringSamples() const = 0;
+
+        /// @brief Get the OUD Transition Rates
+        /// @return Matrix3d OUD Transition Rates
+        virtual Matrix3d getOUDTransitionRates() const = 0;
+
+        /// @brief Get the Intervention Transition Rates
+        /// @return Matrix4d Intervention Transition Rates
+        virtual Matrix4d getInterventionTransitionRates() const = 0;
+
+        /// @brief Get the Overdose Rates
+        /// @return Matrix4d Overdose Rates
+        virtual Matrix4d getOverdoseRates() const = 0;
+
+        /// @brief Get the Fatal Overdose Rates
+        /// @return Matrix4d Fatal Overdose Rates
+        virtual Matrix4d getFatalOverdoseRates() const = 0;
+
+        /// @brief Get the Mortality Rates
+        /// @return Matrix3d Mortality Rates
+        virtual Matrix3d getMortalityRates() const = 0;
+
+        /// @brief Get the Intervention Initialization Rates
+        /// @return Matrix3d Intervention Initialization Rates
+        virtual Matrix3d getInterventionInitRates() const = 0;
+
+        /// @brief set the Initial Sample
+        virtual void setInitialSample(Matrix3d mat) = 0;
+
+        /// @brief set the Entering Samples
+        virtual void setEnteringSamples(Matrix4d mat) = 0;
+
+        /// @brief set the OUD Transition Rates
+        virtual void setOUDTransitionRates(Matrix3d mat) = 0;
+
+        /// @brief set the Intervention Transition Rates
+        virtual void setInterventionTransitionRates(Matrix4d mat) = 0;
+
+        /// @brief set the Overdose Rates
+        virtual void setOverdoseRates(Matrix4d mat) = 0;
+
+        /// @brief set the Fatal Overdose Rates
+        virtual void setFatalOverdoseRates(Matrix4d mat) = 0;
+
+        /// @brief set the Mortality Rates
+        virtual void setMortalityRates(Matrix3d mat) = 0;
+
+        /// @brief set the Intervention Initialization Rates
+        virtual void setInterventionInitRates(Matrix3d mat) = 0;
+
+        /// @brief Load the Initial Sample from a File
+        /// @param csvName Filename to the Initial Sample
+        /// @return Matrix3d Initial Sample
+        virtual Matrix3d loadInitialSample(std::string const &csvName) = 0;
+
+        /// @brief Load the Entering Samples from a File
+        /// @param csvName Filename to the Entering Samples
+        /// @param enteringSampleIntervention The Intervention to Load Entering
+        /// Samples Into
+        /// @param enteringSampleOUD The OUD State to Load Entering Samples Into
+        /// @return Matrix4d Entering Samples
+        virtual Matrix4d
+        loadEnteringSamples(std::string const &csvName,
+                            std::string const &enteringSampleIntervention,
+                            std::string const &enteringSampleOUD) = 0;
+
+        virtual Matrix4d loadEnteringSamples(std::string const &csvName) = 0;
+
+        /// @brief Load the OUD Transition Rates
+        /// @param csvName Filename to the OUD Transition Rates
+        /// @return Matrix3d OUD Transition Rates
+        virtual Matrix3d loadOUDTransitionRates(std::string const &csvName) = 0;
+
+        /// @brief Load the Intervention Initialization Rates
+        /// @param csvName Filename to the Intervention Initialization Rates
+        /// @return Matrix3d Intervention Initialization Rates
+        virtual Matrix3d
+        loadInterventionInitRates(std::string const &csvName) = 0;
+
+        /// @brief Load the Intervention Transition Rates
+        /// @param csvName Filename to the Intervention Transition Rates
+        /// @return Matrix4d Intervention Transition Rates
+        virtual Matrix4d
+        loadInterventionTransitionRates(std::string const &csvName) = 0;
+
+        /// @brief Load the Overdose Rates
+        /// @param csvName Filename to the Overdose Rates
+        /// @return Matrix4d Overdose Rates
+        virtual Matrix4d loadOverdoseRates(std::string const &csvName) = 0;
+
+        /// @brief Load the Fatal Overdose Rates
+        /// @param csvName Filename to the Fatal Overdose Rates
+        /// @return Matrix4d Fatal Overdose Rates
+        virtual Matrix4d loadFatalOverdoseRates(std::string const &csvName) = 0;
+
+        /// @brief Load the Mortality Rates
+        /// @param smrCSVName Filename to the SMR File
+        /// @param bgmCSVName Filename to the Background Mortality File
+        /// @return Matrix3d Mortality Rates
+        virtual Matrix3d loadMortalityRates(std::string const &smrCSVName,
+                                            std::string const &bgmCSVName) = 0;
+    };
+
     /*!
      * @brief The object that processes model inputs
      *

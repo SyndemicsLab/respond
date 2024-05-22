@@ -1,7 +1,7 @@
 #ifndef TESTS_MOCKDATALOADER_HPP_
 #define TESTS_MOCKDATALOADER_HPP_
 
-#include "InterfaceLoaders.hpp"
+#include "Interfaces.hpp"
 #include "gmock/gmock.h"
 
 class MockDataLoader : public Matrixify::IDataLoader {

@@ -1,4 +1,4 @@
-//===-- DataWriter.cpp - DataWriter class definition ------------*- C++ -*-===//
+//===-- Writer.cpp - Writer class definition ------------*- C++ -*-===//
 //
 // Part of the RESPOND - Researching Effective Strategies to Prevent Opioid
 // Death Project, under the AGPLv3 License. See https://www.gnu.org/licenses/
@@ -8,92 +8,35 @@
 //===----------------------------------------------------------------------===//
 ///
 /// \file
-/// This file contains the declaration of the DataWriter class.
+/// This file contains the declaration of the Writer class.
 ///
 /// Created Date: Tuesday, June 27th 2023, 10:20:34 am
 /// Contact: Benjamin.Linas@bmc.org
 ///
 //===----------------------------------------------------------------------===//
 
-#include "DataWriter.hpp"
+#include "Writer.hpp"
 #include <regex>
 
 namespace Matrixify {
-
-    /// @brief Default Constructor creating a completely empty DataWriter Object
-    DataWriter::DataWriter() : DataWriter("", {}, {}, {}, {}, {}, false) {}
-
-    /// @brief The main Constructor for DataWriter, it fills the object with the
-    /// given parameters
-    /// @param dirname A string containing a path to a directory to write output
-    /// files
-    /// @param interventions A list of Intervention State Names
-    /// @param oudStates A list of OUD State Names
-    /// @param demographics A List of Each Demographic List of Names
-    /// @param history The history recorded from a Simulation
-    /// Runstd::vector<int> timesteps, bool writeState
-    DataWriter::DataWriter(std::string dirname,
-                           std::vector<std::string> interventions,
-                           std::vector<std::string> oudStates,
-                           std::vector<std::string> demographics,
-                           std::vector<std::string> demographicCombos,
-                           std::vector<int> timesteps, bool writeState) {
-        this->dirname = dirname;
-        this->interventions = interventions;
-        this->oudStates = oudStates;
-        this->demographics = demographics;
-        this->demographicCombos = demographicCombos;
-        this->timesteps = timesteps;
-        this->writeState = writeState;
-    }
-
-    /// @brief Setter for Directory Path
-    /// @param dirname String representing a path to a directory
-    void DataWriter::addDirname(std::string dirname) {
-        this->dirname = dirname;
-    }
-
-    /// @brief Getter for Directory Path
-    /// @return String representation of Directory Path
-    std::string DataWriter::getDirname() { return this->dirname; }
-
-    /// @brief Setter for List of Intervention State Names
-    /// @param interventions List of Intervention State Names
-    void DataWriter::setInterventions(std::vector<std::string> interventions) {
-        this->interventions = interventions;
-    }
-
-    /// @brief Setter for List of OUD State Names
-    /// @param oudStates List of OUD State Names
-    void DataWriter::setOUDStates(std::vector<std::string> oudStates) {
-        this->oudStates = oudStates;
-    }
-
-    /// @brief Setter for List of Demographic Lists
-    /// @param demographics List of List of Demographic Names
-    void DataWriter::setDemographics(std::vector<std::string> demographics) {
-        this->demographics = demographics;
-    }
-
     /// @brief Main Operation of Class, write data to output
     /// @param outputType Output Enum, generally Matrixify::FILE
     /// @return string containing the result if output enum is Matrixify::STRING
     /// or description of status otherwise
-    std::string DataWriter::writeHistory(OutputType outputType,
-                                         History history) {
+    std::string HistoryWriter::writeHistory(const History history) const {
         if (history.stateHistory.getMatrices().empty() ||
             history.overdoseHistory.getMatrices().empty() ||
             history.fatalOverdoseHistory.getMatrices().empty() ||
             history.mortalityHistory.getMatrices().empty() ||
-            this->dirname.empty()) {
+            this->getDirname().empty()) {
             // log error
             std::ostringstream s;
             return s.str();
         }
 
-        if (outputType == FILE) {
-            if (!std::filesystem::exists(this->dirname)) {
-                std::stringstream dircheck(this->dirname);
+        if (this->getWriteType() == FILE) {
+            if (!std::filesystem::exists(this->getDirname())) {
+                std::stringstream dircheck(this->getDirname());
                 std::string buildingPath = "";
                 std::string temp;
                 while (getline(dircheck, temp, '/')) {
@@ -102,10 +45,10 @@ namespace Matrixify {
                         std::filesystem::create_directory(buildingPath);
                     }
                 }
-                std::filesystem::create_directory(this->dirname);
+                std::filesystem::create_directory(this->getDirname());
             }
 
-            std::filesystem::path dir(this->dirname);
+            std::filesystem::path dir(this->getDirname());
             std::filesystem::path stateFile("stateHistory.csv");
             std::filesystem::path overdoseFile("overdoseHistory.csv");
             std::filesystem::path fatalOverdoseFile("fatalOverdoseHistory.csv");
@@ -120,11 +63,9 @@ namespace Matrixify {
 
             std::ofstream file;
 
-            if (this->writeState) {
-                file.open(stateFullPath.string());
-                this->writer(file, history.stateHistory);
-                file.close();
-            }
+            file.open(stateFullPath.string());
+            this->writer(file, history.stateHistory);
+            file.close();
 
             file.open(overdoseFullPath.string());
             this->writer(file, history.overdoseHistory);
@@ -155,7 +96,7 @@ namespace Matrixify {
     /// @param outputType Output Enum, generally Matrixify::FILE
     /// @return string containing the result if output enum is Matrixify::STRING
     /// or description of status otherwise
-    std::string DataWriter::writeCosts(OutputType outputType, CostList costs) {
+    std::string CostWriter::writeCosts(const CostList costs) const {
         std::ostringstream stringstream;
 
         for (Cost cost : costs) {
@@ -170,12 +111,12 @@ namespace Matrixify {
                 return s.str();
             }
 
-            if (outputType == FILE) {
-                if (!std::filesystem::exists(this->dirname)) {
-                    std::filesystem::create_directory(this->dirname);
+            if (this->getWriteType() == FILE) {
+                if (!std::filesystem::exists(this->getDirname())) {
+                    std::filesystem::create_directory(this->getDirname());
                 }
 
-                std::filesystem::path dir(this->dirname);
+                std::filesystem::path dir(this->getDirname());
 
                 std::filesystem::path healthUtilFile("healthcareCost-" +
                                                      cost.perspective + ".csv");
@@ -225,7 +166,7 @@ namespace Matrixify {
             this->writer(stringstream, cost.nonFatalOverdoseCost);
             this->writer(stringstream, cost.treatmentCost);
         }
-        if (outputType == FILE) {
+        if (this->getWriteType() == FILE) {
             return "success";
         }
         return stringstream.str();
@@ -235,8 +176,8 @@ namespace Matrixify {
     /// @param outputType Output Enum, generally Matrixify::FILE
     /// @return string containing the result if output enum is Matrixify::STRING
     /// or description of status otherwise
-    std::string DataWriter::writeUtilities(OutputType outputType,
-                                           Matrixify::Matrix4d utilities) {
+    std::string
+    UtilityWriter::writeUtilities(const Matrixify::Matrix4d utilities) const {
         std::ostringstream stringstream;
 
         if (utilities.getMatrices().empty()) {
@@ -245,12 +186,12 @@ namespace Matrixify {
             return s.str();
         }
 
-        if (outputType == FILE) {
-            if (!std::filesystem::exists(this->dirname)) {
-                std::filesystem::create_directory(this->dirname);
+        if (this->getWriteType() == FILE) {
+            if (!std::filesystem::exists(this->getDirname())) {
+                std::filesystem::create_directory(this->getDirname());
             }
 
-            std::filesystem::path dir(this->dirname);
+            std::filesystem::path dir(this->getDirname());
             std::filesystem::path utilFile("utility.csv");
             std::filesystem::path utilFullPath = dir / utilFile;
 
@@ -262,13 +203,13 @@ namespace Matrixify {
         }
         this->writer(stringstream, utilities);
 
-        if (outputType == FILE) {
+        if (this->getWriteType() == FILE) {
             return "success";
         }
         return stringstream.str();
     }
 
-    std::string DataWriter::writeTotals(OutputType outputType, Totals totals) {
+    std::string TotalsWriter::writeTotals(const Totals totals) const {
         std::ostringstream stringstream;
 
         if (totals.baseCosts.empty() || totals.discCosts.empty()) {
@@ -277,12 +218,12 @@ namespace Matrixify {
             return s.str();
         }
 
-        if (outputType == FILE) {
-            if (!std::filesystem::exists(this->dirname)) {
-                std::filesystem::create_directory(this->dirname);
+        if (this->getWriteType() == FILE) {
+            if (!std::filesystem::exists(this->getDirname())) {
+                std::filesystem::create_directory(this->getDirname());
             }
 
-            std::filesystem::path dir(this->dirname);
+            std::filesystem::path dir(this->getDirname());
             std::filesystem::path utilFile("totals.csv");
             std::filesystem::path utilFullPath = dir / utilFile;
 
@@ -312,16 +253,138 @@ namespace Matrixify {
         stringstream << "Utility, " << totals.baseUtility << ", "
                      << totals.discUtility << std::endl;
 
-        if (outputType == FILE) {
+        if (this->getWriteType() == FILE) {
             return "success";
         }
         return stringstream.str();
     }
 
+    std::string InputWriter::writeInputs(const DataLoader dataLoader) const {
+        if (this->getWriteType() != WriteType::FILE) {
+            std::ostringstream stringstream;
+            this->writer(stringstream, history.stateHistory);
+            this->writer(stringstream, history.overdoseHistory);
+            this->writer(stringstream, history.fatalOverdoseHistory);
+            this->writer(stringstream, history.mortalityHistory);
+            return stringstream.str();
+        }
+        if (this->getDirname().empty()) {
+            // log error
+            std::ostringstream s;
+            return s.str();
+        }
+
+        if (!std::filesystem::exists(this->getDirname())) {
+            std::stringstream dircheck(this->getDirname());
+            std::string buildingPath = "";
+            std::string temp;
+            while (getline(dircheck, temp, '/')) {
+                buildingPath += temp + "/";
+                if (!std::filesystem::exists(buildingPath)) {
+                    std::filesystem::create_directory(buildingPath);
+                }
+            }
+            std::filesystem::create_directory(this->getDirname());
+        }
+
+        std::filesystem::path dir(this->getDirname());
+
+        std::filesystem::path overdoseFile("overdoseHistory.csv");
+        std::filesystem::path fatalOverdoseFile("fatalOverdoseHistory.csv");
+        std::filesystem::path mortalityFile("mortalityHistory.csv");
+        std::filesystem::path admissionsFile("admissionsHistory.csv");
+        std::filesystem::path stateFullPath = dir / stateFile;
+        std::filesystem::path overdoseFullPath = dir / overdoseFile;
+        std::filesystem::path fatalOverdoseFullPath = dir / fatalOverdoseFile;
+        std::filesystem::path mortalityFullPath = dir / mortalityFile;
+        std::filesystem::path admissionsFullPath = dir / admissionsFile;
+
+        std::ofstream file;
+
+        file.open(stateFullPath.string());
+        this->writer(file, history.stateHistory);
+        file.close();
+
+        file.open(overdoseFullPath.string());
+        this->writer(file, history.overdoseHistory);
+        file.close();
+
+        file.open(fatalOverdoseFullPath.string());
+        this->writer(file, history.fatalOverdoseHistory);
+        file.close();
+
+        file.open(mortalityFullPath.string());
+        this->writer(file, history.mortalityHistory);
+        file.close();
+
+        file.open(admissionsFullPath.string());
+        this->writer(file, history.interventionAdmissionHistory);
+        file.close();
+        return "success";
+    }
+
+    std::string InputWriter::writeOUDTransitionRates(Matrix3d oudRates) const {
+        std::filesystem::path orFile("oud_trans.csv");
+        std::filesystem::path dir(this->getDirname());
+        std::filesystem::path fullPath = dir / orFile;
+
+        std::ofstream file;
+        file.open(fullPath.string());
+        this->writer(file, history.stateHistory);
+        file.close();
+    }
+
+    std::string InputWriter::writeInterventionInitRates(
+        Matrix3d interventionInitProb) const {
+        std::filesystem::path iipFile("block_init_effect.csv");
+        std::filesystem::path dir(this->getDirname());
+        std::filesystem::path fullPath = dir / iipFile;
+
+        std::ofstream file;
+        file.open(fullPath.string());
+        this->writer(file, history.stateHistory);
+        file.close();
+    }
+
+    std::string InputWriter::writeInterventionTransitionRates(
+        Matrix4d interventionRates) const {
+        std::filesystem::path irFile("block_trans.csv");
+        std::filesystem::path dir(this->getDirname());
+        std::filesystem::path fullPath = dir / irFile;
+
+        std::ofstream file;
+        file.open(fullPath.string());
+        this->writer(file, history.stateHistory);
+        file.close();
+    }
+
+    std::string InputWriter::writeOverdoseRates(Matrix4d odRate) const {
+        std::filesystem::path odFile("all_types_overdose.csv");
+        std::filesystem::path dir(this->getDirname());
+        std::filesystem::path fullPath = dir / odFile;
+
+        std::ofstream file;
+        file.open(fullPath.string());
+        this->writer(file, history.stateHistory);
+        file.close();
+    }
+
+    std::string InputWriter::writeFatalOverdoseRates(Matrix4d fodRate) const {
+        std::filesystem::path fodFile("fatal_overdose.csv");
+        std::filesystem::path dir(this->getDirname());
+        std::filesystem::path fullPath = dir / fodFile;
+
+        std::ofstream file;
+        file.open(fullPath.string());
+        this->writer(file, history.stateHistory);
+        file.close();
+    }
+
     /// @brief Helper function to write data to the specified stream
     /// @param stream Stream type to write data to
     /// @param historyToWrite Specific portion of history to save
-    void DataWriter::writer(std::ostream &stream, Matrix4d historyToWrite) {
+    void Writer::writer(std::ostream &stream,
+                        const Matrix4d historyToWrite) const {
         std::vector<Matrix3d> Matrix3dVec = historyToWrite.getMatrices();
         stream << writeColumnHeaders() << std::endl;
         for (long int i = 0; i < this->interventions.size(); i++) {
@@ -354,7 +417,7 @@ namespace Matrixify {
     /// @brief Helper function to write Headers to CSVs
     /// @param timesteps Total duration incurred during the simulation
     /// @return String containing the CSV Column Headers
-    std::string DataWriter::writeColumnHeaders() {
+    std::string Writer::writeColumnHeaders() const {
         std::string ret = "Interventions, OUD States,";
         for (std::string demographic : this->demographics) {
             ret += demographic + ",";
