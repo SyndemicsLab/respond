@@ -100,7 +100,9 @@ namespace Matrixify {
         virtual void setDemographicCombos(const std::vector<std::string>) = 0;
     };
 
-    class IStratifiable : IInterventionable, IBehaviorable, IDemographicable {};
+    class IStratifiable : public virtual IInterventionable,
+                          public virtual IBehaviorable,
+                          public virtual IDemographicable {};
 
     class ICostable {
     public:

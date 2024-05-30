@@ -121,36 +121,17 @@ PYBIND11_MODULE(Matrixify, m) {
                        &History::interventionAdmissionHistory);
 
     py::class_<Writer>(m, "Writer")
-        .def(py::init<std::string, std::vector<std::string>,
-                      std::vector<std::string>, std::vector<std::string>,
-                      std::vector<std::string>, std::vector<int>, bool>())
         .def(py::init<>())
-        .def(py::init<std::string, std::vector<std::string>,
-                      std::vector<std::string>, std::vector<std::string>,
-                      std::vector<std::string>, std::vector<int>, WriteType>())
-        .def("setOutputType", &Writer::setOutputType)
-        .def("getOutputType", &Writer::getOutputType)
+        .def(py::init<std::string, std::vector<int>, WriteType>())
+        .def("setWriteType", &Writer::setWriteType)
+        .def("getWriteType", &Writer::getWriteType)
         .def("setDirname", &Writer::setDirname)
-        .def("getDirname", &Writer::getDirname)
-        .def("setInterventions", &Writer::setInterventions)
-        .def("setOUDStates", &Writer::setOUDStates)
-        .def("setDemographics", &Writer::setDemographics)
-        .def("setDemographicCombos", &Writer::setDemographicCombos)
-        .def("getInterventions", &Writer::getInterventions)
-        .def("getOUDStates", &Writer::getOUDStates)
-        .def("getDemographics", &Writer::getDemographics)
-        .def("getDemographicCombos", &Writer::getDemographicCombos);
+        .def("getDirname", &Writer::getDirname);
 
     py::class_<InputWriter, std::shared_ptr<InputWriter>, Writer>(m,
                                                                   "InputWriter")
-        .def(py::init<std::string, std::vector<std::string>,
-                      std::vector<std::string>, std::vector<std::string>,
-                      std::vector<std::string>, std::vector<int>, bool>())
-        .def(py::init<>())
-        .def(py::init<std::string, std::vector<std::string>,
-                      std::vector<std::string>, std::vector<std::string>,
-                      std::vector<std::string>, std::vector<int>, WriteType>())
-        .def("setOutputType", &Writer::setOutputType);
+        .def(py::init<std::string, std::vector<int>, WriteType>())
+        .def(py::init<>());
 
     py::class_<Cost>(m, "Cost")
         .def(py::init<>())

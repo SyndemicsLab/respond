@@ -39,8 +39,9 @@ namespace Matrixify {
         /// @param numDemographics Integer specifying number of Demographic
         /// Combinations
         /// @return New Matrix3d Object of specified dimensions
-        static Matrixify::Matrix3d
-        Create(int numOUDStates, int numInterventions, int numDemographics);
+        static Matrixify::Matrix3d Create(const int numOUDStates,
+                                          const int numInterventions,
+                                          const int numDemographics);
     };
 
 } // namespace Matrixify
