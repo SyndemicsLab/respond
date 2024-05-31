@@ -76,18 +76,23 @@ namespace Matrixify {
                     WriteType writeType)
             : Writer(dirname, timesteps, writeType){};
 
-        std::string writeInputs(const DataLoader) const;
+        std::string writeInputs(const std::shared_ptr<IDataLoader>) const;
 
     private:
-        std::string writeOUDTransitionRates(const DataLoader) const;
+        std::string
+        writeOUDTransitionRates(const std::shared_ptr<IDataLoader>) const;
 
-        std::string writeInterventionInitRates(const DataLoader) const;
+        std::string
+        writeInterventionInitRates(const std::shared_ptr<IDataLoader>) const;
 
-        std::string writeInterventionTransitionRates(const DataLoader) const;
+        std::string writeInterventionTransitionRates(
+            const std::shared_ptr<IDataLoader>) const;
 
-        std::string writeOverdoseRates(const DataLoader) const;
+        std::string
+        writeOverdoseRates(const std::shared_ptr<IDataLoader>) const;
 
-        std::string writeFatalOverdoseRates(const DataLoader) const;
+        std::string
+        writeFatalOverdoseRates(const std::shared_ptr<IDataLoader>) const;
     };
 
     class OutputWriter : public Writer {

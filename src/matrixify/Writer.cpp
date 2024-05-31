@@ -281,7 +281,8 @@ namespace Matrixify {
         return stringstream.str();
     }
 
-    std::string InputWriter::writeInputs(const DataLoader dataLoader) const {
+    std::string InputWriter::writeInputs(
+        const std::shared_ptr<IDataLoader> dataLoader) const {
 
         std::string res = writeOUDTransitionRates(dataLoader);
         res = res + " " + writeInterventionTransitionRates(dataLoader);
@@ -291,16 +292,17 @@ namespace Matrixify {
         return res;
     }
 
-    std::string
-    InputWriter::writeOUDTransitionRates(const DataLoader dataLoader) const {
+    std::string InputWriter::writeOUDTransitionRates(
+        const std::shared_ptr<IDataLoader> dataLoader) const {
         std::filesystem::path orFile("oud_trans.csv");
         std::filesystem::path dir(this->getDirname());
         std::filesystem::path fullPath = dir / orFile;
 
-        std::vector<std::string> columnNames = {"intervention", "agegrp", "sex",
-                                                "initial_oud"};
-        columnNames.insert(columnNames.end(), dataLoader.getOUDStates().begin(),
-                           dataLoader.getOUDStates().end());
+        std::vector<std::string> columnNames{"intervention", "agegrp", "sex",
+                                             "initial_oud"};
+        for (std::string oud : dataLoader->getOUDStates()) {
+            columnNames.push_back(oud);
+        }
 
         std::ofstream file;
         file.open(fullPath.string());
@@ -310,25 +312,25 @@ namespace Matrixify {
         }
         file << std::endl;
 
-        Matrix3d dm = dataLoader.getOUDTransitionRates();
+        Matrix3d dm = dataLoader->getOUDTransitionRates();
 
-        for (long int init = 0; init < dataLoader.getNumOUDStates(); init++) {
-            for (long int i = 0; i < dataLoader.getNumInterventions(); i++) {
+        for (long int init = 0; init < dataLoader->getNumOUDStates(); init++) {
+            for (long int i = 0; i < dataLoader->getNumInterventions(); i++) {
                 for (long int k = 0;
-                     k < dataLoader.getDemographicCombos().size(); k++) {
-                    file << dataLoader.getInterventions()[i] << ",";
-                    std::string temp = dataLoader.getDemographicCombos()[k];
+                     k < dataLoader->getDemographicCombos().size(); k++) {
+                    file << dataLoader->getInterventions()[i] << ",";
+                    std::string temp = dataLoader->getDemographicCombos()[k];
                     temp = std::regex_replace(temp, std::regex("^ +| +$|( ) +"),
                                               "$1");
                     std::replace(temp.begin(), temp.end(), ' ', ',');
                     file << temp << ",";
-                    file << dataLoader.getOUDStates()[init] << ",";
-                    for (long int j = 0; j < dataLoader.getNumOUDStates();
+                    file << dataLoader->getOUDStates()[init] << ",";
+                    for (long int j = 0; j < dataLoader->getNumOUDStates();
                          j++) {
                         std::array<long int, 3> index = {0, 0, 0};
                         index[Matrixify::INTERVENTION] = i;
                         index[Matrixify::OUD] =
-                            (init * dataLoader.getNumOUDStates()) + j;
+                            (init * dataLoader->getNumOUDStates()) + j;
                         index[Matrixify::DEMOGRAPHIC_COMBO] = k;
                         ASSERTM(dm.NumDimensions == 3,
                                 "3 Dimensions Found in Matrix3d");
@@ -343,16 +345,18 @@ namespace Matrixify {
         return "success";
     }
 
-    std::string
-    InputWriter::writeInterventionInitRates(const DataLoader dataLoader) const {
+    std::string InputWriter::writeInterventionInitRates(
+        const std::shared_ptr<IDataLoader> dataLoader) const {
         std::filesystem::path iipFile("block_init_effect.csv");
         std::filesystem::path dir(this->getDirname());
         std::filesystem::path fullPath = dir / iipFile;
 
-        std::vector<std::string> columnNames = {"initial_oud_state",
-                                                "to_intervention"};
-        columnNames.insert(columnNames.end(), dataLoader.getOUDStates().begin(),
-                           dataLoader.getOUDStates().end());
+        std::vector<std::string> columnNames{"initial_oud_state",
+                                             "to_intervention"};
+
+        for (std::string oud : dataLoader->getOUDStates()) {
+            columnNames.push_back(oud);
+        }
 
         std::ofstream file;
         file.open(fullPath.string());
@@ -362,18 +366,18 @@ namespace Matrixify {
         }
         file << std::endl;
 
-        Matrix3d dm = dataLoader.getInterventionInitRates();
+        Matrix3d dm = dataLoader->getInterventionInitRates();
 
-        for (int init = 0; init < dataLoader.getNumOUDStates(); init++) {
-            for (int inter = 0; inter < dataLoader.getNumInterventions();
+        for (int init = 0; init < dataLoader->getNumOUDStates(); init++) {
+            for (int inter = 0; inter < dataLoader->getNumInterventions();
                  inter++) {
-                file << dataLoader.getOUDStates()[init] << ",";
-                file << dataLoader.getInterventions()[inter] << ",";
-                for (int res = 0; res < dataLoader.getNumOUDStates(); res++) {
+                file << dataLoader->getOUDStates()[init] << ",";
+                file << dataLoader->getInterventions()[inter] << ",";
+                for (int res = 0; res < dataLoader->getNumOUDStates(); res++) {
                     std::array<long int, 3> index = {0, 0, 0};
                     index[Matrixify::INTERVENTION] = inter;
                     index[Matrixify::OUD] =
-                        (init * dataLoader.getNumOUDStates()) + res;
+                        (init * dataLoader->getNumOUDStates()) + res;
                     index[Matrixify::DEMOGRAPHIC_COMBO] = 0;
                     ASSERTM(dm.NumDimensions == 3,
                             "3 Dimensions Found in Matrix3d");
@@ -388,7 +392,7 @@ namespace Matrixify {
     }
 
     std::string InputWriter::writeInterventionTransitionRates(
-        const DataLoader dataLoader) const {
+        const std::shared_ptr<IDataLoader> dataLoader) const {
         std::filesystem::path irFile("block_trans.csv");
         std::filesystem::path dir(this->getDirname());
         std::filesystem::path fullPath = dir / irFile;
@@ -396,13 +400,13 @@ namespace Matrixify {
         std::ofstream file;
         file.open(fullPath.string());
 
-        std::vector<std::string> columnNames = {"agegrp", "sex", "oud",
-                                                "initial_intervention"};
+        std::vector<std::string> columnNames{"agegrp", "sex", "oud",
+                                             "initial_intervention"};
 
-        std::vector<int> changeTimes = dataLoader.getInterventionChangeTimes();
+        std::vector<int> changeTimes = dataLoader->getInterventionChangeTimes();
         int ct1 = 1;
         for (int ct2 : changeTimes) {
-            for (std::string col : dataLoader.getInterventions()) {
+            for (std::string col : dataLoader->getInterventions()) {
                 columnNames.push_back(col + "_" + std::to_string(ct1) + "_" +
                                       std::to_string(ct2));
             }
@@ -418,25 +422,26 @@ namespace Matrixify {
         changeTimes.insert(changeTimes.begin(), 0);
         changeTimes.pop_back();
 
-        Matrix4d dm = dataLoader.getInterventionTransitionRates();
+        Matrix4d dm = dataLoader->getInterventionTransitionRates();
 
-        for (long int k = 0; k < dataLoader.getNumDemographicCombos(); k++) {
-            for (int oud = 0; oud < dataLoader.getNumOUDStates(); oud++) {
-                for (int init = 0; init < dataLoader.getNumInterventions();
+        for (long int k = 0; k < dataLoader->getNumDemographicCombos(); k++) {
+            for (int oud = 0; oud < dataLoader->getNumOUDStates(); oud++) {
+                for (int init = 0; init < dataLoader->getNumInterventions();
                      init++) {
-                    std::string temp = dataLoader.getDemographicCombos()[k];
+                    std::string temp = dataLoader->getDemographicCombos()[k];
                     temp = std::regex_replace(temp, std::regex("^ +| +$|( ) +"),
                                               "$1");
                     std::replace(temp.begin(), temp.end(), ' ', ',');
                     file << temp << ",";
-                    file << dataLoader.getOUDStates()[oud] << ",";
-                    file << dataLoader.getInterventions()[init] << ",";
+                    file << dataLoader->getOUDStates()[oud] << ",";
+                    file << dataLoader->getInterventions()[init] << ",";
                     for (int timestep : changeTimes) {
                         for (int res = 0;
-                             res < dataLoader.getNumInterventions(); res++) {
+                             res < dataLoader->getNumInterventions(); res++) {
                             std::array<long int, 3> index = {0, 0, 0};
                             index[Matrixify::INTERVENTION] =
-                                (init * dataLoader.getNumInterventions()) + res;
+                                (init * dataLoader->getNumInterventions()) +
+                                res;
                             index[Matrixify::OUD] = oud;
                             index[Matrixify::DEMOGRAPHIC_COMBO] = k;
                             double value =
@@ -452,8 +457,8 @@ namespace Matrixify {
         return "success";
     }
 
-    std::string
-    InputWriter::writeOverdoseRates(const DataLoader dataLoader) const {
+    std::string InputWriter::writeOverdoseRates(
+        const std::shared_ptr<IDataLoader> dataLoader) const {
         std::filesystem::path odFile("all_types_overdose.csv");
         std::filesystem::path dir(this->getDirname());
         std::filesystem::path fullPath = dir / odFile;
@@ -461,10 +466,10 @@ namespace Matrixify {
         std::ofstream file;
         file.open(fullPath.string());
 
-        std::vector<std::string> columnNames = {"intervention", "agegrp", "sex",
-                                                "oud"};
+        std::vector<std::string> columnNames{"intervention", "agegrp", "sex",
+                                             "oud"};
 
-        std::vector<int> changeTimes = dataLoader.getOverdoseChangeTimes();
+        std::vector<int> changeTimes = dataLoader->getOverdoseChangeTimes();
         int ct1 = 1;
         for (int ct2 : changeTimes) {
             columnNames.push_back("overdose_" + std::to_string(ct1) + "_" +
@@ -480,21 +485,21 @@ namespace Matrixify {
         changeTimes.insert(changeTimes.begin(), 0);
         changeTimes.pop_back();
 
-        Matrix4d dm = dataLoader.getOverdoseRates();
+        Matrix4d dm = dataLoader->getOverdoseRates();
 
-        for (int inter = 0; inter < dataLoader.getNumInterventions(); inter++)
-            for (long int dem = 0; dem < dataLoader.getNumDemographicCombos();
+        for (int inter = 0; inter < dataLoader->getNumInterventions(); inter++)
+            for (long int dem = 0; dem < dataLoader->getNumDemographicCombos();
                  dem++) {
-                for (int oud = 0; oud < dataLoader.getNumOUDStates(); oud++) {
+                for (int oud = 0; oud < dataLoader->getNumOUDStates(); oud++) {
                     {
-                        file << dataLoader.getInterventions()[inter] << ",";
+                        file << dataLoader->getInterventions()[inter] << ",";
                         std::string temp =
-                            dataLoader.getDemographicCombos()[dem];
+                            dataLoader->getDemographicCombos()[dem];
                         temp = std::regex_replace(
                             temp, std::regex("^ +| +$|( ) +"), "$1");
                         std::replace(temp.begin(), temp.end(), ' ', ',');
                         file << temp << ",";
-                        file << dataLoader.getOUDStates()[oud] << ",";
+                        file << dataLoader->getOUDStates()[oud] << ",";
                         for (int timestep : changeTimes) {
                             std::array<long int, 3> index = {0, 0, 0};
                             index[Matrixify::INTERVENTION] = inter;
@@ -512,8 +517,8 @@ namespace Matrixify {
         return "success";
     }
 
-    std::string
-    InputWriter::writeFatalOverdoseRates(const DataLoader dataLoader) const {
+    std::string InputWriter::writeFatalOverdoseRates(
+        const std::shared_ptr<IDataLoader> dataLoader) const {
         std::filesystem::path fodFile("fatal_overdose.csv");
         std::filesystem::path dir(this->getDirname());
         std::filesystem::path fullPath = dir / fodFile;
@@ -521,9 +526,9 @@ namespace Matrixify {
         std::ofstream file;
         file.open(fullPath.string());
 
-        std::vector<std::string> columnNames = {};
+        std::vector<std::string> columnNames{};
 
-        std::vector<int> changeTimes = dataLoader.getOverdoseChangeTimes();
+        std::vector<int> changeTimes = dataLoader->getOverdoseChangeTimes();
         int ct1 = 1;
         for (int ct2 : changeTimes) {
             columnNames.push_back("percent_overdoses_fatal_" +
@@ -540,7 +545,7 @@ namespace Matrixify {
         changeTimes.insert(changeTimes.begin(), 0);
         changeTimes.pop_back();
 
-        Matrix4d dm = dataLoader.getFatalOverdoseRates();
+        Matrix4d dm = dataLoader->getFatalOverdoseRates();
         for (int timestep : changeTimes) {
             file << std::to_string(dm(timestep, 0, 0, 0)) << ",";
         }

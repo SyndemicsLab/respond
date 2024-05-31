@@ -180,6 +180,11 @@ int main(int argc, char **argv) {
 
             historyWriter.writeHistory(history);
 
+            Matrixify::InputWriter ipWriter(outputDir.string(), outputTimesteps,
+                                            Matrixify::WriteType::FILE);
+
+            ipWriter.writeInputs(inputs);
+
             // Probably want to figure out the right way to do this
             if (costLoader->getCostSwitch()) {
                 Matrixify::CostWriter costWriter(
