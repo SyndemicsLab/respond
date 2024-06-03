@@ -120,7 +120,7 @@ PYBIND11_MODULE(Matrixify, m) {
         .def_readwrite("interventionAdmissionHistory",
                        &History::interventionAdmissionHistory);
 
-    py::class_<Writer>(m, "Writer")
+    py::class_<Writer, std::shared_ptr<Writer>>(m, "Writer")
         .def(py::init<>())
         .def(py::init<std::string, std::vector<int>, WriteType>())
         .def("setWriteType", &Writer::setWriteType)
@@ -131,7 +131,8 @@ PYBIND11_MODULE(Matrixify, m) {
     py::class_<InputWriter, std::shared_ptr<InputWriter>, Writer>(m,
                                                                   "InputWriter")
         .def(py::init<std::string, std::vector<int>, WriteType>())
-        .def(py::init<>());
+        .def(py::init<>())
+        .def("writeInputs", &InputWriter::writeInputs);
 
     py::class_<Cost>(m, "Cost")
         .def(py::init<>())
