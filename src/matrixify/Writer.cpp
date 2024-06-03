@@ -540,6 +540,7 @@ namespace Matrixify {
         for (std::string col : columnNames) {
             file << col << ",";
         }
+        file << std::endl;
 
         // add zero index and pop off final change time to get matrix indices
         changeTimes.insert(changeTimes.begin(), 0);
