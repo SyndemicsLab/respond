@@ -1,8 +1,8 @@
 #include "CostLoader.hpp"
 #include "DataFormatter.hpp"
 #include "DataLoader.hpp"
-#include "DataWriter.hpp"
 #include "UtilityLoader.hpp"
+#include "Writer.hpp"
 #include <DataTypes.hpp>
 #include <memory>
 #include <pybind11/eigen.h>
@@ -120,21 +120,18 @@ PYBIND11_MODULE(Matrixify, m) {
         .def_readwrite("interventionAdmissionHistory",
                        &History::interventionAdmissionHistory);
 
-    py::class_<DataWriter>(m, "DataWriter")
-        .def(py::init<std::string, std::vector<std::string>,
-                      std::vector<std::string>, std::vector<std::string>,
-                      std::vector<std::string>, std::vector<int>, bool>())
+    py::class_<Writer>(m, "Writer")
         .def(py::init<>())
-        .def("addDirname", &DataWriter::addDirname)
-        .def("getDirname", &DataWriter::getDirname)
-        .def("setInterventions", &DataWriter::setInterventions)
-        .def("setOUDStates", &DataWriter::setOUDStates)
-        .def("setDemographics", &DataWriter::setDemographics)
-        .def("setDemographicCombos", &DataWriter::setDemographicCombos)
-        .def("writeHistory", &DataWriter::writeHistory)
-        .def("writeCosts", &DataWriter::writeCosts)
-        .def("writeUtilities", &DataWriter::writeUtilities)
-        .def("writeTotals", &DataWriter::writeTotals);
+        .def(py::init<std::string, std::vector<int>, WriteType>())
+        .def("setWriteType", &Writer::setWriteType)
+        .def("getWriteType", &Writer::getWriteType)
+        .def("setDirname", &Writer::setDirname)
+        .def("getDirname", &Writer::getDirname);
+
+    py::class_<InputWriter, std::shared_ptr<InputWriter>, Writer>(m,
+                                                                  "InputWriter")
+        .def(py::init<std::string, std::vector<int>, WriteType>())
+        .def(py::init<>());
 
     py::class_<Cost>(m, "Cost")
         .def(py::init<>())
@@ -152,8 +149,8 @@ PYBIND11_MODULE(Matrixify, m) {
              py::arg("costs") = py::none(), py::arg("utilities") = py::none(),
              py::arg("costSwitch") = false);
 
-    py::enum_<OutputType>(m, "OutputType")
-        .value("FILE", OutputType::FILE)
-        .value("STRING", OutputType::STRING)
+    py::enum_<WriteType>(m, "WriteType")
+        .value("FILE", WriteType::FILE)
+        .value("STRING", WriteType::STRING)
         .export_values();
 }

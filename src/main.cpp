@@ -33,7 +33,7 @@
 #include "CostLoader.hpp"
 #include "DataFormatter.hpp"
 #include "DataLoader.hpp"
-#include "DataWriter.hpp"
+#include "Writer.hpp"
 #include "simrunner/include/PostSimulationCalculator.hpp"
 #include "simrunner/include/Simulation.hpp"
 
@@ -166,11 +166,11 @@ int main(int argc, char **argv) {
             std::vector<int> outputTimesteps =
                 inputs->getGeneralStatsOutputTimesteps();
 
-            Matrixify::DataWriter writer(
+            Matrixify::HistoryWriter historyWriter(
                 outputDir.string(), inputs->getInterventions(),
                 inputs->getOUDStates(), inputs->getDemographics(),
                 inputs->getDemographicCombos(), outputTimesteps,
-                inputs->getGeneralOutputsSwitch());
+                Matrixify::WriteType::FILE);
 
             Matrixify::DataFormatter formatter;
 
@@ -178,20 +178,44 @@ int main(int argc, char **argv) {
                                        baseutilities,
                                        costLoader->getCostSwitch());
 
-            writer.writeHistory(Matrixify::FILE, history);
+            historyWriter.writeHistory(history);
 
-            Matrixify::Totals totals;
-            totals.baseCosts = totalBaseCosts;
-            totals.baseLifeYears = baselifeYears;
-            totals.baseUtility = totalBaseUtility;
-            totals.discCosts = totalDiscCosts;
-            totals.discLifeYears = disclifeYears;
-            totals.discUtility = totalDiscUtility;
+            Matrixify::InputWriter ipWriter(outputDir.string(), outputTimesteps,
+                                            Matrixify::WriteType::FILE);
 
+            ipWriter.writeInputs(inputs);
+
+            // Probably want to figure out the right way to do this
             if (costLoader->getCostSwitch()) {
-                writer.writeCosts(Matrixify::FILE, basecosts);
-                writer.writeUtilities(Matrixify::FILE, baseutilities);
-                writer.writeTotals(Matrixify::FILE, totals);
+                Matrixify::CostWriter costWriter(
+                    outputDir.string(), inputs->getInterventions(),
+                    inputs->getOUDStates(), inputs->getDemographics(),
+                    inputs->getDemographicCombos(), outputTimesteps,
+                    Matrixify::WriteType::FILE);
+                costWriter.writeCosts(basecosts);
+            }
+            if (utilityLoader->getCostSwitch()) {
+                Matrixify::UtilityWriter utilityWriter(
+                    outputDir.string(), inputs->getInterventions(),
+                    inputs->getOUDStates(), inputs->getDemographics(),
+                    inputs->getDemographicCombos(), outputTimesteps,
+                    Matrixify::WriteType::FILE);
+                utilityWriter.writeUtilities(baseutilities);
+            }
+            if (costLoader->getCostSwitch()) {
+                Matrixify::Totals totals;
+                totals.baseCosts = totalBaseCosts;
+                totals.baseLifeYears = baselifeYears;
+                totals.baseUtility = totalBaseUtility;
+                totals.discCosts = totalDiscCosts;
+                totals.discLifeYears = disclifeYears;
+                totals.discUtility = totalDiscUtility;
+                Matrixify::TotalsWriter totalsWriter(
+                    outputDir.string(), inputs->getInterventions(),
+                    inputs->getOUDStates(), inputs->getDemographics(),
+                    inputs->getDemographicCombos(), outputTimesteps,
+                    Matrixify::WriteType::FILE);
+                totalsWriter.writeTotals(totals);
             }
 
             std::cout << "Output " << std::to_string(i) << " Complete"

@@ -19,9 +19,9 @@
 
 namespace Matrixify {
 
-    Matrixify::Matrix3d Matrix3dFactory::Create(int numOUDStates,
-                                                int numInterventions,
-                                                int numDemographics) {
+    Matrixify::Matrix3d Matrix3dFactory::Create(const int numOUDStates,
+                                                const int numInterventions,
+                                                const int numDemographics) {
         Eigen::array<Eigen::Index, 3> order = {0, 0, 0};
         order[Matrixify::OUD] = numOUDStates;
         order[Matrixify::INTERVENTION] = numInterventions;

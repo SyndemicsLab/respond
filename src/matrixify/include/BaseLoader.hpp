@@ -25,9 +25,18 @@
 #include <unordered_map>
 #include <vector>
 
-#include "InterfaceLoaders.hpp"
+#include "Interfaces.hpp"
 
 namespace Matrixify {
+    class IBaseLoader : public virtual ILoggable,
+                        public virtual IOutputable,
+                        public virtual IConfigable,
+                        public virtual ISimulatable,
+                        public virtual IReadable,
+                        public virtual IAgeable,
+                        public virtual IStratifiable,
+                        public virtual ICostable {};
+
     class BaseLoader : public virtual IBaseLoader {
     public:
         BaseLoader(Data::IConfigablePtr config = nullptr,
@@ -80,6 +89,17 @@ namespace Matrixify {
             return this->interventions.size();
         }
 
+        void setInterventions(std::vector<std::string> interventions) override {
+            this->interventions = interventions;
+        }
+        void setOUDStates(std::vector<std::string> ouds) override {
+            this->oudStates = ouds;
+        }
+
+        void setInterventionChangeTimes(const std::vector<int> ict) override {
+            this->interventionChangeTimes = ict;
+        }
+
         std::vector<std::string> getAgeGroupBins() const override;
 
         // demographic
@@ -95,6 +115,13 @@ namespace Matrixify {
         int getNumDemographicCombos() const override {
             return this->demographicCombos.size();
         }
+        void setDemographicCombos(std::vector<std::string> combos) override {
+            this->demographicCombos = combos;
+        }
+        void setDemographics(std::vector<std::string> dem) override {
+            this->demographics = dem;
+        }
+
         int getAgeGroupShift() const override { return ageGroupShift; }
 
         // cost
