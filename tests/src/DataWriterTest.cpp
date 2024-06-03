@@ -20,17 +20,17 @@
 #include <gtest/gtest.h>
 #include <unsupported/Eigen/CXX11/Tensor>
 
-#include "DataWriter.hpp"
+#include "Writer.hpp"
 
 using namespace Matrixify;
 
-TEST(DataWriterCreation, DefaultConstructor) {
-    DataWriter writer;
+TEST(HistoryWriterCreation, DefaultConstructor) {
+    HistoryWriter writer;
     std::string expected = "";
     EXPECT_EQ(writer.getDirname(), expected); // comparing two std::strings
 }
 
-TEST(DataWriterCreation, MainConstructor) {
+TEST(HistoryWriterCreation, MainConstructor) {
     std::string dirname = "testDir";
     std::vector<std::string> interventions;
     std::vector<std::string> oudStates;
@@ -41,8 +41,8 @@ TEST(DataWriterCreation, MainConstructor) {
     bool stateOutput;
     History history;
 
-    DataWriter writer(dirname, interventions, oudStates, demographics,
-                      demographicCombos, timesteps, stateOutput);
+    HistoryWriter writer(dirname, interventions, oudStates, demographics,
+                         demographicCombos, timesteps, Matrixify::STRING);
     EXPECT_EQ(writer.getDirname(), dirname);
 }
 
@@ -86,9 +86,9 @@ TEST(SimpleWriteTest, SingleValueDimensions) {
 
     std::string dirname = "build/test/TestDir";
 
-    DataWriter writer(dirname, interventions, oudStates, demographics,
-                      demographicCombos, timesteps, true);
-    std::string result = writer.writeHistory(STRING, history);
+    HistoryWriter writer(dirname, interventions, oudStates, demographics,
+                         demographicCombos, timesteps, Matrixify::STRING);
+    std::string result = writer.writeHistory(history);
 
     std::string expected = "Interventions, OUD States,agegrp,sex,t+0,\n"
                            "inter1,oud1,10_14,Male,0.000000,\n"
@@ -183,9 +183,9 @@ TEST(SimpleWriteTest, MultiTimestep) {
 
     std::string dirname = "build/test/TestDir";
 
-    DataWriter writer(dirname, interventions, oudStates, demographics,
-                      demographicCombos, timesteps, true);
-    std::string result = writer.writeHistory(Matrixify::STRING, history);
+    HistoryWriter writer(dirname, interventions, oudStates, demographics,
+                         demographicCombos, timesteps, Matrixify::STRING);
+    std::string result = writer.writeHistory(history);
 
     std::string expected = "Interventions, OUD States,agegrp,sex,t+0,t+1,\n"
                            "inter1,oud1,10_14,Male,1.000000,0.000000,\n"

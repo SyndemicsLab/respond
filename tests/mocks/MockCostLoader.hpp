@@ -1,7 +1,7 @@
 #ifndef TESTS_MOCKCOSTLOADER_HPP_
 #define TESTS_MOCKCOSTLOADER_HPP_
 
-#include "InterfaceLoaders.hpp"
+#include "CostLoader.hpp"
 #include "gmock/gmock.h"
 
 class MockCostLoader : public Matrixify::ICostLoader {
@@ -41,11 +41,17 @@ public:
     MOCK_METHOD((int), getNumInterventions, (), (const, override));
     MOCK_METHOD((std::vector<int>), getInterventionChangeTimes, (),
                 (const, override));
+    MOCK_METHOD((void), setInterventions, (const std::vector<std::string>),
+                (override));
+    MOCK_METHOD((void), setInterventionChangeTimes, (const std::vector<int>),
+                (override));
 
     // IBehavior
     MOCK_METHOD((std::vector<std::string>), getOUDStates, (),
                 (const, override));
     MOCK_METHOD((int), getNumOUDStates, (), (const, override));
+    MOCK_METHOD((void), setOUDStates, (const std::vector<std::string>),
+                (override));
 
     // IDemographics
     MOCK_METHOD((std::vector<std::string>), getDemographics, (),
@@ -54,6 +60,11 @@ public:
     MOCK_METHOD((std::vector<std::string>), getDemographicCombos, (),
                 (const, override));
     MOCK_METHOD((int), getNumDemographicCombos, (), (const, override));
+    MOCK_METHOD((void), setDemographics, (const std::vector<std::string>),
+                (override));
+    MOCK_METHOD((void), setDemographicCombos, (const std::vector<std::string>),
+                (override));
+
     MOCK_METHOD((int), getAgeGroupShift, (), (const, override));
     MOCK_METHOD((int), getAgingInterval, (), (const, override));
     MOCK_METHOD((std::vector<std::string>), getAgeGroupBins, (),

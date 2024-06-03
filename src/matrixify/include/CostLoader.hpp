@@ -24,9 +24,64 @@
 
 #include "BaseLoader.hpp"
 #include "DataTypes.hpp"
-#include "InterfaceLoaders.hpp"
+#include "Interfaces.hpp"
 
 namespace Matrixify {
+    class ICostLoader : public virtual IBaseLoader {
+    public:
+        /// @brief Load Healthcare Utilization Cost from file
+        /// @param csvName filename for Healthcare Utilization Cost
+        /// @return Matrix3d containing the Healthcare Utilization Cost
+        virtual std::unordered_map<std::string, Matrix3d>
+        loadHealthcareUtilizationCost(std::string const &csvName) = 0;
+
+        /// @brief Load Overdose Cost from file
+        /// @param csvName filename for Overdose Cost
+        /// @return unordered map for Overdose CostList, string to double
+        virtual std::unordered_map<std::string,
+                                   std::unordered_map<std::string, double>>
+        loadOverdoseCost(std::string const &csvName) = 0;
+
+        /// @brief
+        /// @param csvName
+        /// @return
+        virtual std::unordered_map<std::string, Matrix3d>
+        loadPharmaceuticalCost(std::string const &csvName) = 0;
+
+        /// @brief
+        /// @param csvName
+        /// @return
+        virtual std::unordered_map<std::string, Matrix3d>
+        loadTreatmentUtilizationCost(std::string const &csvName) = 0;
+
+        /// @brief
+        /// @return
+        virtual Matrix3d
+        getHealthcareUtilizationCost(std::string const &perspective) const = 0;
+
+        /// @brief
+        /// @return
+        virtual Matrix3d
+        getPharmaceuticalCost(std::string const &perspective) const = 0;
+
+        /// @brief
+        /// @return
+        virtual Matrix3d
+        getTreatmentUtilizationCost(std::string const &perspective) const = 0;
+
+        /// @brief
+        /// @return
+        virtual double
+        getNonFatalOverdoseCost(std::string const &perspective) const = 0;
+
+        /// @brief
+        /// @return
+        virtual double
+        getFatalOverdoseCost(std::string const &perspective) const = 0;
+
+        virtual std::vector<std::string> getCostPerspectives() const = 0;
+    };
+
     class CostLoader : public BaseLoader, public virtual ICostLoader {
     public:
         CostLoader(Data::IConfigablePtr config, std::string const &inputDir,

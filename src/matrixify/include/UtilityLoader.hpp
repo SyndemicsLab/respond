@@ -19,11 +19,46 @@
 #define DATA_UTILITYLOADER_HPP_
 
 #include "BaseLoader.hpp"
-#include "DataTypes.hpp"
-#include "InterfaceLoaders.hpp"
 #include "Matrix3dFactory.hpp"
 
 namespace Matrixify {
+    class IUtilityLoader : public virtual IBaseLoader {
+    public:
+        /// @brief Load the Background Utilties from a File
+        /// @param csvName Filename containing Background Utility
+        /// @return Matrix3d of Background Utility
+        virtual std::unordered_map<std::string, Matrix3d>
+        loadBackgroundUtility(std::string const &csvName) = 0;
+
+        /// @brief Load the OUD Utility from a File
+        /// @param csvName Filename containing OUD Utility
+        /// @return Matrix3d of OUD Utility
+        virtual std::unordered_map<std::string, Matrix3d>
+        loadOUDUtility(std::string const &csvName) = 0;
+
+        /// @brief Load the Setting Utility from a File
+        /// @param csvName Filename containing the Setting Utility
+        /// @return Matrix3d of Setting Utility
+        virtual std::unordered_map<std::string, Matrix3d>
+        loadSettingUtility(std::string const &csvName) = 0;
+
+        // GETTERS
+        /// @brief Get the Background Utility
+        /// @return Matrix3d of Background Utility
+        virtual Matrix3d
+        getBackgroundUtility(std::string const &perspective) const = 0;
+
+        /// @brief Get the OUD Utility
+        /// @return Matrix3d of OUD Utility
+        virtual Matrix3d
+        getOUDUtility(std::string const &perspective) const = 0;
+
+        /// @brief Get the Setting Utility
+        /// @return Matrix3d of Setting Utility
+        virtual Matrix3d
+        getSettingUtility(std::string const &perspective) const = 0;
+    };
+
     class UtilityLoader : public BaseLoader, public virtual IUtilityLoader {
     public:
         UtilityLoader(Data::IConfigablePtr config, std::string const &inputDir,

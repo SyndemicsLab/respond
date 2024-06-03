@@ -1,8 +1,8 @@
 #include "CostCalculator.hpp"
 #include "CostLoader.hpp"
 #include "DataLoader.hpp"
-#include "DataWriter.hpp"
 #include "Simulation.hpp"
+#include "Writer.hpp"
 #include "crow.h"
 
 int main(int argc, char **argv) {
@@ -11,7 +11,7 @@ int main(int argc, char **argv) {
     Matrixify::DataLoader inputs;
     Matrixify::CostLoader costs;
     Matrixify::UtilityLoader utils;
-    Matrixify::DataWriter writer;
+    Matrixify::Writer writer;
 
     Matrixify::History hist;
 
