@@ -184,10 +184,10 @@ int main(int argc, char **argv) {
 
             historyWriter.writeHistory(history);
 
-            bool rt = false;
-            rt = std::get<bool>(
-                inputs->getConfig()->get("output.write_calibrated_inputs", rt));
-            if (rt) {
+            bool writeInputs = false;
+            writeInputs = std::get<bool>(inputs->getConfig()->get(
+                "output.write_calibrated_inputs", writeInputs));
+            if (writeInputs) {
                 Matrixify::InputWriter ipWriter(outputDir.string(),
                                                 outputTimesteps,
                                                 Matrixify::WriteType::FILE);

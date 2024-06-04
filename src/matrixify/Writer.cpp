@@ -599,9 +599,11 @@ namespace Matrixify {
                                 "3 Dimensions Found in Matrix3d");
                         double value =
                             Matrix3dVec[timeCtr](index[0], index[1], index[2]);
-                        stream << std::to_string(value) << ",";
+                        stream << std::to_string(value);
                         if (this->pivot) {
                             stream << std::endl;
+                        } else {
+                            stream << ",";
                         }
                     }
                     if (!this->pivot) {
@@ -616,12 +618,12 @@ namespace Matrixify {
     /// @param timesteps Total duration incurred during the simulation
     /// @return String containing the CSV Column Headers
     std::string OutputWriter::writeColumnHeaders() const {
-        std::string ret = "Interventions, OUD States,";
+        std::string ret = "Interventions,OUD States,";
         for (std::string demographic : this->demographics) {
             ret += demographic + ",";
         }
         if (this->pivot) {
-            ret += "time, value";
+            ret += "time,value";
         } else {
             for (int timestep : this->getTimesteps()) {
                 ret += "t+" + std::to_string(timestep) + ",";
