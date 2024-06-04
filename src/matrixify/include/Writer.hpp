@@ -103,12 +103,14 @@ namespace Matrixify {
                      std::vector<std::string> oudStates,
                      std::vector<std::string> demographics,
                      std::vector<std::string> demographicCombos,
-                     std::vector<int> timesteps, WriteType writeType)
+                     std::vector<int> timesteps, WriteType writeType,
+                     bool pivot = false)
             : Writer(dirname, timesteps, writeType) {
             this->interventions = interventions;
             this->oudStates = oudStates;
             this->demographics = demographics;
             this->demographicCombos = demographicCombos;
+            this->pivot = pivot;
         }
 
     protected:
@@ -128,6 +130,7 @@ namespace Matrixify {
         std::vector<std::string> oudStates;
         std::vector<std::string> demographics;
         std::vector<std::string> demographicCombos;
+        bool pivot = false;
     };
 
     class HistoryWriter : public OutputWriter {
@@ -139,9 +142,10 @@ namespace Matrixify {
                       std::vector<std::string> oudStates,
                       std::vector<std::string> demographics,
                       std::vector<std::string> demographicCombos,
-                      std::vector<int> timesteps, WriteType writeType)
+                      std::vector<int> timesteps, WriteType writeType,
+                      bool pivot = false)
             : OutputWriter(dirname, interventions, oudStates, demographics,
-                           demographicCombos, timesteps, writeType) {}
+                           demographicCombos, timesteps, writeType, pivot) {}
 
         /// @brief Main function to write the history
         /// @param writeType Enum describing the output type. Defaults to FILE
@@ -159,9 +163,10 @@ namespace Matrixify {
                    std::vector<std::string> oudStates,
                    std::vector<std::string> demographics,
                    std::vector<std::string> demographicCombos,
-                   std::vector<int> timesteps, WriteType writeType)
+                   std::vector<int> timesteps, WriteType writeType,
+                   bool pivot = false)
             : OutputWriter(dirname, interventions, oudStates, demographics,
-                           demographicCombos, timesteps, writeType) {}
+                           demographicCombos, timesteps, writeType, pivot) {}
         /// @brief Main function to write the cost
         /// @param writeType Enum describing the output type. Defaults to FILE
         /// @param cost Cost struct containing the results of the simulation
@@ -178,9 +183,10 @@ namespace Matrixify {
                       std::vector<std::string> oudStates,
                       std::vector<std::string> demographics,
                       std::vector<std::string> demographicCombos,
-                      std::vector<int> timesteps, WriteType writeType)
+                      std::vector<int> timesteps, WriteType writeType,
+                      bool pivot = false)
             : OutputWriter(dirname, interventions, oudStates, demographics,
-                           demographicCombos, timesteps, writeType) {}
+                           demographicCombos, timesteps, writeType, pivot) {}
         /// @brief Main function to write the Utilities
         /// @param writeType Enum describing the output type. Defaults to FILE
         /// @param util Utility struct containing the results of the simulation

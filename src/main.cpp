@@ -166,11 +166,15 @@ int main(int argc, char **argv) {
             std::vector<int> outputTimesteps =
                 inputs->getGeneralStatsOutputTimesteps();
 
+            bool pivot = false;
+            pivot =
+                std::get<bool>(inputs->getConfig()->get("output.pivot", pivot));
+
             Matrixify::HistoryWriter historyWriter(
                 outputDir.string(), inputs->getInterventions(),
                 inputs->getOUDStates(), inputs->getDemographics(),
                 inputs->getDemographicCombos(), outputTimesteps,
-                Matrixify::WriteType::FILE);
+                Matrixify::WriteType::FILE, pivot);
 
             Matrixify::DataFormatter formatter;
 
@@ -180,10 +184,15 @@ int main(int argc, char **argv) {
 
             historyWriter.writeHistory(history);
 
-            Matrixify::InputWriter ipWriter(outputDir.string(), outputTimesteps,
-                                            Matrixify::WriteType::FILE);
-
-            ipWriter.writeInputs(inputs);
+            bool rt = false;
+            rt = std::get<bool>(
+                inputs->getConfig()->get("output.write_calibrated_inputs", rt));
+            if (rt) {
+                Matrixify::InputWriter ipWriter(outputDir.string(),
+                                                outputTimesteps,
+                                                Matrixify::WriteType::FILE);
+                ipWriter.writeInputs(inputs);
+            }
 
             // Probably want to figure out the right way to do this
             if (costLoader->getCostSwitch()) {
@@ -191,7 +200,7 @@ int main(int argc, char **argv) {
                     outputDir.string(), inputs->getInterventions(),
                     inputs->getOUDStates(), inputs->getDemographics(),
                     inputs->getDemographicCombos(), outputTimesteps,
-                    Matrixify::WriteType::FILE);
+                    Matrixify::WriteType::FILE, pivot);
                 costWriter.writeCosts(basecosts);
             }
             if (utilityLoader->getCostSwitch()) {
@@ -199,7 +208,7 @@ int main(int argc, char **argv) {
                     outputDir.string(), inputs->getInterventions(),
                     inputs->getOUDStates(), inputs->getDemographics(),
                     inputs->getDemographicCombos(), outputTimesteps,
-                    Matrixify::WriteType::FILE);
+                    Matrixify::WriteType::FILE, pivot);
                 utilityWriter.writeUtilities(baseutilities);
             }
             if (costLoader->getCostSwitch()) {

@@ -567,25 +567,46 @@ namespace Matrixify {
         for (long int i = 0; i < this->interventions.size(); i++) {
             for (long int j = 0; j < this->oudStates.size(); j++) {
                 for (long int k = 0; k < this->demographicCombos.size(); k++) {
-                    stream << this->interventions[i] << ",";
-                    stream << this->oudStates[j] << ",";
-                    std::string temp = demographicCombos[k];
-                    temp = std::regex_replace(temp, std::regex("^ +| +$|( ) +"),
-                                              "$1");
-                    std::replace(temp.begin(), temp.end(), ' ', ',');
-                    stream << temp << ",";
+                    if (!this->pivot) {
+                        stream << this->interventions[i] << ",";
+                        stream << this->oudStates[j] << ",";
+                        std::string temp = demographicCombos[k];
+                        temp = std::regex_replace(
+                            temp, std::regex("^ +| +$|( ) +"), "$1");
+                        std::replace(temp.begin(), temp.end(), ' ', ',');
+                        stream << temp << ",";
+                    }
 
-                    for (Matrix3d dm : Matrix3dVec) {
+                    for (int timeCtr = 0; timeCtr < this->getTimesteps().size();
+                         timeCtr++) {
+                        if (this->pivot) {
+                            stream << this->interventions[i] << ",";
+                            stream << this->oudStates[j] << ",";
+                            std::string temp = demographicCombos[k];
+                            temp = std::regex_replace(
+                                temp, std::regex("^ +| +$|( ) +"), "$1");
+                            std::replace(temp.begin(), temp.end(), ' ', ',');
+                            stream
+                                << temp << ","
+                                << std::to_string(this->getTimesteps()[timeCtr])
+                                << ",";
+                        }
                         std::array<long int, 3> index = {0, 0, 0};
                         index[Matrixify::INTERVENTION] = i;
                         index[Matrixify::OUD] = j;
                         index[Matrixify::DEMOGRAPHIC_COMBO] = k;
-                        ASSERTM(dm.NumDimensions == 3,
+                        ASSERTM(Matrix3dVec[timeCtr].NumDimensions == 3,
                                 "3 Dimensions Found in Matrix3d");
-                        double value = dm(index[0], index[1], index[2]);
+                        double value =
+                            Matrix3dVec[timeCtr](index[0], index[1], index[2]);
                         stream << std::to_string(value) << ",";
+                        if (this->pivot) {
+                            stream << std::endl;
+                        }
                     }
-                    stream << std::endl;
+                    if (!this->pivot) {
+                        stream << std::endl;
+                    }
                 }
             }
         }
@@ -599,9 +620,14 @@ namespace Matrixify {
         for (std::string demographic : this->demographics) {
             ret += demographic + ",";
         }
-        for (int timestep : this->getTimesteps()) {
-            ret += "t+" + std::to_string(timestep) + ",";
+        if (this->pivot) {
+            ret += "time, value";
+        } else {
+            for (int timestep : this->getTimesteps()) {
+                ret += "t+" + std::to_string(timestep) + ",";
+            }
         }
+
         return ret;
     }
 } // namespace Matrixify

@@ -82,7 +82,7 @@ TEST(SimpleWriteTest, SingleValueDimensions) {
     std::vector<std::string> oudStates = {"oud1", "oud2"};
     std::vector<std::string> demographicCombos = {"10_14 Male", "10_14 Female"};
     std::vector<std::string> demographics = {"agegrp", "sex"};
-    std::vector<int> timesteps = {0};
+    std::vector<int> timesteps = {1};
 
     std::string dirname = "build/test/TestDir";
 
@@ -90,7 +90,7 @@ TEST(SimpleWriteTest, SingleValueDimensions) {
                          demographicCombos, timesteps, Matrixify::STRING);
     std::string result = writer.writeHistory(history);
 
-    std::string expected = "Interventions, OUD States,agegrp,sex,t+0,\n"
+    std::string expected = "Interventions, OUD States,agegrp,sex,t+1,\n"
                            "inter1,oud1,10_14,Male,0.000000,\n"
                            "inter1,oud1,10_14,Female,0.000000,\n"
                            "inter1,oud2,10_14,Male,0.000000,\n"
@@ -99,7 +99,7 @@ TEST(SimpleWriteTest, SingleValueDimensions) {
                            "inter2,oud1,10_14,Female,0.000000,\n"
                            "inter2,oud2,10_14,Male,0.000000,\n"
                            "inter2,oud2,10_14,Female,1.000000,\n"
-                           "Interventions, OUD States,agegrp,sex,t+0,\n"
+                           "Interventions, OUD States,agegrp,sex,t+1,\n"
                            "inter1,oud1,10_14,Male,1.000000,\n"
                            "inter1,oud1,10_14,Female,0.000000,\n"
                            "inter1,oud2,10_14,Male,0.000000,\n"
@@ -108,7 +108,7 @@ TEST(SimpleWriteTest, SingleValueDimensions) {
                            "inter2,oud1,10_14,Female,0.000000,\n"
                            "inter2,oud2,10_14,Male,0.000000,\n"
                            "inter2,oud2,10_14,Female,0.000000,\n"
-                           "Interventions, OUD States,agegrp,sex,t+0,\n"
+                           "Interventions, OUD States,agegrp,sex,t+1,\n"
                            "inter1,oud1,10_14,Male,0.000000,\n"
                            "inter1,oud1,10_14,Female,0.000000,\n"
                            "inter1,oud2,10_14,Male,0.000000,\n"
@@ -117,7 +117,7 @@ TEST(SimpleWriteTest, SingleValueDimensions) {
                            "inter2,oud1,10_14,Female,0.000000,\n"
                            "inter2,oud2,10_14,Male,0.000000,\n"
                            "inter2,oud2,10_14,Female,0.000000,\n"
-                           "Interventions, OUD States,agegrp,sex,t+0,\n"
+                           "Interventions, OUD States,agegrp,sex,t+1,\n"
                            "inter1,oud1,10_14,Male,0.000000,\n"
                            "inter1,oud1,10_14,Female,1.000000,\n"
                            "inter1,oud2,10_14,Male,0.000000,\n"
@@ -179,7 +179,7 @@ TEST(SimpleWriteTest, MultiTimestep) {
     std::vector<std::string> oudStates = {"oud1", "oud2"};
     std::vector<std::string> demographicCombos = {"10_14 Male", "10_14 Female"};
     std::vector<std::string> demographics = {"agegrp", "sex"};
-    std::vector<int> timesteps = {0, 1};
+    std::vector<int> timesteps = {1, 2};
 
     std::string dirname = "build/test/TestDir";
 
@@ -187,7 +187,7 @@ TEST(SimpleWriteTest, MultiTimestep) {
                          demographicCombos, timesteps, Matrixify::STRING);
     std::string result = writer.writeHistory(history);
 
-    std::string expected = "Interventions, OUD States,agegrp,sex,t+0,t+1,\n"
+    std::string expected = "Interventions, OUD States,agegrp,sex,t+1,t+2,\n"
                            "inter1,oud1,10_14,Male,1.000000,0.000000,\n"
                            "inter1,oud1,10_14,Female,0.000000,0.000000,\n"
                            "inter1,oud2,10_14,Male,0.000000,0.000000,\n"
@@ -196,7 +196,7 @@ TEST(SimpleWriteTest, MultiTimestep) {
                            "inter2,oud1,10_14,Female,0.000000,0.000000,\n"
                            "inter2,oud2,10_14,Male,0.000000,0.000000,\n"
                            "inter2,oud2,10_14,Female,0.000000,1.000000,\n"
-                           "Interventions, OUD States,agegrp,sex,t+0,t+1,\n"
+                           "Interventions, OUD States,agegrp,sex,t+1,t+2,\n"
                            "inter1,oud1,10_14,Male,0.000000,1.000000,\n"
                            "inter1,oud1,10_14,Female,0.000000,0.000000,\n"
                            "inter1,oud2,10_14,Male,0.000000,0.000000,\n"
@@ -205,7 +205,7 @@ TEST(SimpleWriteTest, MultiTimestep) {
                            "inter2,oud1,10_14,Female,0.000000,0.000000,\n"
                            "inter2,oud2,10_14,Male,0.000000,0.000000,\n"
                            "inter2,oud2,10_14,Female,1.000000,0.000000,\n"
-                           "Interventions, OUD States,agegrp,sex,t+0,t+1,\n"
+                           "Interventions, OUD States,agegrp,sex,t+1,t+2,\n"
                            "inter1,oud1,10_14,Male,0.000000,0.000000,\n"
                            "inter1,oud1,10_14,Female,0.000000,0.000000,\n"
                            "inter1,oud2,10_14,Male,0.000000,0.000000,\n"
@@ -214,7 +214,7 @@ TEST(SimpleWriteTest, MultiTimestep) {
                            "inter2,oud1,10_14,Female,0.000000,0.000000,\n"
                            "inter2,oud2,10_14,Male,0.000000,0.000000,\n"
                            "inter2,oud2,10_14,Female,0.000000,0.000000,\n"
-                           "Interventions, OUD States,agegrp,sex,t+0,t+1,\n"
+                           "Interventions, OUD States,agegrp,sex,t+1,t+2,\n"
                            "inter1,oud1,10_14,Male,0.000000,0.000000,\n"
                            "inter1,oud1,10_14,Female,0.000000,1.000000,\n"
                            "inter1,oud2,10_14,Male,0.000000,0.000000,\n"
