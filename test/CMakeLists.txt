@@ -13,12 +13,12 @@ find_package(DataManagement 1 REQUIRED
 )
 
 add_executable(${PROJECT_NAME}
-  src/SimulationTest.cpp
-  src/DataLoaderTest.cpp
-  src/CostLoaderTest.cpp
-  src/UtilityLoaderTest.cpp
-  src/DataWriterTest.cpp
-  src/PostSimulationCalculatorTest.cpp
+  src/TEST_Simulation.cpp
+  src/TEST_DataLoader.cpp
+  src/TEST_CostLoader.cpp
+  src/TEST_UtilityLoader.cpp
+  src/TEST_DataWriter.cpp
+  src/TEST_PostSimulationCalculator.cpp
 )
 
 target_link_libraries(${PROJECT_NAME} PUBLIC Eigen3::Eigen)
