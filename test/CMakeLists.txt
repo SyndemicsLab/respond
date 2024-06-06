@@ -14,6 +14,7 @@ find_package(DataManagement 1 REQUIRED
 
 add_executable(${PROJECT_NAME}
   src/TEST_Simulation.cpp
+  src/TEST_BaseLoader.cpp
   src/TEST_DataLoader.cpp
   src/TEST_CostLoader.cpp
   src/TEST_UtilityLoader.cpp

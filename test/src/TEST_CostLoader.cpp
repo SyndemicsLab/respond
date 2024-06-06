@@ -112,22 +112,42 @@ protected:
     }
 };
 
-TEST_F(CostLoaderTest, Constructor) {
+TEST_F(CostLoaderTest, ConstructorEmpty) {
     Matrixify::CostLoader cl;
     Matrixify::Matrix3d result = cl.getHealthcareUtilizationCost("healthcare");
     EXPECT_EQ(result.size(), 0);
 }
 
-TEST_F(CostLoaderTest, ConstructorStr) {
-    Matrixify::CostLoader cl(std::filesystem::temp_directory_path().string(),
-                             logger);
+TEST_F(CostLoaderTest, ConstructorMain) {
+    Data::IConfigablePtr config = std::make_shared<Data::Config>(configFile);
+    Matrixify::CostLoader cl(
+        config, std::filesystem::temp_directory_path().string(), logger);
+    Matrixify::Matrix3d result = cl.getHealthcareUtilizationCost("healthcare");
     EXPECT_EQ(cl.getInterventions().size(), 9);
 }
 
-TEST_F(CostLoaderTest, loadConfigFile) {
-    Matrixify::CostLoader cl;
-    cl.loadConfigFile(configFile.string());
-    EXPECT_EQ(cl.getConfig()->getStringVector("state.interventions").size(), 9);
+TEST_F(CostLoaderTest, ConstructorConfig) {
+    Data::IConfigablePtr config = std::make_shared<Data::Config>(configFile);
+    Matrixify::CostLoader cl(config);
+    EXPECT_EQ(cl.getInterventions().size(), 9);
+}
+
+TEST_F(CostLoaderTest, ConstructorConfigAndString) {
+    Data::IConfigablePtr config = std::make_shared<Data::Config>(configFile);
+    Matrixify::CostLoader cl(config,
+                             std::filesystem::temp_directory_path().string());
+    EXPECT_EQ(cl.getInterventions().size(), 9);
+}
+
+TEST_F(CostLoaderTest, ConstructorString) {
+    Matrixify::CostLoader cl(std::filesystem::temp_directory_path().string());
+    EXPECT_EQ(cl.getInterventions().size(), 9);
+}
+
+TEST_F(CostLoaderTest, ConstructorStringAndLogger) {
+    Matrixify::CostLoader cl(std::filesystem::temp_directory_path().string(),
+                             logger);
+    EXPECT_EQ(cl.getInterventions().size(), 9);
 }
 
 TEST_F(CostLoaderTest, healthcareUtilizationCost) {
@@ -224,4 +244,25 @@ TEST_F(CostLoaderTest, getFatalOverdoseCost) {
     fileStream.close();
     cl.loadOverdoseCost(tempAbsoluteFile.string());
     EXPECT_EQ(cl.getFatalOverdoseCost("healthcare"), 857.97);
+}
+
+TEST_F(CostLoaderTest, getCostPerspectives) {
+    Matrixify::CostLoader cl(std::filesystem::temp_directory_path().string(),
+                             logger);
+
+    std::vector<std::string> expected{"healthcare"};
+
+    EXPECT_EQ(cl.getCostPerspectives(), expected);
+}
+
+TEST_F(CostLoaderTest, getCostSwitch) {
+    Matrixify::CostLoader cl(std::filesystem::temp_directory_path().string(),
+                             logger);
+    EXPECT_EQ(cl.getCostSwitch(), true);
+}
+
+TEST_F(CostLoaderTest, getDiscountRate) {
+    Matrixify::CostLoader cl(std::filesystem::temp_directory_path().string(),
+                             logger);
+    EXPECT_EQ(cl.getDiscountRate(), 0.0025);
 }
