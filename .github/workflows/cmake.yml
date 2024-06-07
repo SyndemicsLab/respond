@@ -73,7 +73,7 @@ jobs:
     # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
     - name: CMake Configuration
       working-directory: ${{github.workspace}}/build
-      run:  cmake .. -DCMAKE_TOOLCHAIN_FILE="$BUILD_TYPE"/generators/conan_toolchain.cmake -DCMAKE_BUILD_TYPE="$BUILD_TYPE" -DBUILD_TESTS=ON
+      run:  cmake .. -DCMAKE_TOOLCHAIN_FILE="$BUILD_TYPE"/generators/conan_toolchain.cmake -DCMAKE_BUILD_TYPE="$BUILD_TYPE" -DBUILD_TESTS=ON -DCMAKE_C_COMPILER="gcc-12" -DCMAKE_CXX_COMPILER="g++-12"
 
     - name: Cmake Build
       working-directory: ${{github.workspace}}/build
