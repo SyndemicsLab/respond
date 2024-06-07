@@ -48,9 +48,10 @@ jobs:
 
     - name: MacOS Get Conan
       if: ${{ matrix.os == 'macos-latest' }}
-      run: python3 -m pip install conan
+      run: brew install conan
 
     - name: Conan Installation
+      if: ${{ matrix.os == 'ubuntu-latest' }}
       id: conan
       uses: turtlebrowser/get-conan@main
 
