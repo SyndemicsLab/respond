@@ -37,7 +37,7 @@ jobs:
       run: cp -r "dminstall-${{ matrix.os }}/" "${{github.workspace}}/lib/dminstall"
 
     - name: Get GCC-12
-      if: ${{ vars.RUNNER_OS == 'Linux' }}
+      if: ${{ matrix.os == 'ubuntu-latest' }}
       run:  sudo apt update && sudo apt install gcc-12 g++-12
 
     - name: Install Boost
@@ -45,6 +45,10 @@ jobs:
       id: install-boost
       with:
         boost_version: 1.82.0
+
+    - name: MacOS Get Conan
+      if: ${{ matrix.os == 'macos-latest' }}
+      run: python3 -m pip install conan
 
     - name: Conan Installation
       id: conan
