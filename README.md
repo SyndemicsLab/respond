@@ -1,5 +1,7 @@
 # RESPONDv2.0
 
+[![CMake](https://github.com/SyndemicsLab/RESPONDSimulationv2/actions/workflows/cmake.yml/badge.svg)](https://github.com/SyndemicsLab/RESPONDSimulationv2/actions/workflows/cmake.yml)
+
 `RESPONDv2.0` is a complete rewrite of the RESPOND model, first created by the [Syndemics Lab](https://www.syndemicslab.org) in the late 2010s, with the goals of improving the readability and maintainability of the model, improving the execution speed, and making the model calibration process easier.
 
 While the original model was built using a combination of the R and C++ programming languages, the core of this rewrite is purely C++, instead planning to expose language bindings so users can work with the model using their language of choice.
