@@ -67,7 +67,7 @@ jobs:
 
     - name: Activate Conan VirtualEnv
       working-directory: ${{github.workspace}}/build
-      run: source Debug/generators/conanbuild.sh
+      run: source "$BUILD_TYPE"/generators/conanbuild.sh
 
     # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
     # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
@@ -81,7 +81,7 @@ jobs:
 
     - name: Deactivate Conan VirtualEnv
       working-directory: ${{github.workspace}}/build
-      run: source Debug/generators/deactivate_conanbuild.sh
+      run: source "$BUILD_TYPE"/generators/deactivate_conanbuild.sh
 
     - name: Run tests
       working-directory: ${{github.workspace}}
