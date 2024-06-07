@@ -25,6 +25,7 @@
 #include <filesystem>
 #include <fstream>
 #include <iostream>
+#include <sstream>
 #include <string>
 #include <unsupported/Eigen/CXX11/Tensor>
 #include <variant>
@@ -62,6 +63,8 @@ namespace Matrixify {
 
     protected:
         bool checkDirectory() const;
+        std::string writeFile(const std::string filename,
+                              std::stringstream &stream) const;
 
     private:
         std::string dirname;
@@ -122,7 +125,7 @@ namespace Matrixify {
         /// @brief
         /// @param stream
         /// @param historyToWrite
-        void write4d(std::ostream &stream, const Matrix4d historyToWrite,
+        void write4d(std::stringstream &stream, const Matrix4d historyToWrite,
                      const std::string columnHeaders) const;
 
     private:

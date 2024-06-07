@@ -1,25 +1,14 @@
 # RESPONDv2.0
 
+[![CMake](https://github.com/SyndemicsLab/RESPONDSimulationv2/actions/workflows/cmake.yml/badge.svg)](https://github.com/SyndemicsLab/RESPONDSimulationv2/actions/workflows/cmake.yml)
+
 `RESPONDv2.0` is a complete rewrite of the RESPOND model, first created by the [Syndemics Lab](https://www.syndemicslab.org) in the late 2010s, with the goals of improving the readability and maintainability of the model, improving the execution speed, and making the model calibration process easier.
 
 While the original model was built using a combination of the R and C++ programming languages, the core of this rewrite is purely C++, instead planning to expose language bindings so users can work with the model using their language of choice.
 
-## Dependencies
+## Dependency Management
 
-- [Boost](https://www.boost.org)
-- [CMake](https://cmake.org) >= 3.19
-- [Eigen](https://eigen.tuxfamily.org/index.php) >= 3.4.x
-- [`fmt`](https://github.com/fmtlib/fmt) v9.0.0 or v9.1.0
-- [`gcc`](https://gcc.gnu.org) v4.8.1 or newer
-- [OpenMP](https://www.openmp.org)
-
-### Tests
-
-- [`gtest`](https://github.com/google/googletest) & `gmock`
-
-### API
-
-- [`Crow`](https://github.com/CrowCpp/Crow)
+We utilize [Conan 2](https://docs.conan.io/2/) to build and manage dependencies. For a list of dependencies please check the [`Conanfile`](conanfile.py). Conan can be installed via python's package manager, `pip`. Once installed, running the [build script](`scripts/build.sh`) installs all dependencies and builds the executables.
 
 ## What's New?
 
@@ -39,19 +28,33 @@ This enables flexibility in the number of combinations of intervention, opioid u
 
 ## Building RESPOND
 
-If on **Unix**:
-1. Install conan2.0 via python and pip
-2. Ensure > gcc 11 installed
-3. Install cmake
-4. Run the command:
-```
-$ ./debug-conanbuild.sh
-$ src/respond inputfolder/ 1 2
+If on **Unix** and building from source:
+
+1. Clone the repository to your local machine.
+2. Install the [DataManagement repository](https://github.com/SyndemicsLab/DataManagement/tree/main)
+3. Once DataManagement is installed run the following script to build:
+
+```bash
+./scripts/build.sh
 ```
 
-If on **Windows**:
-1. Run the command:
-```
-> debug-conanbuild.bat
-> src/respond.exe inputfolder/ 1 2
+## Running RESPOND
+
+After building RESPOND, running the model requires a set of input files. The input files required are:
+
+1. `all_types_overdose.csv`
+2. `background_mortality.csv`
+3. `block_init_effect.csv`
+4. `block_trans.csv`
+5. `entering_cohort.csv`
+6. `fatal_overdose.csv`
+7. `init_cohort.csv`
+8. `oud_trans.csv`
+9. `sim.conf`
+10. `SMR.csv`
+
+These are all put into a folder titled `input<number>` where the number is replaced with the ID of the input. Then, after these folders are created and RESPOND is built we simply run the command:
+
+```bash
+./bin/respond <input_start> <input_end>
 ```
