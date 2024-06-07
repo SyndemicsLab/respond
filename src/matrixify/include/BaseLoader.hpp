@@ -152,7 +152,7 @@ namespace Matrixify {
             return logger;
         }
 
-        void setLogger(std::shared_ptr<spdlog::logger> const log) {
+        void setLogger(std::shared_ptr<spdlog::logger> const log) override {
             if (!log) {
                 if (!spdlog::get("console")) {
                     this->logger = spdlog::stdout_color_mt("console");
