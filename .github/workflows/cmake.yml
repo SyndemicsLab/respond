@@ -75,9 +75,15 @@ jobs:
 
     # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
     # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
-    - name: CMake Configuration
+    - name: MacOS CMake Configuration
+      if: ${{ matrix.os == 'macos-latest' }}
       working-directory: ${{github.workspace}}/build
-      run:  cmake .. -DCMAKE_TOOLCHAIN_FILE="$BUILD_TYPE"/generators/conan_toolchain.cmake -DCMAKE_BUILD_TYPE="$BUILD_TYPE" -DBUILD_TESTS=ON -DCMAKE_C_COMPILER="gcc-12" -DCMAKE_CXX_COMPILER="g++-12" -DCMAKE_CXX_FLAGS="-stdlib=libstdc++"
+      run:  cmake .. -DCMAKE_TOOLCHAIN_FILE="$BUILD_TYPE"/generators/conan_toolchain.cmake -DCMAKE_BUILD_TYPE="$BUILD_TYPE" -DBUILD_TESTS=ON -DCMAKE_C_COMPILER="gcc-13" -DCMAKE_CXX_COMPILER="g++-13" -DCMAKE_CXX_FLAGS="-stdlib=libstdc++"
+
+    - name: Ubuntu CMake Configuration
+      if: ${{ matrix.os == 'ubuntu-latest' }}
+      working-directory: ${{github.workspace}}/build
+      run:  cmake .. -DCMAKE_TOOLCHAIN_FILE="$BUILD_TYPE"/generators/conan_toolchain.cmake -DCMAKE_BUILD_TYPE="$BUILD_TYPE" -DBUILD_TESTS=ON
 
     - name: Cmake Build
       working-directory: ${{github.workspace}}/build
