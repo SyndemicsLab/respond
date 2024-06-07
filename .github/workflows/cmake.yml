@@ -1,7 +1,7 @@
 name: Build and Test
 
 on:
-  workflow_display:
+  workflow_dispatch:
     branches: [ "main" ]
   push:
     branches: [ "main" ]
