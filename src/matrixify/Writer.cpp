@@ -50,62 +50,41 @@ namespace Matrixify {
             history.fatalOverdoseHistory.getMatrices().empty() ||
             history.mortalityHistory.getMatrices().empty()) {
             // log error
-            std::ostringstream s;
-            return s.str();
+            return "failure";
         }
 
-        if (this->getWriteType() == FILE) {
-            if (!checkDirectory()) {
-                return "";
-            }
+        std::string result = "";
 
-            std::filesystem::path dir(this->getDirname());
-            std::filesystem::path stateFile("stateHistory.csv");
-            std::filesystem::path overdoseFile("overdoseHistory.csv");
-            std::filesystem::path fatalOverdoseFile("fatalOverdoseHistory.csv");
-            std::filesystem::path mortalityFile("mortalityHistory.csv");
-            std::filesystem::path admissionsFile("admissionsHistory.csv");
-            std::filesystem::path stateFullPath = dir / stateFile;
-            std::filesystem::path overdoseFullPath = dir / overdoseFile;
-            std::filesystem::path fatalOverdoseFullPath =
-                dir / fatalOverdoseFile;
-            std::filesystem::path mortalityFullPath = dir / mortalityFile;
-            std::filesystem::path admissionsFullPath = dir / admissionsFile;
+        std::stringstream stream;
 
-            std::ofstream file;
+        this->write4d(stream, history.stateHistory, writeColumnHeaders());
+        this->writeFile("stateHistory.csv", stream);
+        result = result + " " + stream.str();
+        stream.str("");
 
-            file.open(stateFullPath.string());
-            this->write4d(file, history.stateHistory, writeColumnHeaders());
-            file.close();
+        this->write4d(stream, history.overdoseHistory, writeColumnHeaders());
+        this->writeFile("overdoseHistory.csv", stream);
+        result = result + " " + stream.str();
+        stream.str("");
 
-            file.open(overdoseFullPath.string());
-            this->write4d(file, history.overdoseHistory, writeColumnHeaders());
-            file.close();
-
-            file.open(fatalOverdoseFullPath.string());
-            this->write4d(file, history.fatalOverdoseHistory,
-                          writeColumnHeaders());
-            file.close();
-
-            file.open(mortalityFullPath.string());
-            this->write4d(file, history.mortalityHistory, writeColumnHeaders());
-            file.close();
-
-            file.open(admissionsFullPath.string());
-            this->write4d(file, history.interventionAdmissionHistory,
-                          writeColumnHeaders());
-            file.close();
-            return "success";
-        }
-        std::ostringstream stringstream;
-        this->write4d(stringstream, history.stateHistory, writeColumnHeaders());
-        this->write4d(stringstream, history.overdoseHistory,
+        this->write4d(stream, history.fatalOverdoseHistory,
                       writeColumnHeaders());
-        this->write4d(stringstream, history.fatalOverdoseHistory,
+        this->writeFile("fatalOverdoseHistory.csv", stream);
+        result = result + " " + stream.str();
+        stream.str("");
+
+        this->write4d(stream, history.mortalityHistory, writeColumnHeaders());
+        this->writeFile("mortalityHistory.csv", stream);
+        result = result + " " + stream.str();
+        stream.str("");
+
+        this->write4d(stream, history.interventionAdmissionHistory,
                       writeColumnHeaders());
-        this->write4d(stringstream, history.mortalityHistory,
-                      writeColumnHeaders());
-        return stringstream.str();
+        this->writeFile("admissionsHistory.csv", stream);
+        result = result + " " + stream.str();
+        stream.str("");
+
+        return result;
     }
 
     /// @brief Main Operation of Class, write data to output
@@ -113,8 +92,7 @@ namespace Matrixify {
     /// @return string containing the result if output enum is Matrixify::STRING
     /// or description of status otherwise
     std::string CostWriter::writeCosts(const CostList costs) const {
-        std::ostringstream stringstream;
-
+        std::string result = "";
         for (Cost cost : costs) {
 
             if (cost.healthcareCost.getMatrices().empty() ||
@@ -123,162 +101,79 @@ namespace Matrixify {
                 cost.nonFatalOverdoseCost.getMatrices().empty() ||
                 cost.treatmentCost.getMatrices().empty()) {
                 // log error
-                std::ostringstream s;
-                return s.str();
+                return "failure";
             }
 
-            if (this->getWriteType() == FILE) {
-                if (!std::filesystem::exists(this->getDirname())) {
-                    std::filesystem::create_directory(this->getDirname());
-                }
+            std::stringstream stream;
 
-                std::filesystem::path dir(this->getDirname());
+            this->write4d(stream, cost.healthcareCost, writeColumnHeaders());
+            this->writeFile("healthcareCost-" + cost.perspective + ".csv",
+                            stream);
+            result = result + " " + stream.str();
+            stream.str("");
 
-                std::filesystem::path healthUtilFile("healthcareCost-" +
-                                                     cost.perspective + ".csv");
-                std::filesystem::path pharmaFile("pharmaCost-" +
-                                                 cost.perspective + ".csv");
-                std::filesystem::path fatalOverdoseFile(
-                    "fatalOverdoseCost-" + cost.perspective + ".csv");
-                std::filesystem::path nonFatalOverdoseFile(
-                    "nonFatalOverdoseCost-" + cost.perspective + ".csv");
-                std::filesystem::path treatmentFile("treatmentCost-" +
-                                                    cost.perspective + ".csv");
-                std::filesystem::path healthUtilFullPath = dir / healthUtilFile;
-                std::filesystem::path pharmaFullPath = dir / pharmaFile;
-                std::filesystem::path fatalOverdoseFullPath =
-                    dir / fatalOverdoseFile;
-                std::filesystem::path nonFatalOverdoseFullPath =
-                    dir / nonFatalOverdoseFile;
-                std::filesystem::path treatmentFullPath = dir / treatmentFile;
+            this->write4d(stream, cost.pharmaCost, writeColumnHeaders());
+            this->writeFile("pharmaCost-" + cost.perspective + ".csv", stream);
+            result = result + " " + stream.str();
+            stream.str("");
 
-                std::ofstream file;
+            this->write4d(stream, cost.fatalOverdoseCost, writeColumnHeaders());
+            this->writeFile("fatalOverdoseCost-" + cost.perspective + ".csv",
+                            stream);
+            result = result + " " + stream.str();
+            stream.str("");
 
-                file.open(healthUtilFullPath.string());
-
-                this->write4d(file, cost.healthcareCost, writeColumnHeaders());
-                file.close();
-
-                file.open(pharmaFullPath.string());
-                this->write4d(file, cost.pharmaCost, writeColumnHeaders());
-                file.close();
-
-                file.open(fatalOverdoseFullPath.string());
-                this->write4d(file, cost.fatalOverdoseCost,
-                              writeColumnHeaders());
-                file.close();
-
-                file.open(nonFatalOverdoseFullPath.string());
-                this->write4d(file, cost.nonFatalOverdoseCost,
-                              writeColumnHeaders());
-                file.close();
-
-                file.open(treatmentFullPath.string());
-                this->write4d(file, cost.treatmentCost, writeColumnHeaders());
-                file.close();
-            }
-
-            this->write4d(stringstream, cost.healthcareCost,
+            this->write4d(stream, cost.nonFatalOverdoseCost,
                           writeColumnHeaders());
-            this->write4d(stringstream, cost.pharmaCost, writeColumnHeaders());
-            this->write4d(stringstream, cost.fatalOverdoseCost,
-                          writeColumnHeaders());
-            this->write4d(stringstream, cost.nonFatalOverdoseCost,
-                          writeColumnHeaders());
-            this->write4d(stringstream, cost.treatmentCost,
-                          writeColumnHeaders());
+            this->writeFile("nonFatalOverdoseCost-" + cost.perspective + ".csv",
+                            stream);
+            result = result + " " + stream.str();
+            stream.str("");
+
+            this->write4d(stream, cost.treatmentCost, writeColumnHeaders());
+            this->writeFile("treatmentCost-" + cost.perspective + ".csv",
+                            stream);
+            result = result + " " + stream.str();
+            stream.str("");
         }
-        if (this->getWriteType() == FILE) {
-            return "success";
-        }
-        return stringstream.str();
+        return result;
     }
 
     /// @brief Main Operation of Class, write data to output
     /// @param outputType Output Enum, generally Matrixify::FILE
-    /// @return string containing the result if output enum is Matrixify::STRING
-    /// or description of status otherwise
+    /// @return string containing the result if output enum is
+    /// Matrixify::STRING or description of status otherwise
     std::string
     UtilityWriter::writeUtilities(const Matrixify::Matrix4d utilities) const {
-        std::ostringstream stringstream;
-
+        std::stringstream stream;
         if (utilities.getMatrices().empty()) {
             // log error
-            std::ostringstream s;
-            return s.str();
+            return "failure";
         }
-
-        if (this->getWriteType() == FILE) {
-            if (!std::filesystem::exists(this->getDirname())) {
-                std::filesystem::create_directory(this->getDirname());
-            }
-
-            std::filesystem::path dir(this->getDirname());
-            std::filesystem::path utilFile("utility.csv");
-            std::filesystem::path utilFullPath = dir / utilFile;
-
-            std::ofstream file;
-
-            file.open(utilFullPath.string());
-            this->write4d(file, utilities, writeColumnHeaders());
-            file.close();
-        }
-        this->write4d(stringstream, utilities, writeColumnHeaders());
-
-        if (this->getWriteType() == FILE) {
-            return "success";
-        }
-        return stringstream.str();
+        this->write4d(stream, utilities, writeColumnHeaders());
+        this->writeFile("utilities.csv", stream);
+        return stream.str();
     }
 
     std::string TotalsWriter::writeTotals(const Totals totals) const {
-        std::ostringstream stringstream;
-
         if (totals.baseCosts.empty() || totals.discCosts.empty()) {
             // log error
-            std::ostringstream s;
-            return s.str();
+            return "failure";
         }
 
-        if (this->getWriteType() == FILE) {
-            if (!std::filesystem::exists(this->getDirname())) {
-                std::filesystem::create_directory(this->getDirname());
-            }
+        std::stringstream stream;
 
-            std::filesystem::path dir(this->getDirname());
-            std::filesystem::path utilFile("totals.csv");
-            std::filesystem::path utilFullPath = dir / utilFile;
-
-            std::ofstream file;
-
-            file.open(utilFullPath.string());
-            file << "Name, Base, Discount" << std::endl;
-            for (int i = 0; i < totals.baseCosts.size(); ++i) {
-                file << "Perspective " << i << ", " << totals.baseCosts[i]
-                     << ", " << totals.discCosts[i] << std::endl;
-            }
-            file << "Life Years, " << totals.baseLifeYears << ", "
-                 << totals.discLifeYears << std::endl;
-            file << "Utility, " << totals.baseUtility << ", "
-                 << totals.discUtility << std::endl;
-
-            file.close();
-        }
-
-        stringstream << "Name, Base, Discount" << std::endl;
+        stream << "Name, Base, Discount" << std::endl;
         for (int i = 0; i < totals.baseCosts.size(); ++i) {
-            stringstream << "Perspective " << i << ", " << totals.baseCosts[i]
-                         << ", " << totals.discCosts[i] << std::endl;
+            stream << "Perspective " << i << ", " << totals.baseCosts[i] << ", "
+                   << totals.discCosts[i] << std::endl;
         }
-        stringstream << "Life Years, " << totals.baseLifeYears << ", "
-                     << totals.discLifeYears << std::endl;
-        stringstream << "Utility, " << totals.baseUtility << ", "
-                     << totals.discUtility << std::endl;
-
-        if (this->getWriteType() == FILE) {
-            return "success";
-        }
-        return stringstream.str();
+        stream << "Life Years, " << totals.baseLifeYears << ", "
+               << totals.discLifeYears << std::endl;
+        stream << "Utility, " << totals.baseUtility << ", "
+               << totals.discUtility << std::endl;
+        this->writeFile("totals.csv", stream);
+        return stream.str();
     }
 
     std::string InputWriter::writeInputs(
@@ -294,9 +189,7 @@ namespace Matrixify {
 
     std::string InputWriter::writeOUDTransitionRates(
         const std::shared_ptr<IDataLoader> dataLoader) const {
-        std::filesystem::path orFile("oud_trans.csv");
-        std::filesystem::path dir(this->getDirname());
-        std::filesystem::path fullPath = dir / orFile;
+        std::stringstream stream;
 
         std::vector<std::string> columnNames{"intervention", "agegrp", "sex",
                                              "initial_oud"};
@@ -304,13 +197,10 @@ namespace Matrixify {
             columnNames.push_back(oud);
         }
 
-        std::ofstream file;
-        file.open(fullPath.string());
-
         for (std::string col : columnNames) {
-            file << col << ",";
+            stream << col << ",";
         }
-        file << std::endl;
+        stream << std::endl;
 
         Matrix3d dm = dataLoader->getOUDTransitionRates();
 
@@ -318,13 +208,13 @@ namespace Matrixify {
             for (long int i = 0; i < dataLoader->getNumInterventions(); i++) {
                 for (long int k = 0;
                      k < dataLoader->getDemographicCombos().size(); k++) {
-                    file << dataLoader->getInterventions()[i] << ",";
+                    stream << dataLoader->getInterventions()[i] << ",";
                     std::string temp = dataLoader->getDemographicCombos()[k];
                     temp = std::regex_replace(temp, std::regex("^ +| +$|( ) +"),
                                               "$1");
                     std::replace(temp.begin(), temp.end(), ' ', ',');
-                    file << temp << ",";
-                    file << dataLoader->getOUDStates()[init] << ",";
+                    stream << temp << ",";
+                    stream << dataLoader->getOUDStates()[init] << ",";
                     for (long int j = 0; j < dataLoader->getNumOUDStates();
                          j++) {
                         std::array<long int, 3> index = {0, 0, 0};
@@ -335,22 +225,19 @@ namespace Matrixify {
                         ASSERTM(dm.NumDimensions == 3,
                                 "3 Dimensions Found in Matrix3d");
                         double value = dm(index[0], index[1], index[2]);
-                        file << std::to_string(value) << ",";
+                        stream << std::to_string(value) << ",";
                     }
-                    file << std::endl;
+                    stream << std::endl;
                 }
             }
         }
-        file.close();
-        return "success";
+
+        return writeFile("oud_trans.csv", stream);
     }
 
     std::string InputWriter::writeInterventionInitRates(
         const std::shared_ptr<IDataLoader> dataLoader) const {
-        std::filesystem::path iipFile("block_init_effect.csv");
-        std::filesystem::path dir(this->getDirname());
-        std::filesystem::path fullPath = dir / iipFile;
-
+        std::stringstream stream;
         std::vector<std::string> columnNames{"initial_oud_state",
                                              "to_intervention"};
 
@@ -358,21 +245,18 @@ namespace Matrixify {
             columnNames.push_back(oud);
         }
 
-        std::ofstream file;
-        file.open(fullPath.string());
-
         for (std::string col : columnNames) {
-            file << col << ",";
+            stream << col << ",";
         }
-        file << std::endl;
+        stream << std::endl;
 
         Matrix3d dm = dataLoader->getInterventionInitRates();
 
         for (int init = 0; init < dataLoader->getNumOUDStates(); init++) {
             for (int inter = 0; inter < dataLoader->getNumInterventions();
                  inter++) {
-                file << dataLoader->getOUDStates()[init] << ",";
-                file << dataLoader->getInterventions()[inter] << ",";
+                stream << dataLoader->getOUDStates()[init] << ",";
+                stream << dataLoader->getInterventions()[inter] << ",";
                 for (int res = 0; res < dataLoader->getNumOUDStates(); res++) {
                     std::array<long int, 3> index = {0, 0, 0};
                     index[Matrixify::INTERVENTION] = inter;
@@ -382,23 +266,19 @@ namespace Matrixify {
                     ASSERTM(dm.NumDimensions == 3,
                             "3 Dimensions Found in Matrix3d");
                     double value = dm(index[0], index[1], index[2]);
-                    file << std::to_string(value) << ",";
+                    stream << std::to_string(value) << ",";
                 }
-                file << std::endl;
+                stream << std::endl;
             }
         }
-        file.close();
-        return "success";
+
+        return writeFile("block_init_effect.csv", stream);
     }
 
     std::string InputWriter::writeInterventionTransitionRates(
         const std::shared_ptr<IDataLoader> dataLoader) const {
-        std::filesystem::path irFile("block_trans.csv");
-        std::filesystem::path dir(this->getDirname());
-        std::filesystem::path fullPath = dir / irFile;
 
-        std::ofstream file;
-        file.open(fullPath.string());
+        std::stringstream stream;
 
         std::vector<std::string> columnNames{"agegrp", "sex", "oud",
                                              "initial_intervention"};
@@ -414,11 +294,12 @@ namespace Matrixify {
         }
 
         for (std::string col : columnNames) {
-            file << col << ",";
+            stream << col << ",";
         }
-        file << std::endl;
+        stream << std::endl;
 
-        // add zero index and pop off final change time to get matrix indices
+        // add zero index and pop off final change time to get matrix
+        // indices
         changeTimes.insert(changeTimes.begin(), 0);
         changeTimes.pop_back();
 
@@ -432,9 +313,9 @@ namespace Matrixify {
                     temp = std::regex_replace(temp, std::regex("^ +| +$|( ) +"),
                                               "$1");
                     std::replace(temp.begin(), temp.end(), ' ', ',');
-                    file << temp << ",";
-                    file << dataLoader->getOUDStates()[oud] << ",";
-                    file << dataLoader->getInterventions()[init] << ",";
+                    stream << temp << ",";
+                    stream << dataLoader->getOUDStates()[oud] << ",";
+                    stream << dataLoader->getInterventions()[init] << ",";
                     for (int timestep : changeTimes) {
                         for (int res = 0;
                              res < dataLoader->getNumInterventions(); res++) {
@@ -446,25 +327,19 @@ namespace Matrixify {
                             index[Matrixify::DEMOGRAPHIC_COMBO] = k;
                             double value =
                                 dm(timestep, index[0], index[1], index[2]);
-                            file << std::to_string(value) << ",";
+                            stream << std::to_string(value) << ",";
                         }
                     }
-                    file << std::endl;
+                    stream << std::endl;
                 }
             }
         }
-        file.close();
-        return "success";
+        return writeFile("block_trans.csv", stream);
     }
 
     std::string InputWriter::writeOverdoseRates(
         const std::shared_ptr<IDataLoader> dataLoader) const {
-        std::filesystem::path odFile("all_types_overdose.csv");
-        std::filesystem::path dir(this->getDirname());
-        std::filesystem::path fullPath = dir / odFile;
-
-        std::ofstream file;
-        file.open(fullPath.string());
+        std::stringstream stream;
 
         std::vector<std::string> columnNames{"intervention", "agegrp", "sex",
                                              "oud"};
@@ -477,11 +352,12 @@ namespace Matrixify {
             ct1 = ct2;
         }
         for (std::string col : columnNames) {
-            file << col << ",";
+            stream << col << ",";
         }
-        file << std::endl;
+        stream << std::endl;
 
-        // add zero index and pop off final change time to get matrix indices
+        // add zero index and pop off final change time to get matrix
+        // indices
         changeTimes.insert(changeTimes.begin(), 0);
         changeTimes.pop_back();
 
@@ -492,14 +368,14 @@ namespace Matrixify {
                  dem++) {
                 for (int oud = 0; oud < dataLoader->getNumOUDStates(); oud++) {
                     {
-                        file << dataLoader->getInterventions()[inter] << ",";
+                        stream << dataLoader->getInterventions()[inter] << ",";
                         std::string temp =
                             dataLoader->getDemographicCombos()[dem];
                         temp = std::regex_replace(
                             temp, std::regex("^ +| +$|( ) +"), "$1");
                         std::replace(temp.begin(), temp.end(), ' ', ',');
-                        file << temp << ",";
-                        file << dataLoader->getOUDStates()[oud] << ",";
+                        stream << temp << ",";
+                        stream << dataLoader->getOUDStates()[oud] << ",";
                         for (int timestep : changeTimes) {
                             std::array<long int, 3> index = {0, 0, 0};
                             index[Matrixify::INTERVENTION] = inter;
@@ -507,24 +383,18 @@ namespace Matrixify {
                             index[Matrixify::DEMOGRAPHIC_COMBO] = dem;
                             double value =
                                 dm(timestep, index[0], index[1], index[2]);
-                            file << std::to_string(value) << ",";
+                            stream << std::to_string(value) << ",";
                         }
-                        file << std::endl;
+                        stream << std::endl;
                     }
                 }
             }
-        file.close();
-        return "success";
+        return writeFile("all_types_overdose.csv", stream);
     }
 
     std::string InputWriter::writeFatalOverdoseRates(
         const std::shared_ptr<IDataLoader> dataLoader) const {
-        std::filesystem::path fodFile("fatal_overdose.csv");
-        std::filesystem::path dir(this->getDirname());
-        std::filesystem::path fullPath = dir / fodFile;
-
-        std::ofstream file;
-        file.open(fullPath.string());
+        std::stringstream stream;
 
         std::vector<std::string> columnNames{};
 
@@ -538,28 +408,47 @@ namespace Matrixify {
         }
 
         for (std::string col : columnNames) {
-            file << col << ",";
+            stream << col << ",";
         }
-        file << std::endl;
+        stream << std::endl;
 
-        // add zero index and pop off final change time to get matrix indices
+        // add zero index and pop off final change time to get matrix
+        // indices
         changeTimes.insert(changeTimes.begin(), 0);
         changeTimes.pop_back();
 
         Matrix4d dm = dataLoader->getFatalOverdoseRates();
         for (int timestep : changeTimes) {
-            file << std::to_string(dm(timestep, 0, 0, 0)) << ",";
+            stream << std::to_string(dm(timestep, 0, 0, 0)) << ",";
         }
-        file << std::endl;
+        stream << std::endl;
 
-        file.close();
-        return "success";
+        return writeFile("fatal_overdose.csv", stream);
+    }
+
+    std::string Writer::writeFile(const std::string filename,
+                                  std::stringstream &stream) const {
+        if (this->writeType == Matrixify::WriteType::FILE) {
+            std::filesystem::path iipFile(filename);
+            std::filesystem::path dir(this->getDirname());
+            std::filesystem::path fullPath = dir / iipFile;
+            try {
+                std::ofstream file(fullPath.string());
+                file << stream.rdbuf();
+                file.close();
+                return "success";
+            } catch (...) {
+                return "failure";
+            }
+        } else {
+            return stream.str();
+        }
     }
 
     /// @brief Helper function to write data to the specified stream
     /// @param stream Stream type to write data to
     /// @param historyToWrite Specific portion of history to save
-    void OutputWriter::write4d(std::ostream &stream,
+    void OutputWriter::write4d(std::stringstream &stream,
                                const Matrix4d historyToWrite,
                                const std::string columnHeaders) const {
         std::vector<Matrix3d> Matrix3dVec = historyToWrite.getMatrices();

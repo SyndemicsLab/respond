@@ -18,7 +18,8 @@ add_executable(${PROJECT_NAME}
   src/TEST_DataLoader.cpp
   src/TEST_CostLoader.cpp
   src/TEST_UtilityLoader.cpp
-  src/TEST_DataWriter.cpp
+  src/TEST_Writer.cpp
+  src/TEST_InputWriter.cpp
   src/TEST_PostSimulationCalculator.cpp
 )
 
