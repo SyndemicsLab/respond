@@ -59,7 +59,7 @@ namespace Matrixify {
 
         this->write4d(stream, history.stateHistory, writeColumnHeaders());
         this->writeFile("stateHistory.csv", stream);
-        result = result + " " + stream.str();
+        result = stream.str();
         stream.str("");
 
         this->write4d(stream, history.overdoseHistory, writeColumnHeaders());
@@ -92,6 +92,9 @@ namespace Matrixify {
     /// @return string containing the result if output enum is Matrixify::STRING
     /// or description of status otherwise
     std::string CostWriter::writeCosts(const CostList costs) const {
+        if (costs.empty()) {
+            return "failure";
+        }
         std::string result = "";
         for (Cost cost : costs) {
 
@@ -109,7 +112,7 @@ namespace Matrixify {
             this->write4d(stream, cost.healthcareCost, writeColumnHeaders());
             this->writeFile("healthcareCost-" + cost.perspective + ".csv",
                             stream);
-            result = result + " " + stream.str();
+            result = stream.str();
             stream.str("");
 
             this->write4d(stream, cost.pharmaCost, writeColumnHeaders());
