@@ -37,7 +37,7 @@ jobs:
       run: cp -r "dminstall-${{ matrix.os }}/" "${{github.workspace}}/lib/dminstall"
 
     - name: Get GCC-12
-      if: ${{ vars.RUNNER_OS == "Linux" }}
+      if: ${{ vars.RUNNER_OS == 'Linux' }}
       run:  sudo apt update && sudo apt install gcc-12 g++-12
 
     - name: Install Boost
