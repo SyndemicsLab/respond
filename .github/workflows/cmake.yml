@@ -40,9 +40,11 @@ jobs:
       if: ${{ matrix.os == 'ubuntu-latest' }}
       run:  sudo apt update && sudo apt install gcc-12 g++-12
 
-    - name: MacOS Get GCC-12
+    - name: MacOS Get GCC-13
       if: ${{ matrix.os == 'macos-latest' }}
-      run: brew install "gcc@12"
+      run: |
+        brew install "gcc@13"
+        export PATH="/usr/local/bin:$PATH"
 
     - name: Install Boost
       uses: MarkusJx/install-boost@v2.4.4
@@ -78,7 +80,7 @@ jobs:
     - name: MacOS CMake Configuration
       if: ${{ matrix.os == 'macos-latest' }}
       working-directory: ${{github.workspace}}/build
-      run:  cmake .. -DCMAKE_TOOLCHAIN_FILE="$BUILD_TYPE"/generators/conan_toolchain.cmake -DCMAKE_BUILD_TYPE="$BUILD_TYPE" -DBUILD_TESTS=ON -DCMAKE_C_COMPILER="gcc-13" -DCMAKE_CXX_COMPILER="g++-13" -DCMAKE_CXX_FLAGS="-stdlib=libstdc++"
+      run:  cmake .. -DCMAKE_TOOLCHAIN_FILE="$BUILD_TYPE"/generators/conan_toolchain.cmake -DCMAKE_BUILD_TYPE="$BUILD_TYPE" -DBUILD_TESTS=ON -DCMAKE_C_COMPILER="gcc-13" -DCMAKE_CXX_COMPILER="g++-13"
 
     - name: Ubuntu CMake Configuration
       if: ${{ matrix.os == 'ubuntu-latest' }}
