@@ -57,7 +57,7 @@ jobs:
 
     - name: MacOS Define Conan Profile
       if: ${{ matrix.os == 'macos-latest' }}
-      run: conan install . --profile:host="${{github.workspace}}/scripts/profiles/macos-build"
+      run: conan install . --profile:host="${{github.workspace}}/scripts/profiles/macos-build" --profile:build="${{github.workspace}}/scripts/profiles/macos-build"
 
     - name: Create Default Conan Profile
       if: ${{ matrix.os == 'ubuntu-latest' }}
@@ -74,7 +74,7 @@ jobs:
     - name: MacOS Conan Install Dependencies
       if: ${{ matrix.os == 'macos-latest' }}
       working-directory: ${{github.workspace}}
-      run:  conan install . --profile:host="${{github.workspace}}/scripts/profiles/macos-build" --build=missing --settings=build_type="$BUILD_TYPE"
+      run:  conan install . --profile:host="${{github.workspace}}/scripts/profiles/macos-build" --profile:build="${{github.workspace}}/scripts/profiles/macos-build" --build=missing --settings=build_type="$BUILD_TYPE"
 
     - name: Activate Conan VirtualEnv
       working-directory: ${{github.workspace}}/build
