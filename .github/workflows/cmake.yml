@@ -57,7 +57,7 @@ jobs:
 
     - name: MacOS Define Conan Profile
       if: ${{ matrix.os == 'macos-latest' }}
-      run: conan install . -pr ${{github.workspace}}/scripts/profiles/macos-build
+      run: conan install . --profile:build="${{github.workspace}}/scripts/profiles/macos-build"
 
     - name: Create Default Conan Profile
       if: ${{ matrix.os == 'ubuntu-latest' }}
