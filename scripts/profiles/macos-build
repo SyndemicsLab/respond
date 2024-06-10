@@ -1,0 +1,8 @@
+[settings]
+os=Macos
+arch=x86_64
+compiler=gcc
+build_type=Release
+compiler.cppstd=17
+compiler.libcxx=libstdc++
+compiler.version=12.3
