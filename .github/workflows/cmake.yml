@@ -74,7 +74,7 @@ jobs:
     - name: MacOS Conan Install Dependencies
       if: ${{ matrix.os == 'macos-latest' }}
       working-directory: ${{github.workspace}}
-      run:  conan install . -pr ${{github.workspace}}/scripts/profiles/macos-build --build=missing --settings=build_type="$BUILD_TYPE"
+      run:  conan install . --profile:build="${{github.workspace}}/scripts/profiles/macos-build" --build=missing --settings=build_type="$BUILD_TYPE"
 
     - name: Activate Conan VirtualEnv
       working-directory: ${{github.workspace}}/build
