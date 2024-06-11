@@ -107,7 +107,7 @@ done
 	fi
 	# build Python language bindings, if specified
 	if [[ -n "$BUILD_PYBINDINGS" ]]; then
-	    CMAKE_COMMAND="$CMAKE_COMMAND -DBUILD_PYBINDINGS=$BUILD_PYBINDINGS"
+	    CMAKE_COMMAND="$CMAKE_COMMAND -DBUILD_PYBINDINGS=$BUILD_PYBINDINGS -DCMAKE_POSITION_INDEPENDENT_CODE=ON"
 	fi
 	# run the full build command as specified
 	$CMAKE_COMMAND
