@@ -103,11 +103,11 @@ done
 	# build tests, if specified
 	CMAKE_COMMAND="cmake .. -DCMAKE_TOOLCHAIN_FILE=$BUILDTYPE/generators/conan_toolchain.cmake -DCMAKE_BUILD_TYPE=$BUILDTYPE"
 	if [[ -n "$BUILD_TESTS" ]]; then
-	    CMAKE_COMMAND="$CMAKE_COMMAND -DBUILD_TESTS=\"$BUILD_TESTS\""
+	    CMAKE_COMMAND="$CMAKE_COMMAND -DBUILD_TESTS=$BUILD_TESTS"
 	fi
 	# build Python language bindings, if specified
 	if [[ -n "$BUILD_PYBINDINGS" ]]; then
-	    CMAKE_COMMAND="$CMAKE_COMMAND -DBUILD_PYBINDINGS=\"$BUILD_PYBINDINGS\""
+	    CMAKE_COMMAND="$CMAKE_COMMAND -DBUILD_PYBINDINGS=$BUILD_PYBINDINGS"
 	fi
 	# run the full build command as specified
 	$CMAKE_COMMAND
