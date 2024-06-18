@@ -399,6 +399,17 @@ namespace Matrixify {
                     std::to_string(timestep);
             }
 
+            std::vector<std::string> headers = fatalOverdoseTable->getHeaders();
+
+            for (std::string header : headers) {
+                if (header.find(fodColumn) != std::string::npos) {
+                    Matrix3d temp = this->buildOverdoseTransitions(
+                        fatalOverdoseTable, header);
+                    fillTime(startTime, timestep, temp,
+                             this->fatalOverdoseRates);
+                }
+            }
+
             std::vector<std::string> col =
                 fatalOverdoseTable->getColumn(fodColumn);
 
@@ -618,6 +629,38 @@ namespace Matrixify {
             }
         }
         return overdoseTransitionsCycle;
+    }
+
+    Matrix3d
+    DataLoader::buildFatalOverdoseTransitions(Data::IDataTablePtr const &table,
+                                              std::string const &key) {
+        Matrix3d fatalOverdoseTransitionsCycle =
+            Matrixify::Matrix3dFactory::Create(getNumOUDStates(),
+                                               getNumInterventions(),
+                                               getNumDemographicCombos());
+        std::vector<std::string> col = table->getColumn(key);
+        int row = 0;
+        for (int dem = 0; dem < getNumDemographicCombos(); ++dem) {
+            if (row > col.size()) {
+                this->logger->error(
+                    "Invalid Number of Entries for single year of Fatal "
+                    "Overdoses. Have {} and expected {}",
+                    col.size(), dem);
+                return fatalOverdoseTransitionsCycle;
+            }
+            // intervention, oud_state, dem
+            Eigen::array<Eigen::Index, 3> offsets = {0, 0, 0};
+            offsets[Matrixify::DEMOGRAPHIC_COMBO] = dem;
+            Eigen::array<Eigen::Index, 3> extents = {0, 0, 0};
+            extents[Matrixify::INTERVENTION] = getNumInterventions();
+            extents[Matrixify::OUD] = getNumOUDStates();
+            extents[Matrixify::DEMOGRAPHIC_COMBO] = 1;
+            fatalOverdoseTransitionsCycle.slice(offsets, extents)
+                .setConstant(std::stod(col[row]));
+            ++row;
+        }
+
+        return fatalOverdoseTransitionsCycle;
     }
 
     void DataLoader::fillTime(int &start, int const end, Matrix3d data,
