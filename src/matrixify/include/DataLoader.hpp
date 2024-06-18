@@ -293,6 +293,13 @@ namespace Matrixify {
                                           std::string const &key);
 
         /// @brief
+        /// @param table
+        /// @param key
+        /// @return
+        Matrix3d buildFatalOverdoseTransitions(Data::IDataTablePtr const &table,
+                                               std::string const &key);
+
+        /// @brief
         /// @param ict
         /// @param table
         /// @return
