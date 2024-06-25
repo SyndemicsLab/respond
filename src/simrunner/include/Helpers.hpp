@@ -1,11 +1,11 @@
 #ifndef UTILITIES_HELPERS_HPP_
 #define UTILITIES_HELPERS_HPP_
 
+#include "DataLoader.hpp"
+#include "PostSimulationCalculator.hpp"
 #include <iostream>
 #include <string>
 #include <vector>
-
-#include "DataLoader.hpp"
 
 namespace Helpers {
     bool argChecks(int argc, char **argv, std::string &rootInputDir,

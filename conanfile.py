@@ -4,7 +4,6 @@ from conan.tools.build import check_min_cppstd
 
 import os
 
-
 class RESPONDRecipe(ConanFile):
     name = "respond"
     version = "2.0.0"
@@ -12,12 +11,14 @@ class RESPONDRecipe(ConanFile):
     options = {
         "shared": [True, False],
         "with_api": [True, False],
+        "benchmark": [True, False],
         "python_module": [True, False]
     }
 
     default_options = {
         "shared": False,
         "with_api": False,
+        "benchmark": False,
         "python_module": True
     }
 
@@ -32,6 +33,8 @@ class RESPONDRecipe(ConanFile):
         if self.options.python_module:
             self.requires("pybind11/[>=2.11.1]")
         self.test_requires("gtest/[>=1.13.0]")
+        if self.options.benchmark:
+            self.requires("benchmark/[>=1.8.4]")
 
     def validate(self):
         check_min_cppstd(self, "17")
@@ -55,6 +58,9 @@ class RESPONDRecipe(ConanFile):
         if not self.conf.get("tools.build:skip_test", default=False):
             test_folder = os.path.join(str(self.settings.build_type), "tests")
             self.run(os.path.join(test_folder, "respondTest"))
+        if not self.conf.get("tools.build:skip_benchmark", default=False):
+            benchmark_folder = os.path.join(str(self.settings.build_type), "benchmark")
+            self.run(os.path.join(benchmark_folder, "respondBench"))
 
     def package(self):
         cmake = CMake(self)
