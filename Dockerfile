@@ -6,17 +6,17 @@ RUN apt-get update && apt-get -y --no-install-recommends install \
     gcc \
     python3 \
     pip \
+    git \
     cmake 
 
 WORKDIR /respond
 
-COPY src/ ./src/
-COPY scripts/ ./scripts/
-COPY lib/ ./lib/
-COPY test/ ./test/
+COPY . /respond/
 
 RUN ./scripts/build.sh -t Release
 
-ENTRYPOINT [ "/bin/respond" ]
+RUN chmod +x ./scripts/run.sh
+
+ENTRYPOINT [ "./scripts/run.sh" ]
 
 LABEL Name=respondsimulationv2 Version=0.0.1
