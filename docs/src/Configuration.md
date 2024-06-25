@@ -1,4 +1,5 @@
 # Configuration/Inputs
+RESPOND requires inputs for population dynamics in order to run, but cost/utility analysis is optional.
 
 ## Required Inputs
 - `sim.conf`
@@ -11,6 +12,11 @@
 - `init_cohort.csv`
 - `oud_trans.csv`
 - `SMR.csv`
+
+### Plaintext Inputs
+  *
+### Tabular Inputs
+### all types overdose
 
 ## Optional Input Tables
 - `bg_utility.csv`

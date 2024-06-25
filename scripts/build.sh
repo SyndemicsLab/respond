@@ -13,22 +13,24 @@ showhelp () {
     printf "\033[31m%s\033[0m" "$0 - Build the RESPOND Model"
     echo
     echo
-    echo "Syntax: $(basename "$0") [-h|-t OPTION|-p|-b]"
+    echo "Syntax: $(basename "$0") [-h|-t OPTION|-p|-b|-n]"
     echo "h              Print this help screen."
     echo "t OPTION       Set the build type to OPTION"
-    echo "               Options: [Debug|Release|Build]"
+    echo "               Options: [Debug|Release]"
     echo "               Default: Debug"
     echo "p              Build and run tests."
     echo "b              Build Python Language Bindings"
+    echo "n              Build Benchmarking executable"
 }
 
 # set default build type
 BUILDTYPE="Debug"
 BUILD_TESTS=""
 BUILD_PYBINDINGS=""
+BUILD_BENCHMARK=""
 
 # process optional command line flags
-while getopts ":bhpt:" option; do
+while getopts ":bhnpt:" option; do
     case $option in
         h)
             showhelp
@@ -50,6 +52,9 @@ while getopts ":bhpt:" option; do
             ;;
         b)
             BUILD_PYBINDINGS="ON"
+            ;;
+        n)
+            BUILD_BENCHMARK="ON"
             ;;
         \?)
             echo "Error: Invalid option flag provided!"
@@ -90,7 +95,28 @@ done
         $CONANPATH profile detect --force
     fi
 
-    $CONANPATH install . --build=missing --settings=build_type="$BUILDTYPE"
+    echo "Installing missing dependencies via \`conan\`..."
+    INSTALL_DEPS="$CONANPATH install . --build=missing --settings=build_type=$BUILDTYPE"
+    if [[ -n "$BUILD_BENCHMARK" ]]; then
+        INSTALL_DEPS="$INSTALL_DEPS -o benchmark=True"
+    fi
+    if ! $INSTALL_DEPS; then
+        echo "Issue installing dependencies! Exiting..."
+        exit 1
+    fi
+    echo "Dependencies installed!"
+
+    # detect or install DataManagement
+    if [[ ! -d "lib/dminstall" ]]; then
+        git clone git@github.com:SyndemicsLab/DataManagement
+        if ! (
+                cd "DataManagement" || exit 1
+                ./install.sh -i "$TOPLEVEL/lib/dminstall"
+            ); then
+            echo "Installing \`DataManagement\` failed."
+        fi
+        rm -rf DataManagement
+    fi
 
     # detect or install DataManagement
     if [[ ! -d "lib/dminstall" ]]; then
@@ -118,26 +144,30 @@ done
         # build tests, if specified
         CMAKE_COMMAND="cmake .. -DCMAKE_TOOLCHAIN_FILE=$BUILDTYPE/generators/conan_toolchain.cmake -DCMAKE_BUILD_TYPE=$BUILDTYPE"
         if [[ -n "$BUILD_TESTS" ]]; then
-	    CMAKE_COMMAND="$CMAKE_COMMAND -DBUILD_TESTS=$BUILD_TESTS"
-	fi
-	# build Python language bindings, if specified
-	if [[ -n "$BUILD_PYBINDINGS" ]]; then
-	    CMAKE_COMMAND="$CMAKE_COMMAND -DBUILD_PYBINDINGS=$BUILD_PYBINDINGS -DCMAKE_POSITION_INDEPENDENT_CODE=ON"
-	fi
-	# run the full build command as specified
-	$CMAKE_COMMAND
-	(
-	    # determine the number of processing units available
-	    CORES="$(nproc --all)"
-	    # if CORES > 1 compile in parallel where possible
-	    ([[ -n "$CORES" ]] && cmake --build . -j"$CORES") || cmake --build .
-	)
-	# deactivate the conan virtual environment
-	# shellcheck source=/dev/null
-	source "$BUILDTYPE/generators/deactivate_conanbuild.sh"
-	# run tests, if they built properly
+            CMAKE_COMMAND="$CMAKE_COMMAND -DBUILD_TESTS=$BUILD_TESTS"
+        fi
+        # build Python language bindings, if specified
+        if [[ -n "$BUILD_PYBINDINGS" ]]; then
+            CMAKE_COMMAND="$CMAKE_COMMAND -DBUILD_PYBINDINGS=$BUILD_PYBINDINGS -DCMAKE_POSITION_INDEPENDENT_CODE=ON"
+        fi
+        # build benchmarking executable
+        if [[ -n "$BUILD_BENCHMARK" ]]; then
+            CMAKE_COMMAND="$CMAKE_COMMAND -DBUILD_BENCHMARK=$BUILD_BENCHMARK"
+        fi
+        # run the full build command as specified
+        $CMAKE_COMMAND
+        (
+            # determine the number of processing units available
+            CORES="$(nproc --all)"
+            # if CORES > 1 compile in parallel where possible
+            ([[ -n "$CORES" ]] && cmake --build . -j"$CORES") || cmake --build .
+        )
+        # deactivate the conan virtual environment
+        # shellcheck source=/dev/null
+        source "$BUILDTYPE/generators/deactivate_conanbuild.sh"
+        # run tests, if they built properly
     )
     if [[ (-n "$BUILD_TESTS") && (-f "bin/respondTest") ]]; then
-	bin/respondTest
+        bin/respondTest
     fi
 )

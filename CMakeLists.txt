@@ -11,3 +11,9 @@ option(BUILD_TESTS "enable RESPOND tests" OFF)
 if (NOT BUILD_TESTS STREQUAL OFF)
   add_subdirectory(test)
 endif()
+
+# Only compile benchmarking if desired
+option(BUILD_BENCHMARK "enable RESPOND benchmarking" OFF)
+if (NOT BUILD_BENCHMARK STREQUAL OFF)
+  add_subdirectory(benchmark)
+endif()

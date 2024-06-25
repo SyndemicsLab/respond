@@ -19,6 +19,15 @@
 ///
 //===----------------------------------------------------------------------===//
 
+#include "CostLoader.hpp"
+#include "DataFormatter.hpp"
+#include "DataLoader.hpp"
+#include "Helpers.hpp"
+#include "PostSimulationCalculator.hpp"
+#include "Simulation.hpp"
+#include "Writer.hpp"
+#include "spdlog/sinks/basic_file_sink.h"
+#include "spdlog/spdlog.h"
 #include <algorithm>
 #include <cassert>
 #include <execution>
@@ -27,20 +36,7 @@
 #include <numeric>
 #include <vector>
 
-#include "spdlog/sinks/basic_file_sink.h"
-#include "spdlog/spdlog.h"
-
-#include "CostLoader.hpp"
-#include "DataFormatter.hpp"
-#include "DataLoader.hpp"
-#include "Writer.hpp"
-#include "simrunner/include/PostSimulationCalculator.hpp"
-#include "simrunner/include/Simulation.hpp"
-
-#include "simrunner/include/Helpers.hpp"
-
 int main(int argc, char **argv) {
-
     int taskStart;
     int taskEnd;
     std::string rootInputDir;
