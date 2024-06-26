@@ -82,6 +82,8 @@ namespace Matrixify {
         virtual std::vector<std::string> getCostPerspectives() const = 0;
     };
 
+    using ICostLoaderPtr = std::shared_ptr<ICostLoader>;
+
     class CostLoader : public BaseLoader, public virtual ICostLoader {
     public:
         CostLoader(Data::IConfigablePtr config, std::string const &inputDir,

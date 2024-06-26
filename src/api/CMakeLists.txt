@@ -1,5 +1,4 @@
 cmake_minimum_required(VERSION 3.19)
-
 set (CMAKE_CXX_STANDARD 20)
 
 # Set some basic project attributes
@@ -8,10 +7,13 @@ project (api
 	DESCRIPTION "API Exposure of RESPOND"
 )
 
-add_executable(api main.cpp)
-
-target_link_libraries(api
-  Crow::Crow
-  matrixify
-  model
+add_executable(${PROJECT_NAME} 
+    main.cpp
+    api.cpp
 )
+
+target_link_libraries(${PROJECT_NAME} PUBLIC Crow::Crow)
+target_link_libraries(${PROJECT_NAME} PUBLIC matrixify)
+target_link_libraries(${PROJECT_NAME} PUBLIC model)
+
+target_include_directories(${PROJECT_NAME} PUBLIC "include/")

@@ -59,6 +59,8 @@ namespace Matrixify {
         getSettingUtility(std::string const &perspective) const = 0;
     };
 
+    using IUtilityLoaderPtr = std::shared_ptr<IUtilityLoader>;
+
     class UtilityLoader : public BaseLoader, public virtual IUtilityLoader {
     public:
         UtilityLoader(Data::IConfigablePtr config, std::string const &inputDir,
