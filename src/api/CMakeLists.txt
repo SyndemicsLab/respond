@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.19)
 set (CMAKE_CXX_STANDARD 20)
+find_package(Crow)
 
 # Set some basic project attributes
 project (api
@@ -14,6 +15,6 @@ add_executable(${PROJECT_NAME}
 
 target_link_libraries(${PROJECT_NAME} PUBLIC Crow::Crow)
 target_link_libraries(${PROJECT_NAME} PUBLIC matrixify)
-target_link_libraries(${PROJECT_NAME} PUBLIC model)
+target_link_libraries(${PROJECT_NAME} PUBLIC simrunner)
 
 target_include_directories(${PROJECT_NAME} PUBLIC "include/")

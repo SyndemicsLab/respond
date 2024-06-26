@@ -4,6 +4,7 @@ from conan.tools.build import check_min_cppstd
 
 import os
 
+
 class RESPONDRecipe(ConanFile):
     name = "respond"
     version = "2.0.0"
@@ -17,7 +18,7 @@ class RESPONDRecipe(ConanFile):
 
     default_options = {
         "shared": False,
-        "with_api": False,
+        "with_api": True,
         "benchmark": False,
         "python_module": True
     }
@@ -29,7 +30,7 @@ class RESPONDRecipe(ConanFile):
         self.requires("eigen/[>=3.4.0]")
         self.requires("spdlog/[>=1.11.0]")
         if self.options.with_api:
-            self.requires("crowcpp-crow/1.0+5")
+            self.requires("crowcpp-crow/[>=1.0+5]")
         if self.options.python_module:
             self.requires("pybind11/[>=2.11.1]")
         self.test_requires("gtest/[>=1.13.0]")
@@ -47,8 +48,6 @@ class RESPONDRecipe(ConanFile):
 
     def generate(self):
         tc = CMakeToolchain(self)
-        if self.options.with_api:
-            tc.variables["WITH_API"] = True
         tc.generate()
 
     def build(self):
@@ -59,7 +58,8 @@ class RESPONDRecipe(ConanFile):
             test_folder = os.path.join(str(self.settings.build_type), "tests")
             self.run(os.path.join(test_folder, "respondTest"))
         if not self.conf.get("tools.build:skip_benchmark", default=False):
-            benchmark_folder = os.path.join(str(self.settings.build_type), "benchmark")
+            benchmark_folder = os.path.join(
+                str(self.settings.build_type), "benchmark")
             self.run(os.path.join(benchmark_folder, "respondBench"))
 
     def package(self):

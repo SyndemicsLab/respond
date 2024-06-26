@@ -28,9 +28,9 @@ namespace API {
 
         Matrixify::History hist;
 
-        void setupUploadBP(std::make_shared<crow::Blueprint> bp);
-        void setupDownloadBP(std::make_shared<crow::Blueprint> bp);
-        void setupCalculateBP(std::make_shared<crow::Blueprint> bp);
+        void setupUploadBP(crow::Blueprint &bp);
+        void setupDownloadBP(crow::Blueprint &bp);
+        void setupCalculateBP(crow::Blueprint &bp);
         std::string readMessage(const crow::request &req);
     };
 } // namespace API
