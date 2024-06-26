@@ -5,6 +5,26 @@
 #include "Writer.hpp"
 #include "crow.h"
 
+std::string readMessage(const crow::request &req) {
+    std::string uploaded_file_name = "";
+    crow::multipart::message file_message(req);
+    for (auto [part_name, part_value] : file_message.part_map) {
+        if ("InputFile" == part_name) {
+            // Get file name
+            uploaded_file_name = part_value.headers.find("Content-Disposition")
+                                     ->second.params["filename"];
+
+            std::ofstream out_file(uploaded_file_name);
+            if (!out_file) {
+                continue;
+            }
+            out_file << part_value.body;
+            out_file.close();
+        }
+    }
+    return uploaded_file_name;
+}
+
 int main(int argc, char **argv) {
     crow::SimpleApp app;
 
@@ -15,333 +35,27 @@ int main(int argc, char **argv) {
 
     Matrixify::History hist;
 
-    // I hate this route and lambda. I really want to clean it up when I have
-    // time
-    CROW_ROUTE(app, "/upload")
-        .methods(crow::HTTPMethod::Post)([&inputs, &costs,
-                                          &utils](const crow::request &req) {
-            std::string config_file;
-            std::string init_cohort;
-            std::string entering_cohort;
-            std::string oud_trans;
-            std::string intervention_trans;
-            std::string intervention_inits;
-            std::string od_rates;
-            std::string fod_rates;
-            std::string bgm_rates;
-            std::string smr_rates;
-            std::string health_costs;
-            std::string od_costs;
-            std::string pharma_costs;
-            std::string treat_costs;
-            std::string bg_utils;
-            std::string setting_utils;
-            std::string oud_utils;
-
-            crow::multipart::message file_message(req);
-            for (auto [part_name, part_value] : file_message.part_map) {
-                if ("ConfigFile" == part_name) {
-                    // Get file name
-                    config_file =
-                        part_value.headers.find("Content-Disposition")
-                            ->second.params["filename"];
-
-                    std::ofstream out_file(config_file);
-                    if (!out_file) {
-                        continue;
-                    }
-                    out_file << part_value.body;
-                    out_file.close();
-                } else if ("InitCohortFile" == part_name) {
-                    // Get file name
-                    init_cohort =
-                        part_value.headers.find("Content-Disposition")
-                            ->second.params["filename"];
-
-                    std::ofstream out_file(init_cohort);
-                    if (!out_file) {
-                        continue;
-                    }
-                    out_file << part_value.body;
-                    out_file.close();
-                } else if ("EnteringCohortFile" == part_name) {
-                    // Get file name
-                    entering_cohort =
-                        part_value.headers.find("Content-Disposition")
-                            ->second.params["filename"];
-
-                    std::ofstream out_file(entering_cohort);
-                    if (!out_file) {
-                        continue;
-                    }
-                    out_file << part_value.body;
-                    out_file.close();
-                } else if ("OUDTransFile" == part_name) {
-                    // Get file name
-                    oud_trans = part_value.headers.find("Content-Disposition")
-                                    ->second.params["filename"];
-
-                    std::ofstream out_file(oud_trans);
-                    if (!out_file) {
-                        continue;
-                    }
-                    out_file << part_value.body;
-                    out_file.close();
-                } else if ("InterventionTransFile" == part_name) {
-                    // Get file name
-                    intervention_trans =
-                        part_value.headers.find("Content-Disposition")
-                            ->second.params["filename"];
-
-                    std::ofstream out_file(intervention_trans);
-                    if (!out_file) {
-                        continue;
-                    }
-                    out_file << part_value.body;
-                    out_file.close();
-                } else if ("InterventionInitsFile" == part_name) {
-                    // Get file name
-                    intervention_inits =
-                        part_value.headers.find("Content-Disposition")
-                            ->second.params["filename"];
-
-                    std::ofstream out_file(intervention_inits);
-                    if (!out_file) {
-                        continue;
-                    }
-                    out_file << part_value.body;
-                    out_file.close();
-                } else if ("OverdoseRates" == part_name) {
-                    // Get file name
-                    od_rates = part_value.headers.find("Content-Disposition")
-                                   ->second.params["filename"];
-
-                    std::ofstream out_file(od_rates);
-                    if (!out_file) {
-                        continue;
-                    }
-                    out_file << part_value.body;
-                    out_file.close();
-                } else if ("FatalOverdoseRates" == part_name) {
-                    // Get file name
-                    fod_rates = part_value.headers.find("Content-Disposition")
-                                    ->second.params["filename"];
-
-                    std::ofstream out_file(fod_rates);
-                    if (!out_file) {
-                        continue;
-                    }
-                    out_file << part_value.body;
-                    out_file.close();
-                } else if ("BackgroundMortRates" == part_name) {
-                    // Get file name
-                    bgm_rates = part_value.headers.find("Content-Disposition")
-                                    ->second.params["filename"];
-
-                    std::ofstream out_file(bgm_rates);
-                    if (!out_file) {
-                        continue;
-                    }
-                    out_file << part_value.body;
-                    out_file.close();
-                } else if ("SMRRates" == part_name) {
-                    // Get file name
-                    smr_rates = part_value.headers.find("Content-Disposition")
-                                    ->second.params["filename"];
-
-                    std::ofstream out_file(smr_rates);
-                    if (!out_file) {
-                        continue;
-                    }
-                    out_file << part_value.body;
-                    out_file.close();
-                } else if ("HealthCosts" == part_name) {
-                    // Get file name
-                    health_costs =
-                        part_value.headers.find("Content-Disposition")
-                            ->second.params["filename"];
-
-                    std::ofstream out_file(health_costs);
-                    if (!out_file) {
-                        continue;
-                    }
-                    out_file << part_value.body;
-                    out_file.close();
-                } else if ("OverdoseCosts" == part_name) {
-                    // Get file name
-                    od_costs = part_value.headers.find("Content-Disposition")
-                                   ->second.params["filename"];
-
-                    std::ofstream out_file(od_costs);
-                    if (!out_file) {
-                        continue;
-                    }
-                    out_file << part_value.body;
-                    out_file.close();
-                } else if ("PharmaCosts" == part_name) {
-                    // Get file name
-                    pharma_costs =
-                        part_value.headers.find("Content-Disposition")
-                            ->second.params["filename"];
-
-                    std::ofstream out_file(pharma_costs);
-                    if (!out_file) {
-                        continue;
-                    }
-                    out_file << part_value.body;
-                    out_file.close();
-                } else if ("TreatmentCosts" == part_name) {
-                    // Get file name
-                    treat_costs =
-                        part_value.headers.find("Content-Disposition")
-                            ->second.params["filename"];
-
-                    std::ofstream out_file(treat_costs);
-                    if (!out_file) {
-                        continue;
-                    }
-                    out_file << part_value.body;
-                    out_file.close();
-                } else if ("BackgroundUtilities" == part_name) {
-                    // Get file name
-                    bg_utils = part_value.headers.find("Content-Disposition")
-                                   ->second.params["filename"];
-
-                    std::ofstream out_file(bg_utils);
-                    if (!out_file) {
-                        continue;
-                    }
-                    out_file << part_value.body;
-                    out_file.close();
-                } else if ("SettingUtilities" == part_name) {
-                    // Get file name
-                    setting_utils =
-                        part_value.headers.find("Content-Disposition")
-                            ->second.params["filename"];
-
-                    std::ofstream out_file(setting_utils);
-                    if (!out_file) {
-                        continue;
-                    }
-                    out_file << part_value.body;
-                    out_file.close();
-                } else if ("OUDUtilities" == part_name) {
-                    // Get file name
-                    oud_utils = part_value.headers.find("Content-Disposition")
-                                    ->second.params["filename"];
-
-                    std::ofstream out_file(oud_utils);
-                    if (!out_file) {
-                        continue;
-                    }
-                    out_file << part_value.body;
-                    out_file.close();
-                }
-            }
-
-            inputs.loadConfigFile(config_file);
-            inputs.loadInitialSample(init_cohort);
-
-            std::string enteringSampleIntervention =
-                req.url_params.get("intervention");
-            std::string enteringSampleOUD = req.url_params.get("oud");
-            inputs.loadEnteringSamples(
-                entering_cohort, enteringSampleIntervention, enteringSampleOUD);
-
-            inputs.loadOUDTransitionRates(oud_trans);
-            inputs.loadInterventionTransitionRates(intervention_trans);
-            inputs.loadInterventionInitRates(intervention_inits);
-            inputs.loadOverdoseRates(od_rates);
-            inputs.loadFatalOverdoseRates(fod_rates);
-            inputs.loadMortalityRates(smr_rates, bgm_rates);
-
-            costs.loadConfigFile(config_file);
-            costs.loadHealthcareUtilizationCost(health_costs);
-            costs.loadOverdoseCost(od_costs);
-            costs.loadPharmaceuticalCost(pharma_costs);
-            costs.loadTreatmentUtilizationCost(treat_costs);
-
-            utils.loadConfigFile(config_file);
-            utils.loadBackgroundUtility(bg_utils);
-            utils.loadOUDUtility(oud_utils);
-            utils.loadSettingUtility(setting_utils);
-
-            return crow::response(crow::status::OK);
-        });
-
     // Hoping this works? https://github.com/CrowCpp/Crow/issues/591
     CROW_ROUTE(app, "/upload/config")
         .methods(crow::HTTPMethod::Post)(
             [&inputs, &costs, &utils](const crow::request &req) {
-                std::string uploaded_file_name;
-                crow::multipart::message file_message(req);
-                for (auto [part_name, part_value] : file_message.part_map) {
-                    if ("InputFile" == part_name) {
-                        // Get file name
-                        uploaded_file_name =
-                            part_value.headers.find("Content-Disposition")
-                                ->second.params["filename"];
-
-                        std::ofstream out_file(uploaded_file_name);
-                        if (!out_file) {
-                            continue;
-                        }
-                        out_file << part_value.body;
-                        out_file.close();
-                    }
-                }
-
+                std::string uploaded_file_name = readMessage(req);
                 inputs.loadConfigFile(uploaded_file_name);
                 costs.loadConfigFile(uploaded_file_name);
                 utils.loadConfigFile(uploaded_file_name);
-
                 return crow::response(crow::status::OK);
             });
 
-    CROW_ROUTE(app, "/upload/initCohort")
+    CROW_ROUTE(app, "/upload/rates/population")
         .methods(crow::HTTPMethod::Post)([&inputs](const crow::request &req) {
-            std::string uploaded_file_name;
-            crow::multipart::message file_message(req);
-            for (auto [part_name, part_value] : file_message.part_map) {
-                if ("InputFile" == part_name) {
-                    // Get file name
-                    uploaded_file_name =
-                        part_value.headers.find("Content-Disposition")
-                            ->second.params["filename"];
-
-                    std::ofstream out_file(uploaded_file_name);
-                    if (!out_file) {
-                        continue;
-                    }
-                    out_file << part_value.body;
-                    out_file.close();
-                }
-            }
-
+            std::string uploaded_file_name = readMessage(req);
             inputs.loadInitialSample(uploaded_file_name);
-
             return crow::response(crow::status::OK);
         });
 
-    CROW_ROUTE(app, "/upload/enterCohort")
+    CROW_ROUTE(app, "/upload/rates/uptake")
         .methods(crow::HTTPMethod::Post)([&inputs](const crow::request &req) {
-            std::string uploaded_file_name;
-            crow::multipart::message file_message(req);
-            for (auto [part_name, part_value] : file_message.part_map) {
-                if ("InputFile" == part_name) {
-                    // Get file name
-                    uploaded_file_name =
-                        part_value.headers.find("Content-Disposition")
-                            ->second.params["filename"];
-
-                    std::ofstream out_file(uploaded_file_name);
-                    if (!out_file) {
-                        continue;
-                    }
-                    out_file << part_value.body;
-                    out_file.close();
-                }
-            }
+            std::string uploaded_file_name = readMessage(req);
             std::string enteringSampleIntervention =
                 req.url_params.get("intervention");
             std::string enteringSampleOUD = req.url_params.get("oud");
@@ -353,132 +67,52 @@ int main(int argc, char **argv) {
             return crow::response(crow::status::OK);
         });
 
-    CROW_ROUTE(app, "/upload/oudTrans")
+    CROW_ROUTE(app, "/upload/rates/behavior")
         .methods(crow::HTTPMethod::Post)([&inputs](const crow::request &req) {
-            std::string uploaded_file_name;
-            crow::multipart::message file_message(req);
-            for (auto [part_name, part_value] : file_message.part_map) {
-                if ("InputFile" == part_name) {
-                    // Get file name
-                    uploaded_file_name =
-                        part_value.headers.find("Content-Disposition")
-                            ->second.params["filename"];
-
-                    std::ofstream out_file(uploaded_file_name);
-                    if (!out_file) {
-                        continue;
-                    }
-                    out_file << part_value.body;
-                    out_file.close();
-                }
-            }
+            std::string uploaded_file_name = readMessage(req);
 
             inputs.loadOUDTransitionRates(uploaded_file_name);
 
             return crow::response(crow::status::OK);
         });
 
-    CROW_ROUTE(app, "/upload/interventionTrans")
+    CROW_ROUTE(app, "/upload/rates/interventions")
         .methods(crow::HTTPMethod::Post)([&inputs](const crow::request &req) {
-            std::string uploaded_file_name;
-            crow::multipart::message file_message(req);
-            for (auto [part_name, part_value] : file_message.part_map) {
-                if ("InputFile" == part_name) {
-                    // Get file name
-                    uploaded_file_name =
-                        part_value.headers.find("Content-Disposition")
-                            ->second.params["filename"];
-
-                    std::ofstream out_file(uploaded_file_name);
-                    if (!out_file) {
-                        continue;
-                    }
-                    out_file << part_value.body;
-                    out_file.close();
-                }
-            }
+            std::string uploaded_file_name = readMessage(req);
 
             inputs.loadInterventionTransitionRates(uploaded_file_name);
 
             return crow::response(crow::status::OK);
         });
 
-    CROW_ROUTE(app, "/upload/interventionInits")
+    CROW_ROUTE(app, "/upload/rates/conditionalbehavior")
         .methods(crow::HTTPMethod::Post)([&inputs](const crow::request &req) {
-            std::string uploaded_file_name;
-            crow::multipart::message file_message(req);
-            for (auto [part_name, part_value] : file_message.part_map) {
-                if ("InputFile" == part_name) {
-                    // Get file name
-                    uploaded_file_name =
-                        part_value.headers.find("Content-Disposition")
-                            ->second.params["filename"];
-
-                    std::ofstream out_file(uploaded_file_name);
-                    if (!out_file) {
-                        continue;
-                    }
-                    out_file << part_value.body;
-                    out_file.close();
-                }
-            }
+            std::string uploaded_file_name = readMessage(req);
 
             inputs.loadInterventionInitRates(uploaded_file_name);
 
             return crow::response(crow::status::OK);
         });
 
-    CROW_ROUTE(app, "/upload/overdoseRates")
+    CROW_ROUTE(app, "/upload/rates/overdoses")
         .methods(crow::HTTPMethod::Post)([&inputs](const crow::request &req) {
-            std::string uploaded_file_name;
-            crow::multipart::message file_message(req);
-            for (auto [part_name, part_value] : file_message.part_map) {
-                if ("InputFile" == part_name) {
-                    // Get file name
-                    uploaded_file_name =
-                        part_value.headers.find("Content-Disposition")
-                            ->second.params["filename"];
-
-                    std::ofstream out_file(uploaded_file_name);
-                    if (!out_file) {
-                        continue;
-                    }
-                    out_file << part_value.body;
-                    out_file.close();
-                }
-            }
+            std::string uploaded_file_name = readMessage(req);
 
             inputs.loadOverdoseRates(uploaded_file_name);
 
             return crow::response(crow::status::OK);
         });
 
-    CROW_ROUTE(app, "/upload/fatalOverdoseRates")
+    CROW_ROUTE(app, "/upload/rates/fataloverdoses")
         .methods(crow::HTTPMethod::Post)([&inputs](const crow::request &req) {
-            std::string uploaded_file_name;
-            crow::multipart::message file_message(req);
-            for (auto [part_name, part_value] : file_message.part_map) {
-                if ("InputFile" == part_name) {
-                    // Get file name
-                    uploaded_file_name =
-                        part_value.headers.find("Content-Disposition")
-                            ->second.params["filename"];
-
-                    std::ofstream out_file(uploaded_file_name);
-                    if (!out_file) {
-                        continue;
-                    }
-                    out_file << part_value.body;
-                    out_file.close();
-                }
-            }
+            std::string uploaded_file_name = readMessage(req);
 
             inputs.loadFatalOverdoseRates(uploaded_file_name);
 
             return crow::response(crow::status::OK);
         });
 
-    CROW_ROUTE(app, "/upload/mortalityRates")
+    CROW_ROUTE(app, "/upload/rates/mortality")
         .methods(crow::HTTPMethod::Post)([&inputs](const crow::request &req) {
             std::string uploaded_file_name;
             std::string smr_file_name;
@@ -516,175 +150,63 @@ int main(int argc, char **argv) {
             return crow::response(crow::status::OK);
         });
 
-    CROW_ROUTE(app, "/upload/healthcareCost")
+    CROW_ROUTE(app, "/upload/costs/healthcare")
         .methods(crow::HTTPMethod::Post)([&costs](const crow::request &req) {
-            std::string uploaded_file_name;
-            crow::multipart::message file_message(req);
-            for (auto [part_name, part_value] : file_message.part_map) {
-                if ("InputFile" == part_name) {
-                    // Get file name
-                    uploaded_file_name =
-                        part_value.headers.find("Content-Disposition")
-                            ->second.params["filename"];
-
-                    std::ofstream out_file(uploaded_file_name);
-                    if (!out_file) {
-                        continue;
-                    }
-                    out_file << part_value.body;
-                    out_file.close();
-                }
-            }
+            std::string uploaded_file_name = readMessage(req);
 
             costs.loadHealthcareUtilizationCost(uploaded_file_name);
 
             return crow::response(crow::status::OK);
         });
 
-    CROW_ROUTE(app, "/upload/overdoseCost")
+    CROW_ROUTE(app, "/upload/costs/overdoses")
         .methods(crow::HTTPMethod::Post)([&costs](const crow::request &req) {
-            std::string uploaded_file_name;
-            crow::multipart::message file_message(req);
-            for (auto [part_name, part_value] : file_message.part_map) {
-                if ("InputFile" == part_name) {
-                    // Get file name
-                    uploaded_file_name =
-                        part_value.headers.find("Content-Disposition")
-                            ->second.params["filename"];
-
-                    std::ofstream out_file(uploaded_file_name);
-                    if (!out_file) {
-                        continue;
-                    }
-                    out_file << part_value.body;
-                    out_file.close();
-                }
-            }
+            std::string uploaded_file_name = readMessage(req);
 
             costs.loadOverdoseCost(uploaded_file_name);
 
             return crow::response(crow::status::OK);
         });
 
-    CROW_ROUTE(app, "/upload/pharmaCost")
+    CROW_ROUTE(app, "/upload/costs/pharmaceutical")
         .methods(crow::HTTPMethod::Post)([&costs](const crow::request &req) {
-            std::string uploaded_file_name;
-            crow::multipart::message file_message(req);
-            for (auto [part_name, part_value] : file_message.part_map) {
-                if ("InputFile" == part_name) {
-                    // Get file name
-                    uploaded_file_name =
-                        part_value.headers.find("Content-Disposition")
-                            ->second.params["filename"];
-
-                    std::ofstream out_file(uploaded_file_name);
-                    if (!out_file) {
-                        continue;
-                    }
-                    out_file << part_value.body;
-                    out_file.close();
-                }
-            }
+            std::string uploaded_file_name = readMessage(req);
 
             costs.loadPharmaceuticalCost(uploaded_file_name);
 
             return crow::response(crow::status::OK);
         });
 
-    CROW_ROUTE(app, "/upload/treatmentCost")
+    CROW_ROUTE(app, "/upload/costs/treatment")
         .methods(crow::HTTPMethod::Post)([&costs](const crow::request &req) {
-            std::string uploaded_file_name;
-            crow::multipart::message file_message(req);
-            for (auto [part_name, part_value] : file_message.part_map) {
-                if ("InputFile" == part_name) {
-                    // Get file name
-                    uploaded_file_name =
-                        part_value.headers.find("Content-Disposition")
-                            ->second.params["filename"];
-
-                    std::ofstream out_file(uploaded_file_name);
-                    if (!out_file) {
-                        continue;
-                    }
-                    out_file << part_value.body;
-                    out_file.close();
-                }
-            }
+            std::string uploaded_file_name = readMessage(req);
 
             costs.loadTreatmentUtilizationCost(uploaded_file_name);
 
             return crow::response(crow::status::OK);
         });
 
-    CROW_ROUTE(app, "/upload/backgroundUtil")
+    CROW_ROUTE(app, "/upload/utility/background")
         .methods(crow::HTTPMethod::Post)([&utils](const crow::request &req) {
-            std::string uploaded_file_name;
-            crow::multipart::message file_message(req);
-            for (auto [part_name, part_value] : file_message.part_map) {
-                if ("InputFile" == part_name) {
-                    // Get file name
-                    uploaded_file_name =
-                        part_value.headers.find("Content-Disposition")
-                            ->second.params["filename"];
-
-                    std::ofstream out_file(uploaded_file_name);
-                    if (!out_file) {
-                        continue;
-                    }
-                    out_file << part_value.body;
-                    out_file.close();
-                }
-            }
+            std::string uploaded_file_name = readMessage(req);
 
             utils.loadBackgroundUtility(uploaded_file_name);
 
             return crow::response(crow::status::OK);
         });
 
-    CROW_ROUTE(app, "/upload/oudUtil")
+    CROW_ROUTE(app, "/upload/utility/behavior")
         .methods(crow::HTTPMethod::Post)([&utils](const crow::request &req) {
-            std::string uploaded_file_name;
-            crow::multipart::message file_message(req);
-            for (auto [part_name, part_value] : file_message.part_map) {
-                if ("InputFile" == part_name) {
-                    // Get file name
-                    uploaded_file_name =
-                        part_value.headers.find("Content-Disposition")
-                            ->second.params["filename"];
-
-                    std::ofstream out_file(uploaded_file_name);
-                    if (!out_file) {
-                        continue;
-                    }
-                    out_file << part_value.body;
-                    out_file.close();
-                }
-            }
+            std::string uploaded_file_name = readMessage(req);
 
             utils.loadOUDUtility(uploaded_file_name);
 
             return crow::response(crow::status::OK);
         });
 
-    CROW_ROUTE(app, "/upload/settingUtil")
+    CROW_ROUTE(app, "/upload/utility/setting")
         .methods(crow::HTTPMethod::Post)([&utils](const crow::request &req) {
-            std::string uploaded_file_name;
-            crow::multipart::message file_message(req);
-            for (auto [part_name, part_value] : file_message.part_map) {
-                if ("InputFile" == part_name) {
-                    // Get file name
-                    uploaded_file_name =
-                        part_value.headers.find("Content-Disposition")
-                            ->second.params["filename"];
-
-                    std::ofstream out_file(uploaded_file_name);
-                    if (!out_file) {
-                        continue;
-                    }
-                    out_file << part_value.body;
-                    out_file.close();
-                }
-            }
+            std::string uploaded_file_name = readMessage(req);
 
             utils.loadSettingUtility(uploaded_file_name);
 
@@ -700,7 +222,7 @@ int main(int argc, char **argv) {
                 return crow::response(crow::status::OK);
             });
 
-    CROW_ROUTE(app, "/calculateCost")
+    CROW_ROUTE(app, "/calculate/cost")
         .methods(crow::HTTPMethod::Post)(
             [&hist, &costs, &utils](const crow::request &req) {
                 Calculator::CostCalculator costCalculator(costs, utils, hist);
@@ -709,7 +231,7 @@ int main(int argc, char **argv) {
                 return crow::response(crow::status::OK);
             });
 
-    CROW_ROUTE(app, "/calculateUtil")
+    CROW_ROUTE(app, "/calculate/utility")
         .methods(crow::HTTPMethod::Post)(
             [&hist, &costs, &utils](const crow::request &req) {
                 Calculator::CostCalculator costCalculator(costs, utils, hist);
@@ -718,7 +240,7 @@ int main(int argc, char **argv) {
                 return crow::response(crow::status::OK);
             });
 
-    CROW_ROUTE(app, "/download/writeHistory")
+    CROW_ROUTE(app, "/download/outputs/history")
         .methods(crow::HTTPMethod::Get)([&hist, &inputs, &writer]() {
             writer.setInterventions(inputs.getInterventions());
             writer.setOUDStates(inputs.getOUDStates());
@@ -731,7 +253,7 @@ int main(int argc, char **argv) {
             return response;
         });
 
-    CROW_ROUTE(app, "/download/writeCost")
+    CROW_ROUTE(app, "/download/outputs/cost")
         .methods(crow::HTTPMethod::Post)([&hist, &inputs, &costs, &utils,
                                           &writer](const crow::request &req) {
             Calculator::CostCalculator costCalculator(costs, utils, hist);
@@ -750,7 +272,7 @@ int main(int argc, char **argv) {
             return response;
         });
 
-    CROW_ROUTE(app, "/download/writeUtility")
+    CROW_ROUTE(app, "/download/outputs/utility")
         .methods(crow::HTTPMethod::Post)([&hist, &inputs, &costs, &utils,
                                           &writer](const crow::request &req) {
             Calculator::CostCalculator costCalculator(costs, utils, hist);
