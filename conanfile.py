@@ -18,7 +18,7 @@ class RESPONDRecipe(ConanFile):
 
     default_options = {
         "shared": False,
-        "with_api": True,
+        "with_api": False,
         "benchmark": False,
         "python_module": True
     }

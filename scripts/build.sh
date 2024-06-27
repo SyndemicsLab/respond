@@ -34,6 +34,9 @@ BUILD_BENCHMARK=""
 # process optional command line flags
 while getopts ":abhnpt:" option; do
     case $option in
+        a)
+            BUILD_API="ON"
+            ;;
         h)
             showhelp
             exit
@@ -51,9 +54,6 @@ while getopts ":abhnpt:" option; do
             ;;
         p)
             BUILD_TESTS="ON"
-            ;;
-        a)
-            BUILD_API="ON"
             ;;
         b)
             BUILD_PYBINDINGS="ON"
