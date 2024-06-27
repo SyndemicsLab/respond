@@ -14,6 +14,7 @@ showhelp () {
     echo
     echo
     echo "Syntax: $(basename "$0") [-h|-t OPTION|-p|-b|-n]"
+    echo "a              Build API executable"
     echo "h              Print this help screen."
     echo "t OPTION       Set the build type to OPTION"
     echo "               Options: [Debug|Release]"
@@ -26,12 +27,16 @@ showhelp () {
 # set default build type
 BUILDTYPE="Debug"
 BUILD_TESTS=""
+BUILD_API=""
 BUILD_PYBINDINGS=""
 BUILD_BENCHMARK=""
 
 # process optional command line flags
-while getopts ":bhnpt:" option; do
+while getopts ":abhnpt:" option; do
     case $option in
+        a)
+            BUILD_API="ON"
+            ;;
         h)
             showhelp
             exit
@@ -100,6 +105,9 @@ done
     if [[ -n "$BUILD_BENCHMARK" ]]; then
         INSTALL_DEPS="$INSTALL_DEPS -o benchmark=True"
     fi
+    if [[ -n "$BUILD_API" ]]; then
+        INSTALL_DEPS="$INSTALL_DEPS -o with_api=True"
+    fi
     if ! $INSTALL_DEPS; then
         echo "Issue installing dependencies! Exiting..."
         exit 1
@@ -153,6 +161,10 @@ done
         # build benchmarking executable
         if [[ -n "$BUILD_BENCHMARK" ]]; then
             CMAKE_COMMAND="$CMAKE_COMMAND -DBUILD_BENCHMARK=$BUILD_BENCHMARK"
+        fi
+        # build API executable
+        if [[ -n "$BUILD_API" ]]; then
+            CMAKE_COMMAND="$CMAKE_COMMAND -DBUILD_API=$BUILD_API"
         fi
         # run the full build command as specified
         $CMAKE_COMMAND
