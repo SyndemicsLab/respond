@@ -13,10 +13,8 @@ WORKDIR /respond
 
 COPY . /respond/
 
-RUN ./scripts/build.sh -t Release
+RUN ./scripts/build.sh -at Release
 
-RUN chmod +x ./scripts/run.sh
-
-ENTRYPOINT [ "./scripts/run.sh" ]
+ENTRYPOINT [ "./bin/api" ]
 
 LABEL Name=respondsimulationv2 Version=0.0.1
