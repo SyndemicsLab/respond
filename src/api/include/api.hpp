@@ -17,20 +17,18 @@ namespace API {
         void runApp();
 
     private:
-        std::shared_ptr<crow::Blueprint> uploadBP;
-        std::shared_ptr<crow::Blueprint> downloadBP;
-        std::shared_ptr<crow::Blueprint> calculateBP;
-
         Matrixify::IDataLoaderPtr inputs;
         Matrixify::ICostLoaderPtr costs;
         Matrixify::IUtilityLoaderPtr utils;
-        Matrixify::Writer writer;
+        Matrixify::HistoryWriter historyWriter;
+        Matrixify::CostWriter costWriter;
+        Matrixify::UtilityWriter utilityWriter;
 
         Matrixify::History hist;
 
-        void setupUploadBP(crow::Blueprint &bp);
-        void setupDownloadBP(crow::Blueprint &bp);
-        void setupCalculateBP(crow::Blueprint &bp);
+        void setupUpload();
+        void setupDownload();
+        void setupCalculate();
         std::string readMessage(const crow::request &req);
     };
 } // namespace API

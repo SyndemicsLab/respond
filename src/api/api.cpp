@@ -1,25 +1,23 @@
 #include "api.hpp"
 #include "PostSimulationCalculator.hpp"
+#include "Simulation.hpp"
 
 namespace API {
     RESPONDAPI::RESPONDAPI() {
-        this->uploadBP = std::make_shared<crow::Blueprint>("");
-        this->setupUploadBP(*uploadBP);
-        this->downloadBP = std::make_shared<crow::Blueprint>("");
-        this->setupDownloadBP(*downloadBP);
-        this->calculateBP = std::make_shared<crow::Blueprint>("");
-        this->setupCalculateBP(*calculateBP);
+        this->setupUpload();
+        this->setupDownload();
+        this->setupCalculate();
     }
 
     void RESPONDAPI::setupApp() {
-        this->app.register_blueprint(*(this->uploadBP));
-        this->app.register_blueprint(*(this->downloadBP));
-        this->app.register_blueprint(*(this->calculateBP));
+        this->inputs = std::make_shared<Matrixify::DataLoader>();
+        this->costs = std::make_shared<Matrixify::CostLoader>();
+        this->utils = std::make_shared<Matrixify::UtilityLoader>();
 
         CROW_ROUTE(this->app, "/run")
             .methods(crow::HTTPMethod::Post)([this](const crow::request &req) {
                 Simulation::Respond sim(inputs);
-                sim.Run();
+                sim.run();
                 hist = sim.getHistory();
                 return crow::response(crow::status::OK);
             });
@@ -48,9 +46,9 @@ namespace API {
         return uploaded_file_name;
     }
 
-    void RESPONDAPI::setupUploadBP(crow::Blueprint &bp) {
+    void RESPONDAPI::setupUpload() {
         // Hoping this works? https://github.com/CrowCpp/Crow/issues/591
-        CROW_BP_ROUTE(bp, "/upload/config")
+        CROW_ROUTE(this->app, "/upload/config")
             .methods(crow::HTTPMethod::Post)([this](const crow::request &req) {
                 std::string uploaded_file_name = readMessage(req);
                 inputs->loadConfigFile(uploaded_file_name);
@@ -59,14 +57,14 @@ namespace API {
                 return crow::response(crow::status::OK);
             });
 
-        CROW_BP_ROUTE(bp, "/upload/rates/population")
+        CROW_ROUTE(this->app, "/upload/rates/population")
             .methods(crow::HTTPMethod::Post)([this](const crow::request &req) {
                 std::string uploaded_file_name = readMessage(req);
                 inputs->loadInitialSample(uploaded_file_name);
                 return crow::response(crow::status::OK);
             });
 
-        CROW_BP_ROUTE(bp, "/upload/rates/uptake")
+        CROW_ROUTE(this->app, "/upload/rates/uptake")
             .methods(crow::HTTPMethod::Post)([this](const crow::request &req) {
                 std::string uploaded_file_name = readMessage(req);
                 std::string enteringSampleIntervention =
@@ -80,7 +78,7 @@ namespace API {
                 return crow::response(crow::status::OK);
             });
 
-        CROW_BP_ROUTE(bp, "/upload/rates/behavior")
+        CROW_ROUTE(this->app, "/upload/rates/behavior")
             .methods(crow::HTTPMethod::Post)([this](const crow::request &req) {
                 std::string uploaded_file_name = readMessage(req);
 
@@ -89,7 +87,7 @@ namespace API {
                 return crow::response(crow::status::OK);
             });
 
-        CROW_BP_ROUTE(bp, "/upload/rates/interventions")
+        CROW_ROUTE(this->app, "/upload/rates/interventions")
             .methods(crow::HTTPMethod::Post)([this](const crow::request &req) {
                 std::string uploaded_file_name = readMessage(req);
 
@@ -98,7 +96,7 @@ namespace API {
                 return crow::response(crow::status::OK);
             });
 
-        CROW_BP_ROUTE(bp, "/upload/rates/conditionalbehavior")
+        CROW_ROUTE(this->app, "/upload/rates/conditionalbehavior")
             .methods(crow::HTTPMethod::Post)([this](const crow::request &req) {
                 std::string uploaded_file_name = readMessage(req);
 
@@ -107,7 +105,7 @@ namespace API {
                 return crow::response(crow::status::OK);
             });
 
-        CROW_BP_ROUTE(bp, "/upload/rates/overdoses")
+        CROW_ROUTE(this->app, "/upload/rates/overdoses")
             .methods(crow::HTTPMethod::Post)([this](const crow::request &req) {
                 std::string uploaded_file_name = readMessage(req);
 
@@ -116,7 +114,7 @@ namespace API {
                 return crow::response(crow::status::OK);
             });
 
-        CROW_BP_ROUTE(bp, "/upload/rates/fataloverdoses")
+        CROW_ROUTE(this->app, "/upload/rates/fataloverdoses")
             .methods(crow::HTTPMethod::Post)([this](const crow::request &req) {
                 std::string uploaded_file_name = readMessage(req);
 
@@ -125,7 +123,7 @@ namespace API {
                 return crow::response(crow::status::OK);
             });
 
-        CROW_BP_ROUTE(bp, "/upload/rates/mortality")
+        CROW_ROUTE(this->app, "/upload/rates/mortality")
             .methods(crow::HTTPMethod::Post)([this](const crow::request &req) {
                 std::string uploaded_file_name;
                 std::string smr_file_name;
@@ -163,7 +161,7 @@ namespace API {
                 return crow::response(crow::status::OK);
             });
 
-        CROW_BP_ROUTE(bp, "/upload/costs/healthcare")
+        CROW_ROUTE(this->app, "/upload/costs/healthcare")
             .methods(crow::HTTPMethod::Post)([this](const crow::request &req) {
                 std::string uploaded_file_name = readMessage(req);
 
@@ -172,7 +170,7 @@ namespace API {
                 return crow::response(crow::status::OK);
             });
 
-        CROW_BP_ROUTE(bp, "/upload/costs/overdoses")
+        CROW_ROUTE(this->app, "/upload/costs/overdoses")
             .methods(crow::HTTPMethod::Post)([this](const crow::request &req) {
                 std::string uploaded_file_name = readMessage(req);
 
@@ -181,7 +179,7 @@ namespace API {
                 return crow::response(crow::status::OK);
             });
 
-        CROW_BP_ROUTE(bp, "/upload/costs/pharmaceutical")
+        CROW_ROUTE(this->app, "/upload/costs/pharmaceutical")
             .methods(crow::HTTPMethod::Post)([this](const crow::request &req) {
                 std::string uploaded_file_name = readMessage(req);
 
@@ -190,7 +188,7 @@ namespace API {
                 return crow::response(crow::status::OK);
             });
 
-        CROW_BP_ROUTE(bp, "/upload/costs/treatment")
+        CROW_ROUTE(this->app, "/upload/costs/treatment")
             .methods(crow::HTTPMethod::Post)([this](const crow::request &req) {
                 std::string uploaded_file_name = readMessage(req);
 
@@ -199,7 +197,7 @@ namespace API {
                 return crow::response(crow::status::OK);
             });
 
-        CROW_BP_ROUTE(bp, "/upload/utility/background")
+        CROW_ROUTE(this->app, "/upload/utility/background")
             .methods(crow::HTTPMethod::Post)([this](const crow::request &req) {
                 std::string uploaded_file_name = readMessage(req);
 
@@ -208,7 +206,7 @@ namespace API {
                 return crow::response(crow::status::OK);
             });
 
-        CROW_BP_ROUTE(bp, "/upload/utility/behavior")
+        CROW_ROUTE(this->app, "/upload/utility/behavior")
             .methods(crow::HTTPMethod::Post)([this](const crow::request &req) {
                 std::string uploaded_file_name = readMessage(req);
 
@@ -217,7 +215,7 @@ namespace API {
                 return crow::response(crow::status::OK);
             });
 
-        CROW_BP_ROUTE(bp, "/upload/utility/setting")
+        CROW_ROUTE(this->app, "/upload/utility/setting")
             .methods(crow::HTTPMethod::Post)([this](const crow::request &req) {
                 std::string uploaded_file_name = readMessage(req);
 
@@ -227,52 +225,49 @@ namespace API {
             });
     }
 
-    void RESPONDAPI::setupDownloadBP(crow::Blueprint &bp) {
-        CROW_BP_ROUTE(bp, "/download/outputs/history")
+    void RESPONDAPI::setupDownload() {
+        CROW_ROUTE(this->app, "/download/outputs/history")
             .methods(crow::HTTPMethod::Get)([this]() {
-                writer.setInterventions(inputs->getInterventions());
-                writer.setOUDStates(inputs->getOUDStates());
-                writer.setDemographics(
-                    inputs->getConfig().getDemographicCombosVecOfVec());
-                writer.setDirname("output");
-                writer.writeHistory(Matrixify::FILE, hist);
+                historyWriter.setInterventions(inputs->getInterventions());
+                historyWriter.setOUDStates(inputs->getOUDStates());
+                historyWriter.setDemographics(inputs->getDemographics());
+                historyWriter.setDirname("output");
+                historyWriter.writeHistory(hist);
                 crow::response response;
                 response.set_static_file_info("output/stateHistory.csv");
                 return response;
             });
 
-        CROW_BP_ROUTE(bp, "/download/outputs/cost")
+        CROW_ROUTE(this->app, "/download/outputs/cost")
             .methods(crow::HTTPMethod::Post)([this](const crow::request &req) {
                 Calculator::PostSimulationCalculator costCalculator(hist);
-                Matrixify::Cost cost =
-                    costCalculator.calculateCosts(*(this->costs));
+                Matrixify::CostList costList =
+                    costCalculator.calculateCosts(this->costs);
 
-                writer.setInterventions(inputs->getInterventions());
-                writer.setOUDStates(inputs->getOUDStates());
-                writer.setDemographics(
-                    inputs->getConfig().getDemographicCombosVecOfVec());
-                writer.setDirname("output");
+                costWriter.setInterventions(inputs->getInterventions());
+                costWriter.setOUDStates(inputs->getOUDStates());
+                costWriter.setDemographics(inputs->getDemographics());
+                costWriter.setDirname("output");
 
-                writer.writeCost(Matrixify::STRING, cost);
+                costWriter.writeCosts(costList);
                 crow::response response;
                 response.set_static_file_info("output/healthcareCost.csv");
 
                 return response;
             });
 
-        CROW_BP_ROUTE(bp, "/download/outputs/utility")
+        CROW_ROUTE(this->app, "/download/outputs/utility")
             .methods(crow::HTTPMethod::Post)([this](const crow::request &req) {
                 Calculator::PostSimulationCalculator costCalculator(hist);
-                Matrixify::Matrix4d utility =
-                    costCalculator.calculateUtilities(*(this->utils));
+                Matrixify::Matrix4d utility = costCalculator.calculateUtilities(
+                    this->utils, Calculator::UTILITY_TYPE::MIN);
 
-                writer.setInterventions(inputs->getInterventions());
-                writer.setOUDStates(inputs->getOUDStates());
-                writer.setDemographics(
-                    inputs->getConfig().getDemographicCombosVecOfVec());
-                writer.setDirname("output");
+                utilityWriter.setInterventions(inputs->getInterventions());
+                utilityWriter.setOUDStates(inputs->getOUDStates());
+                utilityWriter.setDemographics(inputs->getDemographics());
+                utilityWriter.setDirname("output");
 
-                writer.writeUtility(Matrixify::FILE, utility);
+                utilityWriter.writeUtilities(utility);
                 crow::response response;
                 response.set_static_file_info("output/backgroundUtility.csv");
 
@@ -280,21 +275,21 @@ namespace API {
             });
     }
 
-    void RESPONDAPI::setupCalculateBP(crow::Blueprint &bp) {
-        CROW_BP_ROUTE(bp, "/calculate/cost")
+    void RESPONDAPI::setupCalculate() {
+        CROW_ROUTE(this->app, "/calculate/cost")
             .methods(crow::HTTPMethod::Post)([this](const crow::request &req) {
                 Calculator::PostSimulationCalculator costCalculator(hist);
-                Matrixify::Cost cost =
-                    costCalculator.calculateCosts(*(this->costs));
+                Matrixify::CostList cost =
+                    costCalculator.calculateCosts(this->costs);
 
                 return crow::response(crow::status::OK);
             });
 
-        CROW_BP_ROUTE(bp, "/calculate/utility")
+        CROW_ROUTE(this->app, "/calculate/utility")
             .methods(crow::HTTPMethod::Post)([this](const crow::request &req) {
                 Calculator::PostSimulationCalculator costCalculator(hist);
-                Matrixify::Matrix4d utility =
-                    costCalculator.calculateUtilities(*(this->utils));
+                Matrixify::Matrix4d utility = costCalculator.calculateUtilities(
+                    this->utils, Calculator::UTILITY_TYPE::MIN);
 
                 return crow::response(crow::status::OK);
             });

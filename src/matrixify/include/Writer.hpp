@@ -116,6 +116,34 @@ namespace Matrixify {
             this->pivot = pivot;
         }
 
+        std::vector<std::string> getInterventions() const {
+            return this->interventions;
+        }
+        std::vector<std::string> getOUDStates() const {
+            return this->oudStates;
+        }
+        std::vector<std::string> getDemographics() const {
+            return this->demographics;
+        }
+        std::vector<std::string> getDemographicCombos() const {
+            return this->demographicCombos;
+        }
+        bool getPivot() const { return this->pivot; }
+
+        void setInterventions(std::vector<std::string> const v) {
+            this->interventions = v;
+        }
+        void setOUDStates(std::vector<std::string> const v) {
+            this->oudStates = v;
+        }
+        void setDemographics(std::vector<std::string> const v) {
+            this->demographics = v;
+        }
+        void setDemographicCombos(std::vector<std::string> const v) {
+            this->demographicCombos = v;
+        }
+        void setPivot(bool const p) { this->pivot = p; }
+
     protected:
         /// @brief
         /// @param timesteps
