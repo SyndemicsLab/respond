@@ -138,6 +138,8 @@ namespace Matrixify {
                                             std::string const &bgmCSVName) = 0;
     };
 
+    using IDataLoaderPtr = std::shared_ptr<IDataLoader>;
+
     /*!
      * @brief The object that processes model inputs
      *
