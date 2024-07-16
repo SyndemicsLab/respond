@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.20)
-project(respondpy CXX)
+project(${SKBUILD_PROJECT_NAME} LANGUAGES CXX)
 
 # Find python and Boost - both are required dependencies
-find_package(Python 3.11 REQUIRED COMPONENTS Interpreter Development.Module)
+set(PYBIND11_NEWPYTHON ON)
 find_package(pybind11 CONFIG REQUIRED)
 
 # Add a shared module - modules are intended to be imported at runtime.
@@ -31,3 +31,6 @@ target_link_libraries(Simulation PUBLIC simrunner)
 target_link_libraries(Simulation PUBLIC matrixify)
 
 # SET_TARGET_PROPERTIES(Simulation PROPERTIES SUFFIX .pyd)
+
+install(TARGETS Matrixify LIBRARY DESTINATION .)
+install(TARGETS Simulation LIBRARY DESTINATION .)
