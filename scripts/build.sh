@@ -73,46 +73,9 @@ done
     # change to the top-level git folder
     TOPLEVEL="$(git rev-parse --show-toplevel)"
     cd "$TOPLEVEL" || exit
-    CONANPATH=$(command -v conan)
-
-    # install conan, if not found in the current scope
-    if [[ -z "$CONANPATH" ]]; then
-        echo "The \`conan\` command is not found\! Attempting a local installation..."
-        if [[ -z "$VIRTUAL_ENV" ]]; then
-            if ! pip install --user conan; then
-                echo "\`conan\` installation failed. Exiting."
-                exit 1
-            fi
-        else
-            if ! pip install conan; then
-                echo "\`conan\` installation failed. Exiting."
-                exit 1
-            fi
-        fi
-        CONANPATH="python3 -m conans.conan"
-    fi
 
     # ensure the `build/` directory exists
     ([[ -d "build/" ]] && rm -rf build/*) || mkdir "build/"
-
-    # install dependencies via conan
-    if [[ ! -f "$HOME/.conan2/profiles/default" ]]; then
-        $CONANPATH profile detect --force
-    fi
-
-    echo "Installing missing dependencies via \`conan\`..."
-    INSTALL_DEPS="$CONANPATH install . --build=missing --settings=build_type=$BUILDTYPE"
-    if [[ -n "$BUILD_BENCHMARK" ]]; then
-        INSTALL_DEPS="$INSTALL_DEPS -o benchmark=True"
-    fi
-    if [[ -n "$BUILD_API" ]]; then
-        INSTALL_DEPS="$INSTALL_DEPS -o with_api=True"
-    fi
-    if ! $INSTALL_DEPS; then
-        echo "Issue installing dependencies! Exiting..."
-        exit 1
-    fi
-    echo "Dependencies installed!"
 
     # detect or install DataManagement
     if [[ ! -d "lib/dminstall" ]]; then
@@ -140,17 +103,8 @@ done
 
     (
         cd "build" || exit
-        # check if the conan generator file was generated successfully
-        if [[ -f "$BUILDTYPE/generators/conanbuild.sh" ]]; then
-            # shellcheck source=/dev/null
-            source "$BUILDTYPE/generators/conanbuild.sh"
-        else
-            echo "\`conan\` generator failed. Terminating."
-            exit 1
-        fi
-
         # build tests, if specified
-        CMAKE_COMMAND="cmake .. -DCMAKE_TOOLCHAIN_FILE=$BUILDTYPE/generators/conan_toolchain.cmake -DCMAKE_BUILD_TYPE=$BUILDTYPE"
+        CMAKE_COMMAND="cmake .. -DCMAKE_PREFIX_PATH=$CONDA_PREFIX -DCMAKE_BUILD_TYPE=$BUILDTYPE"
         if [[ -n "$BUILD_TESTS" ]]; then
             CMAKE_COMMAND="$CMAKE_COMMAND -DBUILD_TESTS=$BUILD_TESTS"
         fi

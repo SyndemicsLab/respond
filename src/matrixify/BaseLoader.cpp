@@ -35,6 +35,8 @@ namespace Matrixify {
                     inputPath = inputPath / "sim.conf";
                 }
                 if (!loadConfigFile(inputPath.string())) {
+                    this->logger->error("Config File Not Found! Exiting");
+                    exit(-1);
                     // error on config file being found
                 }
             }
@@ -75,8 +77,10 @@ namespace Matrixify {
         for (std::string inputFile : Matrixify::BaseLoader::INPUT_FILES) {
             std::filesystem::path filePath = inputDirFixed / inputFile;
             if (!std::filesystem::exists(filePath)) {
-                // this->logger->warn("File " + filePath.string() +
-                //                    " does not exist!");
+#ifndef NDEBUG
+                this->logger->warn("File " + filePath.string() +
+                                   " does not exist!");
+#endif
                 continue;
             }
             toReturn[inputFile] = readCSV(filePath.string());
@@ -105,7 +109,11 @@ namespace Matrixify {
 
     void BaseLoader::loadFromConfig() {
         if (!this->Config) {
-            return; // do we want to throw an error or warn the user?
+#ifndef NDEBUG
+            this->logger->warn(
+                "Config not found when trying to load from Config File.");
+#endif
+            return;
         }
         Data::IConfigablePtr derivedConfig =
             std::dynamic_pointer_cast<Data::Config>(this->Config);
