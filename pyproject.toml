@@ -1,10 +1,5 @@
 [build-system]
-requires = [
-    "scikit-build-core",
-    "pybind11",
-    "eigen",
-    "spdlog"
-]
+requires = ["scikit-build-core", "pybind11", "eigen", "spdlog"]
 build-backend = "scikit_build_core.build"
 
 [project]
@@ -12,11 +7,13 @@ name = "respond"
 version = "1.0.0"
 readme = "README.md"
 authors = [
-    {name = "Matthew Carroll", email = "Matthew.Carroll@bmc.org"},
-    {name = "Dimitri Baptiste", email = "Dimitri.Baptiste@bmc.org"}
+    { name = "Matthew Carroll", email = "Matthew.Carroll@bmc.org" },
+    { name = "Dimitri Baptiste", email = "Dimitri.Baptiste@bmc.org" },
 ]
-maintainers = [
-    {name = "Syndemics Lab", email = "Benjamin.Linas@bmc.org"}
-]
-license = {text = "GNU AGPLv3"}
+maintainers = [{ name = "Syndemics Lab", email = "Benjamin.Linas@bmc.org" }]
+license = { text = "GNU AGPLv3" }
 requires-python = ">=3.8"
+
+[project.urls]
+Homepage = "https://github.com/SyndemicsLab/RESPONDSimulationv2"
+Issues = "https://github.com/SyndemicsLab/RESPONDSimulationv2/issues"
