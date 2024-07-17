@@ -44,14 +44,14 @@ jobs:
     - name: Copy dminstall lib
       run: cp -r "dminstall-${{ matrix.os }}/" "${{github.workspace}}/lib/dminstall"
 
-    - name: Get GCC-12
-      run:  sudo apt update && sudo apt install gcc-12 g++-12
+    # - name: Get GCC-12
+    #   run:  sudo apt update && sudo apt install gcc-12 g++-12
 
-    - name: Install Boost
-      uses: MarkusJx/install-boost@v2.4.4
-      id: install-boost
-      with:
-        boost_version: 1.82.0
+    # - name: Install Boost
+    #   uses: MarkusJx/install-boost@v2.4.4
+    #   id: install-boost
+    #   with:
+    #     boost_version: 1.82.0
 
     - name: Clean Build Folder
       run: rm -rf ${{github.workspace}}/build/*
