@@ -25,6 +25,12 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
+    - uses: conda-incubator/setup-miniconda@v2
+      with:
+          activate-environment: respond
+          environment-file: environment.yml
+          auto-activate-base: false
+
     - name: Fetch DataManagement Release Asset
       run: |
         gh release download --repo SyndemicsLab/DataManagement -p "dminstall-${{ matrix.os }}.zip"
@@ -47,38 +53,11 @@ jobs:
       with:
         boost_version: 1.82.0
 
-    - name: Conan Installation
-      id: conan
-      uses: turtlebrowser/get-conan@main
-
-    - name: Create default Conan profile
-      run: conan profile detect --force
-
     - name: Clean Build Folder
       run: rm -rf ${{github.workspace}}/build/*
-
-    - name: Conan install dependencies
-      working-directory: ${{github.workspace}}
-      run:  conan install . --build=missing --settings=build_type="$BUILD_TYPE"
-
-    - name: Activate Conan VirtualEnv
-      working-directory: ${{github.workspace}}/build
-      run: source "$BUILD_TYPE"/generators/conanbuild.sh
 
     # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
     # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
     - name: CMake Configuration
-      working-directory: ${{github.workspace}}/build
-      run:  cmake .. -DCMAKE_TOOLCHAIN_FILE="$BUILD_TYPE"/generators/conan_toolchain.cmake -DCMAKE_BUILD_TYPE="$BUILD_TYPE" -DBUILD_TESTS=ON
-
-    - name: Cmake Build
-      working-directory: ${{github.workspace}}/build
-      run: cmake --build .
-
-    - name: Deactivate Conan VirtualEnv
-      working-directory: ${{github.workspace}}/build
-      run: source "$BUILD_TYPE"/generators/deactivate_conanbuild.sh
-
-    - name: Run tests
       working-directory: ${{github.workspace}}
-      run: ./bin/respondTest
+      run:  ./build.sh -pt Release
