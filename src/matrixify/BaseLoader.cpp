@@ -77,10 +77,13 @@ namespace Matrixify {
         for (std::string inputFile : Matrixify::BaseLoader::INPUT_FILES) {
             std::filesystem::path filePath = inputDirFixed / inputFile;
             if (!std::filesystem::exists(filePath)) {
-#ifndef NDEBUG
-                this->logger->warn("File " + filePath.string() +
-                                   " does not exist!");
-#endif
+
+                // TODO This causes an error during tests
+                // #ifdef NDEBUG
+                //                 this->logger->warn("File " +
+                //                 filePath.string() +
+                //                                    " does not exist!");
+                // #endif
                 continue;
             }
             toReturn[inputFile] = readCSV(filePath.string());

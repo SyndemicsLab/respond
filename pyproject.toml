@@ -17,3 +17,10 @@ requires-python = ">=3.8"
 [project.urls]
 Homepage = "https://github.com/SyndemicsLab/RESPONDSimulationv2"
 Issues = "https://github.com/SyndemicsLab/RESPONDSimulationv2/issues"
+
+[tool.scikit-build]
+cmake.version = ">=3.15"
+
+[tool.scikit-build.cmake.define]
+BUILD_PYBINDINGS = "ON"
+CMAKE_POSITION_INDEPENDENT_CODE = "ON"

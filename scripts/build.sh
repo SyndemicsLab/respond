@@ -128,9 +128,6 @@ done
             # if CORES > 1 compile in parallel where possible
             ([[ -n "$CORES" ]] && cmake --build . -j"$CORES") || cmake --build .
         )
-        # deactivate the conan virtual environment
-        # shellcheck source=/dev/null
-        source "$BUILDTYPE/generators/deactivate_conanbuild.sh"
         # run tests, if they built properly
     )
     if [[ (-n "$BUILD_TESTS") && (-f "bin/respondTest") ]]; then
