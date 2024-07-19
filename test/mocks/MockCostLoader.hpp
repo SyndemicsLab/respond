@@ -28,7 +28,7 @@ public:
     MOCK_METHOD((bool), getEnteringCohortToggle, (), (const, override));
 
     // ITableable
-    MOCK_METHOD((Data::IDataTablePtr), readCSV, ((std::string const &)),
+    MOCK_METHOD((Data::IDataTablePtr), readCSV, (std::string const &, bool),
                 (override));
     MOCK_METHOD((std::unordered_map<std::string, Data::IDataTablePtr>),
                 readInputDir, ((std::string const &)), (override));

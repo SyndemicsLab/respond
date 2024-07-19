@@ -27,10 +27,12 @@ add_executable(respond main.cpp)
 target_include_directories(respond PRIVATE
   "matrixify/include"
   "simrunner/include"
+  ${PROJECT_SOURCE_DIR}/lib/DataManagement/include
   )
 
 target_link_libraries(respond
   matrixify
   simrunner
   spdlog::spdlog
+  DataManagement
 )

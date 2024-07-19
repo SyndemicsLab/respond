@@ -87,7 +87,7 @@ namespace Matrixify {
                 // #endif
                 continue;
             }
-            toReturn[inputFile] = readCSV(filePath.string());
+            toReturn[inputFile] = readCSV(filePath.string(), true);
         }
         return toReturn;
     }

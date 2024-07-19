@@ -78,16 +78,16 @@ done
     ([[ -d "build/" ]] && rm -rf build/*) || mkdir "build/"
 
     # detect or install DataManagement
-    if [[ ! -d "lib/dminstall" ]]; then
-        git clone git@github.com:SyndemicsLab/DataManagement
-        if ! (
-                cd "DataManagement" || exit 1
-                ./install.sh -i "$TOPLEVEL/lib/dminstall"
-            ); then
-            echo "Installing \`DataManagement\` failed."
-        fi
-        rm -rf DataManagement
-    fi
+    # if [[ ! -d "lib/dminstall" ]]; then
+    #     git clone git@github.com:SyndemicsLab/DataManagement
+    #     if ! (
+    #             cd "DataManagement" || exit 1
+    #             ./install.sh -i "$TOPLEVEL/lib/dminstall"
+    #         ); then
+    #         echo "Installing \`DataManagement\` failed."
+    #     fi
+    #     rm -rf DataManagement
+    # fi
 
     (
         cd "build" || exit
