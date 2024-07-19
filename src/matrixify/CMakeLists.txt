@@ -25,6 +25,10 @@ add_library(${PROJECT_NAME}
 
 target_link_libraries(${PROJECT_NAME} PUBLIC Eigen3::Eigen)
 target_link_libraries(${PROJECT_NAME} PUBLIC spdlog::spdlog)
-target_link_libraries(${PROJECT_NAME} PUBLIC DataManagement::DataManagement)
+target_link_libraries(${PROJECT_NAME} PUBLIC DataManagement)
 
-target_include_directories(${PROJECT_NAME} PUBLIC "include/")
+target_include_directories(${PROJECT_NAME} 
+    PUBLIC 
+        "include/"
+        ${DM_INCLUDE_DIR}
+    )

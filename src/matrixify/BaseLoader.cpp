@@ -63,9 +63,10 @@ namespace Matrixify {
         return true;
     }
 
-    Data::IDataTablePtr BaseLoader::readCSV(std::string const &inputFile) {
+    Data::IDataTablePtr BaseLoader::readCSV(std::string const &inputFile,
+                                            bool headers) {
         Data::IDataTablePtr table =
-            std::make_shared<Data::DataTable>(inputFile);
+            std::make_shared<Data::DataTable>(inputFile, headers, ',');
         return table;
     }
 

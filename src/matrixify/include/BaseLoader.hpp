@@ -47,7 +47,8 @@ namespace Matrixify {
 
         bool loadConfigPtr(Data::IConfigablePtr configPtr) override;
 
-        Data::IDataTablePtr readCSV(std::string const &) override;
+        Data::IDataTablePtr readCSV(std::string const &,
+                                    bool headers = false) override;
 
         std::unordered_map<std::string, Data::IDataTablePtr>
         readInputDir(std::string const &) override;

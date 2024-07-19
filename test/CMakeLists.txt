@@ -9,7 +9,7 @@ find_package (Eigen3 3.4 REQUIRED)
 find_package(spdlog REQUIRED)
 
 find_package(DataManagement 1 REQUIRED
-  HINTS "${CMAKE_SOURCE_DIR}/lib/dminstall"
+  HINTS "${CMAKE_SOURCE_DIR}/lib/dminstall/cmake"
 )
 
 add_executable(${PROJECT_NAME}
@@ -31,6 +31,6 @@ target_link_libraries(${PROJECT_NAME} PUBLIC GTest::gmock_main)
 target_link_libraries(${PROJECT_NAME} PUBLIC simrunner)
 target_link_libraries(${PROJECT_NAME} PUBLIC matrixify)
 target_link_libraries(${PROJECT_NAME} PUBLIC spdlog::spdlog)
-target_link_libraries(${PROJECT_NAME} PUBLIC DataManagement::DataManagement)
+target_link_libraries(${PROJECT_NAME} PUBLIC DataManagement)
 
-target_include_directories(${PROJECT_NAME} PUBLIC "mocks/")
+target_include_directories(${PROJECT_NAME} PUBLIC "mocks/" ${DM_INCLUDE_DIR})

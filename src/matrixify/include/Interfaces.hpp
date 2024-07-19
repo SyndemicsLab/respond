@@ -17,7 +17,8 @@ namespace Matrixify {
 
     class IReadable {
     public:
-        virtual Data::IDataTablePtr readCSV(std::string const &) = 0;
+        virtual Data::IDataTablePtr readCSV(std::string const &,
+                                            bool headers) = 0;
         virtual std::unordered_map<std::string, Data::IDataTablePtr>
         readInputDir(std::string const &) = 0;
         virtual Data::IDataTablePtr loadTable(std::string const &filename) = 0;

@@ -89,18 +89,6 @@ done
         rm -rf DataManagement
     fi
 
-    # detect or install DataManagement
-    if [[ ! -d "lib/dminstall" ]]; then
-	git clone git@github.com:SyndemicsLab/DataManagement
-	if ! (
-		cd "DataManagement" || exit 1
-		./install.sh "$TOPLEVEL/lib/dminstall"
-	    ); then
-	    echo "Installing \`DataManagement\` failed."
-	fi
-	rm -rf DataManagement
-    fi
-
     (
         cd "build" || exit
         # build tests, if specified
