@@ -17,6 +17,7 @@ target_link_libraries(Matrixify PRIVATE pybind11::headers)
 target_link_libraries(Matrixify PUBLIC ${PYTHON_LIBRARIES})
 target_link_libraries(Matrixify PUBLIC simrunner)
 target_link_libraries(Matrixify PUBLIC matrixify)
+target_link_libraries(Matrixify PUBLIC DataManagement)
 
 # SET_TARGET_PROPERTIES(Matrixify PROPERTIES SUFFIX .pyd)
 
@@ -27,6 +28,7 @@ target_link_libraries(Simulation PRIVATE pybind11::headers)
 target_link_libraries(Simulation PUBLIC ${PYTHON_LIBRARIES})
 target_link_libraries(Simulation PUBLIC simrunner)
 target_link_libraries(Simulation PUBLIC matrixify)
+target_link_libraries(Matrixify PUBLIC DataManagement)
 
 # SET_TARGET_PROPERTIES(Simulation PROPERTIES SUFFIX .pyd)
 
