@@ -5,7 +5,6 @@ if command -v module &>/dev/null; then
     module load gcc/12.2.0
     module load miniconda
     conda env create -f "/projectnb/respond/environment.yml" 2&>/dev/null
-    conda activate respond
 fi
 
 # help message to be output either with the -h flag or when using invalid syntax
@@ -64,12 +63,21 @@ while getopts ":abhnpt:" option; do
         \?)
             echo "Error: Invalid option flag provided!"
             showhelp
-            exit
+            # exit with a non-zero error code to indicate a problem
+            exit 1
             ;;
     esac
 done
 
 (
+    # ensure conda is present on the system
+    if ! command -v conda &>/dev/null; then
+        echo "Conda not present on the system! Exiting..."
+        exit 1
+    fi
+    # activate the conda environment
+    conda activate respond 2&>/dev/null
+
     # change to the top-level git folder
     TOPLEVEL="$(git rev-parse --show-toplevel)"
     cd "$TOPLEVEL" || exit
@@ -78,16 +86,23 @@ done
     ([[ -d "build/" ]] && rm -rf build/*) || mkdir "build/"
 
     # detect or install DataManagement
-    # if [[ ! -d "lib/dminstall" ]]; then
-    #     git clone git@github.com:SyndemicsLab/DataManagement
-    #     if ! (
-    #             cd "DataManagement" || exit 1
-    #             ./install.sh -i "$TOPLEVEL/lib/dminstall"
-    #         ); then
-    #         echo "Installing \`DataManagement\` failed."
-    #     fi
-    #     rm -rf DataManagement
-    # fi
+    if [[ ! -d "lib/DataManagement" ]]; then
+        # check if submodules have been initialized
+        if git submodule status | grep --quiet '^-'; then
+            git submodule init
+        fi
+        # ensure submodules use the specified hash
+        git submodule update --recursive
+        # the commented stub below installs shared objects of DataManagement,
+        # instead of a static library
+        # if ! (
+        #         cd "DataManagement" || exit 1
+        #         ./install.sh -i "$TOPLEVEL/lib/dminstall"
+        #     ); then
+        #     echo "Installing \`DataManagement\` failed."
+        # fi
+        # rm -rf DataManagement
+    fi
 
     (
         cd "build" || exit
