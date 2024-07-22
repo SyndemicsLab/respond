@@ -70,10 +70,13 @@ while getopts ":abhnpt:" option; do
 done
 
 (
+    echo "Checking if \`conda\` is found..."
     # ensure conda is present on the system
     if ! command -v conda &>/dev/null; then
-        echo "Conda not present on the system! Exiting..."
+        echo "\`conda\` not present on the system! Exiting..."
         exit 1
+    else
+	echo "\`conda\` found!"
     fi
     # activate the conda environment
     conda activate respond 2&>/dev/null
@@ -86,7 +89,9 @@ done
     ([[ -d "build/" ]] && rm -rf build/*) || mkdir "build/"
 
     # detect or install DataManagement
+    echo "Checking for the presence of \`DataManagement\`..."
     if [[ ! -d "lib/DataManagement" ]]; then
+	echo "\`DataManagement\` not found. Attempting to configure..."
         # check if submodules have been initialized
         if git submodule status | grep --quiet '^-'; then
             git submodule init
@@ -103,6 +108,7 @@ done
         # fi
         # rm -rf DataManagement
     fi
+    echo "\`DataManagement\` found!"
 
     (
         cd "build" || exit
