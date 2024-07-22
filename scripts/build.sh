@@ -90,7 +90,8 @@ done
 
     # detect or install DataManagement
     echo "Checking for the presence of \`DataManagement\`..."
-    if [[ ! -d "lib/DataManagement" || ! find "lib/DataManagement" -mindepth 1 -maxdepth 1 ]]; then
+    DM="$(find "lib/DataManagement" -mindepth 1 -maxdepth 1)"
+    if [[ ! -d "lib/DataManagement" || -z "$DM" ]]; then
 	echo "\`DataManagement\` not found. Attempting to configure submodule..."
         # check if submodules have been initialized
         if git submodule status | grep --quiet '^-'; then
@@ -107,8 +108,6 @@ done
         #     echo "Installing \`DataManagement\` failed."
         # fi
         # rm -rf DataManagement
-    else
-	ls -lAR lib/DataManagement
     fi
     echo "\`DataManagement\` found!"
 
