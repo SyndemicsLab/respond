@@ -107,6 +107,8 @@ done
         #     echo "Installing \`DataManagement\` failed."
         # fi
         # rm -rf DataManagement
+    else
+	ls -lAR lib/DataManagement
     fi
     echo "\`DataManagement\` found!"
 
