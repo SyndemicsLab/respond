@@ -1,0 +1,3 @@
+[submodule "lib/DataManagement"]
+	path = lib/DataManagement
+	url = git@github.com:SyndemicsLab/DataManagement.git

@@ -35,6 +35,8 @@ namespace Matrixify {
                     inputPath = inputPath / "sim.conf";
                 }
                 if (!loadConfigFile(inputPath.string())) {
+                    this->logger->error("Config File Not Found! Exiting");
+                    exit(-1);
                     // error on config file being found
                 }
             }
@@ -61,9 +63,10 @@ namespace Matrixify {
         return true;
     }
 
-    Data::IDataTablePtr BaseLoader::readCSV(std::string const &inputFile) {
+    Data::IDataTablePtr BaseLoader::readCSV(std::string const &inputFile,
+                                            bool headers) {
         Data::IDataTablePtr table =
-            std::make_shared<Data::DataTable>(inputFile);
+            std::make_shared<Data::DataTable>(inputFile, headers, ',');
         return table;
     }
 
@@ -75,11 +78,16 @@ namespace Matrixify {
         for (std::string inputFile : Matrixify::BaseLoader::INPUT_FILES) {
             std::filesystem::path filePath = inputDirFixed / inputFile;
             if (!std::filesystem::exists(filePath)) {
-                // this->logger->warn("File " + filePath.string() +
-                //                    " does not exist!");
+
+                // TODO This causes an error during tests
+                // #ifdef NDEBUG
+                //                 this->logger->warn("File " +
+                //                 filePath.string() +
+                //                                    " does not exist!");
+                // #endif
                 continue;
             }
-            toReturn[inputFile] = readCSV(filePath.string());
+            toReturn[inputFile] = readCSV(filePath.string(), true);
         }
         return toReturn;
     }
@@ -105,7 +113,11 @@ namespace Matrixify {
 
     void BaseLoader::loadFromConfig() {
         if (!this->Config) {
-            return; // do we want to throw an error or warn the user?
+#ifndef NDEBUG
+            this->logger->warn(
+                "Config not found when trying to load from Config File.");
+#endif
+            return;
         }
         Data::IConfigablePtr derivedConfig =
             std::dynamic_pointer_cast<Data::Config>(this->Config);

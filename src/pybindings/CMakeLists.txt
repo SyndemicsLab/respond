@@ -1,8 +1,8 @@
-cmake_minimum_required(VERSION 3.20)
-project(respondpy CXX)
+cmake_minimum_required(VERSION 3.21)
+project(${SKBUILD_PROJECT_NAME} LANGUAGES CXX)
 
 # Find python and Boost - both are required dependencies
-find_package(Python 3.11 REQUIRED COMPONENTS Interpreter Development.Module)
+set(PYBIND11_NEWPYTHON ON)
 find_package(pybind11 CONFIG REQUIRED)
 
 # Add a shared module - modules are intended to be imported at runtime.
@@ -14,10 +14,10 @@ pybind11_add_module(Matrixify MODULE Matrixify_ext.cpp)
 
 # Set up the libraries and header search paths for this target
 target_link_libraries(Matrixify PRIVATE pybind11::headers)
-#target_link_libraries(Matrixify PUBLIC ${Boost_LIBRARIES})
 target_link_libraries(Matrixify PUBLIC ${PYTHON_LIBRARIES})
 target_link_libraries(Matrixify PUBLIC simrunner)
 target_link_libraries(Matrixify PUBLIC matrixify)
+target_link_libraries(Matrixify PUBLIC DataManagement)
 
 # SET_TARGET_PROPERTIES(Matrixify PROPERTIES SUFFIX .pyd)
 
@@ -25,9 +25,14 @@ pybind11_add_module(Simulation MODULE Simrunner_ext.cpp)
 
 # Set up the libraries and header search paths for this target
 target_link_libraries(Simulation PRIVATE pybind11::headers)
-#target_link_libraries(Simulation PUBLIC ${Boost_LIBRARIES})
 target_link_libraries(Simulation PUBLIC ${PYTHON_LIBRARIES})
 target_link_libraries(Simulation PUBLIC simrunner)
 target_link_libraries(Simulation PUBLIC matrixify)
+target_link_libraries(Matrixify PUBLIC DataManagement)
 
 # SET_TARGET_PROPERTIES(Simulation PROPERTIES SUFFIX .pyd)
+
+install(TARGETS Matrixify RUNTIME_DEPENDENCIES LIBRARY DESTINATION .)
+install(IMPORTED_RUNTIME_ARTIFACTS Matrixify DESTINATION .)
+install(TARGETS Simulation RUNTIME_DEPENDENCIES LIBRARY DESTINATION .)
+install(IMPORTED_RUNTIME_ARTIFACTS Simulation DESTINATION .)

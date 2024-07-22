@@ -7,10 +7,6 @@ find_package (Eigen3 3.4 REQUIRED)
 
 find_package(spdlog REQUIRED)
 
-find_package(DataManagement 1 REQUIRED
-  HINTS "${CMAKE_SOURCE_DIR}/lib/dminstall"
-)
-
 add_library(${PROJECT_NAME}
   BaseLoader.cpp
   CostLoader.cpp
@@ -25,6 +21,10 @@ add_library(${PROJECT_NAME}
 
 target_link_libraries(${PROJECT_NAME} PUBLIC Eigen3::Eigen)
 target_link_libraries(${PROJECT_NAME} PUBLIC spdlog::spdlog)
-target_link_libraries(${PROJECT_NAME} PUBLIC DataManagement::DataManagement)
+target_link_libraries(${PROJECT_NAME} PUBLIC DataManagement)
 
-target_include_directories(${PROJECT_NAME} PUBLIC "include/")
+target_include_directories(${PROJECT_NAME} 
+    PUBLIC 
+        "include/"
+        ${PROJECT_SOURCE_DIR}/lib/DataManagement/include/
+    )
