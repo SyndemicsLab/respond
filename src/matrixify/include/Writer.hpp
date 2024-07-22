@@ -37,8 +37,15 @@
 /// @brief Namespace Defining all Matrixify Operations
 namespace Matrixify {
 
+    /// @brief Writer Class that acts as a superclass to all writing classes
     class Writer : public virtual IWritable, public virtual IFileable {
     public:
+        /// @brief Primary Constructor for Writer class
+        /// @param dirname string containing path to folder. Default is empty
+        /// string
+        /// @param timesteps Vector containing ints of time to record.
+        /// @param writeType WriteType Enum describing the type of writing being
+        /// done by the class
         Writer(std::string dirname = "", std::vector<int> timesteps = {},
                WriteType writeType = WriteType::STRING) {
             setDirname(dirname);
@@ -46,8 +53,12 @@ namespace Matrixify {
             setWriteType(writeType);
         }
 
+        /// @brief
+        /// @param opt
         void setWriteType(WriteType opt) override { this->writeType = opt; }
 
+        /// @brief
+        /// @return
         WriteType getWriteType() const override { return this->writeType; }
 
         /// @brief
@@ -59,6 +70,8 @@ namespace Matrixify {
         /// @return
         std::string getDirname() const override { return dirname; }
 
+        /// @brief
+        /// @return
         std::vector<int> getTimesteps() const { return timesteps; }
 
     protected:

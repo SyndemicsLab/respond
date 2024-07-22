@@ -194,8 +194,8 @@ namespace Matrixify {
         const std::shared_ptr<IDataLoader> dataLoader) const {
         std::stringstream stream;
 
-        std::vector<std::string> columnNames{"intervention", "agegrp", "sex",
-                                             "initial_oud"};
+        std::vector<std::string> columnNames{"intervention", "agegrp", "race",
+                                             "sex", "initial_oud"};
         for (std::string oud : dataLoader->getOUDStates()) {
             columnNames.push_back(oud);
         }
@@ -283,7 +283,7 @@ namespace Matrixify {
 
         std::stringstream stream;
 
-        std::vector<std::string> columnNames{"agegrp", "sex", "oud",
+        std::vector<std::string> columnNames{"agegrp", "race", "sex", "oud",
                                              "initial_intervention"};
 
         std::vector<int> changeTimes = dataLoader->getInterventionChangeTimes();
@@ -344,8 +344,8 @@ namespace Matrixify {
         const std::shared_ptr<IDataLoader> dataLoader) const {
         std::stringstream stream;
 
-        std::vector<std::string> columnNames{"intervention", "agegrp", "sex",
-                                             "oud"};
+        std::vector<std::string> columnNames{"intervention", "agegrp", "race",
+                                             "sex", "oud"};
 
         std::vector<int> changeTimes = dataLoader->getOverdoseChangeTimes();
         int ct1 = 1;
