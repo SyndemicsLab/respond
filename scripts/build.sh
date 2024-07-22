@@ -79,7 +79,7 @@ done
 	echo "\`conda\` found!"
     fi
     # activate the conda environment
-    conda activate respond 2&>/dev/null
+    conda activate respond
 
     # change to the top-level git folder
     TOPLEVEL="$(git rev-parse --show-toplevel)"
