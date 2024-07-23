@@ -3,9 +3,6 @@ project(respondBench CXX)
 
 find_package(benchmark REQUIRED)
 find_package(spdlog REQUIRED)
-find_package(DataManagement 1 REQUIRED
-  HINTS "${CMAKE_SOURCE_DIR}/lib/dminstall"
-)
 
 add_executable(${PROJECT_NAME}
   src/BENCHMARK_respond.cpp
