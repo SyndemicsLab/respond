@@ -11,6 +11,10 @@ add_executable(${PROJECT_NAME}
   src/BENCHMARK_respond.cpp
 )
 
+target_include_directories(respond
+  ${PROJECT_SOURCE_DIR}/lib/DataManagement/include
+)
+
 target_link_libraries(${PROJECT_NAME} PUBLIC benchmark::benchmark)
 target_link_libraries(${PROJECT_NAME} PUBLIC spdlog::spdlog)
 target_link_libraries(${PROJECT_NAME} PUBLIC matrixify)
