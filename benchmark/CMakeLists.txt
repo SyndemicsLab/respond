@@ -8,7 +8,7 @@ add_executable(${PROJECT_NAME}
   src/BENCHMARK_respond.cpp
 )
 
-target_include_directories(respond
+target_include_directories(respond PRIVATE
   ${PROJECT_SOURCE_DIR}/lib/DataManagement/include
 )
 
