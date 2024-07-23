@@ -11,6 +11,8 @@ dependencies:
   - fmt=10.2.1=h00ab1b0_0
   - gtest=1.15.0=h434a139_0
   - spdlog>=1.13.0
+  - python=3.11.8=hab00c5b_0_cpython
+  - scikit-build-core>=0.9.8
   - pip:
       - pybind11-global==2.13.1
       - respond==1.0.0
