@@ -56,7 +56,7 @@ jobs:
     - name: Clone DataManagement
       working-directory: ${{github.workspace}}/lib
       env:
-        GITHUB_TOKEN: ${{secrets.OAUTH_TOKEN}}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         rm -rf "DataManagement"
         gh repo clone git@github.com:SyndemicsLab/DataManagement
