@@ -21,5 +21,6 @@ endif()
 
 option(BUILD_API "enable RESPOND API" OFF)
 if (NOT BUILD_API STREQUAL OFF)
+  cmake_policy(SET CMP0144 NEW)
   find_package(Crow REQUIRED CONFIG)
 endif()
