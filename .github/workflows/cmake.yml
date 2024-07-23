@@ -23,8 +23,10 @@ jobs:
     name: Build Release
     runs-on: ${{ matrix.os }}
     steps:
-    - uses: actions/checkout@v4
-      submodules: recursive
+    - name: Get Source
+      uses: actions/checkout@v4
+      with:
+        submodules: recursive
 
     - uses: conda-incubator/setup-miniconda@v2
       with:
