@@ -19,7 +19,7 @@ if (NOT BUILD_BENCHMARK STREQUAL OFF)
   add_subdirectory(benchmark)
 endif()
 
-option(BUILD_API "enable RESPOND API" OFF)
-if (NOT BUILD_API STREQUAL OFF)
+# Only build the API if desired
+if(BUILD_API STREQUAL ON)
   add_subdirectory(lib/Crow)
 endif()
