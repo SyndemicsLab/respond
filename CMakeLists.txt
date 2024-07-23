@@ -18,3 +18,8 @@ option(BUILD_BENCHMARK "enable RESPOND benchmarking" OFF)
 if (NOT BUILD_BENCHMARK STREQUAL OFF)
   add_subdirectory(benchmark)
 endif()
+
+option(BUILD_API "enable RESPOND API" OFF)
+if (NOT BUILD_API STREQUAL OFF)
+  find_package(Crow REQUIRED CONFIG)
+endif()
