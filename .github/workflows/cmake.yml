@@ -39,7 +39,7 @@ jobs:
       run: |
         gh release download --repo CrowCpp/Crow -p "Crow-1.2.0.zip"
         unzip "Crow-1.2.0.zip"
-        mv "Crow-1.2.0-Darwin" "Crow"
+        mv -v "Crow-1.2.0-Darwin" "Crow"
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -59,4 +59,4 @@ jobs:
     # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
     - name: Build and Test
       working-directory: ${{github.workspace}}
-      run: BOOST_ROOT="${{ steps.install-boost.outputs.BOOST_ROOT }}" scripts/build.sh -apnbt "$BUILD_TYPE"
+      run: BOOST_ROOT="${{ steps.install-boost.outputs.BOOST_ROOT }}" Crow_DIR="lib/Crow/lib/cmake/Crow/" scripts/build.sh -apnbt "$BUILD_TYPE"
