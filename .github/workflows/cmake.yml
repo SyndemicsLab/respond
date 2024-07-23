@@ -60,8 +60,8 @@ jobs:
     - name: Clone DataManagement
       working-directory: ${{github.workspace}}/lib
       env:
-        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: gh repo clone git@github.com:SyndemicsLab/DataManagement
+        GH_TOKEN: ${{ secrets.OAUTH_TOKEN }}
+      run: gh repo clone git@github.com:SyndemicsLab/DataManagement.git
 
     # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
     # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
