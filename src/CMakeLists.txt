@@ -13,7 +13,7 @@ add_subdirectory(simrunner)
 add_subdirectory(matrixify)
 
 option(BUILD_API "enable RESPOND API" OFF)
-if(NOT BUILD_API STREQUAL OFF)
+if(BUILD_API STREQUAL ON)
   add_subdirectory(api)
 endif()
 
