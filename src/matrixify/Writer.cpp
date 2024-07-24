@@ -179,7 +179,7 @@ namespace Matrixify {
         return stream.str();
     }
 
-    std::string InputWriter::writeInputs(
+    std::string InputWriter::writeParameters(
         const std::shared_ptr<IDataLoader> dataLoader) const {
 
         std::string res = writeOUDTransitionRates(dataLoader);
@@ -366,7 +366,8 @@ namespace Matrixify {
 
         Matrix4d dm = dataLoader->getOverdoseRates();
 
-        for (int inter = 0; inter < dataLoader->getNumInterventions(); inter++)
+        for (int inter = 0; inter < dataLoader->getNumInterventions();
+             inter++) {
             for (long int dem = 0; dem < dataLoader->getNumDemographicCombos();
                  dem++) {
                 for (int oud = 0; oud < dataLoader->getNumOUDStates(); oud++) {
@@ -392,6 +393,7 @@ namespace Matrixify {
                     }
                 }
             }
+        }
         return writeFile("all_types_overdose.csv", stream);
     }
 
@@ -399,7 +401,7 @@ namespace Matrixify {
         const std::shared_ptr<IDataLoader> dataLoader) const {
         std::stringstream stream;
 
-        std::vector<std::string> columnNames{};
+        std::vector<std::string> columnNames{"agegrp", "race", "sex"};
 
         std::vector<int> changeTimes = dataLoader->getOverdoseChangeTimes();
         int ct1 = 1;
@@ -421,10 +423,20 @@ namespace Matrixify {
         changeTimes.pop_back();
 
         Matrix4d dm = dataLoader->getFatalOverdoseRates();
-        for (int timestep : changeTimes) {
-            stream << std::to_string(dm(timestep, 0, 0, 0)) << ",";
+        for (long int dem = 0; dem < dataLoader->getNumDemographicCombos();
+             dem++) {
+            std::string temp = dataLoader->getDemographicCombos()[dem];
+            temp = std::regex_replace(temp, std::regex("^ +| +$|( ) +"), "$1");
+            std::replace(temp.begin(), temp.end(), ' ', ',');
+            stream << temp << ",";
+            for (int timestep : changeTimes) {
+                std::array<long int, 3> index = {0, 0, 0};
+                index[Matrixify::DEMOGRAPHIC_COMBO] = dem;
+                double value = dm(timestep, index[0], index[1], index[2]);
+                stream << std::to_string(value) << ",";
+            }
+            stream << std::endl;
         }
-        stream << std::endl;
 
         return writeFile("fatal_overdose.csv", stream);
     }

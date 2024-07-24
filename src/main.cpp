@@ -180,14 +180,14 @@ int main(int argc, char **argv) {
 
             historyWriter.writeHistory(history);
 
-            bool writeInputs = false;
-            writeInputs = std::get<bool>(inputs->getConfig()->get(
-                "output.write_calibrated_inputs", writeInputs));
-            if (writeInputs) {
+            bool writeParameters = false;
+            writeParameters = std::get<bool>(inputs->getConfig()->get(
+                "output.write_calibrated_inputs", writeParameters));
+            if (writeParameters) {
                 Matrixify::InputWriter ipWriter(outputDir.string(),
                                                 outputTimesteps,
                                                 Matrixify::WriteType::FILE);
-                ipWriter.writeInputs(inputs);
+                ipWriter.writeParameters(inputs);
             }
 
             // Probably want to figure out the right way to do this

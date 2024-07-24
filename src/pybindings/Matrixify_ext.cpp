@@ -28,9 +28,13 @@ PYBIND11_MODULE(Matrixify, m) {
              &BaseLoader::getEnteringSampleChangeTimes)
         .def("getOverdoseChangeTimes", &BaseLoader::getOverdoseChangeTimes)
         .def("getInterventions", &BaseLoader::getInterventions)
+        .def("setInterventions", &BaseLoader::setInterventions)
         .def("getOUDStates", &BaseLoader::getOUDStates)
+        .def("setOUDStates", &BaseLoader::setOUDStates)
         .def("getDemographics", &BaseLoader::getDemographics)
+        .def("setDemographics", &BaseLoader::setDemographics)
         .def("getDemographicCombos", &BaseLoader::getDemographicCombos)
+        .def("setDemographicCombos", &BaseLoader::setDemographicCombos)
         .def("getGeneralStatsOutputTimesteps",
              &BaseLoader::getGeneralStatsOutputTimesteps)
         .def("getGeneralOutputsSwitch", &BaseLoader::getGeneralOutputsSwitch);
@@ -132,7 +136,7 @@ PYBIND11_MODULE(Matrixify, m) {
                                                                   "InputWriter")
         .def(py::init<std::string, std::vector<int>, WriteType>())
         .def(py::init<>())
-        .def("writeInputs", &InputWriter::writeInputs);
+        .def("writeParameters", &InputWriter::writeParameters);
 
     py::class_<Cost>(m, "Cost")
         .def(py::init<>())

@@ -1,4 +1,4 @@
-name: respond
+name: respond_short
 channels:
   - pytorch
   - nvidia
