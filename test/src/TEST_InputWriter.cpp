@@ -41,7 +41,7 @@ TEST_F(InputWriterTest, ConstructorStringAndVectorAndWriteType) {
     EXPECT_EQ(writer.getDirname(), std::string("testDirname"));
 }
 
-// TEST(InputWriterTest, writeInputs) {
+// TEST(InputWriterTest, writeParameters) {
 //     Matrixify::InputWriter writer("testDirname", {1},
 //                                   Matrixify::WriteType::STRING);
 
@@ -60,7 +60,7 @@ TEST_F(InputWriterTest, ConstructorStringAndVectorAndWriteType) {
 //     EXPECT_CALL(*mockLoaderPtr, getDemographicCombos())
 //         .WillRepeatedly(Return({"dc1"}));
 
-//     writer.writeInputs(mockLoaderPtr);
+//     writer.writeParameters(mockLoaderPtr);
 // }
 
 // TEST(SimpleWriteTest, SingleValueDimensions) {

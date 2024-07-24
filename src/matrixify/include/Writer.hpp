@@ -87,12 +87,12 @@ namespace Matrixify {
 
     class InputWriter : public Writer {
     public:
-        InputWriter() : Writer("", {}, WriteType::STRING){};
+        InputWriter() : Writer("", {}, WriteType::STRING) {};
         InputWriter(std::string dirname, std::vector<int> timesteps,
                     WriteType writeType)
-            : Writer(dirname, timesteps, writeType){};
+            : Writer(dirname, timesteps, writeType) {};
 
-        std::string writeInputs(const std::shared_ptr<IDataLoader>) const;
+        std::string writeParameters(const std::shared_ptr<IDataLoader>) const;
 
     private:
         std::string
@@ -113,7 +113,7 @@ namespace Matrixify {
 
     class OutputWriter : public Writer {
     public:
-        OutputWriter() : Writer("", {}, WriteType::STRING){};
+        OutputWriter() : Writer("", {}, WriteType::STRING) {};
         OutputWriter(std::string dirname,
                      std::vector<std::string> interventions,
                      std::vector<std::string> oudStates,
@@ -180,7 +180,7 @@ namespace Matrixify {
     class HistoryWriter : public OutputWriter {
     public:
         HistoryWriter()
-            : OutputWriter("", {}, {}, {}, {}, {}, WriteType::STRING){};
+            : OutputWriter("", {}, {}, {}, {}, {}, WriteType::STRING) {};
         HistoryWriter(std::string dirname,
                       std::vector<std::string> interventions,
                       std::vector<std::string> oudStates,
@@ -202,7 +202,7 @@ namespace Matrixify {
     class CostWriter : public OutputWriter {
     public:
         CostWriter()
-            : OutputWriter("", {}, {}, {}, {}, {}, WriteType::STRING){};
+            : OutputWriter("", {}, {}, {}, {}, {}, WriteType::STRING) {};
         CostWriter(std::string dirname, std::vector<std::string> interventions,
                    std::vector<std::string> oudStates,
                    std::vector<std::string> demographics,
@@ -221,7 +221,7 @@ namespace Matrixify {
     class UtilityWriter : public OutputWriter {
     public:
         UtilityWriter()
-            : OutputWriter("", {}, {}, {}, {}, {}, WriteType::STRING){};
+            : OutputWriter("", {}, {}, {}, {}, {}, WriteType::STRING) {};
         UtilityWriter(std::string dirname,
                       std::vector<std::string> interventions,
                       std::vector<std::string> oudStates,
@@ -241,7 +241,7 @@ namespace Matrixify {
     class TotalsWriter : public OutputWriter {
     public:
         TotalsWriter()
-            : OutputWriter("", {}, {}, {}, {}, {}, WriteType::STRING){};
+            : OutputWriter("", {}, {}, {}, {}, {}, WriteType::STRING) {};
         TotalsWriter(std::string dirname,
                      std::vector<std::string> interventions,
                      std::vector<std::string> oudStates,
