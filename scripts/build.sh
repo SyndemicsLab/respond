@@ -4,7 +4,6 @@
 if command -v module &>/dev/null; then
     module load gcc/12.2.0
     module load miniconda
-    conda env create -f "/projectnb/respond/environment.yml" 2&>/dev/null
 fi
 
 # help message to be output either with the -h flag or when using invalid syntax
@@ -77,6 +76,13 @@ done
         exit 1
     else
 	echo "\`conda\` found!"
+    fi
+    if [[ -f "$(conda info --base)/etc/profile.d/conda.sh" ]]; then
+	# shellcheck source=/dev/null
+	source "$(conda info --base)/etc/profile.d/conda.sh"
+    fi
+    if ! conda info --envs | grep 'respond_short' >/dev/null; then
+	conda env create -f "environment.yml" -p "$(conda config --show envs_dirs | awk '/-/{printf $NF;exit;}')/respond_short"
     fi
     # activate the conda environment
     conda activate respond
