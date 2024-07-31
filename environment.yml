@@ -10,7 +10,9 @@ dependencies:
   - blas=1.0=openblas
   - boost=1.85.0=hbd00459_4
   - bzip2=1.0.8=h7b6447c_0
+  - c-ares=1.32.3=h4bc722e_0
   - ca-certificates=2024.7.2=h06a4308_0
+  - cmake=3.30.1=hf8c4bd3_0
   - eigen=3.4.0=h00ab1b0_0
   - exceptiongroup=1.0.4=py311h06a4308_0
   - fmt=10.2.1=h00ab1b0_0
@@ -19,26 +21,34 @@ dependencies:
   - importlib-metadata=6.0.0=py311h06a4308_0
   - importlib-resources=6.4.0=pyhd8ed1ab_0
   - importlib_resources=6.4.0=pyhd8ed1ab_0
+  - keyutils=1.6.1=h166bdaf_0
+  - krb5=1.21.3=h659f571_0
   - ld_impl_linux-64=2.38=h1181459_1
   - libboost=1.85.0=h0ccab89_4
   - libboost-devel=1.85.0=h00ab1b0_4
   - libboost-headers=1.85.0=ha770c72_4
   - libboost-python=1.85.0=py311h06317a3_4
   - libboost-python-devel=1.85.0=py311hbd00459_4
+  - libcurl=8.9.0=hdb1bdb2_0
+  - libedit=3.1.20230828=h5eee18b_0
+  - libev=4.33=h7f8727e_1
   - libexpat=2.6.2=h59595ed_0
   - libffi=3.4.4=h6a678d5_0
   - libgcc-ng=14.1.0=h77fa898_0
   - libgfortran-ng=11.2.0=h00389a5_1
   - libgfortran5=11.2.0=h1234567_1
   - libgomp=14.1.0=h77fa898_0
+  - libnghttp2=1.58.0=h47da74e_1
   - libnsl=2.0.1=hd590300_0
   - libopenblas=0.3.21=h043d6bf_0
   - libsqlite=3.46.0=hde9e2c9_0
+  - libssh2=1.11.0=h0841786_0
   - libstdcxx-ng=14.1.0=hc0a3c3a_0
   - libuuid=2.38.1=h0b41bf4_0
+  - libuv=1.48.0=h5eee18b_0
   - libxcrypt=4.4.36=hd590300_1
   - libzlib=1.3.1=h4ab18f5_1
-  - ncurses=6.4=h6a678d5_0
+  - ncurses=6.5=h59595ed_0
   - numpy=1.26.4=py311h24aa872_0
   - numpy-base=1.26.4=py311hbfb1bba_0
   - openssl=3.3.1=h4bc722e_2
@@ -48,6 +58,7 @@ dependencies:
   - python=3.11.8=hab00c5b_0_cpython
   - python_abi=3.11=4_cp311
   - readline=8.2=h5eee18b_0
+  - rhash=1.4.4=hd590300_0
   - scikit-build-core=0.9.9=pyh4af843d_0
   - setuptools=68.0.0=py311h06a4308_0
   - spdlog=1.14.1=h597fd29_0
