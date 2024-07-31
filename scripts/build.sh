@@ -93,6 +93,9 @@ done
 
     # ensure the `build/` directory exists
     ([[ -d "build/" ]] && rm -rf build/*) || mkdir "build/"
+    # remove other build artifacts
+    ([[ -d "bin/" ]] && rm -rf bin/*) || mkdir "bin/"
+    ([[ -d "lib/" ]] && rm -rf lib/*.a)
 
     # detect or install DataManagement
     echo "Checking for the presence of \`DataManagement\`..."
