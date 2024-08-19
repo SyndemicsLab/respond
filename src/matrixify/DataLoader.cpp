@@ -403,32 +403,34 @@ namespace Matrixify {
 
             for (std::string header : headers) {
                 if (header.find(fodColumn) != std::string::npos) {
-                    Matrix3d temp = this->buildOverdoseTransitions(
+                    Matrix3d temp = this->buildFatalOverdoseTransitions(
                         fatalOverdoseTable, header);
                     fillTime(startTime, timestep, temp,
                              this->fatalOverdoseRates);
                 }
             }
 
-            std::vector<std::string> col =
-                fatalOverdoseTable->getColumn(fodColumn);
+            // std::vector<std::string> col =
+            //     fatalOverdoseTable->getColumn(fodColumn);
 
-            if (col.empty()) {
-                this->logger->error("{} column not found in fatal_overdose.csv",
-                                    fodColumn);
-                throw std::out_of_range(fodColumn +
-                                        " not in fatal_overdose.csv");
-            }
+            // if (col.empty()) {
+            //     this->logger->error("{} column not found in
+            //     fatal_overdose.csv",
+            //                         fodColumn);
+            //     throw std::out_of_range(fodColumn +
+            //                             " not in fatal_overdose.csv");
+            // }
 
-            Matrix3d temp = Matrixify::Matrix3dFactory::Create(
-                getNumOUDStates(), getNumInterventions(),
-                getNumDemographicCombos());
+            // Matrix3d temp = Matrixify::Matrix3dFactory::Create(
+            //     getNumOUDStates(), getNumInterventions(),
+            //     getNumDemographicCombos());
 
-            double t = (col.size() > 0) ? std::stod(col[0]) : 0.0;
-            temp = temp.constant(t);
+            // double t = (col.size() > 0) ? std::stod(col[0]) : 0.0;
+            // temp = temp.constant(t);
 
-            fillTime(startTime, timestep, temp, this->fatalOverdoseRates);
+            // fillTime(startTime, timestep, temp, this->fatalOverdoseRates);
         }
+        Matrix3dPrinter::PrintOverTime(this->fatalOverdoseRates, std::cout);
         return this->fatalOverdoseRates;
     }
 
@@ -641,7 +643,7 @@ namespace Matrixify {
         std::vector<std::string> col = table->getColumn(key);
         int row = 0;
         for (int dem = 0; dem < getNumDemographicCombos(); ++dem) {
-            if (row > col.size()) {
+            if (row >= col.size()) {
                 this->logger->error(
                     "Invalid Number of Entries for single year of Fatal "
                     "Overdoses. Have {} and expected {}",

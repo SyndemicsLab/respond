@@ -303,6 +303,32 @@ TEST_F(DataLoaderTest, fatalOverdoseRates) {
     EXPECT_EQ(result(0, 0, 0, 0), 0.216540329711774);
 }
 
+TEST_F(DataLoaderTest, fatalOverdoseRatesStratified) {
+    fileStream
+        << "agegrp,sex,percent_overdoses_fatal_1_52,percent_overdoses_fatal_52_"
+           "104,"
+           "percent_overdoses_fatal_104_156,percent_overdoses_fatal_156_208,"
+           "percent_overdoses_fatal_208_260"
+        << std::endl
+        << "10_14,Male,"
+           "0.216540329711774,0.297741215749976,0.113841797135366,0."
+           "126092413319309,0.156049415151599"
+        << std::endl
+        << "10_14, Female, 0.2, 0.3, 0.1, 0.126, 0.15";
+    fileStream.close();
+
+    Matrixify::DataLoader dl(std::filesystem::temp_directory_path().string(),
+                             logger);
+
+    dl.loadFatalOverdoseRates(tempAbsoluteFile.string());
+
+    Matrixify::Matrix4d result = dl.getFatalOverdoseRates();
+    EXPECT_EQ(result(0, 0, 0, 0), 0.216540329711774);
+    EXPECT_EQ(result(0, 1, 0, 0), 0.216540329711774);
+    EXPECT_EQ(result(0, 0, 1, 1), 0.2);
+    EXPECT_EQ(result(0, 1, 1, 1), 0.2);
+}
+
 TEST_F(DataLoaderTest, mortalityRates) {
     fileStream
         << "block,agegrp,sex,oud,SMR" << std::endl
