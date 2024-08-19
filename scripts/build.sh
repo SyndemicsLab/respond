@@ -81,15 +81,16 @@ done
 	# shellcheck source=/dev/null
 	source "$(conda info --base)/etc/profile.d/conda.sh"
     fi
-    if ! conda info --envs | grep 'respond_short' >/dev/null; then
-	conda env create -f "environment.yml" -p "$(conda config --show envs_dirs | awk '/-/{printf $NF;exit;}')/respond_short"
-    fi
-    # activate the conda environment
-    conda activate respond
 
     # change to the top-level git folder
     TOPLEVEL="$(git rev-parse --show-toplevel)"
     cd "$TOPLEVEL" || exit
+
+    if ! conda info --envs | grep 'respond_short' >/dev/null; then
+	conda env create -f "environment.yml" -p "$(conda config --show envs_dirs | awk '/-/{printf $NF;exit;}')/respond_short"
+    fi
+    # activate the conda environment
+    conda activate "respond_short"
 
     # ensure the `build/` directory exists
     ([[ -d "build/" ]] && rm -rf build/*) || mkdir "build/"

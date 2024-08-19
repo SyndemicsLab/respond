@@ -79,5 +79,4 @@ dependencies:
       - jinja2==3.1.4
       - markupsafe==2.1.5
       - pybind11-global==2.13.1
-      - respond==1.0
       - werkzeug==3.0.3
