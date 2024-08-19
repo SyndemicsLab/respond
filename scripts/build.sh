@@ -4,7 +4,6 @@
 if command -v module &>/dev/null; then
     module load gcc/12.2.0
     module load miniconda
-    conda env create -f "/projectnb/respond/environment.yml" 2&>/dev/null
 fi
 
 # help message to be output either with the -h flag or when using invalid syntax
@@ -78,15 +77,26 @@ done
     else
 	echo "\`conda\` found!"
     fi
-    # activate the conda environment
-    conda activate respond
+    if [[ -f "$(conda info --base)/etc/profile.d/conda.sh" ]]; then
+	# shellcheck source=/dev/null
+	source "$(conda info --base)/etc/profile.d/conda.sh"
+    fi
 
     # change to the top-level git folder
     TOPLEVEL="$(git rev-parse --show-toplevel)"
     cd "$TOPLEVEL" || exit
 
+    if ! conda info --envs | grep 'respond_short' >/dev/null; then
+	conda env create -f "environment.yml" -p "$(conda config --show envs_dirs | awk '/-/{printf $NF;exit;}')/respond_short"
+    fi
+    # activate the conda environment
+    conda activate "respond_short"
+
     # ensure the `build/` directory exists
     ([[ -d "build/" ]] && rm -rf build/*) || mkdir "build/"
+    # remove other build artifacts
+    ([[ -d "bin/" ]] && rm -rf bin/*) || mkdir "bin/"
+    ([[ -d "lib/" ]] && rm -rf lib/*.a)
 
     # detect or install DataManagement
     echo "Checking for the presence of \`DataManagement\`..."
