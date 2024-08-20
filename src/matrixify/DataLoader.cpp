@@ -430,7 +430,6 @@ namespace Matrixify {
 
             // fillTime(startTime, timestep, temp, this->fatalOverdoseRates);
         }
-        Matrix3dPrinter::PrintOverTime(this->fatalOverdoseRates, std::cout);
         return this->fatalOverdoseRates;
     }
 
