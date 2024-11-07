@@ -28,7 +28,7 @@
 
 #define ASSERTM(exp, msg) assert(((void)msg, exp))
 
-namespace Matrixify {
+namespace matrixify {
 
     /// @brief Specification for each dimension in the Matrix3d
     enum Dimension { INTERVENTION = 0, OUD = 1, DEMOGRAPHIC_COMBO = 2 };
@@ -90,7 +90,7 @@ namespace Matrixify {
         double operator()(int timestep, int idx1, int idx2, int idx3) const;
 
         /// @brief Add the Matrix3d at the specified Timestep
-        /// @param datapoint Matrix3d Matrixify
+        /// @param datapoint Matrix3d matrixify
         /// @param timestep Timestep to insert the Matrix3d
         void insert(Matrix3d const &datapoint, int timestep);
 
@@ -115,7 +115,7 @@ namespace Matrixify {
     };
 
     /// @brief Struct defining all the History Matrices Across the Duration of
-    /// the Simulation
+    /// the simulation
     using History = History;
 
     struct Cost {
@@ -131,7 +131,7 @@ namespace Matrixify {
     using Cost = Cost;
 
     /// @brief Struct defining Cost Matrices Across the Duration of the
-    /// Simulation
+    /// simulation
     using CostList = std::vector<Cost>;
 
     struct Totals {
@@ -145,6 +145,6 @@ namespace Matrixify {
 
     using Totals = Totals;
 
-}; // namespace Matrixify
+}; // namespace matrixify
 
 #endif

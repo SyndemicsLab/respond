@@ -11,26 +11,26 @@ protected:
 };
 
 TEST_F(WriterTest, ConstructorStringAndVectorAndWriteType) {
-    Matrixify::Writer writer("test", {}, Matrixify::WriteType::STRING);
+    matrixify::Writer writer("test", {}, matrixify::WriteType::STRING);
     std::string result = writer.getDirname();
     EXPECT_EQ(result, std::string("test"));
 }
 
 TEST_F(WriterTest, writeType) {
-    Matrixify::Writer writer;
-    writer.setWriteType(Matrixify::WriteType::FILE);
-    EXPECT_EQ(writer.getWriteType(), Matrixify::WriteType::FILE);
+    matrixify::Writer writer;
+    writer.setWriteType(matrixify::WriteType::FILE);
+    EXPECT_EQ(writer.getWriteType(), matrixify::WriteType::FILE);
 }
 
 TEST_F(WriterTest, dirname) {
-    Matrixify::Writer writer;
+    matrixify::Writer writer;
     writer.setDirname("testingDirname");
     EXPECT_EQ(writer.getDirname(), std::string("testingDirname"));
 }
 
 TEST_F(WriterTest, timesteps) {
     std::vector<int> timesteps{0, 2, 4, 6, 8};
-    Matrixify::Writer writer("", timesteps);
+    matrixify::Writer writer("", timesteps);
     EXPECT_EQ(writer.getTimesteps(), timesteps);
 }
 
@@ -41,14 +41,14 @@ protected:
 };
 
 TEST_F(OutputWriterTest, ConstructorEmpty) {
-    Matrixify::OutputWriter writer;
+    matrixify::OutputWriter writer;
     EXPECT_EQ(writer.getDirname(), std::string(""));
 }
 
 TEST_F(OutputWriterTest, ConstructorStringAndVectorsAndWriteTypeAndBool) {
-    Matrixify::OutputWriter writer("testDirname", {"inte"}, {"oud"}, {"dem"},
+    matrixify::OutputWriter writer("testDirname", {"inte"}, {"oud"}, {"dem"},
                                    {"demCom"}, {1},
-                                   Matrixify::WriteType::STRING, false);
+                                   matrixify::WriteType::STRING, false);
     EXPECT_EQ(writer.getDirname(), std::string("testDirname"));
 }
 
@@ -59,26 +59,26 @@ protected:
 };
 
 TEST_F(HistoryWriterTest, ConstructorEmpty) {
-    Matrixify::HistoryWriter writer;
+    matrixify::HistoryWriter writer;
     EXPECT_EQ(writer.getDirname(), std::string(""));
 }
 
 TEST_F(HistoryWriterTest, ConstructorStringAndVectorsAndWriteTypeAndBool) {
-    Matrixify::HistoryWriter writer("testHistoryDirname", {"inte"}, {"oud"},
+    matrixify::HistoryWriter writer("testHistoryDirname", {"inte"}, {"oud"},
                                     {"dem"}, {"demCom"}, {1},
-                                    Matrixify::WriteType::STRING, false);
+                                    matrixify::WriteType::STRING, false);
     EXPECT_EQ(writer.getDirname(), std::string("testHistoryDirname"));
 }
 
 TEST_F(HistoryWriterTest, writeHistory) {
-    Matrixify::HistoryWriter writer("testHistoryDirname", {"inte"}, {"oud"},
+    matrixify::HistoryWriter writer("testHistoryDirname", {"inte"}, {"oud"},
                                     {"dem"}, {"demCom"}, {1},
-                                    Matrixify::WriteType::STRING, false);
+                                    matrixify::WriteType::STRING, false);
 
-    Matrixify::Matrix3d mat3d(1, 1, 1);
+    matrixify::Matrix3d mat3d(1, 1, 1);
     mat3d(0, 0, 0) = 0.25;
-    Matrixify::Matrix4d mat4d({mat3d});
-    Matrixify::History hist;
+    matrixify::Matrix4d mat4d({mat3d});
+    matrixify::History hist;
     hist.stateHistory = mat4d;
     hist.overdoseHistory = mat4d;
     hist.fatalOverdoseHistory = mat4d;
@@ -96,12 +96,12 @@ TEST_F(HistoryWriterTest, writeHistory) {
 }
 
 TEST_F(HistoryWriterTest, writeHistoryError) {
-    Matrixify::HistoryWriter writer("testHistoryDirname", {"inte"}, {"oud"},
+    matrixify::HistoryWriter writer("testHistoryDirname", {"inte"}, {"oud"},
                                     {"dem"}, {"demCom"}, {1},
-                                    Matrixify::WriteType::STRING, false);
+                                    matrixify::WriteType::STRING, false);
 
-    Matrixify::Matrix3d mat3d(1, 1, 1);
-    Matrixify::History hist;
+    matrixify::Matrix3d mat3d(1, 1, 1);
+    matrixify::History hist;
     std::string result = writer.writeHistory(hist);
 
     std::string expected = "failure";
@@ -115,26 +115,26 @@ protected:
 };
 
 TEST_F(CostWriterTest, ConstructorEmpty) {
-    Matrixify::CostWriter writer;
+    matrixify::CostWriter writer;
     EXPECT_EQ(writer.getDirname(), std::string(""));
 }
 
 TEST_F(CostWriterTest, ConstructorStringAndVectorsAndWriteTypeAndBool) {
-    Matrixify::CostWriter writer("testCostDirname", {"inte"}, {"oud"}, {"dem"},
-                                 {"demCom"}, {1}, Matrixify::WriteType::STRING,
+    matrixify::CostWriter writer("testCostDirname", {"inte"}, {"oud"}, {"dem"},
+                                 {"demCom"}, {1}, matrixify::WriteType::STRING,
                                  false);
     EXPECT_EQ(writer.getDirname(), std::string("testCostDirname"));
 }
 
 TEST_F(CostWriterTest, writeCosts) {
-    Matrixify::CostWriter writer("testCostDirname", {"inte"}, {"oud"}, {"dem"},
-                                 {"demCom"}, {1}, Matrixify::WriteType::STRING,
+    matrixify::CostWriter writer("testCostDirname", {"inte"}, {"oud"}, {"dem"},
+                                 {"demCom"}, {1}, matrixify::WriteType::STRING,
                                  false);
 
-    Matrixify::Matrix3d mat3d(1, 1, 1);
+    matrixify::Matrix3d mat3d(1, 1, 1);
     mat3d(0, 0, 0) = 0.25;
-    Matrixify::Matrix4d mat4d({mat3d});
-    Matrixify::Cost cost;
+    matrixify::Matrix4d mat4d({mat3d});
+    matrixify::Cost cost;
     cost.fatalOverdoseCost = mat4d;
     cost.healthcareCost = mat4d;
     cost.nonFatalOverdoseCost = mat4d;
@@ -153,11 +153,11 @@ TEST_F(CostWriterTest, writeCosts) {
 }
 
 TEST_F(CostWriterTest, writeCostsError) {
-    Matrixify::CostWriter writer("testCostDirname", {"inte"}, {"oud"}, {"dem"},
-                                 {"demCom"}, {1}, Matrixify::WriteType::STRING,
+    matrixify::CostWriter writer("testCostDirname", {"inte"}, {"oud"}, {"dem"},
+                                 {"demCom"}, {1}, matrixify::WriteType::STRING,
                                  false);
 
-    Matrixify::Matrix3d mat3d(1, 1, 1);
+    matrixify::Matrix3d mat3d(1, 1, 1);
     std::string result = writer.writeCosts({});
 
     std::string expected = "failure";
@@ -171,25 +171,25 @@ protected:
 };
 
 TEST_F(UtilityWriterTest, ConstructorEmpty) {
-    Matrixify::UtilityWriter writer;
+    matrixify::UtilityWriter writer;
     EXPECT_EQ(writer.getDirname(), std::string(""));
 }
 
 TEST_F(UtilityWriterTest, ConstructorStringAndVectorsAndWriteTypeAndBool) {
-    Matrixify::UtilityWriter writer("testUtilityDirname", {"inte"}, {"oud"},
+    matrixify::UtilityWriter writer("testUtilityDirname", {"inte"}, {"oud"},
                                     {"dem"}, {"demCom"}, {1},
-                                    Matrixify::WriteType::STRING, false);
+                                    matrixify::WriteType::STRING, false);
     EXPECT_EQ(writer.getDirname(), std::string("testUtilityDirname"));
 }
 
 TEST_F(UtilityWriterTest, writeUtilities) {
-    Matrixify::UtilityWriter writer("testUtilityDirname", {"inte"}, {"oud"},
+    matrixify::UtilityWriter writer("testUtilityDirname", {"inte"}, {"oud"},
                                     {"dem"}, {"demCom"}, {1},
-                                    Matrixify::WriteType::STRING, false);
+                                    matrixify::WriteType::STRING, false);
 
-    Matrixify::Matrix3d mat3d(1, 1, 1);
+    matrixify::Matrix3d mat3d(1, 1, 1);
     mat3d(0, 0, 0) = 0.25;
-    Matrixify::Matrix4d mat4d({mat3d});
+    matrixify::Matrix4d mat4d({mat3d});
     std::string result = writer.writeUtilities(mat4d);
 
     std::string expected =
@@ -198,10 +198,10 @@ TEST_F(UtilityWriterTest, writeUtilities) {
 }
 
 TEST_F(UtilityWriterTest, writeUtilitiesError) {
-    Matrixify::UtilityWriter writer("testUtilityDirname", {"inte"}, {"oud"},
+    matrixify::UtilityWriter writer("testUtilityDirname", {"inte"}, {"oud"},
                                     {"dem"}, {"demCom"}, {1},
-                                    Matrixify::WriteType::STRING, false);
-    Matrixify::Matrix4d mat4d;
+                                    matrixify::WriteType::STRING, false);
+    matrixify::Matrix4d mat4d;
     std::string result = writer.writeUtilities(mat4d);
 
     std::string expected = "failure";
@@ -215,23 +215,23 @@ protected:
 };
 
 TEST_F(TotalsWriterTest, ConstructorEmpty) {
-    Matrixify::TotalsWriter writer;
+    matrixify::TotalsWriter writer;
     EXPECT_EQ(writer.getDirname(), std::string(""));
 }
 
 TEST_F(TotalsWriterTest, ConstructorStringAndVectorsAndWriteTypeAndBool) {
-    Matrixify::TotalsWriter writer("testTotalsDirname", {"inte"}, {"oud"},
+    matrixify::TotalsWriter writer("testTotalsDirname", {"inte"}, {"oud"},
                                    {"dem"}, {"demCom"}, {1},
-                                   Matrixify::WriteType::STRING);
+                                   matrixify::WriteType::STRING);
     EXPECT_EQ(writer.getDirname(), std::string("testTotalsDirname"));
 }
 
 TEST_F(TotalsWriterTest, writeUtilities) {
-    Matrixify::TotalsWriter writer("testTotalsDirname", {"inte"}, {"oud"},
+    matrixify::TotalsWriter writer("testTotalsDirname", {"inte"}, {"oud"},
                                    {"dem"}, {"demCom"}, {1},
-                                   Matrixify::WriteType::STRING);
+                                   matrixify::WriteType::STRING);
 
-    Matrixify::Totals totals;
+    matrixify::Totals totals;
     totals.baseCosts = {0.5};
     totals.baseLifeYears = 0.5;
     totals.baseUtility = 0.5;
@@ -246,10 +246,10 @@ TEST_F(TotalsWriterTest, writeUtilities) {
 }
 
 TEST_F(TotalsWriterTest, writeUtilitiesError) {
-    Matrixify::TotalsWriter writer("testUtilityDirname", {"inte"}, {"oud"},
+    matrixify::TotalsWriter writer("testUtilityDirname", {"inte"}, {"oud"},
                                    {"dem"}, {"demCom"}, {1},
-                                   Matrixify::WriteType::STRING);
-    Matrixify::Totals totals;
+                                   matrixify::WriteType::STRING);
+    matrixify::Totals totals;
     totals.baseCosts = {};
     totals.baseLifeYears = 0.5;
     totals.baseUtility = 0.5;

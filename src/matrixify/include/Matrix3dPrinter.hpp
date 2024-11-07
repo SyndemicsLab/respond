@@ -25,25 +25,25 @@
 
 #include "DataTypes.hpp"
 
-namespace Matrixify {
+namespace matrixify {
 
     /// @brief Helper Class to Cleanly Print Matrix3d Objects
     class Matrix3dPrinter {
     public:
-        Matrix3dPrinter(){};
+        Matrix3dPrinter() {};
 
         /// @brief Static Function to Print Standard Matrix3d
         /// @param mat Matrix3d to Print
         /// @param stream Stream to Print to
-        static void Print(Matrixify::Matrix3d mat, std::ostream &stream);
+        static void Print(matrixify::Matrix3d mat, std::ostream &stream);
 
         /// @brief Static Function to Print Matrix4d object
         /// @param matOverTime Matrix4d to Print
         /// @param stream Stream to Print to
-        static void PrintOverTime(Matrixify::Matrix4d matOverTime,
+        static void PrintOverTime(matrixify::Matrix4d matOverTime,
                                   std::ostream &stream);
     };
 
-} // namespace Matrixify
+} // namespace matrixify
 
 #endif

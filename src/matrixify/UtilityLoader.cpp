@@ -17,7 +17,7 @@
 
 #include "UtilityLoader.hpp"
 
-namespace Matrixify {
+namespace matrixify {
     UtilityLoader::UtilityLoader(Data::IConfigablePtr config,
                                  std::string const &inputDir,
                                  std::shared_ptr<spdlog::logger> logger)
@@ -44,10 +44,10 @@ namespace Matrixify {
     std::unordered_map<std::string, Matrix3d>
     UtilityLoader::loadUtility(std::string const &csvName) {
         Data::IDataTablePtr table = loadTable(csvName);
-        std::unordered_map<std::string, Matrixify::Matrix3d> result;
+        std::unordered_map<std::string, matrixify::Matrix3d> result;
 
-        Matrixify::Matrix3d utilMatrix =
-            Matrixify::Matrix3dFactory::Create(getNumOUDStates(),
+        matrixify::Matrix3d utilMatrix =
+            matrixify::Matrix3dFactory::Create(getNumOUDStates(),
                                                getNumInterventions(),
                                                getNumDemographicCombos())
                 .constant(0);
@@ -58,8 +58,8 @@ namespace Matrixify {
              ++intervention) {
             Eigen::array<Eigen::Index, 3> offset = {0, 0, 0};
             Eigen::array<Eigen::Index, 3> extent = utilMatrix.dimensions();
-            offset[Matrixify::INTERVENTION] = intervention;
-            extent[Matrixify::INTERVENTION] = 1;
+            offset[matrixify::INTERVENTION] = intervention;
+            extent[matrixify::INTERVENTION] = 1;
             Matrix3d temp = utilMatrix.slice(offset, extent);
             if (utilCol.size() > intervention) {
                 temp.setConstant(std::stod(utilCol[intervention]));
@@ -73,4 +73,4 @@ namespace Matrixify {
 
         return result;
     }
-} // namespace Matrixify
+} // namespace matrixify

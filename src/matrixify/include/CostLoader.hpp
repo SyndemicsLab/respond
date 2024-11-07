@@ -27,7 +27,7 @@
 #include "DataTypes.hpp"
 #include "Interfaces.hpp"
 
-namespace Matrixify {
+namespace matrixify {
     class ICostLoader : public virtual IBaseLoader {
     public:
         /// @brief Load Healthcare Utilization Cost from file
@@ -102,7 +102,7 @@ namespace Matrixify {
         CostLoader(std::string const &inputDir)
             : CostLoader(nullptr, inputDir, nullptr) {}
 
-        ~CostLoader(){};
+        ~CostLoader() {};
 
         virtual std::unordered_map<std::string, Matrix3d>
         loadHealthcareUtilizationCost(std::string const &csvName);
@@ -186,6 +186,6 @@ namespace Matrixify {
                                std::unordered_map<std::string, double>>
                 &costParameterMap);
     };
-} // namespace Matrixify
+} // namespace matrixify
 
 #endif

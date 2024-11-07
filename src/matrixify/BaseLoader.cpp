@@ -18,7 +18,7 @@
 
 #include "BaseLoader.hpp"
 
-namespace Matrixify {
+namespace matrixify {
     BaseLoader::BaseLoader(Data::IConfigablePtr config,
                            std::string const &inputDir,
                            std::shared_ptr<spdlog::logger> logger) {
@@ -75,7 +75,7 @@ namespace Matrixify {
         std::filesystem::path inputDirFixed = inputDir;
         std::unordered_map<std::string, Data::IDataTablePtr> toReturn;
 
-        for (std::string inputFile : Matrixify::BaseLoader::INPUT_FILES) {
+        for (std::string inputFile : matrixify::BaseLoader::INPUT_FILES) {
             std::filesystem::path filePath = inputDirFixed / inputFile;
             if (!std::filesystem::exists(filePath)) {
 
@@ -251,4 +251,4 @@ namespace Matrixify {
         "setting_utility.csv",
         "treatment_utilization_cost.csv"};
 
-} // namespace Matrixify
+} // namespace matrixify

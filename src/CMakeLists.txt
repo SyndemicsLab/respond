@@ -1,7 +1,5 @@
 cmake_minimum_required(VERSION 3.20)
 
-find_package(spdlog REQUIRED)
-
 # Set some basic project attributes
 project (
   respond
@@ -9,7 +7,7 @@ project (
   DESCRIPTION "A Compartmental Simulation for Opioid Use Disorder"
 )
 
-add_subdirectory(simrunner)
+add_subdirectory(simulation)
 add_subdirectory(matrixify)
 
 option(BUILD_API "enable RESPOND API" OFF)
@@ -26,13 +24,11 @@ add_executable(respond main.cpp)
 
 target_include_directories(respond PRIVATE
   "matrixify/include"
-  "simrunner/include"
-  ${PROJECT_SOURCE_DIR}/lib/DataManagement/include
+  "simulation/include"
   )
 
 target_link_libraries(respond
   matrixify
-  simrunner
+  simulation
   spdlog::spdlog
-  DataManagement
 )

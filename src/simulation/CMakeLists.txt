@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.20)
 
-project(matrixify)
+project(simulation)
 
 include(FetchContent)
 message(CHECK_START "Fetching Eigen3")
@@ -27,9 +27,6 @@ FetchContent_MakeAvailable(Eigen)
 list(POP_BACK CMAKE_MESSAGE_INDENT)
 message(CHECK_PASS "fetched")
 
-find_package(DataManagement 1 REQUIRED
-    HINTS "${CMAKE_SOURCE_DIR}/lib/dminstall"
-)
 
 if(BUILD_SHARED_LIBS)
   add_library(${PROJECT_NAME} SHARED)
@@ -38,22 +35,16 @@ else()
 endif()
 
 
-
 target_sources(${PROJECT_NAME}
     PRIVATE
-        BaseLoader.cpp
-        CostLoader.cpp
-        UtilityLoader.cpp
-        DataLoader.cpp
-        Writer.cpp
-        DataFormatter.cpp
-        DataTypes.cpp
-        Matrix3dFactory.cpp
-        Matrix3dPrinter.cpp
+        Simulation.cpp
+        PostSimulationCalculator.cpp
 )
 
-target_link_libraries(${PROJECT_NAME} PRIVATE Eigen3::Eigen)
-target_link_libraries(${PROJECT_NAME} PRIVATE spdlog::spdlog)
-target_link_libraries(${PROJECT_NAME} PRIVATE DataManagement)
+target_link_libraries(${PROJECT_NAME} 
+    PRIVATE 
+        Eigen3::Eigen 
+        matrixify
+)
 
 target_include_directories(${PROJECT_NAME} PUBLIC "include/")

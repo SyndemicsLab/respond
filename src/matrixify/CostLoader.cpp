@@ -19,7 +19,7 @@
 #include "Matrix3dFactory.hpp"
 #include "Matrix3dPrinter.hpp"
 
-namespace Matrixify {
+namespace matrixify {
     CostLoader::CostLoader(Data::IConfigablePtr config,
                            std::string const &inputDir,
                            std::shared_ptr<spdlog::logger> logger)
@@ -42,7 +42,7 @@ namespace Matrixify {
             ASSERTM(!healthColumn.empty(), message);
 
             this->healthcareUtilizationCost[perspective] =
-                Matrixify::Matrix3dFactory::Create(
+                matrixify::Matrix3dFactory::Create(
                     numOUDStates, numInterventions, numDemographicCombos);
 
             int rowIdx = 0;
@@ -155,7 +155,7 @@ namespace Matrixify {
 
         for (std::string perspective : this->costPerspectives) {
             costParameter[perspective] =
-                Matrixify::Matrix3dFactory::Create(
+                matrixify::Matrix3dFactory::Create(
                     numOUDStates, numInterventions, numDemographicCombos)
                     .constant(0);
 
@@ -163,8 +163,8 @@ namespace Matrixify {
                 Eigen::array<Eigen::Index, 3> offset = {0, 0, 0};
                 Eigen::array<Eigen::Index, 3> extent =
                     costParameter[perspective].dimensions();
-                offset[Matrixify::INTERVENTION] = i;
-                extent[Matrixify::INTERVENTION] = 1;
+                offset[matrixify::INTERVENTION] = i;
+                extent[matrixify::INTERVENTION] = 1;
                 Matrix3d slice =
                     costParameter[perspective].slice(offset, extent);
                 if (costParameterMap[perspective].find(interventions[i]) !=
@@ -193,4 +193,4 @@ namespace Matrixify {
         return this->treatmentUtilizationCostMap;
     }
 
-} // namespace Matrixify
+} // namespace matrixify

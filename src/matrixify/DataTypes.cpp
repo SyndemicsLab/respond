@@ -17,7 +17,7 @@
 
 #include "DataTypes.hpp"
 
-namespace Matrixify {
+namespace matrixify {
     Matrix4d::Matrix4d(std::vector<Matrix3d> data) {
         for (int i = 0; i < data.size(); i++) {
             this->data.insert({i, data[i]});
@@ -104,4 +104,4 @@ namespace Matrixify {
         return runningSum;
     }
 
-} // namespace Matrixify
+} // namespace matrixify

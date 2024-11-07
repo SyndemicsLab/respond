@@ -21,7 +21,7 @@
 #include "BaseLoader.hpp"
 #include "Matrix3dFactory.hpp"
 
-namespace Matrixify {
+namespace matrixify {
     class IUtilityLoader : public virtual IBaseLoader {
     public:
         /// @brief Load the Background Utilties from a File
@@ -78,7 +78,7 @@ namespace Matrixify {
         UtilityLoader(std::string const &inputDir)
             : UtilityLoader(nullptr, inputDir, nullptr) {}
 
-        ~UtilityLoader(){};
+        ~UtilityLoader() {};
 
         virtual std::unordered_map<std::string, Matrix3d>
         loadBackgroundUtility(std::string const &csvName);
@@ -133,6 +133,6 @@ namespace Matrixify {
         std::unordered_map<std::string, Matrix3d>
         loadUtility(std::string const &csvName);
     };
-} // namespace Matrixify
+} // namespace matrixify
 
 #endif

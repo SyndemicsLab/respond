@@ -1,4 +1,4 @@
-#include "Simulation.hpp"
+#include "simulation.hpp"
 #include <pybind11/eigen.h>
 #include <pybind11/eigen/tensor.h>
 #include <pybind11/numpy.h>
@@ -6,18 +6,18 @@
 #include <pybind11/stl.h>
 
 namespace py = pybind11;
-using namespace Simulation;
+using namespace simulation;
 
-PYBIND11_MODULE(Simulation, m) {
+PYBIND11_MODULE(simulation, m) {
     py::class_<Respond>(m, "Respond")
-        .def(py::init<std::shared_ptr<Matrixify::IDataLoader>>())
+        .def(py::init<std::shared_ptr<matrixify::IDataLoader>>())
         .def("RunRESPOND", &Respond::run,
              py::arg("dataloader") =
-                 static_cast<std::shared_ptr<Matrixify::IDataLoader>>(nullptr),
+                 static_cast<std::shared_ptr<matrixify::IDataLoader>>(nullptr),
              py::arg("costloader") =
-                 static_cast<std::shared_ptr<Matrixify::ICostLoader>>(nullptr),
+                 static_cast<std::shared_ptr<matrixify::ICostLoader>>(nullptr),
              py::arg("utilloader") =
-                 static_cast<std::shared_ptr<Matrixify::IUtilityLoader>>(
+                 static_cast<std::shared_ptr<matrixify::IUtilityLoader>>(
                      nullptr))
         .def("getHistory", &Respond::getHistory)
         .def("ageUp", &Respond::ageUp)

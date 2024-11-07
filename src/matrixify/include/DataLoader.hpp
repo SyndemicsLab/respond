@@ -26,7 +26,7 @@
 #include "BaseLoader.hpp"
 #include "DataTypes.hpp"
 
-namespace Matrixify {
+namespace matrixify {
     class IDataLoader : public virtual IBaseLoader {
     public:
         /// @brief Get the Initial Sample
@@ -169,7 +169,7 @@ namespace Matrixify {
      * - `setting_utility.csv`
      * - `treatment_utilization_cost.csv`
      */
-    class DataLoader : public BaseLoader, public virtual IDataLoader {
+    class DataLoader : public virtual IDataLoader {
     public:
         /// @brief An alternative constructor for DataLoader for loading data
         /// when a Configuration object has already been created prior to
@@ -193,7 +193,7 @@ namespace Matrixify {
         DataLoader(std::string const &inputDir)
             : DataLoader(nullptr, inputDir, nullptr) {}
 
-        ~DataLoader(){};
+        ~DataLoader() {};
 
         Matrix3d getInitialSample() const { return initialSample; }
 
@@ -276,7 +276,7 @@ namespace Matrixify {
         /// @param dimension
         /// @return
         Matrix3d createTransitionMatrix3d(Data::IDataTablePtr const &table,
-                                          Matrixify::Dimension dimension,
+                                          matrixify::Dimension dimension,
                                           int timestep);
 
         /// @brief
@@ -320,5 +320,5 @@ namespace Matrixify {
         Matrix4d fatalOverdoseRates;
         Matrix3d mortalityRates;
     };
-} // namespace Matrixify
+} // namespace matrixify
 #endif // DATA_DATALOADER_HPP_

@@ -5,26 +5,23 @@
 #include "Matrix3dFactory.hpp"
 #include <vector>
 
-namespace Matrixify {
+namespace matrixify {
     class DataFormatter {
     public:
-        DataFormatter(){};
-        ~DataFormatter(){};
+        DataFormatter() {};
+        ~DataFormatter() {};
         void extractTimesteps(std::vector<int> timesteps,
-                              Matrixify::History &history,
-                              Matrixify::CostList &costs,
-                              Matrixify::Matrix4d &utilities,
-                              bool costSwitch);
+                              matrixify::History &history,
+                              matrixify::CostList &costs,
+                              matrixify::Matrix4d &utilities, bool costSwitch);
 
     private:
-        Matrixify::Matrix4d
-        trimMatrix4d(std::vector<int> timesteps,
-                             Matrixify::Matrix4d matrix);
+        matrixify::Matrix4d trimMatrix4d(std::vector<int> timesteps,
+                                         matrixify::Matrix4d matrix);
 
-        Matrixify::Matrix4d
-        trimAndAddMatrix4d(std::vector<int> timesteps,
-                                   Matrixify::Matrix4d matrix);
+        matrixify::Matrix4d trimAndAddMatrix4d(std::vector<int> timesteps,
+                                               matrixify::Matrix4d matrix);
     };
-} // namespace Matrixify
+} // namespace matrixify
 
 #endif

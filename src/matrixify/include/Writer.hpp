@@ -34,8 +34,8 @@
 #include "DataLoader.hpp"
 #include "Interfaces.hpp"
 
-/// @brief Namespace Defining all Matrixify Operations
-namespace Matrixify {
+/// @brief Namespace Defining all matrixify Operations
+namespace matrixify {
 
     /// @brief Writer Class that acts as a superclass to all writing classes
     class Writer : public virtual IWritable, public virtual IFileable {
@@ -252,6 +252,6 @@ namespace Matrixify {
                            demographicCombos, timesteps, writeType) {}
         std::string writeTotals(const Totals totals) const;
     };
-} // namespace Matrixify
+} // namespace matrixify
 
 #endif

@@ -129,20 +129,20 @@ protected:
 };
 
 TEST_F(DataLoaderTest, ConstructorEmpty) {
-    Matrixify::DataLoader dl;
+    matrixify::DataLoader dl;
     EXPECT_EQ(dl.getInterventions().size(), 0);
 }
 
 TEST_F(DataLoaderTest, ConstructorConfigAndStringAndLogger) {
     Data::IConfigablePtr config =
         std::make_shared<Data::Config>(configFile.string());
-    Matrixify::DataLoader dl(
+    matrixify::DataLoader dl(
         config, std::filesystem::temp_directory_path().string(), logger);
     EXPECT_EQ(dl.getInterventions().size(), 9);
 }
 
 TEST_F(DataLoaderTest, ConstructorStringAndLogger) {
-    Matrixify::DataLoader dl(std::filesystem::temp_directory_path().string(),
+    matrixify::DataLoader dl(std::filesystem::temp_directory_path().string(),
                              logger);
     EXPECT_EQ(dl.getInterventions().size(), 9);
 }
@@ -150,20 +150,20 @@ TEST_F(DataLoaderTest, ConstructorStringAndLogger) {
 TEST_F(DataLoaderTest, ConstructorConfig) {
     Data::IConfigablePtr config =
         std::make_shared<Data::Config>(configFile.string());
-    Matrixify::DataLoader dl(config);
+    matrixify::DataLoader dl(config);
     EXPECT_EQ(dl.getInterventions().size(), 9);
 }
 
 TEST_F(DataLoaderTest, ConstructorConfigAndString) {
     Data::IConfigablePtr config =
         std::make_shared<Data::Config>(configFile.string());
-    Matrixify::DataLoader dl(config,
+    matrixify::DataLoader dl(config,
                              std::filesystem::temp_directory_path().string());
     EXPECT_EQ(dl.getInterventions().size(), 9);
 }
 
 TEST_F(DataLoaderTest, ConstructorString) {
-    Matrixify::DataLoader dl(std::filesystem::temp_directory_path().string());
+    matrixify::DataLoader dl(std::filesystem::temp_directory_path().string());
     EXPECT_EQ(dl.getInterventions().size(), 9);
 }
 
@@ -177,12 +177,12 @@ TEST_F(DataLoaderTest, initialSample) {
         << "No_Treatment,10_14,Male,Nonactive_Noninjection,288.995723856067";
     fileStream.close();
 
-    Matrixify::DataLoader dl(std::filesystem::temp_directory_path().string(),
+    matrixify::DataLoader dl(std::filesystem::temp_directory_path().string(),
                              logger);
 
     dl.loadInitialSample(tempAbsoluteFile.string());
 
-    Matrixify::Matrix3d result = dl.getInitialSample();
+    matrixify::Matrix3d result = dl.getInitialSample();
     EXPECT_EQ(result(0, 0, 0), 2917.55795376043);
 }
 
@@ -193,14 +193,14 @@ TEST_F(DataLoaderTest, enteringSamples) {
                << "15_19,male,12.0934754686572";
     fileStream.close();
 
-    Matrixify::DataLoader dl(std::filesystem::temp_directory_path().string(),
+    matrixify::DataLoader dl(std::filesystem::temp_directory_path().string(),
                              logger);
 
     dl.loadEnteringSamples(tempAbsoluteFile.string(),
                            std::string("No_Treatment"),
                            std::string("Active_Noninjection"));
 
-    Matrixify::Matrix4d result = dl.getEnteringSamples();
+    matrixify::Matrix4d result = dl.getEnteringSamples();
     EXPECT_EQ(result(0, 0, 0, 0), 11.4389540364826);
 }
 
@@ -220,12 +220,12 @@ TEST_F(DataLoaderTest, OUDTransitionRates) {
            "0564816594618387,0.635081603241549,0";
     fileStream.close();
 
-    Matrixify::DataLoader dl(std::filesystem::temp_directory_path().string(),
+    matrixify::DataLoader dl(std::filesystem::temp_directory_path().string(),
                              logger);
 
     dl.loadOUDTransitionRates(tempAbsoluteFile.string());
 
-    Matrixify::Matrix3d result = dl.getOUDTransitionRates();
+    matrixify::Matrix3d result = dl.getOUDTransitionRates();
     EXPECT_EQ(result(0, 0, 0), 0.560720353446504);
 }
 
@@ -247,12 +247,12 @@ TEST_F(DataLoaderTest, interventionTransitionRates) {
                   "88186832069196,0,0,0,0.11813167930804,0,0";
     fileStream.close();
 
-    Matrixify::DataLoader dl(std::filesystem::temp_directory_path().string(),
+    matrixify::DataLoader dl(std::filesystem::temp_directory_path().string(),
                              logger);
 
     dl.loadInterventionTransitionRates(tempAbsoluteFile.string());
 
-    Matrixify::Matrix4d result = dl.getInterventionTransitionRates();
+    matrixify::Matrix4d result = dl.getInterventionTransitionRates();
     EXPECT_EQ(result(0, 0, 0, 0), 0.625523912484771);
 }
 
@@ -275,12 +275,12 @@ TEST_F(DataLoaderTest, overdoseRates) {
            "000348390775561181";
     fileStream.close();
 
-    Matrixify::DataLoader dl(std::filesystem::temp_directory_path().string(),
+    matrixify::DataLoader dl(std::filesystem::temp_directory_path().string(),
                              logger);
 
     dl.loadOverdoseRates(tempAbsoluteFile.string());
 
-    Matrixify::Matrix4d result = dl.getOverdoseRates();
+    matrixify::Matrix4d result = dl.getOverdoseRates();
     EXPECT_EQ(result(0, 0, 0, 0), 0.00059346577560159);
 }
 
@@ -294,12 +294,12 @@ TEST_F(DataLoaderTest, fatalOverdoseRates) {
            "126092413319309,0.156049415151599";
     fileStream.close();
 
-    Matrixify::DataLoader dl(std::filesystem::temp_directory_path().string(),
+    matrixify::DataLoader dl(std::filesystem::temp_directory_path().string(),
                              logger);
 
     dl.loadFatalOverdoseRates(tempAbsoluteFile.string());
 
-    Matrixify::Matrix4d result = dl.getFatalOverdoseRates();
+    matrixify::Matrix4d result = dl.getFatalOverdoseRates();
     EXPECT_EQ(result(0, 0, 0, 0), 0.216540329711774);
 }
 
@@ -317,12 +317,12 @@ TEST_F(DataLoaderTest, fatalOverdoseRatesStratified) {
         << "10_14, Female, 0.2, 0.3, 0.1, 0.126, 0.15";
     fileStream.close();
 
-    Matrixify::DataLoader dl(std::filesystem::temp_directory_path().string(),
+    matrixify::DataLoader dl(std::filesystem::temp_directory_path().string(),
                              logger);
 
     dl.loadFatalOverdoseRates(tempAbsoluteFile.string());
 
-    Matrixify::Matrix4d result = dl.getFatalOverdoseRates();
+    matrixify::Matrix4d result = dl.getFatalOverdoseRates();
     EXPECT_EQ(result(0, 0, 0, 0), 0.216540329711774);
     EXPECT_EQ(result(0, 1, 0, 0), 0.216540329711774);
     EXPECT_EQ(result(0, 0, 1, 1), 0.2);
@@ -345,13 +345,13 @@ TEST_F(DataLoaderTest, mortalityRates) {
                 << "15_19,Male,1.2191975906517E-05";
     fileStream2.close();
 
-    Matrixify::DataLoader dl(std::filesystem::temp_directory_path().string(),
+    matrixify::DataLoader dl(std::filesystem::temp_directory_path().string(),
                              logger);
 
     dl.loadMortalityRates(tempAbsoluteFile.string(),
                           tempAbsoluteFile2.string());
 
-    Matrixify::Matrix3d result = dl.getMortalityRates();
+    matrixify::Matrix3d result = dl.getMortalityRates();
     EXPECT_EQ(result(0, 0, 0), 6.8407483245769285e-06);
 }
 
@@ -365,108 +365,108 @@ TEST_F(DataLoaderTest, interventionInitRates) {
         << "No_Treatment,10_14,Male,Nonactive_Noninjection,288.995723856067";
     fileStream.close();
 
-    Matrixify::DataLoader dl(std::filesystem::temp_directory_path().string(),
+    matrixify::DataLoader dl(std::filesystem::temp_directory_path().string(),
                              logger);
 
     dl.loadInitialSample(tempAbsoluteFile.string());
 
-    Matrixify::Matrix3d result = dl.getInitialSample();
+    matrixify::Matrix3d result = dl.getInitialSample();
     EXPECT_EQ(result(0, 0, 0), 2917.55795376043);
 }
 
 TEST_F(DataLoaderTest, setInitialSample) {
-    Matrixify::DataLoader dl;
+    matrixify::DataLoader dl;
 
-    Matrixify::Matrix3d mat3d(1, 1, 1);
+    matrixify::Matrix3d mat3d(1, 1, 1);
     mat3d(0, 0, 0) = 2917.55795376043;
     dl.setInitialSample(mat3d);
 
-    Matrixify::Matrix3d result = dl.getInitialSample();
+    matrixify::Matrix3d result = dl.getInitialSample();
     EXPECT_EQ(result(0, 0, 0), 2917.55795376043);
 }
 
 TEST_F(DataLoaderTest, setEnteringSamples) {
-    Matrixify::DataLoader dl;
+    matrixify::DataLoader dl;
 
-    Matrixify::Matrix3d mat3d(1, 1, 1);
+    matrixify::Matrix3d mat3d(1, 1, 1);
     mat3d(0, 0, 0) = 11.4389540364826;
-    std::vector<Matrixify::Matrix3d> mat4dVec{mat3d};
-    Matrixify::Matrix4d mat4d(mat4dVec);
+    std::vector<matrixify::Matrix3d> mat4dVec{mat3d};
+    matrixify::Matrix4d mat4d(mat4dVec);
     dl.setEnteringSamples(mat4d);
 
-    Matrixify::Matrix4d result = dl.getEnteringSamples();
+    matrixify::Matrix4d result = dl.getEnteringSamples();
     EXPECT_EQ(result(0, 0, 0, 0), 11.4389540364826);
 }
 
 TEST_F(DataLoaderTest, setOUDTransitionRates) {
 
-    Matrixify::DataLoader dl;
+    matrixify::DataLoader dl;
 
-    Matrixify::Matrix3d mat3d(1, 1, 1);
+    matrixify::Matrix3d mat3d(1, 1, 1);
     mat3d(0, 0, 0) = 0.560720353446504;
     dl.setOUDTransitionRates(mat3d);
 
-    Matrixify::Matrix3d result = dl.getOUDTransitionRates();
+    matrixify::Matrix3d result = dl.getOUDTransitionRates();
     EXPECT_EQ(result(0, 0, 0), 0.560720353446504);
 }
 
 TEST_F(DataLoaderTest, setInterventionTransitionRates) {
-    Matrixify::DataLoader dl;
+    matrixify::DataLoader dl;
 
-    Matrixify::Matrix3d mat3d(1, 1, 1);
+    matrixify::Matrix3d mat3d(1, 1, 1);
     mat3d(0, 0, 0) = 0.625523912484771;
-    std::vector<Matrixify::Matrix3d> mat4dVec{mat3d};
-    Matrixify::Matrix4d mat4d(mat4dVec);
+    std::vector<matrixify::Matrix3d> mat4dVec{mat3d};
+    matrixify::Matrix4d mat4d(mat4dVec);
     dl.setInterventionTransitionRates(mat4d);
 
-    Matrixify::Matrix4d result = dl.getInterventionTransitionRates();
+    matrixify::Matrix4d result = dl.getInterventionTransitionRates();
     EXPECT_EQ(result(0, 0, 0, 0), 0.625523912484771);
 }
 
 TEST_F(DataLoaderTest, setOverdoseRates) {
-    Matrixify::DataLoader dl;
+    matrixify::DataLoader dl;
 
-    Matrixify::Matrix3d mat3d(1, 1, 1);
+    matrixify::Matrix3d mat3d(1, 1, 1);
     mat3d(0, 0, 0) = 0.00059346577560159;
-    std::vector<Matrixify::Matrix3d> mat4dVec{mat3d};
-    Matrixify::Matrix4d mat4d(mat4dVec);
+    std::vector<matrixify::Matrix3d> mat4dVec{mat3d};
+    matrixify::Matrix4d mat4d(mat4dVec);
     dl.setOverdoseRates(mat4d);
 
-    Matrixify::Matrix4d result = dl.getOverdoseRates();
+    matrixify::Matrix4d result = dl.getOverdoseRates();
     EXPECT_EQ(result(0, 0, 0, 0), 0.00059346577560159);
 }
 
 TEST_F(DataLoaderTest, setFatalOverdoseRates) {
-    Matrixify::DataLoader dl;
+    matrixify::DataLoader dl;
 
-    Matrixify::Matrix3d mat3d(1, 1, 1);
+    matrixify::Matrix3d mat3d(1, 1, 1);
     mat3d(0, 0, 0) = 0.216540329711774;
-    std::vector<Matrixify::Matrix3d> mat4dVec{mat3d};
-    Matrixify::Matrix4d mat4d(mat4dVec);
+    std::vector<matrixify::Matrix3d> mat4dVec{mat3d};
+    matrixify::Matrix4d mat4d(mat4dVec);
     dl.setFatalOverdoseRates(mat4d);
 
-    Matrixify::Matrix4d result = dl.getFatalOverdoseRates();
+    matrixify::Matrix4d result = dl.getFatalOverdoseRates();
     EXPECT_EQ(result(0, 0, 0, 0), 0.216540329711774);
 }
 
 TEST_F(DataLoaderTest, setMortalityRates) {
-    Matrixify::DataLoader dl;
+    matrixify::DataLoader dl;
 
-    Matrixify::Matrix3d mat3d(1, 1, 1);
+    matrixify::Matrix3d mat3d(1, 1, 1);
     mat3d(0, 0, 0) = 6.8407483245769285e-06;
     dl.setMortalityRates(mat3d);
 
-    Matrixify::Matrix3d result = dl.getMortalityRates();
+    matrixify::Matrix3d result = dl.getMortalityRates();
     EXPECT_EQ(result(0, 0, 0), 6.8407483245769285e-06);
 }
 
 TEST_F(DataLoaderTest, setInterventionInitRates) {
-    Matrixify::DataLoader dl;
+    matrixify::DataLoader dl;
 
-    Matrixify::Matrix3d mat3d(1, 1, 1);
+    matrixify::Matrix3d mat3d(1, 1, 1);
     mat3d(0, 0, 0) = 6.8407483245769285e-06;
     dl.setInterventionInitRates(mat3d);
 
-    Matrixify::Matrix3d result = dl.getInterventionInitRates();
+    matrixify::Matrix3d result = dl.getInterventionInitRates();
     EXPECT_EQ(result(0, 0, 0), 6.8407483245769285e-06);
 }

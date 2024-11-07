@@ -1,6 +1,6 @@
 #include "api.hpp"
-#include "PostSimulationCalculator.hpp"
-#include "Simulation.hpp"
+#include "PostsimulationCalculator.hpp"
+#include "simulation.hpp"
 
 namespace API {
     RESPONDAPI::RESPONDAPI() {
@@ -10,13 +10,13 @@ namespace API {
     }
 
     void RESPONDAPI::setupApp() {
-        this->inputs = std::make_shared<Matrixify::DataLoader>();
-        this->costs = std::make_shared<Matrixify::CostLoader>();
-        this->utils = std::make_shared<Matrixify::UtilityLoader>();
+        this->inputs = std::make_shared<matrixify::DataLoader>();
+        this->costs = std::make_shared<matrixify::CostLoader>();
+        this->utils = std::make_shared<matrixify::UtilityLoader>();
 
         CROW_ROUTE(this->app, "/run")
             .methods(crow::HTTPMethod::Post)([this](const crow::request &req) {
-                Simulation::Respond sim(inputs);
+                simulation::Respond sim(inputs);
                 sim.run();
                 hist = sim.getHistory();
                 return crow::response(crow::status::OK);
@@ -240,8 +240,8 @@ namespace API {
 
         CROW_ROUTE(this->app, "/download/outputs/cost")
             .methods(crow::HTTPMethod::Post)([this](const crow::request &req) {
-                Calculator::PostSimulationCalculator costCalculator(hist);
-                Matrixify::CostList costList =
+                Calculator::PostsimulationCalculator costCalculator(hist);
+                matrixify::CostList costList =
                     costCalculator.calculateCosts(this->costs);
 
                 costWriter.setInterventions(inputs->getInterventions());
@@ -258,8 +258,8 @@ namespace API {
 
         CROW_ROUTE(this->app, "/download/outputs/utility")
             .methods(crow::HTTPMethod::Post)([this](const crow::request &req) {
-                Calculator::PostSimulationCalculator costCalculator(hist);
-                Matrixify::Matrix4d utility = costCalculator.calculateUtilities(
+                Calculator::PostsimulationCalculator costCalculator(hist);
+                matrixify::Matrix4d utility = costCalculator.calculateUtilities(
                     this->utils, Calculator::UTILITY_TYPE::MIN);
 
                 utilityWriter.setInterventions(inputs->getInterventions());
@@ -278,8 +278,8 @@ namespace API {
     void RESPONDAPI::setupCalculate() {
         CROW_ROUTE(this->app, "/calculate/cost")
             .methods(crow::HTTPMethod::Post)([this](const crow::request &req) {
-                Calculator::PostSimulationCalculator costCalculator(hist);
-                Matrixify::CostList cost =
+                Calculator::PostsimulationCalculator costCalculator(hist);
+                matrixify::CostList cost =
                     costCalculator.calculateCosts(this->costs);
 
                 return crow::response(crow::status::OK);
@@ -287,8 +287,8 @@ namespace API {
 
         CROW_ROUTE(this->app, "/calculate/utility")
             .methods(crow::HTTPMethod::Post)([this](const crow::request &req) {
-                Calculator::PostSimulationCalculator costCalculator(hist);
-                Matrixify::Matrix4d utility = costCalculator.calculateUtilities(
+                Calculator::PostsimulationCalculator costCalculator(hist);
+                matrixify::Matrix4d utility = costCalculator.calculateUtilities(
                     this->utils, Calculator::UTILITY_TYPE::MIN);
 
                 return crow::response(crow::status::OK);

@@ -4,7 +4,7 @@
 #include "UtilityLoader.hpp"
 #include "gmock/gmock.h"
 
-class MockUtilityLoader : public Matrixify::IUtilityLoader {
+class MockUtilityLoader : public matrixify::IUtilityLoader {
 public:
     // ILoggable
     MOCK_METHOD(void, setLogger, ((std::shared_ptr<spdlog::logger> const)),
@@ -84,17 +84,17 @@ public:
                 (const, override));
 
     // IUtilityLoader
-    MOCK_METHOD((std::unordered_map<std::string, Matrixify::Matrix3d>),
+    MOCK_METHOD((std::unordered_map<std::string, matrixify::Matrix3d>),
                 loadBackgroundUtility, (std::string const &), (override));
-    MOCK_METHOD((std::unordered_map<std::string, Matrixify::Matrix3d>),
+    MOCK_METHOD((std::unordered_map<std::string, matrixify::Matrix3d>),
                 loadOUDUtility, (std::string const &), (override));
-    MOCK_METHOD((std::unordered_map<std::string, Matrixify::Matrix3d>),
+    MOCK_METHOD((std::unordered_map<std::string, matrixify::Matrix3d>),
                 loadSettingUtility, (std::string const &), (override));
-    MOCK_METHOD((Matrixify::Matrix3d), getBackgroundUtility,
+    MOCK_METHOD((matrixify::Matrix3d), getBackgroundUtility,
                 (std::string const &), (const, override));
-    MOCK_METHOD((Matrixify::Matrix3d), getOUDUtility, (std::string const &),
+    MOCK_METHOD((matrixify::Matrix3d), getOUDUtility, (std::string const &),
                 (const, override));
-    MOCK_METHOD((Matrixify::Matrix3d), getSettingUtility, (std::string const &),
+    MOCK_METHOD((matrixify::Matrix3d), getSettingUtility, (std::string const &),
                 (const, override));
 };
 

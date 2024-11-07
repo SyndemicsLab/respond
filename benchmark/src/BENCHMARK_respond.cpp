@@ -2,9 +2,9 @@
 #include "DataFormatter.hpp"
 #include "DataLoader.hpp"
 #include "Helpers.hpp"
-#include "PostSimulationCalculator.hpp"
-#include "Simulation.hpp"
+#include "PostsimulationCalculator.hpp"
 #include "Writer.hpp"
+#include "simulation.hpp"
 #include "spdlog/sinks/basic_file_sink.h"
 #include "spdlog/spdlog.h"
 #include <algorithm>
@@ -42,17 +42,17 @@ static int respond_main(const int inputID) {
 
     logger->info("Logger Created");
 
-    std::shared_ptr<Matrixify::IDataLoader> inputs =
-        std::make_shared<Matrixify::DataLoader>(nullptr, inputSet.string(),
+    std::shared_ptr<matrixify::IDataLoader> inputs =
+        std::make_shared<matrixify::DataLoader>(nullptr, inputSet.string(),
                                                 logger);
     logger->info("DataLoader Created");
 
-    std::shared_ptr<Matrixify::ICostLoader> costLoader =
-        std::make_shared<Matrixify::CostLoader>(inputSet.string());
+    std::shared_ptr<matrixify::ICostLoader> costLoader =
+        std::make_shared<matrixify::CostLoader>(inputSet.string());
     logger->info("CostLoader Created");
 
-    std::shared_ptr<Matrixify::IUtilityLoader> utilityLoader =
-        std::make_shared<Matrixify::UtilityLoader>(inputSet.string());
+    std::shared_ptr<matrixify::IUtilityLoader> utilityLoader =
+        std::make_shared<matrixify::UtilityLoader>(inputSet.string());
     logger->info("UtilityLoader Created");
 
     inputs->loadInitialSample("init_cohort.csv");
@@ -82,43 +82,43 @@ static int respond_main(const int inputID) {
         utilityLoader->loadSettingUtility("setting_utility.csv");
     }
 
-    Simulation::Respond sim(inputs);
+    simulation::Respond sim(inputs);
     sim.run();
-    Matrixify::History history = sim.getHistory();
+    matrixify::History history = sim.getHistory();
 
-    Matrixify::CostList basecosts;
-    Matrixify::Matrix4d baseutilities;
+    matrixify::CostList basecosts;
+    matrixify::Matrix4d baseutilities;
     double baselifeYears = 0.0;
     std::vector<double> totalBaseCosts;
     double totalBaseUtility = 0.0;
 
-    Matrixify::CostList disccosts;
-    Matrixify::Matrix4d discutilities;
+    matrixify::CostList disccosts;
+    matrixify::Matrix4d discutilities;
     double disclifeYears;
     std::vector<double> totalDiscCosts;
     double totalDiscUtility = 0.0;
 
     if (costLoader->getCostSwitch()) {
-        Calculator::PostSimulationCalculator PostSimulationCalculator(history);
-        basecosts = PostSimulationCalculator.calculateCosts(costLoader);
+        Calculator::PostsimulationCalculator PostsimulationCalculator(history);
+        basecosts = PostsimulationCalculator.calculateCosts(costLoader);
         totalBaseCosts =
-            Helpers::calcCosts(PostSimulationCalculator, basecosts);
+            Helpers::calcCosts(PostsimulationCalculator, basecosts);
 
-        baseutilities = PostSimulationCalculator.calculateUtilities(
+        baseutilities = PostsimulationCalculator.calculateUtilities(
             utilityLoader, Calculator::UTILITY_TYPE::MIN);
         totalBaseUtility =
-            PostSimulationCalculator.totalAcrossTimeAndDims(baseutilities);
-        baselifeYears = PostSimulationCalculator.calculateLifeYears();
+            PostsimulationCalculator.totalAcrossTimeAndDims(baseutilities);
+        baselifeYears = PostsimulationCalculator.calculateLifeYears();
         if (costLoader->getDiscountRate() != 0.0) {
-            disccosts = PostSimulationCalculator.calculateCosts(costLoader);
+            disccosts = PostsimulationCalculator.calculateCosts(costLoader);
 
             totalDiscCosts =
-                Helpers::calcCosts(PostSimulationCalculator, disccosts);
-            discutilities = PostSimulationCalculator.calculateUtilities(
+                Helpers::calcCosts(PostsimulationCalculator, disccosts);
+            discutilities = PostsimulationCalculator.calculateUtilities(
                 utilityLoader, Calculator::UTILITY_TYPE::MIN);
             totalDiscUtility =
-                PostSimulationCalculator.totalAcrossTimeAndDims(discutilities);
-            disclifeYears = PostSimulationCalculator.calculateLifeYears();
+                PostsimulationCalculator.totalAcrossTimeAndDims(discutilities);
+            disclifeYears = PostsimulationCalculator.calculateLifeYears();
         }
     }
 
@@ -128,12 +128,12 @@ static int respond_main(const int inputID) {
     pivot_long = std::get<bool>(
         inputs->getConfig()->get("output.pivot_long", pivot_long));
 
-    Matrixify::HistoryWriter historyWriter(
+    matrixify::HistoryWriter historyWriter(
         outputDir.string(), inputs->getInterventions(), inputs->getOUDStates(),
         inputs->getDemographics(), inputs->getDemographicCombos(),
-        outputTimesteps, Matrixify::WriteType::FILE, pivot_long);
+        outputTimesteps, matrixify::WriteType::FILE, pivot_long);
 
-    Matrixify::DataFormatter formatter;
+    matrixify::DataFormatter formatter;
 
     formatter.extractTimesteps(outputTimesteps, history, basecosts,
                                baseutilities, costLoader->getCostSwitch());
@@ -144,48 +144,48 @@ static int respond_main(const int inputID) {
     writeParameters = std::get<bool>(inputs->getConfig()->get(
         "output.write_calibrated_inputs", writeParameters));
     if (writeParameters) {
-        Matrixify::InputWriter ipWriter(outputDir.string(), outputTimesteps,
-                                        Matrixify::WriteType::FILE);
+        matrixify::InputWriter ipWriter(outputDir.string(), outputTimesteps,
+                                        matrixify::WriteType::FILE);
         ipWriter.writeParameters(inputs);
     }
 
     // Probably want to figure out the right way to do this
     if (costLoader->getCostSwitch()) {
-        Matrixify::CostWriter costWriter(
+        matrixify::CostWriter costWriter(
             outputDir.string(), inputs->getInterventions(),
             inputs->getOUDStates(), inputs->getDemographics(),
             inputs->getDemographicCombos(), outputTimesteps,
-            Matrixify::WriteType::FILE, pivot_long);
+            matrixify::WriteType::FILE, pivot_long);
         costWriter.writeCosts(basecosts);
     }
     if (utilityLoader->getCostSwitch()) {
-        Matrixify::UtilityWriter utilityWriter(
+        matrixify::UtilityWriter utilityWriter(
             outputDir.string(), inputs->getInterventions(),
             inputs->getOUDStates(), inputs->getDemographics(),
             inputs->getDemographicCombos(), outputTimesteps,
-            Matrixify::WriteType::FILE, pivot_long);
+            matrixify::WriteType::FILE, pivot_long);
         utilityWriter.writeUtilities(baseutilities);
     }
     if (costLoader->getCostSwitch()) {
-        Matrixify::Totals totals;
+        matrixify::Totals totals;
         totals.baseCosts = totalBaseCosts;
         totals.baseLifeYears = baselifeYears;
         totals.baseUtility = totalBaseUtility;
         totals.discCosts = totalDiscCosts;
         totals.discLifeYears = disclifeYears;
         totals.discUtility = totalDiscUtility;
-        Matrixify::TotalsWriter totalsWriter(
+        matrixify::TotalsWriter totalsWriter(
             outputDir.string(), inputs->getInterventions(),
             inputs->getOUDStates(), inputs->getDemographics(),
             inputs->getDemographicCombos(), outputTimesteps,
-            Matrixify::WriteType::FILE);
+            matrixify::WriteType::FILE);
         totalsWriter.writeTotals(totals);
     }
 
     std::cout << "Output " << std::to_string(inputID) << " Complete"
               << std::endl;
 
-    std::cout << "Simulation Complete! :)" << std::endl;
+    std::cout << "simulation Complete! :)" << std::endl;
     return 0;
 }
 

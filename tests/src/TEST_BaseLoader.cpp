@@ -111,103 +111,103 @@ protected:
 };
 
 TEST_F(BaseLoaderTest, getDuration) {
-    Matrixify::DataLoader dl(std::filesystem::temp_directory_path().string(),
+    matrixify::DataLoader dl(std::filesystem::temp_directory_path().string(),
                              logger);
     EXPECT_EQ(dl.getDuration(), 52);
 }
 
 TEST_F(BaseLoaderTest, getNumOUDStates) {
-    Matrixify::DataLoader dl(std::filesystem::temp_directory_path().string(),
+    matrixify::DataLoader dl(std::filesystem::temp_directory_path().string(),
                              logger);
     EXPECT_EQ(dl.getNumOUDStates(), 4);
 }
 
 TEST_F(BaseLoaderTest, getNumInterventions) {
-    Matrixify::DataLoader dl(std::filesystem::temp_directory_path().string(),
+    matrixify::DataLoader dl(std::filesystem::temp_directory_path().string(),
                              logger);
     EXPECT_EQ(dl.getNumInterventions(), 9);
 }
 
 TEST_F(BaseLoaderTest, getNumDemographics) {
-    Matrixify::DataLoader dl(std::filesystem::temp_directory_path().string(),
+    matrixify::DataLoader dl(std::filesystem::temp_directory_path().string(),
                              logger);
     EXPECT_EQ(dl.getNumDemographics(), 2);
 }
 
 TEST_F(BaseLoaderTest, getNumDemographicCombos) {
-    Matrixify::DataLoader dl(std::filesystem::temp_directory_path().string(),
+    matrixify::DataLoader dl(std::filesystem::temp_directory_path().string(),
                              logger);
     EXPECT_EQ(dl.getNumDemographicCombos(), 36);
 }
 
 TEST_F(BaseLoaderTest, getInterventions) {
-    Matrixify::DataLoader dl(std::filesystem::temp_directory_path().string(),
+    matrixify::DataLoader dl(std::filesystem::temp_directory_path().string(),
                              logger);
     EXPECT_EQ(dl.getInterventions().size(), 9);
 }
 
 TEST_F(BaseLoaderTest, getOUDStates) {
-    Matrixify::DataLoader dl(std::filesystem::temp_directory_path().string(),
+    matrixify::DataLoader dl(std::filesystem::temp_directory_path().string(),
                              logger);
     EXPECT_EQ(dl.getOUDStates().size(), 4);
 }
 
 TEST_F(BaseLoaderTest, getAgingInterval) {
-    Matrixify::DataLoader dl(std::filesystem::temp_directory_path().string(),
+    matrixify::DataLoader dl(std::filesystem::temp_directory_path().string(),
                              logger);
     EXPECT_EQ(dl.getAgingInterval(), 260);
 }
 
 TEST_F(BaseLoaderTest, getAgeGroupShift) {
-    Matrixify::DataLoader dl(std::filesystem::temp_directory_path().string(),
+    matrixify::DataLoader dl(std::filesystem::temp_directory_path().string(),
                              logger);
     EXPECT_EQ(dl.getAgeGroupShift(), 5);
 }
 
 TEST_F(BaseLoaderTest, getCostSwitch) {
-    Matrixify::DataLoader dl(std::filesystem::temp_directory_path().string(),
+    matrixify::DataLoader dl(std::filesystem::temp_directory_path().string(),
                              logger);
     EXPECT_TRUE(dl.getCostSwitch());
 }
 
 TEST_F(BaseLoaderTest, getCostPerspectives) {
-    Matrixify::DataLoader dl(std::filesystem::temp_directory_path().string(),
+    matrixify::DataLoader dl(std::filesystem::temp_directory_path().string(),
                              logger);
     EXPECT_EQ(dl.getCostPerspectives()[0], "healthcare");
 }
 
 TEST_F(BaseLoaderTest, getDiscountRate) {
-    Matrixify::DataLoader dl(std::filesystem::temp_directory_path().string(),
+    matrixify::DataLoader dl(std::filesystem::temp_directory_path().string(),
                              logger);
     EXPECT_EQ(dl.getDiscountRate(), 0.0025);
 }
 
 TEST_F(BaseLoaderTest, getCostUtilityOutputTimesteps) {
-    Matrixify::DataLoader dl(std::filesystem::temp_directory_path().string(),
+    matrixify::DataLoader dl(std::filesystem::temp_directory_path().string(),
                              logger);
     EXPECT_EQ(dl.getCostUtilityOutputTimesteps()[0], 52);
 }
 
 TEST_F(BaseLoaderTest, getCostCategoryOutputs) {
-    Matrixify::DataLoader dl(std::filesystem::temp_directory_path().string(),
+    matrixify::DataLoader dl(std::filesystem::temp_directory_path().string(),
                              logger);
     EXPECT_FALSE(dl.getCostCategoryOutputs());
 }
 
 TEST_F(BaseLoaderTest, getPerInterventionPredictions) {
-    Matrixify::DataLoader dl(std::filesystem::temp_directory_path().string(),
+    matrixify::DataLoader dl(std::filesystem::temp_directory_path().string(),
                              logger);
     EXPECT_TRUE(dl.getPerInterventionPredictions());
 }
 
 TEST_F(BaseLoaderTest, getGeneralOutputsSwitch) {
-    Matrixify::DataLoader dl(std::filesystem::temp_directory_path().string(),
+    matrixify::DataLoader dl(std::filesystem::temp_directory_path().string(),
                              logger);
     EXPECT_FALSE(dl.getGeneralOutputsSwitch());
 }
 
 TEST_F(BaseLoaderTest, getGeneralStatsOutputTimesteps) {
-    Matrixify::DataLoader dl(std::filesystem::temp_directory_path().string(),
+    matrixify::DataLoader dl(std::filesystem::temp_directory_path().string(),
                              logger);
     EXPECT_EQ(dl.getGeneralStatsOutputTimesteps().size(), 1);
 }

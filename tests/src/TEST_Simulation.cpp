@@ -1,4 +1,4 @@
-//===-- SimulationTest.cpp - Instruction class definition -------*- C++ -*-===//
+//===-- simulationTest.cpp - Instruction class definition -------*- C++ -*-===//
 //
 // Part of the RESPOND - Researching Effective Strategies to Prevent Opioid
 // Death Project, under the AGPLv3 License. See https://www.gnu.org/licenses/
@@ -16,27 +16,27 @@
 ///
 //===----------------------------------------------------------------------===//
 
-#include "Simulation.hpp"
 #include "../mocks/MockCostLoader.hpp"
 #include "../mocks/MockDataLoader.hpp"
-#include "../mocks/MockSimulation.hpp"
 #include "../mocks/MockUtilityLoader.hpp"
+#include "../mocks/Mocksimulation.hpp"
 #include "DataTypes.hpp"
+#include "simulation.hpp"
 #include <gtest/gtest.h>
 #include <memory>
 
-using namespace Simulation;
-using namespace Matrixify;
+using namespace simulation;
+using namespace matrixify;
 
 using ::testing::Return;
 
-TEST(SimulationCreation, DefaultConstructor) {
+TEST(simulationCreation, DefaultConstructor) {
     Respond sim;
     int expected = 0;
     EXPECT_EQ(sim.getDuration(), expected);
 }
 
-TEST(SimulationCreation, MainConstructor) {
+TEST(simulationCreation, MainConstructor) {
     std::shared_ptr<MockDataLoader> mockLoaderPtr =
         std::make_shared<MockDataLoader>();
     EXPECT_CALL(*mockLoaderPtr, getDuration()).WillRepeatedly(Return(10));
@@ -63,10 +63,10 @@ TEST(Run, EmptyRun) {
         .WillRepeatedly(Return(1));
     EXPECT_CALL(*mockLoaderPtr, getLogger()).WillRepeatedly(Return(nullptr));
 
-    Matrixify::Matrix3d expected(1, 1, 1);
+    matrixify::Matrix3d expected(1, 1, 1);
     expected.setZero();
-    std::vector<Matrixify::Matrix3d> vecmat = {expected};
-    Matrixify::Matrix4d mat4d(vecmat);
+    std::vector<matrixify::Matrix3d> vecmat = {expected};
+    matrixify::Matrix4d mat4d(vecmat);
 
     EXPECT_CALL(*mockLoaderPtr, getInitialSample())
         .WillRepeatedly(Return(expected));
@@ -118,14 +118,14 @@ TEST(Run, SingleStepRun) {
     EXPECT_CALL(*mockLoaderPtr, getInitialSample())
         .WillRepeatedly(Return(initialSample));
 
-    Matrixify::Matrix3d e1(2, 2, 2);
+    matrixify::Matrix3d e1(2, 2, 2);
     e1.setValues({{{1, 1}, {1, 1}}, {{1, 1}, {1, 1}}});
     std::vector<Matrix3d> es{e1};
     Matrix4d eVec(es);
     EXPECT_CALL(*mockLoaderPtr, getEnteringSamples())
         .WillRepeatedly(Return(eVec));
 
-    Matrixify::Matrix3d o1(2, 4, 2);
+    matrixify::Matrix3d o1(2, 4, 2);
     o1.setValues({{{.85, .9}, {.15, .1}, {.1, .2}, {.9, .8}},
                   {{.85, .9}, {.15, .1}, {.1, .2}, {.9, .8}}});
     EXPECT_CALL(*mockLoaderPtr, getOUDTransitionRates())
@@ -216,7 +216,7 @@ TEST(Run, MultiStepRun) {
     EXPECT_CALL(*mockLoaderPtr, getInitialSample())
         .WillRepeatedly(Return(initialSample));
 
-    Matrixify::Matrix3d e1(2, 2, 2);
+    matrixify::Matrix3d e1(2, 2, 2);
     e1.setValues({{{1, 1}, {1, 1}}, {{1, 1}, {1, 1}}});
     Matrix3d e2(2, 2, 2);
     e2.setValues({{{1, 1}, {1, 1}}, {{1, 1}, {1, 1}}});
@@ -227,7 +227,7 @@ TEST(Run, MultiStepRun) {
     EXPECT_CALL(*mockLoaderPtr, getEnteringSamples())
         .WillRepeatedly(Return(eVec));
 
-    Matrixify::Matrix3d o1(2, 4, 2);
+    matrixify::Matrix3d o1(2, 4, 2);
     o1.setValues({{{.85, .9}, {.15, .1}, {.1, .2}, {.9, .8}},
                   {{.85, .9}, {.15, .1}, {.1, .2}, {.9, .8}}});
     EXPECT_CALL(*mockLoaderPtr, getOUDTransitionRates())

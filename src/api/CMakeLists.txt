@@ -15,6 +15,6 @@ add_executable(${PROJECT_NAME}
 
 target_link_libraries(${PROJECT_NAME} PUBLIC Crow::Crow)
 target_link_libraries(${PROJECT_NAME} PUBLIC matrixify)
-target_link_libraries(${PROJECT_NAME} PUBLIC simrunner)
+target_link_libraries(${PROJECT_NAME} PUBLIC simulation)
 
 target_include_directories(${PROJECT_NAME} PUBLIC "include/")

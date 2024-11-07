@@ -15,5 +15,5 @@ target_include_directories(respond PRIVATE
 target_link_libraries(${PROJECT_NAME} PUBLIC benchmark::benchmark)
 target_link_libraries(${PROJECT_NAME} PUBLIC spdlog::spdlog)
 target_link_libraries(${PROJECT_NAME} PUBLIC matrixify)
-target_link_libraries(${PROJECT_NAME} PUBLIC simrunner)
+target_link_libraries(${PROJECT_NAME} PUBLIC simulation)
 target_link_libraries(${PROJECT_NAME} PUBLIC DataManagement)

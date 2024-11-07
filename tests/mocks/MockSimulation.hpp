@@ -1,4 +1,4 @@
-//===-- MockSimulation.hpp - Instruction class definition -------*- C++ -*-===//
+//===-- Mocksimulation.hpp - Instruction class definition -------*- C++ -*-===//
 //
 // Part of the RESPOND - Researching Effective Strategies to Prevent Opioid
 // Death Project, under the AGPLv3 License. See https://www.gnu.org/licenses/
@@ -20,39 +20,39 @@
 #define TESTS_MOCKSIMULATION_HPP_
 
 #include "DataTypes.hpp"
-#include "Simulation.hpp"
+#include "simulation.hpp"
 #include "gmock/gmock.h"
 
-using namespace Simulation;
+using namespace simulation;
 
-class MockSimulation : public IRespond {
-    MOCK_METHOD((Matrixify::Matrix3d), getState, (), (const, override));
-    MOCK_METHOD((std::shared_ptr<Matrixify::IDataLoader>), getDataLoader, (),
+class Mocksimulation : public IRespond {
+    MOCK_METHOD((matrixify::Matrix3d), getState, (), (const, override));
+    MOCK_METHOD((std::shared_ptr<matrixify::IDataLoader>), getDataLoader, (),
                 (const, override));
-    MOCK_METHOD((std::shared_ptr<Matrixify::ICostLoader>), getCostLoader, (),
+    MOCK_METHOD((std::shared_ptr<matrixify::ICostLoader>), getCostLoader, (),
                 (const, override));
-    MOCK_METHOD((std::shared_ptr<Matrixify::IUtilityLoader>), getUtilityLoader,
+    MOCK_METHOD((std::shared_ptr<matrixify::IUtilityLoader>), getUtilityLoader,
                 (), (const, override));
     MOCK_METHOD(void, ageUp, (), (override));
-    MOCK_METHOD((Matrixify::History), getHistory, (), (const, override));
+    MOCK_METHOD((matrixify::History), getHistory, (), (const, override));
 
     MOCK_METHOD(void, run,
-                ((std::shared_ptr<Matrixify::IDataLoader> const &),
-                 (std::shared_ptr<Matrixify::ICostLoader> const &),
-                 (std::shared_ptr<Matrixify::IUtilityLoader> const &)),
+                ((std::shared_ptr<matrixify::IDataLoader> const &),
+                 (std::shared_ptr<matrixify::ICostLoader> const &),
+                 (std::shared_ptr<matrixify::IUtilityLoader> const &)),
                 (override));
     MOCK_METHOD(std::uint64_t, getCurrentTime, (), (const, override));
     MOCK_METHOD(void, setDuration, (std::uint64_t const), (override));
     MOCK_METHOD(std::uint64_t, getDuration, (), (const, override));
 
     MOCK_METHOD(void, setData,
-                ((std::shared_ptr<Matrixify::IDataLoader> const &)),
+                ((std::shared_ptr<matrixify::IDataLoader> const &)),
                 (override));
     MOCK_METHOD(void, setCost,
-                ((std::shared_ptr<Matrixify::ICostLoader> const &)),
+                ((std::shared_ptr<matrixify::ICostLoader> const &)),
                 (override));
     MOCK_METHOD(void, setUtility,
-                ((std::shared_ptr<Matrixify::IUtilityLoader> const &)),
+                ((std::shared_ptr<matrixify::IUtilityLoader> const &)),
                 (override));
 };
 

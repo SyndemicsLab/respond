@@ -25,17 +25,7 @@
 #include <unordered_map>
 #include <vector>
 
-#include "Interfaces.hpp"
-
-namespace Matrixify {
-    class IBaseLoader : public virtual ILoggable,
-                        public virtual IOutputable,
-                        public virtual IConfigable,
-                        public virtual ISimulatable,
-                        public virtual IReadable,
-                        public virtual IAgeable,
-                        public virtual IStratifiable,
-                        public virtual ICostable {};
+namespace matrixify {
 
     class BaseLoader : public virtual IBaseLoader {
     public:
@@ -217,5 +207,5 @@ namespace Matrixify {
             std::vector<std::vector<std::string>>::const_iterator currentInput,
             std::vector<std::vector<std::string>>::const_iterator finalInput);
     };
-} // namespace Matrixify
+} // namespace matrixify
 #endif

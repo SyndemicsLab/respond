@@ -26,12 +26,12 @@
 #include "DataTypes.hpp"
 
 /// @brief Namespace containing all Helper Utility Classes
-namespace Matrixify {
+namespace matrixify {
 
     /// @brief Factory to create a Matrix3d Object
     class Matrix3dFactory {
     public:
-        Matrix3dFactory(){};
+        Matrix3dFactory() {};
 
         /// @brief Main Static Function used to generate Matrix3d Objects
         /// @param numOUDStates Integer specifying number of OUD States
@@ -39,11 +39,11 @@ namespace Matrixify {
         /// @param numDemographics Integer specifying number of Demographic
         /// Combinations
         /// @return New Matrix3d Object of specified dimensions
-        static Matrixify::Matrix3d Create(const int numOUDStates,
+        static matrixify::Matrix3d Create(const int numOUDStates,
                                           const int numInterventions,
                                           const int numDemographics);
     };
 
-} // namespace Matrixify
+} // namespace matrixify
 
 #endif

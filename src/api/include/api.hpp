@@ -17,14 +17,14 @@ namespace API {
         void runApp();
 
     private:
-        Matrixify::IDataLoaderPtr inputs;
-        Matrixify::ICostLoaderPtr costs;
-        Matrixify::IUtilityLoaderPtr utils;
-        Matrixify::HistoryWriter historyWriter;
-        Matrixify::CostWriter costWriter;
-        Matrixify::UtilityWriter utilityWriter;
+        matrixify::IDataLoaderPtr inputs;
+        matrixify::ICostLoaderPtr costs;
+        matrixify::IUtilityLoaderPtr utils;
+        matrixify::HistoryWriter historyWriter;
+        matrixify::CostWriter costWriter;
+        matrixify::UtilityWriter utilityWriter;
 
-        Matrixify::History hist;
+        matrixify::History hist;
 
         void setupUpload();
         void setupDownload();

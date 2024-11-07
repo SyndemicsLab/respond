@@ -23,7 +23,7 @@
 #include <stdexcept>
 #include <unordered_map>
 
-namespace Matrixify {
+namespace matrixify {
     DataLoader::DataLoader(Data::IConfigablePtr config,
                            std::string const &inputDir,
                            std::shared_ptr<spdlog::logger> logger)
@@ -39,7 +39,7 @@ namespace Matrixify {
 
         Data::IDataTablePtr initialCohort = loadTable(csvName);
 
-        this->initialSample = Matrixify::Matrix3dFactory::Create(
+        this->initialSample = matrixify::Matrix3dFactory::Create(
             getNumOUDStates(), getNumInterventions(),
             getNumDemographicCombos());
 
@@ -122,7 +122,7 @@ namespace Matrixify {
             std::vector<std::string> col =
                 enteringSamplesTable->getColumn(column);
 
-            Matrix3d enteringSample = Matrixify::Matrix3dFactory::Create(
+            Matrix3d enteringSample = matrixify::Matrix3dFactory::Create(
                 getNumOUDStates(), getNumInterventions(),
                 getNumDemographicCombos());
 
@@ -161,7 +161,7 @@ namespace Matrixify {
             column += std::to_string(changepoint);
             std::vector<std::string> col = enteringCohort->getColumn(column);
 
-            Matrix3d enteringSample = Matrixify::Matrix3dFactory::Create(
+            Matrix3d enteringSample = matrixify::Matrix3dFactory::Create(
                 getNumOUDStates(), getNumInterventions(),
                 getNumDemographicCombos());
 
@@ -221,7 +221,7 @@ namespace Matrixify {
         // end dimensions of oudTransitionRates are getNumInterventions() x
         // getNumOUDStates()^2 x demographics start with a vector of
         // StateTensor-sized Matrix3d objects and stack at the end
-        Matrix3d tempOUDTransitions = Matrixify::Matrix3dFactory::Create(
+        Matrix3d tempOUDTransitions = matrixify::Matrix3dFactory::Create(
             getNumOUDStates() * getNumOUDStates(), getNumInterventions(),
             getNumDemographicCombos());
 
@@ -278,7 +278,7 @@ namespace Matrixify {
 
         Data::IDataTablePtr interventionInitTable = loadTable(csvName);
 
-        Matrix3d tempinterventionInit = Matrixify::Matrix3dFactory::Create(
+        Matrix3d tempinterventionInit = matrixify::Matrix3dFactory::Create(
             getNumOUDStates() * getNumOUDStates(), getNumInterventions(),
             getNumDemographicCombos());
 
@@ -385,7 +385,7 @@ namespace Matrixify {
 
         int startTime = 0;
         for (int i = 0; i < this->overdoseChangeTimes.size(); ++i) {
-            Matrix3d overdoseTransition = Matrixify::Matrix3dFactory::Create(
+            Matrix3d overdoseTransition = matrixify::Matrix3dFactory::Create(
                 getNumOUDStates(), getNumInterventions(),
                 getNumDemographicCombos());
 
@@ -421,7 +421,7 @@ namespace Matrixify {
             //                             " not in fatal_overdose.csv");
             // }
 
-            // Matrix3d temp = Matrixify::Matrix3dFactory::Create(
+            // Matrix3d temp = matrixify::Matrix3dFactory::Create(
             //     getNumOUDStates(), getNumInterventions(),
             //     getNumDemographicCombos());
 
@@ -461,7 +461,7 @@ namespace Matrixify {
                 "death_prob not in background_mortality.csv");
         }
 
-        Matrix3d mortalityTransition = Matrixify::Matrix3dFactory::Create(
+        Matrix3d mortalityTransition = matrixify::Matrix3dFactory::Create(
             getNumOUDStates(), getNumInterventions(),
             getNumDemographicCombos());
         // mortality is one element per stratum, no time variability
@@ -488,11 +488,11 @@ namespace Matrixify {
         return this->mortalityRates;
     }
 
-    Matrixify::Matrix3d
+    matrixify::Matrix3d
     DataLoader::buildInterventionMatrix(Data::IDataTablePtr const &table,
                                         std::string interventionName,
                                         int timestep) {
-        Matrixify::Matrix3d transMat = Matrixify::Matrix3dFactory::Create(
+        matrixify::Matrix3d transMat = matrixify::Matrix3dFactory::Create(
             getNumOUDStates(), getNumInterventions(),
             getNumDemographicCombos());
 
@@ -544,9 +544,9 @@ namespace Matrixify {
         return transMat;
     }
 
-    Matrixify::Matrix3d
+    matrixify::Matrix3d
     DataLoader::createTransitionMatrix3d(Data::IDataTablePtr const &table,
-                                         Matrixify::Dimension dimension,
+                                         matrixify::Dimension dimension,
                                          int timestep) {
 
         std::shared_ptr<Data::DataTable> dynaCast =
@@ -556,35 +556,35 @@ namespace Matrixify {
         Data::IDataTablePtr tempPtr =
             std::make_shared<Data::DataTable>(std::move(temp));
 
-        if (dimension == Matrixify::INTERVENTION) {
-            Matrix3d stackingMatrices = Matrixify::Matrix3dFactory::Create(
+        if (dimension == matrixify::INTERVENTION) {
+            Matrix3d stackingMatrices = matrixify::Matrix3dFactory::Create(
                 getNumOUDStates(),
                 getNumInterventions() * getNumInterventions(),
                 getNumDemographicCombos());
             for (int i = 0; i < getNumInterventions(); i++) {
                 // assign to index + offset of numInterventions
                 Eigen::array<Eigen::Index, 3> offsets = {0, 0, 0};
-                offsets[Matrixify::INTERVENTION] = i * getNumInterventions();
-                offsets[Matrixify::OUD] = i * 0;
-                offsets[Matrixify::DEMOGRAPHIC_COMBO] = 0;
+                offsets[matrixify::INTERVENTION] = i * getNumInterventions();
+                offsets[matrixify::OUD] = i * 0;
+                offsets[matrixify::DEMOGRAPHIC_COMBO] = 0;
                 Eigen::array<Eigen::Index, 3> extents = {0, 0, 0};
-                extents[Matrixify::INTERVENTION] = getNumInterventions();
-                extents[Matrixify::OUD] = getNumOUDStates();
-                extents[Matrixify::DEMOGRAPHIC_COMBO] =
+                extents[matrixify::INTERVENTION] = getNumInterventions();
+                extents[matrixify::OUD] = getNumOUDStates();
+                extents[matrixify::DEMOGRAPHIC_COMBO] =
                     getNumDemographicCombos();
-                Matrixify::Matrix3d temp = this->buildInterventionMatrix(
+                matrixify::Matrix3d temp = this->buildInterventionMatrix(
                     table, this->interventions[i], timestep);
                 stackingMatrices.slice(offsets, extents) = temp;
             }
             return stackingMatrices;
 
-        } else if (dimension == Matrixify::OUD) {
-            Matrix3d stackingMatrices = Matrixify::Matrix3dFactory::Create(
+        } else if (dimension == matrixify::OUD) {
+            Matrix3d stackingMatrices = matrixify::Matrix3dFactory::Create(
                 getNumOUDStates() * getNumOUDStates(), getNumInterventions(),
                 getNumDemographicCombos());
             return stackingMatrices;
         }
-        Matrix3d stackingMatrices = Matrixify::Matrix3dFactory::Create(
+        Matrix3d stackingMatrices = matrixify::Matrix3dFactory::Create(
             getNumOUDStates(), getNumInterventions(),
             getNumDemographicCombos());
         return stackingMatrices;
@@ -597,7 +597,7 @@ namespace Matrixify {
         int startTime = 0;
         for (int timestep : ict) {
             Matrix3d transMat = this->createTransitionMatrix3d(
-                table, Matrixify::INTERVENTION, timestep);
+                table, matrixify::INTERVENTION, timestep);
             fillTime(startTime, timestep, transMat, m3dot);
         }
         return m3dot;
@@ -606,7 +606,7 @@ namespace Matrixify {
     Matrix3d
     DataLoader::buildOverdoseTransitions(Data::IDataTablePtr const &table,
                                          std::string const &key) {
-        Matrix3d overdoseTransitionsCycle = Matrixify::Matrix3dFactory::Create(
+        Matrix3d overdoseTransitionsCycle = matrixify::Matrix3dFactory::Create(
             getNumOUDStates(), getNumInterventions(),
             getNumDemographicCombos());
 
@@ -636,7 +636,7 @@ namespace Matrixify {
     DataLoader::buildFatalOverdoseTransitions(Data::IDataTablePtr const &table,
                                               std::string const &key) {
         Matrix3d fatalOverdoseTransitionsCycle =
-            Matrixify::Matrix3dFactory::Create(getNumOUDStates(),
+            matrixify::Matrix3dFactory::Create(getNumOUDStates(),
                                                getNumInterventions(),
                                                getNumDemographicCombos());
         std::vector<std::string> col = table->getColumn(key);
@@ -651,11 +651,11 @@ namespace Matrixify {
             }
             // intervention, oud_state, dem
             Eigen::array<Eigen::Index, 3> offsets = {0, 0, 0};
-            offsets[Matrixify::DEMOGRAPHIC_COMBO] = dem;
+            offsets[matrixify::DEMOGRAPHIC_COMBO] = dem;
             Eigen::array<Eigen::Index, 3> extents = {0, 0, 0};
-            extents[Matrixify::INTERVENTION] = getNumInterventions();
-            extents[Matrixify::OUD] = getNumOUDStates();
-            extents[Matrixify::DEMOGRAPHIC_COMBO] = 1;
+            extents[matrixify::INTERVENTION] = getNumInterventions();
+            extents[matrixify::OUD] = getNumOUDStates();
+            extents[matrixify::DEMOGRAPHIC_COMBO] = 1;
             fatalOverdoseTransitionsCycle.slice(offsets, extents)
                 .setConstant(std::stod(col[row]));
             ++row;
@@ -695,4 +695,4 @@ namespace Matrixify {
         Matrix3d ret = writingTensor;
         return ret;
     }
-} // namespace Matrixify
+} // namespace matrixify
