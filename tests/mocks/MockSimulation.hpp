@@ -41,9 +41,9 @@ class Mocksimulation : public IRespond {
                  (std::shared_ptr<matrixify::ICostLoader> const &),
                  (std::shared_ptr<matrixify::IUtilityLoader> const &)),
                 (override));
-    MOCK_METHOD(std::uint64_t, getCurrentTime, (), (const, override));
-    MOCK_METHOD(void, setDuration, (std::uint64_t const), (override));
-    MOCK_METHOD(std::uint64_t, getDuration, (), (const, override));
+    MOCK_METHOD(int, getCurrentTime, (), (const, override));
+    MOCK_METHOD(void, setDuration, (int const), (override));
+    MOCK_METHOD(int, getDuration, (), (const, override));
 
     MOCK_METHOD(void, setData,
                 ((std::shared_ptr<matrixify::IDataLoader> const &)),

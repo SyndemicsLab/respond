@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.20)
 
-project(simulation)
+project(matrixify)
 
 include(FetchContent)
 message(CHECK_START "Fetching Eigen3")
@@ -27,6 +27,9 @@ FetchContent_MakeAvailable(Eigen)
 list(POP_BACK CMAKE_MESSAGE_INDENT)
 message(CHECK_PASS "fetched")
 
+find_package(DataManagement 1 REQUIRED
+    HINTS "${CMAKE_SOURCE_DIR}/lib/dminstall"
+)
 
 if(BUILD_SHARED_LIBS)
   add_library(${PROJECT_NAME} SHARED)
@@ -35,16 +38,19 @@ else()
 endif()
 
 
+
 target_sources(${PROJECT_NAME}
     PRIVATE
-        Respond.cpp
-        PostSimulationCalculator.cpp
+        Tensor3dFactory.cpp
+        RespondDataBlock.cpp
 )
 
 target_link_libraries(${PROJECT_NAME} 
     PRIVATE 
-        Eigen3::Eigen 
-        matrixify
+        spdlog::spdlog 
+        DataManagement::DataManagement
+    PUBLIC
+        Eigen3::Eigen
 )
 
 target_include_directories(${PROJECT_NAME} PUBLIC "include/")

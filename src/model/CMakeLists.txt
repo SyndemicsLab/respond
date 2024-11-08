@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.20)
 
-project(matrixify)
+project(model)
 
 include(FetchContent)
 message(CHECK_START "Fetching Eigen3")
@@ -41,19 +41,14 @@ endif()
 
 target_sources(${PROJECT_NAME}
     PRIVATE
-        BaseLoader.cpp
-        CostLoader.cpp
-        UtilityLoader.cpp
-        DataLoader.cpp
-        Writer.cpp
-        DataFormatter.cpp
-        DataTypes.cpp
-        Matrix3dFactory.cpp
-        Matrix3dPrinter.cpp
+        StateTransitionModel.cpp
 )
 
-target_link_libraries(${PROJECT_NAME} PRIVATE Eigen3::Eigen)
-target_link_libraries(${PROJECT_NAME} PRIVATE spdlog::spdlog)
-target_link_libraries(${PROJECT_NAME} PRIVATE DataManagement)
+target_link_libraries(${PROJECT_NAME} 
+    PRIVATE 
+        Eigen3::Eigen 
+        spdlog::spdlog 
+        DataManagement::DataManagement
+        data)
 
 target_include_directories(${PROJECT_NAME} PUBLIC "include/")

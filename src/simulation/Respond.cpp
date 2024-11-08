@@ -15,7 +15,8 @@
 ///
 //===----------------------------------------------------------------------===//
 
-#include "Simulation.hpp"
+#include "Respond.hpp"
+#include "RespondDataBlock.hpp"
 
 #include "Matrix3dPrinter.hpp"
 
@@ -33,29 +34,35 @@ namespace simulation {
      *  @image html png/RESPOND-StateMatrix.png
      *  @image latex pdf/RESPOND-StateMatrix.pdf "Multiplication" width=10cm
      */
-    class Respond : public IRespond {
+    class Respond : public virtual IRespond {
     public:
-        int Run() override {}
-        virtual std::uint64_t GetCurrentTime() const override {}
-        virtual std::uint64_t GetDuration() const override {}
-        virtual int LoadDatabase(std::string &const db_file) override {}
-        virtual int LoadConfig(std::string &const conf_file) override {}
-        virtual std::vector<std::shared_ptr<matrixify::Matrix3d>>
-        GetStateHistory() const override {}
-        virtual std::shared_ptr<matrixify::Matrix3d>
-        GetCurrentState() const override {}
-        virtual void ShiftAges() override {}
+    public:
+        bool BuildModel() override {}
+        bool LoadDataBlock(std::string &const) override {}
+        std::shared_ptr<data::IDataBlock> GetDataBlock() const override {}
+        void
+        AddMigratingCohort(std::shared_ptr<data::Tensor3d> state,
+                           std::shared_ptr<data::IDataBlock>) const override {}
+        void MultiplyBehaviorTransitions(
+            std::shared_ptr<data::Tensor3d> state,
+            std::shared_ptr<data::IDataBlock>) const override {}
+        void MultiplyInterventionTransitions(
+            std::shared_ptr<data::Tensor3d> state,
+            std::shared_ptr<data::IDataBlock>) const override {}
+        void MultiplyBehaviorTransitionsAfterInterventionChange(
+            std::shared_ptr<data::Tensor3d> state,
+            std::shared_ptr<data::IDataBlock>) const override {}
+        void MultiplyOverdoseProbabilities(
+            std::shared_ptr<data::Tensor3d> state,
+            std::shared_ptr<data::IDataBlock>) const override {}
+        void MultiplyProbabilitiesOfFatalityGivenOverdose(
+            std::shared_ptr<data::Tensor3d> state,
+            std::shared_ptr<data::IDataBlock>) const override {}
+        void MultiplyBackgroundMortalityProbabilities(
+            std::shared_ptr<data::Tensor3d> state,
+            std::shared_ptr<data::IDataBlock>) const override {}
 
     private:
-        std::shared_ptr<matrixify::Matrix3d> state;
-        std::uint64_t duration = 0;
-        int current_time = 0;
-        matrixify::History history;
-
-        matrixify::Matrix3d step();
-
-        void setupHistory();
-
         matrixify::Matrix3d
         multUseAfterIntervention(matrixify::Matrix3d const mat,
                                  int const intervention_idx) const;

@@ -7,8 +7,17 @@ project (
   DESCRIPTION "A Compartmental Simulation for Opioid Use Disorder"
 )
 
+include(FetchContent)
+FetchContent_Declare(
+        spdlog
+        GIT_REPOSITORY https://github.com/gabime/spdlog.git
+        GIT_TAG        v1.x
+)
+FetchContent_MakeAvailable(spdlog)
+
+add_subdirectory(data)
+add_subdirectory(model)
 add_subdirectory(simulation)
-add_subdirectory(matrixify)
 
 option(BUILD_API "enable RESPOND API" OFF)
 if(BUILD_API STREQUAL ON)
@@ -20,15 +29,18 @@ if (NOT BUILD_PYBINDINGS STREQUAL OFF)
   add_subdirectory(pybindings)
 endif()
 
-add_executable(respond main.cpp)
+add_executable(${PROJECT_NAME} main.cpp)
+target_include_directories(${PROJECT_NAME}
+    PRIVATE
+        "data/include"
+        "model/include"
+        "simulation/include"
+)
 
-target_include_directories(respond PRIVATE
-  "matrixify/include"
-  "simulation/include"
-  )
-
-target_link_libraries(respond
-  matrixify
-  simulation
-  spdlog::spdlog
+target_link_libraries(${PROJECT_NAME}
+    PRIVATE
+        data
+        model
+        simulation
+        spdlog::spdlog
 )

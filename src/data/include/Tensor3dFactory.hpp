@@ -1,4 +1,4 @@
-//===-- Matrix3dFactory.hpp - Matrix3dFactory class definition --*- C++ -*-===//
+//===-- Tensor3dFactory.hpp - Tensor3dFactory class definition --*- C++ -*-===//
 //
 // Part of the RESPOND - Researching Effective Strategies to Prevent Opioid
 // Death Project, under the AGPLv3 License. See https://www.gnu.org/licenses/
@@ -8,30 +8,26 @@
 //===----------------------------------------------------------------------===//
 ///
 /// \file
-/// This file contains the declaration of the Matrix3dFactory class.
+/// This file contains the declaration of the Tensor3dFactory class.
 ///
 /// Created Date: Tuesday, June 27th 2023, 10:20:34 am
 /// Contact: Benjamin.Linas@bmc.org
 ///
 //===----------------------------------------------------------------------===//
 
-#ifndef UTILITIES_MATRIX3DFACTORY_HPP_
-#define UTILITIES_MATRIX3DFACTORY_HPP_
+#ifndef UTILITIES_Tensor3dFactory_HPP_
+#define UTILITIES_Tensor3dFactory_HPP_
 
-#include <array>
-
-#include <Eigen/Eigen>
-#include <unsupported/Eigen/CXX11/Tensor>
-
-#include "DataTypes.hpp"
+#include "Tensor3d.hpp"
+#include <cstdint>
 
 /// @brief Namespace containing all Helper Utility Classes
-namespace matrixify {
+namespace data {
 
     /// @brief Factory to create a Matrix3d Object
-    class Matrix3dFactory {
+    class Tensor3dFactory {
     public:
-        Matrix3dFactory() {};
+        Tensor3dFactory() {};
 
         /// @brief Main Static Function used to generate Matrix3d Objects
         /// @param numOUDStates Integer specifying number of OUD States
@@ -39,11 +35,10 @@ namespace matrixify {
         /// @param numDemographics Integer specifying number of Demographic
         /// Combinations
         /// @return New Matrix3d Object of specified dimensions
-        static matrixify::Matrix3d Create(const int numOUDStates,
-                                          const int numInterventions,
-                                          const int numDemographics);
+        static Tensor3d Create(const uint16_t x, const uint16_t y,
+                               const uint16_t z);
     };
 
-} // namespace matrixify
+} // namespace data
 
 #endif
