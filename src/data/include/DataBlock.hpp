@@ -3,12 +3,13 @@
 
 #include <cstdint>
 #include <string>
+#include <vector>
 
 namespace data {
     class IDataBlock {
     public:
-        virtual int LoadDatabase(std::string &const db) = 0;
-        virtual int LoadConfig(std::string &const confile) = 0;
+        virtual int LoadDatabase(const std::string &db) = 0;
+        virtual int LoadConfig(const std::string &confile) = 0;
         virtual int GetSimulationDuration() const = 0;
         virtual std::vector<int> GetDataDimensions() const = 0;
         virtual bool GetStoreHistoryStatus() const = 0;

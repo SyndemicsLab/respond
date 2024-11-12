@@ -15,7 +15,7 @@
 ///
 //===----------------------------------------------------------------------===//
 
-#include "PostsimulationCalculator.hpp"
+#include "PostSimulationCalculator.hpp"
 
 namespace Calculator {
 

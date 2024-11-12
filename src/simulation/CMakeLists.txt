@@ -44,7 +44,7 @@ target_sources(${PROJECT_NAME}
 target_link_libraries(${PROJECT_NAME} 
     PRIVATE 
         Eigen3::Eigen 
-        matrixify
+        data
 )
 
 target_include_directories(${PROJECT_NAME} PUBLIC "include/")

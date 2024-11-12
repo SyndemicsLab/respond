@@ -49,6 +49,7 @@ target_link_libraries(${PROJECT_NAME}
         Eigen3::Eigen 
         spdlog::spdlog 
         DataManagement::DataManagement
-        data)
+        data
+)
 
 target_include_directories(${PROJECT_NAME} PUBLIC "include/")

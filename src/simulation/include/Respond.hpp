@@ -31,7 +31,7 @@ namespace simulation {
     class IRespond {
     public:
         virtual bool BuildModel() = 0;
-        virtual bool LoadDataBlock(std::string &const) = 0;
+        virtual bool LoadDataBlock(const std::string &) = 0;
         virtual std::shared_ptr<data::IDataBlock> GetDataBlock() const = 0;
         virtual void
             AddMigratingCohort(std::shared_ptr<data::Tensor3d>,

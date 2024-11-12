@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.20)
 
-project(matrixify)
+project(data)
 
 include(FetchContent)
 message(CHECK_START "Fetching Eigen3")

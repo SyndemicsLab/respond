@@ -38,7 +38,7 @@ namespace simulation {
     public:
     public:
         bool BuildModel() override {}
-        bool LoadDataBlock(std::string &const) override {}
+        bool LoadDataBlock(const std::string &) override {}
         std::shared_ptr<data::IDataBlock> GetDataBlock() const override {}
         void
         AddMigratingCohort(std::shared_ptr<data::Tensor3d> state,

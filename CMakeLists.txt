@@ -7,20 +7,11 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/../lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/../lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/../bin)
 
-include(FetchContent)
-
-FetchContent_Declare(
-        spdlog
-        GIT_REPOSITORY https://github.com/gabime/spdlog.git
-        GIT_TAG        v1.x
-)
-FetchContent_MakeAvailable(spdlog)
-
 add_subdirectory(src)
 # Only compile tests if desired
 option(BUILD_TESTS "enable RESPOND tests" OFF)
 if (NOT BUILD_TESTS STREQUAL OFF)
-  add_subdirectory(test)
+  add_subdirectory(tests)
 endif()
 
 # Only compile benchmarking if desired

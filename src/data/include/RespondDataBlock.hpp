@@ -4,30 +4,31 @@
 #include "DataBlock.hpp"
 #include "Tensor3d.hpp"
 
+#include <memory>
 #include <unordered_map>
 #include <vector>
 
 namespace data {
-    class IDemographics {
-        virtual std::unordered_map<std::string, std::vector<std::string>>
-        GetDemographics() = 0;
-        virtual std::vector<std::string> GetCombinations() const = 0;
-    };
-
+    enum class axis { INTERVENTION = 0, BEHAVIOR = 1, DEMOGRAPHIC = 2 };
     class IRespondDataBlock : public virtual IDataBlock {
     public:
-        virtual Tensor3d GetInitialCohort() const = 0;
-        virtual Tensor3d GetMigratingCohort(int timestep) const = 0;
-        virtual Tensor3d GetBehaviorTransitions(int timestep) const = 0;
-        virtual Tensor3d GetInterventionTransitions(int timestep) const = 0;
-        virtual Tensor3d
-        GetBehaviorTransitionsAfterInterventionChange(int timestep) const = 0;
-        virtual Tensor3d GetOverdoseProbabilities(int timestep) const = 0;
-        virtual Tensor3d
-        GetProbabilitiesOfOverdoseBeingFatal(int timestep) const = 0;
-        virtual Tensor3d GetStandardMortalityRatios(int timestep) const = 0;
-        virtual Tensor3d GetBackgroundMortalities(int timestep) const = 0;
-        virtual Tensor3d GetStandardMortalityRatios(int timestep) const = 0;
+        virtual std::vector<std::string> GetInterventions() const = 0;
+        virtual std::vector<std::string> GetBehaviors() const = 0;
+        virtual std::vector<std::string> GetDemographicTypes() const = 0;
+        virtual std::vector<std::string> GetDemographicCombinations() const = 0;
+        virtual std::shared_ptr<Tensor3d> GetInitialCohort() const = 0;
+        virtual std::shared_ptr<Tensor3d> GetMigratingCohort() const = 0;
+        virtual std::shared_ptr<Tensor3d> GetBehaviorTransitions() const = 0;
+        virtual std::shared_ptr<Tensor3d>
+        GetInterventionTransitions() const = 0;
+        virtual std::shared_ptr<Tensor3d>
+        GetBehaviorTransitionsAfterInterventionChange() const = 0;
+        virtual std::shared_ptr<Tensor3d> GetOverdoseProbabilities() const = 0;
+        virtual std::shared_ptr<Tensor3d>
+        GetProbabilitiesOfOverdoseBeingFatal() const = 0;
+        virtual std::shared_ptr<Tensor3d>
+        GetStandardMortalityRatios() const = 0;
+        virtual std::shared_ptr<Tensor3d> GetBackgroundMortalities() const = 0;
     };
 } // namespace data
 
