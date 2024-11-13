@@ -22,7 +22,7 @@
 #include <string>
 
 namespace data {
-    class IDataBlock;
+    class IRespondDataBlock;
     class Tensor3d;
 } // namespace data
 
@@ -30,30 +30,16 @@ namespace data {
 namespace simulation {
     class IRespond {
     public:
-        virtual bool BuildModel() = 0;
+        virtual bool BuildModel(const std::string &db,
+                                const std::string &confile, const int input_set,
+                                const int parameter_set,
+                                const int start_year = 2015) = 0;
+        virtual bool Run() = 0;
+        virtual bool Step() = 0;
+        virtual std::shared_ptr<data::Tensor3d> GetState() const = 0;
         virtual bool LoadDataBlock(const std::string &) = 0;
-        virtual std::shared_ptr<data::IDataBlock> GetDataBlock() const = 0;
-        virtual void
-            AddMigratingCohort(std::shared_ptr<data::Tensor3d>,
-                               std::shared_ptr<data::IDataBlock>) const = 0;
-        virtual void MultiplyBehaviorTransitions(
-            std::shared_ptr<data::Tensor3d>,
-            std::shared_ptr<data::IDataBlock>) const = 0;
-        virtual void MultiplyInterventionTransitions(
-            std::shared_ptr<data::Tensor3d>,
-            std::shared_ptr<data::IDataBlock>) const = 0;
-        virtual void MultiplyBehaviorTransitionsAfterInterventionChange(
-            std::shared_ptr<data::Tensor3d>,
-            std::shared_ptr<data::IDataBlock>) const = 0;
-        virtual void MultiplyOverdoseProbabilities(
-            std::shared_ptr<data::Tensor3d>,
-            std::shared_ptr<data::IDataBlock>) const = 0;
-        virtual void MultiplyProbabilitiesOfFatalityGivenOverdose(
-            std::shared_ptr<data::Tensor3d>,
-            std::shared_ptr<data::IDataBlock>) const = 0;
-        virtual void MultiplyBackgroundMortalityProbabilities(
-            std::shared_ptr<data::Tensor3d>,
-            std::shared_ptr<data::IDataBlock>) const = 0;
+        virtual std::shared_ptr<data::IRespondDataBlock>
+        GetDataBlock() const = 0;
     };
 } // namespace simulation
 #endif // MODEL_SIMULATION_HPP_

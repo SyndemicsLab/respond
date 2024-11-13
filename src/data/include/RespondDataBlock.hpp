@@ -30,6 +30,11 @@ namespace data {
         GetStandardMortalityRatios() const = 0;
         virtual std::shared_ptr<Tensor3d> GetBackgroundMortalities() const = 0;
     };
+
+    class RespondDataBlockFactory {
+    public:
+        static std::shared_ptr<IRespondDataBlock> MakeDataBlock();
+    };
 } // namespace data
 
 #endif

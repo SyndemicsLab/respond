@@ -17,6 +17,7 @@
 
 #include "Respond.hpp"
 #include "RespondDataBlock.hpp"
+#include "StateTransitionModel.hpp"
 
 #include "Matrix3dPrinter.hpp"
 
@@ -36,199 +37,103 @@ namespace simulation {
      */
     class Respond : public virtual IRespond {
     public:
-    public:
-        bool BuildModel() override {}
-        bool LoadDataBlock(const std::string &) override {}
-        std::shared_ptr<data::IDataBlock> GetDataBlock() const override {}
-        void
-        AddMigratingCohort(std::shared_ptr<data::Tensor3d> state,
-                           std::shared_ptr<data::IDataBlock>) const override {}
-        void MultiplyBehaviorTransitions(
-            std::shared_ptr<data::Tensor3d> state,
-            std::shared_ptr<data::IDataBlock>) const override {}
-        void MultiplyInterventionTransitions(
-            std::shared_ptr<data::Tensor3d> state,
-            std::shared_ptr<data::IDataBlock>) const override {}
-        void MultiplyBehaviorTransitionsAfterInterventionChange(
-            std::shared_ptr<data::Tensor3d> state,
-            std::shared_ptr<data::IDataBlock>) const override {}
-        void MultiplyOverdoseProbabilities(
-            std::shared_ptr<data::Tensor3d> state,
-            std::shared_ptr<data::IDataBlock>) const override {}
-        void MultiplyProbabilitiesOfFatalityGivenOverdose(
-            std::shared_ptr<data::Tensor3d> state,
-            std::shared_ptr<data::IDataBlock>) const override {}
-        void MultiplyBackgroundMortalityProbabilities(
-            std::shared_ptr<data::Tensor3d> state,
-            std::shared_ptr<data::IDataBlock>) const override {}
+        bool BuildModel(const std::string &db, const std::string &confile,
+                        const int input_set, const int parameter_set,
+                        const int start_year) override {
+            _data_block = data::RespondDataBlockFactory::MakeDataBlock();
+            _data_block->LoadData(input_set, parameter_set, start_year, db,
+                                  confile);
+            _model =
+                model::StateTransitionModelFactory::MakeStateTransitionModel();
+            _model->SetState(_data_block->GetInitialCohort());
+            _timestep = 0;
+        }
+        bool Run() override {
+            int duration = _data_block->GetSimulationDuration();
+            std::vector<int> history_steps =
+                _data_block->GetHistoryTimestepsToStore();
+            int history_idx = 0;
+            for (_timestep = 0; _timestep < duration; ++_timestep) {
+                Step();
+                if (_timestep == history_steps[history_idx]) {
+                    SnapshotHistory();
+                    ++history_idx;
+                }
+            }
+        }
+
+        bool Step() override {
+            AddMigratingCohort();
+            MultiplyBehaviorTransitions();
+            MultiplyInterventionTransitions();
+            MultiplyBehaviorTransitionsAfterInterventionChange();
+            MultiplyOverdoseProbabilities();
+            MultiplyProbabilitiesOfFatalityGivenOverdose();
+            MultiplyStandardMortalityRatios();
+            MultiplyBackgroundMortalityProbabilities();
+        }
+
+        std::shared_ptr<data::Tensor3d> GetState() const override {
+            return _model->GetCurrentState();
+        }
+        std::shared_ptr<data::IRespondDataBlock> GetDataBlock() const override {
+            return _data_block;
+        }
 
     private:
+        int _timestep = 0;
+        std::shared_ptr<model::IStateTransitionModel> _model = nullptr;
+        std::shared_ptr<data::IRespondDataBlock> _data_block = nullptr;
+        std::vector<data::Tensor3d> _history = {};
+
+        void AgePopulation() const {
+            std::shared_ptr<data::Tensor3d> transition_state =
+                _model->GetCurrentState();
+            // Shift State based on age
+            _model->SetState(transition_state);
+        }
+
+        void AddMigratingCohort() const {
+            _model->AddState(_data_block->GetMigratingCohort(), true);
+        }
+        void MultiplyBehaviorTransitions() const {
+            _model->MultiplyState(_data_block->GetBehaviorTransitions(), true);
+        }
+        void MultiplyInterventionTransitions() const {
+            _model->MultiplyState(_data_block->GetInterventionTransitions(),
+                                  true);
+        }
+        void MultiplyBehaviorTransitionsAfterInterventionChange() const {
+            _model->MultiplyState(
+                _data_block->GetBehaviorTransitionsAfterInterventionChange(),
+                true);
+        }
+        void MultiplyOverdoseProbabilities() const {
+            _model->MultiplyState(_data_block->GetOverdoseProbabilities(),
+                                  false);
+        }
+        void MultiplyProbabilitiesOfFatalityGivenOverdose() const {
+            _model->MultiplyState(
+                _data_block->GetProbabilitiesOfOverdoseBeingFatal(), false);
+        }
+        void MultiplyStandardMortalityRatios() const {
+            _model->MultiplyState(_data_block->GetStandardMortalityRatios(),
+                                  false);
+        }
+        void MultiplyBackgroundMortalityProbabilities() const {
+            _model->MultiplyState(_data_block->GetBackgroundMortalities(),
+                                  false);
+        }
+
+        void SnapshotHistory() {
+            std::shared_ptr<data::Tensor3d> temp = _model->GetCurrentState();
+            _history.push_back(*temp);
+        }
+
         matrixify::Matrix3d
         multUseAfterIntervention(matrixify::Matrix3d const mat,
                                  int const intervention_idx) const;
-
-        matrixify::Matrix3d
-        addEnteringSample(matrixify::Matrix3d const mat) const;
-
-        matrixify::Matrix3d
-        multBehaviorTransition(matrixify::Matrix3d const mat) const;
-
-        matrixify::Matrix3d
-        multInterventionTransition(matrixify::Matrix3d const mat) const;
-
-        matrixify::Matrix3d multFODGivenOD(matrixify::Matrix3d const mat) const;
-
-        matrixify::Matrix3d multOD(matrixify::Matrix3d const mat) const;
-
-        matrixify::Matrix3d multMortality(matrixify::Matrix3d const mat) const;
-
-        inline matrixify::Matrix3d createStandardMatrix3d() const {
-            matrixify::Matrix3d mat = matrixify::Matrix3dFactory::Create(
-                dataLoader->getNumOUDStates(),
-                dataLoader->getNumInterventions(),
-                dataLoader->getNumDemographicCombos());
-            mat.setZero();
-            return mat;
-        }
     };
-
-    Respond::Respond(std::shared_ptr<matrixify::IDataLoader> dataLoader) {
-        if (!dataLoader) {
-            return;
-        }
-        this->setData(dataLoader);
-        const auto processor_count = std::thread::hardware_concurrency();
-        Eigen::setNbThreads(processor_count);
-        this->setDuration(dataLoader->getDuration());
-        this->currentTime = 0;
-        this->state = createStandardMatrix3d();
-
-        this->logger = dataLoader->getLogger();
-
-        if (!this->logger) {
-            if (!spdlog::get("console")) {
-                this->logger = spdlog::stdout_color_mt("console");
-            } else {
-                this->logger = spdlog::get("console");
-            }
-        }
-    }
-
-    void
-    Respond::run(std::shared_ptr<matrixify::IDataLoader> const &dataloader,
-                 std::shared_ptr<matrixify::ICostLoader> const &costloader,
-                 std::shared_ptr<matrixify::IUtilityLoader> const &utilloader) {
-        if (dataloader) {
-            this->setData(dataloader);
-        }
-        if (costloader) {
-            this->setCost(costloader);
-        }
-        if (utilloader) {
-            this->setUtility(utilloader);
-        }
-        if (!this->getDataLoader()) {
-            this->getLogger()->error(
-                "There is no data Loaded to the simulation!");
-            return;
-        }
-
-        this->state = this->getDataLoader()->getInitialSample();
-        this->currentTime = 0;
-        this->setupHistory();
-
-        while (this->getCurrentTime() < this->getDuration()) {
-            this->state = this->step();
-            this->currentTime++;
-        }
-    }
-
-    void Respond::setupHistory() {
-        matrixify::Matrix3d zeroMat = createStandardMatrix3d();
-        this->history.overdoseHistory.insert(zeroMat, this->getCurrentTime());
-        this->history.fatalOverdoseHistory.insert(zeroMat,
-                                                  this->getCurrentTime());
-        this->history.mortalityHistory.insert(zeroMat, this->getCurrentTime());
-        this->history.interventionAdmissionHistory.insert(
-            zeroMat, this->getCurrentTime());
-        this->history.stateHistory.insert(this->state, this->getCurrentTime());
-    }
-
-    matrixify::Matrix3d Respond::step() {
-#ifndef NDEBUG
-        this->getLogger()->debug("Timestep: {}", this->currentTime);
-        Eigen::Tensor<double, 0> sum1 = this->state.sum();
-        this->getLogger()->debug("State Sum: {}", sum1(0));
-#endif
-
-        int agingReference =
-            std::floor(this->getDataLoader()->getAgingInterval() / 2);
-        if (((this->currentTime - agingReference) %
-                 this->getDataLoader()->getAgingInterval() ==
-             0)) {
-            this->ageUp();
-        }
-
-        matrixify::Matrix3d enterSampleState =
-            this->addEnteringSample(this->state);
-
-#ifndef NDEBUG
-        Eigen::Tensor<double, 0> sum2 = enterSampleState.sum();
-        this->getLogger()->debug(
-            "Post Entering Sample Population State Sum: {}", sum2(0));
-#endif
-        matrixify::Matrix3d oudTransState =
-            this->multBehaviorTransition(enterSampleState);
-
-#ifndef NDEBUG
-        Eigen::Tensor<double, 0> sum3 = oudTransState.sum().eval();
-        this->getLogger()->debug("Post OUD Transition Population State Sum: {}",
-                                 sum3(0));
-#endif
-
-        matrixify::Matrix3d transitionedState =
-            this->multInterventionTransition(oudTransState);
-
-#ifndef NDEBUG
-        Eigen::Tensor<double, 0> sum4 = transitionedState.sum();
-        this->getLogger()->debug(
-            "Post Intervention Transition Population State Sum: {}", sum4(0));
-#endif
-
-        matrixify::Matrix3d overdoses = this->multOD(transitionedState);
-
-        matrixify::Matrix3d fatalOverdoses = this->multFODGivenOD(overdoses);
-
-        matrixify::Matrix3d mortalities =
-            this->multMortality(transitionedState - fatalOverdoses);
-
-        auto new_state = (transitionedState - (mortalities + fatalOverdoses));
-
-#ifndef NDEBUG
-        Eigen::Tensor<double, 0> sum5 = (mortalities + fatalOverdoses).sum();
-        this->getLogger()->debug("Mortalities + FODs Sum: {}", sum5(0));
-        Eigen::Tensor<double, 0> t = new_state.sum();
-        this->getLogger()->debug("Final Step Population Sum: {}", t(0));
-#endif
-
-        matrixify::Matrix3d admissions = this->state - transitionedState;
-
-        matrixify::Matrix3d mat(admissions.dimensions());
-        mat.setZero();
-
-        admissions = admissions.cwiseMax(mat);
-
-        this->history.interventionAdmissionHistory.insert(admissions,
-                                                          currentTime + 1);
-        this->history.overdoseHistory.insert(overdoses, this->currentTime + 1);
-        this->history.fatalOverdoseHistory.insert(fatalOverdoses,
-                                                  this->currentTime + 1);
-        this->history.mortalityHistory.insert(mortalities,
-                                              this->currentTime + 1);
-        this->history.stateHistory.insert(new_state, this->currentTime + 1);
-
-        return new_state;
-    }
 
     void Respond::ageUp() {
         auto tempState = this->state;
@@ -245,19 +150,6 @@ namespace simulation {
         extent = {state.dimensions()};
         extent[matrixify::DEMOGRAPHIC_COMBO] = shift_val;
         this->state.slice(offset, extent).setConstant(0);
-    }
-
-    matrixify::Matrix3d
-    Respond::addEnteringSample(matrixify::Matrix3d const mat) const {
-        matrixify::Matrix3d es =
-            this->getDataLoader()->getEnteringSamples().getMatrix3dAtTimestep(
-                this->currentTime);
-        ASSERTM(es.dimensions() == this->state.dimensions(),
-                "Entering Sample Dimensions is Correct");
-        auto ret = this->state + es;
-        matrixify::Matrix3d roundingMatrix(es.dimensions());
-        roundingMatrix.setZero();
-        return ret.cwiseMax(roundingMatrix);
     }
 
     matrixify::Matrix3d

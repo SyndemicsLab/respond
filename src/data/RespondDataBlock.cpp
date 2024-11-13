@@ -4,18 +4,47 @@
 #include <unsupported/Eigen/CXX11/Tensor>
 
 namespace data {
+
+    std::shared_ptr<IRespondDataBlock>
+    RespondDataBlockFactory::MakeDataBlock() {
+        std::shared_ptr<IRespondDataBlock> res =
+            std::make_shared<RespondDataBlock>();
+        return res;
+    }
+
     class RespondDataBlock : public virtual IRespondDataBlock {
     public:
         RespondDataBlock() {
             _dm = std::make_shared<datamanagement::DataManager>();
         }
-        int LoadDatabase(const std::string &db) override {
+        int ConnectToDatabase(const std::string &db) override {
             return _dm->ConnectToDatabase(db);
         }
         int LoadConfig(const std::string &confile) override {
             int rc = _dm->LoadConfig(confile);
             BuildDemographicCombinations();
             return rc;
+        }
+        int LoadData(const int input_set, const int parameter_set,
+                     const int year, const std::string &db,
+                     const std::string &confile) override {
+            if (!db.empty()) {
+                ConnectToDatabase(db);
+            }
+            if (!confile.empty()) {
+                LoadConfig(confile);
+            }
+            _input_set = input_set;
+            _parameter_set = parameter_set;
+            LoadInitialCohort();
+            LoadMigratingCohort(year);
+            LoadBehaviorTransitions(year);
+            LoadInterventionTransitions(year);
+            LoadBehaviorTransitionsAfterInterventionChange(year);
+            LoadOverdoseProbabilities(year);
+            LoadProbabilitiesOfOverdoseBeingFatal(year);
+            LoadStandardMortalityRatios(year);
+            LoadBackgroundMortalities(year);
         }
         int GetSimulationDuration() const override {
             std::string data;
@@ -67,21 +96,35 @@ namespace data {
             return _migrating_cohort;
         }
 
-        std::shared_ptr<Tensor3d> GetBehaviorTransitions() const override {}
+        std::shared_ptr<Tensor3d> GetBehaviorTransitions() const override {
+            return _behavior_transitions;
+        }
 
-        std::shared_ptr<Tensor3d> GetInterventionTransitions() const override {}
+        std::shared_ptr<Tensor3d> GetInterventionTransitions() const override {
+            return _intervention_transitions;
+        }
 
         std::shared_ptr<Tensor3d>
-        GetBehaviorTransitionsAfterInterventionChange() const override {}
+        GetBehaviorTransitionsAfterInterventionChange() const override {
+            return _behavior_transitions_after_intervention_change;
+        }
 
-        std::shared_ptr<Tensor3d> GetOverdoseProbabilities() const override {}
+        std::shared_ptr<Tensor3d> GetOverdoseProbabilities() const override {
+            return _overdose_probabilities;
+        }
 
         std::shared_ptr<Tensor3d>
-        GetProbabilitiesOfOverdoseBeingFatal() const override {}
+        GetProbabilitiesOfOverdoseBeingFatal() const override {
+            return _probabilities_of_overdose_being_fatal;
+        }
 
-        std::shared_ptr<Tensor3d> GetStandardMortalityRatios() const override {}
+        std::shared_ptr<Tensor3d> GetStandardMortalityRatios() const override {
+            return _smrs;
+        }
 
-        std::shared_ptr<Tensor3d> GetBackgroundMortalities() const override {}
+        std::shared_ptr<Tensor3d> GetBackgroundMortalities() const override {
+            return _background_mortalities;
+        }
 
     private:
         std::shared_ptr<datamanagement::DataManager> _dm;
@@ -107,8 +150,8 @@ namespace data {
             return 0;
         }
 
-        Eigen::TensorMap<data::Tensor3d> TensorBuilder(const std::string &query,
-                                                       int x, int y, int z) {
+        Eigen::TensorMap<Eigen::Tensor<double, 3>>
+        TensorBuilder(const std::string &query, int x, int y, int z) {
             std::string error;
             std::vector<double> data;
             int rc =
@@ -120,7 +163,8 @@ namespace data {
                 // error
             }
 
-            Eigen::TensorMap<data::Tensor3d> res(data.data(), x, y, z);
+            Eigen::TensorMap<Eigen::Tensor<double, 3>> res(data.data(), x, y,
+                                                           z);
             return res;
         }
 
@@ -135,106 +179,133 @@ namespace data {
             data::Tensor3d temp = TensorBuilder(
                 query, GetInterventions().size(), GetBehaviors().size(),
                 GetDemographicCombinations().size());
-            // this->_initial_cohort = std::make_shared<data::Tensor3d>(temp);
-            // Not sure if this works?
+            this->_initial_cohort = std::make_shared<data::Tensor3d>(temp);
         }
 
         void LoadMigratingCohort(int year) {
             std::stringstream sql;
             sql << "SELECT weekly_cohort_size_change FROM entering_cohort ";
-            sql << "WHERE input_set_id = " << _input_set;
-            sql << " ORDER BY " << year;
-            sql << " ASC, age_group ASC, sex ASC, race ASC, "
+            sql << "INNER JOIN years on years.id = entering_cohort.year ";
+            sql << "WHERE input_set_id = " << _input_set
+                << " AND years.year = " << year;
+            sql << " ORDER BY entering_cohort.year ASC, age_group ASC, sex "
+                   "ASC, race ASC, "
                    "intervention ASC, behavior ASC;";
             std::string query = sql.str();
-            this->_migrating_cohort = TensorBuilder(
+            data::Tensor3d temp = TensorBuilder(
                 query, GetInterventions().size(), GetBehaviors().size(),
                 GetDemographicCombinations().size());
+            this->_migrating_cohort = std::make_shared<data::Tensor3d>(temp);
         }
 
-        void LoadBehaviorTransitions(int timestep) {
+        void LoadBehaviorTransitions(int year) {
             std::stringstream sql;
             sql << "SELECT transition_probability FROM behavior_transitions ";
-            sql << "WHERE parameter_set_id = " << _input_set;
+            sql << "INNER JOIN years on years.id = behavior_transitions.year ";
+            sql << "WHERE parameter_set_id = " << _input_set
+                << " AND years.year = " << year;
             sql << " ORDER BY year ASC, age_group ASC, sex ASC, race ASC, "
                    "intervention ASC, start_behavior ASC, end_behavior ASC;";
             std::string query = sql.str();
-            this->_behavior_transitions = TensorBuilder(
+            data::Tensor3d temp = TensorBuilder(
                 query, GetInterventions().size(), GetBehaviors().size(),
                 GetDemographicCombinations().size());
+            this->_behavior_transitions =
+                std::make_shared<data::Tensor3d>(temp);
         }
-        void LoadInterventionTransitions(int timestep) {
+        void LoadInterventionTransitions(int year) {
             std::stringstream sql;
             sql << "SELECT transition_probability FROM "
                    "intervention_transitions ";
-            sql << "WHERE parameter_set_id = " << _input_set;
+            sql << "INNER JOIN years on years.id = "
+                   "intervention_transitions.year ";
+            sql << "WHERE parameter_set_id = " << _input_set
+                << " AND years.year = " << year;
             sql << " ORDER BY year ASC, age_group ASC, sex ASC, race ASC, "
                    "behavior ASC, start_intervention ASC, end_intervention "
                    "ASC;";
             std::string query = sql.str();
-            this->_intervention_transitions = TensorBuilder(
+            data::Tensor3d temp = TensorBuilder(
                 query, GetInterventions().size(), GetBehaviors().size(),
                 GetDemographicCombinations().size());
+            this->_intervention_transitions =
+                std::make_shared<data::Tensor3d>(temp);
         }
-        void LoadBehaviorTransitionsAfterInterventionChange(int timestep) {
+        void LoadBehaviorTransitionsAfterInterventionChange(int year) {
             std::stringstream sql;
             sql << "SELECT retention_probability FROM "
                    "behavior_transition_after_intervention_change ";
-            sql << "WHERE parameter_set_id = " << _input_set;
+            sql << "INNER JOIN years on years.id = "
+                   "behavior_transition_after_intervention_change.year ";
+            sql << "WHERE parameter_set_id = " << _input_set
+                << " AND years.year = " << year;
             sql << " ORDER BY year ASC, "
                    "initial_behavior ASC, new_intervention ASC;";
             std::string query = sql.str();
+            data::Tensor3d temp = TensorBuilder(
+                query, GetInterventions().size(), GetBehaviors().size(),
+                GetDemographicCombinations().size());
             this->_behavior_transitions_after_intervention_change =
-                TensorBuilder(query, GetInterventions().size(),
-                              GetBehaviors().size(),
-                              GetDemographicCombinations().size());
+                std::make_shared<data::Tensor3d>(temp);
         }
-        void LoadOverdoseProbabilities(int timestep) {
+        void LoadOverdoseProbabilities(int year) {
             std::stringstream sql;
             sql << "SELECT percent_pop_overdoses FROM "
                    "overdoses ";
-            sql << "WHERE parameter_set_id = " << _input_set;
+            sql << "INNER JOIN years on years.id = overdoses.year ";
+            sql << "WHERE parameter_set_id = " << _input_set
+                << " AND years.year = " << year;
             sql << " ORDER BY year ASC, age_group ASC, sex ASC, race ASC, "
                    "behavior ASC, intervention ASC;";
             std::string query = sql.str();
-            this->_migrating_cohort = TensorBuilder(
+            data::Tensor3d temp = TensorBuilder(
                 query, GetInterventions().size(), GetBehaviors().size(),
                 GetDemographicCombinations().size());
+            this->_migrating_cohort = std::make_shared<data::Tensor3d>(temp);
         }
-        void LoadProbabilitiesOfOverdoseBeingFatal(int timestep) {
+        void LoadProbabilitiesOfOverdoseBeingFatal(int year) {
             std::stringstream sql;
             sql << "SELECT percent_overdoses_fatal FROM "
                    "overdoses ";
-            sql << "WHERE parameter_set_id = " << _input_set;
+            sql << "INNER JOIN years on years.id = overdoses.year ";
+            sql << "WHERE parameter_set_id = " << _input_set
+                << " AND years.year = " << year;
             sql << " ORDER BY year ASC, age_group ASC, sex ASC, race ASC, "
                    "behavior ASC, intervention ASC;";
             std::string query = sql.str();
-            this->_migrating_cohort = TensorBuilder(
+            data::Tensor3d temp = TensorBuilder(
                 query, GetInterventions().size(), GetBehaviors().size(),
                 GetDemographicCombinations().size());
+            this->_migrating_cohort = std::make_shared<data::Tensor3d>(temp);
         }
-        void LoadStandardMortalityRatios(int timestep) {
+        void LoadStandardMortalityRatios(int year) {
             std::stringstream sql;
             sql << "SELECT smr FROM "
                    "smr ";
-            sql << "WHERE input_set_id = " << _input_set;
+            sql << "INNER JOIN years on years.id = smr.year ";
+            sql << "WHERE input_set_id = " << _input_set
+                << " AND years.year = " << year;
             sql << " ORDER BY year ASC, age_group ASC, sex ASC, race ASC, "
                    "behavior ASC, intervention ASC;";
             std::string query = sql.str();
-            this->_migrating_cohort = TensorBuilder(
+            data::Tensor3d temp = TensorBuilder(
                 query, GetInterventions().size(), GetBehaviors().size(),
                 GetDemographicCombinations().size());
+            this->_migrating_cohort = std::make_shared<data::Tensor3d>(temp);
         }
-        void LoadBackgroundMortalities(int timestep) {
+        void LoadBackgroundMortalities(int year) {
             std::stringstream sql;
             sql << "SELECT death_probability FROM "
                    "background_mortality ";
-            sql << "WHERE input_set_id = " << _input_set;
+            sql << "INNER JOIN years on years.id = background_mortality.year ";
+            sql << "WHERE input_set_id = " << _input_set
+                << " AND years.year = " << year;
             sql << " ORDER BY year ASC, age_group ASC, sex ASC, race ASC;";
             std::string query = sql.str();
-            this->_migrating_cohort = TensorBuilder(
+            data::Tensor3d temp = TensorBuilder(
                 query, GetInterventions().size(), GetBehaviors().size(),
                 GetDemographicCombinations().size());
+            this->_migrating_cohort = std::make_shared<data::Tensor3d>(temp);
         }
 
         std::vector<std::string>

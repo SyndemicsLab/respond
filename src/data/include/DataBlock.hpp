@@ -8,7 +8,10 @@
 namespace data {
     class IDataBlock {
     public:
-        virtual int LoadDatabase(const std::string &db) = 0;
+        virtual int LoadData(const int input_set, const int parameter_set,
+                             const int year = 2015, const std::string &db = "",
+                             const std::string &confile = "") = 0;
+        virtual int ConnectToDatabase(const std::string &db) = 0;
         virtual int LoadConfig(const std::string &confile) = 0;
         virtual int GetSimulationDuration() const = 0;
         virtual std::vector<int> GetDataDimensions() const = 0;

@@ -16,21 +16,26 @@ namespace model {
     /// @brief Interface for all simulations
     class IStateTransitionModel {
     public:
-        virtual bool Step() = 0;
-        virtual int GetCurrentTime() const = 0;
-        virtual int GetDuration() const = 0;
-        virtual int LoadDatabase(std::string &const db_file) = 0;
-        virtual int LoadConfig(std::string &const conf_file) = 0;
-        virtual void AppendStepOperation(
-            std::function<void(std::shared_ptr<data::Tensor3d>,
-                               std::shared_ptr<data::IDataBlock>)>
-                func) = 0;
-        virtual std::vector<
-            std::function<void(std::shared_ptr<data::Tensor3d>,
-                               std::shared_ptr<data::IDataBlock>)>>
-        GetStepOperations() const = 0;
-        virtual std::vector<data::Tensor3d> GetStateHistory() const = 0;
+        virtual void SetState(const std::shared_ptr<data::Tensor3d> &) = 0;
         virtual std::shared_ptr<data::Tensor3d> GetCurrentState() const = 0;
+        virtual std::shared_ptr<data::Tensor3d>
+        AddState(const std::shared_ptr<data::Tensor3d> &,
+                 bool in_place = false) = 0;
+        virtual std::shared_ptr<data::Tensor3d>
+        SubtractState(const std::shared_ptr<data::Tensor3d> &,
+                      bool in_place = false) = 0;
+        virtual std::shared_ptr<data::Tensor3d>
+        MultiplyState(const std::shared_ptr<data::Tensor3d> &,
+                      bool in_place = false) = 0;
+        virtual std::shared_ptr<data::Tensor3d>
+        DivideState(const std::shared_ptr<data::Tensor3d> &,
+                    bool in_place = false) = 0;
+    };
+
+    class StateTransitionModelFactory {
+    public:
+        static std::shared_ptr<IStateTransitionModel>
+        MakeStateTransitionModel();
     };
 
 } // namespace model
