@@ -15,15 +15,15 @@
 ///
 //===----------------------------------------------------------------------===//
 
-#include "Tensor3dFactory.hpp"
+#include "MatrixXdFactory.hpp"
 #include <Eigen/Eigen>
 
 namespace data {
 
-    Tensor3d Tensor3dFactory::Create(const uint16_t x, const uint16_t y,
-                                     const uint16_t z) {
-        Eigen::array<Eigen::Index, 3> order = {x, y, z};
-        Tensor3d empty(order);
+    Eigen::MatrixXd MatrixXdFactory::Create(const uint16_t x,
+                                            const uint16_t y) {
+        Eigen::array<Eigen::Index, 2> order = {x, y};
+        Eigen::MatrixXd empty(order);
         empty.setZero();
         return empty;
     }

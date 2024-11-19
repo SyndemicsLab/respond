@@ -18,16 +18,23 @@
 #ifndef UTILITIES_Tensor3dFactory_HPP_
 #define UTILITIES_Tensor3dFactory_HPP_
 
-#include "Tensor3d.hpp"
 #include <cstdint>
+
+namespace Eigen {
+    template <typename _Scalar, int _Rows, int _Cols, int _Options,
+              int _MaxRows, int _MaxCols>
+    class Matrix;
+    using MatrixXd = Matrix<double, -1, -1, 0, -1, -1>;
+    using VectorXd = Matrix<double, -1, 1, 0, -1, 1>;
+} // namespace Eigen
 
 /// @brief Namespace containing all Helper Utility Classes
 namespace data {
 
     /// @brief Factory to create a Matrix3d Object
-    class Tensor3dFactory {
+    class MatrixXdFactory {
     public:
-        Tensor3dFactory() {};
+        MatrixXdFactory() {};
 
         /// @brief Main Static Function used to generate Matrix3d Objects
         /// @param numOUDStates Integer specifying number of OUD States
@@ -35,8 +42,7 @@ namespace data {
         /// @param numDemographics Integer specifying number of Demographic
         /// Combinations
         /// @return New Matrix3d Object of specified dimensions
-        static Tensor3d Create(const uint16_t x, const uint16_t y,
-                               const uint16_t z);
+        static Eigen::MatrixXd Create(const uint16_t x, const uint16_t y);
     };
 
 } // namespace data

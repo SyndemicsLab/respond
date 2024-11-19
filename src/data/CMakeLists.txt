@@ -41,7 +41,7 @@ endif()
 
 target_sources(${PROJECT_NAME}
     PRIVATE
-        Tensor3dFactory.cpp
+        MatrixXdFactory.cpp
         RespondDataBlock.cpp
 )
 

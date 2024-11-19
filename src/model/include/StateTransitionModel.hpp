@@ -7,8 +7,15 @@
 #include <string>
 #include <vector>
 
+namespace Eigen {
+    template <typename _Scalar, int _Rows, int _Cols, int _Options,
+              int _MaxRows, int _MaxCols>
+    class Matrix;
+    using MatrixXd = Matrix<double, -1, -1, 0, -1, -1>;
+    using VectorXd = Matrix<double, -1, 1, 0, -1, 1>;
+} // namespace Eigen
+
 namespace data {
-    class Tensor3d;
     class IDataBlock;
 } // namespace data
 
@@ -16,20 +23,20 @@ namespace model {
     /// @brief Interface for all simulations
     class IStateTransitionModel {
     public:
-        virtual void SetState(const std::shared_ptr<data::Tensor3d> &) = 0;
-        virtual std::shared_ptr<data::Tensor3d> GetCurrentState() const = 0;
-        virtual std::shared_ptr<data::Tensor3d>
-        AddState(const std::shared_ptr<data::Tensor3d> &,
-                 bool in_place = false) = 0;
-        virtual std::shared_ptr<data::Tensor3d>
-        SubtractState(const std::shared_ptr<data::Tensor3d> &,
+        virtual void SetState(const std::shared_ptr<Eigen::MatrixXd> &) = 0;
+        virtual std::shared_ptr<Eigen::MatrixXd> GetCurrentState() const = 0;
+        virtual std::shared_ptr<Eigen::MatrixXd>
+        AddState(std::shared_ptr<Eigen::MatrixXd>, bool in_place = false) = 0;
+        virtual std::shared_ptr<Eigen::MatrixXd>
+        SubtractState(std::shared_ptr<Eigen::MatrixXd>,
                       bool in_place = false) = 0;
-        virtual std::shared_ptr<data::Tensor3d>
-        MultiplyState(const std::shared_ptr<data::Tensor3d> &,
+        virtual std::shared_ptr<Eigen::MatrixXd>
+        MultiplyState(std::shared_ptr<Eigen::MatrixXd>,
                       bool in_place = false) = 0;
-        virtual std::shared_ptr<data::Tensor3d>
-        DivideState(const std::shared_ptr<data::Tensor3d> &,
-                    bool in_place = false) = 0;
+        virtual std::shared_ptr<Eigen::MatrixXd>
+        ScalarMultiplyState(double, bool in_place = false) = 0;
+        virtual std::shared_ptr<Eigen::MatrixXd>
+        DivideState(double, bool in_place = false) = 0;
     };
 
     class StateTransitionModelFactory {

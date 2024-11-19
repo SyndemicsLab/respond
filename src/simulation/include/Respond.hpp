@@ -20,10 +20,19 @@
 
 #include <memory>
 #include <string>
+#include <vector>
+
+namespace Eigen {
+    template <typename _Scalar, int _Rows, int _Cols, int _Options,
+              int _MaxRows, int _MaxCols>
+    class Matrix;
+    using MatrixXd = Matrix<double, -1, -1, 0, -1, -1>;
+    using VectorXd = Matrix<double, -1, 1, 0, -1, 1>;
+} // namespace Eigen
 
 namespace data {
     class IRespondDataBlock;
-    class Tensor3d;
+    using ModelsVec = std::vector<std::shared_ptr<Eigen::MatrixXd>>;
 } // namespace data
 
 /// @brief Namespace defining all simulation Operations
@@ -36,7 +45,7 @@ namespace simulation {
                                 const int start_year = 2015) = 0;
         virtual bool Run() = 0;
         virtual bool Step() = 0;
-        virtual std::shared_ptr<data::Tensor3d> GetState() const = 0;
+        virtual std::shared_ptr<data::ModelsVec> GetStates() const = 0;
         virtual bool LoadDataBlock(const std::string &) = 0;
         virtual std::shared_ptr<data::IRespondDataBlock>
         GetDataBlock() const = 0;
