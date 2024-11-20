@@ -22,7 +22,8 @@ namespace data {
         virtual std::vector<std::string> GetInterventions() const = 0;
         virtual std::vector<std::string> GetBehaviors() const = 0;
         virtual std::vector<std::string> GetDemographicTypes() const = 0;
-        virtual std::vector<std::string> GetDemographicCombinations() const = 0;
+        virtual std::vector<std::vector<std::string>>
+        GetDemographicCombinations() const = 0;
         virtual std::shared_ptr<ModelsVec> GetInitialCohort() const = 0;
         virtual std::shared_ptr<ModelsVec> GetMigratingCohort() const = 0;
         virtual std::shared_ptr<ModelsVec> GetBehaviorTransitions() const = 0;

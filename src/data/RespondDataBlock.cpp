@@ -1,8 +1,8 @@
 #include "RespondDataBlock.hpp"
 #include <DataManagement/DataManager.hpp>
+#include <Eigen/Eigen>
 #include <cmath>
 #include <string>
-#include <unsupported/Eigen/CXX11/Tensor>
 
 namespace data {
     class RespondDataBlock : public virtual IRespondDataBlock {
@@ -85,73 +85,66 @@ namespace data {
             _dm->GetConfigSectionCategories("demographic", dem_types);
             return dem_types;
         }
-        std::vector<std::string> GetDemographicCombinations() const override {
+        std::vector<std::vector<std::string>>
+        GetDemographicCombinations() const override {
             return _demographic_combinations;
         }
 
-        std::shared_ptr<std::vector<Eigen::MatrixXd>>
-        GetInitialCohort() const override {
+        std::shared_ptr<ModelsVec> GetInitialCohort() const override {
             return _initial_cohort;
         }
-        std::shared_ptr<std::vector<Eigen::MatrixXd>>
-        GetMigratingCohort() const override {
+        std::shared_ptr<ModelsVec> GetMigratingCohort() const override {
             return _migrating_cohort;
         }
 
-        std::shared_ptr<std::vector<Eigen::MatrixXd>>
-        GetBehaviorTransitions() const override {
+        std::shared_ptr<ModelsVec> GetBehaviorTransitions() const override {
             return _behavior_transitions;
         }
 
-        std::shared_ptr<std::vector<Eigen::MatrixXd>>
-        GetInterventionTransitions() const override {
+        std::shared_ptr<ModelsVec> GetInterventionTransitions() const override {
             return _intervention_transitions;
         }
 
-        std::shared_ptr<std::vector<Eigen::MatrixXd>>
+        std::shared_ptr<ModelsVec>
         GetBehaviorTransitionsAfterInterventionChange() const override {
             return _behavior_transitions_after_intervention_change;
         }
 
-        std::shared_ptr<std::vector<Eigen::MatrixXd>>
-        GetOverdoseProbabilities() const override {
+        std::shared_ptr<ModelsVec> GetOverdoseProbabilities() const override {
             return _overdose_probabilities;
         }
 
-        std::shared_ptr<std::vector<Eigen::MatrixXd>>
+        std::shared_ptr<ModelsVec>
         GetProbabilitiesOfOverdoseBeingFatal() const override {
             return _probabilities_of_overdose_being_fatal;
         }
 
-        std::shared_ptr<std::vector<Eigen::MatrixXd>>
-        GetStandardMortalityRatios() const override {
+        std::shared_ptr<ModelsVec> GetStandardMortalityRatios() const override {
             return _smrs;
         }
 
-        std::shared_ptr<std::vector<Eigen::MatrixXd>>
-        GetBackgroundMortalities() const override {
+        std::shared_ptr<ModelsVec> GetBackgroundMortalities() const override {
             return _background_mortalities;
         }
 
     private:
+        const std::string INNERJOIN_DEMOGRAPHIC_STRING =
+            "INNER JOIN age_group AS ag ON ag.id = ec.age_group INNER JOIN sex "
+            "AS s ON s.id = ec.sex INNER JOIN race AS r ON r.id = ec.race ";
+
         std::shared_ptr<datamanagement::DataManager> _dm;
-        std::vector<std::string> _demographic_combinations;
-        std::shared_ptr<std::vector<Eigen::MatrixXd>> _initial_cohort = nullptr;
-        std::shared_ptr<std::vector<Eigen::MatrixXd>> _migrating_cohort =
-            nullptr;
-        std::shared_ptr<std::vector<Eigen::MatrixXd>> _behavior_transitions =
-            nullptr;
-        std::shared_ptr<std::vector<Eigen::MatrixXd>>
-            _intervention_transitions = nullptr;
-        std::shared_ptr<std::vector<Eigen::MatrixXd>>
+        std::vector<std::vector<std::string>> _demographic_combinations;
+        std::shared_ptr<ModelsVec> _initial_cohort = nullptr;
+        std::shared_ptr<ModelsVec> _migrating_cohort = nullptr;
+        std::shared_ptr<ModelsVec> _behavior_transitions = nullptr;
+        std::shared_ptr<ModelsVec> _intervention_transitions = nullptr;
+        std::shared_ptr<ModelsVec>
             _behavior_transitions_after_intervention_change = nullptr;
-        std::shared_ptr<std::vector<Eigen::MatrixXd>> _overdose_probabilities =
+        std::shared_ptr<ModelsVec> _overdose_probabilities = nullptr;
+        std::shared_ptr<ModelsVec> _probabilities_of_overdose_being_fatal =
             nullptr;
-        std::shared_ptr<std::vector<Eigen::MatrixXd>>
-            _probabilities_of_overdose_being_fatal = nullptr;
-        std::shared_ptr<std::vector<Eigen::MatrixXd>> _smrs = nullptr;
-        std::shared_ptr<std::vector<Eigen::MatrixXd>> _background_mortalities =
-            nullptr;
+        std::shared_ptr<ModelsVec> _smrs = nullptr;
+        std::shared_ptr<ModelsVec> _background_mortalities = nullptr;
 
         int _input_set = 1;
         int _parameter_set = 1;
@@ -162,8 +155,16 @@ namespace data {
             return 0;
         }
 
-        Eigen::TensorMap<std::vector<Eigen::MatrixXd>>
-        TensorBuilder(const std::string &query, int x, int y, int z) {
+        std::string BuildDemographicWhereClause(
+            std::vector<std::string> demographic_combination) {
+            std::stringstream clause;
+            clause << "WHERE ag.age_group = " << demographic_combination[0];
+            clause << " AND s.sex = " << demographic_combination[1];
+            clause << " AND r.race = " << demographic_combination[2];
+            return clause.str();
+        }
+
+        Eigen::MatrixXd MatrixBuilder(const std::string &query, int x, int y) {
             std::string error;
             std::vector<double> data;
             int rc =
@@ -175,8 +176,8 @@ namespace data {
                 // error
             }
 
-            Eigen::TensorMap<std::vector<Eigen::MatrixXd>> res(data.data(), x,
-                                                               y, z);
+            Eigen::MatrixXd res =
+                Eigen::Map<Eigen::MatrixXd>(data.data(), x, y);
             return res;
         }
 
@@ -188,45 +189,64 @@ namespace data {
                    "intervention ASC, behavior ASC;";
             std::string query = sql.str();
 
-            std::vector<Eigen::MatrixXd> temp = TensorBuilder(
-                query, GetInterventions().size(), GetBehaviors().size(),
-                GetDemographicCombinations().size());
-            this->_initial_cohort =
-                std::make_shared<std::vector<Eigen::MatrixXd>>(temp);
+            std::string error;
+            std::vector<double> data;
+            int rc =
+                _dm->SelectCustomCallback(query, this->callback, &data, error);
+            if (rc != 0) {
+                // error
+            }
+            if (data.empty()) {
+                // error
+            }
+
+            ModelsVec temp = {};
+
+            for (int i = 0; i < GetDemographicCombinations().size(); ++i) {
+                Eigen::MatrixXd res = Eigen::Map<Eigen::MatrixXd>(
+                    data.data(), GetInterventions().size(),
+                    GetBehaviors().size());
+                std::shared_ptr<Eigen::MatrixXd> res_ptr =
+                    std::make_shared<Eigen::MatrixXd>(res);
+                temp.push_back(res_ptr);
+            }
+
+            this->_initial_cohort = std::make_shared<ModelsVec>(temp);
         }
 
         void LoadMigratingCohort(int year) {
             std::stringstream sql;
-            sql << "SELECT weekly_cohort_size_change FROM entering_cohort ";
-            sql << "INNER JOIN years on years.id = entering_cohort.year ";
-            sql << "WHERE input_set_id = " << _input_set
-                << " AND years.year = " << year;
-            sql << " ORDER BY entering_cohort.year ASC, age_group ASC, sex "
-                   "ASC, race ASC, "
-                   "intervention ASC, behavior ASC;";
+            sql << "SELECT weekly_cohort_size_change ";
+            sql << "FROM entering_cohort AS ec ";
+            sql << "INNER JOIN years AS y ON y.id = ec.year ";
+            sql << INNERJOIN_DEMOGRAPHIC_STRING;
+            sql << BuildDemographicWhereClause({});
+            sql << " AND input_set_id = " << _input_set;
+            sql << " AND y.year = " << year;
+            sql << " ORDER BY ec.year ASC, ec.age_group ASC, ec.sex "
+                   "ASC, ec.race ASC, ec.intervention ASC, ec.behavior ASC;";
             std::string query = sql.str();
-            std::vector<Eigen::MatrixXd> temp = TensorBuilder(
-                query, GetInterventions().size(), GetBehaviors().size(),
-                GetDemographicCombinations().size());
-            this->_migrating_cohort =
-                std::make_shared<std::vector<Eigen::MatrixXd>>(temp);
+            Eigen::MatrixXd temp = MatrixBuilder(
+                query, GetInterventions().size(), GetBehaviors().size());
+            this->_migrating_cohort = std::make_shared<ModelsVec>(temp);
         }
 
         void LoadBehaviorTransitions(int year) {
             std::stringstream sql;
-            sql << "SELECT transition_probability FROM behavior_transitions ";
+            sql << "SELECT transition_probability ";
+            sql << "FROM behavior_transitions as bt";
             sql << "INNER JOIN years on years.id = behavior_transitions.year ";
-            sql << "WHERE parameter_set_id = " << _input_set
+            sql << INNERJOIN_DEMOGRAPHIC_STRING;
+            sql << BuildDemographicWhereClause({});
+            sql << " AND parameter_set_id = " << _input_set
                 << " AND years.year = " << year;
             sql << " ORDER BY year ASC, age_group ASC, sex ASC, race ASC, "
                    "intervention ASC, start_behavior ASC, end_behavior ASC;";
             std::string query = sql.str();
-            std::vector<Eigen::MatrixXd> temp =
-                TensorBuilder(query, GetInterventions().size(),
-                              std::pow(GetBehaviors().size(), 2),
-                              GetDemographicCombinations().size());
-            this->_behavior_transitions =
-                std::make_shared<std::vector<Eigen::MatrixXd>>(temp);
+            Eigen::MatrixXd temp =
+                MatrixBuilder(query, GetInterventions().size(),
+                              std::pow(GetBehaviors().size(), 2));
+            this->_behavior_transitions = std::make_shared<ModelsVec>(temp);
         }
         void LoadInterventionTransitions(int year) {
             std::stringstream sql;
@@ -240,29 +260,27 @@ namespace data {
                    "behavior ASC, start_intervention ASC, end_intervention "
                    "ASC;";
             std::string query = sql.str();
-            std::vector<Eigen::MatrixXd> temp = TensorBuilder(
-                query, std::pow(GetInterventions().size(), 2),
-                GetBehaviors().size(), GetDemographicCombinations().size());
-            this->_intervention_transitions =
-                std::make_shared<std::vector<Eigen::MatrixXd>>(temp);
+            Eigen::MatrixXd temp =
+                MatrixBuilder(query, std::pow(GetInterventions().size(), 2),
+                              GetBehaviors().size());
+            this->_intervention_transitions = std::make_shared<ModelsVec>(temp);
         }
         void LoadBehaviorTransitionsAfterInterventionChange(int year) {
             std::stringstream sql;
             sql << "SELECT retention_probability FROM "
-                   "behavior_transition_after_intervention_change ";
-            sql << "INNER JOIN years on years.id = "
+                   "behavior_transition_after_intervention_change AS btaic ";
+            sql << "INNER JOIN years ON years.id = "
                    "behavior_transition_after_intervention_change.year ";
             sql << "WHERE parameter_set_id = " << _input_set
                 << " AND years.year = " << year;
-            sql << " ORDER BY year ASC, "
+            sql << " ORDER BY btaic.year ASC, "
                    "initial_behavior ASC, new_intervention ASC;";
             std::string query = sql.str();
-            std::vector<Eigen::MatrixXd> temp =
-                TensorBuilder(query, GetInterventions().size(),
-                              std::pow(GetBehaviors().size(), 2),
-                              GetDemographicCombinations().size());
+            Eigen::MatrixXd temp =
+                MatrixBuilder(query, GetInterventions().size(),
+                              std::pow(GetBehaviors().size(), 2));
             this->_behavior_transitions_after_intervention_change =
-                std::make_shared<std::vector<Eigen::MatrixXd>>(temp);
+                std::make_shared<ModelsVec>(temp);
         }
         void LoadOverdoseProbabilities(int year) {
             std::stringstream sql;
@@ -271,14 +289,12 @@ namespace data {
             sql << "INNER JOIN years on years.id = overdoses.year ";
             sql << "WHERE parameter_set_id = " << _input_set
                 << " AND years.year = " << year;
-            sql << " ORDER BY year ASC, age_group ASC, sex ASC, race ASC, "
-                   "behavior ASC, intervention ASC;";
+            sql << " ORDER BY overdoses.year ASC, age_group ASC, sex ASC, race "
+                   "ASC, behavior ASC, intervention ASC;";
             std::string query = sql.str();
-            std::vector<Eigen::MatrixXd> temp = TensorBuilder(
-                query, GetInterventions().size(), GetBehaviors().size(),
-                GetDemographicCombinations().size());
-            this->_migrating_cohort =
-                std::make_shared<std::vector<Eigen::MatrixXd>>(temp);
+            Eigen::MatrixXd temp = MatrixBuilder(
+                query, GetInterventions().size(), GetBehaviors().size());
+            this->_migrating_cohort = std::make_shared<ModelsVec>(temp);
         }
         void LoadProbabilitiesOfOverdoseBeingFatal(int year) {
             std::stringstream sql;
@@ -287,14 +303,12 @@ namespace data {
             sql << "INNER JOIN years on years.id = overdoses.year ";
             sql << "WHERE parameter_set_id = " << _input_set
                 << " AND years.year = " << year;
-            sql << " ORDER BY year ASC, age_group ASC, sex ASC, race ASC, "
-                   "behavior ASC, intervention ASC;";
+            sql << " ORDER BY overdoses.year ASC, age_group ASC, sex ASC, race "
+                   "ASC, behavior ASC, intervention ASC;";
             std::string query = sql.str();
-            std::vector<Eigen::MatrixXd> temp = TensorBuilder(
-                query, GetInterventions().size(), GetBehaviors().size(),
-                GetDemographicCombinations().size());
-            this->_migrating_cohort =
-                std::make_shared<std::vector<Eigen::MatrixXd>>(temp);
+            Eigen::MatrixXd temp = MatrixBuilder(
+                query, GetInterventions().size(), GetBehaviors().size());
+            this->_migrating_cohort = std::make_shared<ModelsVec>(temp);
         }
         void LoadStandardMortalityRatios(int year) {
             std::stringstream sql;
@@ -303,14 +317,12 @@ namespace data {
             sql << "INNER JOIN years on years.id = smr.year ";
             sql << "WHERE input_set_id = " << _input_set
                 << " AND years.year = " << year;
-            sql << " ORDER BY year ASC, age_group ASC, sex ASC, race "
+            sql << " ORDER BY smr.year ASC, age_group ASC, sex ASC, race "
                    "ASC, behavior ASC, intervention ASC;";
             std::string query = sql.str();
-            std::vector<Eigen::MatrixXd> temp = TensorBuilder(
-                query, GetInterventions().size(), GetBehaviors().size(),
-                GetDemographicCombinations().size());
-            this->_migrating_cohort =
-                std::make_shared<std::vector<Eigen::MatrixXd>>(temp);
+            Eigen::MatrixXd temp = MatrixBuilder(
+                query, GetInterventions().size(), GetBehaviors().size());
+            this->_migrating_cohort = std::make_shared<ModelsVec>(temp);
         }
         void LoadBackgroundMortalities(int year) {
             std::stringstream sql;
@@ -319,13 +331,12 @@ namespace data {
             sql << "INNER JOIN years on years.id = background_mortality.year ";
             sql << "WHERE input_set_id = " << _input_set
                 << " AND years.year = " << year;
-            sql << " ORDER BY year ASC, age_group ASC, sex ASC, race ASC;";
+            sql << " ORDER BY background_mortality.year ASC, age_group ASC, "
+                   "sex ASC, race ASC;";
             std::string query = sql.str();
-            std::vector<Eigen::MatrixXd> temp = TensorBuilder(
-                query, GetInterventions().size(), GetBehaviors().size(),
-                GetDemographicCombinations().size());
-            this->_migrating_cohort =
-                std::make_shared<std::vector<Eigen::MatrixXd>>(temp);
+            Eigen::MatrixXd temp = MatrixBuilder(
+                query, GetInterventions().size(), GetBehaviors().size());
+            this->_migrating_cohort = std::make_shared<ModelsVec>(temp);
         }
 
         std::vector<std::string>
@@ -384,12 +395,12 @@ namespace data {
             RecursiveDemographicBuilder(final_result, running_tally,
                                         dem_list.begin(), dem_list.end());
             for (std::vector<std::string> str_vec : final_result) {
-                std::string group = "";
+                std::vector<std::string> group = {};
                 for (std::string st : str_vec) {
                     std::transform(
                         st.begin(), st.end(), st.begin(),
                         [](unsigned char c) { return std::tolower(c); });
-                    group += " " + st;
+                    group.push_back(st);
                 }
                 _demographic_combinations.push_back(group);
             }
