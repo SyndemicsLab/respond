@@ -16,7 +16,7 @@
 //===----------------------------------------------------------------------===//
 
 #include "Respond.hpp"
-#include "RespondDataBlock.hpp"
+#include "RespondDataStore.hpp"
 #include "StateTransitionModel.hpp"
 
 #include <Eigen/Eigen>
@@ -35,101 +35,127 @@ namespace simulation {
      */
     class Respond : public virtual IRespond {
     public:
-        bool BuildModel(const std::string &db, const std::string &confile,
-                        const int input_set, const int parameter_set,
-                        const int start_year) override {
-            _data_block = data::RespondDataBlockFactory::MakeDataBlock();
-            _data_block->LoadData(input_set, parameter_set, start_year, db,
-                                  confile);
-            auto init_data = _data_block->GetInitialCohort();
-            for (int i = 0;
-                 i < _data_block->GetDemographicCombinations().size(); ++i) {
-                std::shared_ptr<model::IStateTransitionModel> model = model::
-                    StateTransitionModelFactory::MakeStateTransitionModel();
-                auto single_dem = (*init_data)[i];
-                model->SetState(single_dem);
-            }
-            _timestep = 0;
+        Respond() {}
+
+        bool AppendModel(
+            const data::Models_v &model,
+            const std::shared_ptr<data::IRespondDataStore> &store) override {
+            _models.push_back(model);
+            _data_stores.push_back(store);
         }
+
         bool Run() override {
-            int duration = _data_block->GetSimulationDuration();
-            std::vector<int> history_steps =
-                _data_block->GetHistoryTimestepsToStore();
-            int history_idx = 0;
-            for (_timestep = 0; _timestep < duration; ++_timestep) {
-                Step();
-                if (_timestep == history_steps[history_idx]) {
-                    SnapshotHistory();
-                    ++history_idx;
+            for (int i = 0; i < _data_stores.size(); ++i) {
+                int duration = _data_stores[i]->GetDuration();
+                std::vector<int> history_steps =
+                    _data_stores[i]->GetHistoryTimestepsToStore();
+                int history_idx = 0;
+                for (int t = 0; t < duration; ++t) {
+                    Step(t, i);
+                    if (t == history_steps[history_idx]) {
+                        SnapshotHistory();
+                        ++history_idx;
+                    }
                 }
             }
         }
 
-        bool Step() override {
-            AddMigratingCohort();
-            MultiplyBehaviorTransitions();
-            MultiplyInterventionTransitions();
-            MultiplyOverdoseProbabilities();
-            MultiplyProbabilitiesOfFatalityGivenOverdose();
-            MultiplyStandardMortalityRatios();
-            MultiplyBackgroundMortalityProbabilities();
+        bool Step(int t, int idx) override {
+            std::shared_ptr<model::IStateTransitionModel> model = _models[idx];
+            std::shared_ptr<data::IRespondDataStore> store = _data_stores[idx];
+            model = AddMigratingCohort(model, store, t);
+            model = MultiplyBehaviorTransitions(model, store, t);
+            model = MultiplyInterventionTransitions(model, store, t);
+            model = MultiplyOverdoseProbabilities(model, store, t);
+            model =
+                MultiplyProbabilitiesOfFatalityGivenOverdose(model, store, t);
+            model = MultiplyStandardMortalityRatios(model, store, t);
+            model = MultiplyBackgroundMortalityProbabilities(model, store, t);
         }
 
-        std::shared_ptr<data::ModelsVec> GetStates() const override {
-            std::shared_ptr<data::ModelsVec> res =
-                std::make_shared<data::ModelsVec>();
-            for (auto &model : _models) {
-                res->push_back(model->GetCurrentState());
-            }
-            return res;
+        data::Models_v GetModels() const override { return _models; }
+        std::vector<std::shared_ptr<data::IRespondDataStore>>
+        GetDataStores() const override {
+            return _data_stores;
         }
-        std::shared_ptr<data::IRespondDataBlock> GetDataBlock() const override {
-            return _data_block;
+
+        std::vector<std::vector<std::string>>
+        GetDemographicCombinations() const override {
+            return _demographic_combos;
+        }
+        std::vector<std::string> GetInterventions() const override {
+            return _interventions;
+        }
+        std::vector<std::string> GetBehaviors() const override {
+            return _behaviors;
+        }
+
+        void SetDemographicCombinations(
+            const std::vector<std::vector<std::string>> &dcs) override {
+            _demographic_combos = dcs;
+        }
+        void SetInterventions(const std::vector<std::string> &is) override {
+            _interventions = is;
+        }
+        void SetBehaviors(const std::vector<std::string> &bs) override {
+            _behaviors = bs;
         }
 
     private:
-        int _timestep = 0;
-        std::vector<std::shared_ptr<model::IStateTransitionModel>> _models = {};
-        std::shared_ptr<data::IRespondDataBlock> _data_block = nullptr;
-        std::vector<data::ModelsVec> _history = {};
+        std::vector<std::vector<std::string>> _demographic_combos;
+        std::vector<std::string> _interventions;
+        std::vector<std::string> _behaviors;
+        data::Models_v _models = {};
+        std::vector<std::shared_ptr<data::IRespondDataStore>> _data_stores = {};
+        std::vector<data::Models_v> _history = {};
 
         void AgePopulation() const {
             // Just shift the vector accordingly
         }
 
-        void AddMigratingCohort() const {
-            auto migrating_cohort = _data_block->GetMigratingCohort();
-            for (int i = 0; i < _models.size(); ++i) {
-                _models[i]->AddState((*migrating_cohort)[i], true);
-            }
+        std::shared_ptr<model::IStateTransitionModel>
+        AddMigratingCohort(std::shared_ptr<model::IStateTransitionModel> model,
+                           const std::shared_ptr<data::IRespondDataStore> store,
+                           const int &t) const {
+
+            auto migrating_cohort = store->GetMigratingCohortState(t);
+            model->AddState(migrating_cohort, true);
+            return model;
         }
-        void MultiplyBehaviorTransitions() const {
-            auto transitions = _data_block->GetBehaviorTransitions();
-            for (int i = 0; i < _data_block->GetBehaviors().size(); ++i) {
+        std::shared_ptr<model::IStateTransitionModel>
+        MultiplyBehaviorTransitions(
+            std::shared_ptr<model::IStateTransitionModel> model,
+            const std::shared_ptr<data::IRespondDataStore> store,
+            const int &t) const {
+            auto transitions = store->GetBehaviorTransitions(t);
+            for (int i = 0; i < GetBehaviors().size(); ++i) {
                 for (int j = 0; j < _models.size(); ++j) {
-                    auto transition_slice =
-                        GetSlice(data::axis::BEHAVIOR, i, (*transitions)[j]);
+                    auto transition_slice = GetTransitionMatrixSlice(
+                        data::axis::BEHAVIOR, i, transitions);
                     auto final_values =
-                        _models[j]->MultiplyState(transition_slice, false);
-                    _models[j]->AddState(final_values, true);
+                        model->MultiplyState(transition_slice, false);
+                    model->AddState(final_values, true);
                 }
             }
         }
-        void MultiplyInterventionTransitions() const {
-            auto transitions = _data_block->GetInterventionTransitions();
-            for (int i = 0; i < _data_block->GetInterventions().size(); ++i) {
-                for (int j = 0; j < _models.size(); ++j) {
-                    auto transition_slice = GetSlice(data::axis::INTERVENTION,
-                                                     i, (*transitions)[j]);
-                    auto transition_counts =
-                        _models[j]->MultiplyState(transition_slice, false);
-                    auto second_transition_counts =
-                        MultiplyBehaviorTransitionsAfterInterventionChange(
-                            i, transition_counts);
-                    auto final_values = _models[j]->MultiplyState(
-                        second_transition_counts, false);
-                    _models[j]->AddState(final_values, true);
-                }
+        std::shared_ptr<model::IStateTransitionModel>
+        MultiplyInterventionTransitions(
+            std::shared_ptr<model::IStateTransitionModel> model,
+            const std::shared_ptr<data::IRespondDataStore> store,
+            const int &t) const {
+            auto transitions = store->GetInterventionTransitions(t);
+            for (int i = 0; i < GetInterventions().size(); ++i) {
+
+                auto transition_slice = GetTransitionMatrixSlice(
+                    data::axis::INTERVENTION, i, transitions);
+                auto transition_counts =
+                    model->MultiplyState(transition_slice, false);
+                auto second_transition_counts =
+                    MultiplyBehaviorTransitionsAfterInterventionChange(
+                        i, transition_counts);
+                auto final_values =
+                    model->MultiplyState(second_transition_counts, false);
+                model->AddState(final_values, true);
             }
         }
 
@@ -140,52 +166,50 @@ namespace simulation {
             // I need to rethink this
         }
 
-        void MultiplyOverdoseProbabilities() const {
-            auto od_probabilities = _data_block->GetOverdoseProbabilities();
-            for (int i = 0; i < _models.size(); ++i) {
-                _models[i]->MultiplyState((*od_probabilities)[i], false);
-            }
+        std::shared_ptr<model::IStateTransitionModel>
+        MultiplyOverdoseProbabilities(
+            std::shared_ptr<model::IStateTransitionModel> model,
+            const std::shared_ptr<data::IRespondDataStore> store,
+            const int &t) const {
+            auto od_probabilities = store->GetOverdoseProbabilityState(t);
+            model->MultiplyState(od_probabilities, false);
         }
-        void MultiplyProbabilitiesOfFatalityGivenOverdose() const {
+        std::shared_ptr<model::IStateTransitionModel>
+        MultiplyProbabilitiesOfFatalityGivenOverdose(
+            std::shared_ptr<model::IStateTransitionModel> model,
+            const std::shared_ptr<data::IRespondDataStore> store,
+            const int &t) const {
             auto fatal_od_probabilities =
-                _data_block->GetProbabilitiesOfOverdoseBeingFatal();
-            for (int i = 0; i < _models.size(); ++i) {
-                _models[i]->MultiplyState((*fatal_od_probabilities)[i], false);
-            }
+                store->GetOverdoseBeingFatalProbabilityState(t);
+            model->MultiplyState(fatal_od_probabilities, false);
         }
-        void MultiplyStandardMortalityRatios() const {
-            auto smrs = _data_block->GetStandardMortalityRatios();
-            for (int i = 0; i < _models.size(); ++i) {
-                _models[i]->MultiplyState((*smrs)[i], false);
-            }
+        std::shared_ptr<model::IStateTransitionModel>
+        MultiplyStandardMortalityRatios(
+            std::shared_ptr<model::IStateTransitionModel> model,
+            const std::shared_ptr<data::IRespondDataStore> store,
+            const int &t) const {
+            auto smrs = store->GetStandardMortalityRatioState(t);
+            model->MultiplyState(smrs, false);
         }
-        void MultiplyBackgroundMortalityProbabilities() const {
-            auto background_mortalities =
-                _data_block->GetBackgroundMortalities();
-            for (int i = 0; i < _models.size(); ++i) {
-                _models[i]->MultiplyState((*background_mortalities)[i], false);
-            }
-        }
-
-        void SnapshotHistory() {
-            data::ModelsVec temp_vec = {};
-            for (int i = 0; i < _models.size(); ++i) {
-                temp_vec.push_back(_models[i]->GetCurrentState());
-            }
-            _history.push_back(temp_vec);
+        std::shared_ptr<model::IStateTransitionModel>
+        MultiplyBackgroundMortalityProbabilities(
+            std::shared_ptr<model::IStateTransitionModel> model,
+            const std::shared_ptr<data::IRespondDataStore> store,
+            const int &t) const {
+            auto background_mortalities = store->GetBackgroundMortalityState(t);
+            model->MultiplyState(background_mortalities, false);
         }
 
-        std::shared_ptr<Eigen::MatrixXd> GetSlice(
+        void SnapshotHistory() { _history.push_back(GetModels()); }
+
+        std::shared_ptr<Eigen::MatrixXd> GetTransitionMatrixSlice(
             data::axis dimension, int start_idx,
-            const std::shared_ptr<Eigen::MatrixXd> transition_tensor) const {
-
-            auto rows = _models[0]->GetCurrentState()->rows();
-            auto cols = _models[0]->GetCurrentState()->cols();
-
+            const std::shared_ptr<Eigen::MatrixXd> transition_matrix) const {
+            int N = GetBehaviors().size() * GetInterventions().size();
             Eigen::MatrixXd block =
                 (dimension == data::axis::INTERVENTION)
-                    ? transition_tensor->block(start_idx, 0, rows, cols)
-                    : transition_tensor->block(0, start_idx, rows, cols);
+                    ? transition_matrix->block(start_idx, 0, N, N)
+                    : transition_matrix->block(0, start_idx, N, N);
 
             std::shared_ptr<Eigen::MatrixXd> res =
                 std::make_shared<Eigen::MatrixXd>(block);

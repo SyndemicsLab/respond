@@ -31,24 +31,32 @@ namespace Eigen {
 } // namespace Eigen
 
 namespace data {
-    class IRespondDataBlock;
-    using ModelsVec = std::vector<std::shared_ptr<Eigen::MatrixXd>>;
+    class IRespondDataStore;
+    using Models_v = std::vector<std::shared_ptr<model::IStateTransitionModel>>;
 } // namespace data
 
 /// @brief Namespace defining all simulation Operations
 namespace simulation {
     class IRespond {
     public:
-        virtual bool BuildModel(const std::string &db,
-                                const std::string &confile, const int input_set,
-                                const int parameter_set,
-                                const int start_year = 2015) = 0;
         virtual bool Run() = 0;
-        virtual bool Step() = 0;
-        virtual std::shared_ptr<data::ModelsVec> GetStates() const = 0;
-        virtual bool LoadDataBlock(const std::string &) = 0;
-        virtual std::shared_ptr<data::IRespondDataBlock>
-        GetDataBlock() const = 0;
+        virtual bool Step(int t, int idx) = 0;
+        virtual data::Models_v GetModels() const = 0;
+        virtual bool
+        AppendModel(const data::Models_v &model,
+                    const std::shared_ptr<data::IRespondDataStore> &store) = 0;
+        virtual std::vector<std::shared_ptr<data::IRespondDataStore>>
+        GetDataStores() const = 0;
+
+        virtual std::vector<std::vector<std::string>>
+        GetDemographicCombinations() const = 0;
+        virtual std::vector<std::string> GetInterventions() const = 0;
+        virtual std::vector<std::string> GetBehaviors() const = 0;
+
+        virtual void SetDemographicCombinations(
+            const std::vector<std::vector<std::string>> &) = 0;
+        virtual void SetInterventions(const std::vector<std::string> &) = 0;
+        virtual void SetBehaviors(const std::vector<std::string> &) = 0;
     };
 } // namespace simulation
 #endif // MODEL_SIMULATION_HPP_

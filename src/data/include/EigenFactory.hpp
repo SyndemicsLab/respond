@@ -32,9 +32,9 @@ namespace Eigen {
 namespace data {
 
     /// @brief Factory to create a Matrix3d Object
-    class MatrixXdFactory {
+    class EigenFactory {
     public:
-        MatrixXdFactory() {};
+        EigenFactory() {};
 
         /// @brief Main Static Function used to generate Matrix3d Objects
         /// @param numOUDStates Integer specifying number of OUD States
@@ -42,7 +42,9 @@ namespace data {
         /// @param numDemographics Integer specifying number of Demographic
         /// Combinations
         /// @return New Matrix3d Object of specified dimensions
-        static Eigen::MatrixXd Create(const uint16_t x, const uint16_t y);
+        static Eigen::MatrixXd CreateMatrix(const uint16_t x, const uint16_t y);
+
+        static Eigen::VectorXd CreateVector(const uint16_t N);
     };
 
 } // namespace data

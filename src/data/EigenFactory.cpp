@@ -15,15 +15,20 @@
 ///
 //===----------------------------------------------------------------------===//
 
-#include "MatrixXdFactory.hpp"
+#include "EigenFactory.hpp"
 #include <Eigen/Eigen>
 
 namespace data {
 
-    Eigen::MatrixXd MatrixXdFactory::Create(const uint16_t x,
-                                            const uint16_t y) {
-        Eigen::array<Eigen::Index, 2> order = {x, y};
-        Eigen::MatrixXd empty(order);
+    Eigen::MatrixXd EigenFactory::CreateMatrix(const uint16_t x,
+                                               const uint16_t y) {
+        Eigen::MatrixXd empty(x, y);
+        empty.setZero();
+        return empty;
+    }
+
+    Eigen::VectorXd EigenFactory::CreateVector(const uint16_t N) {
+        Eigen::VectorXd empty(N);
         empty.setZero();
         return empty;
     }

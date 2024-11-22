@@ -23,19 +23,24 @@ namespace model {
     /// @brief Interface for all simulations
     class IStateTransitionModel {
     public:
-        virtual void SetState(const std::shared_ptr<Eigen::MatrixXd> &) = 0;
-        virtual std::shared_ptr<Eigen::MatrixXd> GetCurrentState() const = 0;
-        virtual std::shared_ptr<Eigen::MatrixXd>
-        AddState(std::shared_ptr<Eigen::MatrixXd>, bool in_place = false) = 0;
-        virtual std::shared_ptr<Eigen::MatrixXd>
-        SubtractState(std::shared_ptr<Eigen::MatrixXd>,
+        virtual void SetState(const std::shared_ptr<Eigen::VectorXd> &) = 0;
+        virtual std::shared_ptr<Eigen::VectorXd> GetState() const = 0;
+        virtual void
+        SetTransitions(const std::shared_ptr<Eigen::MatrixXd> &) = 0;
+        virtual std::shared_ptr<Eigen::MatrixXd> GetTransitions() const = 0;
+        virtual std::shared_ptr<Eigen::VectorXd>
+        Transition(bool in_place = false) = 0;
+        virtual std::shared_ptr<Eigen::VectorXd>
+        AddState(std::shared_ptr<Eigen::VectorXd>, bool in_place = false) = 0;
+        virtual std::shared_ptr<Eigen::VectorXd>
+        SubtractState(std::shared_ptr<Eigen::VectorXd>,
                       bool in_place = false) = 0;
-        virtual std::shared_ptr<Eigen::MatrixXd>
-        MultiplyState(std::shared_ptr<Eigen::MatrixXd>,
+        virtual std::shared_ptr<Eigen::VectorXd>
+        MultiplyState(std::shared_ptr<Eigen::VectorXd>,
                       bool in_place = false) = 0;
-        virtual std::shared_ptr<Eigen::MatrixXd>
+        virtual std::shared_ptr<Eigen::VectorXd>
         ScalarMultiplyState(double, bool in_place = false) = 0;
-        virtual std::shared_ptr<Eigen::MatrixXd>
+        virtual std::shared_ptr<Eigen::VectorXd>
         DivideState(double, bool in_place = false) = 0;
     };
 

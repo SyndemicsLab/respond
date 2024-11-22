@@ -41,8 +41,8 @@ endif()
 
 target_sources(${PROJECT_NAME}
     PRIVATE
-        MatrixXdFactory.cpp
-        RespondDataBlock.cpp
+        EigenFactory.cpp
+        RespondDataStore.cpp
 )
 
 target_link_libraries(${PROJECT_NAME} 
