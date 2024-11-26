@@ -82,6 +82,7 @@ enable_testing()
 add_executable(${PROJECT_NAME}
     src/RespondDataStoreTest.cpp
     src/StateTransitionModelTest.cpp
+    src/RespondTest.cpp
 )
 
 target_link_libraries(${PROJECT_NAME} 

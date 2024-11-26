@@ -20,6 +20,7 @@
 
 #include <memory>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 namespace Eigen {
@@ -42,22 +43,18 @@ namespace kernels {
 namespace models {
     class IRespond {
     public:
-        virtual bool Run() = 0;
-        virtual bool Step() = 0;
-        virtual std::shared_ptr<kernels::IStateTransitionModel>
-        GetModel() const = 0;
-        virtual std::shared_ptr<data::IRespondDataStore>
-        GetDataStore() const = 0;
+        virtual bool Run(const std::shared_ptr<data::IRespondDataStore> &) = 0;
 
-        virtual std::shared_ptr<std::vector<std::string>>
-        GetInterventions() const = 0;
-        virtual std::shared_ptr<std::vector<std::string>>
-        GetBehaviors() const = 0;
+        virtual std::shared_ptr<Eigen::VectorXd> GetState() const = 0;
 
-        virtual void
-        SetInterventions(const std::shared_ptr<std::vector<std::string>> &) = 0;
-        virtual void
-        SetBehaviors(const std::shared_ptr<std::vector<std::string>> &) = 0;
+        virtual std::unordered_map<int, std::shared_ptr<Eigen::VectorXd>>
+        GetSimulationHistory() const = 0;
+    };
+
+    class RespondFactory {
+    public:
+        static std::shared_ptr<IRespond> MakeRespondModel(
+            std::shared_ptr<kernels::IStateTransitionModel> model = nullptr);
     };
 } // namespace models
 #endif // MODEL_SIMULATION_HPP_

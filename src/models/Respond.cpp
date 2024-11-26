@@ -29,12 +29,21 @@ namespace models {
      */
     class Respond : public virtual IRespond {
     public:
-        Respond() {}
+        Respond(
+            std::shared_ptr<kernels::IStateTransitionModel> model = nullptr) {
+            _model = (model == nullptr)
+                         ? _model = kernels::StateTransitionModelFactory::
+                               MakeStateTransitionModel()
+                         : model;
+        }
 
-        bool Run() override {
+        bool Run(const std::shared_ptr<data::IRespondDataStore> &data_store)
+            override {
+            _data_store = data_store;
             int duration = _data_store->GetDuration();
             std::vector<int> history_steps =
                 _data_store->GetHistoryTimestepsToStore();
+            _model->SetState(_data_store->GetInitialCohortState());
             int history_idx = 0;
             for (timestep = 0; timestep < duration; ++timestep) {
                 Step();
@@ -46,7 +55,22 @@ namespace models {
             return true;
         }
 
-        bool Step() override {
+        std::shared_ptr<Eigen::VectorXd> GetState() const override {
+            return _model->GetState();
+        }
+
+        std::unordered_map<int, std::shared_ptr<Eigen::VectorXd>>
+        GetSimulationHistory() const override {
+            return _history;
+        }
+
+    private:
+        int timestep = 0;
+        std::shared_ptr<kernels::IStateTransitionModel> _model;
+        std::shared_ptr<data::IRespondDataStore> _data_store;
+        std::unordered_map<int, std::shared_ptr<Eigen::VectorXd>> _history = {};
+
+        bool Step() {
             _model = AddMigratingCohort();
             _model = Transition();
             _model = MultiplyOverdoseProbabilities();
@@ -55,41 +79,6 @@ namespace models {
             _model = MultiplyBackgroundMortalityProbabilities();
             return true;
         }
-
-        std::shared_ptr<kernels::IStateTransitionModel>
-        GetModel() const override {
-            return _model;
-        }
-        std::shared_ptr<data::IRespondDataStore> GetDataStore() const override {
-            return _data_store;
-        }
-
-        std::shared_ptr<std::vector<std::string>>
-        GetInterventions() const override {
-            return _interventions;
-        }
-        std::shared_ptr<std::vector<std::string>>
-        GetBehaviors() const override {
-            return _behaviors;
-        }
-
-        void SetInterventions(
-            const std::shared_ptr<std::vector<std::string>> &is) override {
-            _interventions = is;
-        }
-        void SetBehaviors(
-            const std::shared_ptr<std::vector<std::string>> &bs) override {
-            _behaviors = bs;
-        }
-
-    private:
-        int timestep = 0;
-        std::shared_ptr<std::vector<std::string>> _interventions;
-        std::shared_ptr<std::vector<std::string>> _behaviors;
-        std::shared_ptr<kernels::IStateTransitionModel> _model = nullptr;
-        std::shared_ptr<data::IRespondDataStore> _data_store = {};
-        std::vector<std::shared_ptr<kernels::IStateTransitionModel>> _history =
-            {};
 
         std::shared_ptr<kernels::IStateTransitionModel>
         AddMigratingCohort() const {
@@ -113,21 +102,6 @@ namespace models {
             //     std::make_shared<Eigen::MatrixXd>(transitions);
             // _model->SetTransitions(trans_ptr);
             // _model->Transition(true);
-            return _model;
-        }
-
-        std::shared_ptr<kernels::IStateTransitionModel>
-        MultiplyBehaviorTransitions() const {
-            _model->SetTransitions(
-                _data_store->GetBehaviorTransitions(timestep));
-            _model->Transition(true);
-            return _model;
-        }
-        std::shared_ptr<kernels::IStateTransitionModel>
-        MultiplyInterventionTransitions() const {
-            _model->SetTransitions(
-                _data_store->GetInterventionTransitions(timestep));
-            _model->Transition(true);
             return _model;
         }
 
@@ -159,6 +133,12 @@ namespace models {
             return _model;
         }
 
-        void SnapshotHistory() { _history.push_back(GetModel()); }
+        void SnapshotHistory() { _history[timestep] = _model->GetState(); }
     };
+
+    std::shared_ptr<IRespond> RespondFactory::MakeRespondModel(
+        std::shared_ptr<kernels::IStateTransitionModel> model) {
+        std::shared_ptr<IRespond> res = std::make_shared<Respond>(model);
+        return res;
+    }
 } // namespace models
