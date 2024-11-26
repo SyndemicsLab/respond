@@ -15,8 +15,8 @@
 ///
 //===----------------------------------------------------------------------===//
 
-#ifndef SIMULATION_RESPOND_HPP_
-#define SIMULATION_RESPOND_HPP_
+#ifndef MODELS_RESPOND_HPP_
+#define MODELS_RESPOND_HPP_
 
 #include <memory>
 #include <string>
@@ -32,31 +32,32 @@ namespace Eigen {
 
 namespace data {
     class IRespondDataStore;
-    using Models_v = std::vector<std::shared_ptr<model::IStateTransitionModel>>;
 } // namespace data
 
+namespace kernels {
+    class IStateTransitionModel;
+} // namespace kernels
+
 /// @brief Namespace defining all simulation Operations
-namespace simulation {
+namespace models {
     class IRespond {
     public:
         virtual bool Run() = 0;
-        virtual bool Step(int t, int idx) = 0;
-        virtual data::Models_v GetModels() const = 0;
-        virtual bool
-        AppendModel(const data::Models_v &model,
-                    const std::shared_ptr<data::IRespondDataStore> &store) = 0;
-        virtual std::vector<std::shared_ptr<data::IRespondDataStore>>
-        GetDataStores() const = 0;
+        virtual bool Step() = 0;
+        virtual std::shared_ptr<kernels::IStateTransitionModel>
+        GetModel() const = 0;
+        virtual std::shared_ptr<data::IRespondDataStore>
+        GetDataStore() const = 0;
 
-        virtual std::vector<std::vector<std::string>>
-        GetDemographicCombinations() const = 0;
-        virtual std::vector<std::string> GetInterventions() const = 0;
-        virtual std::vector<std::string> GetBehaviors() const = 0;
+        virtual std::shared_ptr<std::vector<std::string>>
+        GetInterventions() const = 0;
+        virtual std::shared_ptr<std::vector<std::string>>
+        GetBehaviors() const = 0;
 
-        virtual void SetDemographicCombinations(
-            const std::vector<std::vector<std::string>> &) = 0;
-        virtual void SetInterventions(const std::vector<std::string> &) = 0;
-        virtual void SetBehaviors(const std::vector<std::string> &) = 0;
+        virtual void
+        SetInterventions(const std::shared_ptr<std::vector<std::string>> &) = 0;
+        virtual void
+        SetBehaviors(const std::shared_ptr<std::vector<std::string>> &) = 0;
     };
-} // namespace simulation
+} // namespace models
 #endif // MODEL_SIMULATION_HPP_

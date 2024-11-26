@@ -1,8 +1,6 @@
 #ifndef UTILITIES_HELPERS_HPP_
 #define UTILITIES_HELPERS_HPP_
 
-#include "DataLoader.hpp"
-#include "PostsimulationCalculator.hpp"
 #include <iostream>
 #include <string>
 #include <vector>
@@ -33,21 +31,6 @@ namespace Helpers {
             rootInputDir = argv[1];
         }
         return true;
-    }
-
-    std::vector<double> calcCosts(Calculator::PostsimulationCalculator calc,
-                                  matrixify::CostList costsList) {
-        std::vector<double> result;
-        for (matrixify::Cost cost : costsList) {
-            double totalCost = 0.0;
-            totalCost += calc.totalAcrossTimeAndDims(cost.healthcareCost);
-            totalCost += calc.totalAcrossTimeAndDims(cost.fatalOverdoseCost);
-            totalCost += calc.totalAcrossTimeAndDims(cost.nonFatalOverdoseCost);
-            totalCost += calc.totalAcrossTimeAndDims(cost.pharmaCost);
-            totalCost += calc.totalAcrossTimeAndDims(cost.treatmentCost);
-            result.push_back(totalCost);
-        }
-        return result;
     }
 } // namespace Helpers
 

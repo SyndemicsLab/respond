@@ -16,8 +16,8 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(spdlog)
 
 add_subdirectory(data)
-add_subdirectory(model)
-add_subdirectory(simulation)
+add_subdirectory(kernels)
+add_subdirectory(models)
 
 option(BUILD_API "enable RESPOND API" OFF)
 if(BUILD_API STREQUAL ON)
@@ -29,18 +29,25 @@ if (NOT BUILD_PYBINDINGS STREQUAL OFF)
   add_subdirectory(pybindings)
 endif()
 
-add_executable(${PROJECT_NAME} main.cpp)
+
+option(BUILD_SHARED_LIBS "Build Using Shared Libraries" ON)
+if(BUILD_SHARED_LIBS)
+    add_library(${PROJECT_NAME} SHARED main.cpp)
+else()
+    add_library(${PROJECT_NAME} STATIC main.cpp)
+endif()
+
 target_include_directories(${PROJECT_NAME}
     PRIVATE
         "data/include"
-        "model/include"
+        "kernels/include"
         "simulation/include"
 )
 
 target_link_libraries(${PROJECT_NAME}
     PRIVATE
         data
-        model
-        simulation
+        kernel
+        models
         spdlog::spdlog
 )

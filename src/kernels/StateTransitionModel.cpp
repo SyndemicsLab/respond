@@ -2,8 +2,9 @@
 #include "EigenFactory.hpp"
 #include "RespondDataStore.hpp"
 #include <Eigen/Eigen>
+#include <iostream>
 
-namespace model {
+namespace kernels {
     class StateTransitionModel : public virtual IStateTransitionModel {
     public:
         StateTransitionModel(uint16_t N) {
@@ -26,11 +27,18 @@ namespace model {
             this->_transition_probabilities =
                 std::make_shared<Eigen::MatrixXd>(*t);
         }
+        std::shared_ptr<Eigen::MatrixXd> GetTransitions() const override {
+            return _transition_probabilities;
+        }
         std::shared_ptr<Eigen::VectorXd>
         Transition(bool in_place = false) override {
-            Eigen::VectorXd res = (*_states) * (*_transition_probabilities);
+            if (_transition_probabilities->cols() != _states->size()) {
+                // error
+                return nullptr;
+            }
+            Eigen::VectorXd res = (*_transition_probabilities) * (*_states);
             std::shared_ptr<Eigen::VectorXd> res_ptr =
-                std::make_shared<Eigen::VectorXd>(res);
+                std::make_shared<Eigen::VectorXd>(std::move(res));
             if (in_place) {
                 _states = res_ptr;
             }
@@ -42,9 +50,9 @@ namespace model {
                  bool in_place = false) override {
             Eigen::VectorXd t1 = *_states;
             Eigen::VectorXd t2 = *m;
-            Eigen::VectorXd temp_tensor = t1 + t2;
+            Eigen::VectorXd temp = t1 + t2;
             std::shared_ptr<Eigen::VectorXd> temp_ptr =
-                std::make_shared<Eigen::VectorXd>(temp_tensor);
+                std::make_shared<Eigen::VectorXd>(std::move(temp));
             if (in_place) {
                 _states = temp_ptr;
             }
@@ -55,9 +63,9 @@ namespace model {
                       bool in_place = false) override {
             Eigen::VectorXd t1 = *_states;
             Eigen::VectorXd t2 = *m;
-            Eigen::VectorXd temp_tensor = t1 - t2;
+            Eigen::VectorXd temp = t1 - t2;
             std::shared_ptr<Eigen::VectorXd> temp_ptr =
-                std::make_shared<Eigen::VectorXd>(temp_tensor);
+                std::make_shared<Eigen::VectorXd>(std::move(temp));
             if (in_place) {
                 _states = temp_ptr;
             }
@@ -68,9 +76,9 @@ namespace model {
                       bool in_place = false) override {
             Eigen::VectorXd t1 = *_states;
             Eigen::VectorXd t2 = *m;
-            Eigen::VectorXd temp_tensor = t1 * t2;
+            Eigen::VectorXd temp = t1.cwiseProduct(t2);
             std::shared_ptr<Eigen::VectorXd> temp_ptr =
-                std::make_shared<Eigen::VectorXd>(temp_tensor);
+                std::make_shared<Eigen::VectorXd>(std::move(temp));
             if (in_place) {
                 _states = temp_ptr;
             }
@@ -79,9 +87,9 @@ namespace model {
         std::shared_ptr<Eigen::VectorXd>
         ScalarMultiplyState(double scalar, bool in_place = false) override {
             Eigen::VectorXd t1 = *_states;
-            Eigen::VectorXd temp_tensor = t1 * scalar;
+            Eigen::VectorXd temp = t1 * scalar;
             std::shared_ptr<Eigen::VectorXd> temp_ptr =
-                std::make_shared<Eigen::VectorXd>(temp_tensor);
+                std::make_shared<Eigen::VectorXd>(std::move(temp));
             if (in_place) {
                 _states = temp_ptr;
             }
@@ -90,9 +98,9 @@ namespace model {
         std::shared_ptr<Eigen::VectorXd>
         DivideState(double scalar, bool in_place = false) override {
             Eigen::MatrixXd t1 = *_states;
-            Eigen::MatrixXd temp_tensor = t1 / scalar;
+            Eigen::MatrixXd temp = t1 / scalar;
             std::shared_ptr<Eigen::VectorXd> temp_ptr =
-                std::make_shared<Eigen::VectorXd>(temp_tensor);
+                std::make_shared<Eigen::VectorXd>(std::move(temp));
             if (in_place) {
                 _states = temp_ptr;
             }
@@ -110,4 +118,4 @@ namespace model {
             std::make_shared<StateTransitionModel>();
         return res;
     }
-} // namespace model
+} // namespace kernels

@@ -1,4 +1,5 @@
-cmake_minimum_required(VERSION 3.24)
+cmake_minimum_required(VERSION 3.22)
+set(CMAKE_CXX_STANDARD 17)
 project(respondTest CXX)
 
 include(FetchContent)
@@ -53,6 +54,23 @@ FetchContent_MakeAvailable(Eigen)
 list(POP_BACK CMAKE_MESSAGE_INDENT)
 message(CHECK_PASS "fetched")
 
+message(CHECK_START "Fetching spdlog")
+list(APPEND CMAKE_MESSAGE_INDENT "  ")
+
+FetchContent_Declare(
+        spdlog
+        GIT_REPOSITORY https://github.com/gabime/spdlog.git
+        GIT_TAG        v1.x
+)
+FetchContent_GetProperties(spdlog)
+if (NOT spdlog_POPULATED)
+    FetchContent_Populate(spdlog)
+    add_subdirectory(${spdlog_SOURCE_DIR} ${spdlog_BINARY_DIR})
+endif()
+
+list(POP_BACK CMAKE_MESSAGE_INDENT)
+message(CHECK_PASS "fetched")
+
 find_package(DataManagement 1 REQUIRED
     HINTS "${CMAKE_SOURCE_DIR}/lib/dminstall"
 )
@@ -62,26 +80,27 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/../bin)
 enable_testing()
 
 add_executable(${PROJECT_NAME}
-  src/TEST_Simulation.cpp
-  src/TEST_BaseLoader.cpp
-  src/TEST_DataLoader.cpp
-  src/TEST_CostLoader.cpp
-  src/TEST_UtilityLoader.cpp
-  src/TEST_Writer.cpp
-  src/TEST_InputWriter.cpp
-  src/TEST_PostSimulationCalculator.cpp
+    src/RespondDataStoreTest.cpp
+    src/StateTransitionModelTest.cpp
 )
 
-target_link_libraries(${PROJECT_NAME} PUBLIC Eigen3::Eigen)
-target_link_libraries(${PROJECT_NAME} PUBLIC GTest::gtest_main)
-target_link_libraries(${PROJECT_NAME} PUBLIC GTest::gmock_main)
-target_link_libraries(${PROJECT_NAME} PUBLIC fmt)
-target_link_libraries(${PROJECT_NAME} PUBLIC simulation)
-target_link_libraries(${PROJECT_NAME} PUBLIC matrixify)
-target_link_libraries(${PROJECT_NAME} PUBLIC spdlog::spdlog)
-target_link_libraries(${PROJECT_NAME} PUBLIC DataManagement::DataManagement)
+target_link_libraries(${PROJECT_NAME} 
+    PUBLIC 
+        GTest::gtest_main
+        GTest::gmock_main
+        fmt
+        Eigen3::Eigen
+        spdlog::spdlog
+        kernels
+        models
+        data
+        DataManagement::DataManagement
+)
 
-target_include_directories(${PROJECT_NAME} PUBLIC "mocks/")
+target_include_directories(${PROJECT_NAME} 
+    PUBLIC 
+        "mocks/"
+)
 
 include(GoogleTest)
 gtest_discover_tests(${PROJECT_NAME})

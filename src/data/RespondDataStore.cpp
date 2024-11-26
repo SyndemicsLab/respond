@@ -122,50 +122,50 @@ namespace data {
         std::shared_ptr<Eigen::VectorXd> _smr_state;
         std::shared_ptr<Eigen::VectorXd> _background_mortality_state;
 
-        void BuildDemographicCombinations() {
-            _demographic_combinations = {};
-            std::vector<std::string> dem_types = GetDemographicTypes();
-            std::vector<std::vector<std::string>> dem_list;
-            for (std::string &dem : dem_types) {
-                std::string key = "demographic." + dem;
-                dem_list.push_back(GetStringVectorFromConfig(key));
-            }
+        // void BuildDemographicCombinations() {
+        //     _demographic_combinations = {};
+        //     std::vector<std::string> dem_types = GetDemographicTypes();
+        //     std::vector<std::vector<std::string>> dem_list;
+        //     for (std::string &dem : dem_types) {
+        //         std::string key = "demographic." + dem;
+        //         dem_list.push_back(GetStringVectorFromConfig(key));
+        //     }
 
-            std::vector<std::vector<std::string>> final_result;
-            std::vector<std::string> running_tally;
-            RecursiveDemographicBuilder(final_result, running_tally,
-                                        dem_list.begin(), dem_list.end());
-            for (std::vector<std::string> str_vec : final_result) {
-                std::vector<std::string> group = {};
-                for (std::string st : str_vec) {
-                    std::transform(
-                        st.begin(), st.end(), st.begin(),
-                        [](unsigned char c) { return std::tolower(c); });
-                    group.push_back(st);
-                }
-                _demographic_combinations.push_back(group);
-            }
-        }
+        //     std::vector<std::vector<std::string>> final_result;
+        //     std::vector<std::string> running_tally;
+        //     RecursiveDemographicBuilder(final_result, running_tally,
+        //                                 dem_list.begin(), dem_list.end());
+        //     for (std::vector<std::string> str_vec : final_result) {
+        //         std::vector<std::string> group = {};
+        //         for (std::string st : str_vec) {
+        //             std::transform(
+        //                 st.begin(), st.end(), st.begin(),
+        //                 [](unsigned char c) { return std::tolower(c); });
+        //             group.push_back(st);
+        //         }
+        //         _demographic_combinations.push_back(group);
+        //     }
+        // }
 
-        void RecursiveDemographicBuilder(
-            std::vector<std::vector<std::string>> &final_result,
-            std::vector<std::string> &current_result,
-            std::vector<std::vector<std::string>>::const_iterator current_in,
-            std::vector<std::vector<std::string>>::const_iterator final_in)
-            const {
-            if (current_in == final_in) {
-                final_result.push_back(current_result);
-                return;
-            }
-            const std::vector<std::string> &temp = *current_in;
-            for (std::vector<std::string>::const_iterator it = temp.begin();
-                 it != temp.end(); it++) {
-                current_result.push_back(*it);
-                RecursiveDemographicBuilder(final_result, current_result,
-                                            current_in + 1, final_in);
-                current_result.pop_back();
-            }
-        }
+        // void RecursiveDemographicBuilder(
+        //     std::vector<std::vector<std::string>> &final_result,
+        //     std::vector<std::string> &current_result,
+        //     std::vector<std::vector<std::string>>::const_iterator current_in,
+        //     std::vector<std::vector<std::string>>::const_iterator final_in)
+        //     const {
+        //     if (current_in == final_in) {
+        //         final_result.push_back(current_result);
+        //         return;
+        //     }
+        //     const std::vector<std::string> &temp = *current_in;
+        //     for (std::vector<std::string>::const_iterator it = temp.begin();
+        //          it != temp.end(); it++) {
+        //         current_result.push_back(*it);
+        //         RecursiveDemographicBuilder(final_result, current_result,
+        //                                     current_in + 1, final_in);
+        //         current_result.pop_back();
+        //     }
+        // }
     };
 
     std::shared_ptr<IRespondDataStore>

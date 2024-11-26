@@ -1,4 +1,4 @@
-//===-- Tensor3dFactory.hpp - Tensor3dFactory class definition --*- C++ -*-===//
+//===-- EigenFactory.hpp - EigenFactory class definition --*- C++ -*-===//
 //
 // Part of the RESPOND - Researching Effective Strategies to Prevent Opioid
 // Death Project, under the AGPLv3 License. See https://www.gnu.org/licenses/
@@ -8,15 +8,15 @@
 //===----------------------------------------------------------------------===//
 ///
 /// \file
-/// This file contains the declaration of the Tensor3dFactory class.
+/// This file contains the declaration of the EigenFactory class.
 ///
 /// Created Date: Tuesday, June 27th 2023, 10:20:34 am
 /// Contact: Benjamin.Linas@bmc.org
 ///
 //===----------------------------------------------------------------------===//
 
-#ifndef UTILITIES_Tensor3dFactory_HPP_
-#define UTILITIES_Tensor3dFactory_HPP_
+#ifndef DATA_EIGENFACTORY_HPP_
+#define DATA_EIGENFACTORY_HPP_
 
 #include <cstdint>
 

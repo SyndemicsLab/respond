@@ -3,6 +3,7 @@
 
 #include <memory>
 #include <unordered_map>
+#include <vector>
 
 namespace Eigen {
     template <typename _Scalar, int _Rows, int _Cols, int _Options,
@@ -13,7 +14,6 @@ namespace Eigen {
 } // namespace Eigen
 
 namespace data {
-    enum class axis { INTERVENTION = 0, BEHAVIOR = 1 };
     class IRespondDataStore {
     public:
         virtual int GetDuration() const = 0;

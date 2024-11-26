@@ -1,5 +1,5 @@
-#ifndef MODEL_STATETRANSITIONMODEL_HPP_
-#define MODEL_STATETRANSITIONMODEL_HPP_
+#ifndef KERNEL_STATETRANSITIONMODEL_HPP_
+#define KERNEL_STATETRANSITIONMODEL_HPP_
 
 #include <cstdint>
 #include <functional>
@@ -15,11 +15,7 @@ namespace Eigen {
     using VectorXd = Matrix<double, -1, 1, 0, -1, 1>;
 } // namespace Eigen
 
-namespace data {
-    class IDataBlock;
-} // namespace data
-
-namespace model {
+namespace kernels {
     /// @brief Interface for all simulations
     class IStateTransitionModel {
     public:
@@ -50,5 +46,5 @@ namespace model {
         MakeStateTransitionModel();
     };
 
-} // namespace model
+} // namespace kernels
 #endif

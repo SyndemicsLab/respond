@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.20)
 
-project(simulation)
+project(models)
 
 include(FetchContent)
 message(CHECK_START "Fetching Eigen3")
@@ -38,14 +38,13 @@ endif()
 target_sources(${PROJECT_NAME}
     PRIVATE
         Respond.cpp
-        PostSimulationCalculator.cpp
 )
 
 target_link_libraries(${PROJECT_NAME} 
     PRIVATE 
         Eigen3::Eigen 
         data
-        model
+        kernels
 )
 
 target_include_directories(${PROJECT_NAME} PUBLIC "include/")
