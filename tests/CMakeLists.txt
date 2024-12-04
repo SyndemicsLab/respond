@@ -72,7 +72,7 @@ list(POP_BACK CMAKE_MESSAGE_INDENT)
 message(CHECK_PASS "fetched")
 
 find_package(DataManagement 1 REQUIRED
-    HINTS "${CMAKE_SOURCE_DIR}/lib/dminstall"
+    HINTS "${CMAKE_SOURCE_DIR}/bin/dminstall"
 )
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/../bin)
@@ -95,6 +95,7 @@ target_link_libraries(${PROJECT_NAME}
         kernels
         models
         data
+        synmodels
         DataManagement::DataManagement
 )
 

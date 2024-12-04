@@ -1,4 +1,4 @@
-#include "StateTransitionModel.hpp"
+#include "kernels/StateTransitionModel.hpp"
 #include "spdlog/sinks/stdout_color_sinks.h"
 #include "spdlog/spdlog.h"
 #include <Eigen/Eigen>
@@ -20,11 +20,10 @@ private:
     }
 
 protected:
-    std::shared_ptr<kernels::IStateTransitionModel> test_stm;
+    std::shared_ptr<synmodels::kernels::StateTransitionModel> test_stm;
     void SetUp() override {
         RegisterLogger();
-        test_stm =
-            kernels::StateTransitionModelFactory::MakeStateTransitionModel();
+        test_stm = synmodels::kernels::StateTransitionModel::Create();
     }
     void TearDown() override { spdlog::drop("main"); }
 };
@@ -32,19 +31,15 @@ protected:
 TEST_F(StateTransitionModelTest, State) {
     Eigen::VectorXd vec(4);
     vec << 2, 4, 6, 8;
-    std::shared_ptr<Eigen::VectorXd> vec_ptr =
-        std::make_shared<Eigen::VectorXd>(std::move(vec));
-    test_stm->SetState(vec_ptr);
-    EXPECT_TRUE(test_stm->GetState()->isApprox(*vec_ptr));
+    test_stm->SetState(vec);
+    EXPECT_TRUE(test_stm->GetState().isApprox(vec));
 }
 
 TEST_F(StateTransitionModelTest, Transitions) {
     Eigen::MatrixXd mat(2, 2);
     mat << 2, 4, 6, 8;
-    std::shared_ptr<Eigen::MatrixXd> mat_ptr =
-        std::make_shared<Eigen::MatrixXd>(std::move(mat));
-    test_stm->SetTransitions(mat_ptr);
-    EXPECT_TRUE(test_stm->GetTransitions()->isApprox(*mat_ptr));
+    test_stm->SetTransitions(mat);
+    EXPECT_TRUE(test_stm->GetTransitions().isApprox(mat));
 }
 
 TEST_F(StateTransitionModelTest, TransitionNotInPlace) {
@@ -53,14 +48,10 @@ TEST_F(StateTransitionModelTest, TransitionNotInPlace) {
     Eigen::MatrixXd mat(2, 2);
     mat << 2, 4, 6, 8;
     Eigen::VectorXd expected = mat * vec;
-    std::shared_ptr<Eigen::VectorXd> vec_ptr =
-        std::make_shared<Eigen::VectorXd>(std::move(vec));
-    std::shared_ptr<Eigen::MatrixXd> mat_ptr =
-        std::make_shared<Eigen::MatrixXd>(std::move(mat));
-    test_stm->SetState(vec_ptr);
-    test_stm->SetTransitions(mat_ptr);
+    test_stm->SetState(vec);
+    test_stm->SetTransitions(mat);
     auto result = test_stm->Transition(false);
-    EXPECT_TRUE(result->isApprox(expected));
+    EXPECT_TRUE(result.isApprox(expected));
 }
 
 TEST_F(StateTransitionModelTest, TransitionInPlace) {
@@ -69,14 +60,10 @@ TEST_F(StateTransitionModelTest, TransitionInPlace) {
     Eigen::MatrixXd mat(2, 2);
     mat << 2, 4, 6, 8;
     Eigen::VectorXd expected = mat * vec;
-    std::shared_ptr<Eigen::VectorXd> vec_ptr =
-        std::make_shared<Eigen::VectorXd>(std::move(vec));
-    std::shared_ptr<Eigen::MatrixXd> mat_ptr =
-        std::make_shared<Eigen::MatrixXd>(std::move(mat));
-    test_stm->SetState(vec_ptr);
-    test_stm->SetTransitions(mat_ptr);
+    test_stm->SetState(vec);
+    test_stm->SetTransitions(mat);
     test_stm->Transition(true);
-    EXPECT_TRUE(test_stm->GetState()->isApprox(expected));
+    EXPECT_TRUE(test_stm->GetState().isApprox(expected));
 }
 
 TEST_F(StateTransitionModelTest, AddNotInPlace) {
@@ -85,12 +72,8 @@ TEST_F(StateTransitionModelTest, AddNotInPlace) {
     Eigen::VectorXd vec2(2);
     vec2 << 2, 4;
     Eigen::VectorXd expected = vec1 + vec2;
-    std::shared_ptr<Eigen::VectorXd> vec1_ptr =
-        std::make_shared<Eigen::VectorXd>(std::move(vec1));
-    std::shared_ptr<Eigen::VectorXd> vec2_ptr =
-        std::make_shared<Eigen::VectorXd>(std::move(vec2));
-    test_stm->SetState(vec1_ptr);
-    EXPECT_TRUE(test_stm->AddState(vec2_ptr, false)->isApprox(expected));
+    test_stm->SetState(vec1);
+    EXPECT_TRUE(test_stm->AddState(vec2, false).isApprox(expected));
 }
 
 TEST_F(StateTransitionModelTest, AddInPlace) {
@@ -99,14 +82,10 @@ TEST_F(StateTransitionModelTest, AddInPlace) {
     Eigen::VectorXd vec2(2);
     vec2 << 2, 4;
     Eigen::VectorXd expected = vec1 + vec2;
-    std::shared_ptr<Eigen::VectorXd> vec1_ptr =
-        std::make_shared<Eigen::VectorXd>(std::move(vec1));
-    std::shared_ptr<Eigen::VectorXd> vec2_ptr =
-        std::make_shared<Eigen::VectorXd>(std::move(vec2));
-    test_stm->SetState(vec1_ptr);
-    test_stm->AddState(vec2_ptr, true);
+    test_stm->SetState(vec1);
+    test_stm->AddState(vec2, true);
     auto result = test_stm->GetState();
-    EXPECT_TRUE(result->isApprox(expected));
+    EXPECT_TRUE(result.isApprox(expected));
 }
 
 TEST_F(StateTransitionModelTest, SubtractNotInPlace) {
@@ -115,12 +94,8 @@ TEST_F(StateTransitionModelTest, SubtractNotInPlace) {
     Eigen::VectorXd vec2(2);
     vec2 << 2, 4;
     Eigen::VectorXd expected = vec1 - vec2;
-    std::shared_ptr<Eigen::VectorXd> vec1_ptr =
-        std::make_shared<Eigen::VectorXd>(std::move(vec1));
-    std::shared_ptr<Eigen::VectorXd> vec2_ptr =
-        std::make_shared<Eigen::VectorXd>(std::move(vec2));
-    test_stm->SetState(vec1_ptr);
-    EXPECT_TRUE(test_stm->SubtractState(vec2_ptr, false)->isApprox(expected));
+    test_stm->SetState(vec1);
+    EXPECT_TRUE(test_stm->SubtractState(vec2, false).isApprox(expected));
 }
 
 TEST_F(StateTransitionModelTest, SubtractInPlace) {
@@ -129,14 +104,10 @@ TEST_F(StateTransitionModelTest, SubtractInPlace) {
     Eigen::VectorXd vec2(2);
     vec2 << 2, 4;
     Eigen::VectorXd expected = vec1 - vec2;
-    std::shared_ptr<Eigen::VectorXd> vec1_ptr =
-        std::make_shared<Eigen::VectorXd>(std::move(vec1));
-    std::shared_ptr<Eigen::VectorXd> vec2_ptr =
-        std::make_shared<Eigen::VectorXd>(std::move(vec2));
-    test_stm->SetState(vec1_ptr);
-    test_stm->SubtractState(vec2_ptr, true);
+    test_stm->SetState(vec1);
+    test_stm->SubtractState(vec2, true);
     auto result = test_stm->GetState();
-    EXPECT_TRUE(result->isApprox(expected));
+    EXPECT_TRUE(result.isApprox(expected));
 }
 
 TEST_F(StateTransitionModelTest, MultiplyNotInPlace) {
@@ -145,12 +116,8 @@ TEST_F(StateTransitionModelTest, MultiplyNotInPlace) {
     Eigen::VectorXd vec2(2);
     vec2 << 2, 4;
     Eigen::VectorXd expected = vec1.cwiseProduct(vec2);
-    std::shared_ptr<Eigen::VectorXd> vec1_ptr =
-        std::make_shared<Eigen::VectorXd>(std::move(vec1));
-    std::shared_ptr<Eigen::VectorXd> vec2_ptr =
-        std::make_shared<Eigen::VectorXd>(std::move(vec2));
-    test_stm->SetState(vec1_ptr);
-    EXPECT_TRUE(test_stm->MultiplyState(vec2_ptr, false)->isApprox(expected));
+    test_stm->SetState(vec1);
+    EXPECT_TRUE(test_stm->MultiplyState(vec2, false).isApprox(expected));
 }
 
 TEST_F(StateTransitionModelTest, MultiplyInPlace) {
@@ -159,14 +126,10 @@ TEST_F(StateTransitionModelTest, MultiplyInPlace) {
     Eigen::VectorXd vec2(2);
     vec2 << 2, 4;
     Eigen::VectorXd expected = vec1.cwiseProduct(vec2);
-    std::shared_ptr<Eigen::VectorXd> vec1_ptr =
-        std::make_shared<Eigen::VectorXd>(std::move(vec1));
-    std::shared_ptr<Eigen::VectorXd> vec2_ptr =
-        std::make_shared<Eigen::VectorXd>(std::move(vec2));
-    test_stm->SetState(vec1_ptr);
-    test_stm->MultiplyState(vec2_ptr, true);
+    test_stm->SetState(vec1);
+    test_stm->MultiplyState(vec2, true);
     auto result = test_stm->GetState();
-    EXPECT_TRUE(result->isApprox(expected));
+    EXPECT_TRUE(result.isApprox(expected));
 }
 
 TEST_F(StateTransitionModelTest, ScalarMultiplyNotInPlace) {
@@ -174,11 +137,9 @@ TEST_F(StateTransitionModelTest, ScalarMultiplyNotInPlace) {
     vec1 << 1, 2;
     double scalar = 2.5;
     Eigen::VectorXd expected = vec1 * scalar;
-    std::shared_ptr<Eigen::VectorXd> vec1_ptr =
-        std::make_shared<Eigen::VectorXd>(std::move(vec1));
-    test_stm->SetState(vec1_ptr);
+    test_stm->SetState(vec1);
     EXPECT_TRUE(
-        test_stm->ScalarMultiplyState(scalar, false)->isApprox(expected));
+        test_stm->ScalarMultiplyState(scalar, false).isApprox(expected));
 }
 
 TEST_F(StateTransitionModelTest, ScalarMultiplyInPlace) {
@@ -186,12 +147,10 @@ TEST_F(StateTransitionModelTest, ScalarMultiplyInPlace) {
     vec1 << 1, 2;
     double scalar = 2.5;
     Eigen::VectorXd expected = vec1 * scalar;
-    std::shared_ptr<Eigen::VectorXd> vec1_ptr =
-        std::make_shared<Eigen::VectorXd>(std::move(vec1));
-    test_stm->SetState(vec1_ptr);
+    test_stm->SetState(vec1);
     test_stm->ScalarMultiplyState(scalar, true);
     auto result = test_stm->GetState();
-    EXPECT_TRUE(result->isApprox(expected));
+    EXPECT_TRUE(result.isApprox(expected));
 }
 
 TEST_F(StateTransitionModelTest, DivideNotInPlace) {
@@ -199,10 +158,8 @@ TEST_F(StateTransitionModelTest, DivideNotInPlace) {
     vec1 << 1, 2;
     double scalar = 2.5;
     Eigen::VectorXd expected = vec1 / scalar;
-    std::shared_ptr<Eigen::VectorXd> vec1_ptr =
-        std::make_shared<Eigen::VectorXd>(std::move(vec1));
-    test_stm->SetState(vec1_ptr);
-    EXPECT_TRUE(test_stm->DivideState(scalar, false)->isApprox(expected));
+    test_stm->SetState(vec1);
+    EXPECT_TRUE(test_stm->DivideState(scalar, false).isApprox(expected));
 }
 
 TEST_F(StateTransitionModelTest, DivideInPlace) {
@@ -210,10 +167,8 @@ TEST_F(StateTransitionModelTest, DivideInPlace) {
     vec1 << 1, 2;
     double scalar = 2.5;
     Eigen::VectorXd expected = vec1 / scalar;
-    std::shared_ptr<Eigen::VectorXd> vec1_ptr =
-        std::make_shared<Eigen::VectorXd>(std::move(vec1));
-    test_stm->SetState(vec1_ptr);
+    test_stm->SetState(vec1);
     test_stm->DivideState(scalar, true);
     auto result = test_stm->GetState();
-    EXPECT_TRUE(result->isApprox(expected));
+    EXPECT_TRUE(result.isApprox(expected));
 }

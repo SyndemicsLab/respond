@@ -9,7 +9,7 @@ add_executable(${PROJECT_NAME}
 )
 
 target_include_directories(respond PRIVATE
-  ${PROJECT_SOURCE_DIR}/lib/DataManagement/include
+  ${PROJECT_SOURCE_DIR}/bin/DataManagement/include
 )
 
 target_link_libraries(${PROJECT_NAME} PUBLIC benchmark::benchmark)

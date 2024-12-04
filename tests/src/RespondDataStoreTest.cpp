@@ -1,4 +1,4 @@
-#include "RespondDataStore.hpp"
+#include "data/RespondDataStore.hpp"
 #include "spdlog/sinks/stdout_color_sinks.h"
 #include "spdlog/spdlog.h"
 #include <Eigen/Eigen>
@@ -20,10 +20,10 @@ private:
     }
 
 protected:
-    std::shared_ptr<data::IRespondDataStore> test_data_store;
+    std::shared_ptr<synmodels::data::RespondDataStore> test_data_store;
     void SetUp() override {
         RegisterLogger();
-        test_data_store = data::RespondDataStoreFactory::MakeDataStore();
+        test_data_store = synmodels::data::RespondDataStore::Create();
     }
     void TearDown() override { spdlog::drop("main"); }
 };
@@ -53,92 +53,73 @@ TEST_F(RespondDataStoreTest, HistoryTimestepsToStore) {
 TEST_F(RespondDataStoreTest, InitialCohortState) {
     Eigen::VectorXd vec(4);
     vec << 2, 4, 6, 8;
-    std::shared_ptr<Eigen::VectorXd> vec_ptr =
-        std::make_shared<Eigen::VectorXd>(std::move(vec));
-    test_data_store->SetInitialCohortState(vec_ptr);
-    ASSERT_EQ(test_data_store->GetInitialCohortState(), vec_ptr);
+    test_data_store->SetInitialCohortState(vec);
+    ASSERT_EQ(test_data_store->GetInitialCohortState(), vec);
 }
 
 TEST_F(RespondDataStoreTest, MigratingCohortState) {
     Eigen::VectorXd vec(4);
     int timestep = 4;
     vec << 2, 4, 6, 8;
-    std::shared_ptr<Eigen::VectorXd> vec_ptr =
-        std::make_shared<Eigen::VectorXd>(std::move(vec));
-    test_data_store->SetMigratingCohortState(vec_ptr, timestep);
-    ASSERT_EQ(test_data_store->GetMigratingCohortState(timestep), vec_ptr);
+    test_data_store->SetMigratingCohortState(vec, timestep);
+    ASSERT_EQ(test_data_store->GetMigratingCohortState(timestep), vec);
 }
 
 TEST_F(RespondDataStoreTest, BehaviorTransitions) {
     Eigen::MatrixXd mat(2, 2);
     int timestep = 4;
     mat << 1, 2, 3, 4;
-    std::shared_ptr<Eigen::MatrixXd> mat_ptr =
-        std::make_shared<Eigen::MatrixXd>(std::move(mat));
-    test_data_store->SetBehaviorTransitions(mat_ptr, timestep);
-    ASSERT_EQ(test_data_store->GetBehaviorTransitions(timestep), mat_ptr);
+    test_data_store->SetBehaviorTransitions(mat, timestep);
+    ASSERT_EQ(test_data_store->GetBehaviorTransitions(timestep), mat);
 }
 
 TEST_F(RespondDataStoreTest, InterventionTransitions) {
     Eigen::MatrixXd mat(2, 2);
     int timestep = 4;
     mat << 1, 2, 3, 4;
-    std::shared_ptr<Eigen::MatrixXd> mat_ptr =
-        std::make_shared<Eigen::MatrixXd>(std::move(mat));
-    test_data_store->SetInterventionTransitions(mat_ptr, timestep);
-    ASSERT_EQ(test_data_store->GetInterventionTransitions(timestep), mat_ptr);
+    test_data_store->SetInterventionTransitions(mat, timestep);
+    ASSERT_EQ(test_data_store->GetInterventionTransitions(timestep), mat);
 }
 
 TEST_F(RespondDataStoreTest, BehaviorAfterInterventionTransitions) {
     Eigen::MatrixXd mat(2, 2);
     int timestep = 4;
     mat << 1, 2, 3, 4;
-    std::shared_ptr<Eigen::MatrixXd> mat_ptr =
-        std::make_shared<Eigen::MatrixXd>(std::move(mat));
-    test_data_store->SetBehaviorAfterInterventionTransitions(mat_ptr, timestep);
+    test_data_store->SetBehaviorAfterInterventionTransitions(mat, timestep);
     ASSERT_EQ(
         test_data_store->GetBehaviorAfterInterventionTransitions(timestep),
-        mat_ptr);
+        mat);
 }
 
 TEST_F(RespondDataStoreTest, OverdoseProbabilityState) {
     Eigen::VectorXd vec(4);
     int timestep = 4;
     vec << 2, 4, 6, 8;
-    std::shared_ptr<Eigen::VectorXd> vec_ptr =
-        std::make_shared<Eigen::VectorXd>(std::move(vec));
-    test_data_store->SetOverdoseProbabilityState(vec_ptr, timestep);
-    ASSERT_EQ(test_data_store->GetOverdoseProbabilityState(timestep), vec_ptr);
+    test_data_store->SetOverdoseProbabilityState(vec, timestep);
+    ASSERT_EQ(test_data_store->GetOverdoseProbabilityState(timestep), vec);
 }
 
 TEST_F(RespondDataStoreTest, OverdoseBeingFatalProbabilityState) {
     Eigen::VectorXd vec(4);
     int timestep = 4;
     vec << 2, 4, 6, 8;
-    std::shared_ptr<Eigen::VectorXd> vec_ptr =
-        std::make_shared<Eigen::VectorXd>(std::move(vec));
-    test_data_store->SetOverdoseBeingFatalProbabilityState(vec_ptr, timestep);
+    test_data_store->SetOverdoseBeingFatalProbabilityState(vec, timestep);
     ASSERT_EQ(test_data_store->GetOverdoseBeingFatalProbabilityState(timestep),
-              vec_ptr);
+              vec);
 }
 
 TEST_F(RespondDataStoreTest, StandardMortalityRatioState) {
     Eigen::VectorXd vec(4);
     int timestep = 4;
     vec << 2, 4, 6, 8;
-    std::shared_ptr<Eigen::VectorXd> vec_ptr =
-        std::make_shared<Eigen::VectorXd>(std::move(vec));
-    test_data_store->SetStandardMortalityRatioState(vec_ptr, timestep);
-    ASSERT_EQ(test_data_store->GetStandardMortalityRatioState(timestep),
-              vec_ptr);
+    test_data_store->SetStandardMortalityRatioState(vec, timestep);
+    ASSERT_EQ(test_data_store->GetStandardMortalityRatioState(timestep), vec);
 }
 
 TEST_F(RespondDataStoreTest, BackgroundMortalityState) {
     Eigen::VectorXd vec(4);
     int timestep = 4;
     vec << 2, 4, 6, 8;
-    std::shared_ptr<Eigen::VectorXd> vec_ptr =
-        std::make_shared<Eigen::VectorXd>(std::move(vec));
-    test_data_store->SetBackgroundMortalityState(vec_ptr, timestep);
-    ASSERT_EQ(test_data_store->GetBackgroundMortalityState(timestep), vec_ptr);
+    test_data_store->SetBackgroundMortalityState(vec, timestep);
+    ASSERT_EQ(test_data_store->GetBackgroundMortalityState(timestep), vec);
 }

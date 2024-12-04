@@ -1,20 +1,3 @@
-//===-- EigenFactory.hpp - EigenFactory class definition --*- C++ -*-===//
-//
-// Part of the RESPOND - Researching Effective Strategies to Prevent Opioid
-// Death Project, under the AGPLv3 License. See https://www.gnu.org/licenses/
-// for license information.
-// SPDX-License-Identifier: AGPLv3
-//
-//===----------------------------------------------------------------------===//
-///
-/// \file
-/// This file contains the declaration of the EigenFactory class.
-///
-/// Created Date: Tuesday, June 27th 2023, 10:20:34 am
-/// Contact: Benjamin.Linas@bmc.org
-///
-//===----------------------------------------------------------------------===//
-
 #ifndef DATA_EIGENFACTORY_HPP_
 #define DATA_EIGENFACTORY_HPP_
 
@@ -29,12 +12,13 @@ namespace Eigen {
 } // namespace Eigen
 
 /// @brief Namespace containing all Helper Utility Classes
-namespace data {
+namespace synmodels::data {
 
     /// @brief Factory to create a Matrix3d Object
     class EigenFactory {
     public:
         EigenFactory() {};
+        virtual ~EigenFactory() = default;
 
         /// @brief Main Static Function used to generate Matrix3d Objects
         /// @param numOUDStates Integer specifying number of OUD States
@@ -47,6 +31,6 @@ namespace data {
         static Eigen::VectorXd CreateVector(const uint16_t N);
     };
 
-} // namespace data
+} // namespace synmodels::data
 
 #endif

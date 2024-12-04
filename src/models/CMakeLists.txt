@@ -27,12 +27,11 @@ FetchContent_MakeAvailable(Eigen)
 list(POP_BACK CMAKE_MESSAGE_INDENT)
 message(CHECK_PASS "fetched")
 
-
-if(BUILD_SHARED_LIBS)
-  add_library(${PROJECT_NAME} SHARED)
-else()
-  add_library(${PROJECT_NAME} STATIC)
-endif()
+# if(BUILD_SHARED_LIBS)
+add_library(${PROJECT_NAME} SHARED)
+# else()
+#   add_library(${PROJECT_NAME} STATIC)
+# endif()
 
 
 target_sources(${PROJECT_NAME}
@@ -41,10 +40,10 @@ target_sources(${PROJECT_NAME}
 )
 
 target_link_libraries(${PROJECT_NAME} 
-    PRIVATE 
-        Eigen3::Eigen 
+    PRIVATE
+        synmodels
+        Eigen3::Eigen
         data
         kernels
 )
 
-target_include_directories(${PROJECT_NAME} PUBLIC "include/")

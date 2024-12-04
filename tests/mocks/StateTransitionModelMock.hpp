@@ -1,34 +1,32 @@
 #ifndef MOCKSTATETRANSITIONMODEL_HPP_
 #define MOCKSTATETRANSITIONMODEL_HPP_
 
-#include "StateTransitionModel.hpp"
+#include "kernels/StateTransitionModel.hpp"
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
+#include <Eigen/Eigen>
 
-namespace kernels {
-    class MOCKStateTransitionModel : public IStateTransitionModel {
+namespace synmodels::kernels {
+    class MOCKStateTransitionModel : public StateTransitionModel {
     public:
-        MOCK_METHOD(void, SetState, (const std::shared_ptr<Eigen::VectorXd> &s),
+        MOCK_METHOD(void, SetState, (const Eigen::VectorXd &), (override));
+        MOCK_METHOD((Eigen::VectorXd const), GetState, (), (const, override));
+        MOCK_METHOD(void, SetTransitions, (const Eigen::MatrixXd &),
                     (override));
-        MOCK_METHOD(std::shared_ptr<Eigen::VectorXd>, GetState, (),
+        MOCK_METHOD((Eigen::MatrixXd const), GetTransitions, (),
                     (const, override));
-        MOCK_METHOD(void, SetTransitions,
-                    (const std::shared_ptr<Eigen::MatrixXd> &s), (override));
-        MOCK_METHOD(std::shared_ptr<Eigen::MatrixXd>, GetTransitions, (),
-                    (const, override));
-        MOCK_METHOD(std::shared_ptr<Eigen::VectorXd>, Transition, (bool),
+        MOCK_METHOD((Eigen::VectorXd const), Transition, (bool), (override));
+        MOCK_METHOD((Eigen::VectorXd const), AddState,
+                    (const Eigen::VectorXd &, bool), (override));
+        MOCK_METHOD((const Eigen::VectorXd), SubtractState,
+                    (Eigen::VectorXd const &, bool), (override));
+        MOCK_METHOD((const Eigen::VectorXd), MultiplyState,
+                    (Eigen::VectorXd const &, bool), (override));
+        MOCK_METHOD((const Eigen::VectorXd), ScalarMultiplyState,
+                    (double, bool), (override));
+        MOCK_METHOD((const Eigen::VectorXd), DivideState, (double, bool),
                     (override));
-        MOCK_METHOD(std::shared_ptr<Eigen::VectorXd>, AddState,
-                    (std::shared_ptr<Eigen::VectorXd>, bool), (override));
-        MOCK_METHOD(std::shared_ptr<Eigen::VectorXd>, SubtractState,
-                    (std::shared_ptr<Eigen::VectorXd>, bool), (override));
-        MOCK_METHOD(std::shared_ptr<Eigen::VectorXd>, MultiplyState,
-                    (std::shared_ptr<Eigen::VectorXd>, bool), (override));
-        MOCK_METHOD(std::shared_ptr<Eigen::VectorXd>, ScalarMultiplyState,
-                    (double, bool), (override));
-        MOCK_METHOD(std::shared_ptr<Eigen::VectorXd>, DivideState,
-                    (double, bool), (override));
     };
-} // namespace kernels
+} // namespace synmodels::kernels
 
 #endif

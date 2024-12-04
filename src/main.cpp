@@ -19,8 +19,8 @@
 ///
 //===----------------------------------------------------------------------===//
 
-#include "Respond.hpp"
-#include "RespondDataStore.hpp"
-#include "StateTransitionModel.hpp"
+#include "data/RespondDataStore.hpp"
+#include "kernels/StateTransitionModel.hpp"
+#include "models/Respond.hpp"
 
 int main() { return 0; }

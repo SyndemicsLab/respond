@@ -22,18 +22,19 @@ showhelp () {
     echo "               Options: [Debug|Release]"
     echo "               Default: Debug"
     echo "p              Build and run tests."
+    echo "b              Build Python Bindings."
 }
 
 # set default build type
 BUILDTYPE="Debug"
 BUILD_TESTS=""
 BUILD_SHARED_LIBS="OFF"
+BUILD_PYBINDINGS="OFF"
 # BUILD_API=""
-# BUILD_PYBINDINGS=""
 # BUILD_BENCHMARK=""
 
 # process optional command line flags
-while getopts ":hpt:" option; do
+while getopts ":hpbt:" option; do
     case $option in
         h)
             showhelp
@@ -53,6 +54,9 @@ while getopts ":hpt:" option; do
         p)
             BUILD_TESTS="ON"
             ;;
+        b)
+            BUILD_PYBINDINGS="ON"
+            ;;
         \?)
             echo "Error: Invalid option flag provided!"
             showhelp
@@ -71,7 +75,7 @@ dminstall () {
     # subshell needed to avoid changing working directory unnecessarily
     (
 	cd "DataManagement" || return 1
-	scripts/build.sh -i "$TOPLEVEL/lib/dminstall"
+	scripts/build.sh -i "$TOPLEVEL/bin/dminstall"
     )
     rm -rf DataManagement
 }
@@ -84,10 +88,9 @@ dminstall () {
     # ensure the `build/` directory exists
     ([[ -d "build/" ]] && rm -rf build/*) || mkdir "build/"
     ([[ -d "bin/" ]] && rm -rf bin/*) || mkdir "bin/"
-    ([[ -d "lib/" ]] && rm -rf lib/*.a && rm -rf lib/*.so && rm -rf lib/dminstall)
 
      # detect or install DataManagement
-    if [[ ! -d "lib/dminstall" ]]; then
+    if [[ ! -d "bin/dminstall" ]]; then
         if ! dminstall; then
             echo "Installing \`DataManagement\` failed."
             exit 1
@@ -97,7 +100,7 @@ dminstall () {
     (
         cd "build" || exit
         # build tests, if specified
-        CMAKE_COMMAND="cmake .. -DCMAKE_BUILD_TYPE=$BUILDTYPE"
+        CMAKE_COMMAND="cmake .. -DCMAKE_BUILD_TYPE=$BUILDTYPE -DBUILD_PYBINDINGS=$BUILD_PYBINDINGS"
         if [[ -n "$BUILD_TESTS" ]]; then
             CMAKE_COMMAND="$CMAKE_COMMAND -DBUILD_TESTS=$BUILD_TESTS"
         fi

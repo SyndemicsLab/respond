@@ -15,10 +15,10 @@
 ///
 //===----------------------------------------------------------------------===//
 
-#include "EigenFactory.hpp"
+#include "data/EigenFactory.hpp"
 #include <Eigen/Eigen>
 
-namespace data {
+namespace synmodels::data {
 
     Eigen::MatrixXd EigenFactory::CreateMatrix(const uint16_t x,
                                                const uint16_t y) {
@@ -33,4 +33,4 @@ namespace data {
         return empty;
     }
 
-} // namespace data
+} // namespace synmodels::data

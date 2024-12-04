@@ -35,14 +35,14 @@ jobs:
           auto-activate-base: false
 
     - name: Clone Crow
-      working-directory: ${{ github.workspace }}/lib
+      working-directory: ${{ github.workspace }}/bin
       run: |
         gh repo clone CrowCpp/Crow
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     # - name: Copy dminstall lib
-    #   run: cp -r "dminstall-${{ matrix.os }}/" "${{github.workspace}}/lib/dminstall"
+    #   run: cp -r "dminstall-${{ matrix.os }}/" "${{github.workspace}}/bin/dminstall"
 
     - name: Install asio with development headers
       # dependency for Crow
@@ -58,4 +58,4 @@ jobs:
     # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
     - name: Build and Test
       working-directory: ${{github.workspace}}
-      run: BOOST_ROOT="${{ steps.install-boost.outputs.BOOST_ROOT }}" scripts/build.sh -apnbt "$BUILD_TYPE"
+      run: BOOST_ROOT="${{ steps.install-boost.outputs.BOOST_ROOT }}" tools/build.sh -apnbt "$BUILD_TYPE"

@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.20)
 
 # Set some basic project attributes
 project (
-  respond
+  synmodels_exec
   VERSION 2.0.0
   DESCRIPTION "A Compartmental Simulation for Opioid Use Disorder"
 )
@@ -15,6 +15,30 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(spdlog)
 
+message(CHECK_START "Fetching Eigen3")
+list(APPEND CMAKE_MESSAGE_INDENT "  ")
+
+FetchContent_Declare(
+    Eigen
+    GIT_REPOSITORY https://gitlab.com/libeigen/eigen.git
+    GIT_TAG master
+    GIT_SHALLOW TRUE
+    GIT_PROGRESS TRUE
+)
+# note: To disable eigen tests,
+# you should put this code in a add_subdirectory to avoid to change
+# BUILD_TESTING for your own project too since variables are directory
+# scoped
+set(BUILD_TESTING OFF)
+set(EIGEN_BUILD_TESTING OFF)
+set(EIGEN_MPL2_ONLY ON)
+set(EIGEN_BUILD_PKGCONFIG OFF)
+set(EIGEN_BUILD_DOC OFF)
+FetchContent_MakeAvailable(Eigen)
+
+list(POP_BACK CMAKE_MESSAGE_INDENT)
+message(CHECK_PASS "fetched")
+
 add_subdirectory(data)
 add_subdirectory(kernels)
 add_subdirectory(models)
@@ -24,30 +48,13 @@ if(BUILD_API STREQUAL ON)
   add_subdirectory(api)
 endif()
 
-option(BUILD_PYBINDINGS "enable RESPOND Python Bindings" OFF)
-if (NOT BUILD_PYBINDINGS STREQUAL OFF)
-  add_subdirectory(pybindings)
-endif()
-
-
-option(BUILD_SHARED_LIBS "Build Using Shared Libraries" ON)
-if(BUILD_SHARED_LIBS)
-    add_library(${PROJECT_NAME} SHARED main.cpp)
-else()
-    add_library(${PROJECT_NAME} STATIC main.cpp)
-endif()
-
-target_include_directories(${PROJECT_NAME}
-    PRIVATE
-        "data/include"
-        "kernels/include"
-        "simulation/include"
-)
+add_executable(${PROJECT_NAME} main.cpp)
 
 target_link_libraries(${PROJECT_NAME}
     PRIVATE
+        synmodels
         data
-        kernel
+        kernels
         models
         spdlog::spdlog
 )

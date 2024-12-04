@@ -1,121 +1,88 @@
-#include "StateTransitionModel.hpp"
-#include "EigenFactory.hpp"
-#include "RespondDataStore.hpp"
+#include "StateTransitionModelImpl.hpp"
 #include <Eigen/Eigen>
 #include <iostream>
 
-namespace kernels {
-    class StateTransitionModel : public virtual IStateTransitionModel {
-    public:
-        StateTransitionModel(uint16_t N) {
-            _states = std::make_shared<Eigen::VectorXd>(
-                std::move(data::EigenFactory::CreateVector(N)));
-            _transition_probabilities = std::make_shared<Eigen::MatrixXd>(
-                std::move(data::EigenFactory::CreateMatrix(N, N)));
-        }
-        StateTransitionModel() : StateTransitionModel(0) {}
+namespace synmodels::kernels {
 
-        void SetState(
-            const std::shared_ptr<Eigen::VectorXd> &initial_states) override {
-            this->_states = std::make_shared<Eigen::VectorXd>(*initial_states);
-        }
-        std::shared_ptr<Eigen::VectorXd> GetState() const override {
-            return _states;
-        }
-        void
-        SetTransitions(const std::shared_ptr<Eigen::MatrixXd> &t) override {
-            this->_transition_probabilities =
-                std::make_shared<Eigen::MatrixXd>(*t);
-        }
-        std::shared_ptr<Eigen::MatrixXd> GetTransitions() const override {
-            return _transition_probabilities;
-        }
-        std::shared_ptr<Eigen::VectorXd>
-        Transition(bool in_place = false) override {
-            if (_transition_probabilities->cols() != _states->size()) {
-                // error
-                return nullptr;
-            }
-            Eigen::VectorXd res = (*_transition_probabilities) * (*_states);
-            std::shared_ptr<Eigen::VectorXd> res_ptr =
-                std::make_shared<Eigen::VectorXd>(std::move(res));
-            if (in_place) {
-                _states = res_ptr;
-            }
-            return res_ptr;
-        }
+    StateTransitionModelImpl::StateTransitionModelImpl(uint16_t N) {
+        _state = synmodels::data::EigenFactory::CreateVector(N);
+        _transition = synmodels::data::EigenFactory::CreateMatrix(N, N);
+    }
 
-        std::shared_ptr<Eigen::VectorXd>
-        AddState(std::shared_ptr<Eigen::VectorXd> m,
-                 bool in_place = false) override {
-            Eigen::VectorXd t1 = *_states;
-            Eigen::VectorXd t2 = *m;
-            Eigen::VectorXd temp = t1 + t2;
-            std::shared_ptr<Eigen::VectorXd> temp_ptr =
-                std::make_shared<Eigen::VectorXd>(std::move(temp));
-            if (in_place) {
-                _states = temp_ptr;
-            }
-            return temp_ptr;
+    void
+    StateTransitionModelImpl::SetState(const Eigen::VectorXd &initial_states) {
+        this->_state = initial_states;
+    }
+    Eigen::VectorXd const StateTransitionModelImpl::GetState() const {
+        return _state;
+    }
+    void StateTransitionModelImpl::SetTransitions(const Eigen::MatrixXd &t) {
+        this->_transition = t;
+    }
+    Eigen::MatrixXd const StateTransitionModelImpl::GetTransitions() const {
+        return _transition;
+    }
+    Eigen::VectorXd const StateTransitionModelImpl::Transition(bool in_place) {
+        Eigen::VectorXd res;
+        if (_transition.cols() != _state.size()) {
+            // error
+            return res;
         }
-        std::shared_ptr<Eigen::VectorXd>
-        SubtractState(std::shared_ptr<Eigen::VectorXd> m,
-                      bool in_place = false) override {
-            Eigen::VectorXd t1 = *_states;
-            Eigen::VectorXd t2 = *m;
-            Eigen::VectorXd temp = t1 - t2;
-            std::shared_ptr<Eigen::VectorXd> temp_ptr =
-                std::make_shared<Eigen::VectorXd>(std::move(temp));
-            if (in_place) {
-                _states = temp_ptr;
-            }
-            return temp_ptr;
+        res = (_transition) * (_state);
+        if (in_place) {
+            _state = res;
         }
-        std::shared_ptr<Eigen::VectorXd>
-        MultiplyState(std::shared_ptr<Eigen::VectorXd> m,
-                      bool in_place = false) override {
-            Eigen::VectorXd t1 = *_states;
-            Eigen::VectorXd t2 = *m;
-            Eigen::VectorXd temp = t1.cwiseProduct(t2);
-            std::shared_ptr<Eigen::VectorXd> temp_ptr =
-                std::make_shared<Eigen::VectorXd>(std::move(temp));
-            if (in_place) {
-                _states = temp_ptr;
-            }
-            return temp_ptr;
-        }
-        std::shared_ptr<Eigen::VectorXd>
-        ScalarMultiplyState(double scalar, bool in_place = false) override {
-            Eigen::VectorXd t1 = *_states;
-            Eigen::VectorXd temp = t1 * scalar;
-            std::shared_ptr<Eigen::VectorXd> temp_ptr =
-                std::make_shared<Eigen::VectorXd>(std::move(temp));
-            if (in_place) {
-                _states = temp_ptr;
-            }
-            return temp_ptr;
-        }
-        std::shared_ptr<Eigen::VectorXd>
-        DivideState(double scalar, bool in_place = false) override {
-            Eigen::MatrixXd t1 = *_states;
-            Eigen::MatrixXd temp = t1 / scalar;
-            std::shared_ptr<Eigen::VectorXd> temp_ptr =
-                std::make_shared<Eigen::VectorXd>(std::move(temp));
-            if (in_place) {
-                _states = temp_ptr;
-            }
-            return temp_ptr;
-        }
-
-    private:
-        std::shared_ptr<Eigen::VectorXd> _states;
-        std::shared_ptr<Eigen::MatrixXd> _transition_probabilities;
-    };
-
-    std::shared_ptr<IStateTransitionModel>
-    StateTransitionModelFactory::MakeStateTransitionModel() {
-        std::shared_ptr<IStateTransitionModel> res =
-            std::make_shared<StateTransitionModel>();
         return res;
     }
-} // namespace kernels
+
+    Eigen::VectorXd const
+    StateTransitionModelImpl::AddState(const Eigen::VectorXd &m,
+                                       bool in_place) {
+        Eigen::VectorXd temp = _state + m;
+        if (in_place) {
+            _state = temp;
+        }
+        return temp;
+    }
+    Eigen::VectorXd const
+    StateTransitionModelImpl::SubtractState(const Eigen::VectorXd &m,
+                                            bool in_place) {
+        Eigen::VectorXd temp = _state - m;
+        if (in_place) {
+            _state = temp;
+        }
+        return temp;
+    }
+    Eigen::VectorXd const
+    StateTransitionModelImpl::MultiplyState(const Eigen::VectorXd &m,
+                                            bool in_place) {
+        Eigen::VectorXd temp = _state.cwiseProduct(m);
+        if (in_place) {
+            _state = temp;
+        }
+        return temp;
+    }
+    Eigen::VectorXd const
+    StateTransitionModelImpl::ScalarMultiplyState(double scalar,
+                                                  bool in_place) {
+        Eigen::VectorXd temp = _state * scalar;
+        if (in_place) {
+            _state = temp;
+        }
+        return temp;
+    }
+    Eigen::VectorXd const StateTransitionModelImpl::DivideState(double scalar,
+                                                                bool in_place) {
+        Eigen::MatrixXd temp = _state / scalar;
+        if (in_place) {
+            _state = temp;
+        }
+        return temp;
+    }
+
+    std::shared_ptr<StateTransitionModel> StateTransitionModel::Create() {
+        std::shared_ptr<StateTransitionModel> res =
+            std::make_shared<StateTransitionModelImpl>();
+        return res;
+    }
+} // namespace synmodels::kernels

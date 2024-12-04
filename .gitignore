@@ -26,7 +26,6 @@ test/TestInput/*
 
 # Libraries
 lib/*
-!lib/.gitkeep
 dminstall
 *.so
 *.a
