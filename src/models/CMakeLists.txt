@@ -27,13 +27,13 @@ FetchContent_MakeAvailable(Eigen)
 list(POP_BACK CMAKE_MESSAGE_INDENT)
 message(CHECK_PASS "fetched")
 
-# if(BUILD_SHARED_LIBS)
-add_library(${PROJECT_NAME} SHARED)
-# else()
-#   add_library(${PROJECT_NAME} STATIC)
-# endif()
+if(BUILD_SHARED_LIBS)
+    add_library(${PROJECT_NAME} SHARED)
+else()
+    add_library(${PROJECT_NAME} STATIC)
+endif()
 
-
+set_target_properties(${PROJECT_NAME} PROPERTIES POSITION_INDEPENDENT_CODE TRUE)
 target_sources(${PROJECT_NAME}
     PRIVATE
         Respond.cpp

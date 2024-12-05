@@ -27,7 +27,7 @@ test/TestInput/*
 # Libraries
 lib/*
 dminstall
-*.so
+# *.so
 *.a
 
 

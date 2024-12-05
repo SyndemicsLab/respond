@@ -6,8 +6,9 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/../bin)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/../bin)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/../bin)
 
-add_library(${PROJECT_NAME} INTERFACE)
-target_include_directories(${PROJECT_NAME} INTERFACE include)
+add_library(${PROJECT_NAME} STATIC src/main.cpp)
+set_target_properties(${PROJECT_NAME} PROPERTIES POSITION_INDEPENDENT_CODE TRUE)
+target_include_directories(${PROJECT_NAME} PUBLIC include)
 
 add_subdirectory(src)
 # Only compile tests if desired
@@ -27,8 +28,8 @@ if(BUILD_PYBINDINGS)
     FetchContent_MakeAvailable(pybind11)
     list(POP_BACK CMAKE_MESSAGE_INDENT)
     message(CHECK_PASS "fetched")
-    pybind11_add_module(py_synmodels src/py_SynModels.cpp)
-    target_link_libraries(py_synmodels
+    pybind11_add_module(SynModels src/py_SynModels.cpp)
+    target_link_libraries(SynModels
         PRIVATE
             synmodels
             data
@@ -36,6 +37,7 @@ if(BUILD_PYBINDINGS)
             models
             Eigen3::Eigen
     )
+    install(TARGETS SynModels DESTINATION .)
 endif()
 
 # Only compile benchmarking if desired
