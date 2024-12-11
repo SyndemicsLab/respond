@@ -5,10 +5,6 @@ project(kernels)
 include(LoadSpdlog)
 LoadSpdlog()
 
-find_package(DataManagement 1 REQUIRED
-    HINTS "${CMAKE_SOURCE_DIR}/bin/dminstall"
-)
-
 if(BUILD_SHARED_LIBS)
     add_library(${PROJECT_NAME} SHARED)
 else()
@@ -28,6 +24,5 @@ target_link_libraries(${PROJECT_NAME}
         synmodels
         Eigen3::Eigen 
         spdlog::spdlog 
-        DataManagement::DataManagement
         data
 )

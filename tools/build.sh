@@ -66,20 +66,6 @@ while getopts ":hpbt:" option; do
     esac
 done
 
-dminstall () {
-    if [[ ! -d "DataManagement" ]]; then
-	git clone -b main git@github.com:SyndemicsLab/DataManagement
-    fi
-    echo "DataManagement clone complete."
-
-    # subshell needed to avoid changing working directory unnecessarily
-    (
-	cd "DataManagement" || return 1
-	scripts/build.sh -i "$TOPLEVEL/bin/dminstall"
-    )
-    rm -rf DataManagement
-}
-
 (
     # change to the top-level git folder
     TOPLEVEL="$(git rev-parse --show-toplevel)"
@@ -87,15 +73,6 @@ dminstall () {
 
     # ensure the `build/` directory exists
     ([[ -d "build/" ]] && rm -rf build/*) || mkdir "build/"
-    ([[ -d "bin/" ]] && rm -rf bin/*) || mkdir "bin/"
-
-     # detect or install DataManagement
-    if [[ ! -d "bin/dminstall" ]]; then
-        if ! dminstall; then
-            echo "Installing \`DataManagement\` failed."
-            exit 1
-        fi
-    fi
 
     (
         cd "build" || exit
@@ -120,7 +97,7 @@ dminstall () {
         )
         # run tests, if they built properly
     )
-    if [[ (-n "$BUILD_TESTS") && (-f "bin/respondTest") ]]; then
-        bin/respondTest
+    if [[ (-n "$BUILD_TESTS") && (-f "build/tests/respondTest") ]]; then
+        build/tests/respondTest
     fi
 )
