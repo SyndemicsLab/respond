@@ -54,18 +54,26 @@ namespace synmodels::models {
     }
 
     STMODEL_POINTER RespondImpl::Transition() const {
-        // auto interventions =
-        //     _data_store->GetInterventionTransitions(timestep);
-        // auto diagonal = interventions->diagonal();
-        // interventions->diagonal() = Eigen::VectorXd::Zero();
-        // auto init_effect =
-        //     _data_store->GetBehaviorAfterInterventionTransitions(timestep);
-        // Eigen::MatrixXd transitions = (*interventions) * (*init_effect);
-        // transitions.diagonal() = diagonal;
-        // transitions *= (*_data_store->GetBehaviorTransitions(timestep));
-        // std::shared_ptr<Eigen::MatrixXd> trans_ptr =
-        //     std::make_shared<Eigen::MatrixXd>(transitions);
-        // _model->SetTransitions(trans_ptr);
+        auto state = _model->GetState();
+        auto migration = _data_store->GetMigratingCohortState(timestep);
+        auto behaviors = _data_store->GetBehaviorTransitions(timestep);
+
+        auto interventions = _data_store->GetInterventionTransitions(timestep);
+        auto bait =
+            _data_store->GetBehaviorAfterInterventionTransitions(timestep);
+        auto intervention_diagonals = interventions.diagonal();
+        auto zero_diagonals = interventions - intervention_diagonals;
+        auto intervention_end =
+            intervention_diagonals + (zero_diagonals * bait);
+
+        auto od = _data_store->GetOverdoseProbabilityState(timestep);
+        auto fod = _data_store->GetOverdoseBeingFatalProbabilityState(timestep);
+        auto mort = _data_store->GetBackgroundMortalityState(timestep);
+        auto smr = _data_store->GetStandardMortalityRatioState(timestep);
+
+        // Need to connect them together
+
+        // _model->SetTransitions(transitions);
         // _model->Transition(true);
         return _model;
     }
