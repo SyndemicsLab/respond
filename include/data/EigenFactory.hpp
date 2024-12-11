@@ -3,6 +3,7 @@
 
 #include <cstdint>
 
+/// @brief Namespace used to ensure Eigen is building and linking properly
 namespace Eigen {
     template <typename _Scalar, int _Rows, int _Cols, int _Options,
               int _MaxRows, int _MaxCols>
@@ -20,14 +21,15 @@ namespace synmodels::data {
         EigenFactory() {};
         virtual ~EigenFactory() = default;
 
-        /// @brief Main Static Function used to generate Matrix3d Objects
-        /// @param numOUDStates Integer specifying number of OUD States
-        /// @param numInterventions Integer specifying number of Interventions
-        /// @param numDemographics Integer specifying number of Demographic
-        /// Combinations
-        /// @return New Matrix3d Object of specified dimensions
+        /// @brief Function used to generate Eigen Matrix Objects
+        /// @param x Integer specifying size of first axis
+        /// @param y Integer specifying size of second axis
+        /// @return New Matrix of size x-by-y
         static Eigen::MatrixXd CreateMatrix(const uint16_t x, const uint16_t y);
 
+        /// @brief Function used to generate Eigen Vector Objects
+        /// @param N Integer specifying the size of the Vector
+        /// @return New Vector of Length N
         static Eigen::VectorXd CreateVector(const uint16_t N);
     };
 

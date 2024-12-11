@@ -13,6 +13,7 @@ endif()
 
 
 set_target_properties(${PROJECT_NAME} PROPERTIES POSITION_INDEPENDENT_CODE TRUE)
+target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_SOURCE_DIR}/include/kernels)
 target_sources(${PROJECT_NAME}
     PRIVATE
         StateTransitionModel.cpp

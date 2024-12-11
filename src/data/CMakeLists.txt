@@ -12,6 +12,7 @@ else()
 endif()
 
 set_target_properties(${PROJECT_NAME} PROPERTIES POSITION_INDEPENDENT_CODE TRUE)
+target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_SOURCE_DIR}/include/data)
 target_sources(${PROJECT_NAME}
     PRIVATE
         EigenFactory.cpp
