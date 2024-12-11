@@ -55,7 +55,7 @@ namespace synmodels::data {
                                                     const int &timestep) = 0;
         virtual void SetBackgroundMortalityState(const Eigen::VectorXd &,
                                                  const int &timestep) = 0;
-        static std::shared_ptr<RespondDataStore> Create();
+        static std::unique_ptr<RespondDataStore> Create();
     };
 } // namespace synmodels::data
 

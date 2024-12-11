@@ -100,8 +100,8 @@ namespace synmodels::models {
         _history[timestep] = _model->GetState();
     }
 
-    std::shared_ptr<Respond> Respond::Create(STMODEL_POINTER model) {
-        std::shared_ptr<Respond> res = std::make_shared<RespondImpl>(model);
+    std::unique_ptr<Respond> Respond::Create(STMODEL_POINTER model) {
+        std::unique_ptr<Respond> res = std::make_unique<RespondImpl>(model);
         return res;
     }
 } // namespace synmodels::models

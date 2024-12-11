@@ -1,5 +1,4 @@
 #include "StateTransitionModelImpl.hpp"
-#include <Eigen/Eigen>
 #include <iostream>
 
 namespace synmodels::kernels {
@@ -80,9 +79,9 @@ namespace synmodels::kernels {
         return temp;
     }
 
-    std::shared_ptr<StateTransitionModel> StateTransitionModel::Create() {
-        std::shared_ptr<StateTransitionModel> res =
-            std::make_shared<StateTransitionModelImpl>();
+    std::unique_ptr<StateTransitionModel> StateTransitionModel::Create() {
+        std::unique_ptr<StateTransitionModel> res =
+            std::make_unique<StateTransitionModelImpl>();
         return res;
     }
 } // namespace synmodels::kernels

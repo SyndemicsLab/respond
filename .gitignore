@@ -1,5 +1,4 @@
 .metadata
-bin/
 tmp/
 *.tmp
 *.bak
@@ -10,6 +9,10 @@ local.properties
 .vscode/
 .loadpath
 .recommenders
+
+# Binary Files
+bin/*
+!bin/.gitkeep
 
 # Build Files
 build/*

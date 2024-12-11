@@ -24,7 +24,7 @@ namespace synmodels::models {
 
         virtual HISTORY_MAP const &GetSimulationHistory() const = 0;
 
-        static std::shared_ptr<Respond> Create(STMODEL_POINTER model = nullptr);
+        static std::unique_ptr<Respond> Create(STMODEL_POINTER model = nullptr);
     };
 } // namespace synmodels::models
 #endif // MODEL_SIMULATION_HPP_

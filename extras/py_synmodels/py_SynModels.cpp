@@ -2,7 +2,6 @@
 #include "kernels/py_Kernels.cpp"
 #include "models/py_Models.cpp"
 
-#include <Eigen/Eigen>
 #include <pybind11/pybind11.h>
 
 namespace py = pybind11;

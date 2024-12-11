@@ -153,9 +153,9 @@ namespace synmodels::data {
     //     }
     // }
 
-    std::shared_ptr<RespondDataStore> RespondDataStore::Create() {
-        std::shared_ptr<RespondDataStore> res =
-            std::make_shared<RespondDataStoreImpl>();
+    std::unique_ptr<RespondDataStore> RespondDataStore::Create() {
+        std::unique_ptr<RespondDataStore> res =
+            std::make_unique<RespondDataStoreImpl>();
         return res;
     }
 } // namespace synmodels::data

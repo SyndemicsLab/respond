@@ -1,18 +1,22 @@
-#include "RespondDataStoreImpl.hpp"
+#include "data/EigenFactory.hpp"
 #include "data/RespondDataStore.hpp"
 
 #include <Eigen/Eigen>
 #include <memory>
 #include <pybind11/eigen.h>
 #include <pybind11/pybind11.h>
-#include <pybind11/stl.h>
 
 namespace py = pybind11;
 using namespace synmodels::data;
 
 void init_data(py::module &m) {
-    py::class_<RespondDataStore, RespondDataStoreImpl>(m, "RespondDataStore")
+    py::class_<EigenFactory>(m, "EigenFactory")
         .def(py::init<>())
+        .def("CreateMatrix", &EigenFactory::CreateMatrix)
+        .def("CreateVector", &EigenFactory::CreateVector);
+
+    py::class_<RespondDataStore>(m, "RespondDataStore")
+        .def(py::init(&RespondDataStore::Create))
         .def("GetDuration", &RespondDataStore::GetDuration)
         .def("GetStoreHistoryStatus", &RespondDataStore::GetStoreHistoryStatus)
         .def("GetHistoryTimestepsToStore",

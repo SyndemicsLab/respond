@@ -29,7 +29,7 @@ namespace synmodels::kernels {
         virtual Eigen::VectorXd const DivideState(double,
                                                   bool in_place = false) = 0;
 
-        static std::shared_ptr<StateTransitionModel> Create();
+        static std::unique_ptr<StateTransitionModel> Create();
     };
 } // namespace synmodels::kernels
 #endif
