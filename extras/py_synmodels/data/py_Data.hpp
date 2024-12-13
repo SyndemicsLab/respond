@@ -1,5 +1,8 @@
-#include "data/EigenFactory.hpp"
-#include "data/RespondDataStore.hpp"
+#ifndef PY_DATA_HPP_
+#define PY_DATA_HPP_
+
+#include <synmodels/data/EigenFactory.hpp>
+#include <synmodels/data/RespondDataStore.hpp>
 
 #include <Eigen/Eigen>
 #include <memory>
@@ -61,3 +64,5 @@ void init_data(py::module &m) {
              &RespondDataStore::SetBackgroundMortalityState)
         .def_static("Create", &RespondDataStore::Create);
 }
+
+#endif

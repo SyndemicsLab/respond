@@ -26,11 +26,11 @@ showhelp () {
 }
 
 # set default build type
-BUILDTYPE="Debug"
-BUILD_TESTS=""
+CMAKE_BUILD_TYPE="Debug"
+SYNMODELS_BUILD_TESTS=""
 BUILD_SHARED_LIBS="OFF"
-BUILD_PYBINDINGS="OFF"
-# BUILD_API=""
+SYNMODELS_BUILD_PYBINDINGS="OFF"
+SYNMODELS_BUILD_PIC="OFF"
 # BUILD_BENCHMARK=""
 
 # process optional command line flags
@@ -43,7 +43,7 @@ while getopts ":hpbt:" option; do
         t)
             case "$OPTARG" in
                 "Debug"|"Release")
-                    BUILDTYPE="$OPTARG"
+                    CMAKE_BUILD_TYPE="$OPTARG"
                     ;;
                 *)
                     echo "Specified build type is invalid!"
@@ -52,10 +52,11 @@ while getopts ":hpbt:" option; do
             esac
             ;;
         p)
-            BUILD_TESTS="ON"
+            SYNMODELS_BUILD_TESTS="ON"
             ;;
         b)
-            BUILD_PYBINDINGS="ON"
+            SYNMODELS_BUILD_PYBINDINGS="ON"
+            SYNMODELS_BUILD_PIC="ON"
             ;;
         \?)
             echo "Error: Invalid option flag provided!"
@@ -77,9 +78,9 @@ done
     (
         cd "build" || exit
         # build tests, if specified
-        CMAKE_COMMAND="cmake .. -DCMAKE_BUILD_TYPE=$BUILDTYPE -DBUILD_PYBINDINGS=$BUILD_PYBINDINGS"
-        if [[ -n "$BUILD_TESTS" ]]; then
-            CMAKE_COMMAND="$CMAKE_COMMAND -DBUILD_TESTS=$BUILD_TESTS"
+        CMAKE_COMMAND="cmake .. -DCMAKE_BUILD_TYPE=$BUILDTYPE -DSYNMODELS_BUILD_PYBINDINGS=$SYNMODELS_BUILD_PYBINDINGS -DSYNMODELS_BUILD_PIC=$SYNMODELS_BUILD_PIC"
+        if [[ -n "$SYNMODELS_BUILD_TESTS" ]]; then
+            CMAKE_COMMAND="$CMAKE_COMMAND -DSYNMODELS_BUILD_TESTS=$SYNMODELS_BUILD_TESTS"
         fi
 
         # build static or shared library
@@ -97,7 +98,7 @@ done
         )
         # run tests, if they built properly
     )
-    if [[ (-n "$BUILD_TESTS") && (-f "build/tests/respondTest") ]]; then
+    if [[ (-n "$SYNMODELS_BUILD_TESTS") && (-f "build/tests/respondTest") ]]; then
         build/tests/respondTest
     fi
 )

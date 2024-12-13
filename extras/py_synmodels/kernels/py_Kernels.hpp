@@ -1,4 +1,7 @@
-#include "kernels/StateTransitionModel.hpp"
+#ifndef PY_KERNELS_HPP_
+#define PY_KERNELS_HPP_
+
+#include <synmodels/kernels/StateTransitionModel.hpp>
 
 #include <pybind11/eigen.h>
 #include <pybind11/pybind11.h>
@@ -21,3 +24,5 @@ void init_kernels(py::module &m) {
         .def("DivideState", &StateTransitionModel::DivideState)
         .def_static("Create", &StateTransitionModel::Create);
 }
+
+#endif

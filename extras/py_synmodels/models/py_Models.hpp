@@ -1,4 +1,7 @@
-#include "models/Respond.hpp"
+#ifndef PY_MODELS_HPP_
+#define PY_MODELS_HPP_
+
+#include <synmodels/models/Respond.hpp>
 
 #include <pybind11/eigen.h>
 #include <pybind11/pybind11.h>
@@ -14,3 +17,5 @@ void init_models(py::module &m) {
         .def("GetSimulationHistory", &Respond::GetSimulationHistory)
         .def_static("Create", &Respond::Create);
 }
+
+#endif
