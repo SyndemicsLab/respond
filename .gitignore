@@ -20,16 +20,6 @@ docs/latex
 docs/man
 docs/images/drawio
 
-test/TestInput/*
-!test/TestInput/.gitkeep
-
-# Libraries
-lib/*
-dminstall
-# *.so
-*.a
-
-
 # External tool builders
 .externalToolBuilders/
 
