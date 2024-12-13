@@ -1,8 +1,8 @@
 #ifndef MODELS_RESPONDIMPL_HPP_
 #define MODELS_RESPONDIMPL_HPP_
 
-#include "models/Respond.hpp"
 #include <Eigen/Eigen>
+#include <synmodels/models/Respond.hpp>
 
 namespace synmodels::models {
     class RespondImpl : public virtual Respond {

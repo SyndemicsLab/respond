@@ -19,8 +19,8 @@
 ///
 //===----------------------------------------------------------------------===//
 
-#include "data/RespondDataStore.hpp"
-#include "kernels/StateTransitionModel.hpp"
-#include "models/Respond.hpp"
+#include <synmodels/data/RespondDataStore.hpp>
+#include <synmodels/kernels/StateTransitionModel.hpp>
+#include <synmodels/models/Respond.hpp>
 
 int main() { return 0; }

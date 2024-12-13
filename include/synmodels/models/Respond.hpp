@@ -1,10 +1,10 @@
 #ifndef MODELS_RESPOND_HPP_
 #define MODELS_RESPOND_HPP_
 
-#include "data/RespondDataStore.hpp"
-#include "kernels/StateTransitionModel.hpp"
 #include <functional>
 #include <memory>
+#include <synmodels/data/RespondDataStore.hpp>
+#include <synmodels/kernels/StateTransitionModel.hpp>
 #include <unordered_map>
 #include <vector>
 

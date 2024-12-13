@@ -1,11 +1,11 @@
 #ifndef KERNELS_STATETRANSITIONMODEL_HPP_
 #define KERNELS_STATETRANSITIONMODEL_HPP_
 
-#include "data/EigenFactory.hpp"
 #include <cstdint>
 #include <functional>
 #include <memory>
 #include <string>
+#include <synmodels/data/EigenFactory.hpp>
 #include <vector>
 
 namespace synmodels::kernels {

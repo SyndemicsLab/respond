@@ -1,7 +1,7 @@
 #ifndef KERNELS_STATETRANSITIONMODELIMPL_HPP_
 #define KERNELS_STATETRANSITIONMODELIMPL_HPP_
 
-#include "kernels/StateTransitionModel.hpp"
+#include <synmodels/kernels/StateTransitionModel.hpp>
 
 #include <Eigen/Eigen>
 

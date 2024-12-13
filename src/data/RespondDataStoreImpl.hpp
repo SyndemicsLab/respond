@@ -1,7 +1,7 @@
 #ifndef DATA_RESPONDDATASTOREIMPL_HPP_
 #define DATA_RESPONDDATASTOREIMPL_HPP_
 
-#include "data/RespondDataStore.hpp"
+#include <synmodels/data/RespondDataStore.hpp>
 
 #include <Eigen/Eigen>
 #include <memory>

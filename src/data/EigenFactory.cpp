@@ -15,8 +15,8 @@
 ///
 //===----------------------------------------------------------------------===//
 
-#include "data/EigenFactory.hpp"
 #include <Eigen/Eigen>
+#include <synmodels/data/EigenFactory.hpp>
 
 namespace synmodels::data {
 

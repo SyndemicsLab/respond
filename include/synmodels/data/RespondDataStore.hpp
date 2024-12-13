@@ -1,8 +1,8 @@
 #ifndef INTERFACE_DATA_RESPONDDATASTORE_HPP_
 #define INTERFACE_DATA_RESPONDDATASTORE_HPP_
 
-#include "data/EigenFactory.hpp"
 #include <memory>
+#include <synmodels/data/EigenFactory.hpp>
 #include <unordered_map>
 #include <vector>
 
