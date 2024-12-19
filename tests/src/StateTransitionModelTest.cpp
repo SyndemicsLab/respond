@@ -1,8 +1,8 @@
-#include "kernels/StateTransitionModel.hpp"
 #include "spdlog/sinks/stdout_color_sinks.h"
 #include "spdlog/spdlog.h"
 #include <Eigen/Eigen>
 #include <gtest/gtest.h>
+#include <synmodels/kernels/StateTransitionModel.hpp>
 
 #include <memory>
 #include <vector>

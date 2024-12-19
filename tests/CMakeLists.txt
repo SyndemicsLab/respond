@@ -3,10 +3,7 @@ set(CMAKE_CXX_STANDARD 17)
 project(respondTest CXX)
 
 include(LoadFmt)
-LoadFmt()
-
 include(LoadGoogleTest)
-LoadGoogleTest()
 
 enable_testing()
 
@@ -23,9 +20,6 @@ target_link_libraries(${PROJECT_NAME}
         fmt
         Eigen3::Eigen
         spdlog::spdlog
-        kernels
-        models
-        data
         synmodels
 )
 

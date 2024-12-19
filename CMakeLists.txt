@@ -46,7 +46,6 @@ endif()
 # Set all default options
 # ---------------------------------------------------------------------------------------
 include(options)
-LoadOptions()
 
 # ---------------------------------------------------------------------------------------
 # Set position independent code
@@ -97,8 +96,8 @@ target_compile_definitions(synmodels PUBLIC SYNMODELS_COMPILED_LIB)
 target_include_directories(synmodels ${SYNMODELS_INCLUDES_LEVEL} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include>"
                                                                   "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>")
 
-find_package(spdlog)
-find_package(Eigen3)
+include(LoadSpdlog)
+include(LoadEigen)
                                                                   
 target_link_libraries(synmodels
     PRIVATE
@@ -109,12 +108,10 @@ target_link_libraries(synmodels
 set_target_properties(synmodels PROPERTIES VERSION ${SYNMODELS_VERSION} SOVERSION ${SYNMODELS_VERSION_MAJOR}.${SYNMODELS_VERSION_MINOR})
 
 include(BuildBinaries)
-BuildBinaries()
 
 # ---------------------------------------------------------------------------------------
 # Install
 # ---------------------------------------------------------------------------------------
 if(SYNMODELS_INSTALL)
     include(InstallSynmodels)
-    InstallSynmodels()
 endif()

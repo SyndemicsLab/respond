@@ -1,10 +1,10 @@
 #ifndef RESPONDDATASTOREMOCK_HPP_
 #define RESPONDDATASTOREMOCK_HPP_
 
-#include "data/RespondDataStore.hpp"
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 #include <Eigen/Eigen>
+#include <synmodels/data/RespondDataStore.hpp>
 
 namespace synmodels::data {
     class MOCKRespondDataStore : public RespondDataStore {

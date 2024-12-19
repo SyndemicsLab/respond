@@ -1,10 +1,10 @@
 #ifndef MOCKSTATETRANSITIONMODEL_HPP_
 #define MOCKSTATETRANSITIONMODEL_HPP_
 
-#include "kernels/StateTransitionModel.hpp"
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 #include <Eigen/Eigen>
+#include <synmodels/kernels/StateTransitionModel.hpp>
 
 namespace synmodels::kernels {
     class MOCKStateTransitionModel : public StateTransitionModel {

@@ -1,6 +1,9 @@
-function(LoadEigen)
+message(CHECK_START "Searching for Eigen3...")
+find_package(Eigen3)
+
+if( NOT Eigen3_FOUND )
     include(FetchContent)
-    message(CHECK_START "Fetching Eigen3")
+    message(CHECK_START "Eigen3 Not Found, Fetching...")
     list(APPEND CMAKE_MESSAGE_INDENT "  ")
 
     FetchContent_Declare(
@@ -21,5 +24,7 @@ function(LoadEigen)
     set(EIGEN_BUILD_DOC OFF)
     FetchContent_MakeAvailable(Eigen)
     list(POP_BACK CMAKE_MESSAGE_INDENT)
-    message(CHECK_PASS "fetched")
-endfunction()
+    message(CHECK_PASS "Eigen 3 Fetched")
+else()
+    message(CHECK_PASS "Eigen3 Found")
+endif()

@@ -1,8 +1,8 @@
-#include "data/RespondDataStore.hpp"
 #include "spdlog/sinks/stdout_color_sinks.h"
 #include "spdlog/spdlog.h"
 #include <Eigen/Eigen>
 #include <gtest/gtest.h>
+#include <synmodels/data/RespondDataStore.hpp>
 
 #include <memory>
 #include <vector>

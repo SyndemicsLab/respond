@@ -1,7 +1,8 @@
-function(LoadGoogleTest)
+message(CHECK_START "Searching for GoogleTest...")
+find_package(GTest)
+if(NOT GTest_FOUND)
     include(FetchContent)
-
-    message(CHECK_START "Fetching GoogleTest")
+    message(CHECK_START "GoogleTest Not Found, Fetching...")
     list(APPEND CMAKE_MESSAGE_INDENT "  ")
 
     FetchContent_Declare(
@@ -13,5 +14,7 @@ function(LoadGoogleTest)
     FetchContent_MakeAvailable(googletest)
 
     list(POP_BACK CMAKE_MESSAGE_INDENT)
-    message(CHECK_PASS "fetched")
-endfunction()
+    message(CHECK_PASS "Fetched GoogleTest")
+else()
+    message(CHECK_PASS "Found GoogleTest")
+endif()

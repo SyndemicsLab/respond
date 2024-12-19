@@ -1,6 +1,6 @@
-#include "models/Respond.hpp"
 #include "RespondDataStoreMock.hpp"
 #include "StateTransitionModelMock.hpp"
+#include <synmodels/models/Respond.hpp>
 
 #include "spdlog/sinks/stdout_color_sinks.h"
 #include "spdlog/spdlog.h"
