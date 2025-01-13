@@ -183,9 +183,9 @@ namespace Matrixify {
         const std::shared_ptr<IDataLoader> dataLoader) const {
 
         std::string res = writeOUDTransitionRates(dataLoader);
-        res = res + " " + writeInterventionTransitionRates(dataLoader);
-        res = res + " " + writeInterventionInitRates(dataLoader);
-        res = res + " " + writeOverdoseRates(dataLoader);
+        // res = res + " " + writeInterventionTransitionRates(dataLoader);
+        // res = res + " " + writeInterventionInitRates(dataLoader);
+        // res = res + " " + writeOverdoseRates(dataLoader);
         res = res + " " + writeFatalOverdoseRates(dataLoader);
         return res;
     }
