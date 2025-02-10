@@ -8,10 +8,10 @@
 #include "crow.h"
 #include <string>
 
-namespace API {
-    class RESPONDAPI {
+namespace respond::api {
+    class respondapi {
     public:
-        RESPONDAPI();
+        respondapi();
         crow::SimpleApp app;
         void setupApp();
         void runApp();
@@ -31,6 +31,6 @@ namespace API {
         void setupCalculate();
         std::string readMessage(const crow::request &req);
     };
-} // namespace API
+} // namespace respond::api
 
 #endif

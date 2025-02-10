@@ -2,7 +2,7 @@
 #include "PostSimulationCalculator.hpp"
 #include "Simulation.hpp"
 
-namespace API {
+namespace respond::api {
     RESPONDAPI::RESPONDAPI() {
         this->setupUpload();
         this->setupDownload();
@@ -295,4 +295,4 @@ namespace API {
             });
     }
 
-} // namespace API
+} // namespace respond::api
