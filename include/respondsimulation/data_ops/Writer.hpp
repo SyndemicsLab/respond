@@ -47,8 +47,8 @@
 #include <respondsimulation/data_ops/DataLoader.hpp>
 #include <respondsimulation/data_ops/Interfaces.hpp>
 
-/// @brief Namespace Defining all Matrixify Operations
-namespace Matrixify {
+/// @brief Namespace Defining all data_ops Operations
+namespace data_ops {
 
     /// @brief Writer Class that acts as a superclass to all writing classes
     class Writer : public virtual IWritable, public virtual IFileable {
@@ -265,6 +265,6 @@ namespace Matrixify {
                            demographicCombos, timesteps, writeType) {}
         std::string writeTotals(const Totals totals) const;
     };
-} // namespace Matrixify
+} // namespace data_ops
 
 #endif

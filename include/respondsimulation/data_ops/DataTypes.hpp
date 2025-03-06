@@ -28,7 +28,7 @@
 
 #define ASSERTM(exp, msg) assert(((void)msg, exp))
 
-namespace Matrixify {
+namespace data_ops {
 
     /// @brief Specification for each dimension in the Matrix3d
     enum Dimension { INTERVENTION = 0, OUD = 1, DEMOGRAPHIC_COMBO = 2 };
@@ -90,7 +90,7 @@ namespace Matrixify {
         double operator()(int timestep, int idx1, int idx2, int idx3) const;
 
         /// @brief Add the Matrix3d at the specified Timestep
-        /// @param datapoint Matrix3d Matrixify
+        /// @param datapoint Matrix3d data_ops
         /// @param timestep Timestep to insert the Matrix3d
         void insert(Matrix3d const &datapoint, int timestep);
 
@@ -145,6 +145,6 @@ namespace Matrixify {
 
     using Totals = Totals;
 
-}; // namespace Matrixify
+}; // namespace data_ops
 
 #endif

@@ -1,10 +1,22 @@
+////////////////////////////////////////////////////////////////////////////////
+// File: MockDataLoader.hpp                                                   //
+// Project: RESPONDSimulationv2                                               //
+// Created Date: 2025-01-14                                                   //
+// Author: Matthew Carroll                                                    //
+// -----                                                                      //
+// Last Modified: 2025-03-06                                                  //
+// Modified By: Matthew Carroll                                               //
+// -----                                                                      //
+// Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
+////////////////////////////////////////////////////////////////////////////////
+
 #ifndef TESTS_MOCKDATALOADER_HPP_
 #define TESTS_MOCKDATALOADER_HPP_
 
-#include "DataLoader.hpp"
 #include "gmock/gmock.h"
+#include <respondsimulation/data_ops/DataLoader.hpp>
 
-class MockDataLoader : public Matrixify::IDataLoader {
+class MockDataLoader : public data_ops::IDataLoader {
 public:
     // ILoggable
     MOCK_METHOD(void, setLogger, ((std::shared_ptr<spdlog::logger> const)),
@@ -84,52 +96,50 @@ public:
                 (const, override));
 
     // IDataLoader
-    MOCK_METHOD((Matrixify::Matrix3d), getInitialSample, (), (const, override));
-    MOCK_METHOD((Matrixify::Matrix4d), getEnteringSamples, (),
+    MOCK_METHOD((data_ops::Matrix3d), getInitialSample, (), (const, override));
+    MOCK_METHOD((data_ops::Matrix4d), getEnteringSamples, (),
                 (const, override));
-    MOCK_METHOD((Matrixify::Matrix3d), getOUDTransitionRates, (),
+    MOCK_METHOD((data_ops::Matrix3d), getOUDTransitionRates, (),
                 (const, override));
-    MOCK_METHOD((Matrixify::Matrix4d), getInterventionTransitionRates, (),
+    MOCK_METHOD((data_ops::Matrix4d), getInterventionTransitionRates, (),
                 (const, override));
-    MOCK_METHOD((Matrixify::Matrix4d), getOverdoseRates, (), (const, override));
-    MOCK_METHOD((Matrixify::Matrix4d), getFatalOverdoseRates, (),
+    MOCK_METHOD((data_ops::Matrix4d), getOverdoseRates, (), (const, override));
+    MOCK_METHOD((data_ops::Matrix4d), getFatalOverdoseRates, (),
                 (const, override));
-    MOCK_METHOD((Matrixify::Matrix3d), getMortalityRates, (),
+    MOCK_METHOD((data_ops::Matrix3d), getMortalityRates, (), (const, override));
+    MOCK_METHOD((data_ops::Matrix3d), getInterventionInitRates, (),
                 (const, override));
-    MOCK_METHOD((Matrixify::Matrix3d), getInterventionInitRates, (),
-                (const, override));
-    MOCK_METHOD((void), setInitialSample, ((Matrixify::Matrix3d)), (override));
-    MOCK_METHOD((void), setEnteringSamples, ((Matrixify::Matrix4d)),
+    MOCK_METHOD((void), setInitialSample, ((data_ops::Matrix3d)), (override));
+    MOCK_METHOD((void), setEnteringSamples, ((data_ops::Matrix4d)), (override));
+    MOCK_METHOD((void), setOUDTransitionRates, ((data_ops::Matrix3d)),
                 (override));
-    MOCK_METHOD((void), setOUDTransitionRates, ((Matrixify::Matrix3d)),
+    MOCK_METHOD((void), setInterventionTransitionRates, ((data_ops::Matrix4d)),
                 (override));
-    MOCK_METHOD((void), setInterventionTransitionRates, ((Matrixify::Matrix4d)),
+    MOCK_METHOD((void), setOverdoseRates, ((data_ops::Matrix4d)), (override));
+    MOCK_METHOD((void), setFatalOverdoseRates, ((data_ops::Matrix4d)),
                 (override));
-    MOCK_METHOD((void), setOverdoseRates, ((Matrixify::Matrix4d)), (override));
-    MOCK_METHOD((void), setFatalOverdoseRates, ((Matrixify::Matrix4d)),
+    MOCK_METHOD((void), setMortalityRates, ((data_ops::Matrix3d)), (override));
+    MOCK_METHOD((void), setInterventionInitRates, ((data_ops::Matrix3d)),
                 (override));
-    MOCK_METHOD((void), setMortalityRates, ((Matrixify::Matrix3d)), (override));
-    MOCK_METHOD((void), setInterventionInitRates, ((Matrixify::Matrix3d)),
-                (override));
-    MOCK_METHOD((Matrixify::Matrix3d), loadInitialSample,
+    MOCK_METHOD((data_ops::Matrix3d), loadInitialSample,
                 ((std::string const &)), (override));
-    MOCK_METHOD((Matrixify::Matrix4d), loadEnteringSamples,
+    MOCK_METHOD((data_ops::Matrix4d), loadEnteringSamples,
                 ((std::string const &), (std::string const &),
                  (std::string const &)),
                 (override));
-    MOCK_METHOD((Matrixify::Matrix4d), loadEnteringSamples,
+    MOCK_METHOD((data_ops::Matrix4d), loadEnteringSamples,
                 ((std::string const &)), (override));
-    MOCK_METHOD((Matrixify::Matrix3d), loadOUDTransitionRates,
+    MOCK_METHOD((data_ops::Matrix3d), loadOUDTransitionRates,
                 ((std::string const &)), (override));
-    MOCK_METHOD((Matrixify::Matrix3d), loadInterventionInitRates,
+    MOCK_METHOD((data_ops::Matrix3d), loadInterventionInitRates,
                 ((std::string const &)), (override));
-    MOCK_METHOD((Matrixify::Matrix4d), loadInterventionTransitionRates,
+    MOCK_METHOD((data_ops::Matrix4d), loadInterventionTransitionRates,
                 ((std::string const &)), (override));
-    MOCK_METHOD((Matrixify::Matrix4d), loadOverdoseRates,
+    MOCK_METHOD((data_ops::Matrix4d), loadOverdoseRates,
                 ((std::string const &)), (override));
-    MOCK_METHOD((Matrixify::Matrix4d), loadFatalOverdoseRates,
+    MOCK_METHOD((data_ops::Matrix4d), loadFatalOverdoseRates,
                 ((std::string const &)), (override));
-    MOCK_METHOD((Matrixify::Matrix3d), loadMortalityRates,
+    MOCK_METHOD((data_ops::Matrix3d), loadMortalityRates,
                 ((std::string const &), (std::string const &)), (override));
 };
 

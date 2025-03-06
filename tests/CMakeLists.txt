@@ -24,13 +24,11 @@ target_link_libraries(${PROJECT_NAME} PUBLIC GTest::gtest)
 target_link_libraries(${PROJECT_NAME} PUBLIC GTest::gtest_main)
 target_link_libraries(${PROJECT_NAME} PUBLIC GTest::gmock)
 target_link_libraries(${PROJECT_NAME} PUBLIC GTest::gmock_main)
-target_link_libraries(${PROJECT_NAME} PUBLIC simrunner)
-target_link_libraries(${PROJECT_NAME} PUBLIC matrixify)
 target_link_libraries(${PROJECT_NAME} PUBLIC spdlog::spdlog)
-target_link_libraries(${PROJECT_NAME} PUBLIC DataManagement)
+target_link_libraries(${PROJECT_NAME} PUBLIC datamanagement::datamanagement)
+target_link_libraries(${PROJECT_NAME} PUBLIC respondsimulation::respondsimulation)
 
 target_include_directories(${PROJECT_NAME} 
     PUBLIC 
         "mocks/"
-        ${PROJECT_SOURCE_DIR}/lib/DataManagement/include
 )

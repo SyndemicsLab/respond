@@ -12,9 +12,9 @@
 #include <pybind11/stl.h>
 
 namespace py = pybind11;
-using namespace Matrixify;
+using namespace data_ops;
 
-PYBIND11_MODULE(Matrixify, m) {
+PYBIND11_MODULE(data_ops, m) {
     py::class_<IBaseLoader, std::shared_ptr<IBaseLoader>>(m, "IBaseLoader");
 
     py::class_<BaseLoader, std::shared_ptr<BaseLoader>, IBaseLoader>(

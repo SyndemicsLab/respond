@@ -22,7 +22,7 @@
 
 #include <respondsimulation/data_ops/Interfaces.hpp>
 
-namespace Matrixify {
+namespace data_ops {
     class IBaseLoader : public virtual ILoggable,
                         public virtual IOutputable,
                         public virtual IConfigable,
@@ -212,5 +212,5 @@ namespace Matrixify {
             std::vector<std::vector<std::string>>::const_iterator currentInput,
             std::vector<std::vector<std::string>>::const_iterator finalInput);
     };
-} // namespace Matrixify
+} // namespace data_ops
 #endif

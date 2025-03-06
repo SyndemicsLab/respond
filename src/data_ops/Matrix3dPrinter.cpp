@@ -12,10 +12,10 @@
 
 #include <respondsimulation/data_ops/Matrix3dPrinter.hpp>
 
-namespace Matrixify {
+namespace data_ops {
 
-    void Matrix3dPrinter::Print(Matrixify::Matrix3d mat, std::ostream &stream) {
-        Matrixify::Matrix3d::Dimensions dim = mat.dimensions();
+    void Matrix3dPrinter::Print(data_ops::Matrix3d mat, std::ostream &stream) {
+        data_ops::Matrix3d::Dimensions dim = mat.dimensions();
         for (int i = 0; i < dim[2]; ++i) {
             // intervention iterated along columns
             for (int j = 0; j < dim[0]; ++j) {
@@ -31,13 +31,13 @@ namespace Matrixify {
         }
     }
 
-    void Matrix3dPrinter::PrintOverTime(Matrixify::Matrix4d matOverTime,
+    void Matrix3dPrinter::PrintOverTime(data_ops::Matrix4d matOverTime,
                                         std::ostream &stream) {
-        std::vector<Matrixify::Matrix3d> matrices = matOverTime.getMatrices();
-        for (Matrixify::Matrix3d mat : matrices) {
+        std::vector<data_ops::Matrix3d> matrices = matOverTime.getMatrices();
+        for (data_ops::Matrix3d mat : matrices) {
             stream << "++++++++ NEW TIMESTEP ++++++++" << std::endl;
             Matrix3dPrinter::Print(mat, stream);
         }
     }
 
-} // namespace Matrixify
+} // namespace data_ops

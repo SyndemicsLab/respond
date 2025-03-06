@@ -18,23 +18,23 @@
 
 #include <vector>
 
-namespace Matrixify {
+namespace data_ops {
     class DataFormatter {
     public:
         DataFormatter() {};
         ~DataFormatter() {};
         void extractTimesteps(std::vector<int> timesteps,
-                              Matrixify::History &history,
-                              Matrixify::CostList &costs,
-                              Matrixify::Matrix4d &utilities, bool costSwitch);
+                              data_ops::History &history,
+                              data_ops::CostList &costs,
+                              data_ops::Matrix4d &utilities, bool costSwitch);
 
     private:
-        Matrixify::Matrix4d trimMatrix4d(std::vector<int> timesteps,
-                                         Matrixify::Matrix4d matrix);
+        data_ops::Matrix4d trimMatrix4d(std::vector<int> timesteps,
+                                        data_ops::Matrix4d matrix);
 
-        Matrixify::Matrix4d trimAndAddMatrix4d(std::vector<int> timesteps,
-                                               Matrixify::Matrix4d matrix);
+        data_ops::Matrix4d trimAndAddMatrix4d(std::vector<int> timesteps,
+                                              data_ops::Matrix4d matrix);
     };
-} // namespace Matrixify
+} // namespace data_ops
 
 #endif

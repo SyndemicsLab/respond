@@ -13,8 +13,7 @@
 #ifndef DATA_COSTLOADER_HPP_
 #define DATA_COSTLOADER_HPP_
 
-// #include <DataManagement.hpp>
-#include "lib/DataManagement/include/DataManagement.hpp"
+#include <datamanagement/DataManagement.hpp>
 #include <string>
 #include <unordered_map>
 
@@ -22,7 +21,7 @@
 #include <respondsimulation/data_ops/DataTypes.hpp>
 #include <respondsimulation/data_ops/Interfaces.hpp>
 
-namespace Matrixify {
+namespace data_ops {
     class ICostLoader : public virtual IBaseLoader {
     public:
         /// @brief Load Healthcare Utilization Cost from file
@@ -181,6 +180,6 @@ namespace Matrixify {
                                std::unordered_map<std::string, double>>
                 &costParameterMap);
     };
-} // namespace Matrixify
+} // namespace data_ops
 
 #endif

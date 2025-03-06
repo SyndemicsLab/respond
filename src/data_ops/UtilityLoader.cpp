@@ -12,7 +12,7 @@
 
 #include <respondsimulation/data_ops/UtilityLoader.hpp>
 
-namespace Matrixify {
+namespace data_ops {
     UtilityLoader::UtilityLoader(Data::IConfigablePtr config,
                                  std::string const &inputDir,
                                  std::shared_ptr<spdlog::logger> logger)
@@ -39,12 +39,12 @@ namespace Matrixify {
     std::unordered_map<std::string, Matrix3d>
     UtilityLoader::loadUtility(std::string const &csvName) {
         Data::IDataTablePtr table = loadTable(csvName);
-        std::unordered_map<std::string, Matrixify::Matrix3d> result;
+        std::unordered_map<std::string, data_ops::Matrix3d> result;
 
-        Matrixify::Matrix3d utilMatrix =
-            Matrixify::Matrix3dFactory::Create(getNumOUDStates(),
-                                               getNumInterventions(),
-                                               getNumDemographicCombos())
+        data_ops::Matrix3d utilMatrix =
+            data_ops::Matrix3dFactory::Create(getNumOUDStates(),
+                                              getNumInterventions(),
+                                              getNumDemographicCombos())
                 .constant(0);
 
         std::vector<std::string> utilCol = table->getColumn("utility");
@@ -53,8 +53,8 @@ namespace Matrixify {
              ++intervention) {
             Eigen::array<Eigen::Index, 3> offset = {0, 0, 0};
             Eigen::array<Eigen::Index, 3> extent = utilMatrix.dimensions();
-            offset[Matrixify::INTERVENTION] = intervention;
-            extent[Matrixify::INTERVENTION] = 1;
+            offset[data_ops::INTERVENTION] = intervention;
+            extent[data_ops::INTERVENTION] = 1;
             Matrix3d temp = utilMatrix.slice(offset, extent);
             if (utilCol.size() > intervention) {
                 temp.setConstant(std::stod(utilCol[intervention]));
@@ -68,4 +68,4 @@ namespace Matrixify {
 
         return result;
     }
-} // namespace Matrixify
+} // namespace data_ops

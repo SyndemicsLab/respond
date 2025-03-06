@@ -1,32 +1,28 @@
-//===-- SimulationTest.cpp - Instruction class definition -------*- C++ -*-===//
-//
-// Part of the RESPOND - Researching Effective Strategies to Prevent Opioid
-// Death Project, under the AGPLv3 License. See https://www.gnu.org/licenses/
-// for license information.
-// SPDX-License-Identifier: AGPLv3
-//
-//===----------------------------------------------------------------------===//
-///
-/// \file
-/// This file contains the declaration of the Instruction class, which is the
-/// base class for all of the VM instructions.
-///
-/// Created Date: Tuesday, June 27th 2023, 10:20:33 am
-/// Contact: Benjamin.Linas@bmc.org
-///
-//===----------------------------------------------------------------------===//
+////////////////////////////////////////////////////////////////////////////////
+// File: TEST_Simulation.cpp                                                  //
+// Project: RESPONDSimulationv2                                               //
+// Created Date: 2025-01-14                                                   //
+// Author: Matthew Carroll                                                    //
+// -----                                                                      //
+// Last Modified: 2025-03-06                                                  //
+// Modified By: Matthew Carroll                                               //
+// -----                                                                      //
+// Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
+////////////////////////////////////////////////////////////////////////////////
 
-#include "Simulation.hpp"
-#include "../mocks/MockCostLoader.hpp"
-#include "../mocks/MockDataLoader.hpp"
-#include "../mocks/MockSimulation.hpp"
-#include "../mocks/MockUtilityLoader.hpp"
-#include "DataTypes.hpp"
+#include "MockCostLoader.hpp"
+#include "MockDataLoader.hpp"
+#include "MockSimulation.hpp"
+#include "MockUtilityLoader.hpp"
+
+#include <respondsimulation/data_ops/DataTypes.hpp>
+#include <respondsimulation/model/Simulation.hpp>
+
 #include <gtest/gtest.h>
 #include <memory>
 
 using namespace Simulation;
-using namespace Matrixify;
+using namespace data_ops;
 
 using ::testing::Return;
 
@@ -63,10 +59,10 @@ TEST(Run, EmptyRun) {
         .WillRepeatedly(Return(1));
     EXPECT_CALL(*mockLoaderPtr, getLogger()).WillRepeatedly(Return(nullptr));
 
-    Matrixify::Matrix3d expected(1, 1, 1);
+    data_ops::Matrix3d expected(1, 1, 1);
     expected.setZero();
-    std::vector<Matrixify::Matrix3d> vecmat = {expected};
-    Matrixify::Matrix4d mat4d(vecmat);
+    std::vector<data_ops::Matrix3d> vecmat = {expected};
+    data_ops::Matrix4d mat4d(vecmat);
 
     EXPECT_CALL(*mockLoaderPtr, getInitialSample())
         .WillRepeatedly(Return(expected));
@@ -118,14 +114,14 @@ TEST(Run, SingleStepRun) {
     EXPECT_CALL(*mockLoaderPtr, getInitialSample())
         .WillRepeatedly(Return(initialSample));
 
-    Matrixify::Matrix3d e1(2, 2, 2);
+    data_ops::Matrix3d e1(2, 2, 2);
     e1.setValues({{{1, 1}, {1, 1}}, {{1, 1}, {1, 1}}});
     std::vector<Matrix3d> es{e1};
     Matrix4d eVec(es);
     EXPECT_CALL(*mockLoaderPtr, getEnteringSamples())
         .WillRepeatedly(Return(eVec));
 
-    Matrixify::Matrix3d o1(2, 4, 2);
+    data_ops::Matrix3d o1(2, 4, 2);
     o1.setValues({{{.85, .9}, {.15, .1}, {.1, .2}, {.9, .8}},
                   {{.85, .9}, {.15, .1}, {.1, .2}, {.9, .8}}});
     EXPECT_CALL(*mockLoaderPtr, getOUDTransitionRates())
@@ -216,7 +212,7 @@ TEST(Run, MultiStepRun) {
     EXPECT_CALL(*mockLoaderPtr, getInitialSample())
         .WillRepeatedly(Return(initialSample));
 
-    Matrixify::Matrix3d e1(2, 2, 2);
+    data_ops::Matrix3d e1(2, 2, 2);
     e1.setValues({{{1, 1}, {1, 1}}, {{1, 1}, {1, 1}}});
     Matrix3d e2(2, 2, 2);
     e2.setValues({{{1, 1}, {1, 1}}, {{1, 1}, {1, 1}}});
@@ -227,7 +223,7 @@ TEST(Run, MultiStepRun) {
     EXPECT_CALL(*mockLoaderPtr, getEnteringSamples())
         .WillRepeatedly(Return(eVec));
 
-    Matrixify::Matrix3d o1(2, 4, 2);
+    data_ops::Matrix3d o1(2, 4, 2);
     o1.setValues({{{.85, .9}, {.15, .1}, {.1, .2}, {.9, .8}},
                   {{.85, .9}, {.15, .1}, {.1, .2}, {.9, .8}}});
     EXPECT_CALL(*mockLoaderPtr, getOUDTransitionRates())

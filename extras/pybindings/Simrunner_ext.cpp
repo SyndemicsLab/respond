@@ -10,15 +10,15 @@ using namespace Simulation;
 
 PYBIND11_MODULE(Simulation, m) {
     py::class_<Respond>(m, "Respond")
-        .def(py::init<std::shared_ptr<Matrixify::IDataLoader>>())
-        .def("RunRESPOND", &Respond::run,
-             py::arg("dataloader") =
-                 static_cast<std::shared_ptr<Matrixify::IDataLoader>>(nullptr),
-             py::arg("costloader") =
-                 static_cast<std::shared_ptr<Matrixify::ICostLoader>>(nullptr),
-             py::arg("utilloader") =
-                 static_cast<std::shared_ptr<Matrixify::IUtilityLoader>>(
-                     nullptr))
+        .def(py::init<std::shared_ptr<data_ops::IDataLoader>>())
+        .def(
+            "RunRESPOND", &Respond::run,
+            py::arg("dataloader") =
+                static_cast<std::shared_ptr<data_ops::IDataLoader>>(nullptr),
+            py::arg("costloader") =
+                static_cast<std::shared_ptr<data_ops::ICostLoader>>(nullptr),
+            py::arg("utilloader") =
+                static_cast<std::shared_ptr<data_ops::IUtilityLoader>>(nullptr))
         .def("getHistory", &Respond::getHistory)
         .def("ageUp", &Respond::ageUp)
         .def("setData", &Respond::setData)

@@ -110,6 +110,7 @@ target_link_libraries(respondsimulation
     PRIVATE
         Eigen3::Eigen
         spdlog::spdlog
+        datamanagement::datamanagement
 )
 
 set_target_properties(respondsimulation PROPERTIES VERSION ${RESPONDSIMULATION_VERSION} SOVERSION ${RESPONDSIMULATION_VERSION_MAJOR}.${RESPONDSIMULATION_VERSION_MINOR})

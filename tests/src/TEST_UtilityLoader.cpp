@@ -1,25 +1,19 @@
-//===----------------------------*- C++ -*---------------------------------===//
-//
-// Part of the RESPOND - Researching Effective Strategies to Prevent Opioid
-// Death Project, under the AGPLv3 License. See https://www.gnu.org/licenses/
-// for license information.
-// SPDX-License-Identifier: AGPLv3
-//
-//===----------------------------------------------------------------------===//
-///
-/// \file
-/// This file contains the declaration of the Instruction class, which is the
-/// base class for all of the VM instructions.
-///
-/// Created Date: Tuesday, June 27th 2023, 10:20:33 am
-/// Contact: Benjamin.Linas@bmc.org
-///
-//===----------------------------------------------------------------------===//
+////////////////////////////////////////////////////////////////////////////////
+// File: TEST_UtilityLoader.cpp                                               //
+// Project: RESPONDSimulationv2                                               //
+// Created Date: 2025-01-14                                                   //
+// Author: Matthew Carroll                                                    //
+// -----                                                                      //
+// Last Modified: 2025-03-06                                                  //
+// Modified By: Matthew Carroll                                               //
+// -----                                                                      //
+// Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
+////////////////////////////////////////////////////////////////////////////////
 
 #include <filesystem>
 #include <gtest/gtest.h>
 
-#include "UtilityLoader.hpp"
+#include <respondsimulation/data_ops/UtilityLoader.hpp>
 
 class UtilityLoaderTest : public ::testing::Test {
 protected:
@@ -113,26 +107,25 @@ protected:
 };
 
 TEST_F(UtilityLoaderTest, Constructor) {
-    Matrixify::UtilityLoader ul;
-    Matrixify::Matrix3d result = ul.getBackgroundUtility("healthcare");
+    data_ops::UtilityLoader ul;
+    data_ops::Matrix3d result = ul.getBackgroundUtility("healthcare");
     EXPECT_EQ(result.size(), 0);
 }
 
 TEST_F(UtilityLoaderTest, ConstructorStr) {
-    Matrixify::UtilityLoader ul(std::filesystem::temp_directory_path().string(),
-                                logger);
+    data_ops::UtilityLoader ul(std::filesystem::temp_directory_path().string(),
+                               logger);
     EXPECT_EQ(ul.getConfig()->getStringVector("state.interventions").size(), 9);
 }
 
 TEST_F(UtilityLoaderTest, loadConfigFile) {
-    Matrixify::UtilityLoader ul;
+    data_ops::UtilityLoader ul;
     ul.loadConfigFile(configFile.string());
     EXPECT_EQ(ul.getConfig()->getStringVector("state.interventions").size(), 9);
 }
 
 TEST_F(UtilityLoaderTest, backgroundUtility) {
-    Matrixify::UtilityLoader ul(
-        std::filesystem::temp_directory_path().string());
+    data_ops::UtilityLoader ul(std::filesystem::temp_directory_path().string());
     fileStream << "agegrp,sex,utility" << std::endl
                << "10_14,Male,0.922" << std::endl
                << "10_14,Female,0.922" << std::endl
@@ -142,14 +135,13 @@ TEST_F(UtilityLoaderTest, backgroundUtility) {
 
     ul.loadBackgroundUtility(tempAbsoluteFile.string());
 
-    Matrixify::Matrix3d result = ul.getBackgroundUtility("utility");
+    data_ops::Matrix3d result = ul.getBackgroundUtility("utility");
 
     EXPECT_EQ(result(0, 0, 0), 0.922);
 }
 
 TEST_F(UtilityLoaderTest, OUDUtility) {
-    Matrixify::UtilityLoader ul(
-        std::filesystem::temp_directory_path().string());
+    data_ops::UtilityLoader ul(std::filesystem::temp_directory_path().string());
     fileStream << "block,oud,utility" << std::endl
                << "No_Treatment,Active_Noninjection,0.626" << std::endl
                << "No_Treatment,Active_Injection,0.512" << std::endl
@@ -159,14 +151,13 @@ TEST_F(UtilityLoaderTest, OUDUtility) {
 
     ul.loadOUDUtility(tempAbsoluteFile.string());
 
-    Matrixify::Matrix3d result = ul.getOUDUtility("utility");
+    data_ops::Matrix3d result = ul.getOUDUtility("utility");
 
     EXPECT_EQ(result(0, 0, 0), 0.626);
 }
 
 TEST_F(UtilityLoaderTest, settingUtility) {
-    Matrixify::UtilityLoader ul(
-        std::filesystem::temp_directory_path().string());
+    data_ops::UtilityLoader ul(std::filesystem::temp_directory_path().string());
     fileStream << "block,utility" << std::endl
                << "No_Treatment,1" << std::endl
                << "Buprenorphine,1" << std::endl
@@ -176,7 +167,7 @@ TEST_F(UtilityLoaderTest, settingUtility) {
 
     ul.loadSettingUtility(tempAbsoluteFile.string());
 
-    Matrixify::Matrix3d result = ul.getSettingUtility("utility");
+    data_ops::Matrix3d result = ul.getSettingUtility("utility");
 
     EXPECT_EQ(result(0, 0, 0), 1);
 }

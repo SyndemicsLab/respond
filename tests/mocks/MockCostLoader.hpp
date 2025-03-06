@@ -1,10 +1,22 @@
-#ifndef TESTS_MOCKUTILITYLOADER_HPP_
-#define TESTS_MOCKUTILITYLOADER_HPP_
+////////////////////////////////////////////////////////////////////////////////
+// File: MockCostLoader.hpp                                                   //
+// Project: RESPONDSimulationv2                                               //
+// Created Date: 2025-01-14                                                   //
+// Author: Matthew Carroll                                                    //
+// -----                                                                      //
+// Last Modified: 2025-03-06                                                  //
+// Modified By: Matthew Carroll                                               //
+// -----                                                                      //
+// Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
+////////////////////////////////////////////////////////////////////////////////
 
-#include "UtilityLoader.hpp"
+#ifndef TESTS_MOCKCOSTLOADER_HPP_
+#define TESTS_MOCKCOSTLOADER_HPP_
+
 #include "gmock/gmock.h"
+#include <respondsimulation/data_ops/CostLoader.hpp>
 
-class MockUtilityLoader : public Matrixify::IUtilityLoader {
+class MockCostLoader : public data_ops::ICostLoader {
 public:
     // ILoggable
     MOCK_METHOD(void, setLogger, ((std::shared_ptr<spdlog::logger> const)),
@@ -83,18 +95,27 @@ public:
     MOCK_METHOD((std::vector<int>), getCostUtilityOutputTimesteps, (),
                 (const, override));
 
-    // IUtilityLoader
-    MOCK_METHOD((std::unordered_map<std::string, Matrixify::Matrix3d>),
-                loadBackgroundUtility, (std::string const &), (override));
-    MOCK_METHOD((std::unordered_map<std::string, Matrixify::Matrix3d>),
-                loadOUDUtility, (std::string const &), (override));
-    MOCK_METHOD((std::unordered_map<std::string, Matrixify::Matrix3d>),
-                loadSettingUtility, (std::string const &), (override));
-    MOCK_METHOD((Matrixify::Matrix3d), getBackgroundUtility,
+    // ICostLoader
+    MOCK_METHOD((std::unordered_map<std::string, data_ops::Matrix3d>),
+                loadHealthcareUtilizationCost, (std::string const &),
+                (override));
+    MOCK_METHOD((std::unordered_map<std::string,
+                                    std::unordered_map<std::string, double>>),
+                loadOverdoseCost, (std::string const &), (override));
+    MOCK_METHOD((std::unordered_map<std::string, data_ops::Matrix3d>),
+                loadPharmaceuticalCost, (std::string const &), (override));
+    MOCK_METHOD((std::unordered_map<std::string, data_ops::Matrix3d>),
+                loadTreatmentUtilizationCost, (std::string const &),
+                (override));
+    MOCK_METHOD((data_ops::Matrix3d), getHealthcareUtilizationCost,
                 (std::string const &), (const, override));
-    MOCK_METHOD((Matrixify::Matrix3d), getOUDUtility, (std::string const &),
+    MOCK_METHOD((data_ops::Matrix3d), getPharmaceuticalCost,
+                (std::string const &), (const, override));
+    MOCK_METHOD((data_ops::Matrix3d), getTreatmentUtilizationCost,
+                (std::string const &), (const, override));
+    MOCK_METHOD((double), getNonFatalOverdoseCost, (std::string const &),
                 (const, override));
-    MOCK_METHOD((Matrixify::Matrix3d), getSettingUtility, (std::string const &),
+    MOCK_METHOD((double), getFatalOverdoseCost, (std::string const &),
                 (const, override));
 };
 

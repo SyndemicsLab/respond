@@ -14,7 +14,7 @@
 
 #include <regex>
 
-namespace Matrixify {
+namespace data_ops {
     bool Writer::checkDirectory() const {
         if (this->getDirname().empty()) {
             // log error
@@ -37,8 +37,8 @@ namespace Matrixify {
     }
 
     /// @brief Main Operation of Class, write data to output
-    /// @param outputType Output Enum, generally Matrixify::FILE
-    /// @return string containing the result if output enum is Matrixify::STRING
+    /// @param outputType Output Enum, generally data_ops::FILE
+    /// @return string containing the result if output enum is data_ops::STRING
     /// or description of status otherwise
     std::string HistoryWriter::writeHistory(const History history) const {
         if (history.stateHistory.getMatrices().empty() ||
@@ -84,8 +84,8 @@ namespace Matrixify {
     }
 
     /// @brief Main Operation of Class, write data to output
-    /// @param outputType Output Enum, generally Matrixify::FILE
-    /// @return string containing the result if output enum is Matrixify::STRING
+    /// @param outputType Output Enum, generally data_ops::FILE
+    /// @return string containing the result if output enum is data_ops::STRING
     /// or description of status otherwise
     std::string CostWriter::writeCosts(const CostList costs) const {
         if (costs.empty()) {
@@ -139,11 +139,11 @@ namespace Matrixify {
     }
 
     /// @brief Main Operation of Class, write data to output
-    /// @param outputType Output Enum, generally Matrixify::FILE
+    /// @param outputType Output Enum, generally data_ops::FILE
     /// @return string containing the result if output enum is
-    /// Matrixify::STRING or description of status otherwise
+    /// data_ops::STRING or description of status otherwise
     std::string
-    UtilityWriter::writeUtilities(const Matrixify::Matrix4d utilities) const {
+    UtilityWriter::writeUtilities(const data_ops::Matrix4d utilities) const {
         std::stringstream stream;
         if (utilities.getMatrices().empty()) {
             // log error
@@ -217,10 +217,10 @@ namespace Matrixify {
                     for (long int j = 0; j < dataLoader->getNumOUDStates();
                          j++) {
                         std::array<long int, 3> index = {0, 0, 0};
-                        index[Matrixify::INTERVENTION] = i;
-                        index[Matrixify::OUD] =
+                        index[data_ops::INTERVENTION] = i;
+                        index[data_ops::OUD] =
                             (init * dataLoader->getNumOUDStates()) + j;
-                        index[Matrixify::DEMOGRAPHIC_COMBO] = k;
+                        index[data_ops::DEMOGRAPHIC_COMBO] = k;
                         ASSERTM(dm.NumDimensions == 3,
                                 "3 Dimensions Found in Matrix3d");
                         double value = dm(index[0], index[1], index[2]);
@@ -258,10 +258,10 @@ namespace Matrixify {
                 stream << dataLoader->getInterventions()[inter] << ",";
                 for (int res = 0; res < dataLoader->getNumOUDStates(); res++) {
                     std::array<long int, 3> index = {0, 0, 0};
-                    index[Matrixify::INTERVENTION] = inter;
-                    index[Matrixify::OUD] =
+                    index[data_ops::INTERVENTION] = inter;
+                    index[data_ops::OUD] =
                         (init * dataLoader->getNumOUDStates()) + res;
-                    index[Matrixify::DEMOGRAPHIC_COMBO] = 0;
+                    index[data_ops::DEMOGRAPHIC_COMBO] = 0;
                     ASSERTM(dm.NumDimensions == 3,
                             "3 Dimensions Found in Matrix3d");
                     double value = dm(index[0], index[1], index[2]);
@@ -319,11 +319,11 @@ namespace Matrixify {
                         for (int res = 0;
                              res < dataLoader->getNumInterventions(); res++) {
                             std::array<long int, 3> index = {0, 0, 0};
-                            index[Matrixify::INTERVENTION] =
+                            index[data_ops::INTERVENTION] =
                                 (init * dataLoader->getNumInterventions()) +
                                 res;
-                            index[Matrixify::OUD] = oud;
-                            index[Matrixify::DEMOGRAPHIC_COMBO] = k;
+                            index[data_ops::OUD] = oud;
+                            index[data_ops::DEMOGRAPHIC_COMBO] = k;
                             double value =
                                 dm(timestep, index[0], index[1], index[2]);
                             stream << std::to_string(value) << ",";
@@ -378,9 +378,9 @@ namespace Matrixify {
                         stream << dataLoader->getOUDStates()[oud] << ",";
                         for (int timestep : changeTimes) {
                             std::array<long int, 3> index = {0, 0, 0};
-                            index[Matrixify::INTERVENTION] = inter;
-                            index[Matrixify::OUD] = oud;
-                            index[Matrixify::DEMOGRAPHIC_COMBO] = dem;
+                            index[data_ops::INTERVENTION] = inter;
+                            index[data_ops::OUD] = oud;
+                            index[data_ops::DEMOGRAPHIC_COMBO] = dem;
                             double value =
                                 dm(timestep, index[0], index[1], index[2]);
                             stream << std::to_string(value) << ",";
@@ -427,7 +427,7 @@ namespace Matrixify {
             stream << temp << ",";
             for (int timestep : changeTimes) {
                 std::array<long int, 3> index = {0, 0, 0};
-                index[Matrixify::DEMOGRAPHIC_COMBO] = dem;
+                index[data_ops::DEMOGRAPHIC_COMBO] = dem;
                 double value = dm(timestep, index[0], index[1], index[2]);
                 stream << std::to_string(value) << ",";
             }
@@ -439,7 +439,7 @@ namespace Matrixify {
 
     std::string Writer::writeFile(const std::string filename,
                                   std::stringstream &stream) const {
-        if (this->writeType == Matrixify::WriteType::FILE) {
+        if (this->writeType == data_ops::WriteType::FILE) {
             std::filesystem::path iipFile(filename);
             std::filesystem::path dir(this->getDirname());
             std::filesystem::path fullPath = dir / iipFile;
@@ -492,9 +492,9 @@ namespace Matrixify {
                                 << ",";
                         }
                         std::array<long int, 3> index = {0, 0, 0};
-                        index[Matrixify::INTERVENTION] = i;
-                        index[Matrixify::OUD] = j;
-                        index[Matrixify::DEMOGRAPHIC_COMBO] = k;
+                        index[data_ops::INTERVENTION] = i;
+                        index[data_ops::OUD] = j;
+                        index[data_ops::DEMOGRAPHIC_COMBO] = k;
                         ASSERTM(Matrix3dVec[timeCtr].NumDimensions == 3,
                                 "3 Dimensions Found in Matrix3d");
                         double value =
@@ -532,4 +532,4 @@ namespace Matrixify {
 
         return ret;
     }
-} // namespace Matrixify
+} // namespace data_ops

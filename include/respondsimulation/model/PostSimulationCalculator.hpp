@@ -35,52 +35,52 @@ namespace Calculator {
         /// @param utilityLoader Utility Loader Class containing Information to
         /// calculate the Utility
         /// @param history History Class containing Simulation State History
-        PostSimulationCalculator(Matrixify::History const &history);
+        PostSimulationCalculator(data_ops::History const &history);
 
         /// @brief Main function to calculate the Cost
         /// @return Cost Struct filled with calculated Cost
-        Matrixify::CostList
-        calculateCosts(std::shared_ptr<Matrixify::ICostLoader> const costLoader,
+        data_ops::CostList
+        calculateCosts(std::shared_ptr<data_ops::ICostLoader> const costLoader,
                        bool discount = false) const;
 
         /// @brief Main function to calculate the Utility
         /// @return Cost Struct filled with calculated Utility
-        Matrixify::Matrix4d calculateUtilities(
-            std::shared_ptr<Matrixify::IUtilityLoader> const utilityLoader,
+        data_ops::Matrix4d calculateUtilities(
+            std::shared_ptr<data_ops::IUtilityLoader> const utilityLoader,
             UTILITY_TYPE utilType, bool discount = false) const;
 
         double calculateLifeYears(bool provideDiscount = false,
                                   double discountRate = 0.0) const;
 
-        double totalAcrossTimeAndDims(Matrixify::Matrix4d const data) const;
+        double totalAcrossTimeAndDims(data_ops::Matrix4d const data) const;
 
-        Matrixify::Matrix3d static provideDiscount(Matrixify::Matrix3d data,
-                                                   double discountRate, int N,
-                                                   bool isDiscrete = true,
-                                                   bool weeklyTimestep = true);
+        data_ops::Matrix3d static provideDiscount(data_ops::Matrix3d data,
+                                                  double discountRate, int N,
+                                                  bool isDiscrete = true,
+                                                  bool weeklyTimestep = true);
 
-        Matrixify::History getHistory() const { return this->history; }
+        data_ops::History getHistory() const { return this->history; }
 
     private:
-        Matrixify::History history;
+        data_ops::History history;
 
         /// @brief
         /// @param overdose
         /// @param cost
         /// @return
-        Matrixify::Matrix4d multiplyDouble(Matrixify::Matrix4d const &overdose,
-                                           double const &cost,
-                                           bool provideDiscount = false,
-                                           double discountRate = 0.0) const;
+        data_ops::Matrix4d multiplyDouble(data_ops::Matrix4d const &overdose,
+                                          double const &cost,
+                                          bool provideDiscount = false,
+                                          double discountRate = 0.0) const;
 
         /// @brief
         /// @param state
         /// @param cost
         /// @return
-        Matrixify::Matrix4d multiplyMatrix(Matrixify::Matrix4d const &state,
-                                           Matrixify::Matrix3d const &cost,
-                                           bool provideDiscount = false,
-                                           double discountRate = 0.0) const;
+        data_ops::Matrix4d multiplyMatrix(data_ops::Matrix4d const &state,
+                                          data_ops::Matrix3d const &cost,
+                                          bool provideDiscount = false,
+                                          double discountRate = 0.0) const;
     };
 } // namespace Calculator
 

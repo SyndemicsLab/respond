@@ -98,29 +98,6 @@ done
     ([[ -d "bin/" ]] && rm -rf bin/*) || mkdir "bin/"
     ([[ -d "lib/" ]] && rm -rf lib/*.a)
 
-    # detect or install DataManagement
-    echo "Checking for the presence of \`DataManagement\`..."
-    DM="$(find "lib/DataManagement" -mindepth 1 -maxdepth 1)"
-    if [[ ! -d "lib/DataManagement" || -z "$DM" ]]; then
-	echo "\`DataManagement\` not found. Attempting to configure submodule..."
-        # check if submodules have been initialized
-        if git submodule status | grep --quiet '^-'; then
-            git submodule init
-        fi
-        # ensure submodules use the specified hash
-        git submodule update --recursive
-        # the commented stub below installs shared objects of DataManagement,
-        # instead of a static library
-        # if ! (
-        #         cd "DataManagement" || exit 1
-        #         ./install.sh -i "$TOPLEVEL/lib/dminstall"
-        #     ); then
-        #     echo "Installing \`DataManagement\` failed."
-        # fi
-        # rm -rf DataManagement
-    fi
-    echo "\`DataManagement\` found!"
-
     (
         cd "build" || exit
         # build tests, if specified

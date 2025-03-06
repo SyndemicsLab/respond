@@ -16,7 +16,7 @@
 #include <respondsimulation/data_ops/BaseLoader.hpp>
 #include <respondsimulation/data_ops/Matrix3dFactory.hpp>
 
-namespace Matrixify {
+namespace data_ops {
     class IUtilityLoader : public virtual IBaseLoader {
     public:
         /// @brief Load the Background Utilties from a File
@@ -128,6 +128,6 @@ namespace Matrixify {
         std::unordered_map<std::string, Matrix3d>
         loadUtility(std::string const &csvName);
     };
-} // namespace Matrixify
+} // namespace data_ops
 
 #endif

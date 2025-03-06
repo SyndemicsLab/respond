@@ -42,17 +42,17 @@ static int respond_main(const int inputID) {
 
     logger->info("Logger Created");
 
-    std::shared_ptr<Matrixify::IDataLoader> inputs =
-        std::make_shared<Matrixify::DataLoader>(nullptr, inputSet.string(),
-                                                logger);
+    std::shared_ptr<data_ops::IDataLoader> inputs =
+        std::make_shared<data_ops::DataLoader>(nullptr, inputSet.string(),
+                                               logger);
     logger->info("DataLoader Created");
 
-    std::shared_ptr<Matrixify::ICostLoader> costLoader =
-        std::make_shared<Matrixify::CostLoader>(inputSet.string());
+    std::shared_ptr<data_ops::ICostLoader> costLoader =
+        std::make_shared<data_ops::CostLoader>(inputSet.string());
     logger->info("CostLoader Created");
 
-    std::shared_ptr<Matrixify::IUtilityLoader> utilityLoader =
-        std::make_shared<Matrixify::UtilityLoader>(inputSet.string());
+    std::shared_ptr<data_ops::IUtilityLoader> utilityLoader =
+        std::make_shared<data_ops::UtilityLoader>(inputSet.string());
     logger->info("UtilityLoader Created");
 
     inputs->loadInitialSample("init_cohort.csv");
@@ -84,16 +84,16 @@ static int respond_main(const int inputID) {
 
     Simulation::Respond sim(inputs);
     sim.run();
-    Matrixify::History history = sim.getHistory();
+    data_ops::History history = sim.getHistory();
 
-    Matrixify::CostList basecosts;
-    Matrixify::Matrix4d baseutilities;
+    data_ops::CostList basecosts;
+    data_ops::Matrix4d baseutilities;
     double baselifeYears = 0.0;
     std::vector<double> totalBaseCosts;
     double totalBaseUtility = 0.0;
 
-    Matrixify::CostList disccosts;
-    Matrixify::Matrix4d discutilities;
+    data_ops::CostList disccosts;
+    data_ops::Matrix4d discutilities;
     double disclifeYears;
     std::vector<double> totalDiscCosts;
     double totalDiscUtility = 0.0;
@@ -128,12 +128,12 @@ static int respond_main(const int inputID) {
     pivot_long = std::get<bool>(
         inputs->getConfig()->get("output.pivot_long", pivot_long));
 
-    Matrixify::HistoryWriter historyWriter(
+    data_ops::HistoryWriter historyWriter(
         outputDir.string(), inputs->getInterventions(), inputs->getOUDStates(),
         inputs->getDemographics(), inputs->getDemographicCombos(),
-        outputTimesteps, Matrixify::WriteType::FILE, pivot_long);
+        outputTimesteps, data_ops::WriteType::FILE, pivot_long);
 
-    Matrixify::DataFormatter formatter;
+    data_ops::DataFormatter formatter;
 
     formatter.extractTimesteps(outputTimesteps, history, basecosts,
                                baseutilities, costLoader->getCostSwitch());
@@ -144,41 +144,41 @@ static int respond_main(const int inputID) {
     writeParameters = std::get<bool>(inputs->getConfig()->get(
         "output.write_calibrated_inputs", writeParameters));
     if (writeParameters) {
-        Matrixify::InputWriter ipWriter(outputDir.string(), outputTimesteps,
-                                        Matrixify::WriteType::FILE);
+        data_ops::InputWriter ipWriter(outputDir.string(), outputTimesteps,
+                                       data_ops::WriteType::FILE);
         ipWriter.writeParameters(inputs);
     }
 
     // Probably want to figure out the right way to do this
     if (costLoader->getCostSwitch()) {
-        Matrixify::CostWriter costWriter(
+        data_ops::CostWriter costWriter(
             outputDir.string(), inputs->getInterventions(),
             inputs->getOUDStates(), inputs->getDemographics(),
             inputs->getDemographicCombos(), outputTimesteps,
-            Matrixify::WriteType::FILE, pivot_long);
+            data_ops::WriteType::FILE, pivot_long);
         costWriter.writeCosts(basecosts);
     }
     if (utilityLoader->getCostSwitch()) {
-        Matrixify::UtilityWriter utilityWriter(
+        data_ops::UtilityWriter utilityWriter(
             outputDir.string(), inputs->getInterventions(),
             inputs->getOUDStates(), inputs->getDemographics(),
             inputs->getDemographicCombos(), outputTimesteps,
-            Matrixify::WriteType::FILE, pivot_long);
+            data_ops::WriteType::FILE, pivot_long);
         utilityWriter.writeUtilities(baseutilities);
     }
     if (costLoader->getCostSwitch()) {
-        Matrixify::Totals totals;
+        data_ops::Totals totals;
         totals.baseCosts = totalBaseCosts;
         totals.baseLifeYears = baselifeYears;
         totals.baseUtility = totalBaseUtility;
         totals.discCosts = totalDiscCosts;
         totals.discLifeYears = disclifeYears;
         totals.discUtility = totalDiscUtility;
-        Matrixify::TotalsWriter totalsWriter(
+        data_ops::TotalsWriter totalsWriter(
             outputDir.string(), inputs->getInterventions(),
             inputs->getOUDStates(), inputs->getDemographics(),
             inputs->getDemographicCombos(), outputTimesteps,
-            Matrixify::WriteType::FILE);
+            data_ops::WriteType::FILE);
         totalsWriter.writeTotals(totals);
     }
 

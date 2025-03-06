@@ -21,7 +21,7 @@
 #include <respondsimulation/data_ops/DataTypes.hpp>
 
 /// @brief Namespace containing all Helper Utility Classes
-namespace Matrixify {
+namespace data_ops {
 
     /// @brief Factory to create a Matrix3d Object
     class Matrix3dFactory {
@@ -34,11 +34,11 @@ namespace Matrixify {
         /// @param numDemographics Integer specifying number of Demographic
         /// Combinations
         /// @return New Matrix3d Object of specified dimensions
-        static Matrixify::Matrix3d Create(const int numOUDStates,
-                                          const int numInterventions,
-                                          const int numDemographics);
+        static data_ops::Matrix3d Create(const int numOUDStates,
+                                         const int numInterventions,
+                                         const int numDemographics);
     };
 
-} // namespace Matrixify
+} // namespace data_ops
 
 #endif

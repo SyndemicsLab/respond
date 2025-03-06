@@ -4,7 +4,7 @@ option(RESPONDSIMULATION_BUILD_ALL "Build all artifacts" OFF)
 option(RESPONDSIMULATION_BUILD_PIC "Build position independent code (-fPIC)" OFF)
 
 # testing options
-option(RESPONDSIMULATION_BUILD_TESTS "Build tests" OFF)
+option(RESPONDSIMULATION_BUILD_TESTS "Build tests" ON)
 
 # bench options
 option(RESPONDSIMULATION_BUILD_BENCH "Build benchmarks (Requires https://github.com/google/benchmark.git to be installed)" OFF)

@@ -15,11 +15,11 @@
 
 #include <respondsimulation/data_ops/DataTypes.hpp>
 
-#include "DataManagement.hpp"
 #include "spdlog/sinks/stdout_color_sinks.h"
 #include "spdlog/spdlog.h"
+#include <datamanagement/DataManagement.hpp>
 
-namespace Matrixify {
+namespace data_ops {
 
     class IFileable {
     public:
@@ -125,6 +125,6 @@ namespace Matrixify {
         virtual bool getCostCategoryOutputs() const = 0;
         virtual std::vector<int> getCostUtilityOutputTimesteps() const = 0;
     };
-} // namespace Matrixify
+} // namespace data_ops
 
 #endif

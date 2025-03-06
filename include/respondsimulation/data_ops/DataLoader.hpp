@@ -21,7 +21,7 @@
 #include <respondsimulation/data_ops/BaseLoader.hpp>
 #include <respondsimulation/data_ops/DataTypes.hpp>
 
-namespace Matrixify {
+namespace data_ops {
     class IDataLoader : public virtual IBaseLoader {
     public:
         /// @brief Get the Initial Sample
@@ -271,7 +271,7 @@ namespace Matrixify {
         /// @param dimension
         /// @return
         Matrix3d createTransitionMatrix3d(Data::IDataTablePtr const &table,
-                                          Matrixify::Dimension dimension,
+                                          data_ops::Dimension dimension,
                                           int timestep);
 
         /// @brief
@@ -315,5 +315,5 @@ namespace Matrixify {
         Matrix4d fatalOverdoseRates;
         Matrix3d mortalityRates;
     };
-} // namespace Matrixify
+} // namespace data_ops
 #endif // DATA_DATALOADER_HPP_

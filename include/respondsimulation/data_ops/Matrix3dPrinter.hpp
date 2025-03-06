@@ -20,7 +20,7 @@
 
 #include <respondsimulation/data_ops/DataTypes.hpp>
 
-namespace Matrixify {
+namespace data_ops {
 
     /// @brief Helper Class to Cleanly Print Matrix3d Objects
     class Matrix3dPrinter {
@@ -30,15 +30,15 @@ namespace Matrixify {
         /// @brief Static Function to Print Standard Matrix3d
         /// @param mat Matrix3d to Print
         /// @param stream Stream to Print to
-        static void Print(Matrixify::Matrix3d mat, std::ostream &stream);
+        static void Print(data_ops::Matrix3d mat, std::ostream &stream);
 
         /// @brief Static Function to Print Matrix4d object
         /// @param matOverTime Matrix4d to Print
         /// @param stream Stream to Print to
-        static void PrintOverTime(Matrixify::Matrix4d matOverTime,
+        static void PrintOverTime(data_ops::Matrix4d matOverTime,
                                   std::ostream &stream);
     };
 
-} // namespace Matrixify
+} // namespace data_ops
 
 #endif

@@ -26,9 +26,9 @@ namespace Simulation {
     class IRunnable {
     public:
         virtual void
-        run(std::shared_ptr<Matrixify::IDataLoader> const &dataloader,
-            std::shared_ptr<Matrixify::ICostLoader> const &costloader,
-            std::shared_ptr<Matrixify::IUtilityLoader> const &utilloader) = 0;
+        run(std::shared_ptr<data_ops::IDataLoader> const &dataloader,
+            std::shared_ptr<data_ops::ICostLoader> const &costloader,
+            std::shared_ptr<data_ops::IUtilityLoader> const &utilloader) = 0;
         virtual std::uint64_t getCurrentTime() const = 0;
         virtual void setDuration(std::uint64_t const time) = 0;
         virtual std::uint64_t getDuration() const = 0;
@@ -37,27 +37,27 @@ namespace Simulation {
     class ILoadable {
     public:
         virtual void
-        setData(std::shared_ptr<Matrixify::IDataLoader> const &loader) = 0;
+        setData(std::shared_ptr<data_ops::IDataLoader> const &loader) = 0;
         virtual void
-        setCost(std::shared_ptr<Matrixify::ICostLoader> const &loader) = 0;
-        virtual void setUtility(
-            std::shared_ptr<Matrixify::IUtilityLoader> const &loader) = 0;
+        setCost(std::shared_ptr<data_ops::ICostLoader> const &loader) = 0;
+        virtual void
+        setUtility(std::shared_ptr<data_ops::IUtilityLoader> const &loader) = 0;
     };
 
     /// @brief Interface for all Simulations
     class IRespond : public virtual IRunnable,
                      public virtual ILoadable,
-                     public virtual Matrixify::ILoggable {
+                     public virtual data_ops::ILoggable {
     public:
-        virtual Matrixify::Matrix3d getState() const = 0;
-        virtual std::shared_ptr<Matrixify::IDataLoader>
+        virtual data_ops::Matrix3d getState() const = 0;
+        virtual std::shared_ptr<data_ops::IDataLoader>
         getDataLoader() const = 0;
-        virtual std::shared_ptr<Matrixify::ICostLoader>
+        virtual std::shared_ptr<data_ops::ICostLoader>
         getCostLoader() const = 0;
-        virtual std::shared_ptr<Matrixify::IUtilityLoader>
+        virtual std::shared_ptr<data_ops::IUtilityLoader>
         getUtilityLoader() const = 0;
         virtual void ageUp() = 0;
-        virtual Matrixify::History getHistory() const = 0;
+        virtual data_ops::History getHistory() const = 0;
     };
 
     /*! Concrete Class for Respond implementing the IRespond interface
@@ -71,27 +71,27 @@ namespace Simulation {
 
         /// @brief
         /// @param dataLoader
-        Respond(std::shared_ptr<Matrixify::IDataLoader> dataLoader);
+        Respond(std::shared_ptr<data_ops::IDataLoader> dataLoader);
 
         ~Respond() {};
 
         void
-        run(std::shared_ptr<Matrixify::IDataLoader> const &dataloader = nullptr,
-            std::shared_ptr<Matrixify::ICostLoader> const &costloader = nullptr,
-            std::shared_ptr<Matrixify::IUtilityLoader> const &utilloader =
+        run(std::shared_ptr<data_ops::IDataLoader> const &dataloader = nullptr,
+            std::shared_ptr<data_ops::ICostLoader> const &costloader = nullptr,
+            std::shared_ptr<data_ops::IUtilityLoader> const &utilloader =
                 nullptr) override;
         void ageUp() override;
 
-        void setData(
-            std::shared_ptr<Matrixify::IDataLoader> const &loader) override {
+        void
+        setData(std::shared_ptr<data_ops::IDataLoader> const &loader) override {
             this->dataLoader = loader;
         }
-        void setCost(
-            std::shared_ptr<Matrixify::ICostLoader> const &loader) override {
+        void
+        setCost(std::shared_ptr<data_ops::ICostLoader> const &loader) override {
             this->costLoader = loader;
         }
         void setUtility(
-            std::shared_ptr<Matrixify::IUtilityLoader> const &loader) override {
+            std::shared_ptr<data_ops::IUtilityLoader> const &loader) override {
             this->utilLoader = loader;
         }
 
@@ -107,15 +107,15 @@ namespace Simulation {
         }
         std::uint64_t getDuration() const override { return this->duration; }
 
-        Matrixify::History getHistory() const override { return this->history; }
-        Matrixify::Matrix3d getState() const override { return this->state; }
-        std::shared_ptr<Matrixify::IDataLoader> getDataLoader() const override {
+        data_ops::History getHistory() const override { return this->history; }
+        data_ops::Matrix3d getState() const override { return this->state; }
+        std::shared_ptr<data_ops::IDataLoader> getDataLoader() const override {
             return this->dataLoader;
         }
-        std::shared_ptr<Matrixify::ICostLoader> getCostLoader() const override {
+        std::shared_ptr<data_ops::ICostLoader> getCostLoader() const override {
             return this->costLoader;
         }
-        std::shared_ptr<Matrixify::IUtilityLoader>
+        std::shared_ptr<data_ops::IUtilityLoader>
         getUtilityLoader() const override {
             return this->utilLoader;
         }
@@ -124,40 +124,40 @@ namespace Simulation {
         }
 
     private:
-        Matrixify::Matrix3d state;
+        data_ops::Matrix3d state;
         std::uint64_t duration = 0;
         int currentTime = 0;
-        Matrixify::History history;
-        std::shared_ptr<Matrixify::IDataLoader> dataLoader = nullptr;
-        std::shared_ptr<Matrixify::ICostLoader> costLoader = nullptr;
-        std::shared_ptr<Matrixify::IUtilityLoader> utilLoader = nullptr;
+        data_ops::History history;
+        std::shared_ptr<data_ops::IDataLoader> dataLoader = nullptr;
+        std::shared_ptr<data_ops::ICostLoader> costLoader = nullptr;
+        std::shared_ptr<data_ops::IUtilityLoader> utilLoader = nullptr;
         std::shared_ptr<spdlog::logger> logger = nullptr;
 
-        Matrixify::Matrix3d step();
+        data_ops::Matrix3d step();
 
         void setupHistory();
 
-        Matrixify::Matrix3d
-        multUseAfterIntervention(Matrixify::Matrix3d const mat,
+        data_ops::Matrix3d
+        multUseAfterIntervention(data_ops::Matrix3d const mat,
                                  int const intervention_idx) const;
 
-        Matrixify::Matrix3d
-        addEnteringSample(Matrixify::Matrix3d const mat) const;
+        data_ops::Matrix3d
+        addEnteringSample(data_ops::Matrix3d const mat) const;
 
-        Matrixify::Matrix3d
-        multBehaviorTransition(Matrixify::Matrix3d const mat) const;
+        data_ops::Matrix3d
+        multBehaviorTransition(data_ops::Matrix3d const mat) const;
 
-        Matrixify::Matrix3d
-        multInterventionTransition(Matrixify::Matrix3d const mat) const;
+        data_ops::Matrix3d
+        multInterventionTransition(data_ops::Matrix3d const mat) const;
 
-        Matrixify::Matrix3d multFODGivenOD(Matrixify::Matrix3d const mat) const;
+        data_ops::Matrix3d multFODGivenOD(data_ops::Matrix3d const mat) const;
 
-        Matrixify::Matrix3d multOD(Matrixify::Matrix3d const mat) const;
+        data_ops::Matrix3d multOD(data_ops::Matrix3d const mat) const;
 
-        Matrixify::Matrix3d multMortality(Matrixify::Matrix3d const mat) const;
+        data_ops::Matrix3d multMortality(data_ops::Matrix3d const mat) const;
 
-        inline Matrixify::Matrix3d createStandardMatrix3d() const {
-            Matrixify::Matrix3d mat = Matrixify::Matrix3dFactory::Create(
+        inline data_ops::Matrix3d createStandardMatrix3d() const {
+            data_ops::Matrix3d mat = data_ops::Matrix3dFactory::Create(
                 dataLoader->getNumOUDStates(),
                 dataLoader->getNumInterventions(),
                 dataLoader->getNumDemographicCombos());

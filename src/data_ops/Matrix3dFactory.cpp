@@ -12,18 +12,18 @@
 
 #include <respondsimulation/data_ops/Matrix3dFactory.hpp>
 
-namespace Matrixify {
+namespace data_ops {
 
-    Matrixify::Matrix3d Matrix3dFactory::Create(const int numOUDStates,
-                                                const int numInterventions,
-                                                const int numDemographics) {
+    data_ops::Matrix3d Matrix3dFactory::Create(const int numOUDStates,
+                                               const int numInterventions,
+                                               const int numDemographics) {
         Eigen::array<Eigen::Index, 3> order = {0, 0, 0};
-        order[Matrixify::OUD] = numOUDStates;
-        order[Matrixify::INTERVENTION] = numInterventions;
-        order[Matrixify::DEMOGRAPHIC_COMBO] = numDemographics;
-        Matrixify::Matrix3d empty(order);
+        order[data_ops::OUD] = numOUDStates;
+        order[data_ops::INTERVENTION] = numInterventions;
+        order[data_ops::DEMOGRAPHIC_COMBO] = numDemographics;
+        data_ops::Matrix3d empty(order);
         empty.setZero();
         return empty;
     }
 
-} // namespace Matrixify
+} // namespace data_ops
