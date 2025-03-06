@@ -20,7 +20,6 @@ Issues = "https://github.com/SyndemicsLab/RESPONDSimulationv2/issues"
 
 [tool.scikit-build]
 cmake.version = ">=3.27"
-sdist.cmake = true
 
 [tool.scikit-build.cmake.define]
 BUILD_PYBINDINGS = "ON"

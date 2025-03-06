@@ -1,0 +1,18 @@
+if(RESPONDSIMULATION_BUILD_PYBINDINGS OR RESPONDSIMULATION_BUILD_ALL)
+    message(STATUS "Generating Python Bindings")
+    include(LoadPybind)
+    LoadPybind()
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden")
+    add_subdirectory(extras/py_simdemics)
+endif()
+
+if(RESPONDSIMULATION_BUILD_TESTS OR RESPONDSIMULATION_BUILD_ALL)
+    message(STATUS "Generating tests")
+    enable_testing()
+    add_subdirectory(tests)
+endif()
+
+if(RESPONDSIMULATION_BUILD_BENCH OR RESPONDSIMULATION_BUILD_ALL)
+    message(STATUS "Generating benchmarks")
+    add_subdirectory(extras/benchmarking)
+endif()
