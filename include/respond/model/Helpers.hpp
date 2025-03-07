@@ -4,7 +4,7 @@
 // Created Date: 2025-01-14                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-06                                                  //
+// Last Modified: 2025-03-07                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -14,8 +14,8 @@
 #define UTILITIES_HELPERS_HPP_
 
 #include <iostream>
-#include <respondsimulation/data_ops/DataLoader.hpp>
-#include <respondsimulation/model/PostSimulationCalculator.hpp>
+#include <respond/data_ops/DataLoader.hpp>
+#include <respond/model/PostSimulationCalculator.hpp>
 #include <string>
 #include <vector>
 

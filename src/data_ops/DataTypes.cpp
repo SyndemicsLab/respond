@@ -4,13 +4,13 @@
 // Created Date: 2025-01-14                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-06                                                  //
+// Last Modified: 2025-03-07                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <respondsimulation/data_ops/DataTypes.hpp>
+#include <respond/data_ops/DataTypes.hpp>
 
 namespace data_ops {
     Matrix4d::Matrix4d(std::vector<Matrix3d> data) {

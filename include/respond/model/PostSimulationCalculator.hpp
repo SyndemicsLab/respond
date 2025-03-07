@@ -4,21 +4,21 @@
 // Created Date: 2025-01-14                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-06                                                  //
+// Last Modified: 2025-03-07                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef RESPONDSIMULATION_MODEL_POSTSIMULATIONCALCULATOR_HPP_
-#define RESPONDSIMULATION_MODEL_POSTSIMULATIONCALCULATOR_HPP_
+#ifndef RESPOND_MODEL_POSTSIMULATIONCALCULATOR_HPP_
+#define RESPOND_MODEL_POSTSIMULATIONCALCULATOR_HPP_
 
 #include <math.h>
 
-#include <respondsimulation/data_ops/CostLoader.hpp>
-#include <respondsimulation/data_ops/DataTypes.hpp>
-#include <respondsimulation/data_ops/Matrix3dFactory.hpp>
-#include <respondsimulation/data_ops/UtilityLoader.hpp>
+#include <respond/data_ops/CostLoader.hpp>
+#include <respond/data_ops/DataTypes.hpp>
+#include <respond/data_ops/Matrix3dFactory.hpp>
+#include <respond/data_ops/UtilityLoader.hpp>
 
 /// @brief Namespace for all Post Simulation Calculations
 namespace Calculator {
@@ -84,4 +84,4 @@ namespace Calculator {
     };
 } // namespace Calculator
 
-#endif // RESPONDSIMULATION_MODEL_POSTSIMULATIONCALCULATOR_HPP_
+#endif // RESPOND_MODEL_POSTSIMULATIONCALCULATOR_HPP_

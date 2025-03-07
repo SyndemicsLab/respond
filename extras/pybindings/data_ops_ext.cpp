@@ -1,9 +1,22 @@
-#include "CostLoader.hpp"
-#include "DataFormatter.hpp"
-#include "DataLoader.hpp"
-#include "UtilityLoader.hpp"
-#include "Writer.hpp"
-#include <DataTypes.hpp>
+////////////////////////////////////////////////////////////////////////////////
+// File: data_ops_ext.cpp                                                     //
+// Project: RESPONDSimulationv2                                               //
+// Created Date: 2025-01-14                                                   //
+// Author: Matthew Carroll                                                    //
+// -----                                                                      //
+// Last Modified: 2025-03-07                                                  //
+// Modified By: Matthew Carroll                                               //
+// -----                                                                      //
+// Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
+////////////////////////////////////////////////////////////////////////////////
+
+#include <respond/data_ops/CostLoader.hpp>
+#include <respond/data_ops/DataFormatter.hpp>
+#include <respond/data_ops/DataLoader.hpp>
+#include <respond/data_ops/DataTypes.hpp>
+#include <respond/data_ops/UtilityLoader.hpp>
+#include <respond/data_ops/Writer.hpp>
+
 #include <memory>
 #include <pybind11/eigen.h>
 #include <pybind11/eigen/tensor.h>

@@ -1,42 +1,36 @@
-//===-- DataTypes.hpp - DataTypes class definition --------------*- C++ -*-===//
-//
-// Part of the RESPOND - Researching Effective Strategies to Prevent Opioid
-// Death Project, under the AGPLv3 License. See https://www.gnu.org/licenses/
-// for license information.
-// SPDX-License-Identifier: AGPLv3
-//
-//===----------------------------------------------------------------------===//
-///
-/// \file
-/// This file contains the declaration of the DataTypes class.
-///
-/// Created Date: Tuesday, June 27th 2023, 10:20:34 am
-/// Contact: Benjamin.Linas@bmc.org
-///
-//===----------------------------------------------------------------------===//
+////////////////////////////////////////////////////////////////////////////////
+// File: data_types.hpp                                                       //
+// Project: RESPONDSimulationv2                                               //
+// Created Date: 2025-01-14                                                   //
+// Author: Matthew Carroll                                                    //
+// -----                                                                      //
+// Last Modified: 2025-03-07                                                  //
+// Modified By: Matthew Carroll                                               //
+// -----                                                                      //
+// Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
+////////////////////////////////////////////////////////////////////////////////
 
-#ifndef DATA_DATATYPES_HPP_
-#define DATA_DATATYPES_HPP_
+#ifndef RESPOND_DATAOPS_DATATYPES_HPP_
+#define RESPOND_DATAOPS_DATATYPES_HPP_
 
-#include <Eigen/Eigen>
 #include <cassert>
 #include <cfenv>
 #include <iostream>
 #include <stdexcept>
-#include <unsupported/Eigen/CXX11/Tensor>
 #include <vector>
 
-#define ASSERTM(exp, msg) assert(((void)msg, exp))
+#include <Eigen/Eigen>
+#include <unsupported/Eigen/CXX11/Tensor>
 
-namespace data_ops {
+namespace respond::data_ops {
 
     /// @brief Specification for each dimension in the Matrix3d
-    enum Dimension { INTERVENTION = 0, OUD = 1, DEMOGRAPHIC_COMBO = 2 };
+    enum Dimension { kIntervention = 0, kOud = 1, kDemographicCombo = 2 };
 
     /// @brief Eigen 3d Tensor
     using Matrix3d = Eigen::Tensor<double, 3>;
 
-    inline Matrix3d vecMin(std::vector<Matrix3d> const &matrices) {
+    inline Matrix3d VecMin(std::vector<Matrix3d> const &matrices) {
         if (matrices.empty()) {
             return {};
         }
@@ -52,7 +46,7 @@ namespace data_ops {
         return smallest;
     }
 
-    inline Matrix3d vecMult(std::vector<Matrix3d> const &matrices) {
+    inline Matrix3d VecMult(std::vector<Matrix3d> const &matrices) {
         if (matrices.empty()) {
             return {};
         }
@@ -76,12 +70,12 @@ namespace data_ops {
     public:
         Matrix4d() {}
         Matrix4d(std::vector<Matrix3d> data);
-        Matrix4d(std::vector<Matrix3d> data, std::vector<int> timestepChanges);
+        Matrix4d(std::vector<Matrix3d> data, std::vector<int> timestep_changes);
 
         /// @brief Get the Matrix3d at the Specified Timestep
         /// @param timestep Timestep to retrieve the Matrix3d
         /// @return Matrix3d at Specified Timestep
-        Matrix3d &getMatrix3dAtTimestep(int timestep);
+        Matrix3d &GetMatrix3dAtTimestep(int timestep);
 
         Matrix3d &operator()(int timestep);
         Matrix3d operator()(int timestep) const;
@@ -92,26 +86,26 @@ namespace data_ops {
         /// @brief Add the Matrix3d at the specified Timestep
         /// @param datapoint Matrix3d data_ops
         /// @param timestep Timestep to insert the Matrix3d
-        void insert(Matrix3d const &datapoint, int timestep);
+        void Insert(Matrix3d const &datapoint, int timestep);
 
         /// @brief Return all the Matrices in order by their timestep
         /// @return Vector of Matrix3ds in timestep order
-        std::vector<Matrix3d> getMatrices() const;
+        std::vector<Matrix3d> GetMatrices() const;
 
-        std::map<int, Matrix3d> getMappedData() const { return this->data; }
+        std::map<int, Matrix3d> GetMappedData() const { return this->data; }
 
-        Matrix3d sumOverTime() const;
+        Matrix3d SumOverTime() const;
 
     private:
         std::map<int, Matrix3d> data;
     };
 
     struct History {
-        Matrix4d stateHistory;
-        Matrix4d overdoseHistory;
-        Matrix4d fatalOverdoseHistory;
-        Matrix4d mortalityHistory;
-        Matrix4d interventionAdmissionHistory;
+        Matrix4d state_history;
+        Matrix4d overdose_history;
+        Matrix4d fatal_overdose_history;
+        Matrix4d mortality_history;
+        Matrix4d intervention_admission_history;
     };
 
     /// @brief Struct defining all the History Matrices Across the Duration of
@@ -120,11 +114,11 @@ namespace data_ops {
 
     struct Cost {
         std::string perspective;
-        Matrix4d healthcareCost;
-        Matrix4d nonFatalOverdoseCost;
-        Matrix4d fatalOverdoseCost;
-        Matrix4d pharmaCost;
-        Matrix4d treatmentCost;
+        Matrix4d healthcare_cost;
+        Matrix4d non_fatal_overdose_cost;
+        Matrix4d fatal_overdose_cost;
+        Matrix4d pharma_cost;
+        Matrix4d treatment_cost;
     };
 
     /// @brief
@@ -135,16 +129,16 @@ namespace data_ops {
     using CostList = std::vector<Cost>;
 
     struct Totals {
-        std::vector<double> baseCosts;
-        std::vector<double> discCosts;
-        double baseLifeYears = 0.0;
-        double discLifeYears = 0.0;
-        double baseUtility = 0.0;
-        double discUtility = 0.0;
+        std::vector<double> base_costs;
+        std::vector<double> disc_costs;
+        double base_life_years = 0.0;
+        double disc_life_years = 0.0;
+        double base_utility = 0.0;
+        double disc_utility = 0.0;
     };
 
     using Totals = Totals;
 
-}; // namespace data_ops
+}; // namespace respond::data_ops
 
-#endif
+#endif // RESPOND_DATAOPS_DATATYPES_HPP_

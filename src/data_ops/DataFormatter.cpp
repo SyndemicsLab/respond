@@ -4,13 +4,13 @@
 // Created Date: 2025-01-14                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-06                                                  //
+// Last Modified: 2025-03-07                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <respondsimulation/data_ops/DataFormatter.hpp>
+#include <respond/data_ops/DataFormatter.hpp>
 
 namespace data_ops {
     void DataFormatter::extractTimesteps(std::vector<int> timesteps,

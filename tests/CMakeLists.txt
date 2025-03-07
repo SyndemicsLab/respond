@@ -3,7 +3,6 @@ project(respondTest CXX)
 
 find_package(GTest REQUIRED CONFIG)
 
-# Find Eigen
 find_package (Eigen3 3.4 REQUIRED)
 
 find_package(spdlog REQUIRED)
@@ -26,7 +25,7 @@ target_link_libraries(${PROJECT_NAME} PUBLIC GTest::gmock)
 target_link_libraries(${PROJECT_NAME} PUBLIC GTest::gmock_main)
 target_link_libraries(${PROJECT_NAME} PUBLIC spdlog::spdlog)
 target_link_libraries(${PROJECT_NAME} PUBLIC datamanagement::datamanagement)
-target_link_libraries(${PROJECT_NAME} PUBLIC respondsimulation::respondsimulation)
+target_link_libraries(${PROJECT_NAME} PUBLIC respond::respond)
 
 target_include_directories(${PROJECT_NAME} 
     PUBLIC 

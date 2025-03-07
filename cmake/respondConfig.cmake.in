@@ -1,0 +1,9 @@
+@PACKAGE_INIT@
+
+include(CMakeFindDependencyMacro)
+find_dependency(Eigen3)
+find_dependency(spdlog)
+
+include("${CMAKE_CURRENT_LIST_DIR}/respondConfigTargets.cmake")
+
+check_required_components(respond)

@@ -1,19 +1,19 @@
 ////////////////////////////////////////////////////////////////////////////////
-// File: respondsimulation.cpp                                                //
+// File: respond.cpp                                                //
 // Project: RESPONDSimulationv2                                               //
 // Created Date: 2025-01-14                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-06                                                  //
+// Last Modified: 2025-03-07                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <respondsimulation/data_ops/Writer.hpp>
-#include <respondsimulation/model/Helpers.hpp>
-#include <respondsimulation/model/PostSimulationCalculator.hpp>
-#include <respondsimulation/model/Simulation.hpp>
+#include <respond/data_ops/Writer.hpp>
+#include <respond/model/Helpers.hpp>
+#include <respond/model/PostSimulationCalculator.hpp>
+#include <respond/model/Simulation.hpp>
 
 #include "spdlog/sinks/basic_file_sink.h"
 #include "spdlog/spdlog.h"
@@ -23,10 +23,10 @@
 #include <filesystem>
 #include <iostream>
 #include <numeric>
-#include <respondsimulation/data_ops/CostLoader.hpp>
-#include <respondsimulation/data_ops/DataFormatter.hpp>
-#include <respondsimulation/data_ops/DataLoader.hpp>
-#include <respondsimulation/model/Helpers.hpp>
+#include <respond/data_ops/CostLoader.hpp>
+#include <respond/data_ops/DataFormatter.hpp>
+#include <respond/data_ops/DataLoader.hpp>
+#include <respond/model/Helpers.hpp>
 #include <vector>
 
 int main(int argc, char **argv) {

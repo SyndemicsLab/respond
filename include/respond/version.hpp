@@ -4,24 +4,22 @@
 // Created Date: 2025-03-06                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-06                                                  //
+// Last Modified: 2025-03-07                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef RESPONDSIMULATION_VERSION_HPP_
-#define RESPONDSIMULATION_VERSION_HPP_
+#ifndef RESPOND_VERSION_HPP_
+#define RESPOND_VERSION_HPP_
 
-#define RESPONDSIMULATION_VER_MAJOR 2
-#define RESPONDSIMULATION_VER_MINOR 0
-#define RESPONDSIMULATION_VER_PATCH 1
+#define RESPOND_VER_MAJOR 2
+#define RESPOND_VER_MINOR 0
+#define RESPOND_VER_PATCH 1
 
-#define RESPONDSIMULATION_TO_VERSION(major, minor, patch)                      \
+#define RESPOND_TO_VERSION(major, minor, patch)                                \
     (major * 10000 + minor * 100 + patch)
-#define RESPONDSIMULATION_VERSION                                              \
-    RESPONDSIMULATION_TO_VERSION(RESPONDSIMULATION_VER_MAJOR,                  \
-                                 RESPONDSIMULATION_VER_MINOR,                  \
-                                 RESPONDSIMULATION_VER_PATCH)
+#define RESPOND_VERSION                                                        \
+    RESPOND_TO_VERSION(RESPOND_VER_MAJOR, RESPOND_VER_MINOR, RESPOND_VER_PATCH)
 
-#endif // RESPONDSIMULATION_VERSION_HPP_
+#endif // RESPOND_VERSION_HPP_

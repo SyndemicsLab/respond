@@ -1,27 +1,27 @@
 ////////////////////////////////////////////////////////////////////////////////
-// File: DataLoader.cpp                                                       //
+// File: data_loader.cpp                                                      //
 // Project: RESPONDSimulationv2                                               //
 // Created Date: 2025-01-14                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-06                                                  //
+// Last Modified: 2025-03-07                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <respondsimulation/data_ops/DataLoader.hpp>
+#include "internal/data_loader_internals.hpp"
 
-#include <respondsimulation/data_ops/Matrix3dFactory.hpp>
+#include <respond/data_ops/matrix_3d_factory.hpp>
 
 #include <cmath>
 #include <stdexcept>
 #include <unordered_map>
 
-namespace data_ops {
-    DataLoader::DataLoader(Data::IConfigablePtr config,
-                           std::string const &inputDir,
-                           std::shared_ptr<spdlog::logger> logger)
+namespace respond::data_ops {
+    DataLoaderImpl::DataLoaderImpl(Data::IConfigablePtr config,
+                                   std::string const &inputDir,
+                                   std::shared_ptr<spdlog::logger> logger)
         : BaseLoader(config, inputDir, logger) {}
 
     /*********************************************************************
@@ -29,14 +29,14 @@ namespace data_ops {
      * Public Methods
      *
      *********************************************************************/
-    Matrix3d DataLoader::loadInitialSample(std::string const &csvName) {
+    Matrix3d DataLoaderImpl::LoadInitialSample(std::string const &csvName) {
         // INITIAL GROUP
 
         Data::IDataTablePtr initialCohort = loadTable(csvName);
 
-        this->initialSample = data_ops::Matrix3dFactory::Create(
-            getNumOUDStates(), getNumInterventions(),
-            getNumDemographicCombos());
+        this->initial_sample =
+            Matrix3dFactory::Create(getNumOUDStates(), getNumInterventions(),
+                                    getNumDemographicCombos());
 
         for (int intervention = 0; intervention < getNumInterventions();
              ++intervention) {
@@ -75,14 +75,14 @@ namespace data_ops {
                 Eigen::array<Eigen::Index, 3> extents = {
                     1, 1, getNumDemographicCombos()};
 
-                initialSample.slice(offsets, extents) =
-                    strVecToMatrix3d(values, 1, 1, getNumDemographicCombos());
+                initial_sample.slice(offsets, extents) =
+                    StrVecToMatrix3d(values, 1, 1, getNumDemographicCombos());
             }
         }
-        return this->initialSample;
+        return this->initial_sample;
     }
 
-    Matrix4d DataLoader::loadEnteringSamples(
+    Matrix4d DataLoaderImpl::LoadEnteringSamples(
         std::string const &csvName,
         std::string const &enteringSampleIntervention,
         std::string const &enteringSampleOUD) {
@@ -128,15 +128,15 @@ namespace data_ops {
                                                      getNumDemographicCombos()};
 
             enteringSample.slice(offsets, extents) =
-                strVecToMatrix3d(col, 1, 1, getNumDemographicCombos());
+                StrVecToMatrix3d(col, 1, 1, getNumDemographicCombos());
 
-            fillTime(startTime, changepoint, enteringSample,
-                     this->enteringSamples);
+            FillTime(startTime, changepoint, enteringSample,
+                     this->entering_samples);
         }
-        return this->enteringSamples;
+        return this->entering_samples;
     }
 
-    Matrix4d DataLoader::loadEnteringSamples(std::string const &csvName) {
+    Matrix4d DataLoaderImpl::LoadEnteringSamples(std::string const &csvName) {
         // ENTERING GROUP Stratified by OUD
 
         Data::IDataTablePtr enteringCohort = loadTable(csvName);
@@ -199,18 +199,19 @@ namespace data_ops {
                     Eigen::array<Eigen::Index, 3> extents = {
                         1, 1, getNumDemographicCombos()};
 
-                    enteringSample.slice(offsets, extents) = strVecToMatrix3d(
+                    enteringSample.slice(offsets, extents) = StrVecToMatrix3d(
                         values, 1, 1, getNumDemographicCombos());
                 }
             }
-            fillTime(startTime, changepoint, enteringSample,
-                     this->enteringSamples);
+            FillTime(startTime, changepoint, enteringSample,
+                     this->entering_samples);
         }
 
-        return this->enteringSamples;
+        return this->entering_samples;
     }
 
-    Matrix3d DataLoader::loadOUDTransitionRates(std::string const &csvName) {
+    Matrix3d
+    DataLoaderImpl::LoadOUDTransitionRates(std::string const &csvName) {
 
         Data::IDataTablePtr oudTransitionTable = loadTable(csvName);
         // end dimensions of oudTransitionRates are getNumInterventions() x
@@ -260,16 +261,17 @@ namespace data_ops {
                         1, 1, getNumDemographicCombos()};
 
                     tempOUDTransitions.slice(offsets1, extents) =
-                        strVecToMatrix3d(col, 1, 1, getNumDemographicCombos());
+                        StrVecToMatrix3d(col, 1, 1, getNumDemographicCombos());
                 }
             }
         }
 
-        this->oudTransitionRates = std::move(tempOUDTransitions);
-        return this->oudTransitionRates;
+        this->oud_transition_rates = std::move(tempOUDTransitions);
+        return this->oud_transition_rates;
     }
 
-    Matrix3d DataLoader::loadInterventionInitRates(std::string const &csvName) {
+    Matrix3d
+    DataLoaderImpl::LoadInterventionInitRates(std::string const &csvName) {
 
         Data::IDataTablePtr interventionInitTable = loadTable(csvName);
 
@@ -315,34 +317,34 @@ namespace data_ops {
                         1, 1, getNumDemographicCombos()};
 
                     tempinterventionInit.slice(offsets1, extents) =
-                        doubleToMatrix3d(std::stod(col[0]), 1, 1,
+                        DoubleToMatrix3d(std::stod(col[0]), 1, 1,
                                          getNumDemographicCombos());
                 }
             }
         }
 
-        this->interventionInitRates = std::move(tempinterventionInit);
-        return this->interventionInitRates;
+        this->intervention_init_rates = std::move(tempinterventionInit);
+        return this->intervention_init_rates;
     }
 
-    Matrix4d
-    DataLoader::loadInterventionTransitionRates(std::string const &csvName) {
+    Matrix4d DataLoaderImpl::LoadInterventionTransitionRates(
+        std::string const &csvName) {
 
         // INTERVENTION TRANSITIONS
         Data::IDataTablePtr interventionTransitionTable = loadTable(csvName);
 
         try {
-            this->interventionTransitionRates =
-                this->buildTransitionRatesOverTime(
+            this->intervention_transition_rates =
+                this->BuildTransitionRatesOverTime(
                     this->interventionChangeTimes, interventionTransitionTable);
         } catch (const std::exception &e) {
             this->logger->error(e.what());
         }
 
-        return this->interventionTransitionRates;
+        return this->intervention_transition_rates;
     }
 
-    Matrix4d DataLoader::loadOverdoseRates(std::string const &csvName) {
+    Matrix4d DataLoaderImpl::LoadOverdoseRates(std::string const &csvName) {
 
         // OVERDOSE
         Data::IDataTablePtr overdoseTransitionTable = loadTable(csvName);
@@ -363,16 +365,17 @@ namespace data_ops {
 
             for (std::string header : headers) {
                 if (header.find(odcolumn) != std::string::npos) {
-                    Matrix3d temp = this->buildOverdoseTransitions(
+                    Matrix3d temp = this->BuildOverdoseTransitions(
                         overdoseTransitionTable, header);
-                    fillTime(startTime, timestep, temp, this->overdoseRates);
+                    FillTime(startTime, timestep, temp, this->overdose_rates);
                 }
             }
         }
-        return this->overdoseRates;
+        return this->overdose_rates;
     }
 
-    Matrix4d DataLoader::loadFatalOverdoseRates(std::string const &csvName) {
+    Matrix4d
+    DataLoaderImpl::LoadFatalOverdoseRates(std::string const &csvName) {
 
         std::vector<Matrix3d> tempFatalOverdoseTransitions;
 
@@ -398,10 +401,10 @@ namespace data_ops {
 
             for (std::string header : headers) {
                 if (header.find(fodColumn) != std::string::npos) {
-                    Matrix3d temp = this->buildFatalOverdoseTransitions(
+                    Matrix3d temp = this->BuildFatalOverdoseTransitions(
                         fatalOverdoseTable, header);
-                    fillTime(startTime, timestep, temp,
-                             this->fatalOverdoseRates);
+                    FillTime(startTime, timestep, temp,
+                             this->fatal_overdose_rates);
                 }
             }
 
@@ -425,11 +428,11 @@ namespace data_ops {
 
             // fillTime(startTime, timestep, temp, this->fatalOverdoseRates);
         }
-        return this->fatalOverdoseRates;
+        return this->fatal_overdose_rates;
     }
 
-    Matrix3d DataLoader::loadMortalityRates(std::string const &smrCSVName,
-                                            std::string const &bgmCSVName) {
+    Matrix3d DataLoaderImpl::LoadMortalityRates(std::string const &smrCSVName,
+                                                std::string const &bgmCSVName) {
 
         // MORTALITY TRANSITIONS
         // mortality here refers to death from reasons other than oud and is
@@ -479,14 +482,14 @@ namespace data_ops {
                 }
             }
         }
-        this->mortalityRates = mortalityTransition;
-        return this->mortalityRates;
+        this->mortality_rates = mortalityTransition;
+        return this->mortality_rates;
     }
 
     data_ops::Matrix3d
-    DataLoader::buildInterventionMatrix(Data::IDataTablePtr const &table,
-                                        std::string interventionName,
-                                        int timestep) {
+    DataLoaderImpl::BuildInterventionMatrix(Data::IDataTablePtr const &table,
+                                            std::string interventionName,
+                                            int timestep) {
         data_ops::Matrix3d transMat = data_ops::Matrix3dFactory::Create(
             getNumOUDStates(), getNumInterventions(),
             getNumDemographicCombos());
@@ -533,16 +536,16 @@ namespace data_ops {
                 std::vector<std::string> value = temp->getColumn(header);
 
                 transMat.slice(offsets, extents) =
-                    strVecToMatrix3d(value, 1, 1, getNumDemographicCombos());
+                    StrVecToMatrix3d(value, 1, 1, getNumDemographicCombos());
             }
         }
         return transMat;
     }
 
     data_ops::Matrix3d
-    DataLoader::createTransitionMatrix3d(Data::IDataTablePtr const &table,
-                                         data_ops::Dimension dimension,
-                                         int timestep) {
+    DataLoaderImpl::CreateTransitionMatrix3d(Data::IDataTablePtr const &table,
+                                             data_ops::Dimension dimension,
+                                             int timestep) {
 
         std::shared_ptr<Data::DataTable> dynaCast =
             std::dynamic_pointer_cast<Data::DataTable>(table);
@@ -551,7 +554,7 @@ namespace data_ops {
         Data::IDataTablePtr tempPtr =
             std::make_shared<Data::DataTable>(std::move(temp));
 
-        if (dimension == data_ops::INTERVENTION) {
+        if (dimension == Dimension::kIntervention) {
             Matrix3d stackingMatrices = data_ops::Matrix3dFactory::Create(
                 getNumOUDStates(),
                 getNumInterventions() * getNumInterventions(),
@@ -559,21 +562,21 @@ namespace data_ops {
             for (int i = 0; i < getNumInterventions(); i++) {
                 // assign to index + offset of numInterventions
                 Eigen::array<Eigen::Index, 3> offsets = {0, 0, 0};
-                offsets[data_ops::INTERVENTION] = i * getNumInterventions();
-                offsets[data_ops::OUD] = i * 0;
-                offsets[data_ops::DEMOGRAPHIC_COMBO] = 0;
+                offsets[Dimension::kIntervention] = i * getNumInterventions();
+                offsets[Dimension::kOud] = i * 0;
+                offsets[Dimension::kDemographicCombo] = 0;
                 Eigen::array<Eigen::Index, 3> extents = {0, 0, 0};
-                extents[data_ops::INTERVENTION] = getNumInterventions();
-                extents[data_ops::OUD] = getNumOUDStates();
-                extents[data_ops::DEMOGRAPHIC_COMBO] =
+                extents[Dimension::kIntervention] = getNumInterventions();
+                extents[Dimension::kOud] = getNumOUDStates();
+                extents[Dimension::kDemographicCombo] =
                     getNumDemographicCombos();
-                data_ops::Matrix3d temp = this->buildInterventionMatrix(
+                data_ops::Matrix3d temp = BuildInterventionMatrix(
                     table, this->interventions[i], timestep);
                 stackingMatrices.slice(offsets, extents) = temp;
             }
             return stackingMatrices;
 
-        } else if (dimension == data_ops::OUD) {
+        } else if (dimension == Dimension::kOud) {
             Matrix3d stackingMatrices = data_ops::Matrix3dFactory::Create(
                 getNumOUDStates() * getNumOUDStates(), getNumInterventions(),
                 getNumDemographicCombos());
@@ -585,22 +588,21 @@ namespace data_ops {
         return stackingMatrices;
     }
 
-    Matrix4d
-    DataLoader::buildTransitionRatesOverTime(std::vector<int> const &ict,
-                                             Data::IDataTablePtr const &table) {
+    Matrix4d DataLoaderImpl::BuildTransitionRatesOverTime(
+        std::vector<int> const &ict, Data::IDataTablePtr const &table) {
         Matrix4d m3dot;
         int startTime = 0;
         for (int timestep : ict) {
-            Matrix3d transMat = this->createTransitionMatrix3d(
-                table, data_ops::INTERVENTION, timestep);
-            fillTime(startTime, timestep, transMat, m3dot);
+            Matrix3d transMat = CreateTransitionMatrix3d(
+                table, Dimension::kIntervention, timestep);
+            FillTime(startTime, timestep, transMat, m3dot);
         }
         return m3dot;
     }
 
     Matrix3d
-    DataLoader::buildOverdoseTransitions(Data::IDataTablePtr const &table,
-                                         std::string const &key) {
+    DataLoaderImpl::BuildOverdoseTransitions(Data::IDataTablePtr const &table,
+                                             std::string const &key) {
         Matrix3d overdoseTransitionsCycle = data_ops::Matrix3dFactory::Create(
             getNumOUDStates(), getNumInterventions(),
             getNumDemographicCombos());
@@ -627,9 +629,8 @@ namespace data_ops {
         return overdoseTransitionsCycle;
     }
 
-    Matrix3d
-    DataLoader::buildFatalOverdoseTransitions(Data::IDataTablePtr const &table,
-                                              std::string const &key) {
+    Matrix3d DataLoaderImpl::BuildFatalOverdoseTransitions(
+        Data::IDataTablePtr const &table, std::string const &key) {
         Matrix3d fatalOverdoseTransitionsCycle =
             data_ops::Matrix3dFactory::Create(getNumOUDStates(),
                                               getNumInterventions(),
@@ -646,11 +647,11 @@ namespace data_ops {
             }
             // intervention, oud_state, dem
             Eigen::array<Eigen::Index, 3> offsets = {0, 0, 0};
-            offsets[data_ops::DEMOGRAPHIC_COMBO] = dem;
+            offsets[Dimension::kDemographicCombo] = dem;
             Eigen::array<Eigen::Index, 3> extents = {0, 0, 0};
-            extents[data_ops::INTERVENTION] = getNumInterventions();
-            extents[data_ops::OUD] = getNumOUDStates();
-            extents[data_ops::DEMOGRAPHIC_COMBO] = 1;
+            extents[Dimension::kIntervention] = getNumInterventions();
+            extents[Dimension::kOud] = getNumOUDStates();
+            extents[Dimension::kDemographicCombo] = 1;
             fatalOverdoseTransitionsCycle.slice(offsets, extents)
                 .setConstant(std::stod(col[row]));
             ++row;
@@ -659,16 +660,16 @@ namespace data_ops {
         return fatalOverdoseTransitionsCycle;
     }
 
-    void DataLoader::fillTime(int &start, int const end, Matrix3d data,
-                              Matrix4d &storage) {
+    void DataLoaderImpl::FillTime(int &start, int const end, Matrix3d data,
+                                  Matrix4d &storage) {
         while (start <= end) {
-            storage.insert(data, start);
+            storage.Insert(data, start);
             start++;
         }
     }
 
-    Matrix3d DataLoader::strVecToMatrix3d(std::vector<std::string> strVec,
-                                          int matD1, int matD2, int matD3) {
+    Matrix3d DataLoaderImpl::StrVecToMatrix3d(std::vector<std::string> strVec,
+                                              int matD1, int matD2, int matD3) {
         std::vector<double> doubleVector(strVec.size());
         std::transform(strVec.begin(), strVec.end(), doubleVector.begin(),
                        [](const std::string &val) { return std::stod(val); });
@@ -680,8 +681,8 @@ namespace data_ops {
         return ret;
     }
 
-    Matrix3d DataLoader::doubleToMatrix3d(double value, int matD1, int matD2,
-                                          int matD3) {
+    Matrix3d DataLoaderImpl::DoubleToMatrix3d(double value, int matD1,
+                                              int matD2, int matD3) {
         std::vector<double> rateVector(matD1 * matD2 * matD3);
         std::fill(rateVector.begin(), rateVector.end(), value);
         Eigen::TensorMap<Eigen::Tensor<double, 3>> writingTensor(
@@ -690,4 +691,4 @@ namespace data_ops {
         Matrix3d ret = writingTensor;
         return ret;
     }
-} // namespace data_ops
+} // namespace respond::data_ops

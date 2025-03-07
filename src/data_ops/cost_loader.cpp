@@ -1,27 +1,27 @@
 ////////////////////////////////////////////////////////////////////////////////
-// File: CostLoader.cpp                                                       //
+// File: cost_loader.cpp                                                      //
 // Project: RESPONDSimulationv2                                               //
 // Created Date: 2025-01-14                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-06                                                  //
+// Last Modified: 2025-03-07                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <respondsimulation/data_ops/CostLoader.hpp>
+#include "internal/cost_loader_internals.hpp"
 
-#include <respondsimulation/data_ops/Matrix3dFactory.hpp>
+#include <respond/data_ops/Matrix3dFactory.hpp>
 
 namespace data_ops {
-    CostLoader::CostLoader(Data::IConfigablePtr config,
-                           std::string const &inputDir,
-                           std::shared_ptr<spdlog::logger> logger)
+    CostLoaderImpl::CostLoaderImpl(Data::IConfigablePtr config,
+                                   std::string const &inputDir,
+                                   std::shared_ptr<spdlog::logger> logger)
         : BaseLoader(config, inputDir, logger) {}
 
     std::unordered_map<std::string, Matrix3d>
-    CostLoader::loadHealthcareUtilizationCost(std::string const &csvName) {
+    CostLoaderImpl::loadHealthcareUtilizationCost(std::string const &csvName) {
         Data::IDataTablePtr table = loadTable(csvName);
         size_t numOUDStates = this->oudStates.size();
 
@@ -60,7 +60,7 @@ namespace data_ops {
     }
 
     std::unordered_map<std::string, std::unordered_map<std::string, double>>
-    CostLoader::loadOverdoseCost(std::string const &csvName) {
+    CostLoaderImpl::loadOverdoseCost(std::string const &csvName) {
         Data::IDataTablePtr table = loadTable(csvName);
 
         std::vector<std::string> xCol = table->getColumn("X");
@@ -81,7 +81,7 @@ namespace data_ops {
     }
 
     std::unordered_map<std::string, Matrix3d>
-    CostLoader::loadPharmaceuticalCost(std::string const &csvName) {
+    CostLoaderImpl::loadPharmaceuticalCost(std::string const &csvName) {
         Data::IDataTablePtr table = loadTable(csvName);
 
         size_t numOUDStates = this->oudStates.size();
@@ -97,7 +97,7 @@ namespace data_ops {
     }
 
     std::unordered_map<std::string, Matrix3d>
-    CostLoader::loadTreatmentUtilizationCost(std::string const &csvName) {
+    CostLoaderImpl::loadTreatmentUtilizationCost(std::string const &csvName) {
         Data::IDataTablePtr table = loadTable(csvName);
         this->loadTreatmentUtilizationCostMap(table);
 
@@ -106,8 +106,8 @@ namespace data_ops {
         return this->treatmentUtilizationCost;
     }
 
-    double
-    CostLoader::getNonFatalOverdoseCost(std::string const &perspective) const {
+    double CostLoaderImpl::getNonFatalOverdoseCost(
+        std::string const &perspective) const {
         if (this->overdoseCostsMap.at(perspective).find("non_fatal_overdose") ==
             this->overdoseCostsMap.at(perspective).end()) {
             return 0.0;
@@ -116,7 +116,7 @@ namespace data_ops {
     }
 
     double
-    CostLoader::getFatalOverdoseCost(std::string const &perspective) const {
+    CostLoaderImpl::getFatalOverdoseCost(std::string const &perspective) const {
         if (this->overdoseCostsMap.at(perspective).find("fatal_overdose") ==
             this->overdoseCostsMap.at(perspective).end()) {
             return 0.0;
@@ -125,7 +125,7 @@ namespace data_ops {
     }
 
     std::unordered_map<std::string, std::unordered_map<std::string, double>>
-    CostLoader::loadPharmaceuticalCostMap(Data::IDataTablePtr table) {
+    CostLoaderImpl::loadPharmaceuticalCostMap(Data::IDataTablePtr table) {
         std::vector<std::string> blockCol = table->getColumn("block");
         for (std::string perspective : this->costPerspectives) {
             std::vector<std::string> perspectiveCol =
@@ -138,7 +138,7 @@ namespace data_ops {
         return this->pharmaceuticalCostsMap;
     }
 
-    void CostLoader::loadCostViaPerspective(
+    void CostLoaderImpl::loadCostViaPerspective(
         std::unordered_map<std::string, Matrix3d> &costParameter,
         std::unordered_map<std::string, std::unordered_map<std::string, double>>
             &costParameterMap) {
@@ -175,7 +175,7 @@ namespace data_ops {
     }
 
     std::unordered_map<std::string, std::unordered_map<std::string, double>>
-    CostLoader::loadTreatmentUtilizationCostMap(Data::IDataTablePtr table) {
+    CostLoaderImpl::loadTreatmentUtilizationCostMap(Data::IDataTablePtr table) {
         std::vector<std::string> blockCol = table->getColumn("block");
         for (std::string perspective : this->costPerspectives) {
             std::vector<std::string> perspectiveCol =
