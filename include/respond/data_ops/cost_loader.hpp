@@ -4,7 +4,7 @@
 // Created Date: 2025-01-14                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-07                                                  //
+// Last Modified: 2025-03-11                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -18,30 +18,11 @@
 
 #include <datamanagement/DataManagement.hpp>
 
-#include <respond/data_ops/base_loader.hpp>
 #include <respond/data_ops/data_types.hpp>
 
 namespace respond::data_ops {
-
-    // using ICostLoaderPtr = std::shared_ptr<ICostLoader>;
-
-    class CostLoader : public virtual BaseLoader {
+    class CostLoader {
     public:
-        // CostLoader(Data::IConfigablePtr config, std::string const &inputDir,
-        //            std::shared_ptr<spdlog::logger> logger);
-
-        // delegating constructors
-        // CostLoader() : CostLoader(nullptr, "", nullptr) {}
-        // CostLoader(Data::IConfigablePtr config)
-        //     : CostLoader(config, "", nullptr) {}
-        // CostLoader(Data::IConfigablePtr config, std::string const &inputDir)
-        //     : CostLoader(config, inputDir, nullptr) {}
-        // CostLoader(std::string const &inputDir,
-        //            std::shared_ptr<spdlog::logger> logger)
-        //     : CostLoader(nullptr, inputDir, logger) {}
-        // CostLoader(std::string const &inputDir)
-        //     : CostLoader(nullptr, inputDir, nullptr) {}
-
         virtual ~CostLoader() = default;
 
         virtual std::unordered_map<std::string, Matrix3d>
@@ -59,39 +40,12 @@ namespace respond::data_ops {
 
         virtual Matrix3d
         GetHealthcareUtilizationCost(std::string const &perspective) const = 0;
-        // {
-        //     if (this->healthcareUtilizationCost.find(perspective) !=
-        //         this->healthcareUtilizationCost.end()) {
-        //         return this->healthcareUtilizationCost.at(perspective);
-        //     }
-        //     // add warning
-        //     Matrix3d result;
-        //     return result;
-        // }
 
         virtual Matrix3d
         GetPharmaceuticalCost(std::string const &perspective) const = 0;
-        // {
-        //     if (this->pharmaceuticalCost.find(perspective) !=
-        //         this->pharmaceuticalCost.end()) {
-        //         return this->pharmaceuticalCost.at(perspective);
-        //     }
-        //     // add warning
-        //     Matrix3d result;
-        //     return result;
-        // }
 
         virtual Matrix3d
         GetTreatmentUtilizationCost(std::string const &perspective) const = 0;
-        // {
-        //     if (this->treatmentUtilizationCost.find(perspective) !=
-        //         this->treatmentUtilizationCost.end()) {
-        //         return this->treatmentUtilizationCost.at(perspective);
-        //     }
-        //     // add warning
-        //     Matrix3d result;
-        //     return result;
-        // }
 
         virtual double
         GetNonFatalOverdoseCost(std::string const &perspective) const = 0;

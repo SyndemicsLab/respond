@@ -4,7 +4,7 @@
 // Created Date: 2025-01-14                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-07                                                  //
+// Last Modified: 2025-03-11                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -18,7 +18,6 @@
 #include <string>
 #include <vector>
 
-#include <respond/data_ops/base_loader.hpp>
 #include <respond/data_ops/data_types.hpp>
 
 namespace respond::data_ops {
@@ -52,7 +51,7 @@ namespace respond::data_ops {
      * - `setting_utility.csv`
      * - `treatment_utilization_cost.csv`
      */
-    class DataLoader : public virtual BaseLoader {
+    class DataLoader {
     public:
         virtual ~DataLoader() = default;
 

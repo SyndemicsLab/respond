@@ -4,7 +4,7 @@
 // Created Date: 2025-03-07                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-07                                                  //
+// Last Modified: 2025-03-11                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -14,8 +14,10 @@
 
 #include <respond/data_ops/data_loader.hpp>
 
+#include "base_loader_internals.hpp"
+
 namespace respond::data_ops {
-    class DataLoaderImpl : public virtual DataLoader {
+    class DataLoaderImpl : public virtual DataLoader, public BaseLoader {
     public:
         /// @brief An alternative constructor for DataLoader for loading data
         /// when a Configuration object has already been created prior to
@@ -24,20 +26,9 @@ namespace respond::data_ops {
         /// already-processed configuration file
         /// @param inputDir The name of the directory where input files are
         /// stored
-        DataLoaderImpl(Data::IConfigablePtr config, std::string const &inputDir,
-                       std::shared_ptr<spdlog::logger> logger);
-
-        // delegating constructors
-        DataLoaderImpl() : DataLoaderImpl(nullptr, "", nullptr) {}
-        DataLoaderImpl(Data::IConfigablePtr config)
-            : DataLoaderImpl(config, "", nullptr) {}
-        DataLoaderImpl(Data::IConfigablePtr config, std::string const &inputDir)
-            : DataLoaderImpl(config, inputDir, nullptr) {}
-        DataLoaderImpl(std::string const &inputDir,
-                       std::shared_ptr<spdlog::logger> logger)
-            : DataLoaderImpl(nullptr, inputDir, logger) {}
-        DataLoaderImpl(std::string const &inputDir)
-            : DataLoaderImpl(nullptr, inputDir, nullptr) {}
+        DataLoaderImpl(const std::string &directory = "",
+                       const std::string &log_name = "console")
+            : BaseLoader(directory, log_name) {}
 
         ~DataLoaderImpl() = default;
 

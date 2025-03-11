@@ -61,15 +61,14 @@ endif()
 # ---------------------------------------------------------------------------------------
 set(RESPOND_SRCS 
     src/respond.cpp 
-    src/data_ops/BaseLoader.cpp
-    src/data_ops/CostLoader.cpp
-    src/data_ops/DataFormatter.cpp
-    src/data_ops/DataLoader.cpp
-    src/data_ops/DataTypes.cpp
-    src/data_ops/Matrix3dFactory.cpp
-    src/data_ops/Matrix3dPrinter.cpp
-    src/data_ops/UtilityLoader.cpp
-    src/data_ops/Writer.cpp
+    src/data_ops/cost_loader.cpp
+    src/data_ops/data_formatter.cpp
+    src/data_ops/data_loader.cpp
+    src/data_ops/data_types.cpp
+    src/data_ops/matrix_3d_factory.cpp
+    src/data_ops/matrix_3d_printer.cpp
+    src/data_ops/utility_loader.cpp
+    src/data_ops/writer.cpp
     src/model/PostSimulationCalculator.cpp
     src/model/Simulation.cpp
 )
