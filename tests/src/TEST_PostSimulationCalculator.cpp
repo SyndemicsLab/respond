@@ -4,7 +4,7 @@
 // Created Date: 2025-01-14                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-07                                                  //
+// Last Modified: 2025-03-12                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -112,7 +112,7 @@ TEST_F(PostSimulationCalculatorTest, constructor) {
     data_ops::Matrix3d temp =
         data_ops::Matrix3dFactory::Create(1, 1, 1).setConstant(2.0);
 
-    data_ops::Matrix4d stateHistory({temp});
+    data_ops::TimedMatrix3d stateHistory({temp});
 
     history.stateHistory = stateHistory;
     Calculator::PostSimulationCalculator calculator(history);
@@ -124,7 +124,7 @@ TEST_F(PostSimulationCalculatorTest, calculateCost) {
     data_ops::History history;
     data_ops::Matrix3d temp =
         data_ops::Matrix3dFactory::Create(1, 1, 1).setConstant(2.0);
-    data_ops::Matrix4d stateHistory({temp});
+    data_ops::TimedMatrix3d stateHistory({temp});
     history.stateHistory = stateHistory;
     history.overdoseHistory = stateHistory;
     history.fatalOverdoseHistory = stateHistory;
@@ -175,7 +175,7 @@ TEST_F(PostSimulationCalculatorTest, calculateUtility) {
     data_ops::History history;
     data_ops::Matrix3d temp =
         data_ops::Matrix3dFactory::Create(1, 1, 1).setConstant(2.0);
-    data_ops::Matrix4d stateHistory({temp});
+    data_ops::TimedMatrix3d stateHistory({temp});
     history.stateHistory = stateHistory;
 
     Calculator::PostSimulationCalculator calculator(history);
@@ -197,7 +197,7 @@ TEST_F(PostSimulationCalculatorTest, calculateUtility) {
     EXPECT_CALL(*mockedUtilityLoader, getSettingUtility("utility"))
         .WillRepeatedly(Return(retUtility));
 
-    data_ops::Matrix4d result = calculator.calculateUtilities(
+    data_ops::TimedMatrix3d result = calculator.calculateUtilities(
         utilityLoader, Calculator::UTILITY_TYPE::MIN);
 
     EXPECT_EQ(result(0, 0, 0, 0), 6);
@@ -207,7 +207,7 @@ TEST_F(PostSimulationCalculatorTest, calculateUtilityMin) {
     data_ops::History history;
     data_ops::Matrix3d temp =
         data_ops::Matrix3dFactory::Create(1, 1, 1).setConstant(2.0);
-    data_ops::Matrix4d stateHistory({temp});
+    data_ops::TimedMatrix3d stateHistory({temp});
     history.stateHistory = stateHistory;
 
     Calculator::PostSimulationCalculator calculator(history);
@@ -231,7 +231,7 @@ TEST_F(PostSimulationCalculatorTest, calculateUtilityMin) {
     EXPECT_CALL(*mockedUtilityLoader, getSettingUtility("utility"))
         .WillRepeatedly(Return(retUtility));
 
-    data_ops::Matrix4d result = calculator.calculateUtilities(
+    data_ops::TimedMatrix3d result = calculator.calculateUtilities(
         utilityLoader, Calculator::UTILITY_TYPE::MIN);
 
     EXPECT_EQ(result(0, 0, 0, 0), 1);
@@ -241,7 +241,7 @@ TEST_F(PostSimulationCalculatorTest, calculateUtilityMult) {
     data_ops::History history;
     data_ops::Matrix3d temp =
         data_ops::Matrix3dFactory::Create(1, 1, 1).setConstant(2.0);
-    data_ops::Matrix4d stateHistory({temp});
+    data_ops::TimedMatrix3d stateHistory({temp});
     history.stateHistory = stateHistory;
 
     Calculator::PostSimulationCalculator calculator(history);
@@ -265,7 +265,7 @@ TEST_F(PostSimulationCalculatorTest, calculateUtilityMult) {
     EXPECT_CALL(*mockedUtilityLoader, getSettingUtility("utility"))
         .WillRepeatedly(Return(retUtility));
 
-    data_ops::Matrix4d result = calculator.calculateUtilities(
+    data_ops::TimedMatrix3d result = calculator.calculateUtilities(
         utilityLoader, Calculator::UTILITY_TYPE::MULT);
 
     EXPECT_EQ(result(0, 0, 0, 0), 0.75);
@@ -274,7 +274,7 @@ TEST_F(PostSimulationCalculatorTest, calculateUtilityMult) {
 TEST_F(PostSimulationCalculatorTest, calculateLifeYears) {
     data_ops::History history;
     data_ops::Matrix3d temp;
-    data_ops::Matrix4d stateHistory;
+    data_ops::TimedMatrix3d stateHistory;
     for (int i = 0; i < 52; ++i) {
         temp =
             data_ops::Matrix3dFactory::Create(2, 2, 2).setConstant(double(i));

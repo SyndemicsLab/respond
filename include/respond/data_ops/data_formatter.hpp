@@ -1,40 +1,30 @@
 ////////////////////////////////////////////////////////////////////////////////
-// File: DataFormatter.hpp                                                    //
+// File: data_formatter.hpp                                                   //
 // Project: RESPONDSimulationv2                                               //
-// Created Date: 2025-01-14                                                   //
+// Created Date: 2025-03-12                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-07                                                  //
+// Last Modified: 2025-03-12                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
 ////////////////////////////////////////////////////////////////////////////////
-
-#ifndef DATA_DATAFORMATTER_HPP_
-#define DATA_DATAFORMATTER_HPP_
-
-#include <respond/data_ops/data_types.hpp>
-#include <respond/data_ops/matrix_3d_factory.hpp>
+#ifndef RESPOND_DATAOPS_DATAFORMATTER_HPP_
+#define RESPOND_DATAOPS_DATAFORMATTER_HPP_
 
 #include <vector>
 
-namespace data_ops {
+#include <respond/data_ops/data_types.hpp>
+
+namespace respond::data_ops {
     class DataFormatter {
     public:
-        DataFormatter() {};
-        ~DataFormatter() {};
-        void extractTimesteps(std::vector<int> timesteps,
-                              data_ops::History &history,
-                              data_ops::CostList &costs,
-                              data_ops::Matrix4d &utilities, bool costSwitch);
-
-    private:
-        data_ops::Matrix4d trimMatrix4d(std::vector<int> timesteps,
-                                        data_ops::Matrix4d matrix);
-
-        data_ops::Matrix4d trimAndAddMatrix4d(std::vector<int> timesteps,
-                                              data_ops::Matrix4d matrix);
+        virtual ~DataFormatter() = default;
+        virtual void ExtractTimesteps(std::vector<int> timesteps,
+                                      History &history, CostList &costs,
+                                      TimedMatrix3d &utilities,
+                                      bool costSwitch) = 0;
     };
-} // namespace data_ops
+} // namespace respond::data_ops
 
-#endif
+#endif // RESPOND_DATAOPS_DATAFORMATTER_HPP_

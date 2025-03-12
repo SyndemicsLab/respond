@@ -4,7 +4,7 @@
 // Created Date: 2025-01-14                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-07                                                  //
+// Last Modified: 2025-03-12                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -78,10 +78,10 @@ TEST_F(InputWriterTest, ConstructorStringAndVectorAndWriteType) {
 //     std::vector<data_ops::Matrix3d> fovec{fatalOverdoseHistoryMatrix};
 //     std::vector<data_ops::Matrix3d> mvec{mortalityHistoryMatrix};
 
-//     data_ops::Matrix4d stateHistory(svec);
-//     data_ops::Matrix4d overdoseHistory(ovec);
-//     data_ops::Matrix4d fatalOverdoseHistory(fovec);
-//     data_ops::Matrix4d mortalityHistory(mvec);
+//     data_ops::TimedMatrix3d stateHistory(svec);
+//     data_ops::TimedMatrix3d overdoseHistory(ovec);
+//     data_ops::TimedMatrix3d fatalOverdoseHistory(fovec);
+//     data_ops::TimedMatrix3d mortalityHistory(mvec);
 
 //     data_ops::History history;
 //     history.stateHistory = stateHistory;
@@ -178,10 +178,10 @@ TEST_F(InputWriterTest, ConstructorStringAndVectorAndWriteType) {
 //     std::vector<data_ops::Matrix3d> mvec{mortalityHistoryMatrix1,
 //                                           mortalityHistoryMatrix2};
 
-//     data_ops::Matrix4d stateHistory(svec);
-//     data_ops::Matrix4d overdoseHistory(ovec);
-//     data_ops::Matrix4d fatalOverdoseHistory(fovec);
-//     data_ops::Matrix4d mortalityHistory(mvec);
+//     data_ops::TimedMatrix3d stateHistory(svec);
+//     data_ops::TimedMatrix3d overdoseHistory(ovec);
+//     data_ops::TimedMatrix3d fatalOverdoseHistory(fovec);
+//     data_ops::TimedMatrix3d mortalityHistory(mvec);
 
 //     data_ops::History history;
 //     history.stateHistory = stateHistory;

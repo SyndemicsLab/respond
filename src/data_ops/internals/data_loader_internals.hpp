@@ -4,7 +4,7 @@
 // Created Date: 2025-03-07                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-11                                                  //
+// Last Modified: 2025-03-12                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -34,7 +34,7 @@ namespace respond::data_ops {
 
         Matrix3d GetInitialSample() const override { return initial_sample; }
 
-        Matrix4d GetEnteringSamples() const override {
+        TimedMatrix3d GetEnteringSamples() const override {
             return entering_samples;
         }
 
@@ -42,13 +42,15 @@ namespace respond::data_ops {
             return oud_transition_rates;
         }
 
-        Matrix4d GetInterventionTransitionRates() const override {
+        TimedMatrix3d GetInterventionTransitionRates() const override {
             return intervention_transition_rates;
         }
 
-        Matrix4d GetOverdoseRates() const override { return overdose_rates; }
+        TimedMatrix3d GetOverdoseRates() const override {
+            return overdose_rates;
+        }
 
-        Matrix4d GetFatalOverdoseRates() const override {
+        TimedMatrix3d GetFatalOverdoseRates() const override {
             return fatal_overdose_rates;
         }
 
@@ -58,64 +60,65 @@ namespace respond::data_ops {
             return intervention_init_rates;
         }
 
-        void SetInitialSample(Matrix3d mat) override {
+        void SetInitialSample(const Matrix3d &mat) override {
             this->initial_sample = mat;
         }
 
-        void SetEnteringSamples(Matrix4d mat) override {
+        void SetEnteringSamples(const TimedMatrix3d &mat) override {
             this->entering_samples = mat;
         }
 
-        void SetOUDTransitionRates(Matrix3d mat) override {
+        void SetOUDTransitionRates(const Matrix3d &mat) override {
             this->oud_transition_rates = mat;
         }
 
-        void SetInterventionTransitionRates(Matrix4d mat) override {
+        void SetInterventionTransitionRates(const TimedMatrix3d &mat) override {
             this->intervention_transition_rates = mat;
         }
 
-        void SetOverdoseRates(Matrix4d mat) override {
+        void SetOverdoseRates(const TimedMatrix3d &mat) override {
             this->overdose_rates = mat;
         }
 
-        void SetFatalOverdoseRates(Matrix4d mat) override {
+        void SetFatalOverdoseRates(const TimedMatrix3d &mat) override {
             this->fatal_overdose_rates = mat;
         }
 
-        void SetMortalityRates(Matrix3d mat) override {
+        void SetMortalityRates(const Matrix3d &mat) override {
             this->mortality_rates = mat;
         }
 
-        void SetInterventionInitRates(Matrix3d mat) override {
+        void SetInterventionInitRates(const Matrix3d &mat) override {
             this->intervention_init_rates = mat;
         }
 
         Matrix3d LoadInitialSample(std::string const &csvName) override;
 
-        Matrix4d
+        TimedMatrix3d
         LoadEnteringSamples(std::string const &csvName,
                             std::string const &enteringSampleIntervention,
                             std::string const &enteringSampleOUD) override;
 
-        Matrix4d LoadEnteringSamples(std::string const &csvName) override;
+        TimedMatrix3d LoadEnteringSamples(std::string const &csvName) override;
 
         Matrix3d LoadOUDTransitionRates(std::string const &csvName) override;
 
         Matrix3d LoadInterventionInitRates(std::string const &csvName) override;
 
-        Matrix4d
+        TimedMatrix3d
         LoadInterventionTransitionRates(std::string const &csvName) override;
 
-        Matrix4d LoadOverdoseRates(std::string const &csvName) override;
+        TimedMatrix3d LoadOverdoseRates(std::string const &csvName) override;
 
-        Matrix4d LoadFatalOverdoseRates(std::string const &csvName) override;
+        TimedMatrix3d
+        LoadFatalOverdoseRates(std::string const &csvName) override;
 
         Matrix3d LoadMortalityRates(std::string const &smrCSVName,
                                     std::string const &bgmCSVName) override;
 
     private:
         void FillTime(int &start, int const end, Matrix3d data,
-                      Matrix4d &storage);
+                      TimedMatrix3d &storage);
 
         Matrix3d StrVecToMatrix3d(std::vector<std::string> strVec, int matD1,
                                   int matD2, int matD3);
@@ -128,8 +131,7 @@ namespace respond::data_ops {
         /// @param dimension
         /// @return
         Matrix3d CreateTransitionMatrix3d(Data::IDataTablePtr const &table,
-                                          data_ops::Dimension dimension,
-                                          int timestep);
+                                          Dimension dimension, int timestep);
 
         /// @brief
         /// @param indices
@@ -157,19 +159,20 @@ namespace respond::data_ops {
         /// @param ict
         /// @param table
         /// @return
-        Matrix4d BuildTransitionRatesOverTime(std::vector<int> const &ict,
-                                              Data::IDataTablePtr const &table);
+        TimedMatrix3d
+        BuildTransitionRatesOverTime(std::vector<int> const &ict,
+                                     Data::IDataTablePtr const &table);
 
         std::vector<int> demographic_counts{};
         std::map<std::string, std::vector<int>> simulation_parameters = {};
 
         Matrix3d initial_sample;
-        Matrix4d entering_samples;
+        TimedMatrix3d entering_samples;
         Matrix3d oud_transition_rates;
         Matrix3d intervention_init_rates;
-        Matrix4d intervention_transition_rates;
-        Matrix4d overdose_rates;
-        Matrix4d fatal_overdose_rates;
+        TimedMatrix3d intervention_transition_rates;
+        TimedMatrix3d overdose_rates;
+        TimedMatrix3d fatal_overdose_rates;
         Matrix3d mortality_rates;
     };
 } // namespace respond::data_ops

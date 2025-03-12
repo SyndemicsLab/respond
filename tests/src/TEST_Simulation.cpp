@@ -4,7 +4,7 @@
 // Created Date: 2025-01-14                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-07                                                  //
+// Last Modified: 2025-03-12                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -62,7 +62,7 @@ TEST(Run, EmptyRun) {
     data_ops::Matrix3d expected(1, 1, 1);
     expected.setZero();
     std::vector<data_ops::Matrix3d> vecmat = {expected};
-    data_ops::Matrix4d mat4d(vecmat);
+    data_ops::TimedMatrix3d mat4d(vecmat);
 
     EXPECT_CALL(*mockLoaderPtr, getInitialSample())
         .WillRepeatedly(Return(expected));
@@ -117,7 +117,7 @@ TEST(Run, SingleStepRun) {
     data_ops::Matrix3d e1(2, 2, 2);
     e1.setValues({{{1, 1}, {1, 1}}, {{1, 1}, {1, 1}}});
     std::vector<Matrix3d> es{e1};
-    Matrix4d eVec(es);
+    TimedMatrix3d eVec(es);
     EXPECT_CALL(*mockLoaderPtr, getEnteringSamples())
         .WillRepeatedly(Return(eVec));
 
@@ -133,21 +133,21 @@ TEST(Run, SingleStepRun) {
                   {{.05, .95}, {.15, .85}},
                   {{.05, .95}, {.15, .85}}});
     std::vector<Matrix3d> ts{t1};
-    Matrix4d tVec(ts);
+    TimedMatrix3d tVec(ts);
     EXPECT_CALL(*mockLoaderPtr, getInterventionTransitionRates())
         .WillRepeatedly(Return(ts));
 
     Matrix3d d1(2, 2, 2);
     d1.setValues({{{.25, .25}, {.25, .25}}, {{.25, .25}, {.25, .25}}});
     std::vector<Matrix3d> ds{d1};
-    Matrix4d dVec(ds);
+    TimedMatrix3d dVec(ds);
     EXPECT_CALL(*mockLoaderPtr, getOverdoseRates())
         .WillRepeatedly(Return(dVec));
 
     Matrix3d fod1(2, 2, 2);
     fod1.setValues({{{.0, .0}, {.0, .0}}, {{.0, .0}, {.0, .0}}});
     std::vector<Matrix3d> fods{fod1};
-    Matrix4d fodVec(fods);
+    TimedMatrix3d fodVec(fods);
     EXPECT_CALL(*mockLoaderPtr, getFatalOverdoseRates())
         .WillRepeatedly(Return(fods));
 
@@ -219,7 +219,7 @@ TEST(Run, MultiStepRun) {
     Matrix3d e3(2, 2, 2);
     e3.setValues({{{1, 1}, {1, 1}}, {{1, 1}, {1, 1}}});
     std::vector<Matrix3d> es{e1, e2, e3};
-    Matrix4d eVec(es);
+    TimedMatrix3d eVec(es);
     EXPECT_CALL(*mockLoaderPtr, getEnteringSamples())
         .WillRepeatedly(Return(eVec));
 
@@ -245,7 +245,7 @@ TEST(Run, MultiStepRun) {
                   {{.05, .95}, {.15, .85}},
                   {{.05, .95}, {.15, .85}}});
     std::vector<Matrix3d> ts{t1, t2, t3};
-    Matrix4d tVec(ts);
+    TimedMatrix3d tVec(ts);
     EXPECT_CALL(*mockLoaderPtr, getInterventionTransitionRates())
         .WillRepeatedly(Return(ts));
 
@@ -256,7 +256,7 @@ TEST(Run, MultiStepRun) {
     Matrix3d d3(2, 2, 2);
     d3.setValues({{{.25, .25}, {.25, .25}}, {{.25, .25}, {.25, .25}}});
     std::vector<Matrix3d> ds{d1, d2, d3};
-    Matrix4d dVec(ds);
+    TimedMatrix3d dVec(ds);
     EXPECT_CALL(*mockLoaderPtr, getOverdoseRates())
         .WillRepeatedly(Return(dVec));
 
@@ -267,7 +267,7 @@ TEST(Run, MultiStepRun) {
     Matrix3d fod3(2, 2, 2);
     fod3.setValues({{{.0, .0}, {.0, .0}}, {{.0, .0}, {.0, .0}}});
     std::vector<Matrix3d> fods{fod1, fod2, fod3};
-    Matrix4d fodVec(fods);
+    TimedMatrix3d fodVec(fods);
     EXPECT_CALL(*mockLoaderPtr, getFatalOverdoseRates())
         .WillRepeatedly(Return(fods));
 

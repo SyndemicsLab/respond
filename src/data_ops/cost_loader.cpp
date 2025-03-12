@@ -4,7 +4,7 @@
 // Created Date: 2025-01-14                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-11                                                  //
+// Last Modified: 2025-03-12                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -12,7 +12,7 @@
 
 #include "internals/cost_loader_internals.hpp"
 
-#include <respond/data_ops/matrix_3d_factory.hpp>
+#include <respond/data_ops/matrices.hpp>
 
 namespace respond::data_ops {
 
@@ -40,7 +40,7 @@ namespace respond::data_ops {
                 return {};
             }
 
-            healthcare_utilization_cost[perspective] = Matrix3dFactory::Create(
+            healthcare_utilization_cost[perspective] = CreateMatrix3d(
                 number_behavior_states, number_intervention_states,
                 number_demographic_combos);
 
@@ -165,11 +165,9 @@ namespace respond::data_ops {
         std::vector<std::string> cost_perspectives =
             GetConfig()->getStringVector("cost.cost_perspectives");
         for (std::string perspective : cost_perspectives) {
-            cost[perspective] =
-                Matrix3dFactory::Create(number_behavior_states,
-                                        number_intervention_states,
-                                        number_demographic_combos)
-                    .constant(0);
+            cost[perspective] = CreateMatrix3d(number_behavior_states,
+                                               number_intervention_states,
+                                               number_demographic_combos);
 
             for (int i = 0; i < number_intervention_states; ++i) {
                 Eigen::array<Eigen::Index, 3> offset = {0, 0, 0};

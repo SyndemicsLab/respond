@@ -4,7 +4,7 @@
 // Created Date: 2025-01-14                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-07                                                  //
+// Last Modified: 2025-03-12                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -78,10 +78,10 @@ namespace Calculator {
         return costs;
     }
 
-    data_ops::Matrix4d PostSimulationCalculator::calculateUtilities(
+    data_ops::TimedMatrix3d PostSimulationCalculator::calculateUtilities(
         std::shared_ptr<data_ops::IUtilityLoader> const utilityLoader,
         UTILITY_TYPE utilType, bool discount) const {
-        data_ops::Matrix4d utilities;
+        data_ops::TimedMatrix3d utilities;
 
         std::string perspective = "utility";
 
@@ -141,7 +141,7 @@ namespace Calculator {
     }
 
     double PostSimulationCalculator::totalAcrossTimeAndDims(
-        data_ops::Matrix4d const data) const {
+        data_ops::TimedMatrix3d const data) const {
         std::vector<data_ops::Matrix3d> vec = data.getMatrices();
         if (vec.size() <= 0) {
             // log no vector
@@ -158,8 +158,8 @@ namespace Calculator {
         return result(0);
     }
 
-    data_ops::Matrix4d PostSimulationCalculator::multiplyDouble(
-        data_ops::Matrix4d const &overdose, double const &value,
+    data_ops::TimedMatrix3d PostSimulationCalculator::multiplyDouble(
+        data_ops::TimedMatrix3d const &overdose, double const &value,
         bool provideDiscount, double discountRate) const {
         std::vector<data_ops::Matrix3d> overdoseVec = overdose.getMatrices();
         std::vector<data_ops::Matrix3d> result;
@@ -178,12 +178,12 @@ namespace Calculator {
             result.push_back(temp);
         }
 
-        data_ops::Matrix4d ret(result);
+        data_ops::TimedMatrix3d ret(result);
         return ret;
     }
 
-    data_ops::Matrix4d PostSimulationCalculator::multiplyMatrix(
-        data_ops::Matrix4d const &state, data_ops::Matrix3d const &value,
+    data_ops::TimedMatrix3d PostSimulationCalculator::multiplyMatrix(
+        data_ops::TimedMatrix3d const &state, data_ops::Matrix3d const &value,
         bool provideDiscount, double discountRate) const {
         std::vector<data_ops::Matrix3d> result;
         std::vector<data_ops::Matrix3d> stateVec = state.getMatrices();
@@ -195,7 +195,7 @@ namespace Calculator {
             result.push_back(temp);
         }
 
-        data_ops::Matrix4d ret(result);
+        data_ops::TimedMatrix3d ret(result);
         return ret;
     }
 

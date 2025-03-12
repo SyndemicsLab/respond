@@ -4,14 +4,14 @@
 // Created Date: 2025-01-14                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-11                                                  //
+// Last Modified: 2025-03-12                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef RESPONDSIMULATION_DATAOPS_COSTLOADER_HPP_
-#define RESPONDSIMULATION_DATAOPS_COSTLOADER_HPP_
+#ifndef RESPOND_DATAOPS_COSTLOADER_HPP_
+#define RESPOND_DATAOPS_COSTLOADER_HPP_
 
 #include <string>
 #include <unordered_map>
@@ -19,6 +19,7 @@
 #include <datamanagement/DataManagement.hpp>
 
 #include <respond/data_ops/data_types.hpp>
+#include <respond/data_ops/matrices.hpp>
 
 namespace respond::data_ops {
     class CostLoader {
@@ -61,4 +62,4 @@ namespace respond::data_ops {
     };
 } // namespace respond::data_ops
 
-#endif // RESPONDSIMULATION_DATAOPS_COSTLOADER_HPP_
+#endif // RESPOND_DATAOPS_COSTLOADER_HPP_

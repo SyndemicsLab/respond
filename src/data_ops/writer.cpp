@@ -4,7 +4,7 @@
 // Created Date: 2025-01-17                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-07                                                  //
+// Last Modified: 2025-03-12                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -37,8 +37,8 @@ namespace data_ops {
     }
 
     /// @brief Main Operation of Class, write data to output
-    /// @param outputType Output Enum, generally data_ops::FILE
-    /// @return string containing the result if output enum is data_ops::STRING
+    /// @param outputType Output Enum, generally FILE
+    /// @return string containing the result if output enum is STRING
     /// or description of status otherwise
     std::string HistoryWriter::writeHistory(const History history) const {
         if (history.stateHistory.getMatrices().empty() ||
@@ -84,8 +84,8 @@ namespace data_ops {
     }
 
     /// @brief Main Operation of Class, write data to output
-    /// @param outputType Output Enum, generally data_ops::FILE
-    /// @return string containing the result if output enum is data_ops::STRING
+    /// @param outputType Output Enum, generally FILE
+    /// @return string containing the result if output enum is STRING
     /// or description of status otherwise
     std::string CostWriter::writeCosts(const CostList costs) const {
         if (costs.empty()) {
@@ -139,11 +139,11 @@ namespace data_ops {
     }
 
     /// @brief Main Operation of Class, write data to output
-    /// @param outputType Output Enum, generally data_ops::FILE
+    /// @param outputType Output Enum, generally FILE
     /// @return string containing the result if output enum is
-    /// data_ops::STRING or description of status otherwise
+    /// STRING or description of status otherwise
     std::string
-    UtilityWriter::writeUtilities(const data_ops::Matrix4d utilities) const {
+    UtilityWriter::writeUtilities(const TimedMatrix3d utilities) const {
         std::stringstream stream;
         if (utilities.getMatrices().empty()) {
             // log error
@@ -217,10 +217,9 @@ namespace data_ops {
                     for (long int j = 0; j < dataLoader->getNumOUDStates();
                          j++) {
                         std::array<long int, 3> index = {0, 0, 0};
-                        index[data_ops::INTERVENTION] = i;
-                        index[data_ops::OUD] =
-                            (init * dataLoader->getNumOUDStates()) + j;
-                        index[data_ops::DEMOGRAPHIC_COMBO] = k;
+                        index[INTERVENTION] = i;
+                        index[OUD] = (init * dataLoader->getNumOUDStates()) + j;
+                        index[DEMOGRAPHIC_COMBO] = k;
                         ASSERTM(dm.NumDimensions == 3,
                                 "3 Dimensions Found in Matrix3d");
                         double value = dm(index[0], index[1], index[2]);
@@ -258,10 +257,9 @@ namespace data_ops {
                 stream << dataLoader->getInterventions()[inter] << ",";
                 for (int res = 0; res < dataLoader->getNumOUDStates(); res++) {
                     std::array<long int, 3> index = {0, 0, 0};
-                    index[data_ops::INTERVENTION] = inter;
-                    index[data_ops::OUD] =
-                        (init * dataLoader->getNumOUDStates()) + res;
-                    index[data_ops::DEMOGRAPHIC_COMBO] = 0;
+                    index[INTERVENTION] = inter;
+                    index[OUD] = (init * dataLoader->getNumOUDStates()) + res;
+                    index[DEMOGRAPHIC_COMBO] = 0;
                     ASSERTM(dm.NumDimensions == 3,
                             "3 Dimensions Found in Matrix3d");
                     double value = dm(index[0], index[1], index[2]);
@@ -302,7 +300,7 @@ namespace data_ops {
         changeTimes.insert(changeTimes.begin(), 0);
         changeTimes.pop_back();
 
-        Matrix4d dm = dataLoader->getInterventionTransitionRates();
+        TimedMatrix3d dm = dataLoader->getInterventionTransitionRates();
 
         for (long int k = 0; k < dataLoader->getNumDemographicCombos(); k++) {
             for (int oud = 0; oud < dataLoader->getNumOUDStates(); oud++) {
@@ -319,11 +317,11 @@ namespace data_ops {
                         for (int res = 0;
                              res < dataLoader->getNumInterventions(); res++) {
                             std::array<long int, 3> index = {0, 0, 0};
-                            index[data_ops::INTERVENTION] =
+                            index[INTERVENTION] =
                                 (init * dataLoader->getNumInterventions()) +
                                 res;
-                            index[data_ops::OUD] = oud;
-                            index[data_ops::DEMOGRAPHIC_COMBO] = k;
+                            index[OUD] = oud;
+                            index[DEMOGRAPHIC_COMBO] = k;
                             double value =
                                 dm(timestep, index[0], index[1], index[2]);
                             stream << std::to_string(value) << ",";
@@ -360,7 +358,7 @@ namespace data_ops {
         changeTimes.insert(changeTimes.begin(), 0);
         changeTimes.pop_back();
 
-        Matrix4d dm = dataLoader->getOverdoseRates();
+        TimedMatrix3d dm = dataLoader->getOverdoseRates();
 
         for (int inter = 0; inter < dataLoader->getNumInterventions();
              inter++) {
@@ -378,9 +376,9 @@ namespace data_ops {
                         stream << dataLoader->getOUDStates()[oud] << ",";
                         for (int timestep : changeTimes) {
                             std::array<long int, 3> index = {0, 0, 0};
-                            index[data_ops::INTERVENTION] = inter;
-                            index[data_ops::OUD] = oud;
-                            index[data_ops::DEMOGRAPHIC_COMBO] = dem;
+                            index[INTERVENTION] = inter;
+                            index[OUD] = oud;
+                            index[DEMOGRAPHIC_COMBO] = dem;
                             double value =
                                 dm(timestep, index[0], index[1], index[2]);
                             stream << std::to_string(value) << ",";
@@ -418,7 +416,7 @@ namespace data_ops {
         changeTimes.insert(changeTimes.begin(), 0);
         changeTimes.pop_back();
 
-        Matrix4d dm = dataLoader->getFatalOverdoseRates();
+        TimedMatrix3d dm = dataLoader->getFatalOverdoseRates();
         for (long int dem = 0; dem < dataLoader->getNumDemographicCombos();
              dem++) {
             std::string temp = dataLoader->getDemographicCombos()[dem];
@@ -427,7 +425,7 @@ namespace data_ops {
             stream << temp << ",";
             for (int timestep : changeTimes) {
                 std::array<long int, 3> index = {0, 0, 0};
-                index[data_ops::DEMOGRAPHIC_COMBO] = dem;
+                index[DEMOGRAPHIC_COMBO] = dem;
                 double value = dm(timestep, index[0], index[1], index[2]);
                 stream << std::to_string(value) << ",";
             }
@@ -439,7 +437,7 @@ namespace data_ops {
 
     std::string Writer::writeFile(const std::string filename,
                                   std::stringstream &stream) const {
-        if (this->writeType == data_ops::WriteType::FILE) {
+        if (this->writeType == WriteType::FILE) {
             std::filesystem::path iipFile(filename);
             std::filesystem::path dir(this->getDirname());
             std::filesystem::path fullPath = dir / iipFile;
@@ -460,7 +458,7 @@ namespace data_ops {
     /// @param stream Stream type to write data to
     /// @param historyToWrite Specific portion of history to save
     void OutputWriter::write4d(std::stringstream &stream,
-                               const Matrix4d historyToWrite,
+                               const TimedMatrix3d historyToWrite,
                                const std::string columnHeaders) const {
         std::vector<Matrix3d> Matrix3dVec = historyToWrite.getMatrices();
         stream << columnHeaders << std::endl;
@@ -492,9 +490,9 @@ namespace data_ops {
                                 << ",";
                         }
                         std::array<long int, 3> index = {0, 0, 0};
-                        index[data_ops::INTERVENTION] = i;
-                        index[data_ops::OUD] = j;
-                        index[data_ops::DEMOGRAPHIC_COMBO] = k;
+                        index[INTERVENTION] = i;
+                        index[OUD] = j;
+                        index[DEMOGRAPHIC_COMBO] = k;
                         ASSERTM(Matrix3dVec[timeCtr].NumDimensions == 3,
                                 "3 Dimensions Found in Matrix3d");
                         double value =

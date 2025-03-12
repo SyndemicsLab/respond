@@ -4,7 +4,7 @@
 // Created Date: 2025-01-14                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-07                                                  //
+// Last Modified: 2025-03-12                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -89,7 +89,7 @@ TEST_F(HistoryWriterTest, writeHistory) {
 
     data_ops::Matrix3d mat3d(1, 1, 1);
     mat3d(0, 0, 0) = 0.25;
-    data_ops::Matrix4d mat4d({mat3d});
+    data_ops::TimedMatrix3d mat4d({mat3d});
     data_ops::History hist;
     hist.stateHistory = mat4d;
     hist.overdoseHistory = mat4d;
@@ -145,7 +145,7 @@ TEST_F(CostWriterTest, writeCosts) {
 
     data_ops::Matrix3d mat3d(1, 1, 1);
     mat3d(0, 0, 0) = 0.25;
-    data_ops::Matrix4d mat4d({mat3d});
+    data_ops::TimedMatrix3d mat4d({mat3d});
     data_ops::Cost cost;
     cost.fatalOverdoseCost = mat4d;
     cost.healthcareCost = mat4d;
@@ -201,7 +201,7 @@ TEST_F(UtilityWriterTest, writeUtilities) {
 
     data_ops::Matrix3d mat3d(1, 1, 1);
     mat3d(0, 0, 0) = 0.25;
-    data_ops::Matrix4d mat4d({mat3d});
+    data_ops::TimedMatrix3d mat4d({mat3d});
     std::string result = writer.writeUtilities(mat4d);
 
     std::string expected =
@@ -213,7 +213,7 @@ TEST_F(UtilityWriterTest, writeUtilitiesError) {
     data_ops::UtilityWriter writer("testUtilityDirname", {"inte"}, {"oud"},
                                    {"dem"}, {"demCom"}, {1},
                                    data_ops::WriteType::STRING, false);
-    data_ops::Matrix4d mat4d;
+    data_ops::TimedMatrix3d mat4d;
     std::string result = writer.writeUtilities(mat4d);
 
     std::string expected = "failure";

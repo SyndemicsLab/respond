@@ -64,9 +64,6 @@ set(RESPOND_SRCS
     src/data_ops/cost_loader.cpp
     src/data_ops/data_formatter.cpp
     src/data_ops/data_loader.cpp
-    src/data_ops/data_types.cpp
-    src/data_ops/matrix_3d_factory.cpp
-    src/data_ops/matrix_3d_printer.cpp
     src/data_ops/utility_loader.cpp
     src/data_ops/writer.cpp
     src/model/PostSimulationCalculator.cpp

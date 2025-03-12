@@ -4,7 +4,7 @@
 // Created Date: 2025-01-14                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-07                                                  //
+// Last Modified: 2025-03-12                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -112,13 +112,13 @@ int main(int argc, char **argv) {
             data_ops::History history = sim.getHistory();
 
             data_ops::CostList basecosts;
-            data_ops::Matrix4d baseutilities;
+            data_ops::TimedMatrix3d baseutilities;
             double baselifeYears = 0.0;
             std::vector<double> totalBaseCosts;
             double totalBaseUtility = 0.0;
 
             data_ops::CostList disccosts;
-            data_ops::Matrix4d discutilities;
+            data_ops::TimedMatrix3d discutilities;
             double disclifeYears;
             std::vector<double> totalDiscCosts;
             double totalDiscUtility = 0.0;

@@ -4,7 +4,7 @@
 // Created Date: 2025-01-14                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-07                                                  //
+// Last Modified: 2025-03-12                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -194,7 +194,7 @@ TEST_F(DataLoaderTest, enteringSamples) {
                            std::string("No_Treatment"),
                            std::string("Active_Noninjection"));
 
-    data_ops::Matrix4d result = dl.getEnteringSamples();
+    data_ops::TimedMatrix3d result = dl.getEnteringSamples();
     EXPECT_EQ(result(0, 0, 0, 0), 11.4389540364826);
 }
 
@@ -246,7 +246,7 @@ TEST_F(DataLoaderTest, interventionTransitionRates) {
 
     dl.loadInterventionTransitionRates(tempAbsoluteFile.string());
 
-    data_ops::Matrix4d result = dl.getInterventionTransitionRates();
+    data_ops::TimedMatrix3d result = dl.getInterventionTransitionRates();
     EXPECT_EQ(result(0, 0, 0, 0), 0.625523912484771);
 }
 
@@ -274,7 +274,7 @@ TEST_F(DataLoaderTest, overdoseRates) {
 
     dl.loadOverdoseRates(tempAbsoluteFile.string());
 
-    data_ops::Matrix4d result = dl.getOverdoseRates();
+    data_ops::TimedMatrix3d result = dl.getOverdoseRates();
     EXPECT_EQ(result(0, 0, 0, 0), 0.00059346577560159);
 }
 
@@ -293,7 +293,7 @@ TEST_F(DataLoaderTest, fatalOverdoseRates) {
 
     dl.loadFatalOverdoseRates(tempAbsoluteFile.string());
 
-    data_ops::Matrix4d result = dl.getFatalOverdoseRates();
+    data_ops::TimedMatrix3d result = dl.getFatalOverdoseRates();
     EXPECT_EQ(result(0, 0, 0, 0), 0.216540329711774);
 }
 
@@ -316,7 +316,7 @@ TEST_F(DataLoaderTest, fatalOverdoseRatesStratified) {
 
     dl.loadFatalOverdoseRates(tempAbsoluteFile.string());
 
-    data_ops::Matrix4d result = dl.getFatalOverdoseRates();
+    data_ops::TimedMatrix3d result = dl.getFatalOverdoseRates();
     EXPECT_EQ(result(0, 0, 0, 0), 0.216540329711774);
     EXPECT_EQ(result(0, 1, 0, 0), 0.216540329711774);
     EXPECT_EQ(result(0, 0, 1, 1), 0.2);
@@ -385,10 +385,10 @@ TEST_F(DataLoaderTest, setEnteringSamples) {
     data_ops::Matrix3d mat3d(1, 1, 1);
     mat3d(0, 0, 0) = 11.4389540364826;
     std::vector<data_ops::Matrix3d> mat4dVec{mat3d};
-    data_ops::Matrix4d mat4d(mat4dVec);
+    data_ops::TimedMatrix3d mat4d(mat4dVec);
     dl.setEnteringSamples(mat4d);
 
-    data_ops::Matrix4d result = dl.getEnteringSamples();
+    data_ops::TimedMatrix3d result = dl.getEnteringSamples();
     EXPECT_EQ(result(0, 0, 0, 0), 11.4389540364826);
 }
 
@@ -410,10 +410,10 @@ TEST_F(DataLoaderTest, setInterventionTransitionRates) {
     data_ops::Matrix3d mat3d(1, 1, 1);
     mat3d(0, 0, 0) = 0.625523912484771;
     std::vector<data_ops::Matrix3d> mat4dVec{mat3d};
-    data_ops::Matrix4d mat4d(mat4dVec);
+    data_ops::TimedMatrix3d mat4d(mat4dVec);
     dl.setInterventionTransitionRates(mat4d);
 
-    data_ops::Matrix4d result = dl.getInterventionTransitionRates();
+    data_ops::TimedMatrix3d result = dl.getInterventionTransitionRates();
     EXPECT_EQ(result(0, 0, 0, 0), 0.625523912484771);
 }
 
@@ -423,10 +423,10 @@ TEST_F(DataLoaderTest, setOverdoseRates) {
     data_ops::Matrix3d mat3d(1, 1, 1);
     mat3d(0, 0, 0) = 0.00059346577560159;
     std::vector<data_ops::Matrix3d> mat4dVec{mat3d};
-    data_ops::Matrix4d mat4d(mat4dVec);
+    data_ops::TimedMatrix3d mat4d(mat4dVec);
     dl.setOverdoseRates(mat4d);
 
-    data_ops::Matrix4d result = dl.getOverdoseRates();
+    data_ops::TimedMatrix3d result = dl.getOverdoseRates();
     EXPECT_EQ(result(0, 0, 0, 0), 0.00059346577560159);
 }
 
@@ -436,10 +436,10 @@ TEST_F(DataLoaderTest, setFatalOverdoseRates) {
     data_ops::Matrix3d mat3d(1, 1, 1);
     mat3d(0, 0, 0) = 0.216540329711774;
     std::vector<data_ops::Matrix3d> mat4dVec{mat3d};
-    data_ops::Matrix4d mat4d(mat4dVec);
+    data_ops::TimedMatrix3d mat4d(mat4dVec);
     dl.setFatalOverdoseRates(mat4d);
 
-    data_ops::Matrix4d result = dl.getFatalOverdoseRates();
+    data_ops::TimedMatrix3d result = dl.getFatalOverdoseRates();
     EXPECT_EQ(result(0, 0, 0, 0), 0.216540329711774);
 }
 

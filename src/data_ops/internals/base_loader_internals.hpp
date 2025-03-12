@@ -4,7 +4,7 @@
 // Created Date: 2025-03-07                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-11                                                  //
+// Last Modified: 2025-03-12                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -58,7 +58,7 @@ namespace respond::data_ops {
             std::unordered_map<std::string, Data::IDataTablePtr> toReturn;
             input_tables.clear();
 
-            for (std::string input_file : data_ops::BaseLoader::kInputFiles) {
+            for (std::string input_file : BaseLoader::kInputFiles) {
                 std::filesystem::path file = directory / input_file;
                 if (!std::filesystem::exists(file)) {
                     continue;

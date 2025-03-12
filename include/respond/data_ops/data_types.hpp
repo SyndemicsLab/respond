@@ -4,7 +4,7 @@
 // Created Date: 2025-01-14                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-07                                                  //
+// Last Modified: 2025-03-12                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -13,99 +13,21 @@
 #ifndef RESPOND_DATAOPS_DATATYPES_HPP_
 #define RESPOND_DATAOPS_DATATYPES_HPP_
 
-#include <cassert>
-#include <cfenv>
-#include <iostream>
-#include <stdexcept>
+#include <string>
 #include <vector>
 
-#include <Eigen/Eigen>
-#include <unsupported/Eigen/CXX11/Tensor>
+#include <respond/data_ops/matrices.hpp>
 
 namespace respond::data_ops {
 
     /// @brief Specification for each dimension in the Matrix3d
-    enum Dimension { kIntervention = 0, kOud = 1, kDemographicCombo = 2 };
-
-    /// @brief Eigen 3d Tensor
-    using Matrix3d = Eigen::Tensor<double, 3>;
-
-    inline Matrix3d VecMin(std::vector<Matrix3d> const &matrices) {
-        if (matrices.empty()) {
-            return {};
-        }
-        Matrix3d smallest = matrices[0];
-        auto dims = smallest.dimensions();
-        for (Matrix3d matrix : matrices) {
-            if (matrix.dimensions() != dims) {
-                // throw error
-                return {};
-            }
-            smallest = smallest.cwiseMin(matrix);
-        }
-        return smallest;
-    }
-
-    inline Matrix3d VecMult(std::vector<Matrix3d> const &matrices) {
-        if (matrices.empty()) {
-            return {};
-        }
-
-        auto dims = matrices[0].dimensions();
-        Matrix3d mult(dims);
-        mult.setConstant(1.0);
-
-        for (Matrix3d matrix : matrices) {
-            if (matrix.dimensions() != dims) {
-                // throw error
-                return {};
-            }
-            mult *= matrix;
-        }
-        return mult;
-    }
-
-    /// @brief Eigen 3d Tensor maintaining Time Order
-    class Matrix4d {
-    public:
-        Matrix4d() {}
-        Matrix4d(std::vector<Matrix3d> data);
-        Matrix4d(std::vector<Matrix3d> data, std::vector<int> timestep_changes);
-
-        /// @brief Get the Matrix3d at the Specified Timestep
-        /// @param timestep Timestep to retrieve the Matrix3d
-        /// @return Matrix3d at Specified Timestep
-        Matrix3d &GetMatrix3dAtTimestep(int timestep);
-
-        Matrix3d &operator()(int timestep);
-        Matrix3d operator()(int timestep) const;
-
-        double &operator()(int timestep, int idx1, int idx2, int idx3);
-        double operator()(int timestep, int idx1, int idx2, int idx3) const;
-
-        /// @brief Add the Matrix3d at the specified Timestep
-        /// @param datapoint Matrix3d data_ops
-        /// @param timestep Timestep to insert the Matrix3d
-        void Insert(Matrix3d const &datapoint, int timestep);
-
-        /// @brief Return all the Matrices in order by their timestep
-        /// @return Vector of Matrix3ds in timestep order
-        std::vector<Matrix3d> GetMatrices() const;
-
-        std::map<int, Matrix3d> GetMappedData() const { return this->data; }
-
-        Matrix3d SumOverTime() const;
-
-    private:
-        std::map<int, Matrix3d> data;
-    };
-
+    enum class Dimension { kIntervention = 0, kOud = 1, kDemographicCombo = 2 };
     struct History {
-        Matrix4d state_history;
-        Matrix4d overdose_history;
-        Matrix4d fatal_overdose_history;
-        Matrix4d mortality_history;
-        Matrix4d intervention_admission_history;
+        TimedMatrix3d state_history;
+        TimedMatrix3d overdose_history;
+        TimedMatrix3d fatal_overdose_history;
+        TimedMatrix3d mortality_history;
+        TimedMatrix3d intervention_admission_history;
     };
 
     /// @brief Struct defining all the History Matrices Across the Duration of
@@ -114,11 +36,11 @@ namespace respond::data_ops {
 
     struct Cost {
         std::string perspective;
-        Matrix4d healthcare_cost;
-        Matrix4d non_fatal_overdose_cost;
-        Matrix4d fatal_overdose_cost;
-        Matrix4d pharma_cost;
-        Matrix4d treatment_cost;
+        TimedMatrix3d healthcare_cost;
+        TimedMatrix3d non_fatal_overdose_cost;
+        TimedMatrix3d fatal_overdose_cost;
+        TimedMatrix3d pharma_cost;
+        TimedMatrix3d treatment_cost;
     };
 
     /// @brief

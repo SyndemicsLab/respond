@@ -4,7 +4,7 @@
 // Created Date: 2025-01-14                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-07                                                  //
+// Last Modified: 2025-03-12                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -179,7 +179,8 @@ namespace data_ops {
         /// @brief
         /// @param stream
         /// @param historyToWrite
-        void write4d(std::stringstream &stream, const Matrix4d historyToWrite,
+        void write4d(std::stringstream &stream,
+                     const TimedMatrix3d historyToWrite,
                      const std::string columnHeaders) const;
 
     private:
@@ -248,7 +249,7 @@ namespace data_ops {
         /// @param writeType Enum describing the output type. Defaults to FILE
         /// @param util Utility struct containing the results of the simulation
         /// @return String depending on the output type
-        std::string writeUtilities(const Matrix4d utilities) const;
+        std::string writeUtilities(const TimedMatrix3d utilities) const;
     };
 
     class TotalsWriter : public OutputWriter {

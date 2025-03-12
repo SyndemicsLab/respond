@@ -1,17 +1,17 @@
 ////////////////////////////////////////////////////////////////////////////////
-// File: DataLoader.hpp                                                       //
+// File: data_loader.hpp                                                      //
 // Project: RESPONDSimulationv2                                               //
 // Created Date: 2025-01-14                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-11                                                  //
+// Last Modified: 2025-03-12                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef DATA_DATALOADER_HPP_
-#define DATA_DATALOADER_HPP_
+#ifndef RESPOND_DATAOPS_DATALOADER_HPP_
+#define RESPOND_DATAOPS_DATALOADER_HPP_
 
 #include <iostream>
 #include <map>
@@ -57,59 +57,62 @@ namespace respond::data_ops {
 
         virtual Matrix3d GetInitialSample() const = 0;
 
-        virtual Matrix4d GetEnteringSamples() const = 0;
+        virtual TimedMatrix3d GetEnteringSamples() const = 0;
 
         virtual Matrix3d GetOUDTransitionRates() const = 0;
 
-        virtual Matrix4d GetInterventionTransitionRates() const = 0;
+        virtual TimedMatrix3d GetInterventionTransitionRates() const = 0;
 
-        virtual Matrix4d GetOverdoseRates() const = 0;
+        virtual TimedMatrix3d GetOverdoseRates() const = 0;
 
-        virtual Matrix4d GetFatalOverdoseRates() const = 0;
+        virtual TimedMatrix3d GetFatalOverdoseRates() const = 0;
 
         virtual Matrix3d GetMortalityRates() const = 0;
 
         virtual Matrix3d GetInterventionInitRates() const = 0;
 
-        virtual void SetInitialSample(Matrix3d mat) = 0;
+        virtual void SetInitialSample(const Matrix3d &mat) = 0;
 
-        virtual void SetEnteringSamples(Matrix4d mat) = 0;
+        virtual void SetEnteringSamples(const TimedMatrix3d &mat) = 0;
 
-        virtual void SetOUDTransitionRates(Matrix3d mat) = 0;
+        virtual void SetOUDTransitionRates(const Matrix3d &mat) = 0;
 
-        virtual void SetInterventionTransitionRates(Matrix4d mat) = 0;
+        virtual void
+        SetInterventionTransitionRates(const TimedMatrix3d &mat) = 0;
 
-        virtual void SetOverdoseRates(Matrix4d mat) = 0;
+        virtual void SetOverdoseRates(const TimedMatrix3d &mat) = 0;
 
-        virtual void SetFatalOverdoseRates(Matrix4d mat) = 0;
+        virtual void SetFatalOverdoseRates(const TimedMatrix3d &mat) = 0;
 
-        virtual void SetMortalityRates(Matrix3d mat) = 0;
+        virtual void SetMortalityRates(const Matrix3d &mat) = 0;
 
-        virtual void SetInterventionInitRates(Matrix3d mat) = 0;
+        virtual void SetInterventionInitRates(const Matrix3d &mat) = 0;
 
         virtual Matrix3d LoadInitialSample(std::string const &csvName) = 0;
 
-        virtual Matrix4d
+        virtual TimedMatrix3d
         LoadEnteringSamples(std::string const &csvName,
                             std::string const &enteringSampleIntervention,
                             std::string const &enteringSampleOUD) = 0;
 
-        virtual Matrix4d LoadEnteringSamples(std::string const &csvName) = 0;
+        virtual TimedMatrix3d
+        LoadEnteringSamples(std::string const &csvName) = 0;
 
         virtual Matrix3d LoadOUDTransitionRates(std::string const &csvName) = 0;
 
         virtual Matrix3d
         LoadInterventionInitRates(std::string const &csvName) = 0;
 
-        virtual Matrix4d
+        virtual TimedMatrix3d
         LoadInterventionTransitionRates(std::string const &csvName) = 0;
 
-        virtual Matrix4d LoadOverdoseRates(std::string const &csvName) = 0;
+        virtual TimedMatrix3d LoadOverdoseRates(std::string const &csvName) = 0;
 
-        virtual Matrix4d LoadFatalOverdoseRates(std::string const &csvName) = 0;
+        virtual TimedMatrix3d
+        LoadFatalOverdoseRates(std::string const &csvName) = 0;
 
         virtual Matrix3d LoadMortalityRates(std::string const &smrCSVName,
                                             std::string const &bgmCSVName) = 0;
     };
 } // namespace respond::data_ops
-#endif // DATA_DATALOADER_HPP_
+#endif // RESPOND_DATAOPS_DATALOADER_HPP_

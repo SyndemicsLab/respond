@@ -4,7 +4,7 @@
 // Created Date: 2025-01-14                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-07                                                  //
+// Last Modified: 2025-03-12                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -97,47 +97,50 @@ public:
 
     // IDataLoader
     MOCK_METHOD((data_ops::Matrix3d), getInitialSample, (), (const, override));
-    MOCK_METHOD((data_ops::Matrix4d), getEnteringSamples, (),
+    MOCK_METHOD((data_ops::TimedMatrix3d), getEnteringSamples, (),
                 (const, override));
     MOCK_METHOD((data_ops::Matrix3d), getOUDTransitionRates, (),
                 (const, override));
-    MOCK_METHOD((data_ops::Matrix4d), getInterventionTransitionRates, (),
+    MOCK_METHOD((data_ops::TimedMatrix3d), getInterventionTransitionRates, (),
                 (const, override));
-    MOCK_METHOD((data_ops::Matrix4d), getOverdoseRates, (), (const, override));
-    MOCK_METHOD((data_ops::Matrix4d), getFatalOverdoseRates, (),
+    MOCK_METHOD((data_ops::TimedMatrix3d), getOverdoseRates, (),
+                (const, override));
+    MOCK_METHOD((data_ops::TimedMatrix3d), getFatalOverdoseRates, (),
                 (const, override));
     MOCK_METHOD((data_ops::Matrix3d), getMortalityRates, (), (const, override));
     MOCK_METHOD((data_ops::Matrix3d), getInterventionInitRates, (),
                 (const, override));
     MOCK_METHOD((void), setInitialSample, ((data_ops::Matrix3d)), (override));
-    MOCK_METHOD((void), setEnteringSamples, ((data_ops::Matrix4d)), (override));
+    MOCK_METHOD((void), setEnteringSamples, ((data_ops::TimedMatrix3d)),
+                (override));
     MOCK_METHOD((void), setOUDTransitionRates, ((data_ops::Matrix3d)),
                 (override));
-    MOCK_METHOD((void), setInterventionTransitionRates, ((data_ops::Matrix4d)),
+    MOCK_METHOD((void), setInterventionTransitionRates,
+                ((data_ops::TimedMatrix3d)), (override));
+    MOCK_METHOD((void), setOverdoseRates, ((data_ops::TimedMatrix3d)),
                 (override));
-    MOCK_METHOD((void), setOverdoseRates, ((data_ops::Matrix4d)), (override));
-    MOCK_METHOD((void), setFatalOverdoseRates, ((data_ops::Matrix4d)),
+    MOCK_METHOD((void), setFatalOverdoseRates, ((data_ops::TimedMatrix3d)),
                 (override));
     MOCK_METHOD((void), setMortalityRates, ((data_ops::Matrix3d)), (override));
     MOCK_METHOD((void), setInterventionInitRates, ((data_ops::Matrix3d)),
                 (override));
     MOCK_METHOD((data_ops::Matrix3d), loadInitialSample,
                 ((std::string const &)), (override));
-    MOCK_METHOD((data_ops::Matrix4d), loadEnteringSamples,
+    MOCK_METHOD((data_ops::TimedMatrix3d), loadEnteringSamples,
                 ((std::string const &), (std::string const &),
                  (std::string const &)),
                 (override));
-    MOCK_METHOD((data_ops::Matrix4d), loadEnteringSamples,
+    MOCK_METHOD((data_ops::TimedMatrix3d), loadEnteringSamples,
                 ((std::string const &)), (override));
     MOCK_METHOD((data_ops::Matrix3d), loadOUDTransitionRates,
                 ((std::string const &)), (override));
     MOCK_METHOD((data_ops::Matrix3d), loadInterventionInitRates,
                 ((std::string const &)), (override));
-    MOCK_METHOD((data_ops::Matrix4d), loadInterventionTransitionRates,
+    MOCK_METHOD((data_ops::TimedMatrix3d), loadInterventionTransitionRates,
                 ((std::string const &)), (override));
-    MOCK_METHOD((data_ops::Matrix4d), loadOverdoseRates,
+    MOCK_METHOD((data_ops::TimedMatrix3d), loadOverdoseRates,
                 ((std::string const &)), (override));
-    MOCK_METHOD((data_ops::Matrix4d), loadFatalOverdoseRates,
+    MOCK_METHOD((data_ops::TimedMatrix3d), loadFatalOverdoseRates,
                 ((std::string const &)), (override));
     MOCK_METHOD((data_ops::Matrix3d), loadMortalityRates,
                 ((std::string const &), (std::string const &)), (override));
