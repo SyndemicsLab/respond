@@ -4,13 +4,21 @@
 // Created Date: 2025-01-14                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-12                                                  //
+// Last Modified: 2025-03-14                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "internals/utility_loader_internals.hpp"
+
+#include <cstddef>
+#include <string>
+#include <unordered_map>
+#include <vector>
+
+#include <Eigen/Eigen>
+#include <datamanagement/DataManagement.hpp>
 
 #include <respond/data_ops/data_types.hpp>
 #include <respond/data_ops/matrices.hpp>
@@ -54,8 +62,8 @@ namespace respond::data_ops {
         for (int i = 0; i < number_intervention_states; ++i) {
             Eigen::array<Eigen::Index, 3> offset = {0, 0, 0};
             Eigen::array<Eigen::Index, 3> extent = utilMatrix.dimensions();
-            offset[Dimension::kIntervention] = i;
-            extent[Dimension::kIntervention] = 1;
+            offset[(int)Dimension::kIntervention] = i;
+            extent[(int)Dimension::kIntervention] = 1;
             Matrix3d temp = utilMatrix.slice(offset, extent);
             if (utilCol.size() > i) {
                 temp.setConstant(std::stod(utilCol[i]));

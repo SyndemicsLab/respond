@@ -4,7 +4,7 @@
 // Created Date: 2025-03-07                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-12                                                  //
+// Last Modified: 2025-03-14                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -13,13 +13,15 @@
 #ifndef RESPOND_DATAOPS_BASELOADERINTERNALS_HPP_
 #define RESPOND_DATAOPS_BASELOADERINTERNALS_HPP_
 
+#include <algorithm>
+#include <filesystem>
 #include <memory>
+#include <sstream>
 #include <string>
 #include <unordered_map>
 #include <vector>
 
 #include <datamanagement/DataManagement.hpp>
-#include <spdlog/spdlog.h>
 
 #include <respond/utils/logging.hpp>
 
@@ -38,9 +40,7 @@ namespace respond::data_ops {
                 respond::utils::LogError(log_name, message.str());
                 exit(-1);
             }
-
-            std::filesystem::path inputPath = directory;
-            this->ReadInputDirectory(directory);
+            ReadInputDirectory(directory);
         }
 
         Data::IDataTablePtr ReadCSV(const std::string &path,
@@ -52,12 +52,10 @@ namespace respond::data_ops {
 
         void ReadInputDirectory(const std::filesystem::path &directory) {
             std::filesystem::path conf = directory / "sim.conf";
-            this->config = std::make_shared<Data::Config>(conf.string());
+            config = std::make_shared<Data::Config>(conf.string());
             LoadConfig();
 
-            std::unordered_map<std::string, Data::IDataTablePtr> toReturn;
             input_tables.clear();
-
             for (std::string input_file : BaseLoader::kInputFiles) {
                 std::filesystem::path file = directory / input_file;
                 if (!std::filesystem::exists(file)) {
@@ -67,16 +65,24 @@ namespace respond::data_ops {
             }
         }
 
-        virtual Data::IConfigablePtr GetConfig() const = 0;
+        Data::IConfigablePtr GetConfig() const { return config; }
 
-        virtual Data::IDataTablePtr
-        LoadDataTable(const std::string &filename) = 0;
+        Data::IDataTablePtr LoadDataTable(const std::string &filename) {
+            Data::IDataTablePtr dtp =
+                std::make_shared<Data::DataTable>(filename);
+            input_tables[filename] = dtp;
+            return dtp;
+        }
 
-        virtual std::vector<std::string> GetDemographicCombos() const = 0;
+        std::vector<std::string> GetDemographicCombos() const {
+            return demographic_combos;
+        }
 
-        virtual void SetDemographicCombos(std::vector<std::string> combos) = 0;
+        void SetDemographicCombos(const std::vector<std::string> &combos) {
+            demographic_combos = combos;
+        }
 
-        virtual int GetAgeGroupShift() const = 0;
+        int GetAgeGroupShift() const { return age_group_shift; }
 
     protected:
         std::unordered_map<std::string, Data::IDataTablePtr> input_tables = {};
@@ -109,44 +115,27 @@ namespace respond::data_ops {
 
     private:
         void LoadConfig() {
-            if (!this->config) {
-                respond::utils::LogDebug(
+            if (config) {
+                respond::utils::LogError(
                     logger_name,
                     "Config not found when trying to load from config file.");
                 return;
             }
 
-            // demographic
-            // age_group_shift Calculation. Assumes ages are reported as XX_XX
-            std::vector<std::string> ages =
-                this->config->getStringVector("demographic.age_groups");
+            // Assumes ages are reported as XX_XX
+            age_group_shift = CalculateAgeShift(
+                config->getStringVector("demographic.age_groups"));
 
-            age_group_shift = CalculateAgeShift(ages);
-
-            std::vector<std::string> demographics =
-                config->getSectionCategories("demographic");
-            std::vector<std::vector<std::string>> inputDemographicVals;
-            for (std::string demographic : demographics) {
-                inputDemographicVals.push_back(this->config->getStringVector(
-                    "demographic." + demographic));
-            }
-            std::vector<std::vector<std::string>> temp1;
-            std::vector<std::string> temp2;
-            RecursionHelper(temp1, temp2, inputDemographicVals.begin(),
-                            inputDemographicVals.end());
-            for (std::vector<std::string> strList : temp1) {
-                std::string group = "";
-                for (std::string st : strList) {
-                    std::transform(
-                        st.begin(), st.end(), st.begin(),
-                        [](unsigned char c) { return std::tolower(c); });
-                    group += " " + st;
-                }
-                this->demographic_combos.push_back(group);
-            }
+            BuildDemographicCombinations();
         }
 
         int CalculateAgeShift(const std::vector<std::string> &ages) {
+            if (ages.empty()) {
+                respond::utils::LogWarning(
+                    logger_name, "No ages found when attempting to calculate "
+                                 "Age Shift! Setting Age Shift to 0...");
+                return 0;
+            }
             std::string first_age_group = ages[0];
             std::string delimiter = "_";
             std::string first_age_string =
@@ -158,6 +147,31 @@ namespace respond::data_ops {
 
             // have to add 1 for inclusive first value
             return (second_age - first_age) + 1;
+        }
+
+        void BuildDemographicCombinations() {
+            std::vector<std::string> demographics =
+                config->getSectionCategories("demographic");
+            std::vector<std::vector<std::string>> running_demographics;
+            for (std::string demographic : demographics) {
+                running_demographics.push_back(
+                    config->getStringVector("demographic." + demographic));
+            }
+            std::vector<std::vector<std::string>> temp1;
+            std::vector<std::string> temp2;
+            RecursionHelper(temp1, temp2, running_demographics.begin(),
+                            running_demographics.end());
+            std::stringstream group;
+            for (std::vector<std::string> strList : temp1) {
+                group.clear();
+                for (std::string st : strList) {
+                    std::transform(
+                        st.begin(), st.end(), st.begin(),
+                        [](unsigned char c) { return std::tolower(c); });
+                    group << " " << st;
+                }
+                demographic_combos.push_back(group.str());
+            }
         }
 
         void RecursionHelper(

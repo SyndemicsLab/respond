@@ -4,7 +4,7 @@
 // Created Date: 2025-01-14                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-12                                                  //
+// Last Modified: 2025-03-14                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -13,12 +13,9 @@
 #ifndef RESPOND_DATAOPS_DATALOADER_HPP_
 #define RESPOND_DATAOPS_DATALOADER_HPP_
 
-#include <iostream>
-#include <map>
 #include <string>
-#include <vector>
 
-#include <respond/data_ops/data_types.hpp>
+#include <respond/data_ops/matrices.hpp>
 
 namespace respond::data_ops {
 
@@ -88,31 +85,30 @@ namespace respond::data_ops {
 
         virtual void SetInterventionInitRates(const Matrix3d &mat) = 0;
 
-        virtual Matrix3d LoadInitialSample(std::string const &csvName) = 0;
+        virtual Matrix3d LoadInitialSample(const std::string &file) = 0;
 
         virtual TimedMatrix3d
-        LoadEnteringSamples(std::string const &csvName,
-                            std::string const &enteringSampleIntervention,
-                            std::string const &enteringSampleOUD) = 0;
+        LoadEnteringSamples(const std::string &file,
+                            const std::string &intervention,
+                            const std::string &behavior) = 0;
+
+        virtual TimedMatrix3d LoadEnteringSamples(const std::string &file) = 0;
+
+        virtual Matrix3d LoadOUDTransitionRates(const std::string &file) = 0;
+
+        virtual Matrix3d LoadInterventionInitRates(const std::string &file) = 0;
 
         virtual TimedMatrix3d
-        LoadEnteringSamples(std::string const &csvName) = 0;
+        LoadInterventionTransitionRates(const std::string &file) = 0;
 
-        virtual Matrix3d LoadOUDTransitionRates(std::string const &csvName) = 0;
+        virtual TimedMatrix3d LoadOverdoseRates(const std::string &file) = 0;
+
+        virtual TimedMatrix3d
+        LoadFatalOverdoseRates(const std::string &file) = 0;
 
         virtual Matrix3d
-        LoadInterventionInitRates(std::string const &csvName) = 0;
-
-        virtual TimedMatrix3d
-        LoadInterventionTransitionRates(std::string const &csvName) = 0;
-
-        virtual TimedMatrix3d LoadOverdoseRates(std::string const &csvName) = 0;
-
-        virtual TimedMatrix3d
-        LoadFatalOverdoseRates(std::string const &csvName) = 0;
-
-        virtual Matrix3d LoadMortalityRates(std::string const &smrCSVName,
-                                            std::string const &bgmCSVName) = 0;
+        LoadMortalityRates(const std::string &smr_file,
+                           const std::string &background_file) = 0;
     };
 } // namespace respond::data_ops
 #endif // RESPOND_DATAOPS_DATALOADER_HPP_

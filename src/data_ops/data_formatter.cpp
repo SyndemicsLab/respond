@@ -4,7 +4,7 @@
 // Created Date: 2025-01-14                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-12                                                  //
+// Last Modified: 2025-03-14                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -12,8 +12,14 @@
 
 #include "internals/data_formatter_internals.hpp"
 
+#include <algorithm>
+#include <vector>
+
+#include <respond/data_ops/data_types.hpp>
+#include <respond/data_ops/matrices.hpp>
+
 namespace respond::data_ops {
-    void DataFormatterImpl::ExtractTimesteps(std::vector<int> timesteps,
+    void DataFormatterImpl::ExtractTimesteps(const std::vector<int> &timesteps,
                                              History &history, CostList &costs,
                                              TimedMatrix3d &utilities,
                                              bool costSwitch) {
@@ -57,40 +63,45 @@ namespace respond::data_ops {
     }
 
     TimedMatrix3d
-    DataFormatterImpl::TrimTimedMatrix3d(std::vector<int> timesteps,
-                                         TimedMatrix3d matrix) {
+    DataFormatterImpl::TrimTimedMatrix3d(const std::vector<int> &timesteps,
+                                         const TimedMatrix3d &matrix) {
         TimedMatrix3d trimmed;
         for (int timestep : timesteps) {
-            trimmed.Insert(matrix.GetMappedData()[timestep], timestep);
+            trimmed[timestep] = matrix.at(timestep);
         }
         return trimmed;
     }
 
-    TimedMatrix3d
-    DataFormatterImpl::TrimAndAddTimedMatrix3d(std::vector<int> timesteps,
-                                               TimedMatrix3d matrix) {
-        Matrix3d temp = matrix.GetMatrix3dAtTimestep(0);
-        int oudSize = temp.dimension(Dimension::kOud);
-        int interSize = temp.dimension(Dimension::kIntervention);
-        int demSize = temp.dimension(Dimension::kDemographicCombo);
+    TimedMatrix3d DataFormatterImpl::TrimAndAddTimedMatrix3d(
+        const std::vector<int> &timesteps, const TimedMatrix3d &matrices) {
+        auto itr = matrices.begin();
+        if (itr == matrices.end() || timesteps.empty()) {
+            // empty matrix or timesteps
+            return {};
+        }
+        Matrix3d temp = itr->second;
+        int number_of_behaviors = temp.dimension((int)Dimension::kOud);
+        int number_of_interventions =
+            temp.dimension((int)Dimension::kIntervention);
+        int number_of_demographic_combinations =
+            temp.dimension((int)Dimension::kDemographicCombo);
 
         TimedMatrix3d trimmed;
-        Matrix3d running = Matrix3dFactory::Create(oudSize, interSize, demSize);
+        Matrix3d running =
+            CreateMatrix3d(number_of_behaviors, number_of_interventions,
+                           number_of_demographic_combinations);
 
-        std::vector<Matrix3d> matrices = matrix.GetMatrices();
-        int timestepIdx = 0;
-        for (int i = 0; i < matrices.size(); ++i) {
-            if (timesteps.size() <= timestepIdx) {
-                break;
-            }
-            running += matrices[i];
-            if (i >= timesteps[timestepIdx]) {
-                trimmed.Insert(running, timesteps[timestepIdx]);
-                running = Matrix3dFactory::Create(oudSize, interSize, demSize);
-                timestepIdx++;
+        int timestep_index = 0;
+        for (auto kv : matrices) {
+            running += kv.second;
+            if (kv.first >= timesteps[timestep_index]) {
+                trimmed[kv.first] = running;
+                running =
+                    CreateMatrix3d(number_of_behaviors, number_of_interventions,
+                                   number_of_demographic_combinations);
+                timestep_index++;
             }
         }
-
         return trimmed;
     }
 } // namespace respond::data_ops

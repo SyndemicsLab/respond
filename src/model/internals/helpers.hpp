@@ -1,25 +1,26 @@
 ////////////////////////////////////////////////////////////////////////////////
-// File: Helpers.hpp                                                          //
+// File: helpers.hpp                                                          //
 // Project: RESPONDSimulationv2                                               //
 // Created Date: 2025-01-14                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-07                                                  //
+// Last Modified: 2025-03-14                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef UTILITIES_HELPERS_HPP_
-#define UTILITIES_HELPERS_HPP_
+#ifndef RESPOND_MODEL_HELPERS_HPP_
+#define RESPOND_MODEL_HELPERS_HPP_
 
 #include <iostream>
-#include <respond/data_ops/DataLoader.hpp>
-#include <respond/model/PostSimulationCalculator.hpp>
 #include <string>
 #include <vector>
 
-namespace Helpers {
+#include <respond/data_ops/data_loader.hpp>
+#include <respond/data_ops/data_types.hpp>
+
+namespace respond::model {
     bool argChecks(int argc, char **argv, std::string &rootInputDir,
                    int &taskStart, int &taskEnd) {
         if (argc > 1 && argc != 4) {
@@ -47,20 +48,25 @@ namespace Helpers {
         return true;
     }
 
-    std::vector<double> calcCosts(Calculator::PostSimulationCalculator calc,
-                                  data_ops::CostList costsList) {
+    std::vector<double>
+    CalculateTotalCosts(const respond::data_ops::CostList &cost_list) {
         std::vector<double> result;
-        for (data_ops::Cost cost : costsList) {
-            double totalCost = 0.0;
-            totalCost += calc.totalAcrossTimeAndDims(cost.healthcareCost);
-            totalCost += calc.totalAcrossTimeAndDims(cost.fatalOverdoseCost);
-            totalCost += calc.totalAcrossTimeAndDims(cost.nonFatalOverdoseCost);
-            totalCost += calc.totalAcrossTimeAndDims(cost.pharmaCost);
-            totalCost += calc.totalAcrossTimeAndDims(cost.treatmentCost);
+        for (respond::data_ops::Cost cost : cost_list) {
+            double totalCost =
+                respond::data_ops::TimedMatrix3dSummedOverDimensions(
+                    cost.healthcare_cost) +
+                respond::data_ops::TimedMatrix3dSummedOverDimensions(
+                    cost.fatal_overdose_cost) +
+                respond::data_ops::TimedMatrix3dSummedOverDimensions(
+                    cost.non_fatal_overdose_cost) +
+                respond::data_ops::TimedMatrix3dSummedOverDimensions(
+                    cost.pharma_cost) +
+                respond::data_ops::TimedMatrix3dSummedOverDimensions(
+                    cost.treatment_cost);
             result.push_back(totalCost);
         }
         return result;
     }
-} // namespace Helpers
+} // namespace respond::model
 
-#endif
+#endif // RESPOND_MODEL_HELPERS_HPP_

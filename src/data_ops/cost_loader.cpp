@@ -4,7 +4,7 @@
 // Created Date: 2025-01-14                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-12                                                  //
+// Last Modified: 2025-03-14                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -12,7 +12,12 @@
 
 #include "internals/cost_loader_internals.hpp"
 
+#include <string>
+#include <unordered_map>
+
+#include <respond/data_ops/data_types.hpp>
 #include <respond/data_ops/matrices.hpp>
+#include <respond/utils/logging.hpp>
 
 namespace respond::data_ops {
 
@@ -30,10 +35,9 @@ namespace respond::data_ops {
             GetConfig()->getStringVector("cost.cost_perspectives");
         for (std::string perspective : cost_perspectives) {
 
-            std::vector<std::string> healthColumn =
-                table->getColumn(perspective);
+            std::vector<std::string> column = table->getColumn(perspective);
 
-            if (healthColumn.empty()) {
+            if (column.empty()) {
                 respond::utils::LogError(logger_name,
                                          "No data found for perspective: " +
                                              perspective);
@@ -44,18 +48,16 @@ namespace respond::data_ops {
                 number_behavior_states, number_intervention_states,
                 number_demographic_combos);
 
-            int rowIdx = 0;
-            for (int intervention = 0;
-                 intervention < number_intervention_states; ++intervention) {
-                for (int dem = 0; dem < number_demographic_combos; ++dem) {
-                    for (int oud_state = 0; oud_state < number_behavior_states;
-                         ++oud_state) {
-                        double cost = (healthColumn.size() > rowIdx)
-                                          ? std::stod(healthColumn[rowIdx])
+            int idx = 0;
+            for (int i = 0; i < number_intervention_states; ++i) {
+                for (int d = 0; d < number_demographic_combos; ++d) {
+                    for (int b = 0; b < number_behavior_states; ++b) {
+                        double cost = (column.size() > idx)
+                                          ? std::stod(column[idx])
                                           : 0.0;
-                        healthcare_utilization_cost[perspective](
-                            intervention, oud_state, dem) = cost;
-                        rowIdx++;
+                        healthcare_utilization_cost[perspective](i, b, d) =
+                            cost;
+                        idx++;
                     }
                 }
             }
@@ -67,21 +69,21 @@ namespace respond::data_ops {
     CostLoaderImpl::LoadOverdoseCost(const std::string &file) {
         Data::IDataTablePtr table = LoadDataTable(file);
 
-        std::vector<std::string> xCol = table->getColumn("X");
+        std::vector<std::string> x_column = table->getColumn("X");
 
         std::vector<std::string> cost_perspectives =
             GetConfig()->getStringVector("cost.cost_perspectives");
         for (std::string perspective : cost_perspectives) {
-            for (size_t i = 0; i < xCol.size(); i++) {
-                std::vector<std::string> persCol =
+            for (size_t i = 0; i < x_column.size(); i++) {
+                std::vector<std::string> perspective_column =
                     table->getColumn(perspective);
-                if (persCol.empty()) {
+                if (perspective_column.empty()) {
                     respond::utils::LogError(logger_name,
                                              "Cost perspective " + perspective +
                                                  " not found in table");
                 }
-                overdose_costs_map[perspective][xCol[i]] =
-                    std::stod(persCol[i]);
+                overdose_costs_map[perspective][x_column[i]] =
+                    std::stod(perspective_column[i]);
             }
         }
         return overdose_costs_map;
@@ -118,6 +120,9 @@ namespace respond::data_ops {
         const std::string &perspective) const {
         if (overdose_costs_map.at(perspective).find("non_fatal_overdose") ==
             overdose_costs_map.at(perspective).end()) {
+            respond::utils::LogWarning(
+                logger_name,
+                "No Non Fatal Overdose Costs Found. Returning 0...");
             return 0.0;
         }
         return overdose_costs_map.at(perspective).at("non_fatal_overdose");
@@ -127,6 +132,8 @@ namespace respond::data_ops {
     CostLoaderImpl::GetFatalOverdoseCost(const std::string &perspective) const {
         if (overdose_costs_map.at(perspective).find("fatal_overdose") ==
             overdose_costs_map.at(perspective).end()) {
+            respond::utils::LogWarning(
+                logger_name, "No Fatal Overdose Costs Found. Return 0...");
             return 0.0;
         }
         return overdose_costs_map.at(perspective).at("fatal_overdose");
@@ -173,8 +180,8 @@ namespace respond::data_ops {
                 Eigen::array<Eigen::Index, 3> offset = {0, 0, 0};
                 Eigen::array<Eigen::Index, 3> extent =
                     cost[perspective].dimensions();
-                offset[Dimension::kIntervention] = i;
-                extent[Dimension::kIntervention] = 1;
+                offset[(int)Dimension::kIntervention] = i;
+                extent[(int)Dimension::kIntervention] = 1;
                 Matrix3d slice = cost[perspective].slice(offset, extent);
                 if (cost_map[perspective].find(interventions[i]) !=
                     cost_map[perspective].end()) {

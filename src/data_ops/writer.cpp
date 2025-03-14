@@ -4,138 +4,208 @@
 // Created Date: 2025-01-17                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-12                                                  //
+// Last Modified: 2025-03-14                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <respond/data_ops/Writer.hpp>
+#include "internals/writer_internals.hpp"
 
+#include <fstream>
 #include <regex>
+#include <sstream>
+#include <string>
+#include <vector>
 
-namespace data_ops {
-    bool Writer::checkDirectory() const {
-        if (this->getDirname().empty()) {
-            // log error
-            return false;
-        }
+#include <Eigen/Eigen>
 
-        if (!std::filesystem::exists(this->getDirname())) {
-            std::stringstream dircheck(this->getDirname());
-            std::string buildingPath = "";
-            std::string temp;
-            while (getline(dircheck, temp, '/')) {
-                buildingPath += temp + "/";
-                if (!std::filesystem::exists(buildingPath)) {
-                    std::filesystem::create_directory(buildingPath);
+#include <respond/data_ops/data_types.hpp>
+#include <respond/data_ops/matrices.hpp>
+#include <respond/utils/logging.hpp>
+
+namespace respond::data_ops {
+    std::string WriterImpl::WriteTimedMatrix3d(
+        const TimedMatrix3d &matrices,
+        const std::vector<std::string> &interventions,
+        const std::vector<std::string> &behaviors,
+        const std::vector<std::string> &demographic_combinations,
+        bool pivot) const {
+        std::stringstream stream;
+        for (long int i = 0; i < interventions.size(); i++) {
+            for (long int b = 0; b < behaviors.size(); b++) {
+                for (long int d = 0; d < demographic_combinations.size(); d++) {
+                    std::string current_demographic =
+                        demographic_combinations[d];
+                    current_demographic = std::regex_replace(
+                        current_demographic, std::regex("^ +| +$|( ) +"), "$1");
+                    std::replace(current_demographic.begin(),
+                                 current_demographic.end(), ' ', ',');
+                    if (!pivot) {
+                        stream << interventions[i] << "," << behaviors[b] << ","
+                               << current_demographic << ",";
+                    }
+
+                    for (auto kv : matrices) {
+                        std::array<long int, 3> index = {0, 0, 0};
+                        index[(int)Dimension::kIntervention] = i;
+                        index[(int)Dimension::kOud] = b;
+                        index[(int)Dimension::kDemographicCombo] = d;
+                        double value = kv.second(index[0], index[1], index[2]);
+                        if (pivot) {
+                            stream << interventions[i] << "," << behaviors[b]
+                                   << "," << current_demographic << ","
+                                   << std::to_string(kv.first) << ","
+                                   << std::to_string(value) << std::endl;
+                        } else {
+                            stream << std::to_string(value) << ",";
+                        }
+                    }
+                    if (!pivot) {
+                        stream << std::endl;
+                    }
                 }
             }
-            std::filesystem::create_directory(this->getDirname());
         }
-        return true;
+        return stream.str();
     }
 
-    /// @brief Main Operation of Class, write data to output
-    /// @param outputType Output Enum, generally FILE
-    /// @return string containing the result if output enum is STRING
-    /// or description of status otherwise
-    std::string HistoryWriter::writeHistory(const History history) const {
-        if (history.stateHistory.getMatrices().empty() ||
-            history.overdoseHistory.getMatrices().empty() ||
-            history.fatalOverdoseHistory.getMatrices().empty() ||
-            history.mortalityHistory.getMatrices().empty()) {
+    std::string
+    WriterImpl::WriteHistoryData(const History &history,
+                                 const std::string &directory,
+                                 const OutputType output_type) const {
+        if (history.state_history.empty() || history.overdose_history.empty() ||
+            history.fatal_overdose_history.empty() ||
+            history.mortality_history.empty()) {
             // log error
+            respond::utils::LogWarning(
+                logger_name, "History Structure contains Empty Matrices! "
+                             "Unable to Write to File. Skipping...");
             return "failure";
         }
+        std::vector<std::string> behaviors =
+            config->getStringVector("state.ouds");
+        size_t number_demographic_combos = demographic_combinations.size();
+        std::vector<std::string> interventions =
+            config->getStringVector("state.interventions");
 
-        std::string result = "";
+        std::stringstream result;
 
+        result << WriteTimedMatrix3dToFile(
+            history.state_history, interventions, behaviors,
+            demographic_combinations, false, directory + "/stateHistory.csv");
+
+        result << " "
+               << WriteTimedMatrix3dToFile(history.overdose_history,
+                                           interventions, behaviors,
+                                           demographic_combinations, false,
+                                           directory + "/overdoseHistory.csv");
+
+        result << " "
+               << WriteTimedMatrix3dToFile(
+                      history.fatal_overdose_history, interventions, behaviors,
+                      demographic_combinations, false,
+                      directory + "/fatalOverdoseHistory.csv");
+
+        result << " "
+               << WriteTimedMatrix3dToFile(history.mortality_history,
+                                           interventions, behaviors,
+                                           demographic_combinations, false,
+                                           directory + "/mortalityHistory.csv");
+
+        result << " "
+               << WriteTimedMatrix3dToFile(
+                      history.intervention_admission_history, interventions,
+                      behaviors, demographic_combinations, false,
+                      directory + "/admissionsHistory.csv");
+
+        return result.str();
+    }
+
+    std::string WriterImpl::WriteTimedMatrix3dToFile(
+        const TimedMatrix3d &matrices,
+        const std::vector<std::string> &interventions,
+        const std::vector<std::string> &behaviors,
+        const std::vector<std::string> &demographic_combinations, bool pivot,
+        const std::string &path) const {
         std::stringstream stream;
-
-        this->write4d(stream, history.stateHistory, writeColumnHeaders());
-        this->writeFile("stateHistory.csv", stream);
-        result = stream.str();
-        stream.str("");
-
-        this->write4d(stream, history.overdoseHistory, writeColumnHeaders());
-        this->writeFile("overdoseHistory.csv", stream);
-        result = result + " " + stream.str();
-        stream.str("");
-
-        this->write4d(stream, history.fatalOverdoseHistory,
-                      writeColumnHeaders());
-        this->writeFile("fatalOverdoseHistory.csv", stream);
-        result = result + " " + stream.str();
-        stream.str("");
-
-        this->write4d(stream, history.mortalityHistory, writeColumnHeaders());
-        this->writeFile("mortalityHistory.csv", stream);
-        result = result + " " + stream.str();
-        stream.str("");
-
-        this->write4d(stream, history.interventionAdmissionHistory,
-                      writeColumnHeaders());
-        this->writeFile("admissionsHistory.csv", stream);
-        result = result + " " + stream.str();
-        stream.str("");
-
-        return result;
+        std::vector<int> timesteps;
+        for (auto kv : matrices) {
+            timesteps.push_back(kv.first);
+        }
+        stream << WriteColumnHeaders(timesteps, pivot)
+               << WriteTimedMatrix3d(matrices, interventions, behaviors,
+                                     demographic_combinations, pivot);
+        WriteContents(stream, path, OutputType::kFile);
+        return stream.str();
     }
 
     /// @brief Main Operation of Class, write data to output
     /// @param outputType Output Enum, generally FILE
     /// @return string containing the result if output enum is STRING
     /// or description of status otherwise
-    std::string CostWriter::writeCosts(const CostList costs) const {
-        if (costs.empty()) {
+    std::string WriterImpl::WriteCostData(const CostList &cost_list,
+                                          const std::string &directory,
+                                          const OutputType output_type) const {
+        if (cost_list.empty()) {
+            respond::utils::LogWarning(
+                logger_name,
+                "Cost List is Empty! Unable to Write to File. Skipping...");
             return "failure";
         }
-        std::string result = "";
-        for (Cost cost : costs) {
+        std::vector<std::string> behaviors =
+            config->getStringVector("state.ouds");
+        size_t number_demographic_combos = demographic_combinations.size();
+        std::vector<std::string> interventions =
+            config->getStringVector("state.interventions");
 
-            if (cost.healthcareCost.getMatrices().empty() ||
-                cost.pharmaCost.getMatrices().empty() ||
-                cost.fatalOverdoseCost.getMatrices().empty() ||
-                cost.nonFatalOverdoseCost.getMatrices().empty() ||
-                cost.treatmentCost.getMatrices().empty()) {
-                // log error
+        std::stringstream result;
+        for (Cost cost : cost_list) {
+
+            if (cost.healthcare_cost.empty() || cost.pharma_cost.empty() ||
+                cost.fatal_overdose_cost.empty() ||
+                cost.non_fatal_overdose_cost.empty() ||
+                cost.treatment_cost.empty()) {
+                respond::utils::LogWarning(
+                    logger_name, "Cost Contains Empty Matrices! Unable to "
+                                 "Write to File. Skipping...");
                 return "failure";
             }
 
-            std::stringstream stream;
+            result << WriteTimedMatrix3dToFile(
+                cost.healthcare_cost, interventions, behaviors,
+                demographic_combinations, false,
+                directory + "/healthcareCost-" + cost.perspective + ".csv");
 
-            this->write4d(stream, cost.healthcareCost, writeColumnHeaders());
-            this->writeFile("healthcareCost-" + cost.perspective + ".csv",
-                            stream);
-            result = stream.str();
-            stream.str("");
+            result << " "
+                   << WriteTimedMatrix3dToFile(cost.pharma_cost, interventions,
+                                               behaviors,
+                                               demographic_combinations, false,
+                                               directory + "/pharmaCost-" +
+                                                   cost.perspective + ".csv");
 
-            this->write4d(stream, cost.pharmaCost, writeColumnHeaders());
-            this->writeFile("pharmaCost-" + cost.perspective + ".csv", stream);
-            result = result + " " + stream.str();
-            stream.str("");
+            result << " "
+                   << WriteTimedMatrix3dToFile(
+                          cost.fatal_overdose_cost, interventions, behaviors,
+                          demographic_combinations, false,
+                          directory + "/fatalOverdoseCost-" + cost.perspective +
+                              ".csv");
 
-            this->write4d(stream, cost.fatalOverdoseCost, writeColumnHeaders());
-            this->writeFile("fatalOverdoseCost-" + cost.perspective + ".csv",
-                            stream);
-            result = result + " " + stream.str();
-            stream.str("");
+            result << " "
+                   << WriteTimedMatrix3dToFile(
+                          cost.non_fatal_overdose_cost, interventions,
+                          behaviors, demographic_combinations, false,
+                          directory + "/nonFatalOverdoseCost-" +
+                              cost.perspective + ".csv");
 
-            this->write4d(stream, cost.nonFatalOverdoseCost,
-                          writeColumnHeaders());
-            this->writeFile("nonFatalOverdoseCost-" + cost.perspective + ".csv",
-                            stream);
-            result = result + " " + stream.str();
-            stream.str("");
-
-            this->write4d(stream, cost.treatmentCost, writeColumnHeaders());
-            this->writeFile("treatmentCost-" + cost.perspective + ".csv",
-                            stream);
-            result = result + " " + stream.str();
-            stream.str("");
+            result << " "
+                   << WriteTimedMatrix3dToFile(cost.treatment_cost,
+                                               interventions, behaviors,
+                                               demographic_combinations, false,
+                                               directory + "/treatmentCost-" +
+                                                   cost.perspective + ".csv");
         }
-        return result;
+        return result.str();
     }
 
     /// @brief Main Operation of Class, write data to output
@@ -143,306 +213,317 @@ namespace data_ops {
     /// @return string containing the result if output enum is
     /// STRING or description of status otherwise
     std::string
-    UtilityWriter::writeUtilities(const TimedMatrix3d utilities) const {
-        std::stringstream stream;
-        if (utilities.getMatrices().empty()) {
-            // log error
+    WriterImpl::WriteUtilityData(const TimedMatrix3d &utilities,
+                                 const std::string &directory,
+                                 const OutputType output_type) const {
+        if (utilities.empty()) {
+            respond::utils::LogWarning(logger_name,
+                                       "Utilities Matrix is Empty! Unable to "
+                                       "Write to File. Skipping...");
             return "failure";
         }
-        this->write4d(stream, utilities, writeColumnHeaders());
-        this->writeFile("utilities.csv", stream);
-        return stream.str();
+        std::stringstream result;
+
+        std::vector<std::string> behaviors =
+            config->getStringVector("state.ouds");
+        size_t number_demographic_combos = demographic_combinations.size();
+        std::vector<std::string> interventions =
+            config->getStringVector("state.interventions");
+
+        result << WriteTimedMatrix3dToFile(utilities, interventions, behaviors,
+                                           demographic_combinations, false,
+                                           directory + "/utilities.csv");
+        return result.str();
     }
 
-    std::string TotalsWriter::writeTotals(const Totals totals) const {
-        if (totals.baseCosts.empty() || totals.discCosts.empty()) {
-            // log error
+    std::string WriterImpl::WriteTotalsData(const Totals &totals,
+                                            const std::string &directory,
+                                            const OutputType outputType) const {
+        if (totals.base_costs.empty() || totals.disc_costs.empty()) {
+            respond::utils::LogWarning(logger_name,
+                                       "Totals Matrices are Empty! Unable to "
+                                       "Write to File. Skipping...");
             return "failure";
         }
 
         std::stringstream stream;
 
         stream << "Name, Base, Discount" << std::endl;
-        for (int i = 0; i < totals.baseCosts.size(); ++i) {
-            stream << "Perspective " << i << ", " << totals.baseCosts[i] << ", "
-                   << totals.discCosts[i] << std::endl;
+        for (int i = 0; i < totals.base_costs.size(); ++i) {
+            stream << "Perspective " << i << ", " << totals.base_costs[i]
+                   << ", " << totals.disc_costs[i] << std::endl;
         }
-        stream << "Life Years, " << totals.baseLifeYears << ", "
-               << totals.discLifeYears << std::endl;
-        stream << "Utility, " << totals.baseUtility << ", "
-               << totals.discUtility << std::endl;
-        this->writeFile("totals.csv", stream);
-        return stream.str();
+        stream << "Life Years, " << totals.base_life_years << ", "
+               << totals.disc_life_years << std::endl;
+        stream << "Utility, " << totals.base_utility << ", "
+               << totals.disc_utility << std::endl;
+        return WriteContents(stream, directory + "/totals.csv",
+                             OutputType::kFile);
     }
 
-    std::string InputWriter::writeParameters(
-        const std::shared_ptr<IDataLoader> dataLoader) const {
-
-        // std::string res = writeOUDTransitionRates(dataLoader);
-        std::string res = writeInterventionTransitionRates(dataLoader);
-        // res = res + " " + writeInterventionInitRates(dataLoader);
-        res = res + " " + writeOverdoseRates(dataLoader);
-        // res = res + " " + writeFatalOverdoseRates(dataLoader);
-        return res;
+    std::string WriterImpl::WriteInputData(const DataLoader &data_loader,
+                                           const std::string &directory,
+                                           const OutputType output_type) const {
+        std::stringstream result;
+        result << " "
+               << WriteOUDTransitionRates(data_loader, directory, output_type)
+               << " "
+               << WriteInterventionTransitionRates(data_loader, directory,
+                                                   output_type)
+               << " "
+               << WriteInterventionInitRates(data_loader, directory,
+                                             output_type)
+               << " " << WriteOverdoseRates(data_loader, directory, output_type)
+               << " "
+               << WriteFatalOverdoseRates(data_loader, directory, output_type);
+        return result.str();
     }
 
-    std::string InputWriter::writeOUDTransitionRates(
-        const std::shared_ptr<IDataLoader> dataLoader) const {
+    std::string
+    WriterImpl::WriteOUDTransitionRates(const DataLoader &data_loader,
+                                        const std::string &directory,
+                                        const OutputType output_type) const {
         std::stringstream stream;
+        stream << "intervention,agegrp,race,sex,initial_oud,";
 
-        std::vector<std::string> columnNames{"intervention", "agegrp", "race",
-                                             "sex", "initial_oud"};
-        for (std::string oud : dataLoader->getOUDStates()) {
-            columnNames.push_back(oud);
+        std::vector<std::string> behaviors =
+            config->getStringVector("state.ouds");
+        std::vector<std::string> interventions =
+            config->getStringVector("state.interventions");
+
+        for (const std::string &behavior : behaviors) {
+            stream << behavior << (&behavior != &behaviors.back()) ? "," : "\n";
         }
 
-        for (std::string col : columnNames) {
-            stream << col << ",";
-        }
-        stream << std::endl;
-
-        Matrix3d dm = dataLoader->getOUDTransitionRates();
-
-        for (long int init = 0; init < dataLoader->getNumOUDStates(); init++) {
-            for (long int i = 0; i < dataLoader->getNumInterventions(); i++) {
-                for (long int k = 0;
-                     k < dataLoader->getDemographicCombos().size(); k++) {
-                    stream << dataLoader->getInterventions()[i] << ",";
-                    std::string temp = dataLoader->getDemographicCombos()[k];
+        for (long int b = 0; b < behaviors.size(); ++b) {
+            for (long int i = 0; i < interventions.size(); ++i) {
+                for (long int d = 0; d < demographic_combinations.size(); ++d) {
+                    std::string temp = demographic_combinations[d];
                     temp = std::regex_replace(temp, std::regex("^ +| +$|( ) +"),
                                               "$1");
                     std::replace(temp.begin(), temp.end(), ' ', ',');
-                    stream << temp << ",";
-                    stream << dataLoader->getOUDStates()[init] << ",";
-                    for (long int j = 0; j < dataLoader->getNumOUDStates();
-                         j++) {
+                    stream << interventions[i] << "," << temp << ","
+                           << behaviors[b] << ",";
+                    for (long int h = 0; h < behaviors.size(); h++) {
                         std::array<long int, 3> index = {0, 0, 0};
-                        index[INTERVENTION] = i;
-                        index[OUD] = (init * dataLoader->getNumOUDStates()) + j;
-                        index[DEMOGRAPHIC_COMBO] = k;
-                        ASSERTM(dm.NumDimensions == 3,
-                                "3 Dimensions Found in Matrix3d");
-                        double value = dm(index[0], index[1], index[2]);
-                        stream << std::to_string(value) << ",";
+                        index[(int)Dimension::kIntervention] = i;
+                        index[(int)Dimension::kOud] =
+                            (b * behaviors.size()) + h;
+                        index[(int)Dimension::kDemographicCombo] = d;
+                        stream << std::to_string(
+                                      data_loader.GetOUDTransitionRates()(
+                                          index[0], index[1], index[2]))
+                               << ",";
                     }
                     stream << std::endl;
                 }
             }
         }
-
-        return writeFile("oud_trans.csv", stream);
+        return WriteContents(stream, directory + "/oud_trans.csv", output_type);
     }
 
-    std::string InputWriter::writeInterventionInitRates(
-        const std::shared_ptr<IDataLoader> dataLoader) const {
+    std::string
+    WriterImpl::WriteInterventionInitRates(const DataLoader &data_loader,
+                                           const std::string &directory,
+                                           const OutputType output_type) const {
+        std::vector<std::string> behaviors =
+            config->getStringVector("state.ouds");
+        std::vector<std::string> interventions =
+            config->getStringVector("state.interventions");
+
         std::stringstream stream;
-        std::vector<std::string> columnNames{"initial_oud_state",
-                                             "to_intervention"};
-
-        for (std::string oud : dataLoader->getOUDStates()) {
-            columnNames.push_back(oud);
+        stream << "initial_oud_state,to_intervention";
+        for (std::string behavior : behaviors) {
+            stream << behavior << (&behavior != &behaviors.back()) ? "," : "\n";
         }
 
-        for (std::string col : columnNames) {
-            stream << col << ",";
-        }
-        stream << std::endl;
-
-        Matrix3d dm = dataLoader->getInterventionInitRates();
-
-        for (int init = 0; init < dataLoader->getNumOUDStates(); init++) {
-            for (int inter = 0; inter < dataLoader->getNumInterventions();
-                 inter++) {
-                stream << dataLoader->getOUDStates()[init] << ",";
-                stream << dataLoader->getInterventions()[inter] << ",";
-                for (int res = 0; res < dataLoader->getNumOUDStates(); res++) {
+        for (int b = 0; b < behaviors.size(); ++b) {
+            for (int i = 0; i < interventions.size(); ++i) {
+                stream << behaviors[b] << "," << interventions[i] << ",";
+                for (int h = 0; h < behaviors.size(); ++h) {
                     std::array<long int, 3> index = {0, 0, 0};
-                    index[INTERVENTION] = inter;
-                    index[OUD] = (init * dataLoader->getNumOUDStates()) + res;
-                    index[DEMOGRAPHIC_COMBO] = 0;
-                    ASSERTM(dm.NumDimensions == 3,
-                            "3 Dimensions Found in Matrix3d");
-                    double value = dm(index[0], index[1], index[2]);
-                    stream << std::to_string(value) << ",";
+                    index[(int)Dimension::kIntervention] = i;
+                    index[(int)Dimension::kOud] = (b * behaviors.size()) + h;
+                    index[(int)Dimension::kDemographicCombo] = 0;
+                    stream << std::to_string(
+                                  data_loader.GetInterventionInitRates()(
+                                      index[0], index[1], index[2]))
+                           << ",";
                 }
                 stream << std::endl;
             }
         }
-
-        return writeFile("block_init_effect.csv", stream);
+        return WriteContents(stream, directory + "/block_init_effect.csv",
+                             output_type);
     }
 
-    std::string InputWriter::writeInterventionTransitionRates(
-        const std::shared_ptr<IDataLoader> dataLoader) const {
+    std::string WriterImpl::WriteInterventionTransitionRates(
+        const DataLoader &data_loader, const std::string &directory,
+        const OutputType output_type) const {
 
         std::stringstream stream;
 
-        std::vector<std::string> columnNames{"agegrp", "race", "sex", "oud",
-                                             "initial_intervention"};
+        stream << "agegrp,race,sex,oud,initial_intervention";
 
-        std::vector<int> changeTimes = dataLoader->getInterventionChangeTimes();
-        int ct1 = 1;
-        for (int ct2 : changeTimes) {
-            for (std::string col : dataLoader->getInterventions()) {
-                columnNames.push_back(col + "_" + std::to_string(ct1) + "_" +
-                                      std::to_string(ct2));
+        std::vector<int> timesteps =
+            config->getIntVector("simulation.intervention_change_times");
+        std::vector<std::string> behaviors =
+            config->getStringVector("state.ouds");
+        std::vector<std::string> interventions =
+            config->getStringVector("state.interventions");
+
+        int t_1 = 1;
+        for (const int &t_2 : timesteps) {
+            for (const std::string &col : interventions) {
+                std::string c =
+                    col + "_" + std::to_string(t_1) + "_" + std::to_string(t_2);
+                stream << c
+                       << ((&t_2 != &timesteps.back() &&
+                            &col != &interventions.back())
+                               ? ","
+                               : "\n");
             }
-            ct1 = ct2;
+            t_1 = t_2;
         }
-
-        for (std::string col : columnNames) {
-            stream << col << ",";
-        }
-        stream << std::endl;
 
         // add zero index and pop off final change time to get matrix
         // indices
-        changeTimes.insert(changeTimes.begin(), 0);
-        changeTimes.pop_back();
+        timesteps.insert(timesteps.begin(), 0);
+        timesteps.pop_back();
 
-        TimedMatrix3d dm = dataLoader->getInterventionTransitionRates();
-
-        for (long int k = 0; k < dataLoader->getNumDemographicCombos(); k++) {
-            for (int oud = 0; oud < dataLoader->getNumOUDStates(); oud++) {
-                for (int init = 0; init < dataLoader->getNumInterventions();
-                     init++) {
-                    std::string temp = dataLoader->getDemographicCombos()[k];
+        for (long int d = 0; d < demographic_combinations.size(); d++) {
+            for (int b = 0; b < behaviors.size(); b++) {
+                for (int i = 0; i < interventions.size(); i++) {
+                    std::string temp = demographic_combinations[d];
                     temp = std::regex_replace(temp, std::regex("^ +| +$|( ) +"),
                                               "$1");
                     std::replace(temp.begin(), temp.end(), ' ', ',');
-                    stream << temp << ",";
-                    stream << dataLoader->getOUDStates()[oud] << ",";
-                    stream << dataLoader->getInterventions()[init] << ",";
-                    for (int timestep : changeTimes) {
-                        for (int res = 0;
-                             res < dataLoader->getNumInterventions(); res++) {
+                    stream << temp << "," << behaviors[b] << ","
+                           << interventions[i] << ",";
+                    for (int timestep : timesteps) {
+                        for (int res = 0; res < interventions.size(); res++) {
                             std::array<long int, 3> index = {0, 0, 0};
-                            index[INTERVENTION] =
-                                (init * dataLoader->getNumInterventions()) +
-                                res;
-                            index[OUD] = oud;
-                            index[DEMOGRAPHIC_COMBO] = k;
-                            double value =
-                                dm(timestep, index[0], index[1], index[2]);
-                            stream << std::to_string(value) << ",";
+                            index[(int)Dimension::kIntervention] =
+                                (i * interventions.size()) + res;
+                            index[(int)Dimension::kOud] = b;
+                            index[(int)Dimension::kDemographicCombo] = d;
+                            stream << std::to_string(
+                                          data_loader
+                                              .GetInterventionTransitionRates()
+                                                  [timestep](index[0], index[1],
+                                                             index[2]))
+                                   << ",";
                         }
                     }
                     stream << std::endl;
                 }
             }
         }
-        return writeFile("block_trans.csv", stream);
+        return WriteContents(stream, directory + "/block_trans.csv",
+                             output_type);
     }
 
-    std::string InputWriter::writeOverdoseRates(
-        const std::shared_ptr<IDataLoader> dataLoader) const {
+    std::string
+    WriterImpl::WriteOverdoseRates(const DataLoader &data_loader,
+                                   const std::string &directory,
+                                   const OutputType output_type) const {
         std::stringstream stream;
+        stream << "intervention,agegrp,race,sex,oud";
 
-        std::vector<std::string> columnNames{"intervention", "agegrp", "race",
-                                             "sex", "oud"};
+        std::vector<std::string> behaviors =
+            config->getStringVector("state.ouds");
+        std::vector<std::string> interventions =
+            config->getStringVector("state.interventions");
 
-        std::vector<int> changeTimes = dataLoader->getOverdoseChangeTimes();
-        int ct1 = 1;
-        for (int ct2 : changeTimes) {
-            columnNames.push_back("overdose_" + std::to_string(ct1) + "_" +
-                                  std::to_string(ct2));
-            ct1 = ct2;
+        std::vector<int> timesteps =
+            config->getIntVector("simulation.overdose_change_times");
+        int t_1 = 1;
+        for (int t_2 : timesteps) {
+            std::string c =
+                "overdose_" + std::to_string(t_1) + "_" + std::to_string(t_2);
+            stream << c << ((&t_2 != &timesteps.back()) ? "," : "\n");
+            t_1 = t_2;
         }
-        for (std::string col : columnNames) {
-            stream << col << ",";
-        }
-        stream << std::endl;
 
         // add zero index and pop off final change time to get matrix
         // indices
-        changeTimes.insert(changeTimes.begin(), 0);
-        changeTimes.pop_back();
+        timesteps.insert(timesteps.begin(), 0);
+        timesteps.pop_back();
+        for (int i = 0; i < interventions.size(); i++) {
+            for (long int d = 0; d < demographic_combinations.size(); d++) {
+                for (int b = 0; b < behaviors.size(); b++) {
+                    std::string temp = demographic_combinations[d];
+                    temp = std::regex_replace(temp, std::regex("^ +| +$|( ) +"),
+                                              "$1");
+                    std::replace(temp.begin(), temp.end(), ' ', ',');
 
-        TimedMatrix3d dm = dataLoader->getOverdoseRates();
-
-        for (int inter = 0; inter < dataLoader->getNumInterventions();
-             inter++) {
-            for (long int dem = 0; dem < dataLoader->getNumDemographicCombos();
-                 dem++) {
-                for (int oud = 0; oud < dataLoader->getNumOUDStates(); oud++) {
-                    {
-                        stream << dataLoader->getInterventions()[inter] << ",";
-                        std::string temp =
-                            dataLoader->getDemographicCombos()[dem];
-                        temp = std::regex_replace(
-                            temp, std::regex("^ +| +$|( ) +"), "$1");
-                        std::replace(temp.begin(), temp.end(), ' ', ',');
-                        stream << temp << ",";
-                        stream << dataLoader->getOUDStates()[oud] << ",";
-                        for (int timestep : changeTimes) {
-                            std::array<long int, 3> index = {0, 0, 0};
-                            index[INTERVENTION] = inter;
-                            index[OUD] = oud;
-                            index[DEMOGRAPHIC_COMBO] = dem;
-                            double value =
-                                dm(timestep, index[0], index[1], index[2]);
-                            stream << std::to_string(value) << ",";
-                        }
-                        stream << std::endl;
+                    stream << interventions[i] << "," << temp << ","
+                           << behaviors[b] << ",";
+                    for (int timestep : timesteps) {
+                        std::array<long int, 3> index = {0, 0, 0};
+                        index[(int)Dimension::kIntervention] = i;
+                        index[(int)Dimension::kOud] = b;
+                        index[(int)Dimension::kDemographicCombo] = d;
+                        stream << std::to_string(
+                                      data_loader.GetOverdoseRates()[timestep](
+                                          index[0], index[1], index[2]))
+                               << ",";
                     }
+                    stream << std::endl;
                 }
             }
         }
-        return writeFile("all_types_overdose.csv", stream);
+        return WriteContents(stream, directory + "/all_types_overdose.csv",
+                             output_type);
     }
 
-    std::string InputWriter::writeFatalOverdoseRates(
-        const std::shared_ptr<IDataLoader> dataLoader) const {
+    std::string
+    WriterImpl::WriteFatalOverdoseRates(const DataLoader &data_loader,
+                                        const std::string &directory,
+                                        const OutputType output_type) const {
         std::stringstream stream;
+        stream << "agegrp,race,sex";
 
-        std::vector<std::string> columnNames{"agegrp", "race", "sex"};
-
-        std::vector<int> changeTimes = dataLoader->getOverdoseChangeTimes();
-        int ct1 = 1;
-        for (int ct2 : changeTimes) {
-            columnNames.push_back("percent_overdoses_fatal_" +
-                                  std::to_string(ct1) + "_" +
-                                  std::to_string(ct2));
-            ct1 = ct2;
+        std::vector<int> timesteps =
+            config->getIntVector("simulation.overdose_change_times");
+        int t_1 = 1;
+        for (int t_2 : timesteps) {
+            std::string c = "percent_overdoses_fatal_" + std::to_string(t_1) +
+                            "_" + std::to_string(t_2);
+            stream << c << ((&t_2 != &timesteps.back()) ? "," : "\n");
+            t_1 = t_2;
         }
-
-        for (std::string col : columnNames) {
-            stream << col << ",";
-        }
-        stream << std::endl;
 
         // add zero index and pop off final change time to get matrix
         // indices
-        changeTimes.insert(changeTimes.begin(), 0);
-        changeTimes.pop_back();
-
-        TimedMatrix3d dm = dataLoader->getFatalOverdoseRates();
-        for (long int dem = 0; dem < dataLoader->getNumDemographicCombos();
-             dem++) {
-            std::string temp = dataLoader->getDemographicCombos()[dem];
+        timesteps.insert(timesteps.begin(), 0);
+        timesteps.pop_back();
+        for (long int d = 0; d < demographic_combinations.size(); d++) {
+            std::string temp = demographic_combinations[d];
             temp = std::regex_replace(temp, std::regex("^ +| +$|( ) +"), "$1");
             std::replace(temp.begin(), temp.end(), ' ', ',');
             stream << temp << ",";
-            for (int timestep : changeTimes) {
+            for (int timestep : timesteps) {
                 std::array<long int, 3> index = {0, 0, 0};
-                index[DEMOGRAPHIC_COMBO] = dem;
-                double value = dm(timestep, index[0], index[1], index[2]);
-                stream << std::to_string(value) << ",";
+                index[(int)Dimension::kDemographicCombo] = d;
+                stream << std::to_string(
+                              data_loader.GetFatalOverdoseRates()[timestep](
+                                  index[0], index[1], index[2]))
+                       << ",";
             }
             stream << std::endl;
         }
-
-        return writeFile("fatal_overdose.csv", stream);
+        return WriteContents(stream, directory + "/fatal_overdose.csv",
+                             output_type);
     }
 
-    std::string Writer::writeFile(const std::string filename,
-                                  std::stringstream &stream) const {
-        if (this->writeType == WriteType::FILE) {
-            std::filesystem::path iipFile(filename);
-            std::filesystem::path dir(this->getDirname());
-            std::filesystem::path fullPath = dir / iipFile;
+    std::string WriterImpl::WriteContents(std::stringstream &stream,
+                                          const std::string &path,
+                                          OutputType output_type) const {
+        if (output_type == OutputType::kFile) {
+            std::filesystem::path p = (path.empty()) ? "temp.csv" : path;
             try {
-                std::ofstream file(fullPath.string());
+                std::ofstream file(p.string());
                 file << stream.rdbuf();
                 file.close();
                 return "success";
@@ -454,80 +535,24 @@ namespace data_ops {
         }
     }
 
-    /// @brief Helper function to write data to the specified stream
-    /// @param stream Stream type to write data to
-    /// @param historyToWrite Specific portion of history to save
-    void OutputWriter::write4d(std::stringstream &stream,
-                               const TimedMatrix3d historyToWrite,
-                               const std::string columnHeaders) const {
-        std::vector<Matrix3d> Matrix3dVec = historyToWrite.getMatrices();
-        stream << columnHeaders << std::endl;
-        for (long int i = 0; i < this->interventions.size(); i++) {
-            for (long int j = 0; j < this->oudStates.size(); j++) {
-                for (long int k = 0; k < this->demographicCombos.size(); k++) {
-                    if (!this->pivot) {
-                        stream << this->interventions[i] << ",";
-                        stream << this->oudStates[j] << ",";
-                        std::string temp = demographicCombos[k];
-                        temp = std::regex_replace(
-                            temp, std::regex("^ +| +$|( ) +"), "$1");
-                        std::replace(temp.begin(), temp.end(), ' ', ',');
-                        stream << temp << ",";
-                    }
-
-                    for (int timeCtr = 0; timeCtr < this->getTimesteps().size();
-                         timeCtr++) {
-                        if (this->pivot) {
-                            stream << this->interventions[i] << ",";
-                            stream << this->oudStates[j] << ",";
-                            std::string temp = demographicCombos[k];
-                            temp = std::regex_replace(
-                                temp, std::regex("^ +| +$|( ) +"), "$1");
-                            std::replace(temp.begin(), temp.end(), ' ', ',');
-                            stream
-                                << temp << ","
-                                << std::to_string(this->getTimesteps()[timeCtr])
-                                << ",";
-                        }
-                        std::array<long int, 3> index = {0, 0, 0};
-                        index[INTERVENTION] = i;
-                        index[OUD] = j;
-                        index[DEMOGRAPHIC_COMBO] = k;
-                        ASSERTM(Matrix3dVec[timeCtr].NumDimensions == 3,
-                                "3 Dimensions Found in Matrix3d");
-                        double value =
-                            Matrix3dVec[timeCtr](index[0], index[1], index[2]);
-                        stream << std::to_string(value);
-                        if (this->pivot) {
-                            stream << std::endl;
-                        } else {
-                            stream << ",";
-                        }
-                    }
-                    if (!this->pivot) {
-                        stream << std::endl;
-                    }
-                }
-            }
+    std::string
+    WriterImpl::WriteColumnHeaders(const std::vector<int> &timesteps,
+                                   bool pivot) const {
+        std::vector<std::string> demographics =
+            config->getSectionCategories("demographic");
+        std::stringstream ret;
+        ret << "Interventions,OUD States,";
+        for (std::string demographic : demographics) {
+            ret << demographic << ",";
         }
-    }
-
-    /// @brief Helper function to write Headers to CSVs
-    /// @param timesteps Total duration incurred during the simulation
-    /// @return String containing the CSV Column Headers
-    std::string OutputWriter::writeColumnHeaders() const {
-        std::string ret = "Interventions,OUD States,";
-        for (std::string demographic : this->demographics) {
-            ret += demographic + ",";
-        }
-        if (this->pivot) {
-            ret += "time,value";
+        if (pivot) {
+            ret << "time,value";
         } else {
-            for (int timestep : this->getTimesteps()) {
-                ret += "t+" + std::to_string(timestep) + ",";
+            for (int timestep : timesteps) {
+                ret << "t+" << std::to_string(timestep) << ",";
             }
         }
 
-        return ret;
+        return ret.str();
     }
-} // namespace data_ops
+} // namespace respond::data_ops

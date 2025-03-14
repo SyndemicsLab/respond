@@ -4,7 +4,7 @@
 // Created Date: 2025-03-07                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-12                                                  //
+// Last Modified: 2025-03-14                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -13,6 +13,15 @@
 #define RESPOND_DATAOPS_DATALOADERINTERNALS_HPP_
 
 #include <respond/data_ops/data_loader.hpp>
+
+#include <map>
+#include <string>
+#include <vector>
+
+#include <datamanagement/DataManagement.hpp>
+
+#include <respond/data_ops/data_types.hpp>
+#include <respond/data_ops/matrices.hpp>
 
 #include "base_loader_internals.hpp"
 

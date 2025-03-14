@@ -4,7 +4,7 @@
 // Created Date: 2025-01-14                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-12                                                  //
+// Last Modified: 2025-03-14                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -25,16 +25,17 @@ namespace respond::data_ops {
     public:
         DataFormatterImpl() {};
         ~DataFormatterImpl() {};
-        void ExtractTimesteps(std::vector<int> timesteps, History &history,
-                              CostList &costs, TimedMatrix3d &utilities,
+        void ExtractTimesteps(const std::vector<int> &timesteps,
+                              History &history, CostList &costs,
+                              TimedMatrix3d &utilities,
                               bool costSwitch) override;
 
     private:
-        TimedMatrix3d TrimTimedMatrix3d(std::vector<int> timesteps,
-                                        TimedMatrix3d matrix);
+        TimedMatrix3d TrimTimedMatrix3d(const std::vector<int> &timesteps,
+                                        const TimedMatrix3d &matrix);
 
-        TimedMatrix3d TrimAndAddTimedMatrix3d(std::vector<int> timesteps,
-                                              TimedMatrix3d matrix);
+        TimedMatrix3d TrimAndAddTimedMatrix3d(const std::vector<int> &timesteps,
+                                              const TimedMatrix3d &matrices);
     };
 } // namespace respond::data_ops
 

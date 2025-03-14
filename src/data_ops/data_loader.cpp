@@ -4,7 +4,7 @@
 // Created Date: 2025-01-14                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-12                                                  //
+// Last Modified: 2025-03-14                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -12,11 +12,20 @@
 
 #include "internals/data_loader_internals.hpp"
 
-#include <respond/data_ops/matrices.hpp>
-
-#include <cmath>
+#include <algorithm>
+#include <cstddef>
+#include <sstream>
 #include <stdexcept>
+#include <string>
 #include <unordered_map>
+#include <utility>
+#include <vector>
+
+#include <Eigen/Eigen>
+#include <datamanagement/DataManagement.hpp>
+
+#include <respond/data_ops/matrices.hpp>
+#include <respond/utils/logging.hpp>
 
 namespace respond::data_ops {
     Matrix3d DataLoaderImpl::LoadInitialSample(const std::string &file) {
@@ -32,14 +41,12 @@ namespace respond::data_ops {
             GetConfig()->getStringVector("state.interventions");
         size_t number_intervention_states = interventions.size();
 
-        this->initial_sample =
+        initial_sample =
             CreateMatrix3d(number_behavior_states, number_intervention_states,
                            number_demographic_combos);
 
-        for (int intervention = 0; intervention < number_intervention_states;
-             ++intervention) {
-
-            std::string post_check_string = interventions[intervention];
+        for (int i = 0; i < number_intervention_states; ++i) {
+            std::string post_check_string = interventions[i];
             std::transform(post_check_string.begin(), post_check_string.end(),
                            post_check_string.begin(),
                            [](unsigned char c) { return std::tolower(c); });
@@ -48,14 +55,13 @@ namespace respond::data_ops {
             }
 
             std::unordered_map<std::string, std::string> select_where = {};
-            select_where["block"] = interventions[intervention];
+            select_where["block"] = interventions[i];
             Data::IDataTablePtr interventions_data_table =
                 initial_cohort->selectWhere(select_where);
 
-            for (int behavior = 0; behavior < number_behavior_states;
-                 ++behavior) {
+            for (int b = 0; b < number_behavior_states; ++b) {
                 select_where.clear();
-                select_where["oud"] = behaviors[behavior];
+                select_where["oud"] = behaviors[b];
                 Data::IDataTablePtr behavior_data_table =
                     interventions_data_table->selectWhere(select_where);
                 std::vector<std::string> values =
@@ -65,13 +71,11 @@ namespace respond::data_ops {
                         logger_name,
                         "init_cohort.csv counts column has no record "
                         "for " +
-                            behaviors[behavior] + " and " +
-                            interventions[intervention]);
+                            behaviors[b] + " and " + interventions[i]);
                     continue;
                 }
 
-                Eigen::array<Eigen::Index, 3> offsets = {intervention, behavior,
-                                                         0};
+                Eigen::array<Eigen::Index, 3> offsets = {i, b, 0};
                 Eigen::array<Eigen::Index, 3> extent = {
                     1, 1, number_demographic_combos};
 
@@ -79,7 +83,7 @@ namespace respond::data_ops {
                     StrVecToMatrix3d(values, 1, 1, number_demographic_combos);
             }
         }
-        return this->initial_sample;
+        return initial_sample;
     }
 
     TimedMatrix3d DataLoaderImpl::LoadEnteringSamples(
@@ -108,6 +112,7 @@ namespace respond::data_ops {
             (itr != behaviors.end()) ? itr - behaviors.begin() : 0;
 
         std::string column_prefix = "cohort_size_change_";
+        std::stringstream column;
 
         int start_time = 0;
         std::vector<int> entering_sample_change_times =
@@ -115,17 +120,16 @@ namespace respond::data_ops {
                 "simulation.entering_sample_change_times");
         for (int i = 0; i < entering_sample_change_times.size(); ++i) {
             int changepoint = entering_sample_change_times[i];
-            std::string column = column_prefix;
-            if (i == 0) {
-                column += "1_";
-            } else {
-                column +=
-                    (std::to_string(entering_sample_change_times[i - 1] + 1) +
-                     "_");
-            }
-            column += std::to_string(changepoint);
+            column.clear();
+            column << column_prefix
+                   << ((i == 0)
+                           ? "1_"
+                           : (std::to_string(
+                                  entering_sample_change_times[i - 1] + 1) +
+                              "_"))
+                   << std::to_string(changepoint);
             std::vector<std::string> col =
-                entering_samples_table->getColumn(column);
+                entering_samples_table->getColumn(column.str());
 
             Matrix3d entering_sample = CreateMatrix3d(
                 number_behavior_states, number_intervention_states,
@@ -142,14 +146,12 @@ namespace respond::data_ops {
                 StrVecToMatrix3d(col, 1, 1, number_demographic_combos);
 
             FillTime(start_time, changepoint, entering_sample,
-                     this->entering_samples);
+                     entering_samples);
         }
-        return this->entering_samples;
+        return entering_samples;
     }
 
     TimedMatrix3d DataLoaderImpl::LoadEnteringSamples(const std::string &file) {
-        // ENTERING GROUP Stratified by OUD
-
         Data::IDataTablePtr entering_cohort = LoadDataTable(file);
 
         std::vector<std::string> behaviors =
@@ -161,31 +163,31 @@ namespace respond::data_ops {
         size_t number_intervention_states = interventions.size();
 
         std::string column_prefix = "cohort_size_change_";
+        std::stringstream column;
         int start_time = 0;
         std::vector<int> entering_sample_change_times =
             GetConfig()->getIntVector(
                 "simulation.entering_sample_change_times");
-        for (int i = 0; i < entering_sample_change_times.size(); ++i) {
-            int changepoint = entering_sample_change_times[i];
-            std::string column = column_prefix;
-            if (i == 0) {
-                column += "1_";
-            } else {
-                column +=
-                    (std::to_string(entering_sample_change_times[i - 1] + 1) +
-                     "_");
-            }
-            column += std::to_string(changepoint);
-            std::vector<std::string> col = entering_cohort->getColumn(column);
+        for (int e = 0; e < entering_sample_change_times.size(); ++e) {
+            int changepoint = entering_sample_change_times[e];
+            column.clear();
+            column << column_prefix
+                   << ((e == 0)
+                           ? "1_"
+                           : (std::to_string(
+                                  entering_sample_change_times[e - 1] + 1) +
+                              "_"))
+                   << std::to_string(changepoint);
+            std::vector<std::string> col =
+                entering_cohort->getColumn(column.str());
 
             Matrix3d entering_sample = CreateMatrix3d(
                 number_behavior_states, number_intervention_states,
                 number_demographic_combos);
 
-            for (int intervention = 0;
-                 intervention < number_intervention_states; ++intervention) {
+            for (int i = 0; i < number_intervention_states; ++i) {
 
-                std::string post_check_string = interventions[intervention];
+                std::string post_check_string = interventions[i];
                 std::transform(post_check_string.begin(),
                                post_check_string.end(),
                                post_check_string.begin(),
@@ -195,30 +197,28 @@ namespace respond::data_ops {
                 }
 
                 std::unordered_map<std::string, std::string> select_where = {};
-                select_where["block"] = interventions[intervention];
+                select_where["block"] = interventions[i];
                 Data::IDataTablePtr interventions_data_table =
                     entering_cohort->selectWhere(select_where);
 
-                for (int behavior = 0; behavior < number_behavior_states;
-                     ++behavior) {
+                for (int b = 0; b < number_behavior_states; ++b) {
                     select_where.clear();
-                    select_where["oud"] = behaviors[behavior];
+                    select_where["oud"] = behaviors[b];
                     Data::IDataTablePtr behavior_data_table =
                         interventions_data_table->selectWhere(select_where);
                     std::vector<std::string> values =
-                        behavior_data_table->getColumn(column);
+                        behavior_data_table->getColumn(column.str());
                     if (values.size() == 0) {
                         respond::utils::LogWarning(
-                            logger_name, "entering_cohort.csv " + column +
+                            logger_name, "entering_cohort.csv " + column.str() +
                                              " column has no record "
                                              "for " +
-                                             behaviors[behavior] + " and " +
-                                             interventions[intervention]);
+                                             behaviors[b] + " and " +
+                                             interventions[i]);
                         continue;
                     }
 
-                    Eigen::array<Eigen::Index, 3> offsets = {intervention,
-                                                             behavior, 0};
+                    Eigen::array<Eigen::Index, 3> offsets = {i, b, 0};
                     Eigen::array<Eigen::Index, 3> extent = {
                         1, 1, number_demographic_combos};
 
@@ -227,10 +227,9 @@ namespace respond::data_ops {
                 }
             }
             FillTime(start_time, changepoint, entering_sample,
-                     this->entering_samples);
+                     entering_samples);
         }
-
-        return this->entering_samples;
+        return entering_samples;
     }
 
     Matrix3d DataLoaderImpl::LoadOUDTransitionRates(const std::string &file) {
@@ -254,16 +253,14 @@ namespace respond::data_ops {
         // Matrix3d objects in the vector are matched with the order that oud
         // states are specified in the Config file. the order represents the
         // "initial oud state"
-        for (int initial_state = 0; initial_state < number_behavior_states;
-             ++initial_state) {
+        for (int b = 0; b < number_behavior_states; ++b) {
             std::unordered_map<std::string, std::string> select_where = {};
-            select_where["initial_oud"] = behaviors[initial_state];
+            select_where["initial_oud"] = behaviors[b];
             Data::IDataTablePtr selected_behavior_table =
                 behavior_transitions_table->selectWhere(select_where);
-            for (int intervention = 0;
-                 intervention < number_intervention_states; ++intervention) {
+            for (int i = 0; i < number_intervention_states; ++i) {
                 select_where.clear();
-                select_where["intervention"] = interventions[intervention];
+                select_where["intervention"] = interventions[i];
                 Data::IDataTablePtr selected_intervention_table =
                     selected_behavior_table->selectWhere(select_where);
                 for (int result_state = 0;
@@ -277,16 +274,14 @@ namespace respond::data_ops {
                         respond::utils::LogWarning(
                             logger_name, "oud_trans.csv " + column +
                                              " column has no record for " +
-                                             interventions[intervention]);
+                                             interventions[i]);
                         continue;
                     }
 
                     // Slice for setting matrix values. We select a single
                     // value and set that constant
                     Eigen::array<Eigen::Index, 3> offset = {
-                        intervention,
-                        (initial_state * number_behavior_states) + result_state,
-                        0};
+                        i, (b * number_behavior_states) + result_state, 0};
                     Eigen::array<Eigen::Index, 3> extent = {
                         1, 1, number_demographic_combos};
 
@@ -295,9 +290,8 @@ namespace respond::data_ops {
                 }
             }
         }
-
-        this->oud_transition_rates = std::move(running_transitions);
-        return this->oud_transition_rates;
+        oud_transition_rates = std::move(running_transitions);
+        return oud_transition_rates;
     }
 
     Matrix3d
@@ -317,16 +311,14 @@ namespace respond::data_ops {
             number_behavior_states * number_behavior_states,
             number_intervention_states, number_demographic_combos);
 
-        for (int initial_state = 0; initial_state < number_behavior_states;
-             ++initial_state) {
+        for (int b = 0; b < number_behavior_states; ++b) {
             std::unordered_map<std::string, std::string> select_where = {};
-            select_where["initial_oud_state"] = behaviors[initial_state];
+            select_where["initial_oud_state"] = behaviors[b];
             Data::IDataTablePtr selected_behavior_table =
                 intervention_init_table->selectWhere(select_where);
-            for (int intervention = 0;
-                 intervention < number_intervention_states; ++intervention) {
+            for (int i = 0; i < number_intervention_states; ++i) {
                 select_where.clear();
-                select_where["to_intervention"] = interventions[intervention];
+                select_where["to_intervention"] = interventions[i];
                 Data::IDataTablePtr selected_intervention_table =
                     selected_behavior_table->selectWhere(select_where);
                 for (int result_state = 0;
@@ -341,16 +333,14 @@ namespace respond::data_ops {
                             logger_name, "block_init_effect.csv " + column +
                                              " column has no "
                                              "record for " +
-                                             interventions[intervention]);
+                                             interventions[i]);
                         continue;
                     }
 
                     // Slice for setting matrix values. We select a single
                     // value and set that constant
                     Eigen::array<Eigen::Index, 3> offset = {
-                        intervention,
-                        (initial_state * number_behavior_states) + result_state,
-                        0};
+                        i, (b * number_behavior_states) + result_state, 0};
                     Eigen::array<Eigen::Index, 3> extent = {
                         1, 1, number_demographic_combos};
 
@@ -361,8 +351,8 @@ namespace respond::data_ops {
             }
         }
 
-        this->intervention_init_rates = std::move(running_transitions);
-        return this->intervention_init_rates;
+        intervention_init_rates = std::move(running_transitions);
+        return intervention_init_rates;
     }
 
     TimedMatrix3d
@@ -385,7 +375,6 @@ namespace respond::data_ops {
 
     TimedMatrix3d DataLoaderImpl::LoadOverdoseRates(const std::string &file) {
 
-        // OVERDOSE
         Data::IDataTablePtr overdose_transitions_table = LoadDataTable(file);
 
         int start_time = 0;
@@ -393,26 +382,25 @@ namespace respond::data_ops {
             GetConfig()->getIntVector("simulation.overdose_change_times");
         for (int i = 0; i < overdose_change_times.size(); ++i) {
             int timestep = overdose_change_times[i];
-            std::string column_prefix = "overdose_";
-            if (i == 0) {
-                column_prefix += "1_" + std::to_string(timestep);
-            } else {
-                column_prefix +=
-                    std::to_string(overdose_change_times[i - 1] + 1) + "_" +
-                    std::to_string(timestep);
-            }
+            std::stringstream column;
+            column << "overdose_"
+                   << ((i == 0)
+                           ? "1"
+                           : (std::to_string(overdose_change_times[i - 1] + 1)))
+                   << "_" << std::to_string(timestep);
+
             std::vector<std::string> headers =
                 overdose_transitions_table->getHeaders();
 
             for (std::string header : headers) {
-                if (header.find(column_prefix) != std::string::npos) {
-                    Matrix3d temp = this->BuildOverdoseTransitions(
+                if (header.find(column.str()) != std::string::npos) {
+                    Matrix3d temp = BuildOverdoseTransitions(
                         overdose_transitions_table, header);
-                    FillTime(start_time, timestep, temp, this->overdose_rates);
+                    FillTime(start_time, timestep, temp, overdose_rates);
                 }
             }
         }
-        return this->overdose_rates;
+        return overdose_rates;
     }
 
     TimedMatrix3d
@@ -432,28 +420,25 @@ namespace respond::data_ops {
             GetConfig()->getIntVector("simulation.overdose_change_times");
         for (int i = 0; i < overdose_change_times.size(); ++i) {
             int timestep = overdose_change_times[i];
-            std::string column_prefix = "percent_overdoses_fatal_";
-            if (i == 0) {
-                column_prefix += "1_" + std::to_string(timestep);
-            } else {
-                column_prefix +=
-                    std::to_string(overdose_change_times[i - 1] + 1) + "_" +
-                    std::to_string(timestep);
-            }
+            std::stringstream column;
+            column << "percent_overdoses_fatal_"
+                   << ((i == 0)
+                           ? "1"
+                           : (std::to_string(overdose_change_times[i - 1] + 1)))
+                   << "_" << std::to_string(timestep);
 
             std::vector<std::string> headers =
                 fatal_overdose_table->getHeaders();
 
             for (std::string header : headers) {
-                if (header.find(column_prefix) != std::string::npos) {
-                    Matrix3d temp = this->BuildFatalOverdoseTransitions(
+                if (header.find(column.str()) != std::string::npos) {
+                    Matrix3d temp = BuildFatalOverdoseTransitions(
                         fatal_overdose_table, header);
-                    FillTime(start_time, timestep, temp,
-                             this->fatal_overdose_rates);
+                    FillTime(start_time, timestep, temp, fatal_overdose_rates);
                 }
             }
         }
-        return this->fatal_overdose_rates;
+        return fatal_overdose_rates;
     }
 
     Matrix3d DataLoaderImpl::LoadMortalityRates(
@@ -500,30 +485,29 @@ namespace respond::data_ops {
                            number_demographic_combos);
         // mortality is one element per stratum, no time variability
         int smr_index = 0;
-        for (int intervention = 0; intervention < number_intervention_states;
-             ++intervention) {
+        for (int i = 0; i < number_intervention_states; ++i) {
             for (int d = 0; d < number_demographic_combos; d++) {
                 for (int oud = 0; oud < number_behavior_states; ++oud) {
                     if (background_mortality_column.size() > d &&
                         smr_column.size() > smr_index) {
-                        mortality_transitions(intervention, oud, d) =
+                        mortality_transitions(i, oud, d) =
                             1 -
                             exp(log(1 -
                                     std::stod(background_mortality_column[d])) *
                                 std::stod(smr_column[smr_index]));
                         smr_index++;
                     } else {
-                        mortality_transitions(intervention, oud, d) = 0.0;
+                        mortality_transitions(i, oud, d) = 0.0;
                     }
                 }
             }
         }
-        this->mortality_rates = mortality_transitions;
-        return this->mortality_rates;
+        mortality_rates = mortality_transitions;
+        return mortality_rates;
     }
 
     Matrix3d
-    DataLoaderImpl::BuildInterventionMatrix(Data::IDataTablePtr const &table,
+    DataLoaderImpl::BuildInterventionMatrix(const Data::IDataTablePtr &table,
                                             std::string name, int timestep) {
 
         std::vector<std::string> behaviors =
@@ -565,22 +549,20 @@ namespace respond::data_ops {
                 Eigen::array<Eigen::Index, 3> extent = {
                     1, 1, number_demographic_combos};
 
-                std::string header = interventions[i] + "_";
-
                 auto it = std::find(intervention_change_times.begin(),
                                     intervention_change_times.end(), timestep);
 
                 int idx = it - intervention_change_times.begin();
 
-                if (idx == 0) {
-                    header += "1_" + std::to_string(timestep);
-                } else {
-                    header +=
-                        std::to_string(intervention_change_times[idx - 1] + 1) +
-                        "_" + std::to_string(timestep);
-                }
+                std::stringstream column;
+                column << interventions[i] << "_"
+                       << ((idx == 0)
+                               ? "1"
+                               : (std::to_string(
+                                     intervention_change_times[idx - 1] + 1)))
+                       << "_" << std::to_string(timestep);
 
-                std::vector<std::string> value = temp->getColumn(header);
+                std::vector<std::string> value = temp->getColumn(column.str());
 
                 transition_matrix.slice(offsets, extent) =
                     StrVecToMatrix3d(value, 1, 1, number_demographic_combos);
@@ -615,14 +597,15 @@ namespace respond::data_ops {
             for (int i = 0; i < number_intervention_states; i++) {
                 // assign to index + offset of numInterventions
                 Eigen::array<Eigen::Index, 3> offsets = {0, 0, 0};
-                offsets[Dimension::kIntervention] =
+                offsets[(int)Dimension::kIntervention] =
                     i * number_intervention_states;
-                offsets[Dimension::kOud] = i * 0;
-                offsets[Dimension::kDemographicCombo] = 0;
+                offsets[(int)Dimension::kOud] = i * 0;
+                offsets[(int)Dimension::kDemographicCombo] = 0;
                 Eigen::array<Eigen::Index, 3> extent = {0, 0, 0};
-                extent[Dimension::kIntervention] = number_intervention_states;
-                extent[Dimension::kOud] = number_behavior_states;
-                extent[Dimension::kDemographicCombo] =
+                extent[(int)Dimension::kIntervention] =
+                    number_intervention_states;
+                extent[(int)Dimension::kOud] = number_behavior_states;
+                extent[(int)Dimension::kDemographicCombo] =
                     number_demographic_combos;
                 Matrix3d temp =
                     BuildInterventionMatrix(table, interventions[i], timestep);
@@ -643,15 +626,15 @@ namespace respond::data_ops {
     }
 
     TimedMatrix3d DataLoaderImpl::BuildTransitionRatesOverTime(
-        std::vector<int> const &ict, Data::IDataTablePtr const &table) {
-        TimedMatrix3d m3dot;
+        const std::vector<int> &ict, const Data::IDataTablePtr &table) {
+        TimedMatrix3d matrices;
         int start_time = 0;
         for (int timestep : ict) {
             Matrix3d transition_matrix = CreateTransitionMatrix3d(
                 table, Dimension::kIntervention, timestep);
-            FillTime(start_time, timestep, transition_matrix, m3dot);
+            FillTime(start_time, timestep, transition_matrix, matrices);
         }
-        return m3dot;
+        return matrices;
     }
 
     Matrix3d
@@ -671,17 +654,14 @@ namespace respond::data_ops {
                            number_demographic_combos);
 
         int row = 0;
-        for (int intervention = 0; intervention < number_intervention_states;
-             ++intervention) {
+        for (int i = 0; i < number_intervention_states; ++i) {
             for (int d = 0; d < number_demographic_combos; ++d) {
-                for (int oud_state = 0; oud_state < number_behavior_states;
-                     ++oud_state) {
-                    if (behaviors[oud_state].find("Nonactive") !=
-                            std::string::npos ||
+                for (int b = 0; b < number_behavior_states; ++b) {
+                    if (behaviors[b].find("Nonactive") != std::string::npos ||
                         row >= table->getColumn(key).size()) {
-                        overdose_transitions(intervention, oud_state, d) = 0.0f;
+                        overdose_transitions(i, b, d) = 0.0f;
                     } else {
-                        overdose_transitions(intervention, oud_state, d) =
+                        overdose_transitions(i, b, d) =
                             std::stod((table->getColumn(key))[row]);
                         ++row;
                     }
@@ -718,24 +698,22 @@ namespace respond::data_ops {
             }
             // intervention, oud_state, dem
             Eigen::array<Eigen::Index, 3> offsets = {0, 0, 0};
-            offsets[Dimension::kDemographicCombo] = d;
+            offsets[(int)Dimension::kDemographicCombo] = d;
             Eigen::array<Eigen::Index, 3> extent = {0, 0, 0};
-            extent[Dimension::kIntervention] = number_intervention_states;
-            extent[Dimension::kOud] = number_behavior_states;
-            extent[Dimension::kDemographicCombo] = 1;
+            extent[(int)Dimension::kIntervention] = number_intervention_states;
+            extent[(int)Dimension::kOud] = number_behavior_states;
+            extent[(int)Dimension::kDemographicCombo] = 1;
             fatal_overdose_transitions.slice(offsets, extent)
                 .setConstant(std::stod(col[row]));
             ++row;
         }
-
         return fatal_overdose_transitions;
     }
 
     void DataLoaderImpl::FillTime(int &start, const int end, Matrix3d data,
                                   TimedMatrix3d &storage) {
-        while (start <= end) {
+        for (; start <= end; start++) {
             storage[start] = data;
-            start++;
         }
     }
 

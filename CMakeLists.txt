@@ -66,7 +66,6 @@ set(RESPOND_SRCS
     src/data_ops/data_loader.cpp
     src/data_ops/utility_loader.cpp
     src/data_ops/writer.cpp
-    src/model/PostSimulationCalculator.cpp
     src/model/Simulation.cpp
 )
 

@@ -4,7 +4,7 @@
 // Created Date: 2025-03-12                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-12                                                  //
+// Last Modified: 2025-03-14                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -13,9 +13,12 @@
 #ifndef RESPOND_DATAOPS_UTILITYLOADERINTERNALS_HPP_
 #define RESPOND_DATAOPS_UTILITYLAODERINTERNALS_HPP_
 
-#include <datamanagement/DataManagement.hpp>
-
 #include <respond/data_ops/utility_loader.hpp>
+
+#include <string>
+#include <unordered_map>
+
+#include <respond/data_ops/matrices.hpp>
 
 #include "base_loader_internals.hpp"
 
@@ -39,9 +42,9 @@ namespace respond::data_ops {
 
         Matrix3d
         GetBackgroundUtility(const std::string &perspective) const override {
-            if (this->background_utility.find(perspective) !=
-                this->background_utility.end()) {
-                return this->background_utility.at(perspective);
+            if (background_utility.find(perspective) !=
+                background_utility.end()) {
+                return background_utility.at(perspective);
             }
 
             // add warning
@@ -50,9 +53,8 @@ namespace respond::data_ops {
         }
 
         Matrix3d GetOUDUtility(const std::string &perspective) const override {
-            if (this->behavior_utility.find(perspective) !=
-                this->behavior_utility.end()) {
-                return this->behavior_utility.at(perspective);
+            if (behavior_utility.find(perspective) != behavior_utility.end()) {
+                return behavior_utility.at(perspective);
             }
             // add warning
             Matrix3d result;
@@ -61,9 +63,8 @@ namespace respond::data_ops {
 
         Matrix3d
         GetSettingUtility(const std::string &perspective) const override {
-            if (this->setting_utility.find(perspective) !=
-                this->setting_utility.end()) {
-                return this->setting_utility.at(perspective);
+            if (setting_utility.find(perspective) != setting_utility.end()) {
+                return setting_utility.at(perspective);
             }
             // add warning
             Matrix3d result;

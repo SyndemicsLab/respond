@@ -4,7 +4,7 @@
 // Created Date: 2025-01-14                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-12                                                  //
+// Last Modified: 2025-03-14                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -16,9 +16,6 @@
 #include <string>
 #include <unordered_map>
 
-#include <datamanagement/DataManagement.hpp>
-
-#include <respond/data_ops/data_types.hpp>
 #include <respond/data_ops/matrices.hpp>
 
 namespace respond::data_ops {
@@ -27,38 +24,32 @@ namespace respond::data_ops {
         virtual ~CostLoader() = default;
 
         virtual std::unordered_map<std::string, Matrix3d>
-        LoadHealthcareUtilizationCost(std::string const &csvName) = 0;
+        LoadHealthcareUtilizationCost(const std::string &file) = 0;
 
         virtual std::unordered_map<std::string,
                                    std::unordered_map<std::string, double>>
-        LoadOverdoseCost(std::string const &csvName) = 0;
+        LoadOverdoseCost(const std::string &file) = 0;
 
         virtual std::unordered_map<std::string, Matrix3d>
-        LoadPharmaceuticalCost(std::string const &csvName) = 0;
+        LoadPharmaceuticalCost(const std::string &file) = 0;
 
         virtual std::unordered_map<std::string, Matrix3d>
-        LoadTreatmentUtilizationCost(std::string const &csvName) = 0;
+        LoadTreatmentUtilizationCost(const std::string &file) = 0;
 
         virtual Matrix3d
-        GetHealthcareUtilizationCost(std::string const &perspective) const = 0;
+        GetHealthcareUtilizationCost(const std::string &perspective) const = 0;
 
         virtual Matrix3d
-        GetPharmaceuticalCost(std::string const &perspective) const = 0;
+        GetPharmaceuticalCost(const std::string &perspective) const = 0;
 
         virtual Matrix3d
-        GetTreatmentUtilizationCost(std::string const &perspective) const = 0;
+        GetTreatmentUtilizationCost(const std::string &perspective) const = 0;
 
         virtual double
-        GetNonFatalOverdoseCost(std::string const &perspective) const = 0;
+        GetNonFatalOverdoseCost(const std::string &perspective) const = 0;
 
         virtual double
-        GetFatalOverdoseCost(std::string const &perspective) const = 0;
-
-        virtual std::vector<std::string> GetCostPerspectives() const = 0;
-
-        virtual bool GetCostSwitch() const = 0;
-
-        virtual double GetDiscountRate() const = 0;
+        GetFatalOverdoseCost(const std::string &perspective) const = 0;
     };
 } // namespace respond::data_ops
 
