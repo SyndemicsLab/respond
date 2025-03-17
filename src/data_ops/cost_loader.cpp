@@ -4,7 +4,7 @@
 // Created Date: 2025-01-14                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-14                                                  //
+// Last Modified: 2025-03-17                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -209,6 +209,12 @@ namespace respond::data_ops {
             }
         }
         return treatment_utilization_cost_map;
+    }
+
+    std::unique_ptr<CostLoader>
+    CostLoader::Create(const std::string &directory,
+                       const std::string &log_name) {
+        return std::make_unique<CostLoaderImpl>(directory, log_name);
     }
 
 } // namespace respond::data_ops

@@ -4,7 +4,7 @@
 // Created Date: 2025-01-17                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-14                                                  //
+// Last Modified: 2025-03-17                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -554,5 +554,10 @@ namespace respond::data_ops {
         }
 
         return ret.str();
+    }
+
+    std::unique_ptr<Writer> Writer::Create(const Data::IConfigablePtr &cfg,
+                                           const std::string &log_name) {
+        return std::make_unique<WriterImpl>(cfg, log_name);
     }
 } // namespace respond::data_ops

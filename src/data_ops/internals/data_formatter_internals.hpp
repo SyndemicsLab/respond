@@ -26,9 +26,8 @@ namespace respond::data_ops {
     public:
         DataFormatterImpl() {};
         ~DataFormatterImpl() {};
-        void ExtractTimesteps(const std::vector<int> &timesteps,
-                              History &history, CostList &costs,
-                              TimedMatrix3d &utilities,
+        void ExtractTimesteps(std::vector<int> &timesteps, History &history,
+                              CostList &costs, TimedMatrix3d &utilities,
                               bool costSwitch) override;
 
     private:
@@ -38,10 +37,6 @@ namespace respond::data_ops {
         TimedMatrix3d TrimAndAddTimedMatrix3d(const std::vector<int> &timesteps,
                                               const TimedMatrix3d &matrices);
     };
-
-    std::unique_ptr<DataFormatter> Create() {
-        return std::make_unique<DataFormatterImpl>();
-    }
 } // namespace respond::data_ops
 
 #endif // RESPOND_DATAOPS_DATAFORMATTERINTERNALS_HPP_

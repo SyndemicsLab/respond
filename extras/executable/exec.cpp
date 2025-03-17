@@ -152,9 +152,9 @@ void DoPostSimulationCalculations(
 
     auto formatter = respond::data_ops::DataFormatter::Create();
 
-    formatter->ExtractTimesteps(data_loader.GetConfig()->getIntVector(
-                                    "output.general_stats_output_timesteps"),
-                                history, base_costs, base_utilities,
+    std::vector<int> timesteps = data_loader.GetConfig()->getIntVector(
+        "output.general_stats_output_timesteps");
+    formatter->ExtractTimesteps(timesteps, history, base_costs, base_utilities,
                                 std::get<bool>(data_loader.GetConfig()->get(
                                     "cost.cost_analysis", false)));
 

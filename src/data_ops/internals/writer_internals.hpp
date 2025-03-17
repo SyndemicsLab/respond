@@ -141,11 +141,6 @@ namespace respond::data_ops {
                                             const std::string &directory,
                                             const OutputType output_type) const;
     };
-
-    std::unique_ptr<Writer> Writer::Create(const Data::IConfigablePtr &cfg,
-                                           const std::string &log_name) {
-        return std::make_unique<WriterImpl>(cfg, log_name);
-    }
 } // namespace respond::data_ops
 
 #endif // RESPOND_DATAOPS_WRITERINTERNALS_HPP_

@@ -18,7 +18,7 @@ namespace respond::utils {
     CreationStatus CreateFileLogger(const std::string &logger_name,
                                     const std::string &filepath) {
         if (CheckIfExists(logger_name) == CreationStatus::kExists) {
-            return;
+            return CreationStatus::kExists;
         }
         try {
             spdlog::cfg::load_env_levels();
@@ -28,8 +28,9 @@ namespace respond::utils {
             spdlog::basic_logger_mt(logger_name, filepath);
         } catch (const spdlog::spdlog_ex &ex) {
             std::cout << "Log init failed: " << ex.what() << std::endl;
-            return;
+            return CreationStatus::kError;
         }
+        return CreationStatus::kSuccess;
     }
 
     void LogInfo(const std::string &logger_name, const std::string &message) {

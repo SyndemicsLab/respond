@@ -4,7 +4,7 @@
 // Created Date: 2025-01-14                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-14                                                  //
+// Last Modified: 2025-03-17                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -19,7 +19,7 @@
 #include <respond/data_ops/matrices.hpp>
 
 namespace respond::data_ops {
-    void DataFormatterImpl::ExtractTimesteps(const std::vector<int> &timesteps,
+    void DataFormatterImpl::ExtractTimesteps(std::vector<int> &timesteps,
                                              History &history, CostList &costs,
                                              TimedMatrix3d &utilities,
                                              bool costSwitch) {
@@ -103,5 +103,9 @@ namespace respond::data_ops {
             }
         }
         return trimmed;
+    }
+
+    std::unique_ptr<DataFormatter> DataFormatter::Create() {
+        return std::make_unique<DataFormatterImpl>();
     }
 } // namespace respond::data_ops

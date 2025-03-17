@@ -126,7 +126,9 @@ namespace respond::data_ops {
         Matrix3d LoadMortalityRates(std::string const &smrCSVName,
                                     std::string const &bgmCSVName) override;
 
-        Data::IConfigablePtr GetConfig() const { BaseLoader::GetConfig(); }
+        Data::IConfigablePtr GetConfig() const {
+            return BaseLoader::GetConfig();
+        }
 
     private:
         void FillTime(int &start, int const end, Matrix3d data,
@@ -187,12 +189,6 @@ namespace respond::data_ops {
         TimedMatrix3d fatal_overdose_rates;
         Matrix3d mortality_rates;
     };
-
-    std::unique_ptr<DataLoader>
-    DataLoader::Create(const std::string &directory,
-                       const std::string &log_name) {
-        return std::make_unique<DataLoaderImpl>(directory, log_name);
-    }
 
 } // namespace respond::data_ops
 #endif // RESPOND_DATAOPS_DATALOADERINTERNALS_HPP_

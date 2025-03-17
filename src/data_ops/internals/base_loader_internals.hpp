@@ -95,7 +95,7 @@ namespace respond::data_ops {
 
         // tabular files from the current RESPOND directory structure, as of
         // [2023-04-06]
-        const std::vector<std::string> BaseLoader::kInputFiles = {
+        const std::vector<std::string> kInputFiles = {
             "all_types_overdose.csv",
             "background_mortality.csv",
             "block_init_effect.csv",

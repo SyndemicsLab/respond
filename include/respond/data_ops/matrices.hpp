@@ -4,7 +4,7 @@
 // Created Date: 2025-01-14                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-14                                                  //
+// Last Modified: 2025-03-17                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -115,7 +115,7 @@ namespace respond::data_ops {
             return 0.0;
         }
 
-        data_ops::Matrix3d running_total(data.begin()->second.dimensions());
+        Matrix3d running_total(data.begin()->second.dimensions());
         running_total = running_total.setZero();
         for (auto kv : data) {
             running_total += kv.second;
@@ -132,13 +132,10 @@ namespace respond::data_ops {
 
         for (int t = 0; t < data.size(); t++) {
             Matrix3d temp =
-                CreateMatrix3d(
-                    data.at(t).dimension((int)Dimension::kOud),
-                    data.at(t).dimension((int)Dimension::kIntervention),
-                    data.at(t).dimension((int)Dimension::kDemographicCombo))
+                CreateMatrix3d(data.at(t).dimension(0), data.at(t).dimension(1),
+                               data.at(t).dimension(2))
                     .constant(value);
-            data_ops::Matrix3d temp = data.at(t) * temp;
-            result[t] = temp;
+            result[t] = data.at(t) * temp;
         }
         return result;
     }
@@ -148,7 +145,7 @@ namespace respond::data_ops {
                                   const Matrix3d &value) {
         TimedMatrix3d result;
         for (int t = 0; t < state.size(); ++t) {
-            data_ops::Matrix3d temp = state.at(t) * value;
+            Matrix3d temp = state.at(t) * value;
             result[t] = temp;
         }
         return result;

@@ -117,12 +117,6 @@ namespace respond::data_ops {
                                std::unordered_map<std::string, double>>
                 &cost_map);
     };
-
-    std::unique_ptr<CostLoader>
-    CostLoader::Create(const std::string &directory,
-                       const std::string &log_name) {
-        return std::make_unique<CostLoaderImpl>(directory, log_name);
-    }
 } // namespace respond::data_ops
 
 #endif // RESPOND_DATAOPS_COSTLOADERINTERNALS_HPP_

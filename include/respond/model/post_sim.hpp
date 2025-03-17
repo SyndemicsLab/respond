@@ -20,6 +20,25 @@
 
 /// @brief Namespace for all Post Simulation Calculations
 namespace respond::model {
+    inline respond::data_ops::Matrix3d
+    CalculateDiscount(const respond::data_ops::Matrix3d &data,
+                      double discountRate, int N, bool isDiscrete = true) {
+        double discountConstant =
+            (isDiscrete) ? (1 / pow((1.0 + (discountRate) / 52.0), N))
+                         : (exp(-discountRate * (N / 52)));
+
+        data_ops::Matrix3d discount =
+            respond::data_ops::CreateMatrix3d(
+                data.dimension((int)respond::data_ops::Dimension::kOud),
+                data.dimension(
+                    (int)respond::data_ops::Dimension::kIntervention),
+                data.dimension(
+                    (int)respond::data_ops::Dimension::kDemographicCombo))
+                .setConstant(discountConstant);
+        data_ops::Matrix3d result = data - discount;
+        return result;
+    }
+
     inline respond::data_ops::CostList
     CalculateCosts(const respond::data_ops::History &history,
                    const respond::data_ops::CostLoader &cost_loader,
@@ -128,25 +147,6 @@ namespace respond::model {
 
         // dividing by 52 to switch from life weeks to life years
         return result(0) / 52.0;
-    }
-
-    inline respond::data_ops::Matrix3d
-    CalculateDiscount(const respond::data_ops::Matrix3d &data,
-                      double discountRate, int N, bool isDiscrete = true) {
-        double discountConstant =
-            (isDiscrete) ? (1 / pow((1.0 + (discountRate) / 52.0), N))
-                         : (exp(-discountRate * (N / 52)));
-
-        data_ops::Matrix3d discount =
-            respond::data_ops::CreateMatrix3d(
-                data.dimension((int)respond::data_ops::Dimension::kOud),
-                data.dimension(
-                    (int)respond::data_ops::Dimension::kIntervention),
-                data.dimension(
-                    (int)respond::data_ops::Dimension::kDemographicCombo))
-                .setConstant(discountConstant);
-        data_ops::Matrix3d result = data - discount;
-        return result;
     }
 
     inline std::vector<double>

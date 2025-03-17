@@ -60,13 +60,13 @@ endif()
 # Building the Library
 # ---------------------------------------------------------------------------------------
 set(RESPOND_SRCS 
-    src/respond.cpp 
     src/data_ops/cost_loader.cpp
     src/data_ops/data_formatter.cpp
     src/data_ops/data_loader.cpp
     src/data_ops/utility_loader.cpp
     src/data_ops/writer.cpp
     src/model/simulation.cpp
+    src/utils/logging.cpp
 )
 
 if(BUILD_SHARED_LIBS)

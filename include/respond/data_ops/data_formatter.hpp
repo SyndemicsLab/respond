@@ -21,7 +21,7 @@ namespace respond::data_ops {
     class DataFormatter {
     public:
         virtual ~DataFormatter() = default;
-        virtual void ExtractTimesteps(const std::vector<int> &timesteps,
+        virtual void ExtractTimesteps(std::vector<int> &timesteps,
                                       History &history, CostList &costs,
                                       TimedMatrix3d &utilities,
                                       bool costSwitch) = 0;

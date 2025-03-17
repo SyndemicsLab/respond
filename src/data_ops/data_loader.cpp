@@ -747,4 +747,10 @@ namespace respond::data_ops {
         Matrix3d ret = writer_tensor;
         return ret;
     }
+
+    std::unique_ptr<DataLoader>
+    DataLoader::Create(const std::string &directory,
+                       const std::string &log_name) {
+        return std::make_unique<DataLoaderImpl>(directory, log_name);
+    }
 } // namespace respond::data_ops
