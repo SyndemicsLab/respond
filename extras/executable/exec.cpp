@@ -63,12 +63,126 @@ void LoadDataLoader(respond::data_ops::DataLoader &data_loader) {
     data_loader.LoadMortalityRates("SMR.csv", "background_mortality.csv");
 }
 
-int main(int argc, char **argv) {
+void LoadCostLoader(respond::data_ops::CostLoader &cost_loader) {
+    cost_loader.LoadHealthcareUtilizationCost(
+        "healthcare_utilization_cost.csv");
+    cost_loader.LoadOverdoseCost("overdose_cost.csv");
+    cost_loader.LoadPharmaceuticalCost("pharmaceutical_cost.csv");
+    cost_loader.LoadTreatmentUtilizationCost("treatment_utilization_cost.csv");
+}
+
+void LoadUtilityLoader(respond::data_ops::UtilityLoader &utility_loader) {
+    utility_loader.LoadBackgroundUtility("bg_utility.csv");
+    utility_loader.LoadOUDUtility("oud_utility.csv");
+    utility_loader.LoadSettingUtility("setting_utility.csv");
+}
+
+void DoPostSimulationCalculations(
+    const respond::data_ops::DataLoader &data_loader,
+    respond::data_ops::History history, const std::string &input_set,
+    const std::string &output_directory, const std::string &logger_name) {
+    if (!std::get<bool>(
+            data_loader.GetConfig()->get("cost.cost_analysis", false))) {
+        return;
+    }
+    auto cost_loader =
+        respond::data_ops::CostLoader::Create(input_set, logger_name);
+    respond::utils::LogInfo(logger_name, "CostLoader Created");
+
+    LoadCostLoader(*cost_loader);
+
+    auto utility_loader =
+        respond::data_ops::UtilityLoader::Create(input_set, logger_name);
+    respond::utils::LogInfo(logger_name, "UtilityLoader Created");
+
+    LoadUtilityLoader(*utility_loader);
+
+    respond::data_ops::CostList base_costs;
+    respond::data_ops::TimedMatrix3d base_utilities;
+    respond::data_ops::Totals totals;
+
+    if (std::get<bool>(
+            data_loader.GetConfig()->get("cost.cost_analysis", false))) {
+
+        double disc_life_years = 0.0;
+        std::vector<double> total_disc_costs = {};
+        double total_disc_utility = 0.0;
+
+        base_costs = respond::model::CalculateCosts(
+            history, *cost_loader,
+            data_loader.GetConfig()->getStringVector("cost.cost_perspectives"));
+
+        base_utilities = respond::model::CalculateUtilities(
+            history, *utility_loader, respond::data_ops::UtilityType::kMin);
+
+        double discount_rate = std::get<double>(
+            data_loader.GetConfig()->get("cost.discount_rate", 0.0));
+
+        if (discount_rate != 0.0) {
+            respond::data_ops::CostList disc_costs =
+                respond::model::CalculateCosts(
+                    history, *cost_loader,
+                    data_loader.GetConfig()->getStringVector(
+                        "cost.cost_perspectives"),
+                    true, discount_rate);
+
+            total_disc_costs = respond::model::CalculateTotalCosts(disc_costs);
+
+            respond::data_ops::TimedMatrix3d disc_utilities =
+                respond::model::CalculateUtilities(
+                    history, *utility_loader,
+                    respond::data_ops::UtilityType::kMin, true, discount_rate);
+            total_disc_utility =
+                respond::data_ops::TimedMatrix3dSummedOverDimensions(
+                    disc_utilities);
+
+            disc_life_years = respond::model::CalculateLifeYears(history, true,
+                                                                 discount_rate);
+        }
+
+        totals.base_costs = respond::model::CalculateTotalCosts(base_costs);
+        totals.base_life_years = respond::model::CalculateLifeYears(history);
+        totals.base_utility =
+            respond::data_ops::TimedMatrix3dSummedOverDimensions(
+                base_utilities);
+        totals.disc_costs = total_disc_costs;
+        totals.disc_life_years = disc_life_years;
+        totals.disc_utility = total_disc_utility;
+    }
+
+    auto formatter = respond::data_ops::DataFormatter::Create();
+
+    formatter->ExtractTimesteps(data_loader.GetConfig()->getIntVector(
+                                    "output.general_stats_output_timesteps"),
+                                history, base_costs, base_utilities,
+                                std::get<bool>(data_loader.GetConfig()->get(
+                                    "cost.cost_analysis", false)));
+
+    auto writer =
+        respond::data_ops::Writer::Create(data_loader.GetConfig(), logger_name);
+
+    if (std::get<bool>(data_loader.GetConfig()->get(
+            "output.write_calibrated_inputs", false))) {
+        writer->WriteInputData(data_loader, output_directory,
+                               respond::data_ops::OutputType::kFile);
+    } else {
+        writer->WriteHistoryData(history, output_directory,
+                                 respond::data_ops::OutputType::kFile);
+        writer->WriteCostData(base_costs, output_directory,
+                              respond::data_ops::OutputType::kFile);
+        writer->WriteUtilityData(base_utilities, output_directory,
+                                 respond::data_ops::OutputType::kFile);
+        writer->WriteTotalsData(totals, output_directory,
+                                respond::data_ops::OutputType::kFile);
+    }
+}
+
+void execute(int argc, char **argv) {
     int start;
     int end;
     std::string root;
     if (!ArgChecks(argc, argv, root, start, end)) {
-        return 0;
+        return;
     }
 
     std::vector<int> runs((end + 1) - start);
@@ -85,151 +199,30 @@ int main(int argc, char **argv) {
             std::filesystem::create_directory(output_directory);
 
             std::string log_path = output_directory.string() + "/log.txt";
-            std::string log_name = "logger" + std::to_string(i);
-            respond::utils::CreateFileLogger(log_name, log_path);
+            std::string logger_name = "logger" + std::to_string(i);
+            respond::utils::CreateFileLogger(logger_name, log_path);
 
-            respond::utils::LogInfo(log_name, "Logger Created");
+            respond::utils::LogInfo(logger_name, "Logger Created");
 
             auto data_loader = respond::data_ops::DataLoader::Create(
-                input_set.string(), log_name);
-            respond::utils::LogInfo(log_name, "DataLoader Created");
+                input_set.string(), logger_name);
+            respond::utils::LogInfo(logger_name, "DataLoader Created");
 
             LoadDataLoader(*data_loader);
 
-            auto respond = respond::model::Respond::Create(log_name);
+            auto respond = respond::model::Respond::Create(logger_name);
             respond->Run(*data_loader);
             respond::data_ops::History history = respond->GetHistory();
 
-            auto costLoader = respond::data_ops::CostLoader::Create(
-                input_set.string(), log_name);
-            respond::utils::LogInfo(log_name, "CostLoader Created");
-
-            auto utilityLoader = respond::data_ops::UtilityLoader::Create(
-                input_set.string(), log_name);
-            respond::utils::LogInfo(log_name, "UtilityLoader Created");
-
-            if (std::get<bool>(data_loader->GetConfig()->get(
-                    "cost.cost_analysis", false))) {
-                costLoader->LoadHealthcareUtilizationCost(
-                    "healthcare_utilization_cost.csv");
-                costLoader->LoadOverdoseCost("overdose_cost.csv");
-                costLoader->LoadPharmaceuticalCost("pharmaceutical_cost.csv");
-                costLoader->LoadTreatmentUtilizationCost(
-                    "treatment_utilization_cost.csv");
-
-                utilityLoader->LoadBackgroundUtility("bg_utility.csv");
-                utilityLoader->LoadOUDUtility("oud_utility.csv");
-                utilityLoader->LoadSettingUtility("setting_utility.csv");
-
-                basecosts = respond::model::CalculateCosts(
-                    history, *costLoader,
-                    data_loader->GetConfig()->getStringVector(
-                        "cost.cost_perspectives"));
-
-                totalBaseCosts =
-                    Helpers::calcCosts(PostSimulationCalculator, basecosts);
-
-                baseutilities = PostSimulationCalculator.calculateUtilities(
-                    utilityLoader, Calculator::UTILITY_TYPE::MIN);
-                totalBaseUtility =
-                    PostSimulationCalculator.totalAcrossTimeAndDims(
-                        baseutilities);
-                baselifeYears = PostSimulationCalculator.calculateLifeYears();
-                if (costLoader->GetDiscountRate() != 0.0) {
-                    disccosts =
-                        PostSimulationCalculator.calculateCosts(costLoader);
-
-                    totalDiscCosts =
-                        Helpers::calcCosts(PostSimulationCalculator, disccosts);
-                    discutilities = PostSimulationCalculator.calculateUtilities(
-                        utilityLoader, Calculator::UTILITY_TYPE::MIN);
-                    totalDiscUtility =
-                        PostSimulationCalculator.totalAcrossTimeAndDims(
-                            discutilities);
-                    disclifeYears =
-                        PostSimulationCalculator.calculateLifeYears();
-                }
-            }
-
-            respond::data_ops::CostList basecosts;
-            respond::data_ops::TimedMatrix3d baseutilities;
-            double baselifeYears = 0.0;
-            std::vector<double> totalBaseCosts;
-            double totalBaseUtility = 0.0;
-
-            respond::data_ops::CostList disccosts;
-            respond::data_ops::TimedMatrix3d discutilities;
-            double disclifeYears;
-            std::vector<double> totalDiscCosts;
-            double totalDiscUtility = 0.0;
-
-            std::vector<int> outputTimesteps =
-                data_loader->GetGeneralStatsOutputTimesteps();
-
-            bool pivot_long = false;
-            pivot_long = std::get<bool>(
-                data_loader->GetConfig()->Get("output.pivot_long", pivot_long));
-
-            data_ops::HistoryWriter historyWriter(
-                output_directory.string(), data_loader->GetInterventions(),
-                data_loader->GetOUDStates(), data_loader->GetDemographics(),
-                data_loader->GetDemographicCombos(), outputTimesteps,
-                data_ops::WriteType::FILE, pivot_long);
-
-            data_ops::DataFormatter formatter;
-
-            formatter.extractTimesteps(outputTimesteps, history, basecosts,
-                                       baseutilities,
-                                       costLoader->GetCostSwitch());
-
-            historyWriter.writeHistory(history);
-
-            bool writeParameters = false;
-            writeParameters = std::get<bool>(data_loader->GetConfig()->Get(
-                "output.write_calibrated_inputs", writeParameters));
-            if (writeParameters) {
-                data_ops::InputWriter ipWriter(output_directory.string(),
-                                               outputTimesteps,
-                                               data_ops::WriteType::FILE);
-                ipWriter.writeParameters(data_loader);
-            }
-
-            // Probably want to figure out the right way to do this
-            if (costLoader->GetCostSwitch()) {
-                data_ops::CostWriter costWriter(
-                    output_directory.string(), data_loader->GetInterventions(),
-                    data_loader->GetOUDStates(), data_loader->GetDemographics(),
-                    data_loader->GetDemographicCombos(), outputTimesteps,
-                    data_ops::WriteType::FILE, pivot_long);
-                costWriter.writeCosts(basecosts);
-            }
-            if (utilityLoader->GetCostSwitch()) {
-                data_ops::UtilityWriter utilityWriter(
-                    output_directory.string(), data_loader->GetInterventions(),
-                    data_loader->GetOUDStates(), data_loader->GetDemographics(),
-                    data_loader->GetDemographicCombos(), outputTimesteps,
-                    data_ops::WriteType::FILE, pivot_long);
-                utilityWriter.writeUtilities(baseutilities);
-            }
-            if (costLoader->GetCostSwitch()) {
-                data_ops::Totals totals;
-                totals.baseCosts = totalBaseCosts;
-                totals.baseLifeYears = baselifeYears;
-                totals.baseUtility = totalBaseUtility;
-                totals.discCosts = totalDiscCosts;
-                totals.discLifeYears = disclifeYears;
-                totals.discUtility = totalDiscUtility;
-                data_ops::TotalsWriter totalsWriter(
-                    output_directory.string(), data_loader->GetInterventions(),
-                    data_loader->GetOUDStates(), data_loader->GetDemographics(),
-                    data_loader->GetDemographicCombos(), outputTimesteps,
-                    data_ops::WriteType::FILE);
-                totalsWriter.writeTotals(totals);
-            }
+            DoPostSimulationCalculations(
+                *data_loader, history, input_set.string(),
+                output_directory.string(), logger_name);
 
             std::cout << "Output " << std::to_string(i) << " Complete"
                       << std::endl;
         });
     std::cout << "Simulation Complete! :)" << std::endl;
-    return 0;
+    return;
 }
+
+int main(int argc, char **argv) { execute(argc, argv); }
