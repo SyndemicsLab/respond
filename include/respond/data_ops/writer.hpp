@@ -4,7 +4,7 @@
 // Created Date: 2025-01-14                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-14                                                  //
+// Last Modified: 2025-03-17                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -13,6 +13,7 @@
 #ifndef RESPOND_DATAOPS_WRITER_HPP_
 #define RESPOND_DATAOPS_WRITER_HPP_
 
+#include <memory>
 #include <string>
 
 #include <respond/data_ops/data_loader.hpp>
@@ -53,6 +54,10 @@ namespace respond::data_ops {
         virtual std::string
         WriteTotalsData(const Totals &totals, const std::string &directory,
                         const OutputType output_type) const = 0;
+
+        static std::unique_ptr<Writer>
+        Create(const Data::IConfigablePtr &cfg,
+               const std::string &log_name = "console");
     };
 
 } // namespace respond::data_ops

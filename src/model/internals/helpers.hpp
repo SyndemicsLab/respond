@@ -4,7 +4,7 @@
 // Created Date: 2025-01-14                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-14                                                  //
+// Last Modified: 2025-03-17                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -21,33 +21,6 @@
 #include <respond/data_ops/data_types.hpp>
 
 namespace respond::model {
-    bool argChecks(int argc, char **argv, std::string &rootInputDir,
-                   int &taskStart, int &taskEnd) {
-        if (argc > 1 && argc != 4) {
-            std::cerr << "Usage: " << argv[0]
-                      << "[INPUT FOLDER] [RUN START] [RUN END]\n\n"
-                      << "RESPOND, a compartmental simulation of healthcare in "
-                         "communities with high-risk opioid use";
-            return false;
-        }
-
-        if (argc == 1) {
-            std::cout << "Please provide the input folder path: ";
-            std::cin >> rootInputDir;
-            std::cout << std::endl
-                      << "Please provide the first input folder number: ";
-            std::cin >> taskStart;
-            std::cout << std::endl
-                      << "Please provide the last input folder number: ";
-            std::cin >> taskEnd;
-        } else {
-            taskStart = std::stoi(argv[2]);
-            taskEnd = std::stoi(argv[3]);
-            rootInputDir = argv[1];
-        }
-        return true;
-    }
-
     std::vector<double>
     CalculateTotalCosts(const respond::data_ops::CostList &cost_list) {
         std::vector<double> result;

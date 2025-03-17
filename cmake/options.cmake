@@ -3,6 +3,8 @@ option(RESPOND_BUILD_ALL "Build all artifacts" OFF)
 # build position independent code
 option(RESPOND_BUILD_PIC "Build position independent code (-fPIC)" OFF)
 
+option(RESPOND_BUILD_EXECUTABLE "Build Executable for RESPOND" ON)
+
 # testing options
 option(RESPOND_BUILD_TESTS "Build tests" ON)
 

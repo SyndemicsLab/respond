@@ -4,15 +4,14 @@
 // Created Date: 2025-01-14                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-07                                                  //
+// Last Modified: 2025-03-17                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <respond/model/Simulation.hpp>
+#include "internals/simulation_internals.hpp"
 
-#include "spdlog/fmt/ostr.h"
 #include <Eigen/Eigen>
 #include <algorithm>
 #include <cmath>
@@ -22,197 +21,121 @@
 #include <string>
 #include <unsupported/Eigen/CXX11/Tensor>
 
-namespace Simulation {
+#include <respond/data_ops/data_loader.hpp>
+#include <respond/data_ops/data_types.hpp>
+#include <respond/utils/logging.hpp>
 
-    Respond::Respond(std::shared_ptr<data_ops::IDataLoader> dataLoader) {
-        if (!dataLoader) {
-            return;
-        }
-        this->setData(dataLoader);
-        const auto processor_count = std::thread::hardware_concurrency();
-        Eigen::setNbThreads(processor_count);
-        this->setDuration(dataLoader->getDuration());
-        this->currentTime = 0;
-        this->state = createStandardMatrix3d();
+namespace respond::model {
 
-        this->logger = dataLoader->getLogger();
+    void RespondImpl::Run(const respond::data_ops::DataLoader &data_loader) {
+        state = data_loader.GetInitialSample();
+        ResetTime();
+        ResetHistory();
 
-        if (!this->logger) {
-            if (!spdlog::get("console")) {
-                this->logger = spdlog::stdout_color_mt("console");
-            } else {
-                this->logger = spdlog::get("console");
-            }
+        int duration = std::get<int>(
+            data_loader.GetConfig()->get("simulation.duration", (int)0));
+
+        for (; time < duration; ++time) {
+            state = Step(data_loader);
         }
     }
 
-    void
-    Respond::run(std::shared_ptr<data_ops::IDataLoader> const &dataloader,
-                 std::shared_ptr<data_ops::ICostLoader> const &costloader,
-                 std::shared_ptr<data_ops::IUtilityLoader> const &utilloader) {
-        if (dataloader) {
-            this->setData(dataloader);
-        }
-        if (costloader) {
-            this->setCost(costloader);
-        }
-        if (utilloader) {
-            this->setUtility(utilloader);
-        }
-        if (!this->getDataLoader()) {
-            this->getLogger()->error(
-                "There is no data Loaded to the Simulation!");
-            return;
-        }
-
-        this->state = this->getDataLoader()->getInitialSample();
-        this->currentTime = 0;
-        this->setupHistory();
-
-        while (this->getCurrentTime() < this->getDuration()) {
-            this->state = this->step();
-            this->currentTime++;
-        }
+    void RespondImpl::ResetHistory() {
+        history.overdose_history.clear();
+        history.fatal_overdose_history.clear();
+        history.mortality_history.clear();
+        history.intervention_admission_history.clear();
+        history.state_history.clear();
     }
 
-    void Respond::setupHistory() {
-        data_ops::Matrix3d zeroMat = createStandardMatrix3d();
-        this->history.overdoseHistory.insert(zeroMat, this->getCurrentTime());
-        this->history.fatalOverdoseHistory.insert(zeroMat,
-                                                  this->getCurrentTime());
-        this->history.mortalityHistory.insert(zeroMat, this->getCurrentTime());
-        this->history.interventionAdmissionHistory.insert(
-            zeroMat, this->getCurrentTime());
-        this->history.stateHistory.insert(this->state, this->getCurrentTime());
+    void RespondImpl::LogDebugPoint(
+        const std::string &message,
+        const respond::data_ops::Matrix3d &matrix) const {
+        respond::utils::LogDebug(logger_name,
+                                 "-------------------------------------------");
+        respond::utils::LogDebug(logger_name, "Timestep: " + time);
+        std::stringstream ss;
+        ss << message << ": " << std::endl << matrix;
+        respond::utils::LogDebug(logger_name, ss.str());
+        respond::utils::LogDebug(logger_name,
+                                 "-------------------------------------------");
     }
 
-    data_ops::Matrix3d Respond::step() {
-#ifndef NDEBUG
-        this->getLogger()->debug("Timestep: {}", this->currentTime);
-        Eigen::Tensor<double, 0> sum1 = this->state.sum();
-        this->getLogger()->debug("State Sum: {}", sum1(0));
-#endif
+    respond::data_ops::Matrix3d
+    RespondImpl::Step(const respond::data_ops::DataLoader &data_loader) {
+        LogDebugPoint("Starting Simulation Step", state);
 
-        int agingReference =
-            std::floor(this->getDataLoader()->getAgingInterval() / 2);
-        if (((this->currentTime - agingReference) %
-                 this->getDataLoader()->getAgingInterval() ==
-             0)) {
-            this->ageUp();
-        }
+        auto matrix_1 = AddEnteringCohort(state, data_loader);
 
-        data_ops::Matrix3d enterSampleState =
-            this->addEnteringSample(this->state);
+        LogDebugPoint("Post Entering Sample", matrix_1);
 
-#ifndef NDEBUG
-        Eigen::Tensor<double, 0> sum2 = enterSampleState.sum();
-        this->getLogger()->debug(
-            "Post Entering Sample Population State Sum: {}", sum2(0));
-#endif
-        data_ops::Matrix3d oudTransState =
-            this->multBehaviorTransition(enterSampleState);
+        auto matrix_2 = MultiplyBehaviorTransition(matrix_1, data_loader);
 
-#ifndef NDEBUG
-        Eigen::Tensor<double, 0> sum3 = oudTransState.sum().eval();
-        this->getLogger()->debug("Post OUD Transition Population State Sum: {}",
-                                 sum3(0));
-#endif
+        LogDebugPoint("Post Behavior Transition", matrix_2);
 
-        data_ops::Matrix3d transitionedState =
-            this->multInterventionTransition(oudTransState);
-
-#ifndef NDEBUG
-        Eigen::Tensor<double, 0> sum4 = transitionedState.sum();
-        this->getLogger()->debug(
-            "Post Intervention Transition Population State Sum: {}", sum4(0));
-#endif
-
-        data_ops::Matrix3d overdoses = this->multOD(transitionedState);
-
-        data_ops::Matrix3d fatalOverdoses = this->multFODGivenOD(overdoses);
-
-        data_ops::Matrix3d mortalities =
-            this->multMortality(transitionedState - fatalOverdoses);
-
-        auto new_state = (transitionedState - (mortalities + fatalOverdoses));
-
-#ifndef NDEBUG
-        Eigen::Tensor<double, 0> sum5 = (mortalities + fatalOverdoses).sum();
-        this->getLogger()->debug("Mortalities + FODs Sum: {}", sum5(0));
-        Eigen::Tensor<double, 0> t = new_state.sum();
-        this->getLogger()->debug("Final Step Population Sum: {}", t(0));
-#endif
-
-        data_ops::Matrix3d admissions = this->state - transitionedState;
-
+        matrix_1 = MultiplyInterventionTransition(matrix_2, data_loader);
+        data_ops::Matrix3d admissions = state - matrix_1;
         data_ops::Matrix3d mat(admissions.dimensions());
         mat.setZero();
-
         admissions = admissions.cwiseMax(mat);
+        history.intervention_admission_history[time] = admissions;
 
-        this->history.interventionAdmissionHistory.insert(admissions,
-                                                          currentTime + 1);
-        this->history.overdoseHistory.insert(overdoses, this->currentTime + 1);
-        this->history.fatalOverdoseHistory.insert(fatalOverdoses,
-                                                  this->currentTime + 1);
-        this->history.mortalityHistory.insert(mortalities,
-                                              this->currentTime + 1);
-        this->history.stateHistory.insert(new_state, this->currentTime + 1);
+        LogDebugPoint("Post Intervention Transition", matrix_1);
+
+        matrix_2 = MultiplyOD(matrix_1, data_loader);
+        history.overdose_history[time] = matrix_2;
+
+        auto matrix_3 = MultiplyFODGivenOD(matrix_2, data_loader);
+        history.fatal_overdose_history[time] = matrix_3;
+
+        matrix_2 = MultiplyMortality(matrix_1 - matrix_3, data_loader);
+        history.mortality_history[time] = matrix_2;
+
+        auto new_state = (matrix_1 - (matrix_2 + matrix_3));
+        history.state_history[time] = new_state;
+
+        LogDebugPoint("End of Step", new_state);
 
         return new_state;
     }
 
-    void Respond::ageUp() {
-        auto tempState = this->state;
-        auto dims = tempState.dimensions();
-        int shift_val = this->getDataLoader()->getNumDemographicCombos() /
-                        this->getDataLoader()->getAgeGroupBins().size();
-        Eigen::array<Eigen::Index, 3> offset = {0, 0, 0};
-        Eigen::array<Eigen::Index, 3> extent = {state.dimensions()};
-        extent[data_ops::DEMOGRAPHIC_COMBO] -= shift_val;
-        auto rolling_state = this->state.slice(offset, extent);
-        offset[data_ops::DEMOGRAPHIC_COMBO] += shift_val;
-        this->state.slice(offset, extent) = rolling_state;
-        offset = {0, 0, 0};
-        extent = {state.dimensions()};
-        extent[data_ops::DEMOGRAPHIC_COMBO] = shift_val;
-        this->state.slice(offset, extent).setConstant(0);
-    }
-
-    data_ops::Matrix3d
-    Respond::addEnteringSample(data_ops::Matrix3d const mat) const {
-        data_ops::Matrix3d es =
-            this->getDataLoader()->getEnteringSamples().getMatrix3dAtTimestep(
-                this->currentTime);
-        ASSERTM(es.dimensions() == this->state.dimensions(),
-                "Entering Sample Dimensions is Correct");
-        auto ret = this->state + es;
-        data_ops::Matrix3d roundingMatrix(es.dimensions());
+    respond::data_ops::Matrix3d RespondImpl::AddEnteringCohort(
+        const respond::data_ops::Matrix3d &mat,
+        const respond::data_ops::DataLoader &data_loader) const {
+        auto es = data_loader.GetEnteringSamples().at(time);
+        auto ret = state + es;
+        respond::data_ops::Matrix3d roundingMatrix(es.dimensions());
         roundingMatrix.setZero();
         return ret.cwiseMax(roundingMatrix);
     }
 
-    data_ops::Matrix3d
-    Respond::multBehaviorTransition(data_ops::Matrix3d const state) const {
-        data_ops::Matrix3d behaviorTransitionProbs =
-            this->getDataLoader()->getOUDTransitionRates();
+    respond::data_ops::Matrix3d RespondImpl::MultiplyBehaviorTransition(
+        const respond::data_ops::Matrix3d &state,
+        const respond::data_ops::DataLoader &data_loader) const {
+        auto behaviorTransitionProbs = data_loader.GetOUDTransitionRates();
 
-        data_ops::Matrix3d ret = this->createStandardMatrix3d();
-        for (int i = 0; i < this->state.dimension(data_ops::OUD); ++i) {
+        respond::data_ops::Matrix3d ret = respond::data_ops::CreateMatrix3d(
+            state.dimension(0), state.dimension(1), state.dimension(2));
+
+        for (int i = 0;
+             i < state.dimension((int)respond::data_ops::Dimension::kOud);
+             ++i) {
 
             Eigen::array<Eigen::Index, 3> offsetTrans = {0, 0, 0};
             auto extentTrans = state.dimensions();
-            offsetTrans[data_ops::OUD] = i * state.dimension(data_ops::OUD);
+            offsetTrans[(int)respond::data_ops::Dimension::kOud] =
+                i * state.dimension((int)respond::data_ops::Dimension::kOud);
 
             Eigen::array<Eigen::Index, 3> offsetState = {0, 0, 0};
             auto extentState = state.dimensions();
-            offsetState[data_ops::OUD] = i;
-            extentState[data_ops::OUD] = 1;
+            offsetState[(int)respond::data_ops::Dimension::kOud] = i;
+            extentState[(int)respond::data_ops::Dimension::kOud] = 1;
 
             auto slicedState = state.slice(offsetState, extentState);
 
             Eigen::array<Eigen::Index, 3> bcast = {1, 1, 1};
-            bcast[data_ops::OUD] = state.dimension(data_ops::OUD);
+            bcast[(int)respond::data_ops::Dimension::kOud] =
+                state.dimension((int)respond::data_ops::Dimension::kOud);
 
             auto broadcastedTensor = slicedState.broadcast(bcast);
             auto slicedTransition =
@@ -223,98 +146,113 @@ namespace Simulation {
         return ret;
     }
 
-    data_ops::Matrix3d
-    Respond::multInterventionTransition(data_ops::Matrix3d const state) const {
-        data_ops::Matrix3d interventionTransitionProbs =
-            this->getDataLoader()
-                ->getInterventionTransitionRates()
-                .getMatrix3dAtTimestep(this->currentTime);
+    respond::data_ops::Matrix3d RespondImpl::MultiplyInterventionTransition(
+        const respond::data_ops::Matrix3d &state,
+        const respond::data_ops::DataLoader &data_loader) const {
+        respond::data_ops::Matrix3d interventionTransitionProbs =
+            data_loader.GetInterventionTransitionRates()[time];
 
-        data_ops::Matrix3d ret = this->createStandardMatrix3d();
+        respond::data_ops::Matrix3d ret = respond::data_ops::CreateMatrix3d(
+            state.dimension(0), state.dimension(1), state.dimension(2));
 
-        for (int i = 0; i < this->state.dimension(data_ops::INTERVENTION);
+        for (int i = 0;
+             i < this->state.dimension(
+                     (int)respond::data_ops::Dimension::kIntervention);
              ++i) {
 
             Eigen::array<Eigen::Index, 3> offsetTrans = {0, 0, 0};
             auto extentTrans = state.dimensions();
-            offsetTrans[data_ops::INTERVENTION] =
-                i * state.dimension(data_ops::INTERVENTION);
+            offsetTrans[(int)respond::data_ops::Dimension::kIntervention] =
+                i * state.dimension(
+                        (int)respond::data_ops::Dimension::kIntervention);
 
             Eigen::array<Eigen::Index, 3> offsetState = {0, 0, 0};
             auto extentState = state.dimensions();
-            offsetState[data_ops::INTERVENTION] = i;
-            extentState[data_ops::INTERVENTION] = 1;
+            offsetState[(int)respond::data_ops::Dimension::kIntervention] = i;
+            extentState[(int)respond::data_ops::Dimension::kIntervention] = 1;
 
             auto slicedState = state.slice(offsetState, extentState);
 
             Eigen::array<Eigen::Index, 3> bcast = {1, 1, 1};
-            bcast[data_ops::INTERVENTION] =
-                state.dimension(data_ops::INTERVENTION);
+            bcast[(int)respond::data_ops::Dimension::kIntervention] =
+                state.dimension(
+                    (int)respond::data_ops::Dimension::kIntervention);
 
             auto broadcastedTensor = slicedState.broadcast(bcast);
             auto slicedTransition =
                 interventionTransitionProbs.slice(offsetTrans, extentTrans);
 
-            ret += this->multUseAfterIntervention(
-                broadcastedTensor * slicedTransition, i);
+            ret += MultiplyUseAfterIntervention(
+                broadcastedTensor * slicedTransition, i, data_loader);
         }
         return ret;
     }
 
-    data_ops::Matrix3d Respond::multUseAfterIntervention(
-        data_ops::Matrix3d const interventionState,
-        int const intervention_idx) const {
-        data_ops::Matrix3d result(interventionState.dimensions());
+    respond::data_ops::Matrix3d RespondImpl::MultiplyUseAfterIntervention(
+        const respond::data_ops::Matrix3d &interventionState,
+        int const intervention_idx,
+        const respond::data_ops::DataLoader &data_loader) const {
+        respond::data_ops::Matrix3d result(interventionState.dimensions());
         result.setZero();
+        int intervention_size = data_loader.GetConfig()
+                                    ->getStringVector("state.interventions")
+                                    .size();
 
-        for (int j = 0; j < this->getDataLoader()->getNumInterventions(); j++) {
+        int behavior_size =
+            data_loader.GetConfig()->getStringVector("state.ouds").size();
+
+        for (int j = 0; j < intervention_size; ++j) {
 
             Eigen::array<Eigen::Index, 3> result_offset = {0, 0, 0};
             Eigen::array<Eigen::Index, 3> result_extent = result.dimensions();
-            result_offset[data_ops::INTERVENTION] = j;
-            result_extent[data_ops::INTERVENTION] = 1;
+            result_offset[(int)respond::data_ops::Dimension::kIntervention] = j;
+            result_extent[(int)respond::data_ops::Dimension::kIntervention] = 1;
             if (intervention_idx == j) {
                 result.slice(result_offset, result_extent) +=
                     interventionState.slice(result_offset, result_extent);
             } else {
 
-                data_ops::Matrix3d oudMat((data_ops::Matrix3d(result.slice(
-                                               result_offset, result_extent)))
-                                              .dimensions());
+                respond::data_ops::Matrix3d oudMat(
+                    (respond::data_ops::Matrix3d(
+                         result.slice(result_offset, result_extent)))
+                        .dimensions());
 
-                for (int k = 0; k < this->getDataLoader()->getNumOUDStates();
-                     k++) {
+                for (int k = 0; k < behavior_size; ++k) {
                     Eigen::array<Eigen::Index, 3> intervention_offset = {0, 0,
                                                                          0};
                     Eigen::array<Eigen::Index, 3> intervention_extent =
                         interventionState.dimensions();
-                    intervention_offset[data_ops::INTERVENTION] = j;
-                    intervention_extent[data_ops::INTERVENTION] = 1;
-                    intervention_offset[data_ops::OUD] = k;
-                    intervention_extent[data_ops::OUD] = 1;
+                    intervention_offset[(
+                        int)respond::data_ops::Dimension::kIntervention] = j;
+                    intervention_extent[(
+                        int)respond::data_ops::Dimension::kIntervention] = 1;
+                    intervention_offset[(
+                        int)respond::data_ops::Dimension::kOud] = k;
+                    intervention_extent[(
+                        int)respond::data_ops::Dimension::kOud] = 1;
 
                     Eigen::array<Eigen::Index, 3> bcast = {1, 1, 1};
-                    bcast[data_ops::OUD] =
-                        this->getDataLoader()->getNumOUDStates();
+                    bcast[(int)respond::data_ops::Dimension::kOud] =
+                        behavior_size;
                     auto slicedState = interventionState.slice(
                         intervention_offset, intervention_extent);
                     auto broadcastedTensor = slicedState.broadcast(bcast);
 
                     Eigen::array<Eigen::Index, 3> rates_offset = {0, 0, 0};
                     Eigen::array<Eigen::Index, 3> rates_extent =
-                        this->getDataLoader()
-                            ->getInterventionInitRates()
-                            .dimensions();
-                    rates_offset[data_ops::INTERVENTION] = j;
-                    rates_extent[data_ops::INTERVENTION] = 1;
-                    rates_offset[data_ops::OUD] =
-                        (k * this->getDataLoader()->getNumOUDStates());
-                    rates_extent[data_ops::OUD] =
-                        this->getDataLoader()->getNumOUDStates();
+                        data_loader.GetInterventionInitRates().dimensions();
+                    rates_offset[(
+                        int)respond::data_ops::Dimension::kIntervention] = j;
+                    rates_extent[(
+                        int)respond::data_ops::Dimension::kIntervention] = 1;
+                    rates_offset[(int)respond::data_ops::Dimension::kOud] =
+                        (k * behavior_size);
+                    rates_extent[(int)respond::data_ops::Dimension::kOud] =
+                        behavior_size;
 
                     result.slice(result_offset, result_extent) +=
                         broadcastedTensor *
-                        this->getDataLoader()->getInterventionInitRates().slice(
+                        data_loader.GetInterventionInitRates().slice(
                             rates_offset, rates_extent);
                 }
             }
@@ -322,41 +260,34 @@ namespace Simulation {
         return result;
     }
 
-    data_ops::Matrix3d
-    Respond::multFODGivenOD(data_ops::Matrix3d const state) const {
-        data_ops::Matrix3d fatalOverdoseMatrix =
-            this->getDataLoader()
-                ->getFatalOverdoseRates()
-                .getMatrix3dAtTimestep(this->currentTime);
-        ASSERTM(fatalOverdoseMatrix.dimensions() == state.dimensions(),
-                "Fatal Overdose Dimensions are Correct");
+    respond::data_ops::Matrix3d RespondImpl::MultiplyFODGivenOD(
+        const respond::data_ops::Matrix3d &state,
+        const respond::data_ops::DataLoader &data_loader) const {
+        respond::data_ops::Matrix3d fatalOverdoseMatrix =
+            data_loader.GetFatalOverdoseRates()[time];
 
-        data_ops::Matrix3d mult = fatalOverdoseMatrix * state;
+        respond::data_ops::Matrix3d mult = fatalOverdoseMatrix * state;
         return mult;
     }
 
-    data_ops::Matrix3d Respond::multOD(data_ops::Matrix3d const state) const {
-        data_ops::Matrix3d overdoseMatrix =
-            this->getDataLoader()->getOverdoseRates().getMatrix3dAtTimestep(
-                this->currentTime);
+    respond::data_ops::Matrix3d RespondImpl::MultiplyOD(
+        const respond::data_ops::Matrix3d &state,
+        const respond::data_ops::DataLoader &data_loader) const {
+        respond::data_ops::Matrix3d overdoseMatrix =
+            data_loader.GetOverdoseRates()[time];
 
-        ASSERTM(overdoseMatrix.dimensions() == state.dimensions(),
-                "Overdose Dimensions equal State Dimensions");
-
-        data_ops::Matrix3d mult = overdoseMatrix * state;
+        respond::data_ops::Matrix3d mult = overdoseMatrix * state;
         return mult;
     }
 
-    data_ops::Matrix3d
-    Respond::multMortality(data_ops::Matrix3d const state) const {
-        data_ops::Matrix3d mortalityMatrix =
-            this->getDataLoader()->getMortalityRates();
+    respond::data_ops::Matrix3d RespondImpl::MultiplyMortality(
+        const respond::data_ops::Matrix3d &state,
+        const respond::data_ops::DataLoader &data_loader) const {
+        respond::data_ops::Matrix3d mortalityMatrix =
+            data_loader.GetMortalityRates();
 
-        ASSERTM(mortalityMatrix.dimensions() == state.dimensions(),
-                "Mortality Dimensions equal State Dimensions");
-
-        data_ops::Matrix3d ret(state.dimensions());
-        data_ops::Matrix3d mor = (state * mortalityMatrix);
+        respond::data_ops::Matrix3d ret(state.dimensions());
+        respond::data_ops::Matrix3d mor = (state * mortalityMatrix);
         return mor;
     }
-} // namespace Simulation
+} // namespace respond::model

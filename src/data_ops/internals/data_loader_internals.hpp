@@ -4,7 +4,7 @@
 // Created Date: 2025-03-07                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-14                                                  //
+// Last Modified: 2025-03-17                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -15,6 +15,7 @@
 #include <respond/data_ops/data_loader.hpp>
 
 #include <map>
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -125,6 +126,8 @@ namespace respond::data_ops {
         Matrix3d LoadMortalityRates(std::string const &smrCSVName,
                                     std::string const &bgmCSVName) override;
 
+        Data::IConfigablePtr GetConfig() const { BaseLoader::GetConfig(); }
+
     private:
         void FillTime(int &start, int const end, Matrix3d data,
                       TimedMatrix3d &storage);
@@ -184,6 +187,12 @@ namespace respond::data_ops {
         TimedMatrix3d fatal_overdose_rates;
         Matrix3d mortality_rates;
     };
-} // namespace respond::data_ops
 
+    std::unique_ptr<DataLoader>
+    DataLoader::Create(const std::string &directory,
+                       const std::string &log_name) {
+        return std::make_unique<DataLoaderImpl>(directory, log_name);
+    }
+
+} // namespace respond::data_ops
 #endif // RESPOND_DATAOPS_DATALOADERINTERNALS_HPP_

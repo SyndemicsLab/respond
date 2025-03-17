@@ -4,7 +4,7 @@
 // Created Date: 2025-03-10                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-10                                                  //
+// Last Modified: 2025-03-17                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -13,15 +13,24 @@
 #ifndef RESPOND_UTILS_LOGGINGINTERNALS_HPP_
 #define RESPOND_UTILS_LOGGINGINTERNALS_HPP_
 
+#include <iostream>
 #include <string>
 
+#include <spdlog/cfg/env.h>
+#include <spdlog/sinks/basic_file_sink.h>
 #include <spdlog/spdlog.h>
 
 namespace respond::utils {
-    enum class LogType { kInfo, kWarn, kError, kDebug, kCount };
-
+    CreationStatus CheckIfExists(const std::string &logger_name) {
+        return (spdlog::get(logger_name) != nullptr)
+                   ? CreationStatus::kExists
+                   : CreationStatus::kNotCreated;
+    }
     void log(const std::string &logger_name, const std::string &message,
              LogType type = LogType::kInfo) {
+        if (CheckIfExists(logger_name) != CreationStatus::kExists) {
+            return;
+        }
         auto logger = spdlog::get(logger_name);
         if (logger) {
             switch (type) {

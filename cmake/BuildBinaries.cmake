@@ -6,6 +6,11 @@ if(RESPOND_BUILD_PYBINDINGS OR RESPOND_BUILD_ALL)
     add_subdirectory(extras/py_simdemics)
 endif()
 
+if(RESPOND_BUILD_EXECUTABLE OR RESPOND_BUILD_ALL)
+    message(STATUS "Building Executable")
+    add_subdirectory(extras/executable)
+endif()
+
 if(RESPOND_BUILD_TESTS OR RESPOND_BUILD_ALL)
     message(STATUS "Generating tests")
     enable_testing()

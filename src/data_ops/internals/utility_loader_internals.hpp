@@ -4,7 +4,7 @@
 // Created Date: 2025-03-12                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-14                                                  //
+// Last Modified: 2025-03-17                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -15,6 +15,7 @@
 
 #include <respond/data_ops/utility_loader.hpp>
 
+#include <memory>
 #include <string>
 #include <unordered_map>
 
@@ -79,6 +80,12 @@ namespace respond::data_ops {
         std::unordered_map<std::string, Matrix3d>
         LoadUtility(const std::string &file);
     };
+
+    std::unique_ptr<UtilityLoader>
+    UtilityLoader::Create(const std::string &directory,
+                          const std::string &log_name) {
+        return std::make_unique<UtilityLoaderImpl>(directory, log_name);
+    }
 } // namespace respond::data_ops
 
 #endif

@@ -4,7 +4,7 @@
 // Created Date: 2025-01-14                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-14                                                  //
+// Last Modified: 2025-03-17                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -13,6 +13,7 @@
 #ifndef RESPOND_DATAOPS_COSTLOADER_HPP_
 #define RESPOND_DATAOPS_COSTLOADER_HPP_
 
+#include <memory>
 #include <string>
 #include <unordered_map>
 
@@ -50,6 +51,10 @@ namespace respond::data_ops {
 
         virtual double
         GetFatalOverdoseCost(const std::string &perspective) const = 0;
+
+        static std::unique_ptr<CostLoader>
+        Create(const std::string &directory = "",
+               const std::string &log_name = "console");
     };
 } // namespace respond::data_ops
 

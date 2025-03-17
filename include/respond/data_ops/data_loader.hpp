@@ -4,7 +4,7 @@
 // Created Date: 2025-01-14                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-14                                                  //
+// Last Modified: 2025-03-17                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -13,7 +13,10 @@
 #ifndef RESPOND_DATAOPS_DATALOADER_HPP_
 #define RESPOND_DATAOPS_DATALOADER_HPP_
 
+#include <memory>
 #include <string>
+
+#include <datamanagement/DataManagement.hpp>
 
 #include <respond/data_ops/matrices.hpp>
 
@@ -109,6 +112,12 @@ namespace respond::data_ops {
         virtual Matrix3d
         LoadMortalityRates(const std::string &smr_file,
                            const std::string &background_file) = 0;
+
+        virtual Data::IConfigablePtr GetConfig() const = 0;
+
+        static std::unique_ptr<DataLoader>
+        Create(const std::string &directory = "",
+               const std::string &log_name = "console");
     };
 } // namespace respond::data_ops
 #endif // RESPOND_DATAOPS_DATALOADER_HPP_

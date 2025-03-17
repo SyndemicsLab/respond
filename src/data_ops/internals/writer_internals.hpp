@@ -4,7 +4,7 @@
 // Created Date: 2025-03-13                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-14                                                  //
+// Last Modified: 2025-03-17                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -15,6 +15,7 @@
 #include <respond/data_ops/writer.hpp>
 
 #include <algorithm>
+#include <memory>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -29,7 +30,7 @@
 namespace respond::data_ops {
     class WriterImpl : public virtual Writer {
     public:
-        WriterImpl(const Data::IConfigablePtr cfg,
+        WriterImpl(const Data::IConfigablePtr &cfg,
                    const std::string &log_name = "console")
             : config(cfg), logger_name(log_name) {}
         ~WriterImpl() = default;
@@ -140,6 +141,11 @@ namespace respond::data_ops {
                                             const std::string &directory,
                                             const OutputType output_type) const;
     };
+
+    std::unique_ptr<Writer> Writer::Create(const Data::IConfigablePtr &cfg,
+                                           const std::string &log_name) {
+        return std::make_unique<WriterImpl>(cfg, log_name);
+    }
 } // namespace respond::data_ops
 
 #endif // RESPOND_DATAOPS_WRITERINTERNALS_HPP_

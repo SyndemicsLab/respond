@@ -66,7 +66,7 @@ set(RESPOND_SRCS
     src/data_ops/data_loader.cpp
     src/data_ops/utility_loader.cpp
     src/data_ops/writer.cpp
-    src/model/Simulation.cpp
+    src/model/simulation.cpp
 )
 
 if(BUILD_SHARED_LIBS)
