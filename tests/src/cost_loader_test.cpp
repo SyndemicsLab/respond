@@ -13,7 +13,6 @@
 #include <respond/data_ops/cost_loader.hpp>
 
 #include <cstdio>
-#include <filesystem>
 #include <fstream>
 #include <memory>
 
@@ -93,7 +92,7 @@ protected:
     }
 };
 
-TEST_F(CostLoaderTest, CreateCostLoader) {
+TEST_F(CostLoaderTest, FactoryCreate) {
     auto cl = CostLoader::Create();
     EXPECT_NE(cl, nullptr);
 }

@@ -24,7 +24,8 @@
 
 using namespace respond::data_ops;
 
-class MockDataLoader : public virtual DataLoader {
+class MockDataLoader : public DataLoader {
+public:
     MOCK_METHOD(Matrix3d, GetInitialSample, (), (const, override));
 
     MOCK_METHOD(TimedMatrix3d, GetEnteringSamples, (), (const, override));
@@ -87,7 +88,7 @@ class MockDataLoader : public virtual DataLoader {
     MOCK_METHOD(Matrix3d, LoadMortalityRates,
                 (const std::string &, const std::string &), (override));
 
-    MOCK_METHOD((Data::IConfigablePtr), GetConfig, (), (const, override));
+    MOCK_METHOD(Data::IConfigablePtr, GetConfig, (), (const, override));
 
 public:
 };

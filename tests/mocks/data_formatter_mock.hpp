@@ -21,7 +21,8 @@
 
 using namespace respond::data_ops;
 
-class MockDataFormatter : public virtual DataFormatter {
+class MockDataFormatter : public DataFormatter {
+public:
     MOCK_METHOD(void, ExtractTimesteps,
                 (std::vector<int> &, History &, CostList &, TimedMatrix3d &,
                  bool),

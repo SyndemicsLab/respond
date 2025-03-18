@@ -24,7 +24,7 @@
 
 using namespace respond::data_ops;
 
-class MockCostLoader : public virtual CostLoader {
+class MockCostLoader : public CostLoader {
 public:
     MOCK_METHOD((std::unordered_map<std::string, Matrix3d>),
                 LoadHealthcareUtilizationCost, ((const std::string &)),

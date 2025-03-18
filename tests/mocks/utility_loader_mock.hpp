@@ -24,7 +24,7 @@
 
 using namespace respond::data_ops;
 
-class MockUtilityLoader : public virtual UtilityLoader {
+class MockUtilityLoader : public UtilityLoader {
 public:
     MOCK_METHOD((std::unordered_map<std::string, Matrix3d>),
                 LoadBackgroundUtility, (const std::string &), (override));

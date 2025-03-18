@@ -23,7 +23,8 @@
 
 using namespace respond::data_ops;
 
-class MockWriter : public virtual Writer {
+class MockWriter : public Writer {
+public:
     MOCK_METHOD(std::string, WriteInputData,
                 (const DataLoader &, const std::string &, const OutputType),
                 (const, override));

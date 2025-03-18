@@ -19,7 +19,8 @@
 
 using namespace respond::model;
 
-class MockRespond : public virtual Respond {
+class MockRespond : public Respond {
+public:
     MOCK_METHOD(void, Run, (const respond::data_ops::DataLoader &), (override));
     MOCK_METHOD(respond::data_ops::History, GetHistory, (), (const, override));
 };
