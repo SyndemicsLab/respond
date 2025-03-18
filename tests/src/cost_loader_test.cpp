@@ -4,16 +4,16 @@
 // Created Date: 2025-01-14                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-07                                                  //
+// Last Modified: 2025-03-18                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <respond/data_ops/cost_loader.hpp>
+
 #include <filesystem>
 #include <gtest/gtest.h>
-
-#include <respond/data_ops/CostLoader.hpp>
 
 class CostLoaderTest : public ::testing::Test {
 protected:
@@ -22,16 +22,8 @@ protected:
     std::filesystem::path configFile;
     std::ofstream configFileStream;
     std::ofstream fileStream;
-    std::shared_ptr<spdlog::logger> logger;
 
     void SetUp() override {
-        if (!logger) {
-            if (spdlog::get("test")) {
-                logger = spdlog::get("test");
-            } else {
-                logger = spdlog::stdout_color_mt("test");
-            }
-        }
         tempRelativeFile = std::tmpnam(nullptr) + std::string(".csv");
         tempAbsoluteFile =
             std::filesystem::temp_directory_path() / tempRelativeFile;
