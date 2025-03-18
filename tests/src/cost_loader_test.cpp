@@ -12,27 +12,26 @@
 
 #include <respond/data_ops/cost_loader.hpp>
 
+#include <cstdio>
 #include <filesystem>
+#include <fstream>
+#include <memory>
+
 #include <gtest/gtest.h>
+
+#include <respond/data_ops/matrices.hpp>
+
+using namespace respond::data_ops;
 
 class CostLoaderTest : public ::testing::Test {
 protected:
-    std::filesystem::path tempRelativeFile;
-    std::filesystem::path tempAbsoluteFile;
-    std::filesystem::path configFile;
-    std::ofstream configFileStream;
-    std::ofstream fileStream;
-
+    const std::string file_name = "test.csv";
+    std::unique_ptr<CostLoader> cost_loader;
     void SetUp() override {
-        tempRelativeFile = std::tmpnam(nullptr) + std::string(".csv");
-        tempAbsoluteFile =
-            std::filesystem::temp_directory_path() / tempRelativeFile;
-        configFile = std::filesystem::temp_directory_path() /
-                     std::filesystem::path("sim.conf");
-        configFileStream.open(configFile);
+        std::ofstream config_file_stream("sim.conf");
 
         // clang-format off
-        configFileStream << "[simulation]" 
+        config_file_stream << "[simulation]" 
                             << std::endl << 
                             "duration = 52" 
                             << std::endl << 
@@ -85,170 +84,106 @@ protected:
                             << std::endl << 
                             "general_stats_output_timesteps = 52";
         // clang-format on
-        configFileStream.close();
-        fileStream.open(tempAbsoluteFile);
+        config_file_stream.close();
+        cost_loader = CostLoader::Create();
     }
     void TearDown() override {
-        if (configFileStream.is_open()) {
-            configFileStream.close();
-        }
-        if (fileStream.is_open()) {
-            fileStream.close();
-        }
+        std::remove(file_name.c_str());
+        std::remove("sim.conf");
     }
 };
 
-TEST_F(CostLoaderTest, ConstructorEmpty) {
-    data_ops::CostLoader cl;
-    data_ops::Matrix3d result = cl.getHealthcareUtilizationCost("healthcare");
-    EXPECT_EQ(result.size(), 0);
+TEST_F(CostLoaderTest, CreateCostLoader) {
+    auto cl = CostLoader::Create();
+    EXPECT_NE(cl, nullptr);
 }
 
-TEST_F(CostLoaderTest, ConstructorMain) {
-    Data::IConfigablePtr config = std::make_shared<Data::Config>(configFile);
-    data_ops::CostLoader cl(
-        config, std::filesystem::temp_directory_path().string(), logger);
-    data_ops::Matrix3d result = cl.getHealthcareUtilizationCost("healthcare");
-    EXPECT_EQ(cl.getInterventions().size(), 9);
-}
+TEST_F(CostLoaderTest, HealthcareUtilizationCost) {
+    std::ofstream file_stream(file_name);
+    file_stream << "block,agegrp,sex,oud,healthcare" << std::endl
+                << "No_Treatment,10_14,Male,Active_Noninjection,243"
+                << std::endl
+                << "No_Treatment,10_14,Male,Active_Injection,355.96"
+                << std::endl
+                << "No_Treatment,10_14,Male,Nonactive_Noninjection,162.22";
+    file_stream.close();
 
-TEST_F(CostLoaderTest, ConstructorConfig) {
-    Data::IConfigablePtr config = std::make_shared<Data::Config>(configFile);
-    data_ops::CostLoader cl(config);
-    EXPECT_EQ(cl.getInterventions().size(), 9);
-}
-
-TEST_F(CostLoaderTest, ConstructorConfigAndString) {
-    Data::IConfigablePtr config = std::make_shared<Data::Config>(configFile);
-    data_ops::CostLoader cl(config,
-                            std::filesystem::temp_directory_path().string());
-    EXPECT_EQ(cl.getInterventions().size(), 9);
-}
-
-TEST_F(CostLoaderTest, ConstructorString) {
-    data_ops::CostLoader cl(std::filesystem::temp_directory_path().string());
-    EXPECT_EQ(cl.getInterventions().size(), 9);
-}
-
-TEST_F(CostLoaderTest, ConstructorStringAndLogger) {
-    data_ops::CostLoader cl(std::filesystem::temp_directory_path().string(),
-                            logger);
-    EXPECT_EQ(cl.getInterventions().size(), 9);
-}
-
-TEST_F(CostLoaderTest, healthcareUtilizationCost) {
-    fileStream << "block,agegrp,sex,oud,healthcare" << std::endl
-               << "No_Treatment,10_14,Male,Active_Noninjection,243" << std::endl
-               << "No_Treatment,10_14,Male,Active_Injection,355.96" << std::endl
-               << "No_Treatment,10_14,Male,Nonactive_Noninjection,162.22";
-
-    fileStream.close();
-
-    data_ops::CostLoader cl(std::filesystem::temp_directory_path().string(),
-                            logger);
-    cl.loadHealthcareUtilizationCost(tempAbsoluteFile.string());
-    data_ops::Matrix3d result = cl.getHealthcareUtilizationCost("healthcare");
+    cost_loader->LoadHealthcareUtilizationCost(file_name);
+    Matrix3d result = cost_loader->GetHealthcareUtilizationCost("healthcare");
     EXPECT_EQ(result(0, 0, 0), 243);
 }
 
-TEST_F(CostLoaderTest, overdoseCost) {
-    data_ops::CostLoader cl(std::filesystem::temp_directory_path().string(),
-                            logger);
-    fileStream << "X,healthcare" << std::endl
-               << "non_fatal_overdose,4557.35" << std::endl
-               << "fatal_overdose,857.97";
+TEST_F(CostLoaderTest, OverdoseCost) {
+    std::ofstream file_stream(file_name);
+    file_stream << "X,healthcare" << std::endl
+                << "non_fatal_overdose,4557.35" << std::endl
+                << "fatal_overdose,857.97";
 
-    fileStream.close();
+    file_stream.close();
 
     std::unordered_map<std::string, std::unordered_map<std::string, double>>
-        output = cl.loadOverdoseCost(tempAbsoluteFile.string());
+        output = cost_loader->LoadOverdoseCost(file_name);
 
     EXPECT_EQ(output["healthcare"]["non_fatal_overdose"], 4557.35);
-    EXPECT_EQ(cl.getNonFatalOverdoseCost("healthcare"), 4557.35);
+    EXPECT_EQ(cost_loader->GetNonFatalOverdoseCost("healthcare"), 4557.35);
 }
 
 TEST_F(CostLoaderTest, pharmaceuticalCost) {
-    data_ops::CostLoader cl(std::filesystem::temp_directory_path().string(),
-                            logger);
-    fileStream << "block,healthcare" << std::endl
-               << "Buprenorphine,48.71" << std::endl
-               << "Naltrexone,302.58" << std::endl
-               << "Methadone,4.31" << std::endl
-               << "Detox,0";
+    std::ofstream file_stream(file_name);
+    file_stream << "block,healthcare" << std::endl
+                << "Buprenorphine,48.71" << std::endl
+                << "Naltrexone,302.58" << std::endl
+                << "Methadone,4.31" << std::endl
+                << "Detox,0";
 
-    fileStream.close();
+    file_stream.close();
 
-    std::unordered_map<std::string, data_ops::Matrix3d> output =
-        cl.loadPharmaceuticalCost(tempAbsoluteFile.string());
+    auto output = cost_loader->LoadPharmaceuticalCost(file_name);
 
     EXPECT_EQ(output["healthcare"](1, 0, 0), 48.71);
 
-    data_ops::Matrix3d result = cl.getPharmaceuticalCost("healthcare");
+    Matrix3d result = cost_loader->GetPharmaceuticalCost("healthcare");
 
     EXPECT_EQ(result(1, 0, 0), 48.71);
 }
 
 TEST_F(CostLoaderTest, treatmentUtilizationCost) {
-    data_ops::CostLoader cl(std::filesystem::temp_directory_path().string(),
-                            logger);
-    fileStream << "block,healthcare" << std::endl
-               << "Buprenorphine,65.24" << std::endl
-               << "Naltrexone,24.36" << std::endl
-               << "Methadone,123.43" << std::endl
-               << "Detox,2863";
+    std::ofstream file_stream(file_name);
+    file_stream << "block,healthcare" << std::endl
+                << "Buprenorphine,65.24" << std::endl
+                << "Naltrexone,24.36" << std::endl
+                << "Methadone,123.43" << std::endl
+                << "Detox,2863";
 
-    fileStream.close();
+    file_stream.close();
 
-    std::unordered_map<std::string, data_ops::Matrix3d> output =
-        cl.loadTreatmentUtilizationCost(tempAbsoluteFile.string());
+    std::unordered_map<std::string, Matrix3d> output =
+        cost_loader->LoadTreatmentUtilizationCost(file_name);
 
-    data_ops::Matrix3d result = cl.getTreatmentUtilizationCost("healthcare");
+    Matrix3d result = cost_loader->GetTreatmentUtilizationCost("healthcare");
 
     EXPECT_EQ(output["healthcare"](1, 0, 0), 65.24);
     EXPECT_EQ(result(1, 0, 0), 65.24);
 }
 
 TEST_F(CostLoaderTest, getNonFatalOverdoseCost) {
-    data_ops::CostLoader cl(std::filesystem::temp_directory_path().string(),
-                            logger);
-    fileStream << "X,healthcare" << std::endl
-               << "non_fatal_overdose,4557.35" << std::endl
-               << "fatal_overdose,857.97";
+    std::ofstream file_stream(file_name);
+    file_stream << "X,healthcare" << std::endl
+                << "non_fatal_overdose,4557.35" << std::endl
+                << "fatal_overdose,857.97";
 
-    fileStream.close();
-    cl.loadOverdoseCost(tempAbsoluteFile.string());
-    EXPECT_EQ(cl.getNonFatalOverdoseCost("healthcare"), 4557.35);
+    file_stream.close();
+    cost_loader->LoadOverdoseCost(file_name);
+    EXPECT_EQ(cost_loader->GetNonFatalOverdoseCost("healthcare"), 4557.35);
 }
 
 TEST_F(CostLoaderTest, getFatalOverdoseCost) {
-    data_ops::CostLoader cl(std::filesystem::temp_directory_path().string(),
-                            logger);
-    fileStream << "X,healthcare" << std::endl
-               << "non_fatal_overdose,4557.35" << std::endl
-               << "fatal_overdose,857.97";
+    std::ofstream file_stream(file_name);
+    file_stream << "X,healthcare" << std::endl
+                << "non_fatal_overdose,4557.35" << std::endl
+                << "fatal_overdose,857.97";
 
-    fileStream.close();
-    cl.loadOverdoseCost(tempAbsoluteFile.string());
-    EXPECT_EQ(cl.getFatalOverdoseCost("healthcare"), 857.97);
-}
-
-TEST_F(CostLoaderTest, getCostPerspectives) {
-    data_ops::CostLoader cl(std::filesystem::temp_directory_path().string(),
-                            logger);
-
-    std::vector<std::string> expected{"healthcare"};
-
-    EXPECT_EQ(cl.getCostPerspectives(), expected);
-}
-
-TEST_F(CostLoaderTest, getCostSwitch) {
-    data_ops::CostLoader cl(std::filesystem::temp_directory_path().string(),
-                            logger);
-    EXPECT_EQ(cl.getCostSwitch(), true);
-}
-
-TEST_F(CostLoaderTest, getDiscountRate) {
-    data_ops::CostLoader cl(std::filesystem::temp_directory_path().string(),
-                            logger);
-    EXPECT_EQ(cl.getDiscountRate(), 0.0025);
+    file_stream.close();
+    cost_loader->LoadOverdoseCost(file_name);
+    EXPECT_EQ(cost_loader->GetFatalOverdoseCost("healthcare"), 857.97);
 }
