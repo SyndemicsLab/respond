@@ -4,7 +4,7 @@
 // Created Date: 2025-01-14                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-17                                                  //
+// Last Modified: 2025-03-18                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -18,7 +18,6 @@
 #include <respond/data_ops/matrices.hpp>
 #include <respond/data_ops/utility_loader.hpp>
 
-/// @brief Namespace for all Post Simulation Calculations
 namespace respond::model {
     inline respond::data_ops::Matrix3d
     CalculateDiscount(const respond::data_ops::Matrix3d &data,
@@ -29,11 +28,7 @@ namespace respond::model {
 
         data_ops::Matrix3d discount =
             respond::data_ops::CreateMatrix3d(
-                data.dimension((int)respond::data_ops::Dimension::kOud),
-                data.dimension(
-                    (int)respond::data_ops::Dimension::kIntervention),
-                data.dimension(
-                    (int)respond::data_ops::Dimension::kDemographicCombo))
+                data.dimension(0), data.dimension(1), data.dimension(2))
                 .setConstant(discountConstant);
         data_ops::Matrix3d result = data - discount;
         return result;
