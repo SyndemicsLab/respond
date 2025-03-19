@@ -4,7 +4,7 @@
 // Created Date: 2025-01-14                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-17                                                  //
+// Last Modified: 2025-03-19                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -57,15 +57,16 @@ namespace respond::data_ops {
 
         virtual Matrix3d GetInitialSample() const = 0;
 
-        virtual TimedMatrix3d GetEnteringSamples() const = 0;
+        virtual Matrix3d GetEnteringSamples(const int &time) const = 0;
 
         virtual Matrix3d GetOUDTransitionRates() const = 0;
 
-        virtual TimedMatrix3d GetInterventionTransitionRates() const = 0;
+        virtual Matrix3d
+        GetInterventionTransitionRates(const int &time) const = 0;
 
-        virtual TimedMatrix3d GetOverdoseRates() const = 0;
+        virtual Matrix3d GetOverdoseRates(const int &time) const = 0;
 
-        virtual TimedMatrix3d GetFatalOverdoseRates() const = 0;
+        virtual Matrix3d GetFatalOverdoseRates(const int &time) const = 0;
 
         virtual Matrix3d GetMortalityRates() const = 0;
 

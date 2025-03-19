@@ -4,7 +4,7 @@
 // Created Date: 2025-01-14                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-18                                                  //
+// Last Modified: 2025-03-19                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -109,8 +109,8 @@ TEST_F(DataLoaderTest, enteringSamples) {
     data_loader->LoadEnteringSamples(file_name_1, std::string("No_Treatment"),
                                      std::string("Active_Noninjection"));
 
-    TimedMatrix3d result = data_loader->GetEnteringSamples();
-    EXPECT_EQ(result[0](0, 0, 0), 11.4389540364826);
+    auto result = data_loader->GetEnteringSamples(0);
+    EXPECT_EQ(result(0, 0, 0), 11.4389540364826);
 }
 
 TEST_F(DataLoaderTest, OUDTransitionRates) {
@@ -157,8 +157,8 @@ TEST_F(DataLoaderTest, interventionTransitionRates) {
 
     data_loader->LoadInterventionTransitionRates(file_name_1);
 
-    TimedMatrix3d result = data_loader->GetInterventionTransitionRates();
-    EXPECT_EQ(result[0](0, 0, 0), 0.625523912484771);
+    auto result = data_loader->GetInterventionTransitionRates(0);
+    EXPECT_EQ(result(0, 0, 0), 0.625523912484771);
 }
 
 TEST_F(DataLoaderTest, overdoseRates) {
@@ -183,8 +183,8 @@ TEST_F(DataLoaderTest, overdoseRates) {
 
     data_loader->LoadOverdoseRates(file_name_1);
 
-    TimedMatrix3d result = data_loader->GetOverdoseRates();
-    EXPECT_EQ(result[0](0, 0, 0), 0.00059346577560159);
+    auto result = data_loader->GetOverdoseRates(0);
+    EXPECT_EQ(result(0, 0, 0), 0.00059346577560159);
 }
 
 TEST_F(DataLoaderTest, fatalOverdoseRates) {
@@ -200,8 +200,8 @@ TEST_F(DataLoaderTest, fatalOverdoseRates) {
 
     data_loader->LoadFatalOverdoseRates(file_name_1);
 
-    TimedMatrix3d result = data_loader->GetFatalOverdoseRates();
-    EXPECT_EQ(result[0](0, 0, 0), 0.216540329711774);
+    auto result = data_loader->GetFatalOverdoseRates(0);
+    EXPECT_EQ(result(0, 0, 0), 0.216540329711774);
 }
 
 TEST_F(DataLoaderTest, fatalOverdoseRatesStratified) {
@@ -221,11 +221,11 @@ TEST_F(DataLoaderTest, fatalOverdoseRatesStratified) {
 
     data_loader->LoadFatalOverdoseRates(file_name_1);
 
-    TimedMatrix3d result = data_loader->GetFatalOverdoseRates();
-    EXPECT_EQ(result[0](0, 0, 0), 0.216540329711774);
-    EXPECT_EQ(result[0](1, 0, 0), 0.216540329711774);
-    EXPECT_EQ(result[0](0, 1, 1), 0.2);
-    EXPECT_EQ(result[0](1, 1, 1), 0.2);
+    auto result = data_loader->GetFatalOverdoseRates(0);
+    EXPECT_EQ(result(0, 0, 0), 0.216540329711774);
+    EXPECT_EQ(result(1, 0, 0), 0.216540329711774);
+    EXPECT_EQ(result(0, 1, 1), 0.2);
+    EXPECT_EQ(result(1, 1, 1), 0.2);
 }
 
 TEST_F(DataLoaderTest, mortalityRates) {
@@ -284,8 +284,8 @@ TEST_F(DataLoaderTest, setEnteringSamples) {
     TimedMatrix3d mat4d = {{0, mat3d}};
     data_loader->SetEnteringSamples(mat4d);
 
-    TimedMatrix3d result = data_loader->GetEnteringSamples();
-    EXPECT_EQ(result[0](0, 0, 0), 11.4389540364826);
+    auto result = data_loader->GetEnteringSamples(0);
+    EXPECT_EQ(result(0, 0, 0), 11.4389540364826);
 }
 
 TEST_F(DataLoaderTest, setOUDTransitionRates) {
@@ -303,8 +303,8 @@ TEST_F(DataLoaderTest, setInterventionTransitionRates) {
     TimedMatrix3d mat4d = {{0, mat3d}};
     data_loader->SetInterventionTransitionRates(mat4d);
 
-    TimedMatrix3d result = data_loader->GetInterventionTransitionRates();
-    EXPECT_EQ(result[0](0, 0, 0), 0.625523912484771);
+    auto result = data_loader->GetInterventionTransitionRates(0);
+    EXPECT_EQ(result(0, 0, 0), 0.625523912484771);
 }
 
 TEST_F(DataLoaderTest, setOverdoseRates) {
@@ -313,8 +313,8 @@ TEST_F(DataLoaderTest, setOverdoseRates) {
     TimedMatrix3d mat4d = {{0, mat3d}};
     data_loader->SetOverdoseRates(mat4d);
 
-    TimedMatrix3d result = data_loader->GetOverdoseRates();
-    EXPECT_EQ(result[0](0, 0, 0), 0.00059346577560159);
+    auto result = data_loader->GetOverdoseRates(0);
+    EXPECT_EQ(result(0, 0, 0), 0.00059346577560159);
 }
 
 TEST_F(DataLoaderTest, setFatalOverdoseRates) {
@@ -323,8 +323,8 @@ TEST_F(DataLoaderTest, setFatalOverdoseRates) {
     TimedMatrix3d mat4d = {{0, mat3d}};
     data_loader->SetFatalOverdoseRates(mat4d);
 
-    TimedMatrix3d result = data_loader->GetFatalOverdoseRates();
-    EXPECT_EQ(result[0](0, 0, 0), 0.216540329711774);
+    auto result = data_loader->GetFatalOverdoseRates(0);
+    EXPECT_EQ(result(0, 0, 0), 0.216540329711774);
 }
 
 TEST_F(DataLoaderTest, setMortalityRates) {

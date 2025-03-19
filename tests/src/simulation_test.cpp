@@ -4,7 +4,7 @@
 // Created Date: 2025-01-14                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-18                                                  //
+// Last Modified: 2025-03-19                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -23,6 +23,7 @@
 using namespace respond::model;
 using namespace respond::data_ops;
 
+using ::testing::_;
 using ::testing::NiceMock;
 using ::testing::Return;
 
@@ -33,10 +34,7 @@ protected:
     std::unique_ptr<Respond> respond;
     Data::IConfigablePtr config;
     std::ofstream config_file_stream;
-    void SetUp() override {
-        respond = Respond::Create();
-        config_file_stream.open("sim.conf");
-    }
+    void SetUp() override { respond = Respond::Create(); }
     void TearDown() override { std::remove("sim.conf"); }
 };
 
@@ -46,105 +44,121 @@ TEST_F(RespondTest, FactoryCreate) {
 }
 
 TEST_F(RespondTest, ZeroDuration) {
-    config_file_stream << "[simulation]" << std::endl << "duration = 0";
+    config_file_stream.open("sim.conf");
+    config_file_stream << "[simulation]" << std::endl
+                       << "duration = 0" << std::endl;
+    config_file_stream.close();
     config = std::make_shared<Data::Config>("sim.conf");
 
     Matrix3d temp(1, 1, 1);
     temp.setConstant(1.0);
     EXPECT_CALL(data_loader, GetInitialSample()).WillOnce(Return(temp));
-    EXPECT_CALL(data_loader, GetConfig()).WillOnce(Return(config));
+    EXPECT_CALL(data_loader, GetConfig()).WillRepeatedly(Return(config));
 
     respond->Run(data_loader);
 }
 
 TEST_F(RespondTest, OneDuration) {
+    config_file_stream.open("sim.conf");
     config_file_stream << "[simulation]" << std::endl
                        << "duration = 1" << std::endl
+                       << std::endl
                        << "[state]" << std::endl
                        << "interventions = No_Treatment" << std::endl
                        << "ouds = Active_Injection";
+    config_file_stream.close();
+    config = std::make_shared<Data::Config>("sim.conf");
 
     Matrix3d temp(1, 1, 1);
     temp.setConstant(1.0);
-    TimedMatrix3d temp_timed = {{0, temp}};
 
     EXPECT_CALL(data_loader, GetInitialSample()).WillOnce(Return(temp));
     EXPECT_CALL(data_loader, GetConfig())
         .Times(3)
         .WillRepeatedly(Return(config));
 
-    EXPECT_CALL(data_loader, GetEnteringSamples()).WillOnce(Return(temp_timed));
+    EXPECT_CALL(data_loader, GetEnteringSamples(_)).WillOnce(Return(temp));
 
     temp.setConstant(0.5);
     EXPECT_CALL(data_loader, GetOUDTransitionRates()).WillOnce(Return(temp));
 
-    temp_timed = {{0, temp}};
-    EXPECT_CALL(data_loader, GetInterventionTransitionRates())
-        .WillOnce(Return(temp_timed));
+    EXPECT_CALL(data_loader, GetInterventionTransitionRates(_))
+        .WillOnce(Return(temp));
 
-    EXPECT_CALL(data_loader, GetInterventionInitRates()).WillOnce(Return(temp));
+    EXPECT_CALL(data_loader, GetInterventionInitRates())
+        .Times(1)
+        .WillOnce(Return(temp));
 
-    EXPECT_CALL(data_loader, GetOverdoseRates()).WillOnce(Return(temp_timed));
+    EXPECT_CALL(data_loader, GetOverdoseRates(_)).WillOnce(Return(temp));
 
-    EXPECT_CALL(data_loader, GetFatalOverdoseRates())
-        .WillOnce(Return(temp_timed));
+    EXPECT_CALL(data_loader, GetFatalOverdoseRates(_)).WillOnce(Return(temp));
 
     EXPECT_CALL(data_loader, GetMortalityRates()).WillOnce(Return(temp));
 
     respond->Run(data_loader);
     auto history = respond->GetHistory();
 
-    EXPECT_TRUE(history.state_history.empty());
+    EXPECT_FALSE(history.state_history.empty());
 }
 
 TEST_F(RespondTest, TwoDuration) {
-    config_file_stream << "[simulation]" << std::endl
-                       << "duration = 1" << std::endl
-                       << "[state]" << std::endl
-                       << "interventions = No_Treatment" << std::endl
-                       << "ouds = Active_Injection";
+    config_file_stream.open("sim.conf");
+    config_file_stream
+        << "[simulation]" << std::endl
+        << "duration = 2" << std::endl
+        << std::endl
+        << "[state]" << std::endl
+        << "interventions = No_Treatment, Buprenorphine, Post_Buprenorphine"
+        << std::endl
+        << "ouds = Active_Injection, Nonactive_Injection";
+    config_file_stream.close();
 
-    Matrix3d temp(1, 1, 1);
-    temp.setConstant(1.0);
-    TimedMatrix3d temp_timed = {{0, temp}};
+    config = std::make_shared<Data::Config>("sim.conf");
+    EXPECT_CALL(data_loader, GetConfig()).WillRepeatedly(Return(config));
 
-    EXPECT_CALL(data_loader, GetInitialSample()).WillOnce(Return(temp));
-    EXPECT_CALL(data_loader, GetConfig())
-        .Times(5)
-        .WillRepeatedly(Return(config));
+    Matrix3d ic_mat(3, 2, 1);
+    ic_mat.setConstant(1.0);
+    EXPECT_CALL(data_loader, GetInitialSample()).WillOnce(Return(ic_mat));
 
-    EXPECT_CALL(data_loader, GetEnteringSamples())
+    Matrix3d es_mat(3, 2, 1);
+    es_mat.setConstant(1.0);
+    EXPECT_CALL(data_loader, GetEnteringSamples(_))
         .Times(2)
-        .WillRepeatedly(Return(temp_timed));
+        .WillRepeatedly(Return(es_mat));
 
-    temp.setConstant(0.5);
+    Matrix3d squared_behavior_mat(3, 4, 1);
+    squared_behavior_mat.setConstant(0.5);
     EXPECT_CALL(data_loader, GetOUDTransitionRates())
         .Times(2)
-        .WillRepeatedly(Return(temp));
+        .WillRepeatedly(Return(squared_behavior_mat));
 
-    temp_timed = {{0, temp}};
-    EXPECT_CALL(data_loader, GetInterventionTransitionRates())
+    Matrix3d squared_intervention_mat(9, 2, 1);
+    EXPECT_CALL(data_loader, GetInterventionTransitionRates(_))
         .Times(2)
-        .WillRepeatedly(Return(temp_timed));
+        .WillRepeatedly(Return(squared_intervention_mat));
 
+    Matrix3d squared_iie_mat(3, 4, 1);
+    squared_iie_mat.setConstant(0.5);
     EXPECT_CALL(data_loader, GetInterventionInitRates())
-        .Times(2)
-        .WillRepeatedly(Return(temp));
+        .Times(6)
+        .WillRepeatedly(Return(squared_iie_mat));
 
-    EXPECT_CALL(data_loader, GetOverdoseRates())
+    Matrix3d od_mat(3, 2, 1);
+    od_mat.setConstant(0.5);
+    EXPECT_CALL(data_loader, GetOverdoseRates(_))
         .Times(2)
-        .WillRepeatedly(Return(temp_timed));
+        .WillRepeatedly(Return(od_mat));
 
-    EXPECT_CALL(data_loader, GetFatalOverdoseRates())
+    EXPECT_CALL(data_loader, GetFatalOverdoseRates(_))
         .Times(2)
-        .WillRepeatedly(Return(temp_timed));
+        .WillRepeatedly(Return(od_mat));
 
     EXPECT_CALL(data_loader, GetMortalityRates())
         .Times(2)
-        .WillRepeatedly(Return(temp));
+        .WillRepeatedly(Return(od_mat));
 
     respond->Run(data_loader);
     auto history = respond->GetHistory();
 
-    EXPECT_TRUE(history.state_history.empty());
+    EXPECT_FALSE(history.state_history.empty());
 }

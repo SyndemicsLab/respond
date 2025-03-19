@@ -4,7 +4,7 @@
 // Created Date: 2025-01-14                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-18                                                  //
+// Last Modified: 2025-03-19                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -38,6 +38,7 @@ namespace respond::model {
             data_loader.GetConfig()->get("simulation.duration", (int)0));
 
         for (; time < duration; ++time) {
+            history.state_history[time] = state;
             state = Step(data_loader);
         }
     }
@@ -92,7 +93,7 @@ namespace respond::model {
         history.mortality_history[time] = matrix_2;
 
         auto new_state = (matrix_1 - (matrix_2 + matrix_3));
-        history.state_history[time] = new_state;
+        // history.state_history[time] = new_state;
 
         LogDebugPoint("End of Step", new_state);
 
@@ -102,7 +103,7 @@ namespace respond::model {
     Matrix3d
     RespondImpl::AddEnteringCohort(const Matrix3d &mat,
                                    const DataLoader &data_loader) const {
-        auto es = data_loader.GetEnteringSamples().at(time);
+        auto es = data_loader.GetEnteringSamples(time);
         auto ret = state + es;
         Matrix3d roundingMatrix(es.dimensions());
         roundingMatrix.setZero();
@@ -133,8 +134,8 @@ namespace respond::model {
             Eigen::array<Eigen::Index, 3> bcast = {1, 1, 1};
             bcast[(int)Dimension::kOud] = state.dimension((int)Dimension::kOud);
 
-            auto broadcastedTensor = slicedState.broadcast(bcast);
-            auto slicedTransition =
+            Matrix3d broadcastedTensor = slicedState.broadcast(bcast);
+            Matrix3d slicedTransition =
                 behaviorTransitionProbs.slice(offsetTrans, extentTrans);
 
             ret += (broadcastedTensor * slicedTransition);
@@ -145,7 +146,7 @@ namespace respond::model {
     Matrix3d RespondImpl::MultiplyInterventionTransition(
         const Matrix3d &state, const DataLoader &data_loader) const {
         Matrix3d interventionTransitionProbs =
-            data_loader.GetInterventionTransitionRates()[time];
+            data_loader.GetInterventionTransitionRates(time);
 
         Matrix3d ret = CreateMatrix3d(state.dimension(0), state.dimension(1),
                                       state.dimension(2));
@@ -191,6 +192,8 @@ namespace respond::model {
         int behavior_size =
             data_loader.GetConfig()->getStringVector("state.ouds").size();
 
+        auto iie = data_loader.GetInterventionInitRates();
+
         for (int j = 0; j < intervention_size; ++j) {
 
             Eigen::array<Eigen::Index, 3> result_offset = {0, 0, 0};
@@ -224,7 +227,7 @@ namespace respond::model {
 
                     Eigen::array<Eigen::Index, 3> rates_offset = {0, 0, 0};
                     Eigen::array<Eigen::Index, 3> rates_extent =
-                        data_loader.GetInterventionInitRates().dimensions();
+                        iie.dimensions();
                     rates_offset[(int)Dimension::kIntervention] = j;
                     rates_extent[(int)Dimension::kIntervention] = 1;
                     rates_offset[(int)Dimension::kOud] = (k * behavior_size);
@@ -232,8 +235,7 @@ namespace respond::model {
 
                     result.slice(result_offset, result_extent) +=
                         broadcastedTensor *
-                        data_loader.GetInterventionInitRates().slice(
-                            rates_offset, rates_extent);
+                        iie.slice(rates_offset, rates_extent);
                 }
             }
         }
@@ -243,8 +245,7 @@ namespace respond::model {
     Matrix3d
     RespondImpl::MultiplyFODGivenOD(const Matrix3d &state,
                                     const DataLoader &data_loader) const {
-        Matrix3d fatalOverdoseMatrix =
-            data_loader.GetFatalOverdoseRates()[time];
+        Matrix3d fatalOverdoseMatrix = data_loader.GetFatalOverdoseRates(time);
 
         Matrix3d mult = fatalOverdoseMatrix * state;
         return mult;
@@ -252,7 +253,7 @@ namespace respond::model {
 
     Matrix3d RespondImpl::MultiplyOD(const Matrix3d &state,
                                      const DataLoader &data_loader) const {
-        Matrix3d overdoseMatrix = data_loader.GetOverdoseRates()[time];
+        Matrix3d overdoseMatrix = data_loader.GetOverdoseRates(time);
 
         Matrix3d mult = overdoseMatrix * state;
         return mult;
@@ -266,5 +267,9 @@ namespace respond::model {
         Matrix3d ret(state.dimensions());
         Matrix3d mor = (state * mortalityMatrix);
         return mor;
+    }
+
+    std::unique_ptr<Respond> Respond::Create(const std::string &log_name) {
+        return std::make_unique<RespondImpl>(log_name);
     }
 } // namespace respond::model

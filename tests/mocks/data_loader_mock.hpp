@@ -4,7 +4,7 @@
 // Created Date: 2025-01-14                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-18                                                  //
+// Last Modified: 2025-03-19                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -28,16 +28,17 @@ class MockDataLoader : public DataLoader {
 public:
     MOCK_METHOD(Matrix3d, GetInitialSample, (), (const, override));
 
-    MOCK_METHOD(TimedMatrix3d, GetEnteringSamples, (), (const, override));
+    MOCK_METHOD(Matrix3d, GetEnteringSamples, (const int &), (const, override));
 
     MOCK_METHOD(Matrix3d, GetOUDTransitionRates, (), (const, override));
 
-    MOCK_METHOD(TimedMatrix3d, GetInterventionTransitionRates, (),
+    MOCK_METHOD(Matrix3d, GetInterventionTransitionRates, (const int &),
                 (const, override));
 
-    MOCK_METHOD(TimedMatrix3d, GetOverdoseRates, (), (const, override));
+    MOCK_METHOD(Matrix3d, GetOverdoseRates, (const int &), (const, override));
 
-    MOCK_METHOD(TimedMatrix3d, GetFatalOverdoseRates, (), (const, override));
+    MOCK_METHOD(Matrix3d, GetFatalOverdoseRates, (const int &),
+                (const, override));
 
     MOCK_METHOD(Matrix3d, GetMortalityRates, (), (const, override));
 

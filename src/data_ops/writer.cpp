@@ -4,7 +4,7 @@
 // Created Date: 2025-01-17                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-17                                                  //
+// Last Modified: 2025-03-19                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -409,9 +409,9 @@ namespace respond::data_ops {
                             index[(int)Dimension::kDemographicCombo] = d;
                             stream << std::to_string(
                                           data_loader
-                                              .GetInterventionTransitionRates()
-                                                  [timestep](index[0], index[1],
-                                                             index[2]))
+                                              .GetInterventionTransitionRates(
+                                                  timestep)(index[0], index[1],
+                                                            index[2]))
                                    << ",";
                         }
                     }
@@ -464,9 +464,8 @@ namespace respond::data_ops {
                         index[(int)Dimension::kIntervention] = i;
                         index[(int)Dimension::kOud] = b;
                         index[(int)Dimension::kDemographicCombo] = d;
-                        stream << std::to_string(
-                                      data_loader.GetOverdoseRates()[timestep](
-                                          index[0], index[1], index[2]))
+                        stream << std::to_string(data_loader.GetOverdoseRates(
+                                      timestep)(index[0], index[1], index[2]))
                                << ",";
                     }
                     stream << std::endl;
@@ -506,9 +505,8 @@ namespace respond::data_ops {
             for (int timestep : timesteps) {
                 std::array<long int, 3> index = {0, 0, 0};
                 index[(int)Dimension::kDemographicCombo] = d;
-                stream << std::to_string(
-                              data_loader.GetFatalOverdoseRates()[timestep](
-                                  index[0], index[1], index[2]))
+                stream << std::to_string(data_loader.GetFatalOverdoseRates(
+                              timestep)(index[0], index[1], index[2]))
                        << ",";
             }
             stream << std::endl;

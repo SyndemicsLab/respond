@@ -4,7 +4,7 @@
 // Created Date: 2025-01-14                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-18                                                  //
+// Last Modified: 2025-03-19                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -101,8 +101,6 @@ TEST_F(CostLoaderTest, OverdoseCost) {
                 << "non_fatal_overdose,4557.35" << std::endl
                 << "fatal_overdose,857.97";
 
-    file_stream.close();
-
     std::unordered_map<std::string, std::unordered_map<std::string, double>>
         output = cost_loader->LoadOverdoseCost(file_name);
 
@@ -117,8 +115,6 @@ TEST_F(CostLoaderTest, pharmaceuticalCost) {
                 << "Naltrexone,302.58" << std::endl
                 << "Methadone,4.31" << std::endl
                 << "Detox,0";
-
-    file_stream.close();
 
     auto output = cost_loader->LoadPharmaceuticalCost(file_name);
 

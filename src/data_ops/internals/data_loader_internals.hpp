@@ -4,7 +4,7 @@
 // Created Date: 2025-03-07                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-17                                                  //
+// Last Modified: 2025-03-19                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -44,24 +44,38 @@ namespace respond::data_ops {
 
         Matrix3d GetInitialSample() const override { return initial_sample; }
 
-        TimedMatrix3d GetEnteringSamples() const override {
-            return entering_samples;
+        Matrix3d GetEnteringSamples(const int &time) const override {
+            if (entering_samples.find(time) != entering_samples.end()) {
+                return entering_samples.at(time);
+            }
+            return entering_samples.lower_bound(time)->second;
         }
 
         Matrix3d GetOUDTransitionRates() const override {
             return oud_transition_rates;
         }
 
-        TimedMatrix3d GetInterventionTransitionRates() const override {
-            return intervention_transition_rates;
+        Matrix3d
+        GetInterventionTransitionRates(const int &time) const override {
+            if (intervention_transition_rates.find(time) !=
+                intervention_transition_rates.end()) {
+                return intervention_transition_rates.at(time);
+            }
+            return intervention_transition_rates.lower_bound(time)->second;
         }
 
-        TimedMatrix3d GetOverdoseRates() const override {
-            return overdose_rates;
+        Matrix3d GetOverdoseRates(const int &time) const override {
+            if (overdose_rates.find(time) != overdose_rates.end()) {
+                return overdose_rates.at(time);
+            }
+            return overdose_rates.lower_bound(time)->second;
         }
 
-        TimedMatrix3d GetFatalOverdoseRates() const override {
-            return fatal_overdose_rates;
+        Matrix3d GetFatalOverdoseRates(const int &time) const override {
+            if (fatal_overdose_rates.find(time) != fatal_overdose_rates.end()) {
+                return fatal_overdose_rates.at(time);
+            }
+            return fatal_overdose_rates.lower_bound(time)->second;
         }
 
         Matrix3d GetMortalityRates() const override { return mortality_rates; }

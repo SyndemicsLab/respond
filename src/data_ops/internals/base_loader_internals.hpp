@@ -4,7 +4,7 @@
 // Created Date: 2025-03-07                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-18                                                  //
+// Last Modified: 2025-03-19                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -116,7 +116,7 @@ namespace respond::data_ops {
 
     private:
         void LoadConfig() {
-            if (config) {
+            if (!config) {
                 respond::utils::LogError(
                     logger_name,
                     "Config not found when trying to load from config file.");

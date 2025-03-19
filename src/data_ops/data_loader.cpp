@@ -4,7 +4,7 @@
 // Created Date: 2025-01-14                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-17                                                  //
+// Last Modified: 2025-03-19                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -42,7 +42,7 @@ namespace respond::data_ops {
         size_t number_intervention_states = interventions.size();
 
         initial_sample =
-            CreateMatrix3d(number_behavior_states, number_intervention_states,
+            CreateMatrix3d(number_intervention_states, number_behavior_states,
                            number_demographic_combos);
 
         for (int i = 0; i < number_intervention_states; ++i) {
@@ -132,7 +132,7 @@ namespace respond::data_ops {
                 entering_samples_table->getColumn(column.str());
 
             Matrix3d entering_sample = CreateMatrix3d(
-                number_behavior_states, number_intervention_states,
+                number_intervention_states, number_behavior_states,
                 number_demographic_combos);
 
             // Slice for setting matrix values. We select a single
@@ -182,7 +182,7 @@ namespace respond::data_ops {
                 entering_cohort->getColumn(column.str());
 
             Matrix3d entering_sample = CreateMatrix3d(
-                number_behavior_states, number_intervention_states,
+                number_intervention_states, number_behavior_states,
                 number_demographic_combos);
 
             for (int i = 0; i < number_intervention_states; ++i) {
@@ -246,9 +246,10 @@ namespace respond::data_ops {
         // end dimensions of oudTransitionRates are number_intervention_states x
         // number_behavior_states^2 x demographics start with a vector of
         // StateTensor-sized Matrix3d objects and stack at the end
-        Matrix3d running_transitions = CreateMatrix3d(
-            number_behavior_states * number_behavior_states,
-            number_intervention_states, number_demographic_combos);
+        Matrix3d running_transitions =
+            CreateMatrix3d(number_intervention_states,
+                           number_behavior_states * number_behavior_states,
+                           number_demographic_combos);
 
         // Matrix3d objects in the vector are matched with the order that oud
         // states are specified in the Config file. the order represents the
@@ -307,9 +308,10 @@ namespace respond::data_ops {
             GetConfig()->getStringVector("state.interventions");
         size_t number_intervention_states = interventions.size();
 
-        Matrix3d running_transitions = CreateMatrix3d(
-            number_behavior_states * number_behavior_states,
-            number_intervention_states, number_demographic_combos);
+        Matrix3d running_transitions =
+            CreateMatrix3d(number_intervention_states,
+                           number_behavior_states * number_behavior_states,
+                           number_demographic_combos);
 
         for (int b = 0; b < number_behavior_states; ++b) {
             std::unordered_map<std::string, std::string> select_where = {};
@@ -481,7 +483,7 @@ namespace respond::data_ops {
         }
 
         Matrix3d mortality_transitions =
-            CreateMatrix3d(number_behavior_states, number_intervention_states,
+            CreateMatrix3d(number_intervention_states, number_behavior_states,
                            number_demographic_combos);
         // mortality is one element per stratum, no time variability
         int smr_index = 0;
@@ -522,7 +524,7 @@ namespace respond::data_ops {
             GetConfig()->getIntVector("simulation.intervention_change_times");
 
         Matrix3d transition_matrix =
-            CreateMatrix3d(number_behavior_states, number_intervention_states,
+            CreateMatrix3d(number_intervention_states, number_behavior_states,
                            number_demographic_combos);
 
         std::unordered_map<std::string, std::string> select_where;
@@ -591,9 +593,8 @@ namespace respond::data_ops {
 
         if (dimension == Dimension::kIntervention) {
             Matrix3d matrix_stack = CreateMatrix3d(
-                number_behavior_states,
                 number_intervention_states * number_intervention_states,
-                number_demographic_combos);
+                number_behavior_states, number_demographic_combos);
             for (int i = 0; i < number_intervention_states; i++) {
                 // assign to index + offset of numInterventions
                 Eigen::array<Eigen::Index, 3> offsets = {0, 0, 0};
@@ -614,13 +615,14 @@ namespace respond::data_ops {
             return matrix_stack;
 
         } else if (dimension == Dimension::kOud) {
-            Matrix3d matrix_stack = CreateMatrix3d(
-                number_behavior_states * number_behavior_states,
-                number_intervention_states, number_demographic_combos);
+            Matrix3d matrix_stack =
+                CreateMatrix3d(number_intervention_states,
+                               number_behavior_states * number_behavior_states,
+                               number_demographic_combos);
             return matrix_stack;
         }
         Matrix3d matrix_stack =
-            CreateMatrix3d(number_behavior_states, number_intervention_states,
+            CreateMatrix3d(number_intervention_states, number_behavior_states,
                            number_demographic_combos);
         return matrix_stack;
     }
@@ -650,7 +652,7 @@ namespace respond::data_ops {
         size_t number_intervention_states = interventions.size();
 
         Matrix3d overdose_transitions =
-            CreateMatrix3d(number_behavior_states, number_intervention_states,
+            CreateMatrix3d(number_intervention_states, number_behavior_states,
                            number_demographic_combos);
 
         int row = 0;
@@ -682,7 +684,7 @@ namespace respond::data_ops {
         size_t number_intervention_states = interventions.size();
 
         Matrix3d fatal_overdose_transitions =
-            CreateMatrix3d(number_behavior_states, number_intervention_states,
+            CreateMatrix3d(number_intervention_states, number_behavior_states,
                            number_demographic_combos);
         std::vector<std::string> col = table->getColumn(key);
         int row = 0;

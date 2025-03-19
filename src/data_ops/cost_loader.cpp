@@ -4,7 +4,7 @@
 // Created Date: 2025-01-14                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-17                                                  //
+// Last Modified: 2025-03-19                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -45,7 +45,7 @@ namespace respond::data_ops {
             }
 
             healthcare_utilization_cost[perspective] = CreateMatrix3d(
-                number_behavior_states, number_intervention_states,
+                number_intervention_states, number_behavior_states,
                 number_demographic_combos);
 
             int idx = 0;
@@ -172,8 +172,8 @@ namespace respond::data_ops {
         std::vector<std::string> cost_perspectives =
             GetConfig()->getStringVector("cost.cost_perspectives");
         for (std::string perspective : cost_perspectives) {
-            cost[perspective] = CreateMatrix3d(number_behavior_states,
-                                               number_intervention_states,
+            cost[perspective] = CreateMatrix3d(number_intervention_states,
+                                               number_behavior_states,
                                                number_demographic_combos);
 
             for (int i = 0; i < number_intervention_states; ++i) {

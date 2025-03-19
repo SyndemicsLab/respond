@@ -4,7 +4,7 @@
 // Created Date: 2025-01-14                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-17                                                  //
+// Last Modified: 2025-03-19                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -54,7 +54,7 @@ namespace respond::data_ops {
             GetConfig()->getStringVector("state.interventions").size();
 
         Matrix3d utilMatrix =
-            CreateMatrix3d(number_behavior_states, number_intervention_states,
+            CreateMatrix3d(number_intervention_states, number_behavior_states,
                            number_demographic_combos);
 
         std::vector<std::string> utilCol = table->getColumn("utility");

@@ -4,7 +4,7 @@
 // Created Date: 2025-01-14                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-17                                                  //
+// Last Modified: 2025-03-19                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -88,7 +88,7 @@ namespace respond::data_ops {
 
         TimedMatrix3d trimmed;
         Matrix3d running =
-            CreateMatrix3d(number_of_behaviors, number_of_interventions,
+            CreateMatrix3d(number_of_interventions, number_of_behaviors,
                            number_of_demographic_combinations);
 
         int timestep_index = 0;
@@ -97,7 +97,7 @@ namespace respond::data_ops {
             if (kv.first >= timesteps[timestep_index]) {
                 trimmed[kv.first] = running;
                 running =
-                    CreateMatrix3d(number_of_behaviors, number_of_interventions,
+                    CreateMatrix3d(number_of_interventions, number_of_behaviors,
                                    number_of_demographic_combinations);
                 timestep_index++;
             }
