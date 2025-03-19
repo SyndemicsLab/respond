@@ -62,8 +62,8 @@ namespace respond::data_ops {
         for (int i = 0; i < number_intervention_states; ++i) {
             Eigen::array<Eigen::Index, 3> offset = {0, 0, 0};
             Eigen::array<Eigen::Index, 3> extent = utilMatrix.dimensions();
-            offset[(int)Dimension::kIntervention] = i;
-            extent[(int)Dimension::kIntervention] = 1;
+            offset[static_cast<int>(Dimension::kIntervention)] = i;
+            extent[static_cast<int>(Dimension::kIntervention)] = 1;
             Matrix3d temp = utilMatrix.slice(offset, extent);
             if (utilCol.size() > i) {
                 temp.setConstant(std::stod(utilCol[i]));

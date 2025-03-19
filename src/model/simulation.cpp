@@ -34,8 +34,8 @@ namespace respond::model {
         ResetTime();
         ResetHistory();
 
-        int duration = std::get<int>(
-            data_loader.GetConfig()->get("simulation.duration", (int)0));
+        int duration = std::get<int>(data_loader.GetConfig()->get(
+            "simulation.duration", static_cast<int>(0)));
 
         for (; time < duration; ++time) {
             history.state_history[time] = state;
@@ -117,22 +117,24 @@ namespace respond::model {
         Matrix3d ret = CreateMatrix3d(state.dimension(0), state.dimension(1),
                                       state.dimension(2));
 
-        for (int i = 0; i < state.dimension((int)Dimension::kOud); ++i) {
+        for (int i = 0; i < state.dimension(static_cast<int>(Dimension::kOud));
+             ++i) {
 
             Eigen::array<Eigen::Index, 3> offsetTrans = {0, 0, 0};
             auto extentTrans = state.dimensions();
-            offsetTrans[(int)Dimension::kOud] =
-                i * state.dimension((int)Dimension::kOud);
+            offsetTrans[static_cast<int>(Dimension::kOud)] =
+                i * state.dimension(static_cast<int>(Dimension::kOud));
 
             Eigen::array<Eigen::Index, 3> offsetState = {0, 0, 0};
             auto extentState = state.dimensions();
-            offsetState[(int)Dimension::kOud] = i;
-            extentState[(int)Dimension::kOud] = 1;
+            offsetState[static_cast<int>(Dimension::kOud)] = i;
+            extentState[static_cast<int>(Dimension::kOud)] = 1;
 
             auto slicedState = state.slice(offsetState, extentState);
 
             Eigen::array<Eigen::Index, 3> bcast = {1, 1, 1};
-            bcast[(int)Dimension::kOud] = state.dimension((int)Dimension::kOud);
+            bcast[static_cast<int>(Dimension::kOud)] =
+                state.dimension(static_cast<int>(Dimension::kOud));
 
             Matrix3d broadcastedTensor = slicedState.broadcast(bcast);
             Matrix3d slicedTransition =
@@ -151,24 +153,25 @@ namespace respond::model {
         Matrix3d ret = CreateMatrix3d(state.dimension(0), state.dimension(1),
                                       state.dimension(2));
 
-        for (int i = 0;
-             i < this->state.dimension((int)Dimension::kIntervention); ++i) {
+        for (int i = 0; i < this->state.dimension(
+                                static_cast<int>(Dimension::kIntervention));
+             ++i) {
 
             Eigen::array<Eigen::Index, 3> offsetTrans = {0, 0, 0};
             auto extentTrans = state.dimensions();
-            offsetTrans[(int)Dimension::kIntervention] =
-                i * state.dimension((int)Dimension::kIntervention);
+            offsetTrans[static_cast<int>(Dimension::kIntervention)] =
+                i * state.dimension(static_cast<int>(Dimension::kIntervention));
 
             Eigen::array<Eigen::Index, 3> offsetState = {0, 0, 0};
             auto extentState = state.dimensions();
-            offsetState[(int)Dimension::kIntervention] = i;
-            extentState[(int)Dimension::kIntervention] = 1;
+            offsetState[static_cast<int>(Dimension::kIntervention)] = i;
+            extentState[static_cast<int>(Dimension::kIntervention)] = 1;
 
             auto slicedState = state.slice(offsetState, extentState);
 
             Eigen::array<Eigen::Index, 3> bcast = {1, 1, 1};
-            bcast[(int)Dimension::kIntervention] =
-                state.dimension((int)Dimension::kIntervention);
+            bcast[static_cast<int>(Dimension::kIntervention)] =
+                state.dimension(static_cast<int>(Dimension::kIntervention));
 
             auto broadcastedTensor = slicedState.broadcast(bcast);
             auto slicedTransition =
@@ -198,8 +201,8 @@ namespace respond::model {
 
             Eigen::array<Eigen::Index, 3> result_offset = {0, 0, 0};
             Eigen::array<Eigen::Index, 3> result_extent = result.dimensions();
-            result_offset[(int)Dimension::kIntervention] = j;
-            result_extent[(int)Dimension::kIntervention] = 1;
+            result_offset[static_cast<int>(Dimension::kIntervention)] = j;
+            result_extent[static_cast<int>(Dimension::kIntervention)] = 1;
             if (intervention_idx == j) {
                 result.slice(result_offset, result_extent) +=
                     interventionState.slice(result_offset, result_extent);
@@ -214,13 +217,15 @@ namespace respond::model {
                                                                          0};
                     Eigen::array<Eigen::Index, 3> intervention_extent =
                         interventionState.dimensions();
-                    intervention_offset[(int)Dimension::kIntervention] = j;
-                    intervention_extent[(int)Dimension::kIntervention] = 1;
-                    intervention_offset[(int)Dimension::kOud] = k;
-                    intervention_extent[(int)Dimension::kOud] = 1;
+                    intervention_offset[static_cast<int>(
+                        Dimension::kIntervention)] = j;
+                    intervention_extent[static_cast<int>(
+                        Dimension::kIntervention)] = 1;
+                    intervention_offset[static_cast<int>(Dimension::kOud)] = k;
+                    intervention_extent[static_cast<int>(Dimension::kOud)] = 1;
 
                     Eigen::array<Eigen::Index, 3> bcast = {1, 1, 1};
-                    bcast[(int)Dimension::kOud] = behavior_size;
+                    bcast[static_cast<int>(Dimension::kOud)] = behavior_size;
                     auto slicedState = interventionState.slice(
                         intervention_offset, intervention_extent);
                     auto broadcastedTensor = slicedState.broadcast(bcast);
@@ -228,10 +233,14 @@ namespace respond::model {
                     Eigen::array<Eigen::Index, 3> rates_offset = {0, 0, 0};
                     Eigen::array<Eigen::Index, 3> rates_extent =
                         iie.dimensions();
-                    rates_offset[(int)Dimension::kIntervention] = j;
-                    rates_extent[(int)Dimension::kIntervention] = 1;
-                    rates_offset[(int)Dimension::kOud] = (k * behavior_size);
-                    rates_extent[(int)Dimension::kOud] = behavior_size;
+                    rates_offset[static_cast<int>(Dimension::kIntervention)] =
+                        j;
+                    rates_extent[static_cast<int>(Dimension::kIntervention)] =
+                        1;
+                    rates_offset[static_cast<int>(Dimension::kOud)] =
+                        (k * behavior_size);
+                    rates_extent[static_cast<int>(Dimension::kOud)] =
+                        behavior_size;
 
                     result.slice(result_offset, result_extent) +=
                         broadcastedTensor *

@@ -180,8 +180,8 @@ namespace respond::data_ops {
                 Eigen::array<Eigen::Index, 3> offset = {0, 0, 0};
                 Eigen::array<Eigen::Index, 3> extent =
                     cost[perspective].dimensions();
-                offset[(int)Dimension::kIntervention] = i;
-                extent[(int)Dimension::kIntervention] = 1;
+                offset[static_cast<int>(Dimension::kIntervention)] = i;
+                extent[static_cast<int>(Dimension::kIntervention)] = 1;
                 Matrix3d slice = cost[perspective].slice(offset, extent);
                 if (cost_map[perspective].find(interventions[i]) !=
                     cost_map[perspective].end()) {

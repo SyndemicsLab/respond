@@ -48,9 +48,10 @@ namespace respond::data_ops {
 
                     for (auto kv : matrices) {
                         std::array<long int, 3> index = {0, 0, 0};
-                        index[(int)Dimension::kIntervention] = i;
-                        index[(int)Dimension::kOud] = b;
-                        index[(int)Dimension::kDemographicCombo] = d;
+                        index[static_cast<int>(Dimension::kIntervention)] = i;
+                        index[static_cast<int>(Dimension::kOud)] = b;
+                        index[static_cast<int>(Dimension::kDemographicCombo)] =
+                            d;
                         double value = kv.second(index[0], index[1], index[2]);
                         if (pivot) {
                             stream << interventions[i] << "," << behaviors[b]
@@ -306,10 +307,11 @@ namespace respond::data_ops {
                            << behaviors[b] << ",";
                     for (long int h = 0; h < behaviors.size(); h++) {
                         std::array<long int, 3> index = {0, 0, 0};
-                        index[(int)Dimension::kIntervention] = i;
-                        index[(int)Dimension::kOud] =
+                        index[static_cast<int>(Dimension::kIntervention)] = i;
+                        index[static_cast<int>(Dimension::kOud)] =
                             (b * behaviors.size()) + h;
-                        index[(int)Dimension::kDemographicCombo] = d;
+                        index[static_cast<int>(Dimension::kDemographicCombo)] =
+                            d;
                         stream << std::to_string(
                                       data_loader.GetOUDTransitionRates()(
                                           index[0], index[1], index[2]))
@@ -342,9 +344,10 @@ namespace respond::data_ops {
                 stream << behaviors[b] << "," << interventions[i] << ",";
                 for (int h = 0; h < behaviors.size(); ++h) {
                     std::array<long int, 3> index = {0, 0, 0};
-                    index[(int)Dimension::kIntervention] = i;
-                    index[(int)Dimension::kOud] = (b * behaviors.size()) + h;
-                    index[(int)Dimension::kDemographicCombo] = 0;
+                    index[static_cast<int>(Dimension::kIntervention)] = i;
+                    index[static_cast<int>(Dimension::kOud)] =
+                        (b * behaviors.size()) + h;
+                    index[static_cast<int>(Dimension::kDemographicCombo)] = 0;
                     stream << std::to_string(
                                   data_loader.GetInterventionInitRates()(
                                       index[0], index[1], index[2]))
@@ -403,10 +406,11 @@ namespace respond::data_ops {
                     for (int timestep : timesteps) {
                         for (int res = 0; res < interventions.size(); res++) {
                             std::array<long int, 3> index = {0, 0, 0};
-                            index[(int)Dimension::kIntervention] =
+                            index[static_cast<int>(Dimension::kIntervention)] =
                                 (i * interventions.size()) + res;
-                            index[(int)Dimension::kOud] = b;
-                            index[(int)Dimension::kDemographicCombo] = d;
+                            index[static_cast<int>(Dimension::kOud)] = b;
+                            index[static_cast<int>(
+                                Dimension::kDemographicCombo)] = d;
                             stream << std::to_string(
                                           data_loader
                                               .GetInterventionTransitionRates(
@@ -461,9 +465,10 @@ namespace respond::data_ops {
                            << behaviors[b] << ",";
                     for (int timestep : timesteps) {
                         std::array<long int, 3> index = {0, 0, 0};
-                        index[(int)Dimension::kIntervention] = i;
-                        index[(int)Dimension::kOud] = b;
-                        index[(int)Dimension::kDemographicCombo] = d;
+                        index[static_cast<int>(Dimension::kIntervention)] = i;
+                        index[static_cast<int>(Dimension::kOud)] = b;
+                        index[static_cast<int>(Dimension::kDemographicCombo)] =
+                            d;
                         stream << std::to_string(data_loader.GetOverdoseRates(
                                       timestep)(index[0], index[1], index[2]))
                                << ",";
@@ -504,7 +509,7 @@ namespace respond::data_ops {
             stream << temp << ",";
             for (int timestep : timesteps) {
                 std::array<long int, 3> index = {0, 0, 0};
-                index[(int)Dimension::kDemographicCombo] = d;
+                index[static_cast<int>(Dimension::kDemographicCombo)] = d;
                 stream << std::to_string(data_loader.GetFatalOverdoseRates(
                               timestep)(index[0], index[1], index[2]))
                        << ",";

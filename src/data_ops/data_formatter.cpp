@@ -80,11 +80,12 @@ namespace respond::data_ops {
             return {};
         }
         Matrix3d temp = itr->second;
-        int number_of_behaviors = temp.dimension((int)Dimension::kOud);
+        int number_of_behaviors =
+            temp.dimension(static_cast<int>(Dimension::kOud));
         int number_of_interventions =
-            temp.dimension((int)Dimension::kIntervention);
+            temp.dimension(static_cast<int>(Dimension::kIntervention));
         int number_of_demographic_combinations =
-            temp.dimension((int)Dimension::kDemographicCombo);
+            temp.dimension(static_cast<int>(Dimension::kDemographicCombo));
 
         TimedMatrix3d trimmed;
         Matrix3d running =

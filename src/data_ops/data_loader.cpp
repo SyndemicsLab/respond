@@ -598,15 +598,16 @@ namespace respond::data_ops {
             for (int i = 0; i < number_intervention_states; i++) {
                 // assign to index + offset of numInterventions
                 Eigen::array<Eigen::Index, 3> offsets = {0, 0, 0};
-                offsets[(int)Dimension::kIntervention] =
+                offsets[static_cast<int>(Dimension::kIntervention)] =
                     i * number_intervention_states;
-                offsets[(int)Dimension::kOud] = i * 0;
-                offsets[(int)Dimension::kDemographicCombo] = 0;
+                offsets[static_cast<int>(Dimension::kOud)] = i * 0;
+                offsets[static_cast<int>(Dimension::kDemographicCombo)] = 0;
                 Eigen::array<Eigen::Index, 3> extent = {0, 0, 0};
-                extent[(int)Dimension::kIntervention] =
+                extent[static_cast<int>(Dimension::kIntervention)] =
                     number_intervention_states;
-                extent[(int)Dimension::kOud] = number_behavior_states;
-                extent[(int)Dimension::kDemographicCombo] =
+                extent[static_cast<int>(Dimension::kOud)] =
+                    number_behavior_states;
+                extent[static_cast<int>(Dimension::kDemographicCombo)] =
                     number_demographic_combos;
                 Matrix3d temp =
                     BuildInterventionMatrix(table, interventions[i], timestep);
@@ -700,11 +701,12 @@ namespace respond::data_ops {
             }
             // intervention, oud_state, dem
             Eigen::array<Eigen::Index, 3> offsets = {0, 0, 0};
-            offsets[(int)Dimension::kDemographicCombo] = d;
+            offsets[static_cast<int>(Dimension::kDemographicCombo)] = d;
             Eigen::array<Eigen::Index, 3> extent = {0, 0, 0};
-            extent[(int)Dimension::kIntervention] = number_intervention_states;
-            extent[(int)Dimension::kOud] = number_behavior_states;
-            extent[(int)Dimension::kDemographicCombo] = 1;
+            extent[static_cast<int>(Dimension::kIntervention)] =
+                number_intervention_states;
+            extent[static_cast<int>(Dimension::kOud)] = number_behavior_states;
+            extent[static_cast<int>(Dimension::kDemographicCombo)] = 1;
             fatal_overdose_transitions.slice(offsets, extent)
                 .setConstant(std::stod(col[row]));
             ++row;
