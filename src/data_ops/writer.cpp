@@ -18,8 +18,6 @@
 #include <string>
 #include <vector>
 
-#include <Eigen/Eigen>
-
 #include <respond/data_ops/data_types.hpp>
 #include <respond/data_ops/matrices.hpp>
 #include <respond/utils/logging.hpp>
