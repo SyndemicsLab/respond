@@ -4,7 +4,7 @@
 // Created Date: 2025-01-14                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-19                                                  //
+// Last Modified: 2025-03-20                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -30,12 +30,34 @@ PYBIND11_MODULE(respond, m) {
 
     py::class_<DataLoader>(data_ops, "DataLoader")
         .def(py::init<const std::string &, const std::string &>())
+        .def("GetInitialSample", &DataLoader::GetInitialSample)
         .def("GetEnteringSamples", &DataLoader::GetEnteringSamples)
         .def("GetOUDTransitionRates", &DataLoader::GetOUDTransitionRates)
-        .def("GetFatalOverdoseRates", &DataLoader::GetFatalOverdoseRates)
+        .def("GetInterventionTransitionRates",
+             &DataLoader::GetInterventionTransitionRates)
         .def("GetOverdoseRates", &DataLoader::GetOverdoseRates)
+        .def("GetFatalOverdoseRates", &DataLoader::GetFatalOverdoseRates)
         .def("GetMortalityRates", &DataLoader::GetMortalityRates)
-        .def("GetInitialSample", &DataLoader::GetInitialSample)
+        .def("GetInterventionInitRates", &DataLoader::GetInterventionInitRates)
+        .def("SetInitialSample", &DataLoader::SetInitialSample)
+        .def("SetEnteringSamples", &DataLoader::SetEnteringSamples)
+        .def("SetOUDTransitionRates", &DataLoader::SetOUDTransitionRates)
+        .def("SetInterventionTransitionRates",
+             &DataLoader::SetInterventionTransitionRates)
+        .def("SetOverdoseRates", &DataLoader::SetOverdoseRates)
+        .def("SetFatalOverdoseRates", &DataLoader::SetFatalOverdoseRates)
+        .def("SetMortalityRates", &DataLoader::SetMortalityRates)
+        .def("SetInterventionInitRates", &DataLoader::SetInterventionInitRates)
+        .def("LoadInitialSample", &DataLoader::LoadInitialSample)
+        .def("LoadEnteringSamples", &DataLoader::LoadEnteringSamples)
+        .def("LoadOUDTransitionRates", &DataLoader::LoadOUDTransitionRates)
+        .def("LoadInterventionInitRates",
+             &DataLoader::LoadInterventionInitRates)
+        .def("LoadInterventionTransitionRates",
+             &DataLoader::LoadInterventionTransitionRates)
+        .def("LoadOverdoseRates", &DataLoader::LoadOverdoseRates)
+        .def("LoadFatalOverdoseRates", &DataLoader::LoadFatalOverdoseRates)
+        .def("LoadMortalityRates", &DataLoader::LoadMortalityRates)
         .def("GetConfig", &DataLoader::GetConfig);
 
     py::class_<CostLoader>(data_ops, "CostLoader")
