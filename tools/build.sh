@@ -31,7 +31,7 @@ dminstall () {
         cd "DataManagement" || return 1
         mkdir -p build
         cd build
-        cmake .. -DCMAKE_BUILD_TYPE=Release
+        cmake .. -DCMAKE_BUILD_TYPE=Release -DDATAMANAGEMENT_BUILD_TESTS=OFF
         cmake --build .
         cmake --install . --prefix "$TOPLEVEL/lib/dminstall"
     )
