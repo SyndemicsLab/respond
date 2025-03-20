@@ -34,6 +34,11 @@ jobs:
 
         - name: Setup GoogleTest
           uses: Bacondish2023/setup-googletest@v1.0.1
+        
+        - name: Install Eigen3
+          uses: kupns-aka-kupa/setup-eigen3@v1
+          with:
+            version: 3.4.0
 
         - name: Build and Test Respond
           working-directory: ${{github.workspace}}
