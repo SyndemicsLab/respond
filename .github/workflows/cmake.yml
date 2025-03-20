@@ -32,6 +32,9 @@ jobs:
             boost_version: 1.86.0
             platform_version: 22.04
 
+        - name: Setup GoogleTest
+          uses: Bacondish2023/setup-googletest@v1.0.1
+
         - name: Build and Test Respond
           working-directory: ${{github.workspace}}
           run: |
