@@ -20,6 +20,24 @@ showhelp () {
     echo "n              Build Benchmarking executable"
 }
 
+dminstall () {
+    if [[ ! -d "DataManagement" ]]; then
+        git clone -b respond_old git@github.com:SyndemicsLab/DataManagement
+    fi
+    echo "DataManagement clone complete."
+
+    # subshell needed to avoid changing working directory unnecessarily
+    (
+        cd "DataManagement" || return 1
+        mkdir -p build
+        cd build
+        cmake .. -DCMAKE_BUILD_TYPE=Release
+        cmake --build .
+        cmake --install . --prefix "$TOPLEVEL/lib/dminstall"
+    )
+    rm -rf DataManagement
+}
+
 # set default build type
 BUILDTYPE="Debug"
 RESPOND_BUILD_TESTS="OFF"
@@ -68,6 +86,15 @@ done
     cd "$TOPLEVEL" || exit
     # ensure the `build/` directory exists
     ([[ -d "build/" ]] && rm -rf build/*) || mkdir "build/"
+    ([[ -d "lib/" ]] && rm -rf lib/*.a && rm -rf lib/*.so && rm -rf lib/dminstall)
+
+     # detect or install DataManagement
+    if [[ ! -d "lib/dminstall" ]]; then
+        if ! dminstall; then
+            echo "Installing \`DataManagement\` failed."
+            exit 1
+        fi
+    fi
     (
         cd "build" || exit
         # build tests, if specified

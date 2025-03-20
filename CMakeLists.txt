@@ -97,6 +97,8 @@ endif()
 target_compile_definitions(respond PUBLIC RESPOND_COMPILED_LIB)
 target_include_directories(respond ${RESPOND_INCLUDES_LEVEL} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include>"
                                                                   "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>"
+                                                                  "$<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/lib/dminstall/include>"
+                                                                  "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/lib/dminstall>"
                                                                   PRIVATE "$<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/src>")
 
 include(MakeDependenciesAvailable)
