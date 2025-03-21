@@ -4,7 +4,7 @@
 // Created Date: 2025-01-14                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-17                                                  //
+// Last Modified: 2025-03-21                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -131,11 +131,11 @@ namespace respond::data_ops {
         TimedMatrix3d result;
 
         for (int t = 0; t < data.size(); t++) {
-            Matrix3d temp =
-                CreateMatrix3d(data.at(t).dimension(0), data.at(t).dimension(1),
-                               data.at(t).dimension(2))
-                    .constant(value);
-            result[t] = data.at(t) * temp;
+            auto ref = data.at(t);
+            Matrix3d temp = CreateMatrix3d(ref.dimension(0), ref.dimension(1),
+                                           ref.dimension(2))
+                                .constant(value);
+            result[t] = ref * temp;
         }
         return result;
     }

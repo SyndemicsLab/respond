@@ -4,7 +4,7 @@
 // Created Date: 2025-03-07                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-19                                                  //
+// Last Modified: 2025-03-21                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -31,16 +31,15 @@ namespace respond::data_ops {
         BaseLoader(const std::string &directory = "",
                    const std::string &log_name = "console")
             : logger_name(log_name) {
-
-            // if (directory.empty()) {
-            //     std::stringstream message;
-            //     message << "Invalid Directory provided to loader: " <<
-            //     directory
-            //             << std::endl
-            //             << "Fatal Error! Exiting...";
-            //     respond::utils::LogError(log_name, message.str());
-            //     exit(-1);
-            // }
+            if (!std::filesystem::is_directory(directory) &&
+                !directory.empty()) {
+                std::stringstream message;
+                message << "Invalid Directory provided to loader: " << directory
+                        << std::endl
+                        << "Invalid Data, Expect Bad Results! Returning...";
+                respond::utils::LogError(log_name, message.str());
+                return;
+            }
             ReadInputDirectory(directory);
         }
 
