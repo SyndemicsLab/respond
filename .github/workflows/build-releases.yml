@@ -40,6 +40,8 @@ jobs:
                 -DRESPOND_BUILD_PYBINDINGS=OFF -DRESPOND_BUILD_BENCH=OFF \
                 -DRESPOND_BUILD_WARNINGS=ON -DRESPOND_BUILD_SHARED_LIBS=OFF \
                 -DRESPOND_INSTALL=OFF
+          env:
+            BOOST_ROOT: ${{ steps.install-boost.outputs.BOOST_ROOT }}
                 
         - name: Compile Static Library
           working-directory: ${{github.workspace}}/build
