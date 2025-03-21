@@ -4,5 +4,4 @@ include(LoadEigen)
 include(LoadSpdlog)
 include(LoadDataManagement)
 
-FetchContent_MakeAvailable(eigen spdlog datamanagement)
-set(EIGEN3_INCLUDE_DIR ${eigen_SOURCE_DIR})
+FetchContent_MakeAvailable(Eigen3 spdlog datamanagement)
