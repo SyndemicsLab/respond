@@ -11,9 +11,14 @@ local.properties
 .loadpath
 .recommenders
 
+# Dependency Libraries
+lib/*
+!lib/.gitkeep
+
 # Build Files
 build/*
 !build/.gitkeep
+dist/
 
 # Docs Files
 docs/html
@@ -25,7 +30,6 @@ test/TestInput/*
 !test/TestInput/.gitkeep
 
 # Shared Libraries
-dminstall
 *.so
 *.a
 

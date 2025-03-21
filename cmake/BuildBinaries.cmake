@@ -1,0 +1,21 @@
+if(RESPOND_BUILD_PYBINDINGS OR RESPOND_BUILD_ALL)
+    message(STATUS "Generating Python Bindings")
+    # set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden")
+    add_subdirectory(extras/respondpy)
+endif()
+
+if(RESPOND_BUILD_EXECUTABLE OR RESPOND_BUILD_ALL)
+    message(STATUS "Building Executable")
+    add_subdirectory(extras/executable)
+endif()
+
+if(RESPOND_BUILD_TESTS OR RESPOND_BUILD_ALL)
+    message(STATUS "Generating tests")
+    enable_testing()
+    add_subdirectory(tests)
+endif()
+
+if(RESPOND_BUILD_BENCH OR RESPOND_BUILD_ALL)
+    message(STATUS "Generating benchmarks")
+    add_subdirectory(extras/benchmarking)
+endif()
