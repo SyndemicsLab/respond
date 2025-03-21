@@ -6,4 +6,4 @@ include(LoadEigen)
 include(LoadSpdlog)
 include(LoadDataManagement)
 
-FetchContent_MakeAvailable(Eigen spdlog)
+FetchContent_MakeAvailable(Eigen spdlog datamanagement)

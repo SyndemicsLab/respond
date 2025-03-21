@@ -18,6 +18,7 @@ lib/*
 # Build Files
 build/*
 !build/.gitkeep
+dist/
 
 # Docs Files
 docs/html

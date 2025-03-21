@@ -4,7 +4,7 @@
 // Created Date: 2025-01-14                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-19                                                  //
+// Last Modified: 2025-03-21                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -35,11 +35,11 @@ namespace respond::data_ops {
 
         std::vector<std::string> behaviors =
             GetConfig()->getStringVector("state.ouds");
-        size_t number_behavior_states = behaviors.size();
-        size_t number_demographic_combos = GetDemographicCombos().size();
+        int number_behavior_states = behaviors.size();
+        int number_demographic_combos = GetDemographicCombos().size();
         std::vector<std::string> interventions =
             GetConfig()->getStringVector("state.interventions");
-        size_t number_intervention_states = interventions.size();
+        int number_intervention_states = interventions.size();
 
         initial_sample =
             CreateMatrix3d(number_intervention_states, number_behavior_states,
@@ -95,11 +95,11 @@ namespace respond::data_ops {
 
         std::vector<std::string> behaviors =
             GetConfig()->getStringVector("state.ouds");
-        size_t number_behavior_states = behaviors.size();
-        size_t number_demographic_combos = GetDemographicCombos().size();
+        int number_behavior_states = behaviors.size();
+        int number_demographic_combos = GetDemographicCombos().size();
         std::vector<std::string> interventions =
             GetConfig()->getStringVector("state.interventions");
-        size_t number_intervention_states = interventions.size();
+        int number_intervention_states = interventions.size();
 
         auto itr = find(interventions.begin(), interventions.end(),
                         entering_sample_intervention);
@@ -156,11 +156,11 @@ namespace respond::data_ops {
 
         std::vector<std::string> behaviors =
             GetConfig()->getStringVector("state.ouds");
-        size_t number_behavior_states = behaviors.size();
-        size_t number_demographic_combos = GetDemographicCombos().size();
+        int number_behavior_states = behaviors.size();
+        int number_demographic_combos = GetDemographicCombos().size();
         std::vector<std::string> interventions =
             GetConfig()->getStringVector("state.interventions");
-        size_t number_intervention_states = interventions.size();
+        int number_intervention_states = interventions.size();
 
         std::string column_prefix = "cohort_size_change_";
         std::stringstream column;
@@ -238,11 +238,11 @@ namespace respond::data_ops {
 
         std::vector<std::string> behaviors =
             GetConfig()->getStringVector("state.ouds");
-        size_t number_behavior_states = behaviors.size();
-        size_t number_demographic_combos = GetDemographicCombos().size();
+        int number_behavior_states = behaviors.size();
+        int number_demographic_combos = GetDemographicCombos().size();
         std::vector<std::string> interventions =
             GetConfig()->getStringVector("state.interventions");
-        size_t number_intervention_states = interventions.size();
+        int number_intervention_states = interventions.size();
         // end dimensions of oudTransitionRates are number_intervention_states x
         // number_behavior_states^2 x demographics start with a vector of
         // StateTensor-sized Matrix3d objects and stack at the end
@@ -302,11 +302,11 @@ namespace respond::data_ops {
 
         std::vector<std::string> behaviors =
             GetConfig()->getStringVector("state.ouds");
-        size_t number_behavior_states = behaviors.size();
-        size_t number_demographic_combos = GetDemographicCombos().size();
+        int number_behavior_states = behaviors.size();
+        int number_demographic_combos = GetDemographicCombos().size();
         std::vector<std::string> interventions =
             GetConfig()->getStringVector("state.interventions");
-        size_t number_intervention_states = interventions.size();
+        int number_intervention_states = interventions.size();
 
         Matrix3d running_transitions =
             CreateMatrix3d(number_intervention_states,
@@ -411,11 +411,11 @@ namespace respond::data_ops {
 
         std::vector<std::string> behaviors =
             GetConfig()->getStringVector("state.ouds");
-        size_t number_behavior_states = behaviors.size();
-        size_t number_demographic_combos = GetDemographicCombos().size();
+        int number_behavior_states = behaviors.size();
+        int number_demographic_combos = GetDemographicCombos().size();
         std::vector<std::string> interventions =
             GetConfig()->getStringVector("state.interventions");
-        size_t number_intervention_states = interventions.size();
+        int number_intervention_states = interventions.size();
 
         int start_time = 0;
         std::vector<int> overdose_change_times =
@@ -455,11 +455,11 @@ namespace respond::data_ops {
 
         std::vector<std::string> behaviors =
             GetConfig()->getStringVector("state.ouds");
-        size_t number_behavior_states = behaviors.size();
-        size_t number_demographic_combos = GetDemographicCombos().size();
+        int number_behavior_states = behaviors.size();
+        int number_demographic_combos = GetDemographicCombos().size();
         std::vector<std::string> interventions =
             GetConfig()->getStringVector("state.interventions");
-        size_t number_intervention_states = interventions.size();
+        int number_intervention_states = interventions.size();
 
         std::vector<std::string> smr_column = temp->getColumn("SMR");
         if (smr_column.empty()) {
@@ -514,11 +514,11 @@ namespace respond::data_ops {
 
         std::vector<std::string> behaviors =
             GetConfig()->getStringVector("state.ouds");
-        size_t number_behavior_states = behaviors.size();
-        size_t number_demographic_combos = GetDemographicCombos().size();
+        int number_behavior_states = behaviors.size();
+        int number_demographic_combos = GetDemographicCombos().size();
         std::vector<std::string> interventions =
             GetConfig()->getStringVector("state.interventions");
-        size_t number_intervention_states = interventions.size();
+        int number_intervention_states = interventions.size();
 
         std::vector<int> intervention_change_times =
             GetConfig()->getIntVector("simulation.intervention_change_times");
@@ -581,11 +581,11 @@ namespace respond::data_ops {
 
         std::vector<std::string> behaviors =
             GetConfig()->getStringVector("state.ouds");
-        size_t number_behavior_states = behaviors.size();
-        size_t number_demographic_combos = GetDemographicCombos().size();
+        int number_behavior_states = behaviors.size();
+        int number_demographic_combos = GetDemographicCombos().size();
         std::vector<std::string> interventions =
             GetConfig()->getStringVector("state.interventions");
-        size_t number_intervention_states = interventions.size();
+        int number_intervention_states = interventions.size();
 
         Data::DataTable temp(*data_table);
         Data::IDataTablePtr tempPtr =
@@ -646,11 +646,11 @@ namespace respond::data_ops {
 
         std::vector<std::string> behaviors =
             GetConfig()->getStringVector("state.ouds");
-        size_t number_behavior_states = behaviors.size();
-        size_t number_demographic_combos = GetDemographicCombos().size();
+        int number_behavior_states = behaviors.size();
+        int number_demographic_combos = GetDemographicCombos().size();
         std::vector<std::string> interventions =
             GetConfig()->getStringVector("state.interventions");
-        size_t number_intervention_states = interventions.size();
+        int number_intervention_states = interventions.size();
 
         Matrix3d overdose_transitions =
             CreateMatrix3d(number_intervention_states, number_behavior_states,
@@ -678,11 +678,11 @@ namespace respond::data_ops {
         Data::IDataTablePtr const &table, const std::string &key) {
         std::vector<std::string> behaviors =
             GetConfig()->getStringVector("state.ouds");
-        size_t number_behavior_states = behaviors.size();
-        size_t number_demographic_combos = GetDemographicCombos().size();
+        int number_behavior_states = behaviors.size();
+        int number_demographic_combos = GetDemographicCombos().size();
         std::vector<std::string> interventions =
             GetConfig()->getStringVector("state.interventions");
-        size_t number_intervention_states = interventions.size();
+        int number_intervention_states = interventions.size();
 
         Matrix3d fatal_overdose_transitions =
             CreateMatrix3d(number_intervention_states, number_behavior_states,

@@ -20,7 +20,7 @@ Issues = "https://github.com/SyndemicsLab/RESPONDSimulationv2/issues"
 
 [tool.scikit-build]
 cmake.version = ">=3.27"
+wheel.py-api = "cp38"
 
 [tool.scikit-build.cmake.define]
-BUILD_PYBINDINGS = "ON"
 CMAKE_POSITION_INDEPENDENT_CODE = "ON"

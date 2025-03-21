@@ -19,9 +19,6 @@ jobs:
     name: Build Release
     runs-on: ${{ matrix.os }}
     steps:
-        - uses: webfactory/ssh-agent@v0.9.0
-          with:
-            ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
         - name: Checkout Respond Repository
           uses: actions/checkout@v4
 
@@ -43,7 +40,6 @@ jobs:
         - name: Build and Test Respond
           working-directory: ${{github.workspace}}
           run: |
-            chmod +x tools/build.sh
             tools/build.sh -p
           env:
             BOOST_ROOT: ${{ steps.install-boost.outputs.boost_root }}

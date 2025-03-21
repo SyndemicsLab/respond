@@ -47,8 +47,6 @@ endif()
 # ---------------------------------------------------------------------------------------
 include(options)
 
-include(LoadDataManagement)
-
 # ---------------------------------------------------------------------------------------
 # Set position independent code
 # ---------------------------------------------------------------------------------------
@@ -97,17 +95,16 @@ endif()
 target_compile_definitions(respond PUBLIC RESPOND_COMPILED_LIB)
 target_include_directories(respond ${RESPOND_INCLUDES_LEVEL} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include>"
                                                                   "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>"
-                                                                  "$<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/lib/dminstall/include>"
-                                                                  "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/lib/dminstall>"
                                                                   PRIVATE "$<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/src>")
 
 include(MakeDependenciesAvailable)
                                                                   
 target_link_libraries(respond
-    PRIVATE
-        Eigen3::Eigen
-        spdlog::spdlog
-        datamanagement::datamanagement
+PUBLIC
+    datamanagement::datamanagement
+PRIVATE
+    Eigen3::Eigen
+    spdlog::spdlog
 )
 
 set_target_properties(respond PROPERTIES VERSION ${RESPOND_VERSION} SOVERSION ${RESPOND_VERSION_MAJOR}.${RESPOND_VERSION_MINOR})
