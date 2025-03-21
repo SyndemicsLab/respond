@@ -67,7 +67,7 @@ set(RESPOND_SRCS
     src/utils/logging.cpp
 )
 
-if(BUILD_SHARED_LIBS)
+if(RESPOND_BUILD_SHARED_LIBS)
     if(WIN32)
         configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/version.rc.in ${CMAKE_CURRENT_BINARY_DIR}/version.rc @ONLY)
         list(APPEND RESPOND_SRCS ${CMAKE_CURRENT_BINARY_DIR}/version.rc)
@@ -102,8 +102,8 @@ include(MakeDependenciesAvailable)
 target_link_libraries(respond
 PUBLIC
     datamanagement::datamanagement
-PRIVATE
     Eigen3::Eigen
+PRIVATE
     spdlog::spdlog
 )
 

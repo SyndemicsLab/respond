@@ -1,0 +1,39 @@
+name: Build Releases
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+env:
+  BUILD_TYPE: Release
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+
+    name: Build Static Library Release
+    runs-on: ${{ matrix.os }}
+    steps:
+        - name: Checkout Respond Repository
+          uses: actions/checkout@v4
+
+        - name: Setup cmake
+          uses: jwlawson/actions-setup-cmake@v2
+
+        - name: Generate CMake Files
+          working-directory: ${{github.workspace}}/build
+          run: |
+            cmake .. \
+                -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DRESPOND_BUILD_PIC=OFF \
+                -DRESPOND_BUILD_EXECUTABLE=OFF -DRESPOND_BUILD_TESTS=OFF \
+                -DRESPOND_BUILD_PYBINDINGS=OFF -DRESPOND_BUILD_BENCH=OFF \
+                -DRESPOND_BUILD_WARNINGS=ON -DRESPOND_BUILD_SHARED_LIBS=OFF
+                
+        - name: Compile Static Library
+          working-directory: ${{github.workspace}}/build
+          run: cmake --build . --config $BUILD_TYPE
+            

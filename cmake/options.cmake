@@ -14,6 +14,9 @@ option(RESPOND_BUILD_PYBINDINGS "Build python bindings" OFF)
 # bench options
 option(RESPOND_BUILD_BENCH "Build benchmarks (Requires https://github.com/google/benchmark.git to be installed)" OFF)
 
+# shared_libs options
+option(RESPOND_BUILD_SHARED_LIBS "Enable shared libraries" ${BUILD_SHARED_LIBS})
+
 # warning options
 option(RESPOND_BUILD_WARNINGS "Enable compiler warnings" OFF)
 
