@@ -3,7 +3,7 @@ message(CHECK_START "Fetching Eigen3...")
 list(APPEND CMAKE_MESSAGE_INDENT "  ")
 
 FetchContent_Declare(
-    eigen
+    Eigen
     GIT_REPOSITORY https://gitlab.com/libeigen/eigen.git
     GIT_TAG master
     GIT_SHALLOW TRUE
