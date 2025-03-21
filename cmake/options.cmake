@@ -8,6 +8,9 @@ option(RESPOND_BUILD_EXECUTABLE "Build Executable for RESPOND" ON)
 # testing options
 option(RESPOND_BUILD_TESTS "Build tests" ON)
 
+# pybind options
+option(RESPOND_BUILD_PYBINDINGS "Build python bindings" OFF)
+
 # bench options
 option(RESPOND_BUILD_BENCH "Build benchmarks (Requires https://github.com/google/benchmark.git to be installed)" OFF)
 

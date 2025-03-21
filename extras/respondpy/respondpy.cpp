@@ -13,6 +13,8 @@
 #include <respond/respond.hpp>
 
 #include <memory>
+#include <string>
+
 #include <pybind11/eigen.h>
 #include <pybind11/eigen/tensor.h>
 #include <pybind11/numpy.h>
@@ -23,7 +25,7 @@ namespace py = pybind11;
 using namespace respond::data_ops;
 using namespace respond::model;
 
-PYBIND11_MODULE(respond, m) {
+PYBIND11_MODULE(respondpy, m) {
     auto data_ops = m.def_submodule(
         "data_ops",
         "A submodule containing the data operations necessary for RESPOND.");
@@ -72,7 +74,12 @@ PYBIND11_MODULE(respond, m) {
         .def("SetMortalityRates", &DataLoader::SetMortalityRates)
         .def("SetInterventionInitRates", &DataLoader::SetInterventionInitRates)
         .def("LoadInitialSample", &DataLoader::LoadInitialSample)
-        .def("LoadEnteringSamples", &DataLoader::LoadEnteringSamples)
+        .def("LoadEnteringSamples",
+             py::overload_cast<const std::string &, const std::string &,
+                               const std::string &>(
+                 &DataLoader::LoadEnteringSamples))
+        .def("LoadEnteringSamples", py::overload_cast<const std::string &>(
+                                        &DataLoader::LoadEnteringSamples))
         .def("LoadOUDTransitionRates", &DataLoader::LoadOUDTransitionRates)
         .def("LoadInterventionInitRates",
              &DataLoader::LoadInterventionInitRates)
@@ -125,7 +132,7 @@ PYBIND11_MODULE(respond, m) {
         .def_readwrite("disc_utility", &Totals::disc_utility);
 
     // matrices.hpp
-    data_ops.def("CreateMatrix3d" & CreateMatrix3d,
+    data_ops.def("CreateMatrix3d", &CreateMatrix3d,
                  "A Factory Function to generate a new Eigen Matrix3d.");
     data_ops.def("PrintMatrix3d", &PrintMatrix3d,
                  "Prints an Eigen Matrix3d to the provided stream.");

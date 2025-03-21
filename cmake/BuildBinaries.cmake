@@ -1,9 +1,7 @@
 if(RESPOND_BUILD_PYBINDINGS OR RESPOND_BUILD_ALL)
     message(STATUS "Generating Python Bindings")
-    include(LoadPybind)
-    LoadPybind()
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden")
-    add_subdirectory(extras/py_simdemics)
+    # set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden")
+    add_subdirectory(extras/respondpy)
 endif()
 
 if(RESPOND_BUILD_EXECUTABLE OR RESPOND_BUILD_ALL)

@@ -3,8 +3,8 @@ requires = ["scikit-build-core", "pybind11", "eigen", "spdlog"]
 build-backend = "scikit_build_core.build"
 
 [project]
-name = "respond"
-version = "1.0.0"
+name = "respondpy"
+version = "0.1.0"
 readme = "README.md"
 authors = [
     { name = "Matthew Carroll", email = "Matthew.Carroll@bmc.org" },
@@ -19,8 +19,19 @@ Homepage = "https://github.com/SyndemicsLab/RESPONDSimulationv2"
 Issues = "https://github.com/SyndemicsLab/RESPONDSimulationv2/issues"
 
 [tool.scikit-build]
-cmake.version = ">=3.27"
-wheel.py-api = "cp38"
+cmake.version = ">=3.20"
+sdist.exclude = [
+    ".github",
+    "docs",
+    "tests",
+    "benchmarks",
+    "executable",
+    "tools",
+]
+wheel.packages = ["extras/python/respond"]
 
 [tool.scikit-build.cmake.define]
-CMAKE_POSITION_INDEPENDENT_CODE = "ON"
+RESPOND_BUILD_PIC = "ON"
+RESPOND_BUILD_PYBINDINGS = "ON"
+RESPOND_BUILD_TESTS = "OFF"
+RESPOND_BUILD_EXECUTABLE = "OFF"
