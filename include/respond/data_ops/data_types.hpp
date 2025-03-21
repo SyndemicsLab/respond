@@ -4,7 +4,7 @@
 // Created Date: 2025-01-14                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-14                                                  //
+// Last Modified: 2025-03-21                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -34,10 +34,6 @@ namespace respond::data_ops {
         TimedMatrix3d intervention_admission_history;
     };
 
-    /// @brief Struct defining all the History Matrices Across the Duration of
-    /// the Simulation
-    using History = History;
-
     struct Cost {
         std::string perspective;
         TimedMatrix3d healthcare_cost;
@@ -46,9 +42,6 @@ namespace respond::data_ops {
         TimedMatrix3d pharma_cost;
         TimedMatrix3d treatment_cost;
     };
-
-    /// @brief
-    using Cost = Cost;
 
     /// @brief Struct defining Cost Matrices Across the Duration of the
     /// Simulation
@@ -64,8 +57,6 @@ namespace respond::data_ops {
         double base_utility = 0.0;
         double disc_utility = 0.0;
     };
-
-    using Totals = Totals;
 
 }; // namespace respond::data_ops
 

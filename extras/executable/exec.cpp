@@ -4,7 +4,7 @@
 // Created Date: 2025-03-17                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-17                                                  //
+// Last Modified: 2025-03-21                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -221,7 +221,7 @@ void execute(int argc, char **argv) {
             std::cout << "Output " << std::to_string(i) << " Complete"
                       << std::endl;
         });
-    std::cout << "Simulation Complete! :)" << std::endl;
+    std::cout << "Simulation Complete!" << std::endl;
     return;
 }
 
