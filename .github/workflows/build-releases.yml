@@ -16,11 +16,16 @@ jobs:
         include:
             - os: ubuntu-latest
               PLATFORM: 22.04
+              SHELL: bash
             - os: windows-latest
               PLATFORM: 2022
+              SHELL: powershell
 
     name: Build Static Library Release
     runs-on: ${{ matrix.os }}
+    defaults:
+        run:
+            shell: ${{ matrix.SHELL }}
     steps:
         - name: Checkout Respond Repository
           uses: actions/checkout@v4
