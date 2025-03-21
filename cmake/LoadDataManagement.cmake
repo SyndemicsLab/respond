@@ -6,6 +6,7 @@ FetchContent_Declare(
     GIT_TAG respond_old
 )
 option(DATAMANAGEMENT_INSTALL "Enable install for datamanagement project" ON)
+option(DATAMANAGEMENT_BUILD_TESTS "Disable testing for DataManagement" OFF)
 FetchContent_MakeAvailable(datamanagement)
 list(APPEND CMAKE_MODULE_PATH ${datamanagement_SOURCE_DIR}/cmake)
 message(CHECK_PASS "Found DataManagement")
