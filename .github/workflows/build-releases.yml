@@ -13,7 +13,11 @@ jobs:
   build:
     strategy:
       matrix:
-        os: [ubuntu-latest]
+        include:
+            - os: ubuntu-latest
+              PLATFORM: 22.04
+            - os: windows-latest
+              PLATFORM: 2022
 
     name: Build Static Library Release
     runs-on: ${{ matrix.os }}
@@ -29,7 +33,7 @@ jobs:
           id: install-boost
           with:
             boost_version: 1.86.0
-            platform_version: 22.04
+            platform_version: ${{ matrix.PLATFORM }}
 
         - name: Generate CMake Files
           working-directory: ${{github.workspace}}/build
@@ -38,8 +42,7 @@ jobs:
                 -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DRESPOND_BUILD_PIC=OFF \
                 -DRESPOND_BUILD_EXECUTABLE=OFF -DRESPOND_BUILD_TESTS=OFF \
                 -DRESPOND_BUILD_PYBINDINGS=OFF -DRESPOND_BUILD_BENCH=OFF \
-                -DRESPOND_BUILD_WARNINGS=ON -DRESPOND_BUILD_SHARED_LIBS=OFF \
-                -DRESPOND_INSTALL=OFF
+                -DRESPOND_BUILD_WARNINGS=ON -DRESPOND_BUILD_SHARED_LIBS=OFF 
           env:
             BOOST_ROOT: ${{ steps.install-boost.outputs.BOOST_ROOT }}
                 
