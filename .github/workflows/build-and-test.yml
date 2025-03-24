@@ -46,7 +46,7 @@ jobs:
               with:
                 generator: ${{ matrix.GENERATOR }}
                 options: |
-                    CMAKE_BUILD_TYPE=$BUILD_TYPE
+                    CMAKE_BUILD_TYPE=${{ env.BUILD_TYPE}}
                     RESPOND_BUILD_PIC=ON
                     RESPOND_BUILD_EXECUTABLE=OFF
                     RESPOND_BUILD_TESTS=ON
