@@ -40,6 +40,8 @@ jobs:
                 platform_version: ${{ matrix.PLATFORM }}
 
             - name: Build Project with CMake
+              env:
+                BOOST_ROOT: ${{ steps.install-boost.outputs.BOOST_ROOT }}
               uses: threeal/cmake-action@v2.1.0
               with:
                 generator: ${{ matrix.GENERATOR }}
