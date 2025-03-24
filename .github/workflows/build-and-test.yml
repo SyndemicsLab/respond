@@ -50,6 +50,7 @@ jobs:
                     RESPOND_BUILD_PIC=ON
                     RESPOND_BUILD_EXECUTABLE=OFF
                     RESPOND_BUILD_TESTS=ON
+                    RESPOND_CALCULATE_COVERAGE=OFF
                     RESPOND_BUILD_PYBINDINGS=OFF
                     RESPOND_BUILD_BENCH=OFF
                     RESPOND_BUILD_WARNINGS=ON
@@ -83,7 +84,6 @@ jobs:
                 name: respond_tests
             - name: Run Tests
               run: |
-                cd tests
                 if ["$RUNNER_OS" == "Linux"]; then
                     ./respond_tests
                 elif ["$RUNNER_OS" == "Windows"]; then
