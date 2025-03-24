@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.24)
+cmake_minimum_required(VERSION 3.27)
 project(respond_tests VERSION ${RESPOND_VERSION} LANGUAGES CXX)
 
 if(PROJECT_IS_TOP_LEVEL OR NOT RESPOND_BUILD_TESTS)
