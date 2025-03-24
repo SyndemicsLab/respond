@@ -1,11 +1,10 @@
-cmake_minimum_required(VERSION 3.20)
-project(respondTests CXX)
+cmake_minimum_required(VERSION 3.24)
+project(respond_tests VERSION ${RESPOND_VERSION} LANGUAGES CXX)
 
-find_package(GTest REQUIRED CONFIG)
-
-find_package (Eigen3 3.4 REQUIRED)
-
-find_package(spdlog REQUIRED)
+if(PROJECT_IS_TOP_LEVEL OR NOT RESPOND_BUILD_TESTS)
+    message(STATUS "Attempted to Build tests, but RESPOND_BUILD_TESTS is OFF!")
+    return()
+endif()
 
 add_executable(${PROJECT_NAME}
   src/cost_loader_test.cpp
@@ -19,16 +18,18 @@ add_executable(${PROJECT_NAME}
   src/writer_test.cpp
 )
 
-target_link_libraries(${PROJECT_NAME} PUBLIC Eigen3::Eigen)
-target_link_libraries(${PROJECT_NAME} PUBLIC GTest::gtest)
-target_link_libraries(${PROJECT_NAME} PUBLIC GTest::gtest_main)
-target_link_libraries(${PROJECT_NAME} PUBLIC GTest::gmock)
-target_link_libraries(${PROJECT_NAME} PUBLIC GTest::gmock_main)
-target_link_libraries(${PROJECT_NAME} PUBLIC spdlog::spdlog)
-target_link_libraries(${PROJECT_NAME} PUBLIC datamanagement::datamanagement)
-target_link_libraries(${PROJECT_NAME} PUBLIC respond)
+target_link_libraries(${PROJECT_NAME} 
+PUBLIC 
+    respond
+    Eigen3::Eigen
+    spdlog::spdlog
+    GTest::gmock_main
+    datamanagement::datamanagement
+)
 
 target_include_directories(${PROJECT_NAME} 
-    PUBLIC 
+    PRIVATE 
         "mocks/"
 )
+
+gtest_discover_tests(${PROJECT_NAME})

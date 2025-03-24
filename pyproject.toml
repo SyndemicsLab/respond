@@ -19,7 +19,7 @@ Homepage = "https://github.com/SyndemicsLab/RESPONDSimulationv2"
 Issues = "https://github.com/SyndemicsLab/RESPONDSimulationv2/issues"
 
 [tool.scikit-build]
-cmake.version = ">=3.20"
+cmake.version = ">=3.24"
 sdist.exclude = [
     ".github",
     "docs",
