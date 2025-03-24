@@ -46,20 +46,20 @@ jobs:
               with:
                 generator: ${{ matrix.GENERATOR }}
                 options: |
-                    -DCMAKE_BUILD_TYPE=$BUILD_TYPE
-                    -DRESPOND_BUILD_PIC=ON
-                    -DRESPOND_BUILD_EXECUTABLE=OFF
-                    -DRESPOND_BUILD_TESTS=ON
-                    -DRESPOND_BUILD_PYBINDINGS=OFF 
-                    -DRESPOND_BUILD_BENCH=OFF 
-                    -DRESPOND_BUILD_WARNINGS=ON 
-                    -DRESPOND_BUILD_SHARED_LIBS=OFF 
+                    CMAKE_BUILD_TYPE=$BUILD_TYPE
+                    RESPOND_BUILD_PIC=ON
+                    RESPOND_BUILD_EXECUTABLE=OFF
+                    RESPOND_BUILD_TESTS=ON
+                    RESPOND_BUILD_PYBINDINGS=OFF
+                    RESPOND_BUILD_BENCH=OFF
+                    RESPOND_BUILD_WARNINGS=ON
+                    RESPOND_BUILD_SHARED_LIBS=OFF
             
             - name: Upload Tests
               uses: actions/upload-artifact@v4
               with:
-                name: tests
-                path: ${{github.workspace}}/build/tests/tests
+                name: respond_tests
+                path: ${{github.workspace}}/build/tests/respond_tests
     test:
         needs: build-release
         strategy:
@@ -80,9 +80,12 @@ jobs:
             - name: Download Artifact
               uses: actions/download-artifact@v4
               with:
-                name: tests
+                name: respond_tests
             - name: Run Tests
               run: |
                 cd tests
-                ./tests
-
+                if ["$RUNNER_OS" == "Linux"]; then
+                    ./respond_tests
+                elif ["$RUNNER_OS" == "Windows"]; then
+                    .\respond_tests.exe
+                fi
