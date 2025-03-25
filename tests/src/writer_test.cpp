@@ -169,7 +169,58 @@ TEST_F(WriterTest, WriteHistoryData) {
     ASSERT_EQ(expected, result);
 }
 
-TEST_F(WriterTest, WriteCostData) {}
+TEST_F(WriterTest, WriteCostData) {
+    CostList cost_list;
+    Matrix3d mat3d_1(9, 4, 1);
+    Matrix3d mat3d_2(9, 4, 1);
+    TimedMatrix3d timed_mat;
+
+    Cost cost;
+
+    // healthcare_cost
+    mat3d_1.setConstant(0.9);
+    mat3d_2.setConstant(0.8);
+    timed_mat[0] = mat3d_1;
+    timed_mat[52] = mat3d_2;
+    cost.healthcare_cost = timed_mat;
+
+    // non_fatal_overdose_cost
+    mat3d_1.setConstant(0.7);
+    mat3d_2.setConstant(0.6);
+    timed_mat[0] = mat3d_1;
+    timed_mat[52] = mat3d_2;
+    cost.non_fatal_overdose_cost = timed_mat;
+
+    // fatal_overdose_cost
+    mat3d_1.setConstant(0.5);
+    mat3d_2.setConstant(0.4);
+    timed_mat[0] = mat3d_1;
+    timed_mat[52] = mat3d_2;
+    cost.fatal_overdose_cost = timed_mat;
+
+    // pharma_cost
+    mat3d_1.setConstant(0.3);
+    mat3d_2.setConstant(0.2);
+    timed_mat[0] = mat3d_1;
+    timed_mat[52] = mat3d_2;
+    cost.pharma_cost = timed_mat;
+
+    // treatment_cost
+    mat3d_1.setConstant(0.1);
+    mat3d_2.setConstant(0.0);
+    timed_mat[0] = mat3d_1;
+    timed_mat[52] = mat3d_2;
+    cost.treatment_cost = timed_mat;
+
+    cost.perspective = "healthcare";
+    cost_list.push_back(cost);
+
+    std::string expected =
+        respond::tests::expected_strings::kWriterTestWriteCostDataExpected;
+
+    std::string result =
+        writer->WriteCostData(cost_list, "", OutputType::kString);
+}
 
 TEST_F(WriterTest, WriteUtilityData) {}
 
