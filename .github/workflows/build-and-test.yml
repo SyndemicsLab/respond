@@ -60,13 +60,13 @@ jobs:
               if: runner.os == 'Linux'
               uses: actions/upload-artifact@v4
               with:
-                name: respond_tests
+                name: respond_tests_linux
                 path: ${{github.workspace}}/build/tests/respond_tests
             - name: Run Windows Tests
               if: runner.os == 'Windows'
               uses: actions/upload-artifact@v4
               with:
-                name: respond_tests
+                name: respond_tests_windows
                 path: ${{github.workspace}}\build\tests\Debug\respond_tests.exe
               
     test:
@@ -86,10 +86,18 @@ jobs:
             run:
                 shell: ${{ matrix.SHELL }}
         steps:
-            - name: Download Artifact
+            - name: Download Linux Artifact
+              if: runner.os == 'Linux'
               uses: actions/download-artifact@v4
               with:
-                name: respond_tests
+                name: respond_tests_linux
+            
+            - name: Download Windows Artifact
+              if: runner.os == 'Windows'
+              uses: actions/download-artifact@v4
+              with:
+                name: respond_tests_windows
+
             - name: Run Linux Tests
               if: runner.os == 'Linux'
               run: |
