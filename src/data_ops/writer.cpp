@@ -4,7 +4,7 @@
 // Created Date: 2025-01-17                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-24                                                  //
+// Last Modified: 2025-03-25                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -55,36 +55,35 @@ namespace respond::data_ops {
         }
         std::vector<std::string> behaviors =
             config->getStringVector("state.ouds");
-        size_t number_demographic_combos = demographic_combinations.size();
         std::vector<std::string> interventions =
             config->getStringVector("state.interventions");
 
         std::stringstream result;
 
-        result << WriteTimedMatrix3dToFile(history.state_history, interventions,
-                                           behaviors, demographic_combinations,
-                                           false,
-                                           directory + "/stateHistory.csv")
+        result << WriteTimedMatrix3dToOutput(
+                      history.state_history, interventions, behaviors,
+                      demographic_combinations, false,
+                      directory + "/stateHistory.csv", output_type)
                << " "
-               << WriteTimedMatrix3dToFile(history.overdose_history,
-                                           interventions, behaviors,
-                                           demographic_combinations, false,
-                                           directory + "/overdoseHistory.csv")
+               << WriteTimedMatrix3dToOutput(
+                      history.overdose_history, interventions, behaviors,
+                      demographic_combinations, false,
+                      directory + "/overdoseHistory.csv", output_type)
                << " "
-               << WriteTimedMatrix3dToFile(
+               << WriteTimedMatrix3dToOutput(
                       history.fatal_overdose_history, interventions, behaviors,
                       demographic_combinations, false,
-                      directory + "/fatalOverdoseHistory.csv")
+                      directory + "/fatalOverdoseHistory.csv", output_type)
                << " "
-               << WriteTimedMatrix3dToFile(history.mortality_history,
-                                           interventions, behaviors,
-                                           demographic_combinations, false,
-                                           directory + "/mortalityHistory.csv")
+               << WriteTimedMatrix3dToOutput(
+                      history.mortality_history, interventions, behaviors,
+                      demographic_combinations, false,
+                      directory + "/mortalityHistory.csv", output_type)
                << " "
-               << WriteTimedMatrix3dToFile(
+               << WriteTimedMatrix3dToOutput(
                       history.intervention_admission_history, interventions,
                       behaviors, demographic_combinations, false,
-                      directory + "/admissionsHistory.csv");
+                      directory + "/admissionsHistory.csv", output_type);
 
         return result.str();
     }
@@ -117,35 +116,40 @@ namespace respond::data_ops {
                 return "failure";
             }
 
-            result << WriteTimedMatrix3dToFile(cost.healthcare_cost,
-                                               interventions, behaviors,
-                                               demographic_combinations, false,
-                                               directory + "/healthcareCost-" +
-                                                   cost.perspective + ".csv")
+            result << WriteTimedMatrix3dToOutput(
+                          cost.healthcare_cost, interventions, behaviors,
+                          demographic_combinations, false,
+                          directory + "/healthcareCost-" + cost.perspective +
+                              ".csv",
+                          output_type)
                    << " "
-                   << WriteTimedMatrix3dToFile(cost.pharma_cost, interventions,
-                                               behaviors,
-                                               demographic_combinations, false,
-                                               directory + "/pharmaCost-" +
-                                                   cost.perspective + ".csv")
+                   << WriteTimedMatrix3dToOutput(
+                          cost.pharma_cost, interventions, behaviors,
+                          demographic_combinations, false,
+                          directory + "/pharmaCost-" + cost.perspective +
+                              ".csv",
+                          output_type)
                    << " "
-                   << WriteTimedMatrix3dToFile(
+                   << WriteTimedMatrix3dToOutput(
                           cost.fatal_overdose_cost, interventions, behaviors,
                           demographic_combinations, false,
                           directory + "/fatalOverdoseCost-" + cost.perspective +
-                              ".csv")
+                              ".csv",
+                          output_type)
                    << " "
-                   << WriteTimedMatrix3dToFile(
+                   << WriteTimedMatrix3dToOutput(
                           cost.non_fatal_overdose_cost, interventions,
                           behaviors, demographic_combinations, false,
                           directory + "/nonFatalOverdoseCost-" +
-                              cost.perspective + ".csv")
+                              cost.perspective + ".csv",
+                          output_type)
                    << " "
-                   << WriteTimedMatrix3dToFile(cost.treatment_cost,
-                                               interventions, behaviors,
-                                               demographic_combinations, false,
-                                               directory + "/treatmentCost-" +
-                                                   cost.perspective + ".csv");
+                   << WriteTimedMatrix3dToOutput(
+                          cost.treatment_cost, interventions, behaviors,
+                          demographic_combinations, false,
+                          directory + "/treatmentCost-" + cost.perspective +
+                              ".csv",
+                          output_type);
         }
         return result.str();
     }
@@ -168,9 +172,9 @@ namespace respond::data_ops {
         std::vector<std::string> interventions =
             config->getStringVector("state.interventions");
 
-        result << WriteTimedMatrix3dToFile(utilities, interventions, behaviors,
-                                           demographic_combinations, false,
-                                           directory + "/utilities.csv");
+        result << WriteTimedMatrix3dToOutput(
+            utilities, interventions, behaviors, demographic_combinations,
+            false, directory + "/utilities.csv", output_type);
         return result.str();
     }
 
@@ -245,21 +249,21 @@ namespace respond::data_ops {
         return stream.str();
     }
 
-    std::string WriterImpl::WriteTimedMatrix3dToFile(
+    std::string WriterImpl::WriteTimedMatrix3dToOutput(
         const TimedMatrix3d &matrices,
         const std::vector<std::string> &interventions,
         const std::vector<std::string> &behaviors,
         const std::vector<std::string> &demographic_combinations, bool pivot,
-        const std::string &path) const {
+        const std::string &path, OutputType output_type) const {
         std::stringstream stream;
         std::vector<int> timesteps;
-        for (auto kv : matrices) {
+        for (const auto &kv : matrices) {
             timesteps.push_back(kv.first);
         }
         stream << WriteColumnHeaders(timesteps, pivot)
                << WriteTimedMatrix3d(matrices, interventions, behaviors,
                                      demographic_combinations, pivot);
-        WriteContents(stream, path, OutputType::kFile);
+        WriteContents(stream, path, output_type);
         return stream.str();
     }
 

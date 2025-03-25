@@ -4,7 +4,7 @@
 // Created Date: 2025-03-13                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-17                                                  //
+// Last Modified: 2025-03-25                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -32,7 +32,14 @@ namespace respond::data_ops {
     public:
         WriterImpl(const Data::IConfigablePtr &cfg,
                    const std::string &log_name = "console")
-            : config(cfg), logger_name(log_name) {}
+            : config(cfg), logger_name(log_name) {
+            if (config == nullptr) {
+                respond::utils::LogError(log_name,
+                                         "Config supplied to writer is null");
+                throw std::invalid_argument("Config cannot be null");
+            }
+            BuildDemographicCombinations();
+        }
         ~WriterImpl() = default;
         std::string WriteInputData(
             const DataLoader &data_loader, const std::string &directory = "",
@@ -55,12 +62,13 @@ namespace respond::data_ops {
         const std::string logger_name;
         std::vector<std::string> demographic_combinations;
 
-        std::string WriteTimedMatrix3dToFile(
+        std::string WriteTimedMatrix3dToOutput(
             const TimedMatrix3d &matrices,
             const std::vector<std::string> &interventions,
             const std::vector<std::string> &behaviors,
             const std::vector<std::string> &demographic_combinations,
-            bool pivot, const std::string &path) const;
+            bool pivot, const std::string &path,
+            OutputType output_type = OutputType::kString) const;
 
         std::string
         WriteContents(std::stringstream &stream, const std::string &filename,
@@ -79,19 +87,20 @@ namespace respond::data_ops {
         void BuildDemographicCombinations() {
             std::vector<std::string> demographics =
                 config->getSectionCategories("demographic");
-            std::vector<std::vector<std::string>> inputDemographicVals;
-            for (std::string demographic : demographics) {
-                inputDemographicVals.push_back(
+            std::vector<std::vector<std::string>> input_demographics;
+            for (const auto &demographic : demographics) {
+                input_demographics.push_back(
                     config->getStringVector("demographic." + demographic));
             }
-            std::vector<std::vector<std::string>> temp1;
-            std::vector<std::string> temp2;
-            RecursionHelper(temp1, temp2, inputDemographicVals.begin(),
-                            inputDemographicVals.end());
+            std::vector<std::vector<std::string>> end_result;
+            std::vector<std::string> running_total;
+            RecursionHelper(end_result, running_total,
+                            input_demographics.begin(),
+                            input_demographics.end());
             std::stringstream group;
-            for (std::vector<std::string> strList : temp1) {
+            for (const auto &string_list : end_result) {
                 group.clear();
-                for (std::string st : strList) {
+                for (std::string st : string_list) {
                     std::transform(
                         st.begin(), st.end(), st.begin(),
                         [](unsigned char c) { return std::tolower(c); });

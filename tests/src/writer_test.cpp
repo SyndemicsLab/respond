@@ -4,7 +4,7 @@
 // Created Date: 2025-01-14                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-24                                                  //
+// Last Modified: 2025-03-25                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -18,7 +18,10 @@
 #include <datamanagement/DataManagement.hpp>
 #include <gtest/gtest.h>
 
+#include <respond/data_ops/data_types.hpp>
+
 #include "data_loader_mock.hpp"
+#include "expected_strings.hpp"
 
 using namespace respond::data_ops;
 using ::testing::_;
@@ -27,6 +30,7 @@ using ::testing::Return;
 class WriterTest : public ::testing::Test {
 protected:
     std::unique_ptr<Writer> writer;
+    Data::IConfigablePtr config;
     void SetUp() override {
         std::ofstream config_file_stream("sim.conf");
 
@@ -66,15 +70,14 @@ protected:
             << "general_stats_output_timesteps = 52";
         config_file_stream.close();
 
-        Data::IConfigablePtr config =
-            std::make_shared<Data::Config>("sim.conf");
+        config = std::make_shared<Data::Config>("sim.conf");
         writer = Writer::Create(config);
     }
     void TearDown() override { std::remove("sim.conf"); }
 };
 
 TEST_F(WriterTest, FactoryCreate) {
-    auto w = Writer::Create(nullptr);
+    auto w = Writer::Create(config);
     EXPECT_NE(nullptr, w);
 }
 
@@ -109,63 +112,62 @@ TEST_F(WriterTest, WriteInputData) {
     EXPECT_CALL(data_loader, GetFatalOverdoseRates(_))
         .WillRepeatedly(Return(standard));
 
-    // AHHHHHH (I don't exactly have a better way to do this?)
     std::string expected =
-        "intervention,agegrp,race,sex,initial_oud,Active_Noninjection1Active_"
-        "Injection1Nonactive_Noninjection1Nonactive_Injection0 "
-        "agegrp,race,sex,oud,initial_interventionNo_Treatment_1_"
-        "52\nBuprenorphine_1_52\nNaltrexone_1_52\nMethadone_1_52\nDetox_1_"
-        "52\nPost-Buprenorphine_1_52\nPost-Naltrexone_1_52\nPost-Methadone_1_"
-        "52\nPost-Detox_1_52\n "
-        "initial_oud_state,to_interventionActive_Noninjection1Active_"
-        "Injection1Nonactive_Noninjection1Nonactive_Injection1Active_"
-        "Noninjection,No_Treatment,0.500000,0.500000,0.500000,0.500000,"
-        "\nActive_Noninjection,Buprenorphine,0.500000,0.500000,0.500000,0."
-        "500000,\nActive_Noninjection,Naltrexone,0.500000,0.500000,0.500000,0."
-        "500000,\nActive_Noninjection,Methadone,0.500000,0.500000,0.500000,0."
-        "500000,\nActive_Noninjection,Detox,0.500000,0.500000,0.500000,0."
-        "500000,\nActive_Noninjection,Post-Buprenorphine,0.500000,0.500000,0."
-        "500000,0.500000,\nActive_Noninjection,Post-Naltrexone,0.500000,0."
-        "500000,0.500000,0.500000,\nActive_Noninjection,Post-Methadone,0."
-        "500000,0.500000,0.500000,0.500000,\nActive_Noninjection,Post-Detox,0."
-        "500000,0.500000,0.500000,0.500000,\nActive_Injection,No_Treatment,0."
-        "500000,0.500000,0.500000,0.500000,\nActive_Injection,Buprenorphine,0."
-        "500000,0.500000,0.500000,0.500000,\nActive_Injection,Naltrexone,0."
-        "500000,0.500000,0.500000,0.500000,\nActive_Injection,Methadone,0."
-        "500000,0.500000,0.500000,0.500000,\nActive_Injection,Detox,0.500000,0."
-        "500000,0.500000,0.500000,\nActive_Injection,Post-Buprenorphine,0."
-        "500000,0.500000,0.500000,0.500000,\nActive_Injection,Post-Naltrexone,"
-        "0.500000,0.500000,0.500000,0.500000,\nActive_Injection,Post-Methadone,"
-        "0.500000,0.500000,0.500000,0.500000,\nActive_Injection,Post-Detox,0."
-        "500000,0.500000,0.500000,0.500000,\nNonactive_Noninjection,No_"
-        "Treatment,0.500000,0.500000,0.500000,0.500000,\nNonactive_"
-        "Noninjection,Buprenorphine,0.500000,0.500000,0.500000,0.500000,"
-        "\nNonactive_Noninjection,Naltrexone,0.500000,0.500000,0.500000,0."
-        "500000,\nNonactive_Noninjection,Methadone,0.500000,0.500000,0.500000,"
-        "0.500000,\nNonactive_Noninjection,Detox,0.500000,0.500000,0.500000,0."
-        "500000,\nNonactive_Noninjection,Post-Buprenorphine,0.500000,0.500000,"
-        "0.500000,0.500000,\nNonactive_Noninjection,Post-Naltrexone,0.500000,0."
-        "500000,0.500000,0.500000,\nNonactive_Noninjection,Post-Methadone,0."
-        "500000,0.500000,0.500000,0.500000,\nNonactive_Noninjection,Post-Detox,"
-        "0.500000,0.500000,0.500000,0.500000,\nNonactive_Injection,No_"
-        "Treatment,0.500000,0.500000,0.500000,0.500000,\nNonactive_Injection,"
-        "Buprenorphine,0.500000,0.500000,0.500000,0.500000,\nNonactive_"
-        "Injection,Naltrexone,0.500000,0.500000,0.500000,0.500000,\nNonactive_"
-        "Injection,Methadone,0.500000,0.500000,0.500000,0.500000,\nNonactive_"
-        "Injection,Detox,0.500000,0.500000,0.500000,0.500000,\nNonactive_"
-        "Injection,Post-Buprenorphine,0.500000,0.500000,0.500000,0.500000,"
-        "\nNonactive_Injection,Post-Naltrexone,0.500000,0.500000,0.500000,0."
-        "500000,\nNonactive_Injection,Post-Methadone,0.500000,0.500000,0."
-        "500000,0.500000,\nNonactive_Injection,Post-Detox,0.500000,0.500000,0."
-        "500000,0.500000,\n intervention,agegrp,race,sex,oudoverdose_1_52, "
-        "agegrp,race,sexpercent_overdoses_fatal_1_52,";
+        respond::tests::expected_strings::kWriterTestWriteInputDataExpected;
 
     std::string result =
         writer->WriteInputData(data_loader, "", OutputType::kString);
     ASSERT_EQ(expected, result);
 }
 
-TEST_F(WriterTest, WriteHistoryData) {}
+TEST_F(WriterTest, WriteHistoryData) {
+    History history;
+    Matrix3d mat3d_1(9, 4, 1);
+    Matrix3d mat3d_2(9, 4, 1);
+    TimedMatrix3d timed_mat;
+
+    // state_history
+    mat3d_1.setConstant(0.9);
+    mat3d_2.setConstant(0.8);
+    timed_mat[0] = mat3d_1;
+    timed_mat[52] = mat3d_2;
+    history.state_history = timed_mat;
+
+    // overdose_history
+    mat3d_1.setConstant(0.7);
+    mat3d_2.setConstant(0.6);
+    timed_mat[0] = mat3d_1;
+    timed_mat[1] = mat3d_2;
+    history.overdose_history = timed_mat;
+
+    // fatal_overdose_history
+    mat3d_1.setConstant(0.5);
+    mat3d_1.setConstant(0.4);
+    timed_mat[0] = mat3d_1;
+    timed_mat[1] = mat3d_2;
+    history.fatal_overdose_history = timed_mat;
+
+    // mortality_history
+    mat3d_1.setConstant(0.3);
+    mat3d_2.setConstant(0.2);
+    timed_mat[0] = mat3d_1;
+    timed_mat[1] = mat3d_2;
+    history.mortality_history = timed_mat;
+
+    // intervention_admission_history
+    mat3d_1.setConstant(0.1);
+    mat3d_2.setConstant(0.0);
+    timed_mat[0] = mat3d_1;
+    timed_mat[1] = mat3d_2;
+    history.intervention_admission_history = timed_mat;
+
+    std::string expected =
+        respond::tests::expected_strings::kWriterTestWriteHistoryDataExpected;
+
+    std::string result =
+        writer->WriteHistoryData(history, "", OutputType::kString);
+    ASSERT_EQ(expected, result);
+}
 
 TEST_F(WriterTest, WriteCostData) {}
 

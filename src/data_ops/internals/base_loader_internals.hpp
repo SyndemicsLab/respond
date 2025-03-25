@@ -4,7 +4,7 @@
 // Created Date: 2025-03-07                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-21                                                  //
+// Last Modified: 2025-03-25                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -52,6 +52,12 @@ namespace respond::data_ops {
 
         void ReadInputDirectory(const std::filesystem::path &directory) {
             std::filesystem::path conf = directory / "sim.conf";
+            if (!std::filesystem::exists(conf)) {
+                respond::utils::LogError(logger_name,
+                                         "Config file not found during Loader "
+                                         "Construction. Expect Errors!");
+                return;
+            }
             config = std::make_shared<Data::Config>(conf.string());
             LoadConfig();
 
