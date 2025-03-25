@@ -9,7 +9,7 @@ option(RESPOND_BUILD_EXECUTABLE "Build Executable for RESPOND" ON)
 option(RESPOND_BUILD_TESTS "Build tests" ON)
 
 # coverage options (only valid if RESPOND_BUILD_TESTS is ON)
-option(RESPOND_CALCULATE_COVERAGE "Calculate Code Coverage" ON)
+option(RESPOND_CALCULATE_COVERAGE "Calculate Code Coverage" OFF)
 
 # pybind options
 option(RESPOND_BUILD_PYBINDINGS "Build python bindings" OFF)

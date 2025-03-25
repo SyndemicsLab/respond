@@ -4,7 +4,7 @@
 // Created Date: 2025-01-14                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-19                                                  //
+// Last Modified: 2025-03-24                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -21,6 +21,8 @@
 #include "data_loader_mock.hpp"
 
 using namespace respond::data_ops;
+using ::testing::_;
+using ::testing::Return;
 
 class WriterTest : public ::testing::Test {
 protected:
@@ -41,18 +43,14 @@ protected:
             << "interventions = No_Treatment, Buprenorphine,"
                "Naltrexone, Methadone, Detox, Post-Buprenorphine,"
                "Post-Naltrexone, Post-Methadone, Post-Detox"
-               ""
             << std::endl
             << "ouds = Active_Noninjection, Active_Injection,"
                "Nonactive_Noninjection, Nonactive_Injection"
             << std::endl
             << std::endl
             << "[demographic]" << std::endl
-            << "age_groups = 10_14, 15_19, 20_24, 25_29, 30_34, "
-               "35_39, 40_44, 45_49, 50_54, 55_59, 60_64, 65_69, "
-               "70_74, 75_79, 80_84, 85_89, 90_94, 95_99 "
-            << std::endl
-            << "sex = Male, Female " << std::endl
+            << "age_groups = 1_100" << std::endl
+            << "sex = other" << std::endl
             << std::endl
             << "[cost]" << std::endl
             << "cost_analysis = true" << std::endl
@@ -81,6 +79,96 @@ TEST_F(WriterTest, FactoryCreate) {
 }
 
 TEST_F(WriterTest, WriteInputData) {
-    // MockDataLoader data_loader;
-    // writer->WriteInputData(data_loader, "", OutputType::kString);
+    MockDataLoader data_loader;
+    Matrix3d behavior(9, 16, 1);
+    behavior.setConstant(0.5);
+
+    Matrix3d intervention(81, 4, 1);
+    intervention.setConstant(0.5);
+
+    Matrix3d standard(9, 4, 1);
+    standard.setConstant(0.1);
+
+    // WriteOUDTransitionRates
+    EXPECT_CALL(data_loader, GetOUDTransitionRates())
+        .WillRepeatedly(Return(behavior));
+
+    // WriteInterventionTransitionRates
+    EXPECT_CALL(data_loader, GetInterventionTransitionRates(_))
+        .WillRepeatedly(Return(intervention));
+
+    // WriteInterventionInitRates
+    EXPECT_CALL(data_loader, GetInterventionInitRates())
+        .WillRepeatedly(Return(behavior));
+
+    // WriteOverdoseRates
+    EXPECT_CALL(data_loader, GetOverdoseRates(_))
+        .WillRepeatedly(Return(standard));
+
+    // WriteFatalOverdoseRates
+    EXPECT_CALL(data_loader, GetFatalOverdoseRates(_))
+        .WillRepeatedly(Return(standard));
+
+    // AHHHHHH (I don't exactly have a better way to do this?)
+    std::string expected =
+        "intervention,agegrp,race,sex,initial_oud,Active_Noninjection1Active_"
+        "Injection1Nonactive_Noninjection1Nonactive_Injection0 "
+        "agegrp,race,sex,oud,initial_interventionNo_Treatment_1_"
+        "52\nBuprenorphine_1_52\nNaltrexone_1_52\nMethadone_1_52\nDetox_1_"
+        "52\nPost-Buprenorphine_1_52\nPost-Naltrexone_1_52\nPost-Methadone_1_"
+        "52\nPost-Detox_1_52\n "
+        "initial_oud_state,to_interventionActive_Noninjection1Active_"
+        "Injection1Nonactive_Noninjection1Nonactive_Injection1Active_"
+        "Noninjection,No_Treatment,0.500000,0.500000,0.500000,0.500000,"
+        "\nActive_Noninjection,Buprenorphine,0.500000,0.500000,0.500000,0."
+        "500000,\nActive_Noninjection,Naltrexone,0.500000,0.500000,0.500000,0."
+        "500000,\nActive_Noninjection,Methadone,0.500000,0.500000,0.500000,0."
+        "500000,\nActive_Noninjection,Detox,0.500000,0.500000,0.500000,0."
+        "500000,\nActive_Noninjection,Post-Buprenorphine,0.500000,0.500000,0."
+        "500000,0.500000,\nActive_Noninjection,Post-Naltrexone,0.500000,0."
+        "500000,0.500000,0.500000,\nActive_Noninjection,Post-Methadone,0."
+        "500000,0.500000,0.500000,0.500000,\nActive_Noninjection,Post-Detox,0."
+        "500000,0.500000,0.500000,0.500000,\nActive_Injection,No_Treatment,0."
+        "500000,0.500000,0.500000,0.500000,\nActive_Injection,Buprenorphine,0."
+        "500000,0.500000,0.500000,0.500000,\nActive_Injection,Naltrexone,0."
+        "500000,0.500000,0.500000,0.500000,\nActive_Injection,Methadone,0."
+        "500000,0.500000,0.500000,0.500000,\nActive_Injection,Detox,0.500000,0."
+        "500000,0.500000,0.500000,\nActive_Injection,Post-Buprenorphine,0."
+        "500000,0.500000,0.500000,0.500000,\nActive_Injection,Post-Naltrexone,"
+        "0.500000,0.500000,0.500000,0.500000,\nActive_Injection,Post-Methadone,"
+        "0.500000,0.500000,0.500000,0.500000,\nActive_Injection,Post-Detox,0."
+        "500000,0.500000,0.500000,0.500000,\nNonactive_Noninjection,No_"
+        "Treatment,0.500000,0.500000,0.500000,0.500000,\nNonactive_"
+        "Noninjection,Buprenorphine,0.500000,0.500000,0.500000,0.500000,"
+        "\nNonactive_Noninjection,Naltrexone,0.500000,0.500000,0.500000,0."
+        "500000,\nNonactive_Noninjection,Methadone,0.500000,0.500000,0.500000,"
+        "0.500000,\nNonactive_Noninjection,Detox,0.500000,0.500000,0.500000,0."
+        "500000,\nNonactive_Noninjection,Post-Buprenorphine,0.500000,0.500000,"
+        "0.500000,0.500000,\nNonactive_Noninjection,Post-Naltrexone,0.500000,0."
+        "500000,0.500000,0.500000,\nNonactive_Noninjection,Post-Methadone,0."
+        "500000,0.500000,0.500000,0.500000,\nNonactive_Noninjection,Post-Detox,"
+        "0.500000,0.500000,0.500000,0.500000,\nNonactive_Injection,No_"
+        "Treatment,0.500000,0.500000,0.500000,0.500000,\nNonactive_Injection,"
+        "Buprenorphine,0.500000,0.500000,0.500000,0.500000,\nNonactive_"
+        "Injection,Naltrexone,0.500000,0.500000,0.500000,0.500000,\nNonactive_"
+        "Injection,Methadone,0.500000,0.500000,0.500000,0.500000,\nNonactive_"
+        "Injection,Detox,0.500000,0.500000,0.500000,0.500000,\nNonactive_"
+        "Injection,Post-Buprenorphine,0.500000,0.500000,0.500000,0.500000,"
+        "\nNonactive_Injection,Post-Naltrexone,0.500000,0.500000,0.500000,0."
+        "500000,\nNonactive_Injection,Post-Methadone,0.500000,0.500000,0."
+        "500000,0.500000,\nNonactive_Injection,Post-Detox,0.500000,0.500000,0."
+        "500000,0.500000,\n intervention,agegrp,race,sex,oudoverdose_1_52, "
+        "agegrp,race,sexpercent_overdoses_fatal_1_52,";
+
+    std::string result =
+        writer->WriteInputData(data_loader, "", OutputType::kString);
+    ASSERT_EQ(expected, result);
 }
+
+TEST_F(WriterTest, WriteHistoryData) {}
+
+TEST_F(WriterTest, WriteCostData) {}
+
+TEST_F(WriterTest, WriteUtilityData) {}
+
+TEST_F(WriterTest, WriteTotalsData) {}

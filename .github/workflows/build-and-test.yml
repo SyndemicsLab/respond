@@ -85,7 +85,7 @@ jobs:
             - name: Run Linux Tests
               if: runner.os == 'Linux'
               run: |
-                ./respond_tests
+                sudo chmod +x ./respond_tests && ./respond_tests
             - name: Run Windows Tests
               if: runner.os == 'Windows'
               run: |

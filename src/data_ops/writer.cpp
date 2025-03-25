@@ -4,7 +4,7 @@
 // Created Date: 2025-01-17                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-19                                                  //
+// Last Modified: 2025-03-24                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -23,50 +23,21 @@
 #include <respond/utils/logging.hpp>
 
 namespace respond::data_ops {
-    std::string WriterImpl::WriteTimedMatrix3d(
-        const TimedMatrix3d &matrices,
-        const std::vector<std::string> &interventions,
-        const std::vector<std::string> &behaviors,
-        const std::vector<std::string> &demographic_combinations,
-        bool pivot) const {
-        std::stringstream stream;
-        for (long int i = 0; i < interventions.size(); i++) {
-            for (long int b = 0; b < behaviors.size(); b++) {
-                for (long int d = 0; d < demographic_combinations.size(); d++) {
-                    std::string current_demographic =
-                        demographic_combinations[d];
-                    current_demographic = std::regex_replace(
-                        current_demographic, std::regex("^ +| +$|( ) +"), "$1");
-                    std::replace(current_demographic.begin(),
-                                 current_demographic.end(), ' ', ',');
-                    if (!pivot) {
-                        stream << interventions[i] << "," << behaviors[b] << ","
-                               << current_demographic << ",";
-                    }
-
-                    for (auto kv : matrices) {
-                        std::array<long int, 3> index = {0, 0, 0};
-                        index[static_cast<int>(Dimension::kIntervention)] = i;
-                        index[static_cast<int>(Dimension::kOud)] = b;
-                        index[static_cast<int>(Dimension::kDemographicCombo)] =
-                            d;
-                        double value = kv.second(index[0], index[1], index[2]);
-                        if (pivot) {
-                            stream << interventions[i] << "," << behaviors[b]
-                                   << "," << current_demographic << ","
-                                   << std::to_string(kv.first) << ","
-                                   << std::to_string(value) << std::endl;
-                        } else {
-                            stream << std::to_string(value) << ",";
-                        }
-                    }
-                    if (!pivot) {
-                        stream << std::endl;
-                    }
-                }
-            }
-        }
-        return stream.str();
+    std::string WriterImpl::WriteInputData(const DataLoader &data_loader,
+                                           const std::string &directory,
+                                           const OutputType output_type) const {
+        std::stringstream result;
+        result << WriteOUDTransitionRates(data_loader, directory, output_type)
+               << " "
+               << WriteInterventionTransitionRates(data_loader, directory,
+                                                   output_type)
+               << " "
+               << WriteInterventionInitRates(data_loader, directory,
+                                             output_type)
+               << " " << WriteOverdoseRates(data_loader, directory, output_type)
+               << " "
+               << WriteFatalOverdoseRates(data_loader, directory, output_type);
+        return result.str();
     }
 
     std::string
@@ -90,29 +61,26 @@ namespace respond::data_ops {
 
         std::stringstream result;
 
-        result << WriteTimedMatrix3dToFile(
-            history.state_history, interventions, behaviors,
-            demographic_combinations, false, directory + "/stateHistory.csv");
-
-        result << " "
+        result << WriteTimedMatrix3dToFile(history.state_history, interventions,
+                                           behaviors, demographic_combinations,
+                                           false,
+                                           directory + "/stateHistory.csv")
+               << " "
                << WriteTimedMatrix3dToFile(history.overdose_history,
                                            interventions, behaviors,
                                            demographic_combinations, false,
-                                           directory + "/overdoseHistory.csv");
-
-        result << " "
+                                           directory + "/overdoseHistory.csv")
+               << " "
                << WriteTimedMatrix3dToFile(
                       history.fatal_overdose_history, interventions, behaviors,
                       demographic_combinations, false,
-                      directory + "/fatalOverdoseHistory.csv");
-
-        result << " "
+                      directory + "/fatalOverdoseHistory.csv")
+               << " "
                << WriteTimedMatrix3dToFile(history.mortality_history,
                                            interventions, behaviors,
                                            demographic_combinations, false,
-                                           directory + "/mortalityHistory.csv");
-
-        result << " "
+                                           directory + "/mortalityHistory.csv")
+               << " "
                << WriteTimedMatrix3dToFile(
                       history.intervention_admission_history, interventions,
                       behaviors, demographic_combinations, false,
@@ -121,28 +89,6 @@ namespace respond::data_ops {
         return result.str();
     }
 
-    std::string WriterImpl::WriteTimedMatrix3dToFile(
-        const TimedMatrix3d &matrices,
-        const std::vector<std::string> &interventions,
-        const std::vector<std::string> &behaviors,
-        const std::vector<std::string> &demographic_combinations, bool pivot,
-        const std::string &path) const {
-        std::stringstream stream;
-        std::vector<int> timesteps;
-        for (auto kv : matrices) {
-            timesteps.push_back(kv.first);
-        }
-        stream << WriteColumnHeaders(timesteps, pivot)
-               << WriteTimedMatrix3d(matrices, interventions, behaviors,
-                                     demographic_combinations, pivot);
-        WriteContents(stream, path, OutputType::kFile);
-        return stream.str();
-    }
-
-    /// @brief Main Operation of Class, write data to output
-    /// @param outputType Output Enum, generally FILE
-    /// @return string containing the result if output enum is STRING
-    /// or description of status otherwise
     std::string WriterImpl::WriteCostData(const CostList &cost_list,
                                           const std::string &directory,
                                           const OutputType output_type) const {
@@ -171,33 +117,30 @@ namespace respond::data_ops {
                 return "failure";
             }
 
-            result << WriteTimedMatrix3dToFile(
-                cost.healthcare_cost, interventions, behaviors,
-                demographic_combinations, false,
-                directory + "/healthcareCost-" + cost.perspective + ".csv");
-
-            result << " "
+            result << WriteTimedMatrix3dToFile(cost.healthcare_cost,
+                                               interventions, behaviors,
+                                               demographic_combinations, false,
+                                               directory + "/healthcareCost-" +
+                                                   cost.perspective + ".csv")
+                   << " "
                    << WriteTimedMatrix3dToFile(cost.pharma_cost, interventions,
                                                behaviors,
                                                demographic_combinations, false,
                                                directory + "/pharmaCost-" +
-                                                   cost.perspective + ".csv");
-
-            result << " "
+                                                   cost.perspective + ".csv")
+                   << " "
                    << WriteTimedMatrix3dToFile(
                           cost.fatal_overdose_cost, interventions, behaviors,
                           demographic_combinations, false,
                           directory + "/fatalOverdoseCost-" + cost.perspective +
-                              ".csv");
-
-            result << " "
+                              ".csv")
+                   << " "
                    << WriteTimedMatrix3dToFile(
                           cost.non_fatal_overdose_cost, interventions,
                           behaviors, demographic_combinations, false,
                           directory + "/nonFatalOverdoseCost-" +
-                              cost.perspective + ".csv");
-
-            result << " "
+                              cost.perspective + ".csv")
+                   << " "
                    << WriteTimedMatrix3dToFile(cost.treatment_cost,
                                                interventions, behaviors,
                                                demographic_combinations, false,
@@ -207,10 +150,6 @@ namespace respond::data_ops {
         return result.str();
     }
 
-    /// @brief Main Operation of Class, write data to output
-    /// @param outputType Output Enum, generally FILE
-    /// @return string containing the result if output enum is
-    /// STRING or description of status otherwise
     std::string
     WriterImpl::WriteUtilityData(const TimedMatrix3d &utilities,
                                  const std::string &directory,
@@ -260,22 +199,68 @@ namespace respond::data_ops {
                              OutputType::kFile);
     }
 
-    std::string WriterImpl::WriteInputData(const DataLoader &data_loader,
-                                           const std::string &directory,
-                                           const OutputType output_type) const {
-        std::stringstream result;
-        result << " "
-               << WriteOUDTransitionRates(data_loader, directory, output_type)
-               << " "
-               << WriteInterventionTransitionRates(data_loader, directory,
-                                                   output_type)
-               << " "
-               << WriteInterventionInitRates(data_loader, directory,
-                                             output_type)
-               << " " << WriteOverdoseRates(data_loader, directory, output_type)
-               << " "
-               << WriteFatalOverdoseRates(data_loader, directory, output_type);
-        return result.str();
+    std::string WriterImpl::WriteTimedMatrix3d(
+        const TimedMatrix3d &matrices,
+        const std::vector<std::string> &interventions,
+        const std::vector<std::string> &behaviors,
+        const std::vector<std::string> &demographic_combinations,
+        bool pivot) const {
+        std::stringstream stream;
+        for (long int i = 0; i < interventions.size(); i++) {
+            for (long int b = 0; b < behaviors.size(); b++) {
+                for (long int d = 0; d < demographic_combinations.size(); d++) {
+                    std::string current_demographic =
+                        demographic_combinations[d];
+                    current_demographic = std::regex_replace(
+                        current_demographic, std::regex("^ +| +$|( ) +"), "$1");
+                    std::replace(current_demographic.begin(),
+                                 current_demographic.end(), ' ', ',');
+                    if (!pivot) {
+                        stream << interventions[i] << "," << behaviors[b] << ","
+                               << current_demographic << ",";
+                    }
+
+                    for (auto kv : matrices) {
+                        std::array<long int, 3> index = {0, 0, 0};
+                        index[static_cast<int>(Dimension::kIntervention)] = i;
+                        index[static_cast<int>(Dimension::kOud)] = b;
+                        index[static_cast<int>(Dimension::kDemographicCombo)] =
+                            d;
+                        double value = kv.second(index[0], index[1], index[2]);
+                        if (pivot) {
+                            stream << interventions[i] << "," << behaviors[b]
+                                   << "," << current_demographic << ","
+                                   << std::to_string(kv.first) << ","
+                                   << std::to_string(value) << std::endl;
+                        } else {
+                            stream << std::to_string(value) << ",";
+                        }
+                    }
+                    if (!pivot) {
+                        stream << std::endl;
+                    }
+                }
+            }
+        }
+        return stream.str();
+    }
+
+    std::string WriterImpl::WriteTimedMatrix3dToFile(
+        const TimedMatrix3d &matrices,
+        const std::vector<std::string> &interventions,
+        const std::vector<std::string> &behaviors,
+        const std::vector<std::string> &demographic_combinations, bool pivot,
+        const std::string &path) const {
+        std::stringstream stream;
+        std::vector<int> timesteps;
+        for (auto kv : matrices) {
+            timesteps.push_back(kv.first);
+        }
+        stream << WriteColumnHeaders(timesteps, pivot)
+               << WriteTimedMatrix3d(matrices, interventions, behaviors,
+                                     demographic_combinations, pivot);
+        WriteContents(stream, path, OutputType::kFile);
+        return stream.str();
     }
 
     std::string
