@@ -76,22 +76,14 @@ protected:
 };
 
 TEST_F(UtilityLoaderTest, LoadBackgroundUtility) {
-    std::cout << "Start LoadBackgroundUtility" << std::endl;
     std::ofstream file_stream(file_name);
-    std::cout << "Stream Opened" << std::endl;
     file_stream << "agegrp,sex,utility" << std::endl
                 << "10_14,Male,0.922" << std::endl
                 << "10_14,Female,0.922" << std::endl
                 << "15_19,Male,0.922";
     file_stream.close();
-    std::cout << "Stream Closed" << std::endl;
-
     utility_loader->LoadBackgroundUtility(file_name);
-    std::cout << "Load Called" << std::endl;
-
     Matrix3d result = utility_loader->GetBackgroundUtility("utility");
-    std::cout << "Get Opened" << std::endl;
-
     EXPECT_EQ(result(0, 0, 0), 0.922);
 }
 
