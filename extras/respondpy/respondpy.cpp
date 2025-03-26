@@ -4,7 +4,7 @@
 // Created Date: 2025-01-14                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-21                                                  //
+// Last Modified: 2025-03-26                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -32,7 +32,8 @@ PYBIND11_MODULE(respondpy, m) {
 
     // cost_loader.hpp
     py::class_<CostLoader>(data_ops, "CostLoader")
-        .def(py::init(&CostLoader::Create))
+        .def(py::init(&CostLoader::Create), pybind11::arg("directory") = "",
+             pybind11::arg("log_name") = "console")
         .def("LoadHealthcareUtilizationCost",
              &CostLoader::LoadHealthcareUtilizationCost)
         .def("LoadOverdoseCost", &CostLoader::LoadOverdoseCost)
@@ -54,7 +55,8 @@ PYBIND11_MODULE(respondpy, m) {
 
     // data_loader.hpp
     py::class_<DataLoader>(data_ops, "DataLoader")
-        .def(py::init(&DataLoader::Create))
+        .def(py::init(&DataLoader::Create), pybind11::arg("directory") = "",
+             pybind11::arg("log_name") = "console")
         .def("GetInitialSample", &DataLoader::GetInitialSample)
         .def("GetEnteringSamples", &DataLoader::GetEnteringSamples)
         .def("GetOUDTransitionRates", &DataLoader::GetOUDTransitionRates)
@@ -156,13 +158,38 @@ PYBIND11_MODULE(respondpy, m) {
 
     // utility_loader.hpp
     py::class_<UtilityLoader>(data_ops, "UtilityLoader")
-        .def(py::init(&UtilityLoader::Create))
+        .def(py::init(&UtilityLoader::Create), pybind11::arg("directory") = "",
+             pybind11::arg("log_name") = "console")
         .def("LoadBackgroundUtility", &UtilityLoader::LoadBackgroundUtility)
         .def("LoadOUDUtility", &UtilityLoader::LoadOUDUtility)
         .def("LoadSettingUtility", &UtilityLoader::LoadSettingUtility)
         .def("GetBackgroundUtility", &UtilityLoader::GetBackgroundUtility)
         .def("GetOUDUtility", &UtilityLoader::GetOUDUtility)
         .def("GetSettingUtility", &UtilityLoader::GetSettingUtility);
+
+    // writer.hpp
+    py::enum_<WriterType>(data_ops, "WriterType")
+        .value("kInput", WriterType::kInput)
+        .value("kOutput", WriterType::kOutput)
+        .value("kHistory", WriterType::kHistory)
+        .value("kCost", WriterType::kCost)
+        .value("kUtilities", WriterType::kUtilities)
+        .value("kTotals", WriterType::kTotals)
+        .export_values();
+
+    py::enum_<OutputType>(data_ops, "OutputType")
+        .value("kString", OutputType::kString)
+        .value("kFile", OutputType::kFile)
+        .export_values();
+
+    py::class_<Writer>(data_ops, "Writer")
+        .def(py::init(&Writer::Create), pybind11::arg("cfg"),
+             pybind11::arg("log_name") = "console")
+        .def("WriteInputData", &Writer::WriteInputData)
+        .def("WriteHistoryData", &Writer::WriteHistoryData)
+        .def("WriteCostData", &Writer::WriteCostData)
+        .def("WriteUtilityData", &Writer::WriteUtilityData)
+        .def("WriteTotalsData", &Writer::WriteTotalsData);
 
     auto model = m.def_submodule(
         "model", "A submodule containing the model components for RESPOND.");
