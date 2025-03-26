@@ -4,7 +4,7 @@
 // Created Date: 2025-01-14                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-25                                                  //
+// Last Modified: 2025-03-26                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -67,6 +67,8 @@ protected:
             << "per_intervention_predictions = true " << std::endl
             << "general_outputs = false " << std::endl
             << "general_stats_output_timesteps = 52";
+        config_file_stream.close();
+
         data_loader = DataLoader::Create();
     }
     void TearDown() override {

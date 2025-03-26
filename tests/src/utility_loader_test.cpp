@@ -4,7 +4,7 @@
 // Created Date: 2025-01-14                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-25                                                  //
+// Last Modified: 2025-03-26                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -14,6 +14,8 @@
 
 #include <filesystem>
 #include <fstream>
+#include <memory>
+#include <string>
 
 #include <gtest/gtest.h>
 
@@ -25,6 +27,8 @@ protected:
     std::unique_ptr<UtilityLoader> utility_loader;
 
     void SetUp() override {
+        std::remove("sim.conf");
+        std::remove("test.csv");
         std::ofstream config_file_stream("sim.conf");
 
         config_file_stream
@@ -64,8 +68,11 @@ protected:
             << "per_intervention_predictions = true " << std::endl
             << "general_outputs = false " << std::endl
             << "general_stats_output_timesteps = 52";
+        config_file_stream.close();
+        std::cout << "End of Config Write in Setup" << std::endl;
 
         utility_loader = UtilityLoader::Create();
+        std::cout << "End of Create in Setup" << std::endl;
     }
     void TearDown() override {
         std::remove(file_name.c_str());

@@ -39,9 +39,19 @@ jobs:
                 boost_version: 1.86.0
                 platform_version: ${{ matrix.PLATFORM }}
 
+            - name: Install Eigen3
+              uses: kupns-aka-kupa/setup-eigen3@v1
+              id: install-eigen3
+              with:
+                version: 3.4.0
+              env:
+                CMAKE_GENERATOR: ${{ matrix.GENERATOR }}
+
             - name: Build Project with CMake
               env:
                 BOOST_ROOT: ${{ steps.install-boost.outputs.BOOST_ROOT }}
+                EIGEN3_INCLUDE_DIR: ${{ steps.install-eigen3.outputs.EIGEN3_INCLUDE_DIR }}
+                EIGEN3_DIR: ${{ steps.install-eigen3.outputs.EIGEN3_DIR}}
               uses: threeal/cmake-action@v2.1.0
               with:
                 generator: ${{ matrix.GENERATOR }}
