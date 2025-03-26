@@ -78,7 +78,7 @@ jobs:
               uses: actions/upload-artifact@v4
               with:
                 name: respond_tests_windows
-                path: ${{github.workspace}}\build\tests\Debug\respond_tests.exe
+                path: ${{github.workspace}}\build\tests\respond_tests.exe
               
     test:
         needs: build-release
