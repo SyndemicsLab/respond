@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.20)
+cmake_minimum_required(VERSION 3.27)
 project(${SKBUILD_PROJECT_NAME} LANGUAGES CXX)
 
 set(PYBIND11_FINDPYTHON ON)

@@ -4,7 +4,7 @@
 // Created Date: 2025-01-14                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-18                                                  //
+// Last Modified: 2025-03-26                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -14,6 +14,8 @@
 
 #include <filesystem>
 #include <fstream>
+#include <memory>
+#include <string>
 
 #include <gtest/gtest.h>
 
@@ -64,7 +66,7 @@ protected:
             << "per_intervention_predictions = true " << std::endl
             << "general_outputs = false " << std::endl
             << "general_stats_output_timesteps = 52";
-
+        config_file_stream.close();
         utility_loader = UtilityLoader::Create();
     }
     void TearDown() override {
@@ -73,24 +75,15 @@ protected:
     }
 };
 
-TEST_F(UtilityLoaderTest, FactoryCreate) {
-    auto ul = UtilityLoader::Create();
-    EXPECT_NE(nullptr, ul);
-}
-
 TEST_F(UtilityLoaderTest, LoadBackgroundUtility) {
     std::ofstream file_stream(file_name);
     file_stream << "agegrp,sex,utility" << std::endl
                 << "10_14,Male,0.922" << std::endl
                 << "10_14,Female,0.922" << std::endl
                 << "15_19,Male,0.922";
-
     file_stream.close();
-
     utility_loader->LoadBackgroundUtility(file_name);
-
     Matrix3d result = utility_loader->GetBackgroundUtility("utility");
-
     EXPECT_EQ(result(0, 0, 0), 0.922);
 }
 

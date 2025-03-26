@@ -4,7 +4,7 @@
 // Created Date: 2025-03-10                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-17                                                  //
+// Last Modified: 2025-03-25                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -12,6 +12,8 @@
 
 #ifndef RESPOND_UTILS_LOGGINGINTERNALS_HPP_
 #define RESPOND_UTILS_LOGGINGINTERNALS_HPP_
+
+#include <respond/utils/logging.hpp>
 
 #include <iostream>
 #include <string>
@@ -28,7 +30,12 @@ namespace respond::utils {
     }
     void log(const std::string &logger_name, const std::string &message,
              LogType type = LogType::kInfo) {
-        if (CheckIfExists(logger_name) != CreationStatus::kExists) {
+        CreationStatus status = CheckIfExists(logger_name);
+        if ((status == CreationStatus::kNotCreated) &&
+            (CreateFileLogger(logger_name, "log.txt") ==
+             CreationStatus::kError)) {
+            std::cerr << "Failed to create logger: " << logger_name
+                      << std::endl;
             return;
         }
         auto logger = spdlog::get(logger_name);
