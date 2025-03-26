@@ -27,8 +27,6 @@ protected:
     std::unique_ptr<UtilityLoader> utility_loader;
 
     void SetUp() override {
-        std::remove("sim.conf");
-        std::remove("test.csv");
         std::ofstream config_file_stream("sim.conf");
 
         config_file_stream
@@ -69,10 +67,7 @@ protected:
             << "general_outputs = false " << std::endl
             << "general_stats_output_timesteps = 52";
         config_file_stream.close();
-        std::cout << "End of Config Write in Setup" << std::endl;
-
         utility_loader = UtilityLoader::Create();
-        std::cout << "End of Create in Setup" << std::endl;
     }
     void TearDown() override {
         std::remove(file_name.c_str());
@@ -81,17 +76,21 @@ protected:
 };
 
 TEST_F(UtilityLoaderTest, LoadBackgroundUtility) {
+    std::cout << "Start LoadBackgroundUtility" << std::endl;
     std::ofstream file_stream(file_name);
+    std::cout << "Stream Opened" << std::endl;
     file_stream << "agegrp,sex,utility" << std::endl
                 << "10_14,Male,0.922" << std::endl
                 << "10_14,Female,0.922" << std::endl
                 << "15_19,Male,0.922";
-
     file_stream.close();
+    std::cout << "Stream Closed" << std::endl;
 
     utility_loader->LoadBackgroundUtility(file_name);
+    std::cout << "Load Called" << std::endl;
 
     Matrix3d result = utility_loader->GetBackgroundUtility("utility");
+    std::cout << "Get Opened" << std::endl;
 
     EXPECT_EQ(result(0, 0, 0), 0.922);
 }

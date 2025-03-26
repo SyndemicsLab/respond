@@ -15,19 +15,20 @@ jobs:
             matrix:
                 include:
                     - os: ubuntu-latest
-                      PLATFORM: 22.04
-                      SHELL: bash
-                      GENERATOR: "Ninja"
+                      platform: 22.04
+                      shell: bash
+                      gen: "Ninja"
+
                     - os: windows-latest
-                      PLATFORM: 2022
-                      SHELL: powershell
-                      GENERATOR: "Visual Studio 17 2022"
+                      platform: 2022
+                      shell: powershell
+                      gen: "MinGW Makefiles"
 
         name: Build Static Library Release
         runs-on: ${{ matrix.os }}
         defaults:
             run:
-                shell: ${{ matrix.SHELL }}
+                shell: ${{ matrix.shell }}
         steps:
             - name: Checkout Respond Repository
               uses: actions/checkout@v4
@@ -37,7 +38,7 @@ jobs:
               id: install-boost
               with:
                 boost_version: 1.86.0
-                platform_version: ${{ matrix.PLATFORM }}
+                platform_version: ${{ matrix.platform }}
 
             - name: Install Eigen3
               uses: kupns-aka-kupa/setup-eigen3@master
@@ -45,7 +46,7 @@ jobs:
               with:
                 version: 3.4.0
               env:
-                CMAKE_GENERATOR: ${{ matrix.GENERATOR }}
+                CMAKE_GENERATOR: ${{ matrix.gen }}
 
             - name: Build Project with CMake
               env:
@@ -54,7 +55,7 @@ jobs:
                 EIGEN3_DIR: ${{ steps.install-eigen3.outputs.EIGEN3_DIR}}
               uses: threeal/cmake-action@v2.1.0
               with:
-                generator: ${{ matrix.GENERATOR }}
+                generator: ${{ matrix.gen }}
                 options: |
                     CMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }}
                     RESPOND_BUILD_PIC=ON
@@ -85,16 +86,16 @@ jobs:
             matrix:
                 include:
                     - os: ubuntu-latest
-                      PLATFORM: 22.04
-                      SHELL: bash
+                      platform: 22.04
+                      shell: bash
                     - os: windows-latest
-                      PLATFORM: 2022
-                      SHELL: powershell
+                      platform: 2022
+                      shell: powershell
         name: Test Static Libraries
         runs-on: ${{ matrix.os }}
         defaults:
             run:
-                shell: ${{ matrix.SHELL }}
+                shell: ${{ matrix.shell }}
         steps:
             - name: Download Linux Artifact
               if: runner.os == 'Linux'
