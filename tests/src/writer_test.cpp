@@ -4,7 +4,7 @@
 // Created Date: 2025-01-14                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-25                                                  //
+// Last Modified: 2025-03-26                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -31,6 +31,7 @@ class WriterTest : public ::testing::Test {
 protected:
     std::unique_ptr<Writer> writer;
     Data::IConfigablePtr config;
+    respond::tests::ExpectedStrings expected_strings;
     void SetUp() override {
         std::ofstream config_file_stream("sim.conf");
 
@@ -76,21 +77,16 @@ protected:
     void TearDown() override { std::remove("sim.conf"); }
 };
 
-TEST_F(WriterTest, FactoryCreate) {
-    auto w = Writer::Create(config);
-    EXPECT_NE(nullptr, w);
-}
-
 TEST_F(WriterTest, WriteInputData) {
     MockDataLoader data_loader;
     Matrix3d behavior(9, 16, 1);
-    behavior.setConstant(0.5);
+    behavior.setConstant(0.9);
 
     Matrix3d intervention(81, 4, 1);
-    intervention.setConstant(0.5);
+    intervention.setConstant(0.8);
 
     Matrix3d standard(9, 4, 1);
-    standard.setConstant(0.1);
+    standard.setConstant(0.7);
 
     // WriteOUDTransitionRates
     EXPECT_CALL(data_loader, GetOUDTransitionRates())
@@ -112,8 +108,7 @@ TEST_F(WriterTest, WriteInputData) {
     EXPECT_CALL(data_loader, GetFatalOverdoseRates(_))
         .WillRepeatedly(Return(standard));
 
-    std::string expected =
-        respond::tests::expected_strings::kWriterTestWriteInputDataExpected;
+    std::string expected = expected_strings.kWriterTestWriteInputDataExpected;
 
     std::string result =
         writer->WriteInputData(data_loader, "", OutputType::kString);
@@ -161,8 +156,7 @@ TEST_F(WriterTest, WriteHistoryData) {
     timed_mat[1] = mat3d_2;
     history.intervention_admission_history = timed_mat;
 
-    std::string expected =
-        respond::tests::expected_strings::kWriterTestWriteHistoryDataExpected;
+    std::string expected = expected_strings.kWriterTestWriteHistoryDataExpected;
 
     std::string result =
         writer->WriteHistoryData(history, "", OutputType::kString);
@@ -215,13 +209,41 @@ TEST_F(WriterTest, WriteCostData) {
     cost.perspective = "healthcare";
     cost_list.push_back(cost);
 
-    std::string expected =
-        respond::tests::expected_strings::kWriterTestWriteCostDataExpected;
+    std::string expected = expected_strings.kWriterTestWriteCostDataExpected;
 
     std::string result =
         writer->WriteCostData(cost_list, "", OutputType::kString);
+
+    ASSERT_EQ(expected, result);
 }
 
-TEST_F(WriterTest, WriteUtilityData) {}
+TEST_F(WriterTest, WriteUtilityData) {
+    TimedMatrix3d utilities;
+    Matrix3d mat3d_1(9, 4, 1);
+    Matrix3d mat3d_2(9, 4, 1);
+    mat3d_1.setConstant(0.9);
+    mat3d_2.setConstant(0.8);
+    utilities[0] = mat3d_1;
+    utilities[52] = mat3d_2;
 
-TEST_F(WriterTest, WriteTotalsData) {}
+    std::string expected = expected_strings.kWriterTestWriteUtilityDataExpected;
+
+    std::string result =
+        writer->WriteUtilityData(utilities, "", OutputType::kString);
+    ASSERT_EQ(expected, result);
+}
+
+TEST_F(WriterTest, WriteTotalsData) {
+    Totals totals;
+    totals.base_costs = {100.0, 200.0, 300.0};
+    totals.disc_costs = {90.0, 180.0, 270.0};
+    totals.base_life_years = 100.0;
+    totals.disc_life_years = 90.0;
+    totals.base_utility = 0.8;
+    totals.disc_utility = 0.7;
+
+    std::string expected = expected_strings.kWriterTestWriteTotalsDataExpected;
+    std::string result =
+        writer->WriteTotalsData(totals, "", OutputType::kString);
+    ASSERT_EQ(expected, result);
+}

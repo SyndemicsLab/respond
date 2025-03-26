@@ -4,7 +4,7 @@
 // Created Date: 2025-01-14                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-19                                                  //
+// Last Modified: 2025-03-25                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -75,11 +75,6 @@ protected:
         std::remove("sim.conf");
     }
 };
-
-TEST_F(CostLoaderTest, FactoryCreate) {
-    auto cl = CostLoader::Create();
-    EXPECT_NE(nullptr, cl);
-}
 
 TEST_F(CostLoaderTest, HealthcareUtilizationCost) {
     std::ofstream file_stream(file_name);

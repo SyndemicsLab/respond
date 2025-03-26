@@ -4,7 +4,7 @@
 // Created Date: 2025-03-25                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-25                                                  //
+// Last Modified: 2025-03-26                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -12,473 +12,1533 @@
 #ifndef RESPOND_TESTS_MOCKS_EXPECTEDSTRINGS_HPP_
 #define RESPOND_TESTS_MOCKS_EXPECTEDSTRINGS_HPP_
 
+#include <sstream>
 #include <string>
 
-namespace respond::tests::expected_strings {
+namespace respond::tests {
+class ExpectedStrings {
+private:
+    std::string LoadWriteInputDataStream() const {
+        std::stringstream stream;
+        stream
+            << "intervention,agegrp,race,sex,initial_oud,Active_Noninjection,"
+               "Active_Injection,Nonactive_Noninjection,Nonactive_Injection"
+            << std::endl
+            << "No_Treatment,1_100,other,Active_Noninjection,0.900000,0.900000,"
+               "0.900000,0.900000"
+            << std::endl
+            << "Buprenorphine,1_100,other,Active_Noninjection,0.900000,0."
+               "900000,0.900000,0.900000"
+            << std::endl
+            << "Naltrexone,1_100,other,Active_Noninjection,0.900000,0.900000,0."
+               "900000,0.900000"
+            << std::endl
+            << "Methadone,1_100,other,Active_Noninjection,0.900000,0.900000,0."
+               "900000,0.900000"
+            << std::endl
+            << "Detox,1_100,other,Active_Noninjection,0.900000,0.900000,0."
+               "900000,0.900000"
+            << std::endl
+            << "Post-Buprenorphine,1_100,other,Active_Noninjection,0.900000,0."
+               "900000,0.900000,0.900000"
+            << std::endl
+            << "Post-Naltrexone,1_100,other,Active_Noninjection,0.900000,0."
+               "900000,0.900000,0.900000"
+            << std::endl
+            << "Post-Methadone,1_100,other,Active_Noninjection,0.900000,0."
+               "900000,0.900000,0.900000"
+            << std::endl
+            << "Post-Detox,1_100,other,Active_Noninjection,0.900000,0.900000,0."
+               "900000,0.900000"
+            << std::endl
+            << "No_Treatment,1_100,other,Active_Injection,0.900000,0.900000,0."
+               "900000,0.900000"
+            << std::endl
+            << "Buprenorphine,1_100,other,Active_Injection,0.900000,0.900000,0."
+               "900000,0.900000"
+            << std::endl
+            << "Naltrexone,1_100,other,Active_Injection,0.900000,0.900000,0."
+               "900000,0.900000"
+            << std::endl
+            << "Methadone,1_100,other,Active_Injection,0.900000,0.900000,0."
+               "900000,0.900000"
+            << std::endl
+            << "Detox,1_100,other,Active_Injection,0.900000,0.900000,0.900000,"
+               "0.900000"
+            << std::endl
+            << "Post-Buprenorphine,1_100,other,Active_Injection,0.900000,0."
+               "900000,0.900000,0.900000"
+            << std::endl
+            << "Post-Naltrexone,1_100,other,Active_Injection,0.900000,0.900000,"
+               "0.900000,0.900000"
+            << std::endl
+            << "Post-Methadone,1_100,other,Active_Injection,0.900000,0.900000,"
+               "0.900000,0.900000"
+            << std::endl
+            << "Post-Detox,1_100,other,Active_Injection,0.900000,0.900000,0."
+               "900000,0.900000"
+            << std::endl
+            << "No_Treatment,1_100,other,Nonactive_Noninjection,0.900000,0."
+               "900000,0.900000,0.900000"
+            << std::endl
+            << "Buprenorphine,1_100,other,Nonactive_Noninjection,0.900000,0."
+               "900000,0.900000,0.900000"
+            << std::endl
+            << "Naltrexone,1_100,other,Nonactive_Noninjection,0.900000,0."
+               "900000,0.900000,0.900000"
+            << std::endl
+            << "Methadone,1_100,other,Nonactive_Noninjection,0.900000,0.900000,"
+               "0.900000,0.900000"
+            << std::endl
+            << "Detox,1_100,other,Nonactive_Noninjection,0.900000,0.900000,0."
+               "900000,0.900000"
+            << std::endl
+            << "Post-Buprenorphine,1_100,other,Nonactive_Noninjection,0.900000,"
+               "0.900000,0.900000,0.900000"
+            << std::endl
+            << "Post-Naltrexone,1_100,other,Nonactive_Noninjection,0.900000,0."
+               "900000,0.900000,0.900000"
+            << std::endl
+            << "Post-Methadone,1_100,other,Nonactive_Noninjection,0.900000,0."
+               "900000,0.900000,0.900000"
+            << std::endl
+            << "Post-Detox,1_100,other,Nonactive_Noninjection,0.900000,0."
+               "900000,0.900000,0.900000"
+            << std::endl
+            << "No_Treatment,1_100,other,Nonactive_Injection,0.900000,0.900000,"
+               "0.900000,0.900000"
+            << std::endl
+            << "Buprenorphine,1_100,other,Nonactive_Injection,0.900000,0."
+               "900000,0.900000,0.900000"
+            << std::endl
+            << "Naltrexone,1_100,other,Nonactive_Injection,0.900000,0.900000,0."
+               "900000,0.900000"
+            << std::endl
+            << "Methadone,1_100,other,Nonactive_Injection,0.900000,0.900000,0."
+               "900000,0.900000"
+            << std::endl
+            << "Detox,1_100,other,Nonactive_Injection,0.900000,0.900000,0."
+               "900000,0.900000"
+            << std::endl
+            << "Post-Buprenorphine,1_100,other,Nonactive_Injection,0.900000,0."
+               "900000,0.900000,0.900000"
+            << std::endl
+            << "Post-Naltrexone,1_100,other,Nonactive_Injection,0.900000,0."
+               "900000,0.900000,0.900000"
+            << std::endl
+            << "Post-Methadone,1_100,other,Nonactive_Injection,0.900000,0."
+               "900000,0.900000,0.900000"
+            << std::endl
+            << "Post-Detox,1_100,other,Nonactive_Injection,0.900000,0.900000,0."
+               "900000,0.900000"
+            << std::endl
+            << "" << std::endl
+            << "" << std::endl
+            << "agegrp,race,sex,oud,initial_intervention,No_Treatment_1_52,"
+               "Buprenorphine_1_52,Naltrexone_1_52,Methadone_1_52,Detox_1_52,"
+               "Post-Buprenorphine_1_52,Post-Naltrexone_1_52,Post-Methadone_1_"
+               "52,Post-Detox_1_52"
+            << std::endl
+            << "1_100,other,Active_Noninjection,No_Treatment,0.800000,0.800000,"
+               "0.800000,0.800000,0.800000,0.800000,0.800000,0.800000,0.800000"
+            << std::endl
+            << "1_100,other,Active_Noninjection,Buprenorphine,0.800000,0."
+               "800000,0.800000,0.800000,0.800000,0.800000,0.800000,0.800000,0."
+               "800000"
+            << std::endl
+            << "1_100,other,Active_Noninjection,Naltrexone,0.800000,0.800000,0."
+               "800000,0.800000,0.800000,0.800000,0.800000,0.800000,0.800000"
+            << std::endl
+            << "1_100,other,Active_Noninjection,Methadone,0.800000,0.800000,0."
+               "800000,0.800000,0.800000,0.800000,0.800000,0.800000,0.800000"
+            << std::endl
+            << "1_100,other,Active_Noninjection,Detox,0.800000,0.800000,0."
+               "800000,0.800000,0.800000,0.800000,0.800000,0.800000,0.800000"
+            << std::endl
+            << "1_100,other,Active_Noninjection,Post-Buprenorphine,0.800000,0."
+               "800000,0.800000,0.800000,0.800000,0.800000,0.800000,0.800000,0."
+               "800000"
+            << std::endl
+            << "1_100,other,Active_Noninjection,Post-Naltrexone,0.800000,0."
+               "800000,0.800000,0.800000,0.800000,0.800000,0.800000,0.800000,0."
+               "800000"
+            << std::endl
+            << "1_100,other,Active_Noninjection,Post-Methadone,0.800000,0."
+               "800000,0.800000,0.800000,0.800000,0.800000,0.800000,0.800000,0."
+               "800000"
+            << std::endl
+            << "1_100,other,Active_Noninjection,Post-Detox,0.800000,0.800000,0."
+               "800000,0.800000,0.800000,0.800000,0.800000,0.800000,0.800000"
+            << std::endl
+            << "1_100,other,Active_Injection,No_Treatment,0.800000,0.800000,0."
+               "800000,0.800000,0.800000,0.800000,0.800000,0.800000,0.800000"
+            << std::endl
+            << "1_100,other,Active_Injection,Buprenorphine,0.800000,0.800000,0."
+               "800000,0.800000,0.800000,0.800000,0.800000,0.800000,0.800000"
+            << std::endl
+            << "1_100,other,Active_Injection,Naltrexone,0.800000,0.800000,0."
+               "800000,0.800000,0.800000,0.800000,0.800000,0.800000,0.800000"
+            << std::endl
+            << "1_100,other,Active_Injection,Methadone,0.800000,0.800000,0."
+               "800000,0.800000,0.800000,0.800000,0.800000,0.800000,0.800000"
+            << std::endl
+            << "1_100,other,Active_Injection,Detox,0.800000,0.800000,0.800000,"
+               "0.800000,0.800000,0.800000,0.800000,0.800000,0.800000"
+            << std::endl
+            << "1_100,other,Active_Injection,Post-Buprenorphine,0.800000,0."
+               "800000,0.800000,0.800000,0.800000,0.800000,0.800000,0.800000,0."
+               "800000"
+            << std::endl
+            << "1_100,other,Active_Injection,Post-Naltrexone,0.800000,0.800000,"
+               "0.800000,0.800000,0.800000,0.800000,0.800000,0.800000,0.800000"
+            << std::endl
+            << "1_100,other,Active_Injection,Post-Methadone,0.800000,0.800000,"
+               "0.800000,0.800000,0.800000,0.800000,0.800000,0.800000,0.800000"
+            << std::endl
+            << "1_100,other,Active_Injection,Post-Detox,0.800000,0.800000,0."
+               "800000,0.800000,0.800000,0.800000,0.800000,0.800000,0.800000"
+            << std::endl
+            << "1_100,other,Nonactive_Noninjection,No_Treatment,0.800000,0."
+               "800000,0.800000,0.800000,0.800000,0.800000,0.800000,0.800000,0."
+               "800000"
+            << std::endl
+            << "1_100,other,Nonactive_Noninjection,Buprenorphine,0.800000,0."
+               "800000,0.800000,0.800000,0.800000,0.800000,0.800000,0.800000,0."
+               "800000"
+            << std::endl
+            << "1_100,other,Nonactive_Noninjection,Naltrexone,0.800000,0."
+               "800000,0.800000,0.800000,0.800000,0.800000,0.800000,0.800000,0."
+               "800000"
+            << std::endl
+            << "1_100,other,Nonactive_Noninjection,Methadone,0.800000,0.800000,"
+               "0.800000,0.800000,0.800000,0.800000,0.800000,0.800000,0.800000"
+            << std::endl
+            << "1_100,other,Nonactive_Noninjection,Detox,0.800000,0.800000,0."
+               "800000,0.800000,0.800000,0.800000,0.800000,0.800000,0.800000"
+            << std::endl
+            << "1_100,other,Nonactive_Noninjection,Post-Buprenorphine,0.800000,"
+               "0.800000,0.800000,0.800000,0.800000,0.800000,0.800000,0.800000,"
+               "0.800000"
+            << std::endl
+            << "1_100,other,Nonactive_Noninjection,Post-Naltrexone,0.800000,0."
+               "800000,0.800000,0.800000,0.800000,0.800000,0.800000,0.800000,0."
+               "800000"
+            << std::endl
+            << "1_100,other,Nonactive_Noninjection,Post-Methadone,0.800000,0."
+               "800000,0.800000,0.800000,0.800000,0.800000,0.800000,0.800000,0."
+               "800000"
+            << std::endl
+            << "1_100,other,Nonactive_Noninjection,Post-Detox,0.800000,0."
+               "800000,0.800000,0.800000,0.800000,0.800000,0.800000,0.800000,0."
+               "800000"
+            << std::endl
+            << "1_100,other,Nonactive_Injection,No_Treatment,0.800000,0.800000,"
+               "0.800000,0.800000,0.800000,0.800000,0.800000,0.800000,0.800000"
+            << std::endl
+            << "1_100,other,Nonactive_Injection,Buprenorphine,0.800000,0."
+               "800000,0.800000,0.800000,0.800000,0.800000,0.800000,0.800000,0."
+               "800000"
+            << std::endl
+            << "1_100,other,Nonactive_Injection,Naltrexone,0.800000,0.800000,0."
+               "800000,0.800000,0.800000,0.800000,0.800000,0.800000,0.800000"
+            << std::endl
+            << "1_100,other,Nonactive_Injection,Methadone,0.800000,0.800000,0."
+               "800000,0.800000,0.800000,0.800000,0.800000,0.800000,0.800000"
+            << std::endl
+            << "1_100,other,Nonactive_Injection,Detox,0.800000,0.800000,0."
+               "800000,0.800000,0.800000,0.800000,0.800000,0.800000,0.800000"
+            << std::endl
+            << "1_100,other,Nonactive_Injection,Post-Buprenorphine,0.800000,0."
+               "800000,0.800000,0.800000,0.800000,0.800000,0.800000,0.800000,0."
+               "800000"
+            << std::endl
+            << "1_100,other,Nonactive_Injection,Post-Naltrexone,0.800000,0."
+               "800000,0.800000,0.800000,0.800000,0.800000,0.800000,0.800000,0."
+               "800000"
+            << std::endl
+            << "1_100,other,Nonactive_Injection,Post-Methadone,0.800000,0."
+               "800000,0.800000,0.800000,0.800000,0.800000,0.800000,0.800000,0."
+               "800000"
+            << std::endl
+            << "1_100,other,Nonactive_Injection,Post-Detox,0.800000,0.800000,0."
+               "800000,0.800000,0.800000,0.800000,0.800000,0.800000,0.800000"
+            << std::endl
+            << "" << std::endl
+            << "" << std::endl
+            << "initial_oud_state,to_intervention,Active_Noninjection,Active_"
+               "Injection,Nonactive_Noninjection,Nonactive_Injection"
+            << std::endl
+            << "Active_Noninjection,No_Treatment,0.900000,0.900000,0.900000,0."
+               "900000"
+            << std::endl
+            << "Active_Noninjection,Buprenorphine,0.900000,0.900000,0.900000,0."
+               "900000"
+            << std::endl
+            << "Active_Noninjection,Naltrexone,0.900000,0.900000,0.900000,0."
+               "900000"
+            << std::endl
+            << "Active_Noninjection,Methadone,0.900000,0.900000,0.900000,0."
+               "900000"
+            << std::endl
+            << "Active_Noninjection,Detox,0.900000,0.900000,0.900000,0.900000"
+            << std::endl
+            << "Active_Noninjection,Post-Buprenorphine,0.900000,0.900000,0."
+               "900000,0.900000"
+            << std::endl
+            << "Active_Noninjection,Post-Naltrexone,0.900000,0.900000,0.900000,"
+               "0.900000"
+            << std::endl
+            << "Active_Noninjection,Post-Methadone,0.900000,0.900000,0.900000,"
+               "0.900000"
+            << std::endl
+            << "Active_Noninjection,Post-Detox,0.900000,0.900000,0.900000,0."
+               "900000"
+            << std::endl
+            << "Active_Injection,No_Treatment,0.900000,0.900000,0.900000,0."
+               "900000"
+            << std::endl
+            << "Active_Injection,Buprenorphine,0.900000,0.900000,0.900000,0."
+               "900000"
+            << std::endl
+            << "Active_Injection,Naltrexone,0.900000,0.900000,0.900000,0.900000"
+            << std::endl
+            << "Active_Injection,Methadone,0.900000,0.900000,0.900000,0.900000"
+            << std::endl
+            << "Active_Injection,Detox,0.900000,0.900000,0.900000,0.900000"
+            << std::endl
+            << "Active_Injection,Post-Buprenorphine,0.900000,0.900000,0.900000,"
+               "0.900000"
+            << std::endl
+            << "Active_Injection,Post-Naltrexone,0.900000,0.900000,0.900000,0."
+               "900000"
+            << std::endl
+            << "Active_Injection,Post-Methadone,0.900000,0.900000,0.900000,0."
+               "900000"
+            << std::endl
+            << "Active_Injection,Post-Detox,0.900000,0.900000,0.900000,0.900000"
+            << std::endl
+            << "Nonactive_Noninjection,No_Treatment,0.900000,0.900000,0.900000,"
+               "0.900000"
+            << std::endl
+            << "Nonactive_Noninjection,Buprenorphine,0.900000,0.900000,0."
+               "900000,0.900000"
+            << std::endl
+            << "Nonactive_Noninjection,Naltrexone,0.900000,0.900000,0.900000,0."
+               "900000"
+            << std::endl
+            << "Nonactive_Noninjection,Methadone,0.900000,0.900000,0.900000,0."
+               "900000"
+            << std::endl
+            << "Nonactive_Noninjection,Detox,0.900000,0.900000,0.900000,0."
+               "900000"
+            << std::endl
+            << "Nonactive_Noninjection,Post-Buprenorphine,0.900000,0.900000,0."
+               "900000,0.900000"
+            << std::endl
+            << "Nonactive_Noninjection,Post-Naltrexone,0.900000,0.900000,0."
+               "900000,0.900000"
+            << std::endl
+            << "Nonactive_Noninjection,Post-Methadone,0.900000,0.900000,0."
+               "900000,0.900000"
+            << std::endl
+            << "Nonactive_Noninjection,Post-Detox,0.900000,0.900000,0.900000,0."
+               "900000"
+            << std::endl
+            << "Nonactive_Injection,No_Treatment,0.900000,0.900000,0.900000,0."
+               "900000"
+            << std::endl
+            << "Nonactive_Injection,Buprenorphine,0.900000,0.900000,0.900000,0."
+               "900000"
+            << std::endl
+            << "Nonactive_Injection,Naltrexone,0.900000,0.900000,0.900000,0."
+               "900000"
+            << std::endl
+            << "Nonactive_Injection,Methadone,0.900000,0.900000,0.900000,0."
+               "900000"
+            << std::endl
+            << "Nonactive_Injection,Detox,0.900000,0.900000,0.900000,0.900000"
+            << std::endl
+            << "Nonactive_Injection,Post-Buprenorphine,0.900000,0.900000,0."
+               "900000,0.900000"
+            << std::endl
+            << "Nonactive_Injection,Post-Naltrexone,0.900000,0.900000,0.900000,"
+               "0.900000"
+            << std::endl
+            << "Nonactive_Injection,Post-Methadone,0.900000,0.900000,0.900000,"
+               "0.900000"
+            << std::endl
+            << "Nonactive_Injection,Post-Detox,0.900000,0.900000,0.900000,0."
+               "900000"
+            << std::endl
+            << "" << std::endl
+            << "" << std::endl
+            << "intervention,agegrp,race,sex,oud,overdose_1_52" << std::endl
+            << "No_Treatment,1_100,other,Active_Noninjection,0.700000"
+            << std::endl
+            << "No_Treatment,1_100,other,Active_Injection,0.700000" << std::endl
+            << "No_Treatment,1_100,other,Nonactive_Noninjection,0.700000"
+            << std::endl
+            << "No_Treatment,1_100,other,Nonactive_Injection,0.700000"
+            << std::endl
+            << "Buprenorphine,1_100,other,Active_Noninjection,0.700000"
+            << std::endl
+            << "Buprenorphine,1_100,other,Active_Injection,0.700000"
+            << std::endl
+            << "Buprenorphine,1_100,other,Nonactive_Noninjection,0.700000"
+            << std::endl
+            << "Buprenorphine,1_100,other,Nonactive_Injection,0.700000"
+            << std::endl
+            << "Naltrexone,1_100,other,Active_Noninjection,0.700000"
+            << std::endl
+            << "Naltrexone,1_100,other,Active_Injection,0.700000" << std::endl
+            << "Naltrexone,1_100,other,Nonactive_Noninjection,0.700000"
+            << std::endl
+            << "Naltrexone,1_100,other,Nonactive_Injection,0.700000"
+            << std::endl
+            << "Methadone,1_100,other,Active_Noninjection,0.700000" << std::endl
+            << "Methadone,1_100,other,Active_Injection,0.700000" << std::endl
+            << "Methadone,1_100,other,Nonactive_Noninjection,0.700000"
+            << std::endl
+            << "Methadone,1_100,other,Nonactive_Injection,0.700000" << std::endl
+            << "Detox,1_100,other,Active_Noninjection,0.700000" << std::endl
+            << "Detox,1_100,other,Active_Injection,0.700000" << std::endl
+            << "Detox,1_100,other,Nonactive_Noninjection,0.700000" << std::endl
+            << "Detox,1_100,other,Nonactive_Injection,0.700000" << std::endl
+            << "Post-Buprenorphine,1_100,other,Active_Noninjection,0.700000"
+            << std::endl
+            << "Post-Buprenorphine,1_100,other,Active_Injection,0.700000"
+            << std::endl
+            << "Post-Buprenorphine,1_100,other,Nonactive_Noninjection,0.700000"
+            << std::endl
+            << "Post-Buprenorphine,1_100,other,Nonactive_Injection,0.700000"
+            << std::endl
+            << "Post-Naltrexone,1_100,other,Active_Noninjection,0.700000"
+            << std::endl
+            << "Post-Naltrexone,1_100,other,Active_Injection,0.700000"
+            << std::endl
+            << "Post-Naltrexone,1_100,other,Nonactive_Noninjection,0.700000"
+            << std::endl
+            << "Post-Naltrexone,1_100,other,Nonactive_Injection,0.700000"
+            << std::endl
+            << "Post-Methadone,1_100,other,Active_Noninjection,0.700000"
+            << std::endl
+            << "Post-Methadone,1_100,other,Active_Injection,0.700000"
+            << std::endl
+            << "Post-Methadone,1_100,other,Nonactive_Noninjection,0.700000"
+            << std::endl
+            << "Post-Methadone,1_100,other,Nonactive_Injection,0.700000"
+            << std::endl
+            << "Post-Detox,1_100,other,Active_Noninjection,0.700000"
+            << std::endl
+            << "Post-Detox,1_100,other,Active_Injection,0.700000" << std::endl
+            << "Post-Detox,1_100,other,Nonactive_Noninjection,0.700000"
+            << std::endl
+            << "Post-Detox,1_100,other,Nonactive_Injection,0.700000"
+            << std::endl
+            << "" << std::endl
+            << "" << std::endl
+            << "agegrp,race,sex,percent_overdoses_fatal_1_52" << std::endl
+            << "1_100,other,0.700000" << std::endl
+            << "";
+        return stream.str();
+    }
 
-    const std::string kWriterTestWriteInputDataExpected =
-        ("intervention,agegrp,race,sex,initial_oud,Active_Noninjection1Active_"
-         "Injection1Nonactive_Noninjection1Nonactive_Injection0No_Treatment,1_"
-         "100,other,Active_Noninjection,0.500000,0.500000,0.500000,0.500000,"
-         "\nBuprenorphine,1_100,other,Active_Noninjection,0.500000,0.500000,0."
-         "500000,0.500000,\nNaltrexone,1_100,other,Active_Noninjection,0."
-         "500000,"
-         "0.500000,0.500000,0.500000,\nMethadone,1_100,other,Active_"
-         "Noninjection,0.500000,0.500000,0.500000,0.500000,\nDetox,1_100,other,"
-         "Active_Noninjection,0.500000,0.500000,0.500000,0.500000,\nPost-"
-         "Buprenorphine,1_100,other,Active_Noninjection,0.500000,0.500000,0."
-         "500000,0.500000,\nPost-Naltrexone,1_100,other,Active_Noninjection,0."
-         "500000,0.500000,0.500000,0.500000,\nPost-Methadone,1_100,other,"
-         "Active_"
-         "Noninjection,0.500000,0.500000,0.500000,0.500000,\nPost-Detox,1_100,"
-         "other,Active_Noninjection,0.500000,0.500000,0.500000,0.500000,\nNo_"
-         "Treatment,1_100,other,Active_Injection,0.500000,0.500000,0.500000,0."
-         "500000,\nBuprenorphine,1_100,other,Active_Injection,0.500000,0."
-         "500000,"
-         "0.500000,0.500000,\nNaltrexone,1_100,other,Active_Injection,0.500000,"
-         "0.500000,0.500000,0.500000,\nMethadone,1_100,other,Active_Injection,"
-         "0."
-         "500000,0.500000,0.500000,0.500000,\nDetox,1_100,other,Active_"
-         "Injection,0.500000,0.500000,0.500000,0.500000,\nPost-Buprenorphine,1_"
-         "100,other,Active_Injection,0.500000,0.500000,0.500000,0.500000,"
-         "\nPost-"
-         "Naltrexone,1_100,other,Active_Injection,0.500000,0.500000,0.500000,0."
-         "500000,\nPost-Methadone,1_100,other,Active_Injection,0.500000,0."
-         "500000,0.500000,0.500000,\nPost-Detox,1_100,other,Active_Injection,0."
-         "500000,0.500000,0.500000,0.500000,\nNo_Treatment,1_100,other,"
-         "Nonactive_Noninjection,0.500000,0.500000,0.500000,0.500000,"
-         "\nBuprenorphine,1_100,other,Nonactive_Noninjection,0.500000,0.500000,"
-         "0.500000,0.500000,\nNaltrexone,1_100,other,Nonactive_Noninjection,0."
-         "500000,0.500000,0.500000,0.500000,\nMethadone,1_100,other,Nonactive_"
-         "Noninjection,0.500000,0.500000,0.500000,0.500000,\nDetox,1_100,other,"
-         "Nonactive_Noninjection,0.500000,0.500000,0.500000,0.500000,\nPost-"
-         "Buprenorphine,1_100,other,Nonactive_Noninjection,0.500000,0.500000,0."
-         "500000,0.500000,\nPost-Naltrexone,1_100,other,Nonactive_Noninjection,"
-         "0.500000,0.500000,0.500000,0.500000,\nPost-Methadone,1_100,other,"
-         "Nonactive_Noninjection,0.500000,0.500000,0.500000,0.500000,\nPost-"
-         "Detox,1_100,other,Nonactive_Noninjection,0.500000,0.500000,0.500000,"
-         "0."
-         "500000,\nNo_Treatment,1_100,other,Nonactive_Injection,0.500000,0."
-         "500000,0.500000,0.500000,\nBuprenorphine,1_100,other,Nonactive_"
-         "Injection,0.500000,0.500000,0.500000,0.500000,\nNaltrexone,1_100,"
-         "other,Nonactive_Injection,0.500000,0.500000,0.500000,0.500000,"
-         "\nMethadone,1_100,other,Nonactive_Injection,0.500000,0.500000,0."
-         "500000,0.500000,\nDetox,1_100,other,Nonactive_Injection,0.500000,0."
-         "500000,0.500000,0.500000,\nPost-Buprenorphine,1_100,other,Nonactive_"
-         "Injection,0.500000,0.500000,0.500000,0.500000,\nPost-Naltrexone,1_"
-         "100,"
-         "other,Nonactive_Injection,0.500000,0.500000,0.500000,0.500000,\nPost-"
-         "Methadone,1_100,other,Nonactive_Injection,0.500000,0.500000,0.500000,"
-         "0.500000,\nPost-Detox,1_100,other,Nonactive_Injection,0.500000,0."
-         "500000,0.500000,0.500000,\n "
-         "agegrp,race,sex,oud,initial_interventionNo_Treatment_1_"
-         "52\nBuprenorphine_1_52\nNaltrexone_1_52\nMethadone_1_52\nDetox_1_"
-         "52\nPost-Buprenorphine_1_52\nPost-Naltrexone_1_52\nPost-Methadone_1_"
-         "52\nPost-Detox_1_52\n1_100,other,Active_Noninjection,No_Treatment,0."
-         "500000,0.500000,0.500000,0.500000,0.500000,0.500000,0.500000,0."
-         "500000,"
-         "0.500000,\n1_100,other,Active_Noninjection,Buprenorphine,0.500000,0."
-         "500000,0.500000,0.500000,0.500000,0.500000,0.500000,0.500000,0."
-         "500000,"
-         "\n1_100,other,Active_Noninjection,Naltrexone,0.500000,0.500000,0."
-         "500000,0.500000,0.500000,0.500000,0.500000,0.500000,0.500000,\n1_100,"
-         "other,Active_Noninjection,Methadone,0.500000,0.500000,0.500000,0."
-         "500000,0.500000,0.500000,0.500000,0.500000,0.500000,\n1_100,other,"
-         "Active_Noninjection,Detox,0.500000,0.500000,0.500000,0.500000,0."
-         "500000,0.500000,0.500000,0.500000,0.500000,\n1_100,other,Active_"
-         "Noninjection,Post-Buprenorphine,0.500000,0.500000,0.500000,0.500000,"
-         "0."
-         "500000,0.500000,0.500000,0.500000,0.500000,\n1_100,other,Active_"
-         "Noninjection,Post-Naltrexone,0.500000,0.500000,0.500000,0.500000,0."
-         "500000,0.500000,0.500000,0.500000,0.500000,\n1_100,other,Active_"
-         "Noninjection,Post-Methadone,0.500000,0.500000,0.500000,0.500000,0."
-         "500000,0.500000,0.500000,0.500000,0.500000,\n1_100,other,Active_"
-         "Noninjection,Post-Detox,0.500000,0.500000,0.500000,0.500000,0.500000,"
-         "0.500000,0.500000,0.500000,0.500000,\n1_100,other,Active_Injection,"
-         "No_"
-         "Treatment,0.500000,0.500000,0.500000,0.500000,0.500000,0.500000,0."
-         "500000,0.500000,0.500000,\n1_100,other,Active_Injection,"
-         "Buprenorphine,"
-         "0.500000,0.500000,0.500000,0.500000,0.500000,0.500000,0.500000,0."
-         "500000,0.500000,\n1_100,other,Active_Injection,Naltrexone,0.500000,0."
-         "500000,0.500000,0.500000,0.500000,0.500000,0.500000,0.500000,0."
-         "500000,"
-         "\n1_100,other,Active_Injection,Methadone,0.500000,0.500000,0.500000,"
-         "0."
-         "500000,0.500000,0.500000,0.500000,0.500000,0.500000,\n1_100,other,"
-         "Active_Injection,Detox,0.500000,0.500000,0.500000,0.500000,0.500000,"
-         "0."
-         "500000,0.500000,0.500000,0.500000,\n1_100,other,Active_Injection,"
-         "Post-"
-         "Buprenorphine,0.500000,0.500000,0.500000,0.500000,0.500000,0.500000,"
-         "0."
-         "500000,0.500000,0.500000,\n1_100,other,Active_Injection,Post-"
-         "Naltrexone,0.500000,0.500000,0.500000,0.500000,0.500000,0.500000,0."
-         "500000,0.500000,0.500000,\n1_100,other,Active_Injection,Post-"
-         "Methadone,0.500000,0.500000,0.500000,0.500000,0.500000,0.500000,0."
-         "500000,0.500000,0.500000,\n1_100,other,Active_Injection,Post-Detox,0."
-         "500000,0.500000,0.500000,0.500000,0.500000,0.500000,0.500000,0."
-         "500000,"
-         "0.500000,\n1_100,other,Nonactive_Noninjection,No_Treatment,0.500000,"
-         "0."
-         "500000,0.500000,0.500000,0.500000,0.500000,0.500000,0.500000,0."
-         "500000,"
-         "\n1_100,other,Nonactive_Noninjection,Buprenorphine,0.500000,0.500000,"
-         "0.500000,0.500000,0.500000,0.500000,0.500000,0.500000,0.500000,\n1_"
-         "100,other,Nonactive_Noninjection,Naltrexone,0.500000,0.500000,0."
-         "500000,0.500000,0.500000,0.500000,0.500000,0.500000,0.500000,\n1_100,"
-         "other,Nonactive_Noninjection,Methadone,0.500000,0.500000,0.500000,0."
-         "500000,0.500000,0.500000,0.500000,0.500000,0.500000,\n1_100,other,"
-         "Nonactive_Noninjection,Detox,0.500000,0.500000,0.500000,0.500000,0."
-         "500000,0.500000,0.500000,0.500000,0.500000,\n1_100,other,Nonactive_"
-         "Noninjection,Post-Buprenorphine,0.500000,0.500000,0.500000,0.500000,"
-         "0."
-         "500000,0.500000,0.500000,0.500000,0.500000,\n1_100,other,Nonactive_"
-         "Noninjection,Post-Naltrexone,0.500000,0.500000,0.500000,0.500000,0."
-         "500000,0.500000,0.500000,0.500000,0.500000,\n1_100,other,Nonactive_"
-         "Noninjection,Post-Methadone,0.500000,0.500000,0.500000,0.500000,0."
-         "500000,0.500000,0.500000,0.500000,0.500000,\n1_100,other,Nonactive_"
-         "Noninjection,Post-Detox,0.500000,0.500000,0.500000,0.500000,0.500000,"
-         "0.500000,0.500000,0.500000,0.500000,\n1_100,other,Nonactive_"
-         "Injection,"
-         "No_Treatment,0.500000,0.500000,0.500000,0.500000,0.500000,0.500000,0."
-         "500000,0.500000,0.500000,\n1_100,other,Nonactive_Injection,"
-         "Buprenorphine,0.500000,0.500000,0.500000,0.500000,0.500000,0.500000,"
-         "0."
-         "500000,0.500000,0.500000,\n1_100,other,Nonactive_Injection,"
-         "Naltrexone,"
-         "0.500000,0.500000,0.500000,0.500000,0.500000,0.500000,0.500000,0."
-         "500000,0.500000,\n1_100,other,Nonactive_Injection,Methadone,0.500000,"
-         "0.500000,0.500000,0.500000,0.500000,0.500000,0.500000,0.500000,0."
-         "500000,\n1_100,other,Nonactive_Injection,Detox,0.500000,0.500000,0."
-         "500000,0.500000,0.500000,0.500000,0.500000,0.500000,0.500000,\n1_100,"
-         "other,Nonactive_Injection,Post-Buprenorphine,0.500000,0.500000,0."
-         "500000,0.500000,0.500000,0.500000,0.500000,0.500000,0.500000,\n1_100,"
-         "other,Nonactive_Injection,Post-Naltrexone,0.500000,0.500000,0.500000,"
-         "0.500000,0.500000,0.500000,0.500000,0.500000,0.500000,\n1_100,other,"
-         "Nonactive_Injection,Post-Methadone,0.500000,0.500000,0.500000,0."
-         "500000,0.500000,0.500000,0.500000,0.500000,0.500000,\n1_100,other,"
-         "Nonactive_Injection,Post-Detox,0.500000,0.500000,0.500000,0.500000,0."
-         "500000,0.500000,0.500000,0.500000,0.500000,\n "
-         "initial_oud_state,to_interventionActive_Noninjection1Active_"
-         "Injection1Nonactive_Noninjection1Nonactive_Injection1Active_"
-         "Noninjection,No_Treatment,0.500000,0.500000,0.500000,0.500000,"
-         "\nActive_Noninjection,Buprenorphine,0.500000,0.500000,0.500000,0."
-         "500000,\nActive_Noninjection,Naltrexone,0.500000,0.500000,0.500000,0."
-         "500000,\nActive_Noninjection,Methadone,0.500000,0.500000,0.500000,0."
-         "500000,\nActive_Noninjection,Detox,0.500000,0.500000,0.500000,0."
-         "500000,\nActive_Noninjection,Post-Buprenorphine,0.500000,0.500000,0."
-         "500000,0.500000,\nActive_Noninjection,Post-Naltrexone,0.500000,0."
-         "500000,0.500000,0.500000,\nActive_Noninjection,Post-Methadone,0."
-         "500000,0.500000,0.500000,0.500000,\nActive_Noninjection,Post-Detox,0."
-         "500000,0.500000,0.500000,0.500000,\nActive_Injection,No_Treatment,0."
-         "500000,0.500000,0.500000,0.500000,\nActive_Injection,Buprenorphine,0."
-         "500000,0.500000,0.500000,0.500000,\nActive_Injection,Naltrexone,0."
-         "500000,0.500000,0.500000,0.500000,\nActive_Injection,Methadone,0."
-         "500000,0.500000,0.500000,0.500000,\nActive_Injection,Detox,0.500000,"
-         "0."
-         "500000,0.500000,0.500000,\nActive_Injection,Post-Buprenorphine,0."
-         "500000,0.500000,0.500000,0.500000,\nActive_Injection,Post-Naltrexone,"
-         "0.500000,0.500000,0.500000,0.500000,\nActive_Injection,Post-"
-         "Methadone,"
-         "0.500000,0.500000,0.500000,0.500000,\nActive_Injection,Post-Detox,0."
-         "500000,0.500000,0.500000,0.500000,\nNonactive_Noninjection,No_"
-         "Treatment,0.500000,0.500000,0.500000,0.500000,\nNonactive_"
-         "Noninjection,Buprenorphine,0.500000,0.500000,0.500000,0.500000,"
-         "\nNonactive_Noninjection,Naltrexone,0.500000,0.500000,0.500000,0."
-         "500000,\nNonactive_Noninjection,Methadone,0.500000,0.500000,0.500000,"
-         "0.500000,\nNonactive_Noninjection,Detox,0.500000,0.500000,0.500000,0."
-         "500000,\nNonactive_Noninjection,Post-Buprenorphine,0.500000,0.500000,"
-         "0.500000,0.500000,\nNonactive_Noninjection,Post-Naltrexone,0.500000,"
-         "0."
-         "500000,0.500000,0.500000,\nNonactive_Noninjection,Post-Methadone,0."
-         "500000,0.500000,0.500000,0.500000,\nNonactive_Noninjection,Post-"
-         "Detox,"
-         "0.500000,0.500000,0.500000,0.500000,\nNonactive_Injection,No_"
-         "Treatment,0.500000,0.500000,0.500000,0.500000,\nNonactive_Injection,"
-         "Buprenorphine,0.500000,0.500000,0.500000,0.500000,\nNonactive_"
-         "Injection,Naltrexone,0.500000,0.500000,0.500000,0.500000,\nNonactive_"
-         "Injection,Methadone,0.500000,0.500000,0.500000,0.500000,\nNonactive_"
-         "Injection,Detox,0.500000,0.500000,0.500000,0.500000,\nNonactive_"
-         "Injection,Post-Buprenorphine,0.500000,0.500000,0.500000,0.500000,"
-         "\nNonactive_Injection,Post-Naltrexone,0.500000,0.500000,0.500000,0."
-         "500000,\nNonactive_Injection,Post-Methadone,0.500000,0.500000,0."
-         "500000,0.500000,\nNonactive_Injection,Post-Detox,0.500000,0.500000,0."
-         "500000,0.500000,\n "
-         "intervention,agegrp,race,sex,oudoverdose_1_52,No_Treatment,1_100,"
-         "other,Active_Noninjection,0.100000,\nNo_Treatment,1_100,other,Active_"
-         "Injection,0.100000,\nNo_Treatment,1_100,other,Nonactive_Noninjection,"
-         "0.100000,\nNo_Treatment,1_100,other,Nonactive_Injection,0.100000,"
-         "\nBuprenorphine,1_100,other,Active_Noninjection,0.100000,"
-         "\nBuprenorphine,1_100,other,Active_Injection,0.100000,"
-         "\nBuprenorphine,"
-         "1_100,other,Nonactive_Noninjection,0.100000,\nBuprenorphine,1_100,"
-         "other,Nonactive_Injection,0.100000,\nNaltrexone,1_100,other,Active_"
-         "Noninjection,0.100000,\nNaltrexone,1_100,other,Active_Injection,0."
-         "100000,\nNaltrexone,1_100,other,Nonactive_Noninjection,0.100000,"
-         "\nNaltrexone,1_100,other,Nonactive_Injection,0.100000,\nMethadone,1_"
-         "100,other,Active_Noninjection,0.100000,\nMethadone,1_100,other,"
-         "Active_"
-         "Injection,0.100000,\nMethadone,1_100,other,Nonactive_Noninjection,0."
-         "100000,\nMethadone,1_100,other,Nonactive_Injection,0.100000,\nDetox,"
-         "1_"
-         "100,other,Active_Noninjection,0.100000,\nDetox,1_100,other,Active_"
-         "Injection,0.100000,\nDetox,1_100,other,Nonactive_Noninjection,0."
-         "100000,\nDetox,1_100,other,Nonactive_Injection,0.100000,\nPost-"
-         "Buprenorphine,1_100,other,Active_Noninjection,0.100000,\nPost-"
-         "Buprenorphine,1_100,other,Active_Injection,0.100000,\nPost-"
-         "Buprenorphine,1_100,other,Nonactive_Noninjection,0.100000,\nPost-"
-         "Buprenorphine,1_100,other,Nonactive_Injection,0.100000,\nPost-"
-         "Naltrexone,1_100,other,Active_Noninjection,0.100000,\nPost-"
-         "Naltrexone,"
-         "1_100,other,Active_Injection,0.100000,\nPost-Naltrexone,1_100,other,"
-         "Nonactive_Noninjection,0.100000,\nPost-Naltrexone,1_100,other,"
-         "Nonactive_Injection,0.100000,\nPost-Methadone,1_100,other,Active_"
-         "Noninjection,0.100000,\nPost-Methadone,1_100,other,Active_Injection,"
-         "0."
-         "100000,\nPost-Methadone,1_100,other,Nonactive_Noninjection,0.100000,"
-         "\nPost-Methadone,1_100,other,Nonactive_Injection,0.100000,\nPost-"
-         "Detox,1_100,other,Active_Noninjection,0.100000,\nPost-Detox,1_100,"
-         "other,Active_Injection,0.100000,\nPost-Detox,1_100,other,Nonactive_"
-         "Noninjection,0.100000,\nPost-Detox,1_100,other,Nonactive_Injection,0."
-         "100000,\n "
-         "agegrp,race,sexpercent_overdoses_fatal_1_52,1_100,other,0.100000,\n");
+    std::string LoadWriteHistoryDataStream() const {
+        std::stringstream stream;
+        stream
+            << "Interventions,OUD States,age_groups,sex,t+0,t+52" << std::endl
+            << "No_Treatment,Active_Noninjection,1_100,other,0.900000,0.800000"
+            << std::endl
+            << "No_Treatment,Active_Injection,1_100,other,0.900000,0.800000"
+            << std::endl
+            << "No_Treatment,Nonactive_Noninjection,1_100,other,0.900000,0."
+               "800000"
+            << std::endl
+            << "No_Treatment,Nonactive_Injection,1_100,other,0.900000,0.800000"
+            << std::endl
+            << "Buprenorphine,Active_Noninjection,1_100,other,0.900000,0.800000"
+            << std::endl
+            << "Buprenorphine,Active_Injection,1_100,other,0.900000,0.800000"
+            << std::endl
+            << "Buprenorphine,Nonactive_Noninjection,1_100,other,0.900000,0."
+               "800000"
+            << std::endl
+            << "Buprenorphine,Nonactive_Injection,1_100,other,0.900000,0.800000"
+            << std::endl
+            << "Naltrexone,Active_Noninjection,1_100,other,0.900000,0.800000"
+            << std::endl
+            << "Naltrexone,Active_Injection,1_100,other,0.900000,0.800000"
+            << std::endl
+            << "Naltrexone,Nonactive_Noninjection,1_100,other,0.900000,0.800000"
+            << std::endl
+            << "Naltrexone,Nonactive_Injection,1_100,other,0.900000,0.800000"
+            << std::endl
+            << "Methadone,Active_Noninjection,1_100,other,0.900000,0.800000"
+            << std::endl
+            << "Methadone,Active_Injection,1_100,other,0.900000,0.800000"
+            << std::endl
+            << "Methadone,Nonactive_Noninjection,1_100,other,0.900000,0.800000"
+            << std::endl
+            << "Methadone,Nonactive_Injection,1_100,other,0.900000,0.800000"
+            << std::endl
+            << "Detox,Active_Noninjection,1_100,other,0.900000,0.800000"
+            << std::endl
+            << "Detox,Active_Injection,1_100,other,0.900000,0.800000"
+            << std::endl
+            << "Detox,Nonactive_Noninjection,1_100,other,0.900000,0.800000"
+            << std::endl
+            << "Detox,Nonactive_Injection,1_100,other,0.900000,0.800000"
+            << std::endl
+            << "Post-Buprenorphine,Active_Noninjection,1_100,other,0.900000,0."
+               "800000"
+            << std::endl
+            << "Post-Buprenorphine,Active_Injection,1_100,other,0.900000,0."
+               "800000"
+            << std::endl
+            << "Post-Buprenorphine,Nonactive_Noninjection,1_100,other,0.900000,"
+               "0.800000"
+            << std::endl
+            << "Post-Buprenorphine,Nonactive_Injection,1_100,other,0.900000,0."
+               "800000"
+            << std::endl
+            << "Post-Naltrexone,Active_Noninjection,1_100,other,0.900000,0."
+               "800000"
+            << std::endl
+            << "Post-Naltrexone,Active_Injection,1_100,other,0.900000,0.800000"
+            << std::endl
+            << "Post-Naltrexone,Nonactive_Noninjection,1_100,other,0.900000,0."
+               "800000"
+            << std::endl
+            << "Post-Naltrexone,Nonactive_Injection,1_100,other,0.900000,0."
+               "800000"
+            << std::endl
+            << "Post-Methadone,Active_Noninjection,1_100,other,0.900000,0."
+               "800000"
+            << std::endl
+            << "Post-Methadone,Active_Injection,1_100,other,0.900000,0.800000"
+            << std::endl
+            << "Post-Methadone,Nonactive_Noninjection,1_100,other,0.900000,0."
+               "800000"
+            << std::endl
+            << "Post-Methadone,Nonactive_Injection,1_100,other,0.900000,0."
+               "800000"
+            << std::endl
+            << "Post-Detox,Active_Noninjection,1_100,other,0.900000,0.800000"
+            << std::endl
+            << "Post-Detox,Active_Injection,1_100,other,0.900000,0.800000"
+            << std::endl
+            << "Post-Detox,Nonactive_Noninjection,1_100,other,0.900000,0.800000"
+            << std::endl
+            << "Post-Detox,Nonactive_Injection,1_100,other,0.900000,0.800000"
+            << std::endl
+            << "" << std::endl
+            << "" << std::endl
+            << "Interventions,OUD States,age_groups,sex,t+0,t+1,t+52"
+            << std::endl
+            << "No_Treatment,Active_Noninjection,1_100,other,0.700000,0.600000,"
+               "0.800000"
+            << std::endl
+            << "No_Treatment,Active_Injection,1_100,other,0.700000,0.600000,0."
+               "800000"
+            << std::endl
+            << "No_Treatment,Nonactive_Noninjection,1_100,other,0.700000,0."
+               "600000,0.800000"
+            << std::endl
+            << "No_Treatment,Nonactive_Injection,1_100,other,0.700000,0.600000,"
+               "0.800000"
+            << std::endl
+            << "Buprenorphine,Active_Noninjection,1_100,other,0.700000,0."
+               "600000,0.800000"
+            << std::endl
+            << "Buprenorphine,Active_Injection,1_100,other,0.700000,0.600000,0."
+               "800000"
+            << std::endl
+            << "Buprenorphine,Nonactive_Noninjection,1_100,other,0.700000,0."
+               "600000,0.800000"
+            << std::endl
+            << "Buprenorphine,Nonactive_Injection,1_100,other,0.700000,0."
+               "600000,0.800000"
+            << std::endl
+            << "Naltrexone,Active_Noninjection,1_100,other,0.700000,0.600000,0."
+               "800000"
+            << std::endl
+            << "Naltrexone,Active_Injection,1_100,other,0.700000,0.600000,0."
+               "800000"
+            << std::endl
+            << "Naltrexone,Nonactive_Noninjection,1_100,other,0.700000,0."
+               "600000,0.800000"
+            << std::endl
+            << "Naltrexone,Nonactive_Injection,1_100,other,0.700000,0.600000,0."
+               "800000"
+            << std::endl
+            << "Methadone,Active_Noninjection,1_100,other,0.700000,0.600000,0."
+               "800000"
+            << std::endl
+            << "Methadone,Active_Injection,1_100,other,0.700000,0.600000,0."
+               "800000"
+            << std::endl
+            << "Methadone,Nonactive_Noninjection,1_100,other,0.700000,0.600000,"
+               "0.800000"
+            << std::endl
+            << "Methadone,Nonactive_Injection,1_100,other,0.700000,0.600000,0."
+               "800000"
+            << std::endl
+            << "Detox,Active_Noninjection,1_100,other,0.700000,0.600000,0."
+               "800000"
+            << std::endl
+            << "Detox,Active_Injection,1_100,other,0.700000,0.600000,0.800000"
+            << std::endl
+            << "Detox,Nonactive_Noninjection,1_100,other,0.700000,0.600000,0."
+               "800000"
+            << std::endl
+            << "Detox,Nonactive_Injection,1_100,other,0.700000,0.600000,0."
+               "800000"
+            << std::endl
+            << "Post-Buprenorphine,Active_Noninjection,1_100,other,0.700000,0."
+               "600000,0.800000"
+            << std::endl
+            << "Post-Buprenorphine,Active_Injection,1_100,other,0.700000,0."
+               "600000,0.800000"
+            << std::endl
+            << "Post-Buprenorphine,Nonactive_Noninjection,1_100,other,0.700000,"
+               "0.600000,0.800000"
+            << std::endl
+            << "Post-Buprenorphine,Nonactive_Injection,1_100,other,0.700000,0."
+               "600000,0.800000"
+            << std::endl
+            << "Post-Naltrexone,Active_Noninjection,1_100,other,0.700000,0."
+               "600000,0.800000"
+            << std::endl
+            << "Post-Naltrexone,Active_Injection,1_100,other,0.700000,0.600000,"
+               "0.800000"
+            << std::endl
+            << "Post-Naltrexone,Nonactive_Noninjection,1_100,other,0.700000,0."
+               "600000,0.800000"
+            << std::endl
+            << "Post-Naltrexone,Nonactive_Injection,1_100,other,0.700000,0."
+               "600000,0.800000"
+            << std::endl
+            << "Post-Methadone,Active_Noninjection,1_100,other,0.700000,0."
+               "600000,0.800000"
+            << std::endl
+            << "Post-Methadone,Active_Injection,1_100,other,0.700000,0.600000,"
+               "0.800000"
+            << std::endl
+            << "Post-Methadone,Nonactive_Noninjection,1_100,other,0.700000,0."
+               "600000,0.800000"
+            << std::endl
+            << "Post-Methadone,Nonactive_Injection,1_100,other,0.700000,0."
+               "600000,0.800000"
+            << std::endl
+            << "Post-Detox,Active_Noninjection,1_100,other,0.700000,0.600000,0."
+               "800000"
+            << std::endl
+            << "Post-Detox,Active_Injection,1_100,other,0.700000,0.600000,0."
+               "800000"
+            << std::endl
+            << "Post-Detox,Nonactive_Noninjection,1_100,other,0.700000,0."
+               "600000,0.800000"
+            << std::endl
+            << "Post-Detox,Nonactive_Injection,1_100,other,0.700000,0.600000,0."
+               "800000"
+            << std::endl
+            << "" << std::endl
+            << "" << std::endl
+            << "Interventions,OUD States,age_groups,sex,t+0,t+1,t+52"
+            << std::endl
+            << "No_Treatment,Active_Noninjection,1_100,other,0.400000,0.600000,"
+               "0.800000"
+            << std::endl
+            << "No_Treatment,Active_Injection,1_100,other,0.400000,0.600000,0."
+               "800000"
+            << std::endl
+            << "No_Treatment,Nonactive_Noninjection,1_100,other,0.400000,0."
+               "600000,0.800000"
+            << std::endl
+            << "No_Treatment,Nonactive_Injection,1_100,other,0.400000,0.600000,"
+               "0.800000"
+            << std::endl
+            << "Buprenorphine,Active_Noninjection,1_100,other,0.400000,0."
+               "600000,0.800000"
+            << std::endl
+            << "Buprenorphine,Active_Injection,1_100,other,0.400000,0.600000,0."
+               "800000"
+            << std::endl
+            << "Buprenorphine,Nonactive_Noninjection,1_100,other,0.400000,0."
+               "600000,0.800000"
+            << std::endl
+            << "Buprenorphine,Nonactive_Injection,1_100,other,0.400000,0."
+               "600000,0.800000"
+            << std::endl
+            << "Naltrexone,Active_Noninjection,1_100,other,0.400000,0.600000,0."
+               "800000"
+            << std::endl
+            << "Naltrexone,Active_Injection,1_100,other,0.400000,0.600000,0."
+               "800000"
+            << std::endl
+            << "Naltrexone,Nonactive_Noninjection,1_100,other,0.400000,0."
+               "600000,0.800000"
+            << std::endl
+            << "Naltrexone,Nonactive_Injection,1_100,other,0.400000,0.600000,0."
+               "800000"
+            << std::endl
+            << "Methadone,Active_Noninjection,1_100,other,0.400000,0.600000,0."
+               "800000"
+            << std::endl
+            << "Methadone,Active_Injection,1_100,other,0.400000,0.600000,0."
+               "800000"
+            << std::endl
+            << "Methadone,Nonactive_Noninjection,1_100,other,0.400000,0.600000,"
+               "0.800000"
+            << std::endl
+            << "Methadone,Nonactive_Injection,1_100,other,0.400000,0.600000,0."
+               "800000"
+            << std::endl
+            << "Detox,Active_Noninjection,1_100,other,0.400000,0.600000,0."
+               "800000"
+            << std::endl
+            << "Detox,Active_Injection,1_100,other,0.400000,0.600000,0.800000"
+            << std::endl
+            << "Detox,Nonactive_Noninjection,1_100,other,0.400000,0.600000,0."
+               "800000"
+            << std::endl
+            << "Detox,Nonactive_Injection,1_100,other,0.400000,0.600000,0."
+               "800000"
+            << std::endl
+            << "Post-Buprenorphine,Active_Noninjection,1_100,other,0.400000,0."
+               "600000,0.800000"
+            << std::endl
+            << "Post-Buprenorphine,Active_Injection,1_100,other,0.400000,0."
+               "600000,0.800000"
+            << std::endl
+            << "Post-Buprenorphine,Nonactive_Noninjection,1_100,other,0.400000,"
+               "0.600000,0.800000"
+            << std::endl
+            << "Post-Buprenorphine,Nonactive_Injection,1_100,other,0.400000,0."
+               "600000,0.800000"
+            << std::endl
+            << "Post-Naltrexone,Active_Noninjection,1_100,other,0.400000,0."
+               "600000,0.800000"
+            << std::endl
+            << "Post-Naltrexone,Active_Injection,1_100,other,0.400000,0.600000,"
+               "0.800000"
+            << std::endl
+            << "Post-Naltrexone,Nonactive_Noninjection,1_100,other,0.400000,0."
+               "600000,0.800000"
+            << std::endl
+            << "Post-Naltrexone,Nonactive_Injection,1_100,other,0.400000,0."
+               "600000,0.800000"
+            << std::endl
+            << "Post-Methadone,Active_Noninjection,1_100,other,0.400000,0."
+               "600000,0.800000"
+            << std::endl
+            << "Post-Methadone,Active_Injection,1_100,other,0.400000,0.600000,"
+               "0.800000"
+            << std::endl
+            << "Post-Methadone,Nonactive_Noninjection,1_100,other,0.400000,0."
+               "600000,0.800000"
+            << std::endl
+            << "Post-Methadone,Nonactive_Injection,1_100,other,0.400000,0."
+               "600000,0.800000"
+            << std::endl
+            << "Post-Detox,Active_Noninjection,1_100,other,0.400000,0.600000,0."
+               "800000"
+            << std::endl
+            << "Post-Detox,Active_Injection,1_100,other,0.400000,0.600000,0."
+               "800000"
+            << std::endl
+            << "Post-Detox,Nonactive_Noninjection,1_100,other,0.400000,0."
+               "600000,0.800000"
+            << std::endl
+            << "Post-Detox,Nonactive_Injection,1_100,other,0.400000,0.600000,0."
+               "800000"
+            << std::endl
+            << "" << std::endl
+            << "" << std::endl
+            << "Interventions,OUD States,age_groups,sex,t+0,t+1,t+52"
+            << std::endl
+            << "No_Treatment,Active_Noninjection,1_100,other,0.300000,0.200000,"
+               "0.800000"
+            << std::endl
+            << "No_Treatment,Active_Injection,1_100,other,0.300000,0.200000,0."
+               "800000"
+            << std::endl
+            << "No_Treatment,Nonactive_Noninjection,1_100,other,0.300000,0."
+               "200000,0.800000"
+            << std::endl
+            << "No_Treatment,Nonactive_Injection,1_100,other,0.300000,0.200000,"
+               "0.800000"
+            << std::endl
+            << "Buprenorphine,Active_Noninjection,1_100,other,0.300000,0."
+               "200000,0.800000"
+            << std::endl
+            << "Buprenorphine,Active_Injection,1_100,other,0.300000,0.200000,0."
+               "800000"
+            << std::endl
+            << "Buprenorphine,Nonactive_Noninjection,1_100,other,0.300000,0."
+               "200000,0.800000"
+            << std::endl
+            << "Buprenorphine,Nonactive_Injection,1_100,other,0.300000,0."
+               "200000,0.800000"
+            << std::endl
+            << "Naltrexone,Active_Noninjection,1_100,other,0.300000,0.200000,0."
+               "800000"
+            << std::endl
+            << "Naltrexone,Active_Injection,1_100,other,0.300000,0.200000,0."
+               "800000"
+            << std::endl
+            << "Naltrexone,Nonactive_Noninjection,1_100,other,0.300000,0."
+               "200000,0.800000"
+            << std::endl
+            << "Naltrexone,Nonactive_Injection,1_100,other,0.300000,0.200000,0."
+               "800000"
+            << std::endl
+            << "Methadone,Active_Noninjection,1_100,other,0.300000,0.200000,0."
+               "800000"
+            << std::endl
+            << "Methadone,Active_Injection,1_100,other,0.300000,0.200000,0."
+               "800000"
+            << std::endl
+            << "Methadone,Nonactive_Noninjection,1_100,other,0.300000,0.200000,"
+               "0.800000"
+            << std::endl
+            << "Methadone,Nonactive_Injection,1_100,other,0.300000,0.200000,0."
+               "800000"
+            << std::endl
+            << "Detox,Active_Noninjection,1_100,other,0.300000,0.200000,0."
+               "800000"
+            << std::endl
+            << "Detox,Active_Injection,1_100,other,0.300000,0.200000,0.800000"
+            << std::endl
+            << "Detox,Nonactive_Noninjection,1_100,other,0.300000,0.200000,0."
+               "800000"
+            << std::endl
+            << "Detox,Nonactive_Injection,1_100,other,0.300000,0.200000,0."
+               "800000"
+            << std::endl
+            << "Post-Buprenorphine,Active_Noninjection,1_100,other,0.300000,0."
+               "200000,0.800000"
+            << std::endl
+            << "Post-Buprenorphine,Active_Injection,1_100,other,0.300000,0."
+               "200000,0.800000"
+            << std::endl
+            << "Post-Buprenorphine,Nonactive_Noninjection,1_100,other,0.300000,"
+               "0.200000,0.800000"
+            << std::endl
+            << "Post-Buprenorphine,Nonactive_Injection,1_100,other,0.300000,0."
+               "200000,0.800000"
+            << std::endl
+            << "Post-Naltrexone,Active_Noninjection,1_100,other,0.300000,0."
+               "200000,0.800000"
+            << std::endl
+            << "Post-Naltrexone,Active_Injection,1_100,other,0.300000,0.200000,"
+               "0.800000"
+            << std::endl
+            << "Post-Naltrexone,Nonactive_Noninjection,1_100,other,0.300000,0."
+               "200000,0.800000"
+            << std::endl
+            << "Post-Naltrexone,Nonactive_Injection,1_100,other,0.300000,0."
+               "200000,0.800000"
+            << std::endl
+            << "Post-Methadone,Active_Noninjection,1_100,other,0.300000,0."
+               "200000,0.800000"
+            << std::endl
+            << "Post-Methadone,Active_Injection,1_100,other,0.300000,0.200000,"
+               "0.800000"
+            << std::endl
+            << "Post-Methadone,Nonactive_Noninjection,1_100,other,0.300000,0."
+               "200000,0.800000"
+            << std::endl
+            << "Post-Methadone,Nonactive_Injection,1_100,other,0.300000,0."
+               "200000,0.800000"
+            << std::endl
+            << "Post-Detox,Active_Noninjection,1_100,other,0.300000,0.200000,0."
+               "800000"
+            << std::endl
+            << "Post-Detox,Active_Injection,1_100,other,0.300000,0.200000,0."
+               "800000"
+            << std::endl
+            << "Post-Detox,Nonactive_Noninjection,1_100,other,0.300000,0."
+               "200000,0.800000"
+            << std::endl
+            << "Post-Detox,Nonactive_Injection,1_100,other,0.300000,0.200000,0."
+               "800000"
+            << std::endl
+            << "" << std::endl
+            << "" << std::endl
+            << "Interventions,OUD States,age_groups,sex,t+0,t+1,t+52"
+            << std::endl
+            << "No_Treatment,Active_Noninjection,1_100,other,0.100000,0.000000,"
+               "0.800000"
+            << std::endl
+            << "No_Treatment,Active_Injection,1_100,other,0.100000,0.000000,0."
+               "800000"
+            << std::endl
+            << "No_Treatment,Nonactive_Noninjection,1_100,other,0.100000,0."
+               "000000,0.800000"
+            << std::endl
+            << "No_Treatment,Nonactive_Injection,1_100,other,0.100000,0.000000,"
+               "0.800000"
+            << std::endl
+            << "Buprenorphine,Active_Noninjection,1_100,other,0.100000,0."
+               "000000,0.800000"
+            << std::endl
+            << "Buprenorphine,Active_Injection,1_100,other,0.100000,0.000000,0."
+               "800000"
+            << std::endl
+            << "Buprenorphine,Nonactive_Noninjection,1_100,other,0.100000,0."
+               "000000,0.800000"
+            << std::endl
+            << "Buprenorphine,Nonactive_Injection,1_100,other,0.100000,0."
+               "000000,0.800000"
+            << std::endl
+            << "Naltrexone,Active_Noninjection,1_100,other,0.100000,0.000000,0."
+               "800000"
+            << std::endl
+            << "Naltrexone,Active_Injection,1_100,other,0.100000,0.000000,0."
+               "800000"
+            << std::endl
+            << "Naltrexone,Nonactive_Noninjection,1_100,other,0.100000,0."
+               "000000,0.800000"
+            << std::endl
+            << "Naltrexone,Nonactive_Injection,1_100,other,0.100000,0.000000,0."
+               "800000"
+            << std::endl
+            << "Methadone,Active_Noninjection,1_100,other,0.100000,0.000000,0."
+               "800000"
+            << std::endl
+            << "Methadone,Active_Injection,1_100,other,0.100000,0.000000,0."
+               "800000"
+            << std::endl
+            << "Methadone,Nonactive_Noninjection,1_100,other,0.100000,0.000000,"
+               "0.800000"
+            << std::endl
+            << "Methadone,Nonactive_Injection,1_100,other,0.100000,0.000000,0."
+               "800000"
+            << std::endl
+            << "Detox,Active_Noninjection,1_100,other,0.100000,0.000000,0."
+               "800000"
+            << std::endl
+            << "Detox,Active_Injection,1_100,other,0.100000,0.000000,0.800000"
+            << std::endl
+            << "Detox,Nonactive_Noninjection,1_100,other,0.100000,0.000000,0."
+               "800000"
+            << std::endl
+            << "Detox,Nonactive_Injection,1_100,other,0.100000,0.000000,0."
+               "800000"
+            << std::endl
+            << "Post-Buprenorphine,Active_Noninjection,1_100,other,0.100000,0."
+               "000000,0.800000"
+            << std::endl
+            << "Post-Buprenorphine,Active_Injection,1_100,other,0.100000,0."
+               "000000,0.800000"
+            << std::endl
+            << "Post-Buprenorphine,Nonactive_Noninjection,1_100,other,0.100000,"
+               "0.000000,0.800000"
+            << std::endl
+            << "Post-Buprenorphine,Nonactive_Injection,1_100,other,0.100000,0."
+               "000000,0.800000"
+            << std::endl
+            << "Post-Naltrexone,Active_Noninjection,1_100,other,0.100000,0."
+               "000000,0.800000"
+            << std::endl
+            << "Post-Naltrexone,Active_Injection,1_100,other,0.100000,0.000000,"
+               "0.800000"
+            << std::endl
+            << "Post-Naltrexone,Nonactive_Noninjection,1_100,other,0.100000,0."
+               "000000,0.800000"
+            << std::endl
+            << "Post-Naltrexone,Nonactive_Injection,1_100,other,0.100000,0."
+               "000000,0.800000"
+            << std::endl
+            << "Post-Methadone,Active_Noninjection,1_100,other,0.100000,0."
+               "000000,0.800000"
+            << std::endl
+            << "Post-Methadone,Active_Injection,1_100,other,0.100000,0.000000,"
+               "0.800000"
+            << std::endl
+            << "Post-Methadone,Nonactive_Noninjection,1_100,other,0.100000,0."
+               "000000,0.800000"
+            << std::endl
+            << "Post-Methadone,Nonactive_Injection,1_100,other,0.100000,0."
+               "000000,0.800000"
+            << std::endl
+            << "Post-Detox,Active_Noninjection,1_100,other,0.100000,0.000000,0."
+               "800000"
+            << std::endl
+            << "Post-Detox,Active_Injection,1_100,other,0.100000,0.000000,0."
+               "800000"
+            << std::endl
+            << "Post-Detox,Nonactive_Noninjection,1_100,other,0.100000,0."
+               "000000,0.800000"
+            << std::endl
+            << "Post-Detox,Nonactive_Injection,1_100,other,0.100000,0.000000,0."
+               "800000"
+            << std::endl
+            << "";
+        return stream.str();
+    }
 
-    const std::string kWriterTestWriteHistoryDataExpected =
-        ("Interventions,OUD "
-         "States,age_groups,sex,t+0,t+52,No_Treatment,Active_Noninjection,1_"
-         "100,"
-         "other,0.900000,0.800000,\nNo_Treatment,Active_Injection,1_100,other,"
-         "0."
-         "900000,0.800000,\nNo_Treatment,Nonactive_Noninjection,1_100,other,0."
-         "900000,0.800000,\nNo_Treatment,Nonactive_Injection,1_100,other,0."
-         "900000,0.800000,\nBuprenorphine,Active_Noninjection,1_100,other,0."
-         "900000,0.800000,\nBuprenorphine,Active_Injection,1_100,other,0."
-         "900000,"
-         "0.800000,\nBuprenorphine,Nonactive_Noninjection,1_100,other,0.900000,"
-         "0.800000,\nBuprenorphine,Nonactive_Injection,1_100,other,0.900000,0."
-         "800000,\nNaltrexone,Active_Noninjection,1_100,other,0.900000,0."
-         "800000,"
-         "\nNaltrexone,Active_Injection,1_100,other,0.900000,0.800000,"
-         "\nNaltrexone,Nonactive_Noninjection,1_100,other,0.900000,0.800000,"
-         "\nNaltrexone,Nonactive_Injection,1_100,other,0.900000,0.800000,"
-         "\nMethadone,Active_Noninjection,1_100,other,0.900000,0.800000,"
-         "\nMethadone,Active_Injection,1_100,other,0.900000,0.800000,"
-         "\nMethadone,Nonactive_Noninjection,1_100,other,0.900000,0.800000,"
-         "\nMethadone,Nonactive_Injection,1_100,other,0.900000,0.800000,"
-         "\nDetox,"
-         "Active_Noninjection,1_100,other,0.900000,0.800000,\nDetox,Active_"
-         "Injection,1_100,other,0.900000,0.800000,\nDetox,Nonactive_"
-         "Noninjection,1_100,other,0.900000,0.800000,\nDetox,Nonactive_"
-         "Injection,1_100,other,0.900000,0.800000,\nPost-Buprenorphine,Active_"
-         "Noninjection,1_100,other,0.900000,0.800000,\nPost-Buprenorphine,"
-         "Active_Injection,1_100,other,0.900000,0.800000,\nPost-Buprenorphine,"
-         "Nonactive_Noninjection,1_100,other,0.900000,0.800000,\nPost-"
-         "Buprenorphine,Nonactive_Injection,1_100,other,0.900000,0.800000,"
-         "\nPost-Naltrexone,Active_Noninjection,1_100,other,0.900000,0.800000,"
-         "\nPost-Naltrexone,Active_Injection,1_100,other,0.900000,0.800000,"
-         "\nPost-Naltrexone,Nonactive_Noninjection,1_100,other,0.900000,0."
-         "800000,\nPost-Naltrexone,Nonactive_Injection,1_100,other,0.900000,0."
-         "800000,\nPost-Methadone,Active_Noninjection,1_100,other,0.900000,0."
-         "800000,\nPost-Methadone,Active_Injection,1_100,other,0.900000,0."
-         "800000,\nPost-Methadone,Nonactive_Noninjection,1_100,other,0.900000,"
-         "0."
-         "800000,\nPost-Methadone,Nonactive_Injection,1_100,other,0.900000,0."
-         "800000,\nPost-Detox,Active_Noninjection,1_100,other,0.900000,0."
-         "800000,"
-         "\nPost-Detox,Active_Injection,1_100,other,0.900000,0.800000,\nPost-"
-         "Detox,Nonactive_Noninjection,1_100,other,0.900000,0.800000,\nPost-"
-         "Detox,Nonactive_Injection,1_100,other,0.900000,0.800000,\n "
-         "Interventions,OUD "
-         "States,age_groups,sex,t+0,t+1,t+52,No_Treatment,Active_Noninjection,"
-         "1_"
-         "100,other,0.700000,0.600000,0.800000,\nNo_Treatment,Active_Injection,"
-         "1_100,other,0.700000,0.600000,0.800000,\nNo_Treatment,Nonactive_"
-         "Noninjection,1_100,other,0.700000,0.600000,0.800000,\nNo_Treatment,"
-         "Nonactive_Injection,1_100,other,0.700000,0.600000,0.800000,"
-         "\nBuprenorphine,Active_Noninjection,1_100,other,0.700000,0.600000,0."
-         "800000,\nBuprenorphine,Active_Injection,1_100,other,0.700000,0."
-         "600000,"
-         "0.800000,\nBuprenorphine,Nonactive_Noninjection,1_100,other,0.700000,"
-         "0.600000,0.800000,\nBuprenorphine,Nonactive_Injection,1_100,other,0."
-         "700000,0.600000,0.800000,\nNaltrexone,Active_Noninjection,1_100,"
-         "other,"
-         "0.700000,0.600000,0.800000,\nNaltrexone,Active_Injection,1_100,other,"
-         "0.700000,0.600000,0.800000,\nNaltrexone,Nonactive_Noninjection,1_100,"
-         "other,0.700000,0.600000,0.800000,\nNaltrexone,Nonactive_Injection,1_"
-         "100,other,0.700000,0.600000,0.800000,\nMethadone,Active_Noninjection,"
-         "1_100,other,0.700000,0.600000,0.800000,\nMethadone,Active_Injection,"
-         "1_"
-         "100,other,0.700000,0.600000,0.800000,\nMethadone,Nonactive_"
-         "Noninjection,1_100,other,0.700000,0.600000,0.800000,\nMethadone,"
-         "Nonactive_Injection,1_100,other,0.700000,0.600000,0.800000,\nDetox,"
-         "Active_Noninjection,1_100,other,0.700000,0.600000,0.800000,\nDetox,"
-         "Active_Injection,1_100,other,0.700000,0.600000,0.800000,\nDetox,"
-         "Nonactive_Noninjection,1_100,other,0.700000,0.600000,0.800000,"
-         "\nDetox,"
-         "Nonactive_Injection,1_100,other,0.700000,0.600000,0.800000,\nPost-"
-         "Buprenorphine,Active_Noninjection,1_100,other,0.700000,0.600000,0."
-         "800000,\nPost-Buprenorphine,Active_Injection,1_100,other,0.700000,0."
-         "600000,0.800000,\nPost-Buprenorphine,Nonactive_Noninjection,1_100,"
-         "other,0.700000,0.600000,0.800000,\nPost-Buprenorphine,Nonactive_"
-         "Injection,1_100,other,0.700000,0.600000,0.800000,\nPost-Naltrexone,"
-         "Active_Noninjection,1_100,other,0.700000,0.600000,0.800000,\nPost-"
-         "Naltrexone,Active_Injection,1_100,other,0.700000,0.600000,0.800000,"
-         "\nPost-Naltrexone,Nonactive_Noninjection,1_100,other,0.700000,0."
-         "600000,0.800000,\nPost-Naltrexone,Nonactive_Injection,1_100,other,0."
-         "700000,0.600000,0.800000,\nPost-Methadone,Active_Noninjection,1_100,"
-         "other,0.700000,0.600000,0.800000,\nPost-Methadone,Active_Injection,1_"
-         "100,other,0.700000,0.600000,0.800000,\nPost-Methadone,Nonactive_"
-         "Noninjection,1_100,other,0.700000,0.600000,0.800000,\nPost-Methadone,"
-         "Nonactive_Injection,1_100,other,0.700000,0.600000,0.800000,\nPost-"
-         "Detox,Active_Noninjection,1_100,other,0.700000,0.600000,0.800000,"
-         "\nPost-Detox,Active_Injection,1_100,other,0.700000,0.600000,0.800000,"
-         "\nPost-Detox,Nonactive_Noninjection,1_100,other,0.700000,0.600000,0."
-         "800000,\nPost-Detox,Nonactive_Injection,1_100,other,0.700000,0."
-         "600000,"
-         "0.800000,\n Interventions,OUD "
-         "States,age_groups,sex,t+0,t+1,t+52,No_Treatment,Active_Noninjection,"
-         "1_"
-         "100,other,0.400000,0.600000,0.800000,\nNo_Treatment,Active_Injection,"
-         "1_100,other,0.400000,0.600000,0.800000,\nNo_Treatment,Nonactive_"
-         "Noninjection,1_100,other,0.400000,0.600000,0.800000,\nNo_Treatment,"
-         "Nonactive_Injection,1_100,other,0.400000,0.600000,0.800000,"
-         "\nBuprenorphine,Active_Noninjection,1_100,other,0.400000,0.600000,0."
-         "800000,\nBuprenorphine,Active_Injection,1_100,other,0.400000,0."
-         "600000,"
-         "0.800000,\nBuprenorphine,Nonactive_Noninjection,1_100,other,0.400000,"
-         "0.600000,0.800000,\nBuprenorphine,Nonactive_Injection,1_100,other,0."
-         "400000,0.600000,0.800000,\nNaltrexone,Active_Noninjection,1_100,"
-         "other,"
-         "0.400000,0.600000,0.800000,\nNaltrexone,Active_Injection,1_100,other,"
-         "0.400000,0.600000,0.800000,\nNaltrexone,Nonactive_Noninjection,1_100,"
-         "other,0.400000,0.600000,0.800000,\nNaltrexone,Nonactive_Injection,1_"
-         "100,other,0.400000,0.600000,0.800000,\nMethadone,Active_Noninjection,"
-         "1_100,other,0.400000,0.600000,0.800000,\nMethadone,Active_Injection,"
-         "1_"
-         "100,other,0.400000,0.600000,0.800000,\nMethadone,Nonactive_"
-         "Noninjection,1_100,other,0.400000,0.600000,0.800000,\nMethadone,"
-         "Nonactive_Injection,1_100,other,0.400000,0.600000,0.800000,\nDetox,"
-         "Active_Noninjection,1_100,other,0.400000,0.600000,0.800000,\nDetox,"
-         "Active_Injection,1_100,other,0.400000,0.600000,0.800000,\nDetox,"
-         "Nonactive_Noninjection,1_100,other,0.400000,0.600000,0.800000,"
-         "\nDetox,"
-         "Nonactive_Injection,1_100,other,0.400000,0.600000,0.800000,\nPost-"
-         "Buprenorphine,Active_Noninjection,1_100,other,0.400000,0.600000,0."
-         "800000,\nPost-Buprenorphine,Active_Injection,1_100,other,0.400000,0."
-         "600000,0.800000,\nPost-Buprenorphine,Nonactive_Noninjection,1_100,"
-         "other,0.400000,0.600000,0.800000,\nPost-Buprenorphine,Nonactive_"
-         "Injection,1_100,other,0.400000,0.600000,0.800000,\nPost-Naltrexone,"
-         "Active_Noninjection,1_100,other,0.400000,0.600000,0.800000,\nPost-"
-         "Naltrexone,Active_Injection,1_100,other,0.400000,0.600000,0.800000,"
-         "\nPost-Naltrexone,Nonactive_Noninjection,1_100,other,0.400000,0."
-         "600000,0.800000,\nPost-Naltrexone,Nonactive_Injection,1_100,other,0."
-         "400000,0.600000,0.800000,\nPost-Methadone,Active_Noninjection,1_100,"
-         "other,0.400000,0.600000,0.800000,\nPost-Methadone,Active_Injection,1_"
-         "100,other,0.400000,0.600000,0.800000,\nPost-Methadone,Nonactive_"
-         "Noninjection,1_100,other,0.400000,0.600000,0.800000,\nPost-Methadone,"
-         "Nonactive_Injection,1_100,other,0.400000,0.600000,0.800000,\nPost-"
-         "Detox,Active_Noninjection,1_100,other,0.400000,0.600000,0.800000,"
-         "\nPost-Detox,Active_Injection,1_100,other,0.400000,0.600000,0.800000,"
-         "\nPost-Detox,Nonactive_Noninjection,1_100,other,0.400000,0.600000,0."
-         "800000,\nPost-Detox,Nonactive_Injection,1_100,other,0.400000,0."
-         "600000,"
-         "0.800000,\n Interventions,OUD "
-         "States,age_groups,sex,t+0,t+1,t+52,No_Treatment,Active_Noninjection,"
-         "1_"
-         "100,other,0.300000,0.200000,0.800000,\nNo_Treatment,Active_Injection,"
-         "1_100,other,0.300000,0.200000,0.800000,\nNo_Treatment,Nonactive_"
-         "Noninjection,1_100,other,0.300000,0.200000,0.800000,\nNo_Treatment,"
-         "Nonactive_Injection,1_100,other,0.300000,0.200000,0.800000,"
-         "\nBuprenorphine,Active_Noninjection,1_100,other,0.300000,0.200000,0."
-         "800000,\nBuprenorphine,Active_Injection,1_100,other,0.300000,0."
-         "200000,"
-         "0.800000,\nBuprenorphine,Nonactive_Noninjection,1_100,other,0.300000,"
-         "0.200000,0.800000,\nBuprenorphine,Nonactive_Injection,1_100,other,0."
-         "300000,0.200000,0.800000,\nNaltrexone,Active_Noninjection,1_100,"
-         "other,"
-         "0.300000,0.200000,0.800000,\nNaltrexone,Active_Injection,1_100,other,"
-         "0.300000,0.200000,0.800000,\nNaltrexone,Nonactive_Noninjection,1_100,"
-         "other,0.300000,0.200000,0.800000,\nNaltrexone,Nonactive_Injection,1_"
-         "100,other,0.300000,0.200000,0.800000,\nMethadone,Active_Noninjection,"
-         "1_100,other,0.300000,0.200000,0.800000,\nMethadone,Active_Injection,"
-         "1_"
-         "100,other,0.300000,0.200000,0.800000,\nMethadone,Nonactive_"
-         "Noninjection,1_100,other,0.300000,0.200000,0.800000,\nMethadone,"
-         "Nonactive_Injection,1_100,other,0.300000,0.200000,0.800000,\nDetox,"
-         "Active_Noninjection,1_100,other,0.300000,0.200000,0.800000,\nDetox,"
-         "Active_Injection,1_100,other,0.300000,0.200000,0.800000,\nDetox,"
-         "Nonactive_Noninjection,1_100,other,0.300000,0.200000,0.800000,"
-         "\nDetox,"
-         "Nonactive_Injection,1_100,other,0.300000,0.200000,0.800000,\nPost-"
-         "Buprenorphine,Active_Noninjection,1_100,other,0.300000,0.200000,0."
-         "800000,\nPost-Buprenorphine,Active_Injection,1_100,other,0.300000,0."
-         "200000,0.800000,\nPost-Buprenorphine,Nonactive_Noninjection,1_100,"
-         "other,0.300000,0.200000,0.800000,\nPost-Buprenorphine,Nonactive_"
-         "Injection,1_100,other,0.300000,0.200000,0.800000,\nPost-Naltrexone,"
-         "Active_Noninjection,1_100,other,0.300000,0.200000,0.800000,\nPost-"
-         "Naltrexone,Active_Injection,1_100,other,0.300000,0.200000,0.800000,"
-         "\nPost-Naltrexone,Nonactive_Noninjection,1_100,other,0.300000,0."
-         "200000,0.800000,\nPost-Naltrexone,Nonactive_Injection,1_100,other,0."
-         "300000,0.200000,0.800000,\nPost-Methadone,Active_Noninjection,1_100,"
-         "other,0.300000,0.200000,0.800000,\nPost-Methadone,Active_Injection,1_"
-         "100,other,0.300000,0.200000,0.800000,\nPost-Methadone,Nonactive_"
-         "Noninjection,1_100,other,0.300000,0.200000,0.800000,\nPost-Methadone,"
-         "Nonactive_Injection,1_100,other,0.300000,0.200000,0.800000,\nPost-"
-         "Detox,Active_Noninjection,1_100,other,0.300000,0.200000,0.800000,"
-         "\nPost-Detox,Active_Injection,1_100,other,0.300000,0.200000,0.800000,"
-         "\nPost-Detox,Nonactive_Noninjection,1_100,other,0.300000,0.200000,0."
-         "800000,\nPost-Detox,Nonactive_Injection,1_100,other,0.300000,0."
-         "200000,"
-         "0.800000,\n Interventions,OUD "
-         "States,age_groups,sex,t+0,t+1,t+52,No_Treatment,Active_Noninjection,"
-         "1_"
-         "100,other,0.100000,0.000000,0.800000,\nNo_Treatment,Active_Injection,"
-         "1_100,other,0.100000,0.000000,0.800000,\nNo_Treatment,Nonactive_"
-         "Noninjection,1_100,other,0.100000,0.000000,0.800000,\nNo_Treatment,"
-         "Nonactive_Injection,1_100,other,0.100000,0.000000,0.800000,"
-         "\nBuprenorphine,Active_Noninjection,1_100,other,0.100000,0.000000,0."
-         "800000,\nBuprenorphine,Active_Injection,1_100,other,0.100000,0."
-         "000000,"
-         "0.800000,\nBuprenorphine,Nonactive_Noninjection,1_100,other,0.100000,"
-         "0.000000,0.800000,\nBuprenorphine,Nonactive_Injection,1_100,other,0."
-         "100000,0.000000,0.800000,\nNaltrexone,Active_Noninjection,1_100,"
-         "other,"
-         "0.100000,0.000000,0.800000,\nNaltrexone,Active_Injection,1_100,other,"
-         "0.100000,0.000000,0.800000,\nNaltrexone,Nonactive_Noninjection,1_100,"
-         "other,0.100000,0.000000,0.800000,\nNaltrexone,Nonactive_Injection,1_"
-         "100,other,0.100000,0.000000,0.800000,\nMethadone,Active_Noninjection,"
-         "1_100,other,0.100000,0.000000,0.800000,\nMethadone,Active_Injection,"
-         "1_"
-         "100,other,0.100000,0.000000,0.800000,\nMethadone,Nonactive_"
-         "Noninjection,1_100,other,0.100000,0.000000,0.800000,\nMethadone,"
-         "Nonactive_Injection,1_100,other,0.100000,0.000000,0.800000,\nDetox,"
-         "Active_Noninjection,1_100,other,0.100000,0.000000,0.800000,\nDetox,"
-         "Active_Injection,1_100,other,0.100000,0.000000,0.800000,\nDetox,"
-         "Nonactive_Noninjection,1_100,other,0.100000,0.000000,0.800000,"
-         "\nDetox,"
-         "Nonactive_Injection,1_100,other,0.100000,0.000000,0.800000,\nPost-"
-         "Buprenorphine,Active_Noninjection,1_100,other,0.100000,0.000000,0."
-         "800000,\nPost-Buprenorphine,Active_Injection,1_100,other,0.100000,0."
-         "000000,0.800000,\nPost-Buprenorphine,Nonactive_Noninjection,1_100,"
-         "other,0.100000,0.000000,0.800000,\nPost-Buprenorphine,Nonactive_"
-         "Injection,1_100,other,0.100000,0.000000,0.800000,\nPost-Naltrexone,"
-         "Active_Noninjection,1_100,other,0.100000,0.000000,0.800000,\nPost-"
-         "Naltrexone,Active_Injection,1_100,other,0.100000,0.000000,0.800000,"
-         "\nPost-Naltrexone,Nonactive_Noninjection,1_100,other,0.100000,0."
-         "000000,0.800000,\nPost-Naltrexone,Nonactive_Injection,1_100,other,0."
-         "100000,0.000000,0.800000,\nPost-Methadone,Active_Noninjection,1_100,"
-         "other,0.100000,0.000000,0.800000,\nPost-Methadone,Active_Injection,1_"
-         "100,other,0.100000,0.000000,0.800000,\nPost-Methadone,Nonactive_"
-         "Noninjection,1_100,other,0.100000,0.000000,0.800000,\nPost-Methadone,"
-         "Nonactive_Injection,1_100,other,0.100000,0.000000,0.800000,\nPost-"
-         "Detox,Active_Noninjection,1_100,other,0.100000,0.000000,0.800000,"
-         "\nPost-Detox,Active_Injection,1_100,other,0.100000,0.000000,0.800000,"
-         "\nPost-Detox,Nonactive_Noninjection,1_100,other,0.100000,0.000000,0."
-         "800000,\nPost-Detox,Nonactive_Injection,1_100,other,0.100000,0."
-         "000000,"
-         "0.800000,\n");
+    std::string LoadWriteCostDataStream() const {
+        std::stringstream stream;
 
-    const std::string kWriterTestWriteCostDataExpected = "";
-} // namespace respond::tests::expected_strings
+        stream
+            << "Interventions,OUD States,age_groups,sex,t+0,t+52" << std::endl
+            << "No_Treatment,Active_Noninjection,1_100,other,0.900000,0.800000"
+            << std::endl
+            << "No_Treatment,Active_Injection,1_100,other,0.900000,0.800000"
+            << std::endl
+            << "No_Treatment,Nonactive_Noninjection,1_100,other,0.900000,0."
+               "800000"
+            << std::endl
+            << "No_Treatment,Nonactive_Injection,1_100,other,0.900000,0.800000"
+            << std::endl
+            << "Buprenorphine,Active_Noninjection,1_100,other,0.900000,0.800000"
+            << std::endl
+            << "Buprenorphine,Active_Injection,1_100,other,0.900000,0.800000"
+            << std::endl
+            << "Buprenorphine,Nonactive_Noninjection,1_100,other,0.900000,0."
+               "800000"
+            << std::endl
+            << "Buprenorphine,Nonactive_Injection,1_100,other,0.900000,0.800000"
+            << std::endl
+            << "Naltrexone,Active_Noninjection,1_100,other,0.900000,0.800000"
+            << std::endl
+            << "Naltrexone,Active_Injection,1_100,other,0.900000,0.800000"
+            << std::endl
+            << "Naltrexone,Nonactive_Noninjection,1_100,other,0.900000,0.800000"
+            << std::endl
+            << "Naltrexone,Nonactive_Injection,1_100,other,0.900000,0.800000"
+            << std::endl
+            << "Methadone,Active_Noninjection,1_100,other,0.900000,0.800000"
+            << std::endl
+            << "Methadone,Active_Injection,1_100,other,0.900000,0.800000"
+            << std::endl
+            << "Methadone,Nonactive_Noninjection,1_100,other,0.900000,0.800000"
+            << std::endl
+            << "Methadone,Nonactive_Injection,1_100,other,0.900000,0.800000"
+            << std::endl
+            << "Detox,Active_Noninjection,1_100,other,0.900000,0.800000"
+            << std::endl
+            << "Detox,Active_Injection,1_100,other,0.900000,0.800000"
+            << std::endl
+            << "Detox,Nonactive_Noninjection,1_100,other,0.900000,0.800000"
+            << std::endl
+            << "Detox,Nonactive_Injection,1_100,other,0.900000,0.800000"
+            << std::endl
+            << "Post-Buprenorphine,Active_Noninjection,1_100,other,0.900000,0."
+               "800000"
+            << std::endl
+            << "Post-Buprenorphine,Active_Injection,1_100,other,0.900000,0."
+               "800000"
+            << std::endl
+            << "Post-Buprenorphine,Nonactive_Noninjection,1_100,other,0.900000,"
+               "0.800000"
+            << std::endl
+            << "Post-Buprenorphine,Nonactive_Injection,1_100,other,0.900000,0."
+               "800000"
+            << std::endl
+            << "Post-Naltrexone,Active_Noninjection,1_100,other,0.900000,0."
+               "800000"
+            << std::endl
+            << "Post-Naltrexone,Active_Injection,1_100,other,0.900000,0.800000"
+            << std::endl
+            << "Post-Naltrexone,Nonactive_Noninjection,1_100,other,0.900000,0."
+               "800000"
+            << std::endl
+            << "Post-Naltrexone,Nonactive_Injection,1_100,other,0.900000,0."
+               "800000"
+            << std::endl
+            << "Post-Methadone,Active_Noninjection,1_100,other,0.900000,0."
+               "800000"
+            << std::endl
+            << "Post-Methadone,Active_Injection,1_100,other,0.900000,0.800000"
+            << std::endl
+            << "Post-Methadone,Nonactive_Noninjection,1_100,other,0.900000,0."
+               "800000"
+            << std::endl
+            << "Post-Methadone,Nonactive_Injection,1_100,other,0.900000,0."
+               "800000"
+            << std::endl
+            << "Post-Detox,Active_Noninjection,1_100,other,0.900000,0.800000"
+            << std::endl
+            << "Post-Detox,Active_Injection,1_100,other,0.900000,0.800000"
+            << std::endl
+            << "Post-Detox,Nonactive_Noninjection,1_100,other,0.900000,0.800000"
+            << std::endl
+            << "Post-Detox,Nonactive_Injection,1_100,other,0.900000,0.800000"
+            << std::endl
+            << "" << std::endl
+            << "" << std::endl
+            << "Interventions,OUD States,age_groups,sex,t+0,t+52" << std::endl
+            << "No_Treatment,Active_Noninjection,1_100,other,0.300000,0.200000"
+            << std::endl
+            << "No_Treatment,Active_Injection,1_100,other,0.300000,0.200000"
+            << std::endl
+            << "No_Treatment,Nonactive_Noninjection,1_100,other,0.300000,0."
+               "200000"
+            << std::endl
+            << "No_Treatment,Nonactive_Injection,1_100,other,0.300000,0.200000"
+            << std::endl
+            << "Buprenorphine,Active_Noninjection,1_100,other,0.300000,0.200000"
+            << std::endl
+            << "Buprenorphine,Active_Injection,1_100,other,0.300000,0.200000"
+            << std::endl
+            << "Buprenorphine,Nonactive_Noninjection,1_100,other,0.300000,0."
+               "200000"
+            << std::endl
+            << "Buprenorphine,Nonactive_Injection,1_100,other,0.300000,0.200000"
+            << std::endl
+            << "Naltrexone,Active_Noninjection,1_100,other,0.300000,0.200000"
+            << std::endl
+            << "Naltrexone,Active_Injection,1_100,other,0.300000,0.200000"
+            << std::endl
+            << "Naltrexone,Nonactive_Noninjection,1_100,other,0.300000,0.200000"
+            << std::endl
+            << "Naltrexone,Nonactive_Injection,1_100,other,0.300000,0.200000"
+            << std::endl
+            << "Methadone,Active_Noninjection,1_100,other,0.300000,0.200000"
+            << std::endl
+            << "Methadone,Active_Injection,1_100,other,0.300000,0.200000"
+            << std::endl
+            << "Methadone,Nonactive_Noninjection,1_100,other,0.300000,0.200000"
+            << std::endl
+            << "Methadone,Nonactive_Injection,1_100,other,0.300000,0.200000"
+            << std::endl
+            << "Detox,Active_Noninjection,1_100,other,0.300000,0.200000"
+            << std::endl
+            << "Detox,Active_Injection,1_100,other,0.300000,0.200000"
+            << std::endl
+            << "Detox,Nonactive_Noninjection,1_100,other,0.300000,0.200000"
+            << std::endl
+            << "Detox,Nonactive_Injection,1_100,other,0.300000,0.200000"
+            << std::endl
+            << "Post-Buprenorphine,Active_Noninjection,1_100,other,0.300000,0."
+               "200000"
+            << std::endl
+            << "Post-Buprenorphine,Active_Injection,1_100,other,0.300000,0."
+               "200000"
+            << std::endl
+            << "Post-Buprenorphine,Nonactive_Noninjection,1_100,other,0.300000,"
+               "0.200000"
+            << std::endl
+            << "Post-Buprenorphine,Nonactive_Injection,1_100,other,0.300000,0."
+               "200000"
+            << std::endl
+            << "Post-Naltrexone,Active_Noninjection,1_100,other,0.300000,0."
+               "200000"
+            << std::endl
+            << "Post-Naltrexone,Active_Injection,1_100,other,0.300000,0.200000"
+            << std::endl
+            << "Post-Naltrexone,Nonactive_Noninjection,1_100,other,0.300000,0."
+               "200000"
+            << std::endl
+            << "Post-Naltrexone,Nonactive_Injection,1_100,other,0.300000,0."
+               "200000"
+            << std::endl
+            << "Post-Methadone,Active_Noninjection,1_100,other,0.300000,0."
+               "200000"
+            << std::endl
+            << "Post-Methadone,Active_Injection,1_100,other,0.300000,0.200000"
+            << std::endl
+            << "Post-Methadone,Nonactive_Noninjection,1_100,other,0.300000,0."
+               "200000"
+            << std::endl
+            << "Post-Methadone,Nonactive_Injection,1_100,other,0.300000,0."
+               "200000"
+            << std::endl
+            << "Post-Detox,Active_Noninjection,1_100,other,0.300000,0.200000"
+            << std::endl
+            << "Post-Detox,Active_Injection,1_100,other,0.300000,0.200000"
+            << std::endl
+            << "Post-Detox,Nonactive_Noninjection,1_100,other,0.300000,0.200000"
+            << std::endl
+            << "Post-Detox,Nonactive_Injection,1_100,other,0.300000,0.200000"
+            << std::endl
+            << "" << std::endl
+            << "" << std::endl
+            << "Interventions,OUD States,age_groups,sex,t+0,t+52" << std::endl
+            << "No_Treatment,Active_Noninjection,1_100,other,0.500000,0.400000"
+            << std::endl
+            << "No_Treatment,Active_Injection,1_100,other,0.500000,0.400000"
+            << std::endl
+            << "No_Treatment,Nonactive_Noninjection,1_100,other,0.500000,0."
+               "400000"
+            << std::endl
+            << "No_Treatment,Nonactive_Injection,1_100,other,0.500000,0.400000"
+            << std::endl
+            << "Buprenorphine,Active_Noninjection,1_100,other,0.500000,0.400000"
+            << std::endl
+            << "Buprenorphine,Active_Injection,1_100,other,0.500000,0.400000"
+            << std::endl
+            << "Buprenorphine,Nonactive_Noninjection,1_100,other,0.500000,0."
+               "400000"
+            << std::endl
+            << "Buprenorphine,Nonactive_Injection,1_100,other,0.500000,0.400000"
+            << std::endl
+            << "Naltrexone,Active_Noninjection,1_100,other,0.500000,0.400000"
+            << std::endl
+            << "Naltrexone,Active_Injection,1_100,other,0.500000,0.400000"
+            << std::endl
+            << "Naltrexone,Nonactive_Noninjection,1_100,other,0.500000,0.400000"
+            << std::endl
+            << "Naltrexone,Nonactive_Injection,1_100,other,0.500000,0.400000"
+            << std::endl
+            << "Methadone,Active_Noninjection,1_100,other,0.500000,0.400000"
+            << std::endl
+            << "Methadone,Active_Injection,1_100,other,0.500000,0.400000"
+            << std::endl
+            << "Methadone,Nonactive_Noninjection,1_100,other,0.500000,0.400000"
+            << std::endl
+            << "Methadone,Nonactive_Injection,1_100,other,0.500000,0.400000"
+            << std::endl
+            << "Detox,Active_Noninjection,1_100,other,0.500000,0.400000"
+            << std::endl
+            << "Detox,Active_Injection,1_100,other,0.500000,0.400000"
+            << std::endl
+            << "Detox,Nonactive_Noninjection,1_100,other,0.500000,0.400000"
+            << std::endl
+            << "Detox,Nonactive_Injection,1_100,other,0.500000,0.400000"
+            << std::endl
+            << "Post-Buprenorphine,Active_Noninjection,1_100,other,0.500000,0."
+               "400000"
+            << std::endl
+            << "Post-Buprenorphine,Active_Injection,1_100,other,0.500000,0."
+               "400000"
+            << std::endl
+            << "Post-Buprenorphine,Nonactive_Noninjection,1_100,other,0.500000,"
+               "0.400000"
+            << std::endl
+            << "Post-Buprenorphine,Nonactive_Injection,1_100,other,0.500000,0."
+               "400000"
+            << std::endl
+            << "Post-Naltrexone,Active_Noninjection,1_100,other,0.500000,0."
+               "400000"
+            << std::endl
+            << "Post-Naltrexone,Active_Injection,1_100,other,0.500000,0.400000"
+            << std::endl
+            << "Post-Naltrexone,Nonactive_Noninjection,1_100,other,0.500000,0."
+               "400000"
+            << std::endl
+            << "Post-Naltrexone,Nonactive_Injection,1_100,other,0.500000,0."
+               "400000"
+            << std::endl
+            << "Post-Methadone,Active_Noninjection,1_100,other,0.500000,0."
+               "400000"
+            << std::endl
+            << "Post-Methadone,Active_Injection,1_100,other,0.500000,0.400000"
+            << std::endl
+            << "Post-Methadone,Nonactive_Noninjection,1_100,other,0.500000,0."
+               "400000"
+            << std::endl
+            << "Post-Methadone,Nonactive_Injection,1_100,other,0.500000,0."
+               "400000"
+            << std::endl
+            << "Post-Detox,Active_Noninjection,1_100,other,0.500000,0.400000"
+            << std::endl
+            << "Post-Detox,Active_Injection,1_100,other,0.500000,0.400000"
+            << std::endl
+            << "Post-Detox,Nonactive_Noninjection,1_100,other,0.500000,0.400000"
+            << std::endl
+            << "Post-Detox,Nonactive_Injection,1_100,other,0.500000,0.400000"
+            << std::endl
+            << "" << std::endl
+            << "" << std::endl
+            << "Interventions,OUD States,age_groups,sex,t+0,t+52" << std::endl
+            << "No_Treatment,Active_Noninjection,1_100,other,0.700000,0.600000"
+            << std::endl
+            << "No_Treatment,Active_Injection,1_100,other,0.700000,0.600000"
+            << std::endl
+            << "No_Treatment,Nonactive_Noninjection,1_100,other,0.700000,0."
+               "600000"
+            << std::endl
+            << "No_Treatment,Nonactive_Injection,1_100,other,0.700000,0.600000"
+            << std::endl
+            << "Buprenorphine,Active_Noninjection,1_100,other,0.700000,0.600000"
+            << std::endl
+            << "Buprenorphine,Active_Injection,1_100,other,0.700000,0.600000"
+            << std::endl
+            << "Buprenorphine,Nonactive_Noninjection,1_100,other,0.700000,0."
+               "600000"
+            << std::endl
+            << "Buprenorphine,Nonactive_Injection,1_100,other,0.700000,0.600000"
+            << std::endl
+            << "Naltrexone,Active_Noninjection,1_100,other,0.700000,0.600000"
+            << std::endl
+            << "Naltrexone,Active_Injection,1_100,other,0.700000,0.600000"
+            << std::endl
+            << "Naltrexone,Nonactive_Noninjection,1_100,other,0.700000,0.600000"
+            << std::endl
+            << "Naltrexone,Nonactive_Injection,1_100,other,0.700000,0.600000"
+            << std::endl
+            << "Methadone,Active_Noninjection,1_100,other,0.700000,0.600000"
+            << std::endl
+            << "Methadone,Active_Injection,1_100,other,0.700000,0.600000"
+            << std::endl
+            << "Methadone,Nonactive_Noninjection,1_100,other,0.700000,0.600000"
+            << std::endl
+            << "Methadone,Nonactive_Injection,1_100,other,0.700000,0.600000"
+            << std::endl
+            << "Detox,Active_Noninjection,1_100,other,0.700000,0.600000"
+            << std::endl
+            << "Detox,Active_Injection,1_100,other,0.700000,0.600000"
+            << std::endl
+            << "Detox,Nonactive_Noninjection,1_100,other,0.700000,0.600000"
+            << std::endl
+            << "Detox,Nonactive_Injection,1_100,other,0.700000,0.600000"
+            << std::endl
+            << "Post-Buprenorphine,Active_Noninjection,1_100,other,0.700000,0."
+               "600000"
+            << std::endl
+            << "Post-Buprenorphine,Active_Injection,1_100,other,0.700000,0."
+               "600000"
+            << std::endl
+            << "Post-Buprenorphine,Nonactive_Noninjection,1_100,other,0.700000,"
+               "0.600000"
+            << std::endl
+            << "Post-Buprenorphine,Nonactive_Injection,1_100,other,0.700000,0."
+               "600000"
+            << std::endl
+            << "Post-Naltrexone,Active_Noninjection,1_100,other,0.700000,0."
+               "600000"
+            << std::endl
+            << "Post-Naltrexone,Active_Injection,1_100,other,0.700000,0.600000"
+            << std::endl
+            << "Post-Naltrexone,Nonactive_Noninjection,1_100,other,0.700000,0."
+               "600000"
+            << std::endl
+            << "Post-Naltrexone,Nonactive_Injection,1_100,other,0.700000,0."
+               "600000"
+            << std::endl
+            << "Post-Methadone,Active_Noninjection,1_100,other,0.700000,0."
+               "600000"
+            << std::endl
+            << "Post-Methadone,Active_Injection,1_100,other,0.700000,0.600000"
+            << std::endl
+            << "Post-Methadone,Nonactive_Noninjection,1_100,other,0.700000,0."
+               "600000"
+            << std::endl
+            << "Post-Methadone,Nonactive_Injection,1_100,other,0.700000,0."
+               "600000"
+            << std::endl
+            << "Post-Detox,Active_Noninjection,1_100,other,0.700000,0.600000"
+            << std::endl
+            << "Post-Detox,Active_Injection,1_100,other,0.700000,0.600000"
+            << std::endl
+            << "Post-Detox,Nonactive_Noninjection,1_100,other,0.700000,0.600000"
+            << std::endl
+            << "Post-Detox,Nonactive_Injection,1_100,other,0.700000,0.600000"
+            << std::endl
+            << "" << std::endl
+            << "" << std::endl
+            << "Interventions,OUD States,age_groups,sex,t+0,t+52" << std::endl
+            << "No_Treatment,Active_Noninjection,1_100,other,0.100000,0.000000"
+            << std::endl
+            << "No_Treatment,Active_Injection,1_100,other,0.100000,0.000000"
+            << std::endl
+            << "No_Treatment,Nonactive_Noninjection,1_100,other,0.100000,0."
+               "000000"
+            << std::endl
+            << "No_Treatment,Nonactive_Injection,1_100,other,0.100000,0.000000"
+            << std::endl
+            << "Buprenorphine,Active_Noninjection,1_100,other,0.100000,0.000000"
+            << std::endl
+            << "Buprenorphine,Active_Injection,1_100,other,0.100000,0.000000"
+            << std::endl
+            << "Buprenorphine,Nonactive_Noninjection,1_100,other,0.100000,0."
+               "000000"
+            << std::endl
+            << "Buprenorphine,Nonactive_Injection,1_100,other,0.100000,0.000000"
+            << std::endl
+            << "Naltrexone,Active_Noninjection,1_100,other,0.100000,0.000000"
+            << std::endl
+            << "Naltrexone,Active_Injection,1_100,other,0.100000,0.000000"
+            << std::endl
+            << "Naltrexone,Nonactive_Noninjection,1_100,other,0.100000,0.000000"
+            << std::endl
+            << "Naltrexone,Nonactive_Injection,1_100,other,0.100000,0.000000"
+            << std::endl
+            << "Methadone,Active_Noninjection,1_100,other,0.100000,0.000000"
+            << std::endl
+            << "Methadone,Active_Injection,1_100,other,0.100000,0.000000"
+            << std::endl
+            << "Methadone,Nonactive_Noninjection,1_100,other,0.100000,0.000000"
+            << std::endl
+            << "Methadone,Nonactive_Injection,1_100,other,0.100000,0.000000"
+            << std::endl
+            << "Detox,Active_Noninjection,1_100,other,0.100000,0.000000"
+            << std::endl
+            << "Detox,Active_Injection,1_100,other,0.100000,0.000000"
+            << std::endl
+            << "Detox,Nonactive_Noninjection,1_100,other,0.100000,0.000000"
+            << std::endl
+            << "Detox,Nonactive_Injection,1_100,other,0.100000,0.000000"
+            << std::endl
+            << "Post-Buprenorphine,Active_Noninjection,1_100,other,0.100000,0."
+               "000000"
+            << std::endl
+            << "Post-Buprenorphine,Active_Injection,1_100,other,0.100000,0."
+               "000000"
+            << std::endl
+            << "Post-Buprenorphine,Nonactive_Noninjection,1_100,other,0.100000,"
+               "0.000000"
+            << std::endl
+            << "Post-Buprenorphine,Nonactive_Injection,1_100,other,0.100000,0."
+               "000000"
+            << std::endl
+            << "Post-Naltrexone,Active_Noninjection,1_100,other,0.100000,0."
+               "000000"
+            << std::endl
+            << "Post-Naltrexone,Active_Injection,1_100,other,0.100000,0.000000"
+            << std::endl
+            << "Post-Naltrexone,Nonactive_Noninjection,1_100,other,0.100000,0."
+               "000000"
+            << std::endl
+            << "Post-Naltrexone,Nonactive_Injection,1_100,other,0.100000,0."
+               "000000"
+            << std::endl
+            << "Post-Methadone,Active_Noninjection,1_100,other,0.100000,0."
+               "000000"
+            << std::endl
+            << "Post-Methadone,Active_Injection,1_100,other,0.100000,0.000000"
+            << std::endl
+            << "Post-Methadone,Nonactive_Noninjection,1_100,other,0.100000,0."
+               "000000"
+            << std::endl
+            << "Post-Methadone,Nonactive_Injection,1_100,other,0.100000,0."
+               "000000"
+            << std::endl
+            << "Post-Detox,Active_Noninjection,1_100,other,0.100000,0.000000"
+            << std::endl
+            << "Post-Detox,Active_Injection,1_100,other,0.100000,0.000000"
+            << std::endl
+            << "Post-Detox,Nonactive_Noninjection,1_100,other,0.100000,0.000000"
+            << std::endl
+            << "Post-Detox,Nonactive_Injection,1_100,other,0.100000,0.000000"
+            << std::endl
+            << "";
+
+        return stream.str();
+    }
+
+    std::string LoadUtilityDataStream() const {
+        std::stringstream stream;
+
+        stream
+            << "Interventions,OUD States,age_groups,sex,t+0,t+52" << std::endl
+            << "No_Treatment,Active_Noninjection,1_100,other,0.900000,0.800000"
+            << std::endl
+            << "No_Treatment,Active_Injection,1_100,other,0.900000,0.800000"
+            << std::endl
+            << "No_Treatment,Nonactive_Noninjection,1_100,other,0.900000,0."
+               "800000"
+            << std::endl
+            << "No_Treatment,Nonactive_Injection,1_100,other,0.900000,0.800000"
+            << std::endl
+            << "Buprenorphine,Active_Noninjection,1_100,other,0.900000,0.800000"
+            << std::endl
+            << "Buprenorphine,Active_Injection,1_100,other,0.900000,0.800000"
+            << std::endl
+            << "Buprenorphine,Nonactive_Noninjection,1_100,other,0.900000,0."
+               "800000"
+            << std::endl
+            << "Buprenorphine,Nonactive_Injection,1_100,other,0.900000,0.800000"
+            << std::endl
+            << "Naltrexone,Active_Noninjection,1_100,other,0.900000,0.800000"
+            << std::endl
+            << "Naltrexone,Active_Injection,1_100,other,0.900000,0.800000"
+            << std::endl
+            << "Naltrexone,Nonactive_Noninjection,1_100,other,0.900000,0.800000"
+            << std::endl
+            << "Naltrexone,Nonactive_Injection,1_100,other,0.900000,0.800000"
+            << std::endl
+            << "Methadone,Active_Noninjection,1_100,other,0.900000,0.800000"
+            << std::endl
+            << "Methadone,Active_Injection,1_100,other,0.900000,0.800000"
+            << std::endl
+            << "Methadone,Nonactive_Noninjection,1_100,other,0.900000,0.800000"
+            << std::endl
+            << "Methadone,Nonactive_Injection,1_100,other,0.900000,0.800000"
+            << std::endl
+            << "Detox,Active_Noninjection,1_100,other,0.900000,0.800000"
+            << std::endl
+            << "Detox,Active_Injection,1_100,other,0.900000,0.800000"
+            << std::endl
+            << "Detox,Nonactive_Noninjection,1_100,other,0.900000,0.800000"
+            << std::endl
+            << "Detox,Nonactive_Injection,1_100,other,0.900000,0.800000"
+            << std::endl
+            << "Post-Buprenorphine,Active_Noninjection,1_100,other,0.900000,0."
+               "800000"
+            << std::endl
+            << "Post-Buprenorphine,Active_Injection,1_100,other,0.900000,0."
+               "800000"
+            << std::endl
+            << "Post-Buprenorphine,Nonactive_Noninjection,1_100,other,0.900000,"
+               "0.800000"
+            << std::endl
+            << "Post-Buprenorphine,Nonactive_Injection,1_100,other,0.900000,0."
+               "800000"
+            << std::endl
+            << "Post-Naltrexone,Active_Noninjection,1_100,other,0.900000,0."
+               "800000"
+            << std::endl
+            << "Post-Naltrexone,Active_Injection,1_100,other,0.900000,0.800000"
+            << std::endl
+            << "Post-Naltrexone,Nonactive_Noninjection,1_100,other,0.900000,0."
+               "800000"
+            << std::endl
+            << "Post-Naltrexone,Nonactive_Injection,1_100,other,0.900000,0."
+               "800000"
+            << std::endl
+            << "Post-Methadone,Active_Noninjection,1_100,other,0.900000,0."
+               "800000"
+            << std::endl
+            << "Post-Methadone,Active_Injection,1_100,other,0.900000,0.800000"
+            << std::endl
+            << "Post-Methadone,Nonactive_Noninjection,1_100,other,0.900000,0."
+               "800000"
+            << std::endl
+            << "Post-Methadone,Nonactive_Injection,1_100,other,0.900000,0."
+               "800000"
+            << std::endl
+            << "Post-Detox,Active_Noninjection,1_100,other,0.900000,0.800000"
+            << std::endl
+            << "Post-Detox,Active_Injection,1_100,other,0.900000,0.800000"
+            << std::endl
+            << "Post-Detox,Nonactive_Noninjection,1_100,other,0.900000,0.800000"
+            << std::endl
+            << "Post-Detox,Nonactive_Injection,1_100,other,0.900000,0.800000"
+            << std::endl
+            << "";
+        return stream.str();
+    }
+
+    std::string LoadTotalsDataStream() const {
+        std::stringstream stream;
+        stream << "Name,Base,Discount" << std::endl
+               << "Perspective 0,100,90" << std::endl
+               << "Perspective 1,200,180" << std::endl
+               << "Perspective 2,300,270" << std::endl
+               << "Life Years,100,90" << std::endl
+               << "Utility,0.8,0.7" << std::endl
+               << "";
+        return stream.str();
+    }
+
+public:
+    const std::string kWriterTestWriteInputDataExpected;
+    const std::string kWriterTestWriteHistoryDataExpected;
+    const std::string kWriterTestWriteCostDataExpected;
+    const std::string kWriterTestWriteUtilityDataExpected;
+    const std::string kWriterTestWriteTotalsDataExpected;
+
+    ExpectedStrings()
+        : kWriterTestWriteInputDataExpected(LoadWriteInputDataStream()),
+          kWriterTestWriteHistoryDataExpected(LoadWriteHistoryDataStream()),
+          kWriterTestWriteCostDataExpected(LoadWriteCostDataStream()),
+          kWriterTestWriteUtilityDataExpected(LoadUtilityDataStream()),
+          kWriterTestWriteTotalsDataExpected(LoadTotalsDataStream()) {}
+};
+} // namespace respond::tests
 #endif
