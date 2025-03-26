@@ -4,7 +4,7 @@
 // Created Date: 2025-03-17                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-21                                                  //
+// Last Modified: 2025-03-26                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -161,20 +161,12 @@ void DoPostSimulationCalculations(
     auto writer =
         respond::data_ops::Writer::Create(data_loader.GetConfig(), logger_name);
 
-    if (std::get<bool>(data_loader.GetConfig()->get(
-            "output.write_calibrated_inputs", false))) {
-        writer->WriteInputData(data_loader, output_directory,
-                               respond::data_ops::OutputType::kFile);
-    } else {
-        writer->WriteHistoryData(history, output_directory,
-                                 respond::data_ops::OutputType::kFile);
-        writer->WriteCostData(base_costs, output_directory,
-                              respond::data_ops::OutputType::kFile);
-        writer->WriteUtilityData(base_utilities, output_directory,
-                                 respond::data_ops::OutputType::kFile);
-        writer->WriteTotalsData(totals, output_directory,
-                                respond::data_ops::OutputType::kFile);
-    }
+    writer->WriteCostData(base_costs, output_directory,
+                          respond::data_ops::OutputType::kFile);
+    writer->WriteUtilityData(base_utilities, output_directory,
+                             respond::data_ops::OutputType::kFile);
+    writer->WriteTotalsData(totals, output_directory,
+                            respond::data_ops::OutputType::kFile);
 }
 
 void execute(int argc, char **argv) {
@@ -217,6 +209,19 @@ void execute(int argc, char **argv) {
             DoPostSimulationCalculations(
                 *data_loader, history, input_set.string(),
                 output_directory.string(), logger_name);
+
+            auto writer = respond::data_ops::Writer::Create(
+                data_loader->GetConfig(), logger_name);
+
+            if (std::get<bool>(data_loader->GetConfig()->get(
+                    "output.write_calibrated_inputs", false))) {
+                writer->WriteInputData(*data_loader, output_directory,
+                                       respond::data_ops::OutputType::kFile);
+            } else {
+
+                writer->WriteHistoryData(history, output_directory,
+                                         respond::data_ops::OutputType::kFile);
+            }
 
             std::cout << "Output " << std::to_string(i) << " Complete"
                       << std::endl;
