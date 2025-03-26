@@ -639,12 +639,15 @@ DataLoaderImpl::BuildOverdoseTransitions(Data::IDataTablePtr const &table,
                        number_demographic_combos);
 
     // This should be translated into a matrix slice instead
+    auto col = (table->getColumn(key));
     int row = 0;
     for (int i = 0; i < number_intervention_states; ++i) {
         for (int d = 0; d < number_demographic_combos; ++d) {
             for (int b = 0; b < number_behavior_states; ++b) {
-                overdose_transitions(i, b, d) =
-                    std::stod((table->getColumn(key))[row]);
+                if (row >= col.size()) {
+                    continue;
+                }
+                overdose_transitions(i, b, d) = std::stod(col[row]);
                 ++row;
             }
         }
