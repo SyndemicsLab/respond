@@ -4,7 +4,7 @@
 // Created Date: 2025-03-13                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-25                                                  //
+// Last Modified: 2025-03-27                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -27,7 +27,8 @@
 
 #include "data_loader_internals.hpp"
 
-namespace respond::data_ops {
+namespace respond {
+namespace data_ops {
 class WriterImpl : public virtual Writer {
 public:
     WriterImpl(const Data::IConfigablePtr &cfg,
@@ -157,6 +158,7 @@ private:
                                         const std::string &directory,
                                         const OutputType output_type) const;
 };
-} // namespace respond::data_ops
+} // namespace data_ops
+} // namespace respond
 
 #endif // RESPOND_DATAOPS_WRITERINTERNALS_HPP_

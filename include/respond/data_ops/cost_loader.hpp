@@ -4,7 +4,7 @@
 // Created Date: 2025-01-14                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-26                                                  //
+// Last Modified: 2025-03-27                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -19,7 +19,8 @@
 
 #include <respond/data_ops/matrices.hpp>
 
-namespace respond::data_ops {
+namespace respond {
+namespace data_ops {
 class CostLoader {
 public:
     virtual ~CostLoader() = default;
@@ -56,6 +57,7 @@ public:
     Create(const std::string &directory = "",
            const std::string &log_name = "console");
 };
-} // namespace respond::data_ops
+} // namespace data_ops
+} // namespace respond
 
 #endif // RESPOND_DATAOPS_COSTLOADER_HPP_

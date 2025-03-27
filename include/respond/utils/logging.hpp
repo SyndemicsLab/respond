@@ -4,7 +4,7 @@
 // Created Date: 2025-03-10                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-17                                                  //
+// Last Modified: 2025-03-27                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -14,23 +14,25 @@
 
 #include <string>
 
-namespace respond::utils {
-    enum class LogType : int { kInfo, kWarn, kError, kDebug, kCount };
-    enum class CreationStatus : int {
-        kError = -1,
-        kSuccess = 0,
-        kExists = 1,
-        kNotCreated = 2,
-        kCount = 4
-    };
+namespace respond {
+namespace utils {
+enum class LogType : int { kInfo, kWarn, kError, kDebug, kCount };
+enum class CreationStatus : int {
+    kError = -1,
+    kSuccess = 0,
+    kExists = 1,
+    kNotCreated = 2,
+    kCount = 4
+};
 
-    CreationStatus CreateFileLogger(const std::string &logger_name,
-                                    const std::string &filepath);
-    void LogInfo(const std::string &logger_name, const std::string &message);
-    void LogWarning(const std::string &logger_name, const std::string &message);
-    void LogError(const std::string &logger_name, const std::string &message);
-    void LogDebug(const std::string &logger_name, const std::string &message);
+CreationStatus CreateFileLogger(const std::string &logger_name,
+                                const std::string &filepath);
+void LogInfo(const std::string &logger_name, const std::string &message);
+void LogWarning(const std::string &logger_name, const std::string &message);
+void LogError(const std::string &logger_name, const std::string &message);
+void LogDebug(const std::string &logger_name, const std::string &message);
 
-} // namespace respond::utils
+} // namespace utils
+} // namespace respond
 
 #endif // RESPOND_UTILS_LOGGING_HPP_

@@ -4,7 +4,7 @@
 // Created Date: 2025-01-17                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-26                                                  //
+// Last Modified: 2025-03-27                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -22,7 +22,8 @@
 #include <respond/data_ops/matrices.hpp>
 #include <respond/utils/logging.hpp>
 
-namespace respond::data_ops {
+namespace respond {
+namespace data_ops {
 std::string WriterImpl::WriteInputData(const DataLoader &data_loader,
                                        const std::string &directory,
                                        const OutputType output_type) const {
@@ -543,4 +544,5 @@ std::unique_ptr<Writer> Writer::Create(const Data::IConfigablePtr &cfg,
                                        const std::string &log_name) {
     return std::make_unique<WriterImpl>(cfg, log_name);
 }
-} // namespace respond::data_ops
+} // namespace data_ops
+} // namespace respond
