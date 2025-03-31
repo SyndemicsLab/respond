@@ -20,4 +20,5 @@ jobs:
           github_token: ${{ secrets.OAUTH_TOKEN }}
           branch: gh-pages
           folder: docs/html
+          target_folder: docs/html
           config_file: Doxyfile
