@@ -1,14 +1,54 @@
-# RESPONDv2.0
+# RESPONDSimulationv2
 
-[![CMake](https://github.com/SyndemicsLab/RESPONDSimulationv2/actions/workflows/cmake.yml/badge.svg)](https://github.com/SyndemicsLab/RESPONDSimulationv2/actions/workflows/cmake.yml)
+[![Ubuntu Build](https://github.com/SyndemicsLab/RESPONDSimulationv2/actions/workflows/build-and-test.yml/badge.svg)](https://github.com/SyndemicsLab/RESPONDSimulationv2/actions/workflows/build-and-test.yml)
+
+[![Ubuntu Tests](https://github.com/SyndemicsLab/RESPONDSimulationv2/actions/workflows/build-and-test.yml/badge.svg)](https://github.com/SyndemicsLab/RESPONDSimulationv2/actions/workflows/build-and-test.yml)
+
+[![Windows Build](https://github.com/SyndemicsLab/RESPONDSimulationv2/actions/workflows/build-and-test.yml/badge.svg)](https://github.com/SyndemicsLab/RESPONDSimulationv2/actions/workflows/build-and-test.yml)
+
+[![Windows Tests](https://github.com/SyndemicsLab/RESPONDSimulationv2/actions/workflows/build-and-test.yml/badge.svg)](https://github.com/SyndemicsLab/RESPONDSimulationv2/actions/workflows/build-and-test.yml)
 
 `RESPONDv2.0` is a complete rewrite of the RESPOND model, first created by the [Syndemics Lab](https://www.syndemicslab.org) in the late 2010s, with the goals of improving the readability and maintainability of the model, improving the execution speed, and making the model calibration process easier.
 
-While the original model was built using a combination of the R and C++ programming languages, the core of this rewrite is purely C++, instead planning to expose language bindings so users can work with the model using their language of choice.
+While the original model was built using a combination of the R and C++ programming languages, the core of this rewrite is purely C++ with various language bindings so users can work with the model using their language of choice.
 
 ## Dependency Management
 
-We utilize [Conan 2](https://docs.conan.io/2/) to build and manage dependencies. For a list of dependencies please check the [`Conanfile`](conanfile.py). Conan can be installed via python's package manager, `pip`. Once installed, running the [build script](`scripts/build.sh`) installs all dependencies and builds the executables.
+Dependency management is done primarily through CMake files and the `FetchContent_Declare` methodology. If you wish to maintain local installations, core dependencies include:
+
+- [DataManagement](https://github.com/SyndemicsLab/DataManagement)
+- [Eigen](https://gitlab.com/libeigen/eigen)
+- [spdlog](https://github.com/gabime/spdlog)
+
+For python bindings we require:
+
+- [Pybind11](https://pybind11.readthedocs.io/en/stable/basics.html)
+- [Scikit-Build-Core](https://scikit-build-core.readthedocs.io/en/latest/)
+
+For tests we require:
+
+- [GoogleTest](https://github.com/google/googletest)
+
+## Installation
+
+To install the C++ executable (a list of cmake variable options can be found [here](cmake/options.cmake)):
+
+```shell
+git clone https://github.com/SyndemicsLab/RESPONDSimulationv2.git
+cd RESPONDSimulationv2/build/
+cmake .. -DCMAKE_BUILD_TYPE=Release -DRESPOND_BUILD_EXECUTABLE=ON -DRESPOND_BUILD_PIC=ON -DRESPOND_INSTALL=ON
+cmake --build . --target install --config Release
+```
+
+To build the Python Bindings into a OS specific wheel (we are working on deploying/testing multi-platform):
+
+```shell
+git clone https://github.com/SyndemicsLab/RESPONDSimulationv2.git
+cd RESPONDSimulationv2
+pipx run build
+```
+
+and the wheel/distribution zip are placed in a directory called `dist/` found in the root of the project.
 
 ## What's New?
 
@@ -25,18 +65,6 @@ The State Tensor, known in the original as `cohort` (described above), is a thre
 - Demographics (e.g. age, sex)
 
 This enables flexibility in the number of combinations of intervention, opioid use, and demographics classifiers used in the model. The State Tensor is then wrapped in a vector to capture all timesteps.
-
-## Building RESPOND
-
-If on **Unix** and building from source:
-
-1. Clone the repository to your local machine.
-2. Install the [DataManagement repository](https://github.com/SyndemicsLab/DataManagement/tree/main)
-3. Once DataManagement is installed run the following script to build:
-
-```bash
-./scripts/build.sh
-```
 
 ## Running RESPOND
 
@@ -56,5 +84,5 @@ After building RESPOND, running the model requires a set of input files. The inp
 These are all put into a folder titled `input<number>` where the number is replaced with the ID of the input. Then, after these folders are created and RESPOND is built we simply run the command:
 
 ```bash
-./bin/respond <input_start> <input_end>
+./build/extras/respond_exe <input_start> <input_end>
 ```
