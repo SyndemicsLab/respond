@@ -4,7 +4,7 @@
 // Created Date: 2025-03-13                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-27                                                  //
+// Last Modified: 2025-04-02                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -15,6 +15,7 @@
 #include <respond/data_ops/writer.hpp>
 
 #include <algorithm>
+#include <filesystem>
 #include <memory>
 #include <sstream>
 #include <string>
@@ -31,14 +32,18 @@ namespace respond {
 namespace data_ops {
 class WriterImpl : public virtual Writer {
 public:
-    WriterImpl(const Data::IConfigablePtr &cfg,
+    WriterImpl(const std::string &directory = "",
                const std::string &log_name = "console")
-        : config(cfg), logger_name(log_name) {
-        if (config == nullptr) {
-            respond::utils::LogError(log_name,
-                                     "Config supplied to writer is null");
-            throw std::invalid_argument("Config cannot be null");
+        : logger_name(log_name) {
+        std::filesystem::path dir = directory;
+        std::filesystem::path conf = dir / "sim.conf";
+        if (!std::filesystem::exists(conf)) {
+            respond::utils::LogError(
+                log_name,
+                "Unable to find a sim.conf file at the provided directory");
+            throw std::invalid_argument("The Writer needs a sim.conf file.");
         }
+        config = std::make_shared<Data::Config>(conf.string());
         BuildDemographicCombinations();
     }
     ~WriterImpl() = default;
@@ -59,7 +64,7 @@ public:
         const OutputType output_type = OutputType::kString) const override;
 
 private:
-    const Data::IConfigablePtr config;
+    Data::IConfigablePtr config;
     const std::string logger_name;
     std::vector<std::string> demographic_combinations;
 

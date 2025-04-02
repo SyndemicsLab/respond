@@ -4,7 +4,7 @@
 // Created Date: 2025-01-14                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-26                                                  //
+// Last Modified: 2025-04-02                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -89,8 +89,7 @@ PYBIND11_MODULE(respondpy, m) {
              &DataLoader::LoadInterventionTransitionRates)
         .def("LoadOverdoseRates", &DataLoader::LoadOverdoseRates)
         .def("LoadFatalOverdoseRates", &DataLoader::LoadFatalOverdoseRates)
-        .def("LoadMortalityRates", &DataLoader::LoadMortalityRates)
-        .def("GetConfig", &DataLoader::GetConfig);
+        .def("LoadMortalityRates", &DataLoader::LoadMortalityRates);
 
     // data_types.hpp
     py::enum_<Dimension>(data_ops, "Dimension")
@@ -183,7 +182,7 @@ PYBIND11_MODULE(respondpy, m) {
         .export_values();
 
     py::class_<Writer>(data_ops, "Writer")
-        .def(py::init(&Writer::Create), pybind11::arg("cfg"),
+        .def(py::init(&Writer::Create), pybind11::arg("directory") = "",
              pybind11::arg("log_name") = "console")
         .def("WriteInputData", &Writer::WriteInputData)
         .def("WriteHistoryData", &Writer::WriteHistoryData)
@@ -208,7 +207,7 @@ PYBIND11_MODULE(respondpy, m) {
 
     // simulation.hpp
     py::class_<Respond>(model, "Respond")
-        .def(py::init(&Respond::Create))
+        .def(py::init(&Respond::Create), pybind11::arg("log_name") = "console")
         .def("Run", &Respond::Run)
         .def("GetHistory", &Respond::GetHistory);
 }
