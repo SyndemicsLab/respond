@@ -4,9 +4,7 @@ name: Doxygen GitHub Pages Deploy Action
 # events but only for the master branch
 on:
   push:
-    branches: ["main"]
-  pull_request:
-    branches: ["main"]   
+    branches: ["main"] 
   workflow_dispatch:
   
 jobs:
