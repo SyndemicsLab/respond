@@ -1,22 +1,47 @@
-# This is a basic workflow to help you get started with Actions
-
 name: Doxygen GitHub Pages Deploy Action
 
 # Controls when the action will run. Triggers the workflow on push or pull request
 # events but only for the master branch
 on:
   push:
-    branches:
-      - main
+    branches: ["main"] 
   workflow_dispatch:
   
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: DenverCoder1/doxygen-github-pages-action@v1.3.0
+      - name: Checkout repository
+        uses: actions/checkout@v4
         with:
-          github_token: ${{ secrets.OAUTH_TOKEN }}
+          submodules: "true"
+  
+      - name: Install dependencies
+        run: sudo apt-get update && sudo apt-get install -y wget graphviz rsync
+        shell: bash
+  
+      - name: Install Doxygen v1.9.6
+        run: |
+          transformed_version=$(echo "1.9.6" | tr '.' '_')
+          wget https://github.com/doxygen/doxygen/releases/download/Release_${transformed_version}/doxygen-1.9.6.linux.bin.tar.gz
+          tar -xzf doxygen-1.9.6.linux.bin.tar.gz
+          sudo mv doxygen-1.9.6/bin/doxygen /usr/local/bin/doxygen
+        shell: bash
+  
+      - name: Generate Doxygen Documentation
+        run: doxygen Doxyfile
+        shell: bash
+        
+      - name: Create .nojekyll (ensures pages with underscores work on gh pages)
+        run: touch docs/html/.nojekyll
+        shell: bash
+  
+      - name: Deploy to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          repository-name: SyndemicsLab/RESPONDSimulationv2
           branch: gh-pages
           folder: docs/html
-          config_file: Doxyfile
+          target-folder: docs/html
+          ssh-key: ${{ secrets.RESPOND_DOCS_DEPLOY_SSH_PRIVATE }}
+          token: ${{ secrets.OAUTH_TOKEN }}
