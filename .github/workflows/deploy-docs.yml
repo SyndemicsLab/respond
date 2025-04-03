@@ -5,6 +5,8 @@ name: Doxygen GitHub Pages Deploy Action
 on:
   push:
     branches: ["main"]
+  pull_request:
+    branches: ["main"]
    
   workflow_dispatch:
   
@@ -46,5 +48,3 @@ jobs:
           target-folder: docs/html
           ssh-key: ${{ secrets.RESPOND_DOCS_DEPLOY_SSH_PRIVATE }}
           token: ${{ secrets.OAUTH_TOKEN }}
-          git-config-name: "Matthew Carroll"
-          git-config-email: "matthew.j.carroll@outlook.com"
