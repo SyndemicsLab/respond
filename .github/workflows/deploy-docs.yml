@@ -41,6 +41,7 @@ jobs:
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
+          repository-name: SyndemicsLab/RESPONDSimulationv2
           branch: gh-pages
           folder: docs/html
           ssh-key: ${{ secrets.SSH_PRIVATE_KEY }}
