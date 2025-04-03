@@ -1,5 +1,3 @@
-# This is a basic workflow to help you get started with Actions
-
 name: Doxygen GitHub Pages Deploy Action
 permissions:
   contents: write
@@ -16,11 +14,35 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    steps:
-      - uses: DenverCoder1/doxygen-github-pages-action@v2.0.0
-        with:
-          github_token: ${{ secrets.OAUTH_TOKEN }}
-          branch: gh-pages
-          folder: docs/html
-          target_folder: docs/html
-          config_file: Doxyfile
+  steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        submodules: "true"
+
+    - name: Install dependencies
+      run: sudo apt-get update && sudo apt-get install -y wget graphviz
+      shell: bash
+
+    - name: Install Doxygen v1.9.6
+      run: |
+        transformed_version=$(echo "1.9.6" | tr '.' '_')
+        wget https://github.com/doxygen/doxygen/releases/download/Release_${transformed_version}/doxygen-1.9.6.linux.bin.tar.gz
+        tar -xzf doxygen-1.9.6.linux.bin.tar.gz
+        sudo mv doxygen-1.9.6/bin/doxygen /usr/local/bin/doxygen
+      shell: bash
+
+    - name: Generate Doxygen Documentation
+      run: doxygen Doxyfile
+      shell: bash
+      
+    - name: Create .nojekyll (ensures pages with underscores work on gh pages)
+      run: touch docs/html/.nojekyll
+      shell: bash
+
+    - name: Deploy to GitHub Pages
+      uses: JamesIves/github-pages-deploy-action@v4
+      with:
+        branch: gh-pages
+        folder: docs/html
+        ssh-key: ${{ secrets.SSH_PRIVATE_KEY }}
