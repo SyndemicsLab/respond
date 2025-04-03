@@ -45,7 +45,7 @@ jobs:
           branch: gh-pages
           folder: docs/html
           target-folder: docs/html
-          ssh-key: ${{ secrets.SSH_PRIVATE_KEY }}
+          ssh-key: ${{ secrets.RESPOND_DOCS_DEPLOY_SSH_PRIVATE }}
           token: ${{ secrets.OAUTH_TOKEN }}
           git-config-name: "Matthew Carroll"
           git-config-email: "matthew.j.carroll@outlook.com"
