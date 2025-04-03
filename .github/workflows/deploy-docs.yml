@@ -46,3 +46,4 @@ jobs:
           branch: gh-pages
           folder: docs/html
           ssh-key: ${{ secrets.SSH_PRIVATE_KEY }}
+          token: ${{ secrets.OAUTH_TOKEN }}
