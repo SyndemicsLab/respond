@@ -44,6 +44,7 @@ jobs:
           repository-name: SyndemicsLab/RESPONDSimulationv2
           branch: gh-pages
           folder: docs/html
+          target-folder: docs/html
           ssh-key: ${{ secrets.SSH_PRIVATE_KEY }}
           token: ${{ secrets.OAUTH_TOKEN }}
           git-config-name: "Matthew Carroll"
