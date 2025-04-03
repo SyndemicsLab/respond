@@ -4,7 +4,7 @@
 // Created Date: 2025-03-07                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-26                                                  //
+// Last Modified: 2025-03-27                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -25,7 +25,8 @@
 
 #include <respond/utils/logging.hpp>
 
-namespace respond::data_ops {
+namespace respond {
+namespace data_ops {
 class BaseLoader {
 public:
     BaseLoader(const std::filesystem::path &directory = "",
@@ -152,6 +153,7 @@ private:
         }
     }
 };
-} // namespace respond::data_ops
+} // namespace data_ops
+} // namespace respond
 
 #endif // RESPOND_DATAOPS_BASELOADERINTERNALS_HPP_

@@ -4,7 +4,7 @@
 // Created Date: 2025-01-17                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-26                                                  //
+// Last Modified: 2025-04-02                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -12,6 +12,7 @@
 
 #include "internals/writer_internals.hpp"
 
+#include <filesystem>
 #include <fstream>
 #include <regex>
 #include <sstream>
@@ -22,7 +23,8 @@
 #include <respond/data_ops/matrices.hpp>
 #include <respond/utils/logging.hpp>
 
-namespace respond::data_ops {
+namespace respond {
+namespace data_ops {
 std::string WriterImpl::WriteInputData(const DataLoader &data_loader,
                                        const std::string &directory,
                                        const OutputType output_type) const {
@@ -273,9 +275,11 @@ std::string
 WriterImpl::WriteOUDTransitionRates(const DataLoader &data_loader,
                                     const std::string &directory,
                                     const OutputType output_type) const {
+    if (data_loader.GetOUDTransitionRates().size() == 0) {
+        return "success";
+    }
     std::stringstream stream;
     stream << "intervention,agegrp,race,sex,initial_oud,";
-
     std::vector<std::string> behaviors = config->getStringVector("state.ouds");
     std::vector<std::string> interventions =
         config->getStringVector("state.interventions");
@@ -315,6 +319,9 @@ std::string
 WriterImpl::WriteInterventionInitRates(const DataLoader &data_loader,
                                        const std::string &directory,
                                        const OutputType output_type) const {
+    if (data_loader.GetInterventionInitRates().size() == 0) {
+        return "success";
+    }
     std::vector<std::string> behaviors = config->getStringVector("state.ouds");
     std::vector<std::string> interventions =
         config->getStringVector("state.interventions");
@@ -349,6 +356,9 @@ WriterImpl::WriteInterventionInitRates(const DataLoader &data_loader,
 std::string WriterImpl::WriteInterventionTransitionRates(
     const DataLoader &data_loader, const std::string &directory,
     const OutputType output_type) const {
+    if (data_loader.GetInterventionTransitionRates(0).size() == 0) {
+        return "success";
+    }
 
     std::stringstream stream;
 
@@ -408,6 +418,10 @@ std::string WriterImpl::WriteInterventionTransitionRates(
 std::string WriterImpl::WriteOverdoseRates(const DataLoader &data_loader,
                                            const std::string &directory,
                                            const OutputType output_type) const {
+    if (data_loader.GetOverdoseRates(0).size() == 0) {
+        return "success";
+    }
+
     std::stringstream stream;
     stream << "intervention,agegrp,race,sex,oud,";
 
@@ -461,6 +475,10 @@ std::string
 WriterImpl::WriteFatalOverdoseRates(const DataLoader &data_loader,
                                     const std::string &directory,
                                     const OutputType output_type) const {
+    if (data_loader.GetFatalOverdoseRates(0).size() == 0) {
+        return "success";
+    }
+
     std::stringstream stream;
     stream << "agegrp,race,sex,";
 
@@ -539,8 +557,9 @@ std::string WriterImpl::WriteColumnHeaders(const std::vector<int> &timesteps,
     return val;
 }
 
-std::unique_ptr<Writer> Writer::Create(const Data::IConfigablePtr &cfg,
+std::unique_ptr<Writer> Writer::Create(const std::string &directory,
                                        const std::string &log_name) {
-    return std::make_unique<WriterImpl>(cfg, log_name);
+    return std::make_unique<WriterImpl>(directory, log_name);
 }
-} // namespace respond::data_ops
+} // namespace data_ops
+} // namespace respond

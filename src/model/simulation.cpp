@@ -4,7 +4,7 @@
 // Created Date: 2025-01-14                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-26                                                  //
+// Last Modified: 2025-04-02                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -27,7 +27,8 @@
 
 using namespace respond::data_ops;
 
-namespace respond::model {
+namespace respond {
+namespace model {
 
 void RespondImpl::Run(const DataLoader &data_loader) {
     state = data_loader.GetInitialSample();
@@ -268,4 +269,5 @@ Matrix3d RespondImpl::MultiplyMortality(const Matrix3d &state,
 std::unique_ptr<Respond> Respond::Create(const std::string &log_name) {
     return std::make_unique<RespondImpl>(log_name);
 }
-} // namespace respond::model
+} // namespace model
+} // namespace respond

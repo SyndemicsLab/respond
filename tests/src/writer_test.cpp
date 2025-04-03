@@ -4,7 +4,7 @@
 // Created Date: 2025-01-14                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-26                                                  //
+// Last Modified: 2025-04-02                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -71,8 +71,7 @@ protected:
             << "general_stats_output_timesteps = 52";
         config_file_stream.close();
 
-        config = std::make_shared<Data::Config>("sim.conf");
-        writer = Writer::Create(config);
+        writer = Writer::Create();
     }
     void TearDown() override { std::remove("sim.conf"); }
 };

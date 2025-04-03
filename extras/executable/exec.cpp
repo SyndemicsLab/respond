@@ -4,7 +4,7 @@
 // Created Date: 2025-03-17                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-26                                                  //
+// Last Modified: 2025-04-02                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -158,8 +158,7 @@ void DoPostSimulationCalculations(
                                 std::get<bool>(data_loader.GetConfig()->get(
                                     "cost.cost_analysis", false)));
 
-    auto writer =
-        respond::data_ops::Writer::Create(data_loader.GetConfig(), logger_name);
+    auto writer = respond::data_ops::Writer::Create(input_set, logger_name);
 
     writer->WriteCostData(base_costs, output_directory,
                           respond::data_ops::OutputType::kFile);
@@ -210,8 +209,8 @@ void execute(int argc, char **argv) {
                 *data_loader, history, input_set.string(),
                 output_directory.string(), logger_name);
 
-            auto writer = respond::data_ops::Writer::Create(
-                data_loader->GetConfig(), logger_name);
+            auto writer = respond::data_ops::Writer::Create(input_set.string(),
+                                                            logger_name);
 
             if (std::get<bool>(data_loader->GetConfig()->get(
                     "output.write_calibrated_inputs", false))) {

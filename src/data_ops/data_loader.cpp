@@ -4,7 +4,7 @@
 // Created Date: 2025-01-14                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-26                                                  //
+// Last Modified: 2025-03-27                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -27,7 +27,8 @@
 #include <respond/data_ops/matrices.hpp>
 #include <respond/utils/logging.hpp>
 
-namespace respond::data_ops {
+namespace respond {
+namespace data_ops {
 Matrix3d DataLoaderImpl::LoadInitialSample(const std::string &file) {
     // INITIAL GROUP
 
@@ -738,4 +739,5 @@ std::unique_ptr<DataLoader> DataLoader::Create(const std::string &directory,
                                                const std::string &log_name) {
     return std::make_unique<DataLoaderImpl>(directory, log_name);
 }
-} // namespace respond::data_ops
+} // namespace data_ops
+} // namespace respond
