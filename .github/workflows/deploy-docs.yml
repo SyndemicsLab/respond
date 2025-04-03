@@ -1,6 +1,4 @@
 name: Doxygen GitHub Pages Deploy Action
-permissions:
-  contents: write
 
 # Controls when the action will run. Triggers the workflow on push or pull request
 # events but only for the master branch
@@ -47,3 +45,5 @@ jobs:
           folder: docs/html
           ssh-key: ${{ secrets.SSH_PRIVATE_KEY }}
           token: ${{ secrets.OAUTH_TOKEN }}
+          git-config-name: "Matthew Carroll"
+          git-config-email: "matthew.j.carroll@outlook.com"
