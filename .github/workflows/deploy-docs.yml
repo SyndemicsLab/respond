@@ -19,7 +19,7 @@ jobs:
           submodules: "true"
   
       - name: Install dependencies
-        run: sudo apt-get update && sudo apt-get install -y wget graphviz
+        run: sudo apt-get update && sudo apt-get install -y wget graphviz rsync
         shell: bash
   
       - name: Install Doxygen v1.9.6
