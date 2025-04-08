@@ -4,7 +4,7 @@
 // Created Date: 2025-01-14                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-04-02                                                  //
+// Last Modified: 2025-04-08                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -24,6 +24,7 @@
 namespace py = pybind11;
 using namespace respond::data_ops;
 using namespace respond::model;
+using namespace respond::utils;
 
 PYBIND11_MODULE(respondpy, m) {
     auto data_ops = m.def_submodule(
@@ -210,4 +211,18 @@ PYBIND11_MODULE(respondpy, m) {
         .def(py::init(&Respond::Create), pybind11::arg("log_name") = "console")
         .def("Run", &Respond::Run)
         .def("GetHistory", &Respond::GetHistory);
+
+    auto utils = m.def_submodule(
+        "utils", "A submodule containing the utility functions for RESPOND.");
+
+    // logging.hpp
+    py::enum_<CreationStatus>(utils, "CreationStatus")
+        .value("kError", CreationStatus::kError)
+        .value("kSuccess", CreationStatus::kSuccess)
+        .value("kExists", CreationStatus::kExists)
+        .value("kNotCreated", CreationStatus::kNotCreated)
+        .export_values();
+
+    utils.def("CreateFileLogger", &CreateFileLogger,
+              "Creates a File Logger for use with RESPOND.");
 }
