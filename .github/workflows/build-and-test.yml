@@ -19,14 +19,14 @@ jobs:
                       shell: bash
                       gen: "Ninja"
                       asset-name: respond_tests_linux
-                      path: "${{github.workspace}}/build/tests/respond_tests"
+                      path: "build/tests/respond_tests"
 
                     - os: windows-latest
                       platform: 2022
                       shell: powershell
                       gen: "MinGW Makefiles"
                       asset-name: respond_tests_windows
-                      path: "${{github.workspace}}\\build\\tests\\respond_tests.exe"
+                      path: "build\\tests\\respond_tests.exe"
 
         name: Build Static Library Release
         runs-on: ${{ matrix.os }}
@@ -75,7 +75,7 @@ jobs:
               uses: actions/upload-artifact@v4
               with:
                 name: ${{matrix.asset-name}}
-                path: ${{ matrix.path }}
+                path: ${{github.workspace}}/${{ matrix.path }}
               
     test:
         needs: build-release
@@ -83,18 +83,12 @@ jobs:
             matrix:
                 include:
                     - os: ubuntu-latest
-                      platform: 22.04
                       shell: bash
-                      gen: "Ninja"
                       asset-name: respond_tests_linux
-                      path: "${{github.workspace}}/build/tests/respond_tests"
 
                     - os: windows-latest
-                      platform: 2022
                       shell: powershell
-                      gen: "MinGW Makefiles"
                       asset-name: respond_tests_windows
-                      path: "${{github.workspace}}\\build\\tests\\respond_tests.exe"
         name: Test Static Libraries
         runs-on: ${{ matrix.os }}
         defaults:
