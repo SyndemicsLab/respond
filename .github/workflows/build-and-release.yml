@@ -18,14 +18,14 @@ jobs:
                       shell: bash
                       gen: "Ninja"
                       asset-name: respond_linux_x86_64_exe
-                      path: "${{github.workspace}}/build/extras/executable/respond_exe"
+                      path: "build/extras/executable/respond_exe"
 
                     - os: windows-latest
                       platform: 2022
                       shell: powershell
                       gen: "MinGW Makefiles"
                       asset-name: respond_windows_x64_64_exe
-                      path: "${{github.workspace}}\\build\\extras\\executable\\respond_exe.exe"
+                      path: "build\\extras\\executable\\respond_exe.exe"
         name: Build Assets
         runs-on: ${{ matrix.os }}
         defaults:
@@ -73,7 +73,7 @@ jobs:
               uses: actions/upload-artifact@v4
               with:
                 name: ${{ matrix.asset-name }}
-                path: ${{matrix.path}}
+                path: ${{github.workspace}}/${{matrix.path}}
 
 
     release:
@@ -81,18 +81,10 @@ jobs:
             matrix:
                 include:
                     - os: ubuntu-latest
-                      platform: 22.04
-                      shell: bash
-                      gen: "Ninja"
                       asset-name: respond_linux_x86_64_exe
-                      path: "${{github.workspace}}/build/extras/executable/respond_exe"
 
                     - os: windows-latest
-                      platform: 2022
-                      shell: powershell
-                      gen: "MinGW Makefiles"
                       asset-name: respond_windows_x64_64_exe
-                      path: "${{github.workspace}}\\build\\extras\\executable\\respond_exe.exe"
         name: Release Assets on Tag
         runs-on: ${{ matrix.os }}
         steps:
