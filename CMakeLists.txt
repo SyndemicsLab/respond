@@ -105,6 +105,7 @@ PUBLIC
     Eigen3::Eigen
 PRIVATE
     spdlog::spdlog
+    gcov
 )
 
 set_target_properties(respond PROPERTIES VERSION ${RESPOND_VERSION} SOVERSION ${RESPOND_VERSION_MAJOR}.${RESPOND_VERSION_MINOR})

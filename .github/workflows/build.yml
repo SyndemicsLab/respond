@@ -1,0 +1,78 @@
+name: Build All Workflow
+
+on:
+    workflow_call:
+        inputs:
+            build-type:
+                description: The Build Type to generate, examples are 'Debug' and 'Release'
+                required: true
+                type: string
+            os:
+                description: The workflow runner os
+                required: true
+                type: string
+            platform:
+                description: The platform to build Boost
+                required: true
+                type: number
+            generator:
+                description: CMake Generator to use
+                required: true
+                type: string
+            asset-name:
+                description: Name of the build asset you want to extract
+                required: true
+                type: string
+            asset-path:
+                description: Path to the build asset you want to extract
+                required: true
+                type: string
+            cmake-vars:
+                description: The List of Defined CMake Variables
+                required: false
+                type: string
+
+jobs:
+    build:
+        name: ${{inputs.os}}, ${{inputs.build-type}}
+        runs-on: ${{inputs.os}}
+        steps:
+            - name: Checkout Respond Repository
+              uses: actions/checkout@v4
+
+            - name: Install Boost
+              uses: MarkusJx/install-boost@v2.4.5
+              id: install-boost
+              with:
+                boost_version: 1.86.0
+                platform_version: ${{ inputs.platform }}
+
+            - name: Install Eigen3
+              uses: kupns-aka-kupa/setup-eigen3@master
+              id: install-eigen3
+              with:
+                version: 3.4.0
+              env:
+                CMAKE_GENERATOR: ${{inputs.generator}}
+
+            - name: Configure Project
+              env:
+                BOOST_ROOT: ${{ steps.install-boost.outputs.BOOST_ROOT }}
+                EIGEN3_INCLUDE_DIR: ${{ steps.install-eigen3.outputs.EIGEN3_INCLUDE_DIR }}
+                EIGEN3_DIR: ${{ steps.install-eigen3.outputs.EIGEN3_DIR}}
+              run: >
+                cmake
+                -B ${{github.workspace}}/build
+                ${{inputs.cmake-vars}}
+                -D CMAKE_BUILD_TYPE:STRING=${{inputs.build-type}}
+
+            - name: Build Project
+              run: >
+                cmake
+                --build ${{github.workspace}}/build.
+                --config ${{inputs.build-type}}
+            - name: Upload Asset
+              uses: actions/upload-artifact@v4
+              with:
+                name: ${{inputs.os}}-${{inputs.build-type}}-${{inputs.asset-name}}
+                path: ${{github.workspace}}/${{inputs.asset-path}}

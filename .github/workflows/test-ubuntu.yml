@@ -1,0 +1,46 @@
+name: Test Ubuntu
+
+on:
+    push:
+        branches: [ "main" ]
+    pull_request:
+        branches: [ "main" ]
+
+
+env:
+    BUILD_TYPE: Debug
+
+jobs:
+    build:
+        name: Build
+        runs-on: ubuntu-latest
+        steps:
+            - name: Build Tests
+              uses: ./.github/workflows/build.yml
+              with:
+                build-type: ${BUILD_TYPE}
+                os: ubuntu-latest
+                platform: 22.04
+                generator: Ninja
+                asset-name: respond_tests_linux
+                asset-path: build/tests/respond_tests
+                cmake-vars: -D RESPOND_BUILD_PIC=ON -D RESPOND_BUILD_EXECUTABLE=OFF -D RESPOND_BUILD_TESTS=ON -D RESPOND_CALCULATE_COVERAGE=ON -D RESPOND_BUILD_PYBINDINGS=OFF -D RESPOND_BUILD_BENCH=OFF -D RESPOND_BUILD_WARNINGS=ON -D RESPOND_BUILD_SHARED_LIBS=OFF
+    test:
+        needs: build
+        name: Test Static Libraries
+        runs-on: ubuntu-latest
+        steps:
+            - name: Download Artifact
+              uses: actions/download-artifact@v4
+              with:
+                name: respond_tests_linux
+
+            - name: Run Linux Tests
+              run: |
+                sudo chmod +x ./respond_tests && ./respond_tests
+
+            - name: Check Test Coverage
+              uses: threeal/gcovr-action@v1.1.0
+              with:
+                working-directory: ${{github.workspace}}
+                fail-under-line: 80
