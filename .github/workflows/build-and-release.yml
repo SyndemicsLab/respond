@@ -1,16 +1,15 @@
-name: Build and Test
+name: Build and Release
 
 on:
     push:
-        branches: [ "main" ]
-    pull_request:
-        branches: [ "main" ]
+        tags:
+            - 'v*.*.*'
 
-env:
-    BUILD_TYPE: Debug
+env: 
+    BUILD_TYPE: Release
 
 jobs:
-    build-release:
+    build:
         strategy:
             matrix:
                 include:
@@ -18,17 +17,16 @@ jobs:
                       platform: 22.04
                       shell: bash
                       gen: "Ninja"
-                      asset-name: respond_tests_linux
-                      path: "build/tests/respond_tests"
+                      asset-name: respond_linux_x86_64_exe
+                      path: "build/extras/executable/respond_exe"
 
                     - os: windows-latest
                       platform: 2022
                       shell: powershell
                       gen: "MinGW Makefiles"
-                      asset-name: respond_tests_windows
-                      path: "build\\tests\\respond_tests.exe"
-
-        name: Build Static Library Release
+                      asset-name: respond_windows_x64_64_exe
+                      path: "build\\extras\\executable\\respond_exe.exe"
+        name: Build Assets
         runs-on: ${{ matrix.os }}
         defaults:
             run:
@@ -51,7 +49,7 @@ jobs:
                 version: 3.4.0
               env:
                 CMAKE_GENERATOR: ${{ matrix.gen }}
-
+  
             - name: Build Project with CMake
               env:
                 BOOST_ROOT: ${{ steps.install-boost.outputs.BOOST_ROOT }}
@@ -63,50 +61,43 @@ jobs:
                 options: |
                     CMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }}
                     RESPOND_BUILD_PIC=ON
-                    RESPOND_BUILD_EXECUTABLE=OFF
-                    RESPOND_BUILD_TESTS=ON
-                    RESPOND_CALCULATE_COVERAGE=ON
+                    RESPOND_BUILD_EXECUTABLE=ON
+                    RESPOND_BUILD_TESTS=OFF
+                    RESPOND_CALCULATE_COVERAGE=OFF
                     RESPOND_BUILD_PYBINDINGS=OFF
                     RESPOND_BUILD_BENCH=OFF
                     RESPOND_BUILD_WARNINGS=ON
                     RESPOND_BUILD_SHARED_LIBS=OFF
-            
-            - name: Upload Tests
+              
+            - name: Upload Executable
               uses: actions/upload-artifact@v4
               with:
-                name: ${{matrix.asset-name}}
-                path: ${{github.workspace}}/${{ matrix.path }}
-              
-    test:
-        needs: build-release
+                name: ${{ matrix.asset-name }}
+                path: ${{github.workspace}}/${{matrix.path}}
+
+
+    release:
         strategy:
             matrix:
                 include:
                     - os: ubuntu-latest
-                      shell: bash
-                      asset-name: respond_tests_linux
+                      asset-name: respond_linux_x86_64_exe
 
                     - os: windows-latest
-                      shell: powershell
-                      asset-name: respond_tests_windows
-        name: Test Static Libraries
+                      asset-name: respond_windows_x64_64_exe
+        name: Release Assets on Tag
         runs-on: ${{ matrix.os }}
-        defaults:
-            run:
-                shell: ${{ matrix.shell }}
         steps:
-            - name: Download Artifact
-              uses: actions/download-artifact@v4
+            - name: Checkout RESPOND Repository
+              uses: actions/checkout@v4
+            - name: Create Release
+              id: create_release
+              uses: actions/create-release@latest
+              env:
+                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
               with:
-                name: ${{ matrix.asset-name }}
-
-            - name: Run Linux Tests
-              if: runner.os == 'Linux'
-              run: |
-                sudo chmod +x ./respond_tests && ./respond_tests
-            - name: Run Windows Tests
-              if: runner.os == 'Windows'
-              run: |
-                .\respond_tests.exe
-
-                
+                tag_name: ${{ github.ref }}
+                release_name: Release ${{ github.ref }}
+                draft: false
+                prerelease: false
+            
