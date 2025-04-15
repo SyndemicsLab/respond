@@ -6,16 +6,12 @@ on:
     pull_request:
         branches: [ "main" ]
 
-
-env:
-    BUILD_TYPE: Debug
-
 jobs:
     build:
         name: Build
         uses: ./.github/workflows/build.yml
         with:
-            build-type: ${BUILD_TYPE}
+            build-type: Debug
             os: windows-latest
             platform: 2022
             generator: MinGW Makefiles
