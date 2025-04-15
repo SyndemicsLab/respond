@@ -1,0 +1,149 @@
+{
+    "version": 7,
+    "cmakeMinimumRequired": {
+        "major": 3,
+        "minor": 27,
+        "patch": 0
+    },
+    "include": [],
+    "configurePresets": [
+        {
+            "name": "linux-ninja",
+            "hidden": true,
+            "displayName": "Linux Config",
+            "description": "Linux Config build using Ninja generator",
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/build",
+            "cacheVariables": {
+                "RESPOND_BUILD_PIC": {
+                    "type": "BOOL",
+                    "value": "ON"
+                }
+            },
+            "environment": {}
+        },
+        {
+            "name": "linux-ninja-debug",
+            "inherits": "linux-ninja",
+            "hidden": true,
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": {
+                    "type": "STRING",
+                    "value": "Debug"
+                }
+            }
+        },
+        {
+            "name": "linux-ninja-release",
+            "inherits": "linux-ninja",
+            "hidden": true,
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": {
+                    "type": "STRING",
+                    "value": "Release"
+                }
+            }
+        },
+        {
+            "name": "linux-ninja-debug-tests",
+            "inherits": "linux-ninja-debug",
+            "cacheVariables": {
+                "RESPOND_BUILD_TESTS": {
+                    "type": "BOOL",
+                    "value": "ON"
+                },
+                "RESPOND_CALCULATE_COVERAGE": {
+                    "type": "BOOL",
+                    "value": "ON"
+                }
+            }
+        },
+        {
+            "name": "linux-ninja-release-executable",
+            "inherits": "linux-ninja-release",
+            "hidden": true,
+            "cacheVariables": {
+                "RESPOND_BUILD_EXECUTABLE": {
+                    "type": "BOOL",
+                    "value": "ON"
+                },
+                "RESPOND_BUILD_PYBINDINGS": {
+                    "type": "BOOL",
+                    "value": "OFF"
+                }
+            }
+        },
+        {
+            "name": "linux-ninja-release-python",
+            "inherits": "linux-ninja-release",
+            "hidden": true,
+            "cacheVariables": {
+                "RESPOND_BUILD_EXECUTABLE": {
+                    "type": "BOOL",
+                    "value": "OFF"
+                },
+                "RESPOND_BUILD_PYBINDINGS": {
+                    "type": "BOOL",
+                    "value": "ON"
+                }
+            }
+        }
+    ],
+    "buildPresets": [
+        {
+            "name": "default-executable",
+            "configurePreset": "linux-ninja-release-executable"
+        },
+        {
+            "name": "default-python",
+            "configurePreset": "linux-ninja-release-python"
+        }
+    ],
+    "testPresets": [
+        {
+            "name": "default",
+            "configurePreset": "linux-ninja-debug-tests",
+            "configuration": "Debug",
+            "output": {
+                "verbosity": "verbose",
+                "outputOnFailure": true
+            },
+            "execution": {
+                "noTestsAction": "error",
+                "stopOnFailure": true
+            }
+        }
+    ],
+    "packagePresets": [
+        {
+            "name": "default",
+            "configurePreset": "linux-ninja-release-executable",
+            "generators": [
+                "TGZ"
+            ]
+        }
+    ],
+    "workflowPresets": [
+        {
+            "name": "default",
+            "steps": [
+                {
+                    "type": "configure",
+                    "name": "linux-ninja-debug-tests"
+                },
+                {
+                    "type": "build",
+                    "name": "default-executable"
+                },
+                {
+                    "type": "test",
+                    "name": "default"
+                },
+                {
+                    "type": "package",
+                    "name": "default"
+                }
+            ]
+        }
+    ]
+}
