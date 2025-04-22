@@ -44,12 +44,7 @@ jobs:
                 cmake
                 --build ${{github.workspace}}/build
                 --config Debug
-
-    test:
-        needs: build
-        name: Check Coverage
-        runs-on: ubuntu-latest
-        steps:
+            
             - name: Check Test Coverage
               uses: threeal/gcovr-action@v1.1.0
               with:
