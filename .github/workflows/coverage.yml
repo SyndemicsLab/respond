@@ -59,4 +59,5 @@ jobs:
                     datamanagement/*
                     gtest/*
                     googletest/*
+                    build/*
                 fail-under-line: 80
