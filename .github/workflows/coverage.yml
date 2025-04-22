@@ -16,7 +16,6 @@ jobs:
             platform: 22.04
             generator: Ninja
             asset-name: respond_coverage
-            asset-path: .
             cmake-vars: -D RESPOND_BUILD_PIC=ON -D RESPOND_BUILD_EXECUTABLE=OFF -D RESPOND_BUILD_TESTS=ON -D RESPOND_CALCULATE_COVERAGE=ON -D RESPOND_BUILD_PYBINDINGS=OFF -D RESPOND_BUILD_BENCH=OFF -D RESPOND_BUILD_WARNINGS=ON -D RESPOND_BUILD_SHARED_LIBS=OFF
     test:
         needs: build
@@ -35,6 +34,5 @@ jobs:
             - name: Check Test Coverage
               uses: threeal/gcovr-action@v1.1.0
               with:
-                working-directory: ${{github.workspace}}
                 excludes: Eigen3/*
                 fail-under-line: 80

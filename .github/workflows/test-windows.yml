@@ -16,7 +16,6 @@ jobs:
             platform: 2022
             generator: MinGW Makefiles
             asset-name: respond_tests
-            asset-path: "build\\tests\\Debug\\respond_tests.exe"
             cmake-vars: -D RESPOND_BUILD_PIC=ON -D RESPOND_BUILD_EXECUTABLE=OFF -D RESPOND_BUILD_TESTS=ON -D RESPOND_CALCULATE_COVERAGE=OFF -D RESPOND_BUILD_PYBINDINGS=OFF -D RESPOND_BUILD_BENCH=OFF -D RESPOND_BUILD_WARNINGS=ON -D RESPOND_BUILD_SHARED_LIBS=OFF
     test:
         needs: build
@@ -29,4 +28,4 @@ jobs:
                 name: windows-latest-Debug-respond_tests
             - name: Run Windows Tests
               run: |
-                .\respond_tests.exe
+                .\build\tests\Debug\respond_tests.exe
