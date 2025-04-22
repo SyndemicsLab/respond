@@ -8,31 +8,51 @@ on:
 
 jobs:
     build:
-        name: Build Coverage Results
-        uses: ./.github/workflows/build.yml
-        with:
-            build-type: Debug
-            os: ubuntu-latest
-            platform: 22.04
-            generator: Ninja
-            asset-name: respond_coverage
-            cmake-vars: -D RESPOND_BUILD_PIC=ON -D RESPOND_BUILD_EXECUTABLE=OFF -D RESPOND_BUILD_TESTS=ON -D RESPOND_CALCULATE_COVERAGE=ON -D RESPOND_BUILD_PYBINDINGS=OFF -D RESPOND_BUILD_BENCH=OFF -D RESPOND_BUILD_WARNINGS=ON -D RESPOND_BUILD_SHARED_LIBS=OFF
+        name: ubuntu-latest, Debug
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout Respond Repository
+              uses: actions/checkout@v4
+
+            - name: Install Boost
+              uses: MarkusJx/install-boost@v2.4.5
+              id: install-boost
+              with:
+                boost_version: 1.86.0
+                platform_version: 22.04
+
+            - name: Install Eigen3
+              uses: kupns-aka-kupa/setup-eigen3@master
+              id: install-eigen3
+              with:
+                version: 3.4.0
+              env:
+                CMAKE_GENERATOR: Ninja
+
+            - name: Configure Project
+              env:
+                BOOST_ROOT: ${{ steps.install-boost.outputs.BOOST_ROOT }}
+                EIGEN3_INCLUDE_DIR: ${{ steps.install-eigen3.outputs.EIGEN3_INCLUDE_DIR }}
+                EIGEN3_DIR: ${{ steps.install-eigen3.outputs.EIGEN3_DIR}}
+              run: >
+                cmake
+                -B ${{github.workspace}}/build
+                -D RESPOND_BUILD_PIC=ON -D RESPOND_BUILD_EXECUTABLE=OFF -D RESPOND_BUILD_TESTS=ON -D RESPOND_CALCULATE_COVERAGE=ON -D RESPOND_BUILD_PYBINDINGS=OFF -D RESPOND_BUILD_BENCH=OFF -D RESPOND_BUILD_WARNINGS=ON -D RESPOND_BUILD_SHARED_LIBS=OFF -D CMAKE_BUILD_TYPE:STRING=Debug
+
+            - name: Build Project
+              run: >
+                cmake
+                --build ${{github.workspace}}/build
+                --config Debug
+
     test:
         needs: build
         name: Check Coverage
         runs-on: ubuntu-latest
         steps:
-            - name: Download Artifact
-              uses: actions/download-artifact@v4
-              with:
-                name: ubuntu-latest-Debug-respond_coverage
-            
-            - name: Update Permissions
-              run: |
-                sudo chmod -R 755 .
-
             - name: Check Test Coverage
               uses: threeal/gcovr-action@v1.1.0
               with:
+                working-directory: ${{github.workspace}}
                 excludes: Eigen3/*
                 fail-under-line: 80
