@@ -15,9 +15,9 @@ jobs:
             os: windows-latest
             platform: 2022
             generator: MinGW Makefiles
-            asset-name: respond_tests_windows
+            asset-name: respond_tests
             asset-path: "build\\tests\\respond_tests.exe"
-            cmake-vars: -D RESPOND_BUILD_PIC=ON -D RESPOND_BUILD_EXECUTABLE=OFF -D RESPOND_BUILD_TESTS=ON -D RESPOND_CALCULATE_COVERAGE=ON -D RESPOND_BUILD_PYBINDINGS=OFF -D RESPOND_BUILD_BENCH=OFF -D RESPOND_BUILD_WARNINGS=ON -D RESPOND_BUILD_SHARED_LIBS=OFF
+            cmake-vars: -D RESPOND_BUILD_PIC=ON -D RESPOND_BUILD_EXECUTABLE=OFF -D RESPOND_BUILD_TESTS=ON -D RESPOND_CALCULATE_COVERAGE=OFF -D RESPOND_BUILD_PYBINDINGS=OFF -D RESPOND_BUILD_BENCH=OFF -D RESPOND_BUILD_WARNINGS=ON -D RESPOND_BUILD_SHARED_LIBS=OFF
     test:
         needs: build
         name: Test Static Libraries
@@ -26,7 +26,7 @@ jobs:
             - name: Download Artifact
               uses: actions/download-artifact@v4
               with:
-                name: respond_tests_windows
+                name: windows-latest-Debug-respond_tests
             - name: Run Windows Tests
               run: |
                 .\respond_tests.exe
