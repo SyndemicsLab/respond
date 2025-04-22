@@ -28,13 +28,9 @@ jobs:
               with:
                 name: ubuntu-latest-Debug-respond_coverage
             
-            - name: Debugging
-              run: |
-                ls
-
             - name: Update Permissions
               run: |
-                sudo chmod -R 755 ./build
+                sudo chmod -R 755 .
 
             - name: Check Test Coverage
               uses: threeal/gcovr-action@v1.1.0
