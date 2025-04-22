@@ -3,6 +3,7 @@
 # used for the BU SCC
 if command -v module &>/dev/null; then
     module load gcc/12.2.0
+    module load boost/1.83.0
 fi
 
 # help message to be output either with the -h flag or when using invalid syntax
@@ -18,7 +19,7 @@ showhelp () {
     echo "p              Build and run tests."
     echo "b              Build Python Language Bindings"
     echo "n              Build Benchmarking executable"
-}
+} 
 
 # set default build type
 BUILDTYPE="Debug"
