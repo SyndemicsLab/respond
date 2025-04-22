@@ -8,7 +8,7 @@ on:
 
 jobs:
     build:
-        name: Build Tests
+        name: Build Ubuntu Tests
         uses: ./.github/workflows/build.yml
         with:
             build-type: Debug
@@ -20,7 +20,7 @@ jobs:
             cmake-vars: -D RESPOND_BUILD_PIC=ON -D RESPOND_BUILD_EXECUTABLE=OFF -D RESPOND_BUILD_TESTS=ON -D RESPOND_CALCULATE_COVERAGE=OFF -D RESPOND_BUILD_PYBINDINGS=OFF -D RESPOND_BUILD_BENCH=OFF -D RESPOND_BUILD_WARNINGS=ON -D RESPOND_BUILD_SHARED_LIBS=OFF
     test:
         needs: build
-        name: Test Static Libraries
+        name: Test Ubuntu Libraries
         runs-on: ubuntu-latest
         steps:
             - name: Download Artifact
