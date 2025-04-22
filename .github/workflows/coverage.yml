@@ -44,10 +44,19 @@ jobs:
                 cmake
                 --build ${{github.workspace}}/build
                 --config Debug
+
+            - name: Run Tests
+              run: |
+                ./build/tests/respond_tests
             
             - name: Check Test Coverage
               uses: threeal/gcovr-action@v1.1.0
               with:
                 working-directory: ${{github.workspace}}
-                excludes: Eigen3/*
+                excludes: |
+                    Eigen3/*
+                    boost/*
+                    datamanagement/*
+                    gtest/*
+                    googletest/*
                 fail-under-line: 80
