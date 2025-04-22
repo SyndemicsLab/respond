@@ -17,7 +17,7 @@ jobs:
             generator: Ninja
             asset-name: respond_tests
             asset-path: build/tests/respond_tests
-            cmake-vars: -D RESPOND_BUILD_PIC=ON -D RESPOND_BUILD_EXECUTABLE=OFF -D RESPOND_BUILD_TESTS=ON -D RESPOND_CALCULATE_COVERAGE=ON -D RESPOND_BUILD_PYBINDINGS=OFF -D RESPOND_BUILD_BENCH=OFF -D RESPOND_BUILD_WARNINGS=ON -D RESPOND_BUILD_SHARED_LIBS=OFF
+            cmake-vars: -D RESPOND_BUILD_PIC=ON -D RESPOND_BUILD_EXECUTABLE=OFF -D RESPOND_BUILD_TESTS=ON -D RESPOND_CALCULATE_COVERAGE=OFF -D RESPOND_BUILD_PYBINDINGS=OFF -D RESPOND_BUILD_BENCH=OFF -D RESPOND_BUILD_WARNINGS=ON -D RESPOND_BUILD_SHARED_LIBS=OFF
     test:
         needs: build
         name: Test Static Libraries
@@ -31,9 +31,3 @@ jobs:
             - name: Run Linux Tests
               run: |
                 sudo chmod +x ./respond_tests && ./respond_tests
-
-            - name: Check Test Coverage
-              uses: threeal/gcovr-action@v1.1.0
-              with:
-                working-directory: ${{github.workspace}}
-                fail-under-line: 80

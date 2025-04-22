@@ -98,15 +98,25 @@ target_include_directories(respond ${RESPOND_INCLUDES_LEVEL} PUBLIC "$<BUILD_INT
                                                                   PRIVATE "$<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/src>")
 
 include(MakeDependenciesAvailable)
-                                                                  
-target_link_libraries(respond
-PUBLIC
-    datamanagement::datamanagement
-    Eigen3::Eigen
-PRIVATE
-    spdlog::spdlog
-    gcov
-)
+
+if (RESPOND_CALCULATE_COVERAGE)
+    target_link_libraries(respond
+    PUBLIC
+        datamanagement::datamanagement
+        Eigen3::Eigen
+    PRIVATE
+        spdlog::spdlog
+        gcov
+    )
+else()
+    target_link_libraries(respond
+    PUBLIC
+        datamanagement::datamanagement
+        Eigen3::Eigen
+    PRIVATE
+        spdlog::spdlog
+    )
+endif()
 
 set_target_properties(respond PROPERTIES VERSION ${RESPOND_VERSION} SOVERSION ${RESPOND_VERSION_MAJOR}.${RESPOND_VERSION_MINOR})
 
