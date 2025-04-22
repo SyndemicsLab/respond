@@ -28,6 +28,10 @@ jobs:
               with:
                 name: ubuntu-latest-Debug-respond_coverage
             
+            - name: Debugging
+              run: |
+                ls
+
             - name: Update Permissions
               run: |
                 sudo chmod -R 755 ./build
