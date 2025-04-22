@@ -36,5 +36,5 @@ jobs:
               uses: threeal/gcovr-action@v1.1.0
               with:
                 working-directory: ${{github.workspace}}
-                excludes: "*/Eigen3/*"
+                excludes: Eigen3/*
                 fail-under-line: 80

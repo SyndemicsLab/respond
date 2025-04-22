@@ -4,7 +4,7 @@
 // Created Date: 2025-01-14                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-26                                                  //
+// Last Modified: 2025-04-22                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -67,6 +67,7 @@ protected:
             << "general_outputs = false " << std::endl
             << "general_stats_output_timesteps = 52";
         config_file_stream.close();
+
         utility_loader = UtilityLoader::Create();
     }
     void TearDown() override {
@@ -79,9 +80,8 @@ TEST_F(UtilityLoaderTest, LoadBackgroundUtility) {
     std::ofstream file_stream(file_name);
     file_stream << "agegrp,sex,utility" << std::endl
                 << "10_14,Male,0.922" << std::endl
-                << "10_14,Female,0.922" << std::endl
-                << "15_19,Male,0.922";
-    file_stream.close();
+                << "10_14,Female,0.922";
+
     utility_loader->LoadBackgroundUtility(file_name);
     Matrix3d result = utility_loader->GetBackgroundUtility("utility");
     EXPECT_EQ(result(0, 0, 0), 0.922);
