@@ -1,4 +1,4 @@
-name: Calculate Coverage
+name: Coverage Results
 
 on:
     push:
@@ -8,7 +8,7 @@ on:
 
 jobs:
     build:
-        name: Build Tests
+        name: Build Coverage Results
         uses: ./.github/workflows/build.yml
         with:
             build-type: Debug
@@ -20,7 +20,7 @@ jobs:
             cmake-vars: -D RESPOND_BUILD_PIC=ON -D RESPOND_BUILD_EXECUTABLE=OFF -D RESPOND_BUILD_TESTS=ON -D RESPOND_CALCULATE_COVERAGE=ON -D RESPOND_BUILD_PYBINDINGS=OFF -D RESPOND_BUILD_BENCH=OFF -D RESPOND_BUILD_WARNINGS=ON -D RESPOND_BUILD_SHARED_LIBS=OFF
     test:
         needs: build
-        name: Test Static Libraries
+        name: Check Coverage
         runs-on: ubuntu-latest
         steps:
             - name: Download Artifact
@@ -31,5 +31,5 @@ jobs:
             - name: Check Test Coverage
               uses: threeal/gcovr-action@v1.1.0
               with:
-                working-directory: ${{github.workspace}}/build
+                working-directory: ${{github.workspace}}
                 fail-under-line: 80
