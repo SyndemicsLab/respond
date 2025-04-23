@@ -4,7 +4,7 @@
 // Created Date: 2025-01-14                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-19                                                  //
+// Last Modified: 2025-04-23                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -37,11 +37,6 @@ protected:
     void SetUp() override { respond = Respond::Create(); }
     void TearDown() override { std::remove("sim.conf"); }
 };
-
-TEST_F(RespondTest, FactoryCreate) {
-    auto r = Respond::Create();
-    EXPECT_NE(nullptr, r);
-}
 
 TEST_F(RespondTest, ZeroDuration) {
     config_file_stream.open("sim.conf");

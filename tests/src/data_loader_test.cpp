@@ -1,10 +1,10 @@
 ////////////////////////////////////////////////////////////////////////////////
-// File: TEST_DataLoader.cpp                                                  //
+// File: data_loader_test.cpp                                                 //
 // Project: RESPONDSimulationv2                                               //
 // Created Date: 2025-01-14                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-04-22                                                  //
+// Last Modified: 2025-04-23                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -25,8 +25,8 @@ using namespace respond::data_ops;
 
 class DataLoaderTest : public ::testing::Test {
 protected:
-    const std::string file_name_1 = "test1.csv";
-    const std::string file_name_2 = "test2.csv";
+    const std::string file_name_1 = "data_test1.csv";
+    const std::string file_name_2 = "data_test2.csv";
     void SetUp() override {
         std::ofstream config_file_stream("sim.conf");
 

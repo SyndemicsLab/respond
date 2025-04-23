@@ -4,7 +4,7 @@
 // Created Date: 2025-01-14                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-26                                                  //
+// Last Modified: 2025-04-23                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -24,7 +24,7 @@ using namespace respond::data_ops;
 
 class CostLoaderTest : public ::testing::Test {
 protected:
-    const std::string file_name = "test.csv";
+    const std::string file_name = "cost_test.csv";
     std::unique_ptr<CostLoader> cost_loader;
     void SetUp() override {
         std::ofstream config_file_stream("sim.conf");

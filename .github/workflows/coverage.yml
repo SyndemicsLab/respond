@@ -61,3 +61,7 @@ jobs:
                     googletest/*
                     build/*
                 fail-under-line: 80
+                html-out: coverage.html
+                html-details: true
+                html-title: TESPOND Test Coverage Report
+                html-theme: github.green
