@@ -1,4 +1,4 @@
-message(CHECK_START "Fetching spdlog...")
+message(CHECK_START "Fetching GTest...")
 list(APPEND CMAKE_MESSAGE_INDENT "  ")
 
 FetchContent_Declare(

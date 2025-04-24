@@ -4,7 +4,7 @@
 // Created Date: 2025-01-14                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-27                                                  //
+// Last Modified: 2025-04-24                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -117,15 +117,15 @@ TimedMatrix3d DataLoaderImpl::LoadEnteringSamples(
         GetConfig()->getIntVector("simulation.entering_sample_change_times");
     for (int i = 0; i < entering_sample_change_times.size(); ++i) {
         int changepoint = entering_sample_change_times[i];
-        column.clear();
+        column.str(std::string());
         column << column_prefix
                << ((i == 0) ? "1_"
                             : (std::to_string(
                                    entering_sample_change_times[i - 1] + 1) +
                                "_"))
                << std::to_string(changepoint);
-        std::vector<std::string> col =
-            entering_samples_table->getColumn(column.str());
+        std::string temp = column.str();
+        std::vector<std::string> col = entering_samples_table->getColumn(temp);
 
         Matrix3d entering_sample =
             CreateMatrix3d(number_intervention_states, number_behavior_states,

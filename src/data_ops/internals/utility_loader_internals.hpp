@@ -4,7 +4,7 @@
 // Created Date: 2025-03-12                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-27                                                  //
+// Last Modified: 2025-04-22                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -47,8 +47,9 @@ public:
         if (background_utility.find(perspective) != background_utility.end()) {
             return background_utility.at(perspective);
         }
-
-        // add warning
+        respond::utils::LogWarning(
+            logger_name,
+            "Background Utility not found for perspective: " + perspective);
         Matrix3d result;
         return result;
     }

@@ -1,0 +1,33 @@
+name: Ubuntu Unit Tests
+
+on:
+    push:
+        branches: [ "main" ]
+    pull_request:
+        branches: [ "main" ]
+
+jobs:
+    build:
+        name: Build Ubuntu Tests
+        uses: ./.github/workflows/build.yml
+        with:
+            build-type: Debug
+            os: ubuntu-latest
+            platform: 22.04
+            generator: Ninja
+            asset-name: respond_tests
+            asset-path: build/tests/respond_tests
+            cmake-vars: -D RESPOND_BUILD_PIC=ON -D RESPOND_BUILD_EXECUTABLE=OFF -D RESPOND_BUILD_TESTS=ON -D RESPOND_CALCULATE_COVERAGE=OFF -D RESPOND_BUILD_PYBINDINGS=OFF -D RESPOND_BUILD_BENCH=OFF -D RESPOND_BUILD_WARNINGS=ON -D RESPOND_BUILD_SHARED_LIBS=OFF
+    test:
+        needs: build
+        name: Test Ubuntu Libraries
+        runs-on: ubuntu-latest
+        steps:
+            - name: Download Artifact
+              uses: actions/download-artifact@v4
+              with:
+                name: ubuntu-latest-Debug-respond_tests
+
+            - name: Run Linux Tests
+              run: |
+                sudo chmod +x ./respond_tests && ./respond_tests
