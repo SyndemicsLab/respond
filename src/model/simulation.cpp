@@ -4,7 +4,7 @@
 // Created Date: 2025-01-14                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-04-02                                                  //
+// Last Modified: 2025-04-25                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -33,7 +33,7 @@ namespace model {
 void RespondImpl::Run(const DataLoader &data_loader) {
     state = data_loader.GetInitialSample();
     ResetTime();
-    ResetHistory();
+    ResetHistory(state);
 
     int duration = std::get<int>(data_loader.GetConfig()->get(
         "simulation.duration", static_cast<int>(0)));
@@ -45,12 +45,20 @@ void RespondImpl::Run(const DataLoader &data_loader) {
     history.state_history[duration] = state;
 }
 
-void RespondImpl::ResetHistory() {
+void RespondImpl::ResetHistory(const Matrix3d &matrix) {
     history.overdose_history.clear();
     history.fatal_overdose_history.clear();
     history.mortality_history.clear();
     history.intervention_admission_history.clear();
     history.state_history.clear();
+
+    // Pad the first timesteps with zeros except for the initial state
+    Matrix3d zeros(state.dimensions());
+    zeros.setZero();
+    history.overdose_history[0] = zeros;
+    history.fatal_overdose_history[0] = zeros;
+    history.mortality_history[0] = zeros;
+    history.intervention_admission_history[0] = zeros;
 }
 
 void RespondImpl::LogDebugPoint(const std::string &message,
@@ -79,16 +87,16 @@ Matrix3d RespondImpl::Step(const DataLoader &data_loader) {
     mat.setZero();
 
     admissions = admissions.cwiseMax(mat);
-    history.intervention_admission_history[time] = admissions;
+    history.intervention_admission_history[time + 1] = admissions;
 
     matrix_2 = MultiplyOD(matrix_1, data_loader);
-    history.overdose_history[time] = matrix_2;
+    history.overdose_history[time + 1] = matrix_2;
 
     auto matrix_3 = MultiplyFODGivenOD(matrix_2, data_loader);
-    history.fatal_overdose_history[time] = matrix_3;
+    history.fatal_overdose_history[time + 1] = matrix_3;
 
     matrix_2 = MultiplyMortality(matrix_1 - matrix_3, data_loader);
-    history.mortality_history[time] = matrix_2;
+    history.mortality_history[time + 1] = matrix_2;
 
     auto new_state = (matrix_1 - (matrix_2 + matrix_3));
 
