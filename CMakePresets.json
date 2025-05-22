@@ -8,102 +8,130 @@
     "include": [],
     "configurePresets": [
         {
-            "name": "linux-ninja",
+            "name": "configuration-common",
+            "description": "General Configuration Settings for All Configs",
             "hidden": true,
-            "displayName": "Linux Config",
-            "description": "Linux Config build using Ninja generator",
             "generator": "Ninja",
             "binaryDir": "${sourceDir}/build",
-            "cacheVariables": {
-                "RESPOND_BUILD_PIC": {
-                    "type": "BOOL",
-                    "value": "ON"
-                }
+            "installDir": "${sourceDir}/install"
+        },
+        {
+            "name": "configuration-common-linux",
+            "description": "Linux Configuration Settings for GCC and Clang",
+            "hidden": true,
+            "inherits": "configuration-common",
+            "condition": {
+                "type": "equals",
+                "lhs": "${hostSystemName}",
+                "rhs": "Linux"
             },
-            "environment": {}
-        },
-        {
-            "name": "linux-ninja-debug",
-            "inherits": "linux-ninja",
-            "hidden": true,
+            "architecture": {
+                "value": "x64",
+                "strategy": "external"
+            },
+            "toolset": {
+                "value": "host=x64",
+                "strategy": "external"
+            },
             "cacheVariables": {
-                "CMAKE_BUILD_TYPE": {
-                    "type": "STRING",
-                    "value": "Debug"
-                }
+                "RESPOND_BUILD_PIC": "ON"
             }
         },
         {
-            "name": "linux-ninja-release",
-            "inherits": "linux-ninja",
-            "hidden": true,
+            "name": "gcc-debug",
+            "displayName": "gcc Debug",
+            "description": "Target Linux with the GCC compiler, debug build type",
+            "inherits": "configuration-common-linux",
             "cacheVariables": {
-                "CMAKE_BUILD_TYPE": {
-                    "type": "STRING",
-                    "value": "Release"
-                }
+                "CMAKE_BUILD_TYPE": "Debug",
+                "RESPOND_BUILD_EXECUTABLE": "ON",
+                "RESPOND_BUILD_TESTS": "ON",
+                "RESPOND_CALCULATE_COVERAGE": "ON",
+                "RESPOND_BUILD_BENCH": "OFF",
+                "RESPOND_BUILD_SHARED_LIBS": "OFF",
+                "RESPOND_BUILD_WARNINGS": "ON",
+                "RESPOND_SYSTEM_INCLUDES": "OFF",
+                "RESPOND_INSTALL": "OFF",
+                "RESPOND_NO_EXCEPTIONS": "OFF"
             }
         },
         {
-            "name": "linux-ninja-debug-tests",
-            "inherits": "linux-ninja-debug",
+            "name": "gcc-release",
+            "displayName": "gcc Release",
+            "description": "Target Linux with the GCC compiler, release build type",
+            "inherits": "configuration-common-linux",
             "cacheVariables": {
-                "RESPOND_BUILD_TESTS": {
-                    "type": "BOOL",
-                    "value": "ON"
-                },
-                "RESPOND_CALCULATE_COVERAGE": {
-                    "type": "BOOL",
-                    "value": "ON"
-                }
+                "CMAKE_BUILD_TYPE": "Release",
+                "RESPOND_BUILD_EXECUTABLE": "ON",
+                "RESPOND_BUILD_TESTS": "OFF",
+                "RESPOND_CALCULATE_COVERAGE": "OFF",
+                "RESPOND_BUILD_BENCH": "OFF",
+                "RESPOND_BUILD_SHARED_LIBS": "OFF",
+                "RESPOND_BUILD_WARNINGS": "OFF",
+                "RESPOND_SYSTEM_INCLUDES": "OFF",
+                "RESPOND_INSTALL": "ON",
+                "RESPOND_NO_EXCEPTIONS": "OFF",
+                "RESPOND_RUN_OMP": "ON"
+            },
+            "warnings": {
+                "dev": false
             }
         },
         {
-            "name": "linux-ninja-release-executable",
-            "inherits": "linux-ninja-release",
-            "hidden": true,
+            "name": "gcc-release-cluster",
+            "inherits": "gcc-release",
             "cacheVariables": {
-                "RESPOND_BUILD_EXECUTABLE": {
-                    "type": "BOOL",
-                    "value": "ON"
-                },
-                "RESPOND_BUILD_PYBINDINGS": {
-                    "type": "BOOL",
-                    "value": "OFF"
-                }
+                "CMAKE_PREFIX_PATH": "${fileDir}/lib/sqlitecpp"
             }
         },
         {
-            "name": "linux-ninja-release-python",
-            "inherits": "linux-ninja-release",
-            "hidden": true,
+            "name": "gcc-debug-cluster",
+            "inherits": "gcc-debug",
             "cacheVariables": {
-                "RESPOND_BUILD_EXECUTABLE": {
-                    "type": "BOOL",
-                    "value": "OFF"
-                },
-                "RESPOND_BUILD_PYBINDINGS": {
-                    "type": "BOOL",
-                    "value": "ON"
-                }
+                "CMAKE_PREFIX_PATH": "${fileDir}/lib/sqlitecpp"
             }
         }
     ],
     "buildPresets": [
         {
-            "name": "default-executable",
-            "configurePreset": "linux-ninja-release-executable"
+            "name": "build-common",
+            "hidden": true,
+            "jobs": 8
         },
         {
-            "name": "default-python",
-            "configurePreset": "linux-ninja-release-python"
+            "name": "gcc-release",
+            "inherits": "build-common",
+            "configurePreset": "gcc-release"
+        },
+        {
+            "name": "gcc-install",
+            "inherits": "build-common",
+            "configurePreset": "gcc-release",
+            "targets": [
+                "install"
+            ]
+        },
+        {
+            "name": "gcc-debug",
+            "inherits": "build-common",
+            "configurePreset": "gcc-debug"
+        },
+        {
+            "name": "gcc-debug-cluster",
+            "inherits": "build-common",
+            "configurePreset": "gcc-debug-cluster"
+        },
+        {
+            "name": "gcc-release-cluster",
+            "inherits": "build-common",
+            "configurePreset": "gcc-release-cluster"
         }
     ],
     "testPresets": [
         {
-            "name": "default",
-            "configurePreset": "linux-ninja-debug-tests",
-            "configuration": "Debug",
+            "name": "test-common",
+            "description": "Settings for all tests",
+            "hidden": true,
             "output": {
                 "verbosity": "verbose",
                 "outputOnFailure": true
@@ -112,12 +140,40 @@
                 "noTestsAction": "error",
                 "stopOnFailure": true
             }
+        },
+        {
+            "name": "gcc-debug",
+            "displayName": "Strict",
+            "description": "Enable output and stop on failure",
+            "inherits": "test-common",
+            "configurePreset": "gcc-debug"
+        },
+        {
+            "name": "gcc-release",
+            "displayName": "Strict",
+            "description": "Enable output and stop on failure",
+            "inherits": "test-common",
+            "configurePreset": "gcc-release"
+        },
+        {
+            "name": "gcc-debug-cluster",
+            "displayName": "Strict",
+            "description": "Enable output and stop on failure",
+            "inherits": "test-common",
+            "configurePreset": "gcc-debug-cluster"
+        },
+        {
+            "name": "gcc-release-cluster",
+            "displayName": "Strict",
+            "description": "Enable output and stop on failure",
+            "inherits": "test-common",
+            "configurePreset": "gcc-release-cluster"
         }
     ],
     "packagePresets": [
         {
-            "name": "default",
-            "configurePreset": "linux-ninja-release-executable",
+            "name": "gcc-release",
+            "configurePreset": "gcc-release",
             "generators": [
                 "TGZ"
             ]
@@ -125,23 +181,52 @@
     ],
     "workflowPresets": [
         {
-            "name": "default",
+            "name": "gcc-debug",
+            "description": "Developer Debugging Workflow Without Installation",
             "steps": [
                 {
                     "type": "configure",
-                    "name": "linux-ninja-debug-tests"
+                    "name": "gcc-debug"
                 },
                 {
                     "type": "build",
-                    "name": "default-executable"
+                    "name": "gcc-debug"
                 },
                 {
                     "type": "test",
-                    "name": "default"
+                    "name": "gcc-debug"
+                }
+            ]
+        },
+        {
+            "name": "gcc-release",
+            "description": "Release Workflow Without Testing",
+            "steps": [
+                {
+                    "type": "configure",
+                    "name": "gcc-release"
+                },
+                {
+                    "type": "build",
+                    "name": "gcc-release"
                 },
                 {
                     "type": "package",
-                    "name": "default"
+                    "name": "gcc-release"
+                }
+            ]
+        },
+        {
+            "name": "gcc-release-cluster",
+            "description": "Release Workflow Without Testing for the BU SCC",
+            "steps": [
+                {
+                    "type": "configure",
+                    "name": "gcc-release-cluster"
+                },
+                {
+                    "type": "build",
+                    "name": "gcc-release-cluster"
                 }
             ]
         }

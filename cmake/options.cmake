@@ -11,9 +11,6 @@ option(RESPOND_BUILD_TESTS "Build tests" ON)
 # coverage options (only valid if RESPOND_BUILD_TESTS is ON)
 option(RESPOND_CALCULATE_COVERAGE "Calculate Code Coverage" OFF)
 
-# pybind options
-option(RESPOND_BUILD_PYBINDINGS "Build python bindings" OFF)
-
 # bench options
 option(RESPOND_BUILD_BENCH "Build benchmarks (Requires https://github.com/google/benchmark.git to be installed)" OFF)
 
