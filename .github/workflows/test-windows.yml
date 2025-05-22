@@ -2,9 +2,9 @@ name: Windows Unit Tests
 
 on:
     push:
-        branches: [ "main" ]
+        branches: [ "windows" ]
     pull_request:
-        branches: [ "main" ]
+        branches: [ "windows" ]
 
 jobs:
     build:
@@ -17,7 +17,7 @@ jobs:
             generator: MinGW Makefiles
             asset-name: respond_tests
             asset-path: "build\\tests\\Debug\\respond_tests.exe"
-            cmake-vars: -D RESPOND_BUILD_PIC=ON -D RESPOND_BUILD_EXECUTABLE=OFF -D RESPOND_BUILD_TESTS=ON -D RESPOND_CALCULATE_COVERAGE=OFF -D RESPOND_BUILD_PYBINDINGS=OFF -D RESPOND_BUILD_BENCH=OFF -D RESPOND_BUILD_WARNINGS=ON -D RESPOND_BUILD_SHARED_LIBS=OFF
+            cmake-vars: -D RESPOND_BUILD_PIC=ON -D RESPOND_BUILD_EXECUTABLE=OFF -D RESPOND_BUILD_TESTS=ON -D RESPOND_CALCULATE_COVERAGE=OFF -D RESPOND_BUILD_BENCH=OFF -D RESPOND_BUILD_WARNINGS=ON -D RESPOND_BUILD_SHARED_LIBS=OFF
     test:
         needs: build
         name: Test Windows Libraries

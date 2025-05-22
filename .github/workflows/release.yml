@@ -39,7 +39,7 @@ jobs:
                 generator: ${{matrix.gen}}
                 asset-name: ${{matrix.asset-name}}
                 asset-path: ${{matrix.path}}
-                cmake-vars: -D RESPOND_BUILD_PIC=ON -D RESPOND_BUILD_EXECUTABLE=ON -D RESPOND_BUILD_TESTS=OFF -D RESPOND_CALCULATE_COVERAGE=OFF -D RESPOND_BUILD_PYBINDINGS=OFF -D RESPOND_BUILD_BENCH=OFF -D RESPOND_BUILD_WARNINGS=OFF -D RESPOND_BUILD_SHARED_LIBS=OFF
+                cmake-vars: -D RESPOND_BUILD_PIC=ON -D RESPOND_BUILD_EXECUTABLE=ON -D RESPOND_BUILD_TESTS=OFF -D RESPOND_CALCULATE_COVERAGE=OFF -D RESPOND_BUILD_BENCH=OFF -D RESPOND_BUILD_WARNINGS=OFF -D RESPOND_BUILD_SHARED_LIBS=OFF
     release:
         strategy:
             matrix:
