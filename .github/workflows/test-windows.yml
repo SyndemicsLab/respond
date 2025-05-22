@@ -2,9 +2,9 @@ name: Windows Unit Tests
 
 on:
     push:
-        branches: [ "main" ]
+        branches: [ "windows" ]
     pull_request:
-        branches: [ "main" ]
+        branches: [ "windows" ]
 
 jobs:
     build:
