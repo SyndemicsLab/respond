@@ -1,10 +1,10 @@
 ////////////////////////////////////////////////////////////////////////////////
 // File: post_sim.hpp                                                         //
-// Project: RESPONDSimulationv2                                               //
+// Project: model                                                             //
 // Created Date: 2025-01-14                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-27                                                  //
+// Last Modified: 2025-05-27                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -20,6 +20,13 @@
 
 namespace respond {
 namespace model {
+
+/// @brief
+/// @param data
+/// @param discountRate
+/// @param N
+/// @param isDiscrete
+/// @return
 inline respond::data_ops::Matrix3d
 CalculateDiscount(const respond::data_ops::Matrix3d &data, double discountRate,
                   int N, bool isDiscrete = true) {
@@ -35,6 +42,13 @@ CalculateDiscount(const respond::data_ops::Matrix3d &data, double discountRate,
     return result;
 }
 
+/// @brief
+/// @param history
+/// @param cost_loader
+/// @param perspectives
+/// @param discount
+/// @param discount_rate
+/// @return
 inline respond::data_ops::CostList
 CalculateCosts(const respond::data_ops::History &history,
                const respond::data_ops::CostLoader &cost_loader,
@@ -82,6 +96,13 @@ CalculateCosts(const respond::data_ops::History &history,
     return costs;
 }
 
+/// @brief
+/// @param history
+/// @param utility_loader
+/// @param util_type
+/// @param discount
+/// @param discount_rate
+/// @return
 inline respond::data_ops::TimedMatrix3d
 CalculateUtilities(const respond::data_ops::History &history,
                    const respond::data_ops::UtilityLoader &utility_loader,
@@ -118,6 +139,11 @@ CalculateUtilities(const respond::data_ops::History &history,
     return utilities;
 }
 
+/// @brief
+/// @param history
+/// @param provideDiscount
+/// @param discountRate
+/// @return
 inline double CalculateLifeYears(const respond::data_ops::History &history,
                                  bool provideDiscount = false,
                                  double discountRate = 0.0) {
@@ -142,6 +168,9 @@ inline double CalculateLifeYears(const respond::data_ops::History &history,
     return result(0) / 52.0;
 }
 
+/// @brief
+/// @param cost_list
+/// @return
 inline std::vector<double>
 CalculateTotalCosts(const respond::data_ops::CostList &cost_list) {
     std::vector<double> result;

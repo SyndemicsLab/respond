@@ -1,10 +1,10 @@
 ////////////////////////////////////////////////////////////////////////////////
 // File: UtilityLoader.hpp                                                    //
-// Project: RESPONDSimulationv2                                               //
+// Project: data_ops                                                          //
 // Created Date: 2025-01-14                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-27                                                  //
+// Last Modified: 2025-05-27                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -17,29 +17,51 @@
 #include <string>
 #include <unordered_map>
 
-#include <respond/data_ops/matrices.hpp>
+#include <respond/data_ops/data_types.hpp>
 
 namespace respond {
 namespace data_ops {
+/// @brief
 class UtilityLoader {
 public:
-    virtual std::unordered_map<std::string, Matrix3d>
+    /// @brief
+    /// @param file
+    /// @return
+    virtual StringUOMap<Matrix3d>
     LoadBackgroundUtility(const std::string &file) = 0;
 
-    virtual std::unordered_map<std::string, Matrix3d>
-    LoadOUDUtility(const std::string &file) = 0;
+    /// @brief
+    /// @param file
+    /// @return
+    virtual StringUOMap<Matrix3d> LoadOUDUtility(const std::string &file) = 0;
 
-    virtual std::unordered_map<std::string, Matrix3d>
+    /// @brief
+    /// @param file
+    /// @return
+    virtual StringUOMap<Matrix3d>
     LoadSettingUtility(const std::string &file) = 0;
 
+    /// @brief
+    /// @param perspective
+    /// @return
     virtual Matrix3d
     GetBackgroundUtility(const std::string &perspective) const = 0;
 
+    /// @brief
+    /// @param perspective
+    /// @return
     virtual Matrix3d GetOUDUtility(const std::string &perspective) const = 0;
 
+    /// @brief
+    /// @param perspective
+    /// @return
     virtual Matrix3d
     GetSettingUtility(const std::string &perspective) const = 0;
 
+    /// @brief
+    /// @param directory
+    /// @param log_name
+    /// @return
     static std::unique_ptr<UtilityLoader>
     Create(const std::string &directory = "",
            const std::string &log_name = "console");

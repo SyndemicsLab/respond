@@ -1,10 +1,10 @@
 ////////////////////////////////////////////////////////////////////////////////
 // File: matrices.hpp                                                         //
-// Project: RESPONDSimulationv2                                               //
+// Project: data_ops                                                          //
 // Created Date: 2025-01-14                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-27                                                  //
+// Last Modified: 2025-05-27                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -18,16 +18,17 @@
 #include <vector>
 
 #include <Eigen/Eigen>
-#include <unsupported/Eigen/CXX11/Tensor>
 
-/// @brief Namespace containing all Helper Utility Classes
+#include <respond/data_ops/data_types.hpp>
+
 namespace respond {
 namespace data_ops {
 
-using Matrix3d = Eigen::Tensor<double, 3>;
-
-using TimedMatrix3d = std::map<int, Matrix3d>;
-
+/// @brief
+/// @param x_1
+/// @param x_2
+/// @param x_3
+/// @return
 inline Matrix3d CreateMatrix3d(const int x_1, const int x_2, const int x_3) {
     Eigen::array<Eigen::Index, 3> order = {x_1, x_2, x_3};
     Matrix3d empty(order);
@@ -35,12 +36,13 @@ inline Matrix3d CreateMatrix3d(const int x_1, const int x_2, const int x_3) {
     return empty;
 }
 
+/// @brief
+/// @param matrix
+/// @param stream
 inline void PrintMatrix3d(const Matrix3d &matrix, std::ostream &stream) {
     Matrix3d::Dimensions dim = matrix.dimensions();
     for (int i = 0; i < dim[2]; ++i) {
-        // intervention iterated along columns
         for (int j = 0; j < dim[0]; ++j) {
-            // oud state is the row
             for (int k = 0; k < dim[1]; ++k) {
                 stream << matrix(j, k, i) << " ";
             }
@@ -52,6 +54,9 @@ inline void PrintMatrix3d(const Matrix3d &matrix, std::ostream &stream) {
     }
 }
 
+/// @brief
+/// @param data
+/// @param stream
 inline void PrintTimedMatrix3d(const TimedMatrix3d &data,
                                std::ostream &stream) {
     for (const auto &kv : data) {
@@ -60,6 +65,9 @@ inline void PrintTimedMatrix3d(const TimedMatrix3d &data,
     }
 }
 
+/// @brief
+/// @param matrices
+/// @return
 inline Matrix3d Matrix3dVectorMinimum(const std::vector<Matrix3d> &matrices) {
     if (matrices.empty()) {
         return {};
@@ -76,6 +84,9 @@ inline Matrix3d Matrix3dVectorMinimum(const std::vector<Matrix3d> &matrices) {
     return smallest;
 }
 
+/// @brief
+/// @param matrices
+/// @return
 inline Matrix3d
 Matrix3dVectorMultiplied(const std::vector<Matrix3d> &matrices) {
     if (matrices.empty()) {
@@ -96,6 +107,9 @@ Matrix3dVectorMultiplied(const std::vector<Matrix3d> &matrices) {
     return mult;
 }
 
+/// @brief
+/// @param matrices
+/// @return
 inline Matrix3d TimedMatrix3dSummed(const TimedMatrix3d &matrices) {
     if (matrices.size() <= 0) {
         // log empty data
@@ -109,6 +123,9 @@ inline Matrix3d TimedMatrix3dSummed(const TimedMatrix3d &matrices) {
     return running_sum;
 }
 
+/// @brief
+/// @param data
+/// @return
 inline double TimedMatrix3dSummedOverDimensions(const TimedMatrix3d &data) {
     if (data.size() <= 0) {
         return 0.0;
@@ -124,6 +141,10 @@ inline double TimedMatrix3dSummedOverDimensions(const TimedMatrix3d &data) {
     return result(0);
 }
 
+/// @brief
+/// @param data
+/// @param value
+/// @return
 inline TimedMatrix3d MultiplyTimedMatrix3dByDouble(const TimedMatrix3d &data,
                                                    const double &value) {
     TimedMatrix3d result;
@@ -138,6 +159,10 @@ inline TimedMatrix3d MultiplyTimedMatrix3dByDouble(const TimedMatrix3d &data,
     return result;
 }
 
+/// @brief
+/// @param state
+/// @param value
+/// @return
 inline TimedMatrix3d MultiplyTimedMatrix3dByMatrix(const TimedMatrix3d &state,
                                                    const Matrix3d &value) {
     TimedMatrix3d result;

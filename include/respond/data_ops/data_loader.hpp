@@ -1,10 +1,10 @@
 ////////////////////////////////////////////////////////////////////////////////
 // File: data_loader.hpp                                                      //
-// Project: RESPONDSimulationv2                                               //
+// Project: data_ops                                                          //
 // Created Date: 2025-01-14                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-27                                                  //
+// Last Modified: 2025-05-27                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -23,95 +23,140 @@
 namespace respond {
 namespace data_ops {
 
-/*!
- * @brief The object that processes model inputs
- *
- * DataLoader handles the primary configuration file, `sim.conf`, and the
- * tabular inputs necessary to run the model.
- *
- * Updated **[2023-04-28]**
- *
- * **Required Input Tables:**
- * - `sim.conf`
- * - `all_types_overdose.csv`
- * - `background_mortality.csv`
- * - `block_init_effect.csv`
- * - `block_trans.csv`
- * - `entering_cohort.csv`
- * - `fatal_overdose.csv`
- * - `init_cohort.csv`
- * - `oud_trans.csv`
- * - `SMR.csv`
- *
- * **Optional Input Tables:**
- * - `bg_utility.csv`
- * - `healthcare_utilization_cost.csv`
- * - `oud_utility.csv`
- * - `overdose_cost.csv`
- * - `pharmaceutical_cost.csv`
- * - `setting_utility.csv`
- * - `treatment_utilization_cost.csv`
- */
+/// @brief
 class DataLoader {
 public:
+    /// @brief
     virtual ~DataLoader() = default;
 
+    /// @brief
+    /// @return
     virtual Matrix3d GetInitialSample() const = 0;
 
+    /// @brief
+    /// @param time
+    /// @return
     virtual Matrix3d GetEnteringSamples(const int &time) const = 0;
 
+    /// @brief
+    /// @return
     virtual Matrix3d GetOUDTransitionRates() const = 0;
 
+    /// @brief
+    /// @param time
+    /// @return
     virtual Matrix3d GetInterventionTransitionRates(const int &time) const = 0;
 
+    /// @brief
+    /// @param time
+    /// @return
     virtual Matrix3d GetOverdoseRates(const int &time) const = 0;
 
+    /// @brief
+    /// @param time
+    /// @return
     virtual Matrix3d GetFatalOverdoseRates(const int &time) const = 0;
 
+    /// @brief
+    /// @return
     virtual Matrix3d GetMortalityRates() const = 0;
 
+    /// @brief
+    /// @return
     virtual Matrix3d GetInterventionInitRates() const = 0;
 
+    /// @brief
+    /// @param mat
     virtual void SetInitialSample(const Matrix3d &mat) = 0;
 
+    /// @brief
+    /// @param mat
     virtual void SetEnteringSamples(const TimedMatrix3d &mat) = 0;
 
+    /// @brief
+    /// @param mat
     virtual void SetOUDTransitionRates(const Matrix3d &mat) = 0;
 
+    /// @brief
+    /// @param mat
     virtual void SetInterventionTransitionRates(const TimedMatrix3d &mat) = 0;
 
+    /// @brief
+    /// @param mat
     virtual void SetOverdoseRates(const TimedMatrix3d &mat) = 0;
 
+    /// @brief
+    /// @param mat
     virtual void SetFatalOverdoseRates(const TimedMatrix3d &mat) = 0;
 
+    /// @brief
+    /// @param mat
     virtual void SetMortalityRates(const Matrix3d &mat) = 0;
 
+    /// @brief
+    /// @param mat
     virtual void SetInterventionInitRates(const Matrix3d &mat) = 0;
 
+    /// @brief
+    /// @param file
+    /// @return
     virtual Matrix3d LoadInitialSample(const std::string &file) = 0;
 
+    /// @brief
+    /// @param file
+    /// @param intervention
+    /// @param behavior
+    /// @return
     virtual TimedMatrix3d LoadEnteringSamples(const std::string &file,
                                               const std::string &intervention,
                                               const std::string &behavior) = 0;
 
+    /// @brief
+    /// @param file
+    /// @return
     virtual TimedMatrix3d LoadEnteringSamples(const std::string &file) = 0;
 
+    /// @brief
+    /// @param file
+    /// @return
     virtual Matrix3d LoadOUDTransitionRates(const std::string &file) = 0;
 
+    /// @brief
+    /// @param file
+    /// @return
     virtual Matrix3d LoadInterventionInitRates(const std::string &file) = 0;
 
+    /// @brief
+    /// @param file
+    /// @return
     virtual TimedMatrix3d
     LoadInterventionTransitionRates(const std::string &file) = 0;
 
+    /// @brief
+    /// @param file
+    /// @return
     virtual TimedMatrix3d LoadOverdoseRates(const std::string &file) = 0;
 
+    /// @brief
+    /// @param file
+    /// @return
     virtual TimedMatrix3d LoadFatalOverdoseRates(const std::string &file) = 0;
 
+    /// @brief
+    /// @param smr_file
+    /// @param background_file
+    /// @return
     virtual Matrix3d LoadMortalityRates(const std::string &smr_file,
                                         const std::string &background_file) = 0;
 
+    /// @brief
+    /// @return
     virtual Data::IConfigablePtr GetConfig() const = 0;
 
+    /// @brief
+    /// @param directory
+    /// @param log_name
+    /// @return
     static std::unique_ptr<DataLoader>
     Create(const std::string &directory = "",
            const std::string &log_name = "console");

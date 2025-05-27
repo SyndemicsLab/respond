@@ -10,6 +10,7 @@ local.properties
 .vscode/
 .loadpath
 .recommenders
+log.txt
 
 # Dependency Libraries
 lib/*

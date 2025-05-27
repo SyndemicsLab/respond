@@ -1,10 +1,10 @@
 ////////////////////////////////////////////////////////////////////////////////
 // File: Simulation.hpp                                                       //
-// Project: RESPONDSimulationv2                                               //
+// Project: model                                                             //
 // Created Date: 2025-01-14                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-27                                                  //
+// Last Modified: 2025-05-27                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -21,12 +21,26 @@
 #include <respond/data_ops/utility_loader.hpp>
 
 namespace respond {
+/// @brief
 namespace model {
+
+/// @brief
 class Respond {
 public:
+    /// @brief
     virtual ~Respond() = default;
+
+    /// @brief
+    /// @param data_loader
     virtual void Run(const respond::data_ops::DataLoader &data_loader) = 0;
+
+    /// @brief
+    /// @return
     virtual respond::data_ops::History GetHistory() const = 0;
+
+    /// @brief
+    /// @param log_name
+    /// @return
     static std::unique_ptr<Respond>
     Create(const std::string &log_name = "console");
 };

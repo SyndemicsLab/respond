@@ -1,10 +1,10 @@
 ////////////////////////////////////////////////////////////////////////////////
 // File: utility_loader.cpp                                                   //
-// Project: RESPONDSimulationv2                                               //
+// Project: data_ops                                                          //
 // Created Date: 2025-01-14                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-27                                                  //
+// Last Modified: 2025-05-27                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -25,28 +25,27 @@
 
 namespace respond {
 namespace data_ops {
-std::unordered_map<std::string, Matrix3d>
+StringUOMap<Matrix3d>
 UtilityLoaderImpl::LoadBackgroundUtility(const std::string &file) {
     this->background_utility = this->LoadUtility(file);
     return this->background_utility;
 }
 
-std::unordered_map<std::string, Matrix3d>
+StringUOMap<Matrix3d>
 UtilityLoaderImpl::LoadOUDUtility(const std::string &file) {
     this->behavior_utility = this->LoadUtility(file);
     return this->behavior_utility;
 }
 
-std::unordered_map<std::string, Matrix3d>
+StringUOMap<Matrix3d>
 UtilityLoaderImpl::LoadSettingUtility(const std::string &file) {
     this->setting_utility = this->LoadUtility(file);
     return this->setting_utility;
 }
 
-std::unordered_map<std::string, Matrix3d>
-UtilityLoaderImpl::LoadUtility(const std::string &file) {
+StringUOMap<Matrix3d> UtilityLoaderImpl::LoadUtility(const std::string &file) {
     Data::IDataTablePtr table = LoadDataTable(file);
-    std::unordered_map<std::string, Matrix3d> result;
+    StringUOMap<Matrix3d> result;
 
     size_t number_behavior_states =
         GetConfig()->getStringVector("state.ouds").size();

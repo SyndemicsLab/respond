@@ -1,10 +1,10 @@
 ////////////////////////////////////////////////////////////////////////////////
 // File: data_types.hpp                                                       //
-// Project: RESPONDSimulationv2                                               //
+// Project: data_ops                                                          //
 // Created Date: 2025-01-14                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-27                                                  //
+// Last Modified: 2025-05-27                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -16,17 +16,36 @@
 #include <string>
 #include <vector>
 
-#include <respond/data_ops/matrices.hpp>
+#include <Eigen/Eigen>
+#include <unsupported/Eigen/CXX11/Tensor>
 
+/// @brief General Namespace for all RESPOND repo related code.
 namespace respond {
+/// @brief Namespace for all data operations.
 namespace data_ops {
+
+/// @brief
+using Matrix3d = Eigen::Tensor<double, 3>;
+
+/// @brief
+using TimedMatrix3d = std::map<int, Matrix3d>;
+
+/// @brief
+/// @tparam T
+template <typename T> using StringMap = std::map<std::string, T>;
+
+/// @brief
+/// @tparam T
+template <typename T> using StringUOMap = std::unordered_map<std::string, T>;
 
 /// @brief Specification for each dimension in the Matrix3d
 enum class Dimension : int {
-    kIntervention = 0,
-    kOud = 1,
-    kDemographicCombo = 2
+    kIntervention = 0,    // Intervention Dimension
+    kOud = 1,             // OUD Dimension
+    kDemographicCombo = 2 // Demographic Combination Dimension
 };
+
+/// @brief
 struct History {
     TimedMatrix3d state_history;
     TimedMatrix3d overdose_history;
@@ -35,6 +54,7 @@ struct History {
     TimedMatrix3d intervention_admission_history;
 };
 
+/// @brief
 struct Cost {
     std::string perspective;
     TimedMatrix3d healthcare_cost;
@@ -48,8 +68,14 @@ struct Cost {
 /// Simulation
 using CostList = std::vector<Cost>;
 
-enum class UtilityType : int { kMin = 0, kMult = 1, kCount = 2 };
+/// @brief
+enum class UtilityType : int {
+    kMin = 0,  // Calculate Minimum
+    kMult = 1, // Calculate Multiplicative
+    kCount = 2 // Counter for Enum
+};
 
+/// @brief
 struct Totals {
     std::vector<double> base_costs;
     std::vector<double> disc_costs;

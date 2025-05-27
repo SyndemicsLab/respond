@@ -1,10 +1,10 @@
 ////////////////////////////////////////////////////////////////////////////////
 // File: cost_loader_internals.hpp                                            //
-// Project: RESPONDSimulationv2                                               //
+// Project: internals                                                         //
 // Created Date: 2025-03-07                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-27                                                  //
+// Last Modified: 2025-05-27                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -36,16 +36,16 @@ public:
 
     ~CostLoaderImpl() = default;
 
-    std::unordered_map<std::string, Matrix3d>
+    StringUOMap<Matrix3d>
     LoadHealthcareUtilizationCost(const std::string &file) override;
 
-    std::unordered_map<std::string, std::unordered_map<std::string, double>>
+    StringUOMap<StringUOMap<double>>
     LoadOverdoseCost(const std::string &file) override;
 
-    std::unordered_map<std::string, Matrix3d>
+    StringUOMap<Matrix3d>
     LoadPharmaceuticalCost(const std::string &file) override;
 
-    std::unordered_map<std::string, Matrix3d>
+    StringUOMap<Matrix3d>
     LoadTreatmentUtilizationCost(const std::string &file) override;
 
     Matrix3d GetHealthcareUtilizationCost(
@@ -96,25 +96,20 @@ public:
     double GetFatalOverdoseCost(const std::string &perspective) const override;
 
 private:
-    std::unordered_map<std::string, Matrix3d> healthcare_utilization_cost;
-    std::unordered_map<std::string, Matrix3d> pharmaceutical_cost;
-    std::unordered_map<std::string, Matrix3d> treatment_utilization_cost;
-    std::unordered_map<std::string, std::unordered_map<std::string, double>>
-        overdose_costs_map;
-    std::unordered_map<std::string, std::unordered_map<std::string, double>>
-        pharmaceutical_costs_map;
-    std::unordered_map<std::string, std::unordered_map<std::string, double>>
-        treatment_utilization_cost_map;
+    StringUOMap<Matrix3d> healthcare_utilization_cost;
+    StringUOMap<Matrix3d> pharmaceutical_cost;
+    StringUOMap<Matrix3d> treatment_utilization_cost;
+    StringUOMap<StringUOMap<double>> overdose_costs_map;
+    StringUOMap<StringUOMap<double>> pharmaceutical_costs_map;
+    StringUOMap<StringUOMap<double>> treatment_utilization_cost_map;
 
-    std::unordered_map<std::string, std::unordered_map<std::string, double>>
+    StringUOMap<StringUOMap<double>>
     LoadTreatmentUtilizationCostMap(Data::IDataTablePtr table);
-    std::unordered_map<std::string, std::unordered_map<std::string, double>>
+    StringUOMap<StringUOMap<double>>
     LoadPharmaceuticalCostMap(Data::IDataTablePtr table);
 
-    void LoadCostViaPerspective(
-        std::unordered_map<std::string, Matrix3d> &cost,
-        std::unordered_map<std::string, std::unordered_map<std::string, double>>
-            &cost_map);
+    void LoadCostViaPerspective(StringUOMap<Matrix3d> &cost,
+                                StringUOMap<StringUOMap<double>> &cost_map);
 };
 } // namespace data_ops
 } // namespace respond
