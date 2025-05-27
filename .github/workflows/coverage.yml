@@ -1,4 +1,4 @@
-name: Coverage Results
+name: Code Coverage
 
 on:
     push:

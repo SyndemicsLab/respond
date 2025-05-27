@@ -2,8 +2,6 @@
 
 <a href="https://www.syndemicslab.org/hep-ce"><img align="right" src="https://github.com/SyndemicsLab/.github/blob/main/profile/images/RESPOND.png" alt="RESPOND Logo" height="120" /></a>
 
-[![Build](https://github.com/SyndemicsLab/RESPONDSimulationv2/actions/workflows/test-ubuntu.yml/badge.svg)](https://github.com/SyndemicsLab/RESPONDSimulationv2/actions/workflows/test-ubuntu.yml)
-
 [![Docs](https://github.com/SyndemicsLab/RESPONDSimulationv2/actions/workflows/deploy-docs.yml/badge.svg)](https://github.com/SyndemicsLab/RESPONDSimulationv2/actions/workflows/deploy-docs.yml)
 
 [![Tests](https://github.com/SyndemicsLab/RESPONDSimulationv2/actions/workflows/test-ubuntu.yml/badge.svg)](https://github.com/SyndemicsLab/RESPONDSimulationv2/actions/workflows/test-ubuntu.yml)
