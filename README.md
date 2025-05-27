@@ -10,67 +10,88 @@
 
 [![Coverage](https://github.com/SyndemicsLab/RESPONDSimulationv2/actions/workflows/coverage.yml/badge.svg)](https://github.com/SyndemicsLab/RESPONDSimulationv2/actions/workflows/coverage.yml)
 
-`RESPONDv2.0` is a complete rewrite of the RESPOND model, first created by the [Syndemics Lab](https://www.syndemicslab.org) in the late 2010s, with the goals of improving the readability and maintainability of the model, improving the execution speed, and making the model calibration process easier.
+This repository houses a complete rewrite of the original [RESPOND model](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0310763), first created by the [Syndemics Lab](https://www.syndemicslab.org) in 2018 with a focus on 3 primary goals:
 
-While the original model was built using a combination of the R and C++ programming languages, the core of this rewrite is purely C++ with various language bindings so users can work with the model using their language of choice.
+1. Improve the Maintainability/Scalability of the Model
+2. Improve the Overall Efficiency of the Model
+3. Improve the Portability
 
-## Dependency Management
+## RESPONDv1
 
-Dependency management is done primarily through CMake files and the `FetchContent_Declare` methodology. If you wish to maintain local installations, core dependencies include:
+The [original RESPOND model](https://github.com/SyndemicsLab/RESPONDv1/tree/main) was built using a combination of the R and C++ programming languages. This proved computationally slow and required a very skilled developer at the core of the software knowing all of the intricate details. As such, it proved incredibly difficult to onboard new engineers, analysts, and researchers to the model. Worse yet, in order to make changes to the model, all requirements inevitably filtered back to the software engineer. Following the software "inversion of control" paradigm, this refactoring focused on abstracting the model to it's core components and allowing users to customize it to their needs rather than a general rigid structure.
+
+## CMake
+
+RESPOND makes full use of the CMake build system. It is a common tool used throughout the C++ user-base and we utilize it for dependency management, linking, and testing. As C++ has poor package management, we intentionally decided to move our focus away from tools such as conan and vcpkg and stay with pure CMake. Not to say we would never publish with such package managers, but it is not a core focus of the refactor/engineering team.
+
+We natively support 4 different build workflows with the `CMakePresets.json` file. They are:
+
+1. `gcc-release`
+2. `gcc-debug`
+3. `gcc-release-cluster`
+4. `gcc-debug-cluster`
+
+Unless you are explicitly using a linux based computing cluster, we highly recommend choosing one of the first two build processes. In the future, we do intend to expand to additional compilers and operating systems beyond GCC and Linux.
+
+Overall, we make use of 11 custom CMake variables. They are found in the [options.cmake file](cmake/options.cmake) and all are set accordingly in the `CMakePresets.json`.
+
+## Dependencies
+
+We make abundant use of the CMake `FetchContent` feature released in CMake 3.11. We utilize features added in CMake 3.24 to check if the package is previously installed, so the minimum required version of CMake is **3.24**.
+
+The required dependencies are:
 
 - [DataManagement](https://github.com/SyndemicsLab/DataManagement)
 - [Eigen](https://gitlab.com/libeigen/eigen)
 - [spdlog](https://github.com/gabime/spdlog)
 
-For python bindings we require:
-
-- [Pybind11](https://pybind11.readthedocs.io/en/stable/basics.html)
-- [Scikit-Build-Core](https://scikit-build-core.readthedocs.io/en/latest/)
-
 For tests we require:
 
 - [GoogleTest](https://github.com/google/googletest)
 
-## Installation
+## Build
 
-To install the C++ executable (a list of cmake variable options can be found [here](cmake/options.cmake)):
+This is, by nature, a C++ library. This means that the default behavior is not to provide an executable for the model, but rather a set of callable functions to design your own model. However, we have a distinct use case for an executable and building a model, and as such we provide the ability to build and install this executable. This is directly controlled via the `RESPOND_BUILD_EXECUTABLE` variable.
 
-```shell
-git clone https://github.com/SyndemicsLab/RESPONDSimulationv2.git
-cd RESPONDSimulationv2/build/
-cmake .. -DCMAKE_BUILD_TYPE=Release -DRESPOND_BUILD_EXECUTABLE=ON -DRESPOND_BUILD_PIC=ON -DRESPOND_INSTALL=ON
-cmake --build . --target install --config Release
-```
+### Local
 
-To build the Python Bindings into a OS specific wheel (we are working on deploying/testing multi-platform):
+If you would like to clone and build this locally, it is a relatively straightforward process:
 
 ```shell
 git clone https://github.com/SyndemicsLab/RESPONDSimulationv2.git
 cd RESPONDSimulationv2
-pipx run build
+cmake --workflow --preset gcc-release
 ```
 
-and the wheel/distribution zip are placed in a directory called `dist/` found in the root of the project.
+And then the model is build and installed. Our default location is a build directory in the repository, but the CMake Install Directory can be pointed to wherever the user desires.
 
-## What's New?
+### Fetch Content
 
-### Simulation Function Structure
+If you would like to make use of Fetch Content to extract the library:
 
-One of the largest changes to the model, from a programming perspective, is the approach taken for representing the simulation population. In the original RESPOND model, this was done through a large, five-dimensional array that could not easily account for new population demographics/strata and required multiplication to be performed in serial.
+```cmake
+include(FetchContent)
+FetchContent_Declare(
+    respond
+    GIT_REPOSITORY https://github.com/SyndemicsLab/RESPONDSimulationv2.git
+    GIT_TAG main
+)
+option(RESPOND_INSTALL "Enable install for respond project" ON)
+option(RESPOND_BUILD_TESTS "Disable testing for RESPOND" OFF)
+FetchContent_MakeAvailable(respond)
+```
 
-This new implementation uses Eigen objects both to speed up the simulation through parallel computation of matrix multiplication and to make the programming more directly follow the underlying mathematical logic.
+### Script
 
-The State Tensor, known in the original as `cohort` (described above), is a three-dimensional array whose axes are
+If you would prefer a single, all in one, script. Our team has developed a script that works on any linux environment and finds packages wherever available. As such, the user needs simply run:
 
-- Treatment/Intervention Status
-- Opioid Use Disorder (OUD) Status
-- Demographics (e.g. age, sex)
+```shell
+./tools/build.sh
+```
 
-This enables flexibility in the number of combinations of intervention, opioid use, and demographics classifiers used in the model. The State Tensor is then wrapped in a vector to capture all timesteps.
+## Running the RESPOND Executable
 
-## Running RESPOND
-
-After building RESPOND, running the model requires a set of input files. The input files required are:
+If you choose to use our provided executable, running the model requires a set of input files. The input files required are:
 
 1. `all_types_overdose.csv`
 2. `background_mortality.csv`
