@@ -1,12 +1,14 @@
-# RESPONDSimulationv2
+# RESPOND: An Opioid Use Disorder State Transition Model
 
-[![Ubuntu Build](https://github.com/SyndemicsLab/RESPONDSimulationv2/actions/workflows/build-and-test.yml/badge.svg)](https://github.com/SyndemicsLab/RESPONDSimulationv2/actions/workflows/build-and-test.yml)
+<a href="https://www.syndemicslab.org/hep-ce"><img align="right" src="https://github.com/SyndemicsLab/.github/blob/main/profile/images/RESPOND.png" alt="RESPOND Logo" height="120" /></a>
 
-[![Ubuntu Tests](https://github.com/SyndemicsLab/RESPONDSimulationv2/actions/workflows/build-and-test.yml/badge.svg)](https://github.com/SyndemicsLab/RESPONDSimulationv2/actions/workflows/build-and-test.yml)
+[![Build](https://github.com/SyndemicsLab/RESPONDSimulationv2/actions/workflows/test-ubuntu.yml/badge.svg)](https://github.com/SyndemicsLab/RESPONDSimulationv2/actions/workflows/test-ubuntu.yml)
 
-[![Windows Build](https://github.com/SyndemicsLab/RESPONDSimulationv2/actions/workflows/build-and-test.yml/badge.svg)](https://github.com/SyndemicsLab/RESPONDSimulationv2/actions/workflows/build-and-test.yml)
+[![Docs](https://github.com/SyndemicsLab/RESPONDSimulationv2/actions/workflows/deploy-docs.yml/badge.svg)](https://github.com/SyndemicsLab/RESPONDSimulationv2/actions/workflows/deploy-docs.yml)
 
-[![Windows Tests](https://github.com/SyndemicsLab/RESPONDSimulationv2/actions/workflows/build-and-test.yml/badge.svg)](https://github.com/SyndemicsLab/RESPONDSimulationv2/actions/workflows/build-and-test.yml)
+[![Tests](https://github.com/SyndemicsLab/RESPONDSimulationv2/actions/workflows/test-ubuntu.yml/badge.svg)](https://github.com/SyndemicsLab/RESPONDSimulationv2/actions/workflows/test-ubuntu.yml)
+
+[![Coverage](https://github.com/SyndemicsLab/RESPONDSimulationv2/actions/workflows/coverage.yml/badge.svg)](https://github.com/SyndemicsLab/RESPONDSimulationv2/actions/workflows/coverage.yml)
 
 `RESPONDv2.0` is a complete rewrite of the RESPOND model, first created by the [Syndemics Lab](https://www.syndemicslab.org) in the late 2010s, with the goals of improving the readability and maintainability of the model, improving the execution speed, and making the model calibration process easier.
 
