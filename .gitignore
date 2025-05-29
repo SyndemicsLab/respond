@@ -22,10 +22,8 @@ build/*
 dist/
 
 # Docs Files
-docs/html
-docs/latex
-docs/man
-docs/images/drawio
+docs/doxygen/*
+!docs/doxygen/.gitkeep
 
 test/TestInput/*
 !test/TestInput/.gitkeep
