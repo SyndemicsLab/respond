@@ -1,37 +1,14 @@
 # Running the Model
 
-RESPOND requires inputs for population dynamics in order to run, but cost/utility analysis is optional.
+Running RESPOND is incredibly simple, provided you use our packaged executable. If built using the "gcc-release" workflow the following command runs the executable from the root of the repository on input folder 1:
 
-## Required Inputs
+```bash
+./build/extras/executable/hep_ce /path/to/input/folders 1 1
+```
 
-- `sim.conf`
-- `all_types_overdose.csv`
-- `background_mortality.csv`
-- `block_init_effect.csv`
-- `block_trans.csv`
-- `entering_cohort.csv`
-- `fatal_overdose.csv`
-- `init_cohort.csv`
-- `oud_trans.csv`
-- `SMR.csv`
+## Arguments
 
-### Plaintext Inputs
-
--
-
-### Tabular Inputs
-
-### all types overdose
-
-## Optional Input Tables
-
-- `bg_utility.csv`
-- `healthcare_utilization_cost.csv`
-- `oud_utility.csv`
-- `overdose_cost.csv`
-- `pharmaceutical_cost.csv`
-- `setting_utility.csv`
-- `treatment_utilization_cost.csv`
+As you can tell, the executable takes 3 positional arguments. They're actually quite simplistic and straightforward. They govern the input folder location, the starting input folder and the end input folder inclusively. Thus, if you only have a single input folder titled `input1` located at `/home/usr/` you would provide the arguments: `/home/usr/ 1 1`. If you have multiple input folders (i.e. `input1`, `input2`, and `input3`) you would provide: `/home/usr/ 1 3`.
 
 Previous: [Data](data.md)
 
