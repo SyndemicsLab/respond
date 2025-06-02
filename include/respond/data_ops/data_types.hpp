@@ -1,10 +1,10 @@
 ////////////////////////////////////////////////////////////////////////////////
 // File: data_types.hpp                                                       //
-// Project: RESPONDSimulationv2                                               //
+// Project: data_ops                                                          //
 // Created Date: 2025-01-14                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-27                                                  //
+// Last Modified: 2025-05-29                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -16,17 +16,36 @@
 #include <string>
 #include <vector>
 
-#include <respond/data_ops/matrices.hpp>
+#include <Eigen/Eigen>
+#include <unsupported/Eigen/CXX11/Tensor>
 
+/// @brief General Namespace for all RESPOND repo related code.
 namespace respond {
+/// @brief Namespace for all data operations.
 namespace data_ops {
+
+/// @brief Type alias for a 3 Dimensional Eigen Tensor
+using Matrix3d = Eigen::Tensor<double, 3>;
+
+/// @brief Type alias for 3 Dimensional Eigen Tensors given time points
+using TimedMatrix3d = std::map<int, Matrix3d>;
+
+/// @brief Type alias for a string map
+/// @tparam T Type of key for the map
+template <typename T> using StringMap = std::map<std::string, T>;
+
+/// @brief Type alias for a string unordered map
+/// @tparam T Type of key for the unordered map
+template <typename T> using StringUOMap = std::unordered_map<std::string, T>;
 
 /// @brief Specification for each dimension in the Matrix3d
 enum class Dimension : int {
-    kIntervention = 0,
-    kOud = 1,
-    kDemographicCombo = 2
+    kIntervention = 0,    // Intervention Dimension
+    kOud = 1,             // OUD Dimension
+    kDemographicCombo = 2 // Demographic Combination Dimension
 };
+
+/// @brief Struct grouping together matrices containing run history
 struct History {
     TimedMatrix3d state_history;
     TimedMatrix3d overdose_history;
@@ -35,6 +54,7 @@ struct History {
     TimedMatrix3d intervention_admission_history;
 };
 
+/// @brief Struct grouping together matrices containing cost information
 struct Cost {
     std::string perspective;
     TimedMatrix3d healthcare_cost;
@@ -44,12 +64,18 @@ struct Cost {
     TimedMatrix3d treatment_cost;
 };
 
-/// @brief Struct defining Cost Matrices Across the Duration of the
-/// Simulation
+/// @brief Type alias for a vector of Cost objects
 using CostList = std::vector<Cost>;
 
-enum class UtilityType : int { kMin = 0, kMult = 1, kCount = 2 };
+/// @brief Enum for the ways we can calculate utility
+enum class UtilityType : int {
+    kMin = 0,  // Calculate Minimum
+    kMult = 1, // Calculate Multiplicative
+    kCount = 2 // Counter for Enum
+};
 
+/// @brief Struct grouping together matricies containing total cost
+/// effectiveness information
 struct Totals {
     std::vector<double> base_costs;
     std::vector<double> disc_costs;

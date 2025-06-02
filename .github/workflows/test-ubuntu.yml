@@ -1,4 +1,4 @@
-name: Ubuntu Unit Tests
+name: Tests
 
 on:
     push:

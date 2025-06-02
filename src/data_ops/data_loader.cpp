@@ -1,10 +1,10 @@
 ////////////////////////////////////////////////////////////////////////////////
 // File: data_loader.cpp                                                      //
-// Project: RESPONDSimulationv2                                               //
+// Project: data_ops                                                          //
 // Created Date: 2025-01-14                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-04-24                                                  //
+// Last Modified: 2025-05-27                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -24,7 +24,7 @@
 #include <Eigen/Eigen>
 #include <datamanagement/DataManagement.hpp>
 
-#include <respond/data_ops/matrices.hpp>
+#include <respond/data_ops/data_types.hpp>
 #include <respond/utils/logging.hpp>
 
 namespace respond {
@@ -55,7 +55,7 @@ Matrix3d DataLoaderImpl::LoadInitialSample(const std::string &file) {
             continue;
         }
 
-        std::unordered_map<std::string, std::string> select_where = {};
+        StringUOMap<std::string> select_where = {};
         select_where["block"] = interventions[i];
         Data::IDataTablePtr interventions_data_table =
             initial_cohort->selectWhere(select_where);
@@ -187,7 +187,7 @@ TimedMatrix3d DataLoaderImpl::LoadEnteringSamples(const std::string &file) {
                 continue;
             }
 
-            std::unordered_map<std::string, std::string> select_where = {};
+            StringUOMap<std::string> select_where = {};
             select_where["block"] = interventions[i];
             Data::IDataTablePtr interventions_data_table =
                 entering_cohort->selectWhere(select_where);
@@ -245,7 +245,7 @@ Matrix3d DataLoaderImpl::LoadOUDTransitionRates(const std::string &file) {
     // states are specified in the Config file. the order represents the
     // "initial oud state"
     for (int b = 0; b < number_behavior_states; ++b) {
-        std::unordered_map<std::string, std::string> select_where = {};
+        StringUOMap<std::string> select_where = {};
         select_where["initial_oud"] = behaviors[b];
         Data::IDataTablePtr selected_behavior_table =
             behavior_transitions_table->selectWhere(select_where);
@@ -303,7 +303,7 @@ Matrix3d DataLoaderImpl::LoadInterventionInitRates(const std::string &file) {
                        number_demographic_combos);
 
     for (int b = 0; b < number_behavior_states; ++b) {
-        std::unordered_map<std::string, std::string> select_where = {};
+        StringUOMap<std::string> select_where = {};
         select_where["initial_oud_state"] = behaviors[b];
         Data::IDataTablePtr selected_behavior_table =
             intervention_init_table->selectWhere(select_where);
@@ -510,7 +510,7 @@ DataLoaderImpl::BuildInterventionMatrix(const Data::IDataTablePtr &table,
         CreateMatrix3d(number_intervention_states, number_behavior_states,
                        number_demographic_combos);
 
-    std::unordered_map<std::string, std::string> select_where;
+    StringUOMap<std::string> select_where;
 
     for (int b = 0; b < number_behavior_states; ++b) {
         select_where.clear();

@@ -1,10 +1,10 @@
 ////////////////////////////////////////////////////////////////////////////////
 // File: post_sim.hpp                                                         //
-// Project: RESPONDSimulationv2                                               //
+// Project: model                                                             //
 // Created Date: 2025-01-14                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-27                                                  //
+// Last Modified: 2025-05-29                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -20,24 +20,38 @@
 
 namespace respond {
 namespace model {
-inline respond::data_ops::Matrix3d
-CalculateDiscount(const respond::data_ops::Matrix3d &data, double discountRate,
-                  int N, bool isDiscrete = true) {
+
+/// @brief A function to calculate the discoutn for the given data.
+/// @param data Data to be discounted.
+/// @param discountRate Discount rate to apply to the data.
+/// @param N Number of weeks to discount over.
+/// @param isDiscrete Whether the discount is a discrete or continuous discount.
+/// @return A matrix with the discounted data.
+inline data_ops::Matrix3d CalculateDiscount(const data_ops::Matrix3d &data,
+                                            double discountRate, int N,
+                                            bool isDiscrete = true) {
     double discountConstant = (isDiscrete)
                                   ? (1 / pow((1.0 + (discountRate) / 52.0), N))
                                   : (exp(-discountRate * (N / 52)));
 
     data_ops::Matrix3d discount =
-        respond::data_ops::CreateMatrix3d(data.dimension(0), data.dimension(1),
-                                          data.dimension(2))
+        data_ops::CreateMatrix3d(data.dimension(0), data.dimension(1),
+                                 data.dimension(2))
             .setConstant(discountConstant);
     data_ops::Matrix3d result = data - discount;
     return result;
 }
 
-inline respond::data_ops::CostList
-CalculateCosts(const respond::data_ops::History &history,
-               const respond::data_ops::CostLoader &cost_loader,
+/// @brief Calculate the costs for the given history and cost data.
+/// @param history History to calculate costs over.
+/// @param cost_loader CostLoader containing the cost data.
+/// @param perspectives Perspectives to account for with costs.
+/// @param discount Flag to indicate whether to apply discounting.
+/// @param discount_rate Discount rate to apply if discounting is enabled.
+/// @return The calculated costs as a list of Cost objects.
+inline data_ops::CostList
+CalculateCosts(const data_ops::History &history,
+               const data_ops::CostLoader &cost_loader,
                const std::vector<std::string> &perspectives,
                bool discount = false, double discount_rate = 0.0) {
     data_ops::CostList costs;
@@ -45,23 +59,21 @@ CalculateCosts(const respond::data_ops::History &history,
     for (std::string perspective : perspectives) {
         data_ops::Cost cost;
         cost.perspective = perspective;
-        cost.healthcare_cost = respond::data_ops::MultiplyTimedMatrix3dByMatrix(
+        cost.healthcare_cost = data_ops::MultiplyTimedMatrix3dByMatrix(
             history.state_history,
             cost_loader.GetHealthcareUtilizationCost(perspective));
-        cost.pharma_cost = respond::data_ops::MultiplyTimedMatrix3dByMatrix(
+        cost.pharma_cost = data_ops::MultiplyTimedMatrix3dByMatrix(
             history.state_history,
             cost_loader.GetPharmaceuticalCost(perspective));
-        cost.treatment_cost = respond::data_ops::MultiplyTimedMatrix3dByMatrix(
+        cost.treatment_cost = data_ops::MultiplyTimedMatrix3dByMatrix(
             history.state_history,
             cost_loader.GetTreatmentUtilizationCost(perspective));
-        cost.non_fatal_overdose_cost =
-            respond::data_ops::MultiplyTimedMatrix3dByDouble(
-                history.overdose_history,
-                cost_loader.GetNonFatalOverdoseCost(perspective));
-        cost.fatal_overdose_cost =
-            respond::data_ops::MultiplyTimedMatrix3dByDouble(
-                history.overdose_history,
-                cost_loader.GetFatalOverdoseCost(perspective));
+        cost.non_fatal_overdose_cost = data_ops::MultiplyTimedMatrix3dByDouble(
+            history.overdose_history,
+            cost_loader.GetNonFatalOverdoseCost(perspective));
+        cost.fatal_overdose_cost = data_ops::MultiplyTimedMatrix3dByDouble(
+            history.overdose_history,
+            cost_loader.GetFatalOverdoseCost(perspective));
 
         if (discount) {
             for (int i = 0; i < history.state_history.size(); ++i) {
@@ -82,11 +94,18 @@ CalculateCosts(const respond::data_ops::History &history,
     return costs;
 }
 
-inline respond::data_ops::TimedMatrix3d
-CalculateUtilities(const respond::data_ops::History &history,
-                   const respond::data_ops::UtilityLoader &utility_loader,
-                   respond::data_ops::UtilityType util_type,
-                   bool discount = false, double discount_rate = 0.0) {
+/// @brief Calculate the utilities for the given history and utility data.
+/// @param history History to calculate utilities over.
+/// @param utility_loader UtilityLoader containing the utility data.
+/// @param util_type Type of utility calculation to perform.
+/// @param discount Flag to indicate whether to apply discounting.
+/// @param discount_rate Discount rate to apply if discounting is enabled.
+/// @return The calculated utilities as a TimedMatrix3d object.
+inline data_ops::TimedMatrix3d
+CalculateUtilities(const data_ops::History &history,
+                   const data_ops::UtilityLoader &utility_loader,
+                   data_ops::UtilityType util_type, bool discount = false,
+                   double discount_rate = 0.0) {
     std::vector<data_ops::Matrix3d> utilityMatrices = {
         utility_loader.GetBackgroundUtility("utility"),
         utility_loader.GetOUDUtility("utility"),
@@ -94,19 +113,18 @@ CalculateUtilities(const respond::data_ops::History &history,
 
     data_ops::Matrix3d util;
     switch (util_type) {
-    case respond::data_ops::UtilityType::kMin:
-        util = respond::data_ops::Matrix3dVectorMinimum(utilityMatrices);
+    case data_ops::UtilityType::kMin:
+        util = data_ops::Matrix3dVectorMinimum(utilityMatrices);
         break;
-    case respond::data_ops::UtilityType::kMult:
-        util = respond::data_ops::Matrix3dVectorMultiplied(utilityMatrices);
+    case data_ops::UtilityType::kMult:
+        util = data_ops::Matrix3dVectorMultiplied(utilityMatrices);
         break;
     default:
         break;
     }
 
-    respond::data_ops::TimedMatrix3d utilities =
-        respond::data_ops::MultiplyTimedMatrix3dByMatrix(history.state_history,
-                                                         util);
+    data_ops::TimedMatrix3d utilities =
+        data_ops::MultiplyTimedMatrix3dByMatrix(history.state_history, util);
 
     if (!discount) {
         return utilities;
@@ -118,7 +136,12 @@ CalculateUtilities(const respond::data_ops::History &history,
     return utilities;
 }
 
-inline double CalculateLifeYears(const respond::data_ops::History &history,
+/// @brief Calculate the life years from the history data.
+/// @param history History object containing the state history.
+/// @param provideDiscount Flag to indicate whether to apply discounting.
+/// @param discountRate Discount rate to apply if discounting is enabled.
+/// @return The total life years calculated from the state history.
+inline double CalculateLifeYears(const data_ops::History &history,
                                  bool provideDiscount = false,
                                  double discountRate = 0.0) {
     if (history.state_history.size() <= 0) {
@@ -126,7 +149,7 @@ inline double CalculateLifeYears(const respond::data_ops::History &history,
         return 0.0;
     }
 
-    respond::data_ops::Matrix3d running_total(
+    data_ops::Matrix3d running_total(
         history.state_history.begin()->second.dimensions());
     running_total = running_total.setZero();
 
@@ -142,20 +165,21 @@ inline double CalculateLifeYears(const respond::data_ops::History &history,
     return result(0) / 52.0;
 }
 
+/// @brief Calculate the total costs from a list of costs.
+/// @param cost_list List of costs to calculate total costs from.
+/// @return A vector containing the total costs for each cost entry.
 inline std::vector<double>
-CalculateTotalCosts(const respond::data_ops::CostList &cost_list) {
+CalculateTotalCosts(const data_ops::CostList &cost_list) {
     std::vector<double> result;
-    for (respond::data_ops::Cost cost : cost_list) {
-        double totalCost = respond::data_ops::TimedMatrix3dSummedOverDimensions(
-                               cost.healthcare_cost) +
-                           respond::data_ops::TimedMatrix3dSummedOverDimensions(
-                               cost.fatal_overdose_cost) +
-                           respond::data_ops::TimedMatrix3dSummedOverDimensions(
-                               cost.non_fatal_overdose_cost) +
-                           respond::data_ops::TimedMatrix3dSummedOverDimensions(
-                               cost.pharma_cost) +
-                           respond::data_ops::TimedMatrix3dSummedOverDimensions(
-                               cost.treatment_cost);
+    for (data_ops::Cost cost : cost_list) {
+        double totalCost =
+            data_ops::TimedMatrix3dSummedOverDimensions(cost.healthcare_cost) +
+            data_ops::TimedMatrix3dSummedOverDimensions(
+                cost.fatal_overdose_cost) +
+            data_ops::TimedMatrix3dSummedOverDimensions(
+                cost.non_fatal_overdose_cost) +
+            data_ops::TimedMatrix3dSummedOverDimensions(cost.pharma_cost) +
+            data_ops::TimedMatrix3dSummedOverDimensions(cost.treatment_cost);
         result.push_back(totalCost);
     }
     return result;

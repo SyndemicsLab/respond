@@ -1,4 +1,4 @@
-name: Doxygen GitHub Pages Deploy Action
+name: Docs
 
 # Controls when the action will run. Triggers the workflow on push or pull request
 # events but only for the master branch
@@ -33,7 +33,7 @@ jobs:
         shell: bash
         
       - name: Create .nojekyll (ensures pages with underscores work on gh pages)
-        run: touch docs/html/.nojekyll
+        run: touch docs/doxygen/html/.nojekyll
         shell: bash
   
       - name: Deploy to GitHub Pages
@@ -41,7 +41,7 @@ jobs:
         with:
           repository-name: SyndemicsLab/RESPONDSimulationv2
           branch: gh-pages
-          folder: docs/html
-          target-folder: docs/html
+          folder: docs/doxygen/html
+          target-folder: docs/doxygen/html
           ssh-key: ${{ secrets.RESPOND_DOCS_DEPLOY_SSH_PRIVATE }}
           token: ${{ secrets.OAUTH_TOKEN }}

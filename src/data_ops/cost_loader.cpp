@@ -1,10 +1,10 @@
 ////////////////////////////////////////////////////////////////////////////////
 // File: cost_loader.cpp                                                      //
-// Project: RESPONDSimulationv2                                               //
+// Project: data_ops                                                          //
 // Created Date: 2025-01-14                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-27                                                  //
+// Last Modified: 2025-05-27                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -22,7 +22,7 @@
 namespace respond {
 namespace data_ops {
 
-std::unordered_map<std::string, Matrix3d>
+StringUOMap<Matrix3d>
 CostLoaderImpl::LoadHealthcareUtilizationCost(const std::string &file) {
     Data::IDataTablePtr table = LoadDataTable(file);
 
@@ -63,7 +63,7 @@ CostLoaderImpl::LoadHealthcareUtilizationCost(const std::string &file) {
     return healthcare_utilization_cost;
 }
 
-std::unordered_map<std::string, std::unordered_map<std::string, double>>
+StringUOMap<StringUOMap<double>>
 CostLoaderImpl::LoadOverdoseCost(const std::string &file) {
     Data::IDataTablePtr table = LoadDataTable(file);
 
@@ -76,9 +76,10 @@ CostLoaderImpl::LoadOverdoseCost(const std::string &file) {
             std::vector<std::string> perspective_column =
                 table->getColumn(perspective);
             if (perspective_column.empty()) {
-                respond::utils::LogError(logger_name,
-                                         "Cost perspective " + perspective +
-                                             " not found in table");
+                respond::utils::LogError(
+                    logger_name, "Cost perspective " + perspective +
+                                     " not found in table! Returning...");
+                return {};
             }
             overdose_costs_map[perspective][x_column[i]] =
                 std::stod(perspective_column[i]);
@@ -87,7 +88,7 @@ CostLoaderImpl::LoadOverdoseCost(const std::string &file) {
     return overdose_costs_map;
 }
 
-std::unordered_map<std::string, Matrix3d>
+StringUOMap<Matrix3d>
 CostLoaderImpl::LoadPharmaceuticalCost(const std::string &file) {
     Data::IDataTablePtr table = LoadDataTable(file);
 
@@ -104,7 +105,7 @@ CostLoaderImpl::LoadPharmaceuticalCost(const std::string &file) {
     return pharmaceutical_cost;
 }
 
-std::unordered_map<std::string, Matrix3d>
+StringUOMap<Matrix3d>
 CostLoaderImpl::LoadTreatmentUtilizationCost(const std::string &file) {
     Data::IDataTablePtr table = LoadDataTable(file);
     LoadTreatmentUtilizationCostMap(table);
@@ -136,7 +137,7 @@ CostLoaderImpl::GetFatalOverdoseCost(const std::string &perspective) const {
     return overdose_costs_map.at(perspective).at("fatal_overdose");
 }
 
-std::unordered_map<std::string, std::unordered_map<std::string, double>>
+StringUOMap<StringUOMap<double>>
 CostLoaderImpl::LoadPharmaceuticalCostMap(Data::IDataTablePtr table) {
     std::vector<std::string> block_column = table->getColumn("block");
 
@@ -154,9 +155,7 @@ CostLoaderImpl::LoadPharmaceuticalCostMap(Data::IDataTablePtr table) {
 }
 
 void CostLoaderImpl::LoadCostViaPerspective(
-    std::unordered_map<std::string, Matrix3d> &cost,
-    std::unordered_map<std::string, std::unordered_map<std::string, double>>
-        &cost_map) {
+    StringUOMap<Matrix3d> &cost, StringUOMap<StringUOMap<double>> &cost_map) {
 
     size_t number_behavior_states =
         GetConfig()->getStringVector("state.ouds").size();
@@ -191,7 +190,7 @@ void CostLoaderImpl::LoadCostViaPerspective(
     }
 }
 
-std::unordered_map<std::string, std::unordered_map<std::string, double>>
+StringUOMap<StringUOMap<double>>
 CostLoaderImpl::LoadTreatmentUtilizationCostMap(Data::IDataTablePtr table) {
     std::vector<std::string> block_column = table->getColumn("block");
 

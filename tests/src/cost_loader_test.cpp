@@ -1,10 +1,10 @@
 ////////////////////////////////////////////////////////////////////////////////
 // File: TEST_CostLoader.cpp                                                  //
-// Project: RESPONDSimulationv2                                               //
+// Project: src                                                               //
 // Created Date: 2025-01-14                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-04-23                                                  //
+// Last Modified: 2025-05-27                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -97,8 +97,8 @@ TEST_F(CostLoaderTest, OverdoseCost) {
                 << "non_fatal_overdose,4557.35" << std::endl
                 << "fatal_overdose,857.97";
 
-    std::unordered_map<std::string, std::unordered_map<std::string, double>>
-        output = cost_loader->LoadOverdoseCost(file_name);
+    StringUOMap<StringUOMap<double>> output =
+        cost_loader->LoadOverdoseCost(file_name);
 
     EXPECT_EQ(output["healthcare"]["non_fatal_overdose"], 4557.35);
     EXPECT_EQ(cost_loader->GetNonFatalOverdoseCost("healthcare"), 4557.35);
@@ -131,7 +131,7 @@ TEST_F(CostLoaderTest, treatmentUtilizationCost) {
 
     file_stream.close();
 
-    std::unordered_map<std::string, Matrix3d> output =
+    StringUOMap<Matrix3d> output =
         cost_loader->LoadTreatmentUtilizationCost(file_name);
 
     Matrix3d result = cost_loader->GetTreatmentUtilizationCost("healthcare");

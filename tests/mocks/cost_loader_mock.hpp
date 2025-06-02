@@ -1,10 +1,10 @@
 ////////////////////////////////////////////////////////////////////////////////
 // File: cost_loader_mock.hpp                                                 //
-// Project: RESPONDSimulationv2                                               //
+// Project: mocks                                                             //
 // Created Date: 2025-01-14                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-18                                                  //
+// Last Modified: 2025-05-27                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -26,20 +26,17 @@ using namespace respond::data_ops;
 
 class MockCostLoader : public CostLoader {
 public:
-    MOCK_METHOD((std::unordered_map<std::string, Matrix3d>),
-                LoadHealthcareUtilizationCost, ((const std::string &)),
-                (override));
+    MOCK_METHOD((StringUOMap<Matrix3d>), LoadHealthcareUtilizationCost,
+                ((const std::string &)), (override));
 
-    MOCK_METHOD((std::unordered_map<std::string,
-                                    std::unordered_map<std::string, double>>),
+    MOCK_METHOD((std::unordered_map<std::string, StringUOMap<double>>),
                 LoadOverdoseCost, ((const std::string &)), (override));
 
-    MOCK_METHOD((std::unordered_map<std::string, Matrix3d>),
-                LoadPharmaceuticalCost, ((const std::string &)), (override));
+    MOCK_METHOD((StringUOMap<Matrix3d>), LoadPharmaceuticalCost,
+                ((const std::string &)), (override));
 
-    MOCK_METHOD((std::unordered_map<std::string, Matrix3d>),
-                LoadTreatmentUtilizationCost, ((const std::string &)),
-                (override));
+    MOCK_METHOD((StringUOMap<Matrix3d>), LoadTreatmentUtilizationCost,
+                ((const std::string &)), (override));
 
     MOCK_METHOD((Matrix3d), GetHealthcareUtilizationCost,
                 ((const std::string &)), (const, override));

@@ -1,10 +1,10 @@
 ////////////////////////////////////////////////////////////////////////////////
 // File: Simulation.cpp                                                       //
-// Project: RESPONDSimulationv2                                               //
+// Project: model                                                             //
 // Created Date: 2025-01-14                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-04-25                                                  //
+// Last Modified: 2025-05-29                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -23,6 +23,7 @@
 
 #include <respond/data_ops/data_loader.hpp>
 #include <respond/data_ops/data_types.hpp>
+#include <respond/data_ops/matrices.hpp>
 #include <respond/utils/logging.hpp>
 
 using namespace respond::data_ops;

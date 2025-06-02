@@ -1,10 +1,10 @@
 ////////////////////////////////////////////////////////////////////////////////
 // File: utility_loader_internals.hpp                                         //
-// Project: RESPONDSimulationv2                                               //
+// Project: internals                                                         //
 // Created Date: 2025-03-12                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-04-22                                                  //
+// Last Modified: 2025-05-27                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -19,7 +19,7 @@
 #include <string>
 #include <unordered_map>
 
-#include <respond/data_ops/matrices.hpp>
+#include <respond/data_ops/data_types.hpp>
 
 #include "base_loader_internals.hpp"
 
@@ -33,14 +33,12 @@ public:
 
     ~UtilityLoaderImpl() {};
 
-    std::unordered_map<std::string, Matrix3d>
+    StringUOMap<Matrix3d>
     LoadBackgroundUtility(const std::string &file) override;
 
-    std::unordered_map<std::string, Matrix3d>
-    LoadOUDUtility(const std::string &file) override;
+    StringUOMap<Matrix3d> LoadOUDUtility(const std::string &file) override;
 
-    std::unordered_map<std::string, Matrix3d>
-    LoadSettingUtility(const std::string &file) override;
+    StringUOMap<Matrix3d> LoadSettingUtility(const std::string &file) override;
 
     Matrix3d
     GetBackgroundUtility(const std::string &perspective) const override {
@@ -73,12 +71,11 @@ public:
     }
 
 private:
-    std::unordered_map<std::string, Matrix3d> background_utility;
-    std::unordered_map<std::string, Matrix3d> behavior_utility;
-    std::unordered_map<std::string, Matrix3d> setting_utility;
+    StringUOMap<Matrix3d> background_utility;
+    StringUOMap<Matrix3d> behavior_utility;
+    StringUOMap<Matrix3d> setting_utility;
 
-    std::unordered_map<std::string, Matrix3d>
-    LoadUtility(const std::string &file);
+    StringUOMap<Matrix3d> LoadUtility(const std::string &file);
 };
 } // namespace data_ops
 } // namespace respond
