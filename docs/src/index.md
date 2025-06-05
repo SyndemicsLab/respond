@@ -50,8 +50,8 @@ This is, by nature, a C++ library. This means that the default behavior is not t
 If you would like to clone and build this locally, it is a relatively straightforward process:
 
 ```shell
-git clone https://github.com/SyndemicsLab/RESPONDSimulationv2.git
-cd RESPONDSimulationv2
+git clone https://github.com/SyndemicsLab/respond.git
+cd respond
 cmake --workflow --preset gcc-release
 ```
 
@@ -65,7 +65,7 @@ If you would like to make use of Fetch Content to extract the library:
 include(FetchContent)
 FetchContent_Declare(
     respond
-    GIT_REPOSITORY https://github.com/SyndemicsLab/RESPONDSimulationv2.git
+    GIT_REPOSITORY https://github.com/SyndemicsLab/respond.git
     GIT_TAG main
 )
 option(RESPOND_INSTALL "Enable install for respond project" ON)
