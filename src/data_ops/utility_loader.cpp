@@ -4,7 +4,7 @@
 // Created Date: 2025-01-14                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-05-27                                                  //
+// Last Modified: 2025-06-05                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -48,7 +48,7 @@ StringUOMap<Matrix3d> UtilityLoaderImpl::LoadUtility(const std::string &file) {
     StringUOMap<Matrix3d> result;
 
     size_t number_behavior_states =
-        GetConfig()->getStringVector("state.ouds").size();
+        GetConfig()->getStringVector("state.behaviors").size();
     size_t number_demographic_combos = GetDemographicCombos().size();
     size_t number_intervention_states =
         GetConfig()->getStringVector("state.interventions").size();

@@ -1,10 +1,10 @@
 ////////////////////////////////////////////////////////////////////////////////
 // File: simulation_test.cpp                                                  //
-// Project: RESPONDSimulationv2                                               //
+// Project: src                                                               //
 // Created Date: 2025-01-14                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-04-23                                                  //
+// Last Modified: 2025-06-06                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -60,7 +60,7 @@ TEST_F(RespondTest, OneDuration) {
                        << std::endl
                        << "[state]" << std::endl
                        << "interventions = No_Treatment" << std::endl
-                       << "ouds = Active_Injection";
+                       << "behaviors = Active_Injection";
     config_file_stream.close();
     config = std::make_shared<Data::Config>("sim.conf");
 
@@ -105,7 +105,7 @@ TEST_F(RespondTest, TwoDuration) {
         << "[state]" << std::endl
         << "interventions = No_Treatment, Buprenorphine, Post_Buprenorphine"
         << std::endl
-        << "ouds = Active_Injection, Nonactive_Injection";
+        << "behaviors = Active_Injection, Nonactive_Injection";
     config_file_stream.close();
 
     config = std::make_shared<Data::Config>("sim.conf");

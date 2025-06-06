@@ -4,7 +4,7 @@
 // Created Date: 2025-01-14                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-05-27                                                  //
+// Last Modified: 2025-06-06                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -44,7 +44,7 @@ protected:
                "Post-Naltrexone, Post-Methadone, Post-Detox"
                ""
             << std::endl
-            << "ouds = Active_Noninjection, Active_Injection,"
+            << "behaviors = Active_Noninjection, Active_Injection,"
                "Nonactive_Noninjection, Nonactive_Injection"
             << std::endl
             << std::endl

@@ -1,10 +1,10 @@
 ////////////////////////////////////////////////////////////////////////////////
 // File: logging.cpp                                                          //
-// Project: RESPONDSimulationv2                                               //
+// Project: utils                                                             //
 // Created Date: 2025-03-10                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-03-27                                                  //
+// Last Modified: 2025-06-05                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //

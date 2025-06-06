@@ -2,11 +2,11 @@
 
 <a href="https://www.syndemicslab.org/hep-ce"><img align="right" src="https://github.com/SyndemicsLab/.github/blob/main/profile/images/RESPOND.png" alt="RESPOND Logo" height="120" /></a>
 
-[![Docs](https://github.com/SyndemicsLab/RESPONDSimulationv2/actions/workflows/deploy-docs.yml/badge.svg)](https://github.com/SyndemicsLab/RESPONDSimulationv2/actions/workflows/deploy-docs.yml)
+[![Docs](https://github.com/SyndemicsLab/respond/actions/workflows/deploy-docs.yml/badge.svg)](https://github.com/SyndemicsLab/respond/actions/workflows/deploy-docs.yml)
 
-[![Tests](https://github.com/SyndemicsLab/RESPONDSimulationv2/actions/workflows/test-ubuntu.yml/badge.svg)](https://github.com/SyndemicsLab/RESPONDSimulationv2/actions/workflows/test-ubuntu.yml)
+[![Tests](https://github.com/SyndemicsLab/respond/actions/workflows/test-ubuntu.yml/badge.svg)](https://github.com/SyndemicsLab/respond/actions/workflows/test-ubuntu.yml)
 
-[![Coverage](https://github.com/SyndemicsLab/RESPONDSimulationv2/actions/workflows/coverage.yml/badge.svg)](https://github.com/SyndemicsLab/RESPONDSimulationv2/actions/workflows/coverage.yml)
+[![Coverage](https://github.com/SyndemicsLab/respond/actions/workflows/coverage.yml/badge.svg)](https://github.com/SyndemicsLab/respond/actions/workflows/coverage.yml)
 
 This repository houses a complete rewrite of the original [RESPOND model](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0310763), first created by the [Syndemics Lab](https://www.syndemicslab.org) in 2018 with a focus on 3 primary goals:
 
@@ -56,8 +56,8 @@ This is, by nature, a C++ library. This means that the default behavior is not t
 If you would like to clone and build this locally, it is a relatively straightforward process:
 
 ```shell
-git clone https://github.com/SyndemicsLab/RESPONDSimulationv2.git
-cd RESPONDSimulationv2
+git clone https://github.com/SyndemicsLab/respond.git
+cd respond
 cmake --workflow --preset gcc-release
 ```
 
@@ -71,7 +71,7 @@ If you would like to make use of Fetch Content to extract the library:
 include(FetchContent)
 FetchContent_Declare(
     respond
-    GIT_REPOSITORY https://github.com/SyndemicsLab/RESPONDSimulationv2.git
+    GIT_REPOSITORY https://github.com/SyndemicsLab/respond.git
     GIT_TAG main
 )
 option(RESPOND_INSTALL "Enable install for respond project" ON)

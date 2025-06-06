@@ -39,7 +39,7 @@ jobs:
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          repository-name: SyndemicsLab/RESPONDSimulationv2
+          repository-name: SyndemicsLab/respond
           branch: gh-pages
           folder: docs/doxygen/html
           target-folder: ./

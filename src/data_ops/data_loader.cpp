@@ -4,7 +4,7 @@
 // Created Date: 2025-01-14                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-05-27                                                  //
+// Last Modified: 2025-06-05                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -35,7 +35,7 @@ Matrix3d DataLoaderImpl::LoadInitialSample(const std::string &file) {
     Data::IDataTablePtr initial_cohort = LoadDataTable(file);
 
     std::vector<std::string> behaviors =
-        GetConfig()->getStringVector("state.ouds");
+        GetConfig()->getStringVector("state.behaviors");
     int number_behavior_states = behaviors.size();
     int number_demographic_combos = GetDemographicCombos().size();
     std::vector<std::string> interventions =
@@ -93,7 +93,7 @@ TimedMatrix3d DataLoaderImpl::LoadEnteringSamples(
     Data::IDataTablePtr entering_samples_table = LoadDataTable(file);
 
     std::vector<std::string> behaviors =
-        GetConfig()->getStringVector("state.ouds");
+        GetConfig()->getStringVector("state.behaviors");
     int number_behavior_states = behaviors.size();
     int number_demographic_combos = GetDemographicCombos().size();
     std::vector<std::string> interventions =
@@ -150,7 +150,7 @@ TimedMatrix3d DataLoaderImpl::LoadEnteringSamples(const std::string &file) {
     Data::IDataTablePtr entering_cohort = LoadDataTable(file);
 
     std::vector<std::string> behaviors =
-        GetConfig()->getStringVector("state.ouds");
+        GetConfig()->getStringVector("state.behaviors");
     int number_behavior_states = behaviors.size();
     int number_demographic_combos = GetDemographicCombos().size();
     std::vector<std::string> interventions =
@@ -227,7 +227,7 @@ Matrix3d DataLoaderImpl::LoadOUDTransitionRates(const std::string &file) {
     Data::IDataTablePtr behavior_transitions_table = LoadDataTable(file);
 
     std::vector<std::string> behaviors =
-        GetConfig()->getStringVector("state.ouds");
+        GetConfig()->getStringVector("state.behaviors");
     int number_behavior_states = behaviors.size();
     int number_demographic_combos = GetDemographicCombos().size();
     std::vector<std::string> interventions =
@@ -290,7 +290,7 @@ Matrix3d DataLoaderImpl::LoadInterventionInitRates(const std::string &file) {
     Data::IDataTablePtr intervention_init_table = LoadDataTable(file);
 
     std::vector<std::string> behaviors =
-        GetConfig()->getStringVector("state.ouds");
+        GetConfig()->getStringVector("state.behaviors");
     int number_behavior_states = behaviors.size();
     int number_demographic_combos = GetDemographicCombos().size();
     std::vector<std::string> interventions =
@@ -396,7 +396,7 @@ TimedMatrix3d DataLoaderImpl::LoadFatalOverdoseRates(const std::string &file) {
     Data::IDataTablePtr fatal_overdose_table = LoadDataTable(file);
 
     std::vector<std::string> behaviors =
-        GetConfig()->getStringVector("state.ouds");
+        GetConfig()->getStringVector("state.behaviors");
     int number_behavior_states = behaviors.size();
     int number_demographic_combos = GetDemographicCombos().size();
     std::vector<std::string> interventions =
@@ -438,7 +438,7 @@ Matrix3d DataLoaderImpl::LoadMortalityRates(
     Data::IDataTablePtr temp = LoadDataTable(smr_file);
 
     std::vector<std::string> behaviors =
-        GetConfig()->getStringVector("state.ouds");
+        GetConfig()->getStringVector("state.behaviors");
     int number_behavior_states = behaviors.size();
     int number_demographic_combos = GetDemographicCombos().size();
     std::vector<std::string> interventions =
@@ -496,7 +496,7 @@ DataLoaderImpl::BuildInterventionMatrix(const Data::IDataTablePtr &table,
                                         std::string name, int timestep) {
 
     std::vector<std::string> behaviors =
-        GetConfig()->getStringVector("state.ouds");
+        GetConfig()->getStringVector("state.behaviors");
     int number_behavior_states = behaviors.size();
     int number_demographic_combos = GetDemographicCombos().size();
     std::vector<std::string> interventions =
@@ -563,7 +563,7 @@ DataLoaderImpl::CreateTransitionMatrix3d(const Data::IDataTablePtr &table,
         std::dynamic_pointer_cast<Data::DataTable>(table);
 
     std::vector<std::string> behaviors =
-        GetConfig()->getStringVector("state.ouds");
+        GetConfig()->getStringVector("state.behaviors");
     int number_behavior_states = behaviors.size();
     int number_demographic_combos = GetDemographicCombos().size();
     std::vector<std::string> interventions =
@@ -628,7 +628,7 @@ DataLoaderImpl::BuildOverdoseTransitions(Data::IDataTablePtr const &table,
                                          const std::string &key) {
 
     std::vector<std::string> behaviors =
-        GetConfig()->getStringVector("state.ouds");
+        GetConfig()->getStringVector("state.behaviors");
     int number_behavior_states = behaviors.size();
     int number_demographic_combos = GetDemographicCombos().size();
     std::vector<std::string> interventions =
@@ -660,7 +660,7 @@ Matrix3d
 DataLoaderImpl::BuildFatalOverdoseTransitions(Data::IDataTablePtr const &table,
                                               const std::string &key) {
     std::vector<std::string> behaviors =
-        GetConfig()->getStringVector("state.ouds");
+        GetConfig()->getStringVector("state.behaviors");
     int number_behavior_states = behaviors.size();
     int number_demographic_combos = GetDemographicCombos().size();
     std::vector<std::string> interventions =
