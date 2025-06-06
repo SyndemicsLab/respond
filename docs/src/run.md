@@ -1,6 +1,10 @@
 # Running the Model
 
-Running RESPOND is incredibly simple, provided you use our packaged executable. If built using the "gcc-release" workflow the following command runs the executable from the root of the repository on input folder 1:
+The RESPOND model, in addition to forming the basis for the Simdemics library, acts as a completely independent executable model. This model was designed to track state transitions to study opioid use disorder.
+
+## Using the Executable
+
+Running RESPOND is incredibly simple provided you use our packaged executable. If built using the "gcc-release" workflow outlined in the [Installation Section](installation.md) the following command runs the executable from the root of the repository on input folder 1:
 
 ```bash
 ./build/extras/executable/hep_ce /path/to/input/folders 1 1

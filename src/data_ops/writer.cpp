@@ -58,7 +58,8 @@ std::string WriterImpl::WriteHistoryData(const History &history,
                                    "Unable to Write to File. Skipping...");
         return "failure";
     }
-    std::vector<std::string> behaviors = config->getStringVector("state.ouds");
+    std::vector<std::string> behaviors =
+        config->getStringVector("state.behaviors");
     std::vector<std::string> interventions =
         config->getStringVector("state.interventions");
 
@@ -105,7 +106,8 @@ std::string WriterImpl::WriteCostData(const CostList &cost_list,
             "Cost List is Empty! Unable to Write to File. Skipping...");
         return "failure";
     }
-    std::vector<std::string> behaviors = config->getStringVector("state.ouds");
+    std::vector<std::string> behaviors =
+        config->getStringVector("state.behaviors");
     size_t number_demographic_combos = demographic_combinations.size();
     std::vector<std::string> interventions =
         config->getStringVector("state.interventions");
@@ -174,7 +176,8 @@ std::string WriterImpl::WriteUtilityData(const TimedMatrix3d &utilities,
     }
     std::stringstream result;
 
-    std::vector<std::string> behaviors = config->getStringVector("state.ouds");
+    std::vector<std::string> behaviors =
+        config->getStringVector("state.behaviors");
     size_t number_demographic_combos = demographic_combinations.size();
     std::vector<std::string> interventions =
         config->getStringVector("state.interventions");
@@ -280,7 +283,8 @@ WriterImpl::WriteOUDTransitionRates(const DataLoader &data_loader,
     }
     std::stringstream stream;
     stream << "intervention,agegrp,race,sex,initial_oud,";
-    std::vector<std::string> behaviors = config->getStringVector("state.ouds");
+    std::vector<std::string> behaviors =
+        config->getStringVector("state.behaviors");
     std::vector<std::string> interventions =
         config->getStringVector("state.interventions");
 
@@ -322,7 +326,8 @@ WriterImpl::WriteInterventionInitRates(const DataLoader &data_loader,
     if (data_loader.GetInterventionInitRates().size() == 0) {
         return "success";
     }
-    std::vector<std::string> behaviors = config->getStringVector("state.ouds");
+    std::vector<std::string> behaviors =
+        config->getStringVector("state.behaviors");
     std::vector<std::string> interventions =
         config->getStringVector("state.interventions");
 
@@ -366,7 +371,8 @@ std::string WriterImpl::WriteInterventionTransitionRates(
 
     std::vector<int> timesteps =
         config->getIntVector("simulation.intervention_change_times");
-    std::vector<std::string> behaviors = config->getStringVector("state.ouds");
+    std::vector<std::string> behaviors =
+        config->getStringVector("state.behaviors");
     std::vector<std::string> interventions =
         config->getStringVector("state.interventions");
 
@@ -425,7 +431,8 @@ std::string WriterImpl::WriteOverdoseRates(const DataLoader &data_loader,
     std::stringstream stream;
     stream << "intervention,agegrp,race,sex,oud,";
 
-    std::vector<std::string> behaviors = config->getStringVector("state.ouds");
+    std::vector<std::string> behaviors =
+        config->getStringVector("state.behaviors");
     std::vector<std::string> interventions =
         config->getStringVector("state.interventions");
 

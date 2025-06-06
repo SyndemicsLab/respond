@@ -1,12 +1,12 @@
 /*
  * Filename: /home/matt/Repos/respond/docs/src/custom.css
  * Path: /home/matt/Repos/respond/docs/src
- * Created Date: Friday, May 30th 2025, 2:27:39 pm
+ * Created Date: Monday, June 2nd 2025, 10:26:57 am
  * Author: Matthew Carroll
  * 
  * Copyright (c) 2025 Syndemics Lab at Boston Medical Center
  */
 
-#MSearchBox {
-    margin-bottom: 30px;
+html {
+    --top-height: 140px;
 }
