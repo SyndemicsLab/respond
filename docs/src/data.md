@@ -1,6 +1,6 @@
 # Managing the Data
 
-The RESPOND model is packaged as a library, but for ease of use we do also provide a basic command line interface executable for users to run the model. To this end, we make use of command line arguments and required files/directory structures. In addition to the baseline required files, we have additional optional files used to calculate both the cost effectivness measures and the utility (quality of life) measurements.
+The RESPOND model is packaged as a library, but for ease of use we do also provide a basic command line interface executable for users to run the model. To this end, we make use of command line arguments and required files/directory structures. In addition to the baseline required files, we have additional optional files used to calculate both the cost effectiveness measures and the utility (quality of life) measurements.
 
 ## Required Inputs
 
@@ -17,7 +17,7 @@ The required inputs are listed below:
 - `oud_trans.csv`
 - `SMR.csv`
 
-### `sim.conf`
+### sim.conf
 
 The `sim.conf` file forms the backbone of the RESPOND model. It governs the general flow and the basic pre-defined single digit parameters in the model. This file is meant to be changed by the user to determine how the model should act, it is not calibrated and does not contain tabular data. The general structure follows a prototypical `.ini` file with a header describing a set of key-value pairs. For RESPOND, there are 5 unique sets:
 
