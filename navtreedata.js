@@ -26,17 +26,32 @@ var NAVTREE =
 [
   [ "RESPOND", "index.html", [
     [ "RESPOND: An Opioid Use Disorder State Transition Model", "index.html", "index" ],
-    [ "Installation", "d7/d63/md_docs_src_installation.html", null ],
-    [ "Managing the Data", "d0/d1d/md_docs_src_data.html", null ],
-    [ "Running the Model", "dd/d4c/md_docs_src_run.html", [
-      [ "Required Inputs", "dd/d4c/md_docs_src_run.html#autotoc_md12", [
-        [ "Plaintext Inputs", "dd/d4c/md_docs_src_run.html#autotoc_md13", null ],
-        [ "Tabular Inputs", "dd/d4c/md_docs_src_run.html#autotoc_md14", null ],
-        [ "all types overdose", "dd/d4c/md_docs_src_run.html#autotoc_md15", null ]
-      ] ],
-      [ "Optional Input Tables", "dd/d4c/md_docs_src_run.html#autotoc_md16", null ]
+    [ "Installation", "d7/d63/md_docs_src_installation.html", [
+      [ "Dependencies", "d7/d63/md_docs_src_installation.html#autotoc_md10", null ],
+      [ "Installing From Source", "d7/d63/md_docs_src_installation.html#autotoc_md11", null ],
+      [ "Installing With CMake", "d7/d63/md_docs_src_installation.html#autotoc_md12", null ]
     ] ],
-    [ "Limitations", "d6/d3e/md_docs_src_limitations.html", null ],
+    [ "Managing the Data", "d0/d1d/md_docs_src_data.html", [
+      [ "Required Inputs", "d0/d1d/md_docs_src_data.html#autotoc_md14", [
+        [ "sim.conf", "d0/d1d/md_docs_src_data.html#autotoc_md15", [
+          [ "simulation", "d0/d1d/md_docs_src_data.html#autotoc_md16", null ],
+          [ "state", "d0/d1d/md_docs_src_data.html#autotoc_md17", null ],
+          [ "demographic", "d0/d1d/md_docs_src_data.html#autotoc_md18", null ],
+          [ "cost", "d0/d1d/md_docs_src_data.html#autotoc_md19", null ],
+          [ "output", "d0/d1d/md_docs_src_data.html#autotoc_md20", null ]
+        ] ],
+        [ "Tabular Data", "d0/d1d/md_docs_src_data.html#autotoc_md21", null ]
+      ] ],
+      [ "Optional Input Tables", "d0/d1d/md_docs_src_data.html#autotoc_md22", null ]
+    ] ],
+    [ "Running the Model", "dd/d4c/md_docs_src_run.html", [
+      [ "Using the Executable", "dd/d4c/md_docs_src_run.html#autotoc_md24", null ],
+      [ "Arguments", "dd/d4c/md_docs_src_run.html#autotoc_md25", null ]
+    ] ],
+    [ "Limitations", "d6/d3e/md_docs_src_limitations.html", [
+      [ "Library", "d6/d3e/md_docs_src_limitations.html#autotoc_md27", null ],
+      [ "Data", "d6/d3e/md_docs_src_limitations.html#autotoc_md28", null ]
+    ] ],
     [ "FAQs", "d8/d51/md_docs_src_faq.html", null ],
     [ "Namespaces", "namespaces.html", [
       [ "Namespace List", "namespaces.html", "namespaces_dup" ],
