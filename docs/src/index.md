@@ -1,6 +1,6 @@
 # RESPOND: An Opioid Use Disorder State Transition Model
 
-<a href="https://www.syndemicslab.org/hep-ce"><img align="right" src="Respond_logo.png" alt="Respond Logo" height="120" /></a>
+<a href="https://www.syndemicslab.org/respond"><img align="right" src="Respond_logo.png" alt="Respond Logo" height="120" /></a>
 
 This repository houses a complete rewrite of the original [RESPOND model](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0310763), first created by the [Syndemics Lab](https://www.syndemicslab.org) in 2018 with a focus on 3 primary goals:
 
@@ -99,7 +99,7 @@ If you choose to use our provided executable, running the model requires a set o
 These are all put into a folder titled `input<number>` where the number is replaced with the ID of the input. Then, after these folders are created and RESPOND is built we simply run the command:
 
 ```bash
-./build/extras/respond_exe <input_start> <input_end>
+./build/extras/executable/respond_exe <input_start> <input_end>
 ```
 
 Next: [Installation](installation.md)
