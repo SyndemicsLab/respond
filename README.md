@@ -13,7 +13,7 @@ This repository houses a complete rewrite of the original [RESPOND model](https:
 1. Improve the Maintainability/Scalability of the Model
 2. Improve the Overall Efficiency of the Model
 3. Improve the Portability
-4. Improve testingl
+4. Improve testing
 
 ## RESPONDv1
 
