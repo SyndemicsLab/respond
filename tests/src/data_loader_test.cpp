@@ -4,7 +4,7 @@
 // Created Date: 2025-01-14                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-06-06                                                  //
+// Last Modified: 2025-06-26                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -21,54 +21,18 @@
 
 #include <respond/data_ops/matrices.hpp>
 
+#include <config.hpp>
+
 using namespace respond::data_ops;
+
+namespace respond {
+namespace testing {
 
 class DataLoaderTest : public ::testing::Test {
 protected:
     const std::string file_name_1 = "data_test1.csv";
     const std::string file_name_2 = "data_test2.csv";
-    void SetUp() override {
-        std::ofstream config_file_stream("sim.conf");
-
-        config_file_stream
-            << "[simulation]" << std::endl
-            << "duration = 52" << std::endl
-            << "aging_interval = 260" << std::endl
-            << "intervention_change_times = 52" << std::endl
-            << "entering_sample_change_times = 52" << std::endl
-            << "overdose_change_times = 52" << std::endl
-            << "stratified_entering_cohort = false" << std::endl
-            << std::endl
-            << "[state]" << std::endl
-            << "interventions = No_Treatment, Buprenorphine,"
-               "Naltrexone, Methadone, Detox, Post-Buprenorphine,"
-               "Post-Naltrexone, Post-Methadone, Post-Detox"
-            << std::endl
-            << "behaviors = Active_Noninjection, Active_Injection,"
-               "Nonactive_Noninjection, Nonactive_Injection"
-            << std::endl
-            << std::endl
-            << "[demographic]" << std::endl
-            << "age_groups = 10_14, 15_19, 20_24, 25_29, 30_34, "
-               "35_39, 40_44, 45_49, 50_54, 55_59, 60_64, 65_69, "
-               "70_74, 75_79, 80_84, 85_89, 90_94, 95_99 "
-            << std::endl
-            << "sex = Male, Female " << std::endl
-            << std::endl
-            << "[cost]" << std::endl
-            << "cost_analysis = true" << std::endl
-            << "cost_perspectives = healthcare" << std::endl
-            << "discount_rate = 0.0025 " << std::endl
-            << "reporting_interval = 1" << std::endl
-            << "cost_utility_output_timesteps = 52 " << std::endl
-            << "cost_category_outputs = false " << std::endl
-            << std::endl
-            << "[output] " << std::endl
-            << "per_intervention_predictions = true " << std::endl
-            << "general_outputs = false " << std::endl
-            << "general_stats_output_timesteps = 52";
-        config_file_stream.close();
-    }
+    void SetUp() override { BuildSimConf("sim.conf"); }
     void TearDown() override {
         std::remove(file_name_1.c_str());
         std::remove(file_name_2.c_str());
@@ -78,6 +42,7 @@ protected:
 
 TEST_F(DataLoaderTest, initialSample) {
     std::unique_ptr<DataLoader> data_loader = DataLoader::Create();
+    data_loader->SetConfig("sim.conf");
     std::ofstream file_stream(file_name_1);
     file_stream
         << "block,agegrp,sex,oud,counts" << std::endl
@@ -96,6 +61,7 @@ TEST_F(DataLoaderTest, initialSample) {
 
 TEST_F(DataLoaderTest, enteringSamples) {
     std::unique_ptr<DataLoader> data_loader = DataLoader::Create();
+    data_loader->SetConfig("sim.conf");
     std::ofstream file_stream(file_name_1);
     file_stream << "agegrp,sex,cohort_size_change_1_52" << std::endl
                 << "10_14,male,11.4389540364826" << std::endl
@@ -112,6 +78,7 @@ TEST_F(DataLoaderTest, enteringSamples) {
 
 TEST_F(DataLoaderTest, OUDTransitionRates) {
     std::unique_ptr<DataLoader> data_loader = DataLoader::Create();
+    data_loader->SetConfig("sim.conf");
     std::ofstream file_stream(file_name_1);
     file_stream
         << "intervention,agegrp,sex,initial_oud,Active_Noninjection,"
@@ -136,6 +103,7 @@ TEST_F(DataLoaderTest, OUDTransitionRates) {
 
 TEST_F(DataLoaderTest, interventionTransitionRates) {
     std::unique_ptr<DataLoader> data_loader = DataLoader::Create();
+    data_loader->SetConfig("sim.conf");
     std::ofstream file_stream(file_name_1);
     file_stream << "agegrp,sex,oud,initial_intervention,No_Treatment_1_52,"
                    "Buprenorphine_1_52,Naltrexone_1_52,Methadone"
@@ -162,6 +130,7 @@ TEST_F(DataLoaderTest, interventionTransitionRates) {
 
 TEST_F(DataLoaderTest, overdoseRates) {
     std::unique_ptr<DataLoader> data_loader = DataLoader::Create();
+    data_loader->SetConfig("sim.conf");
     std::ofstream file_stream(file_name_1);
     file_stream
         << "block,agegrp,sex,oud,overdose_1_52,overdose_52_104,overdose_104_"
@@ -189,6 +158,7 @@ TEST_F(DataLoaderTest, overdoseRates) {
 
 TEST_F(DataLoaderTest, fatalOverdoseRates) {
     std::unique_ptr<DataLoader> data_loader = DataLoader::Create();
+    data_loader->SetConfig("sim.conf");
     std::ofstream file_stream(file_name_1);
     file_stream
         << "percent_overdoses_fatal_1_52,percent_overdoses_fatal_52_104,"
@@ -205,33 +175,9 @@ TEST_F(DataLoaderTest, fatalOverdoseRates) {
     EXPECT_EQ(result(0, 0, 0), 0.216540329711774);
 }
 
-TEST_F(DataLoaderTest, fatalOverdoseRatesStratified) {
-    std::unique_ptr<DataLoader> data_loader = DataLoader::Create();
-    std::ofstream file_stream(file_name_1);
-    file_stream
-        << "agegrp,sex,percent_overdoses_fatal_1_52,percent_overdoses_fatal_52_"
-           "104,"
-           "percent_overdoses_fatal_104_156,percent_overdoses_fatal_156_208,"
-           "percent_overdoses_fatal_208_260"
-        << std::endl
-        << "10_14,Male,"
-           "0.216540329711774,0.297741215749976,0.113841797135366,0."
-           "126092413319309,0.156049415151599"
-        << std::endl
-        << "10_14, Female, 0.2, 0.3, 0.1, 0.126, 0.15";
-    file_stream.close();
-
-    data_loader->LoadFatalOverdoseRates(file_name_1);
-
-    auto result = data_loader->GetFatalOverdoseRates(0);
-    EXPECT_EQ(result(0, 0, 0), 0.216540329711774);
-    EXPECT_EQ(result(1, 0, 0), 0.216540329711774);
-    EXPECT_EQ(result(0, 1, 1), 0.2);
-    EXPECT_EQ(result(1, 1, 1), 0.2);
-}
-
 TEST_F(DataLoaderTest, mortalityRates) {
     std::unique_ptr<DataLoader> data_loader = DataLoader::Create();
+    data_loader->SetConfig("sim.conf");
     std::ofstream file_stream_1(file_name_1);
     file_stream_1
         << "block,agegrp,sex,oud,SMR" << std::endl
@@ -257,6 +203,7 @@ TEST_F(DataLoaderTest, mortalityRates) {
 
 TEST_F(DataLoaderTest, interventionInitRates) {
     std::unique_ptr<DataLoader> data_loader = DataLoader::Create();
+    data_loader->SetConfig("sim.conf");
     std::ofstream file_stream(file_name_1);
     file_stream
         << "block,agegrp,sex,oud,counts" << std::endl
@@ -275,6 +222,7 @@ TEST_F(DataLoaderTest, interventionInitRates) {
 
 TEST_F(DataLoaderTest, setInitialSample) {
     std::unique_ptr<DataLoader> data_loader = DataLoader::Create();
+    data_loader->SetConfig("sim.conf");
     Matrix3d mat3d(1, 1, 1);
     mat3d(0, 0, 0) = 2917.55795376043;
     data_loader->SetInitialSample(mat3d);
@@ -285,6 +233,7 @@ TEST_F(DataLoaderTest, setInitialSample) {
 
 TEST_F(DataLoaderTest, setEnteringSamples) {
     std::unique_ptr<DataLoader> data_loader = DataLoader::Create();
+    data_loader->SetConfig("sim.conf");
     Matrix3d mat3d(1, 1, 1);
     mat3d(0, 0, 0) = 11.4389540364826;
     TimedMatrix3d mat4d = {{0, mat3d}};
@@ -296,6 +245,7 @@ TEST_F(DataLoaderTest, setEnteringSamples) {
 
 TEST_F(DataLoaderTest, setOUDTransitionRates) {
     std::unique_ptr<DataLoader> data_loader = DataLoader::Create();
+    data_loader->SetConfig("sim.conf");
     Matrix3d mat3d(1, 1, 1);
     mat3d(0, 0, 0) = 0.560720353446504;
     data_loader->SetOUDTransitionRates(mat3d);
@@ -306,6 +256,7 @@ TEST_F(DataLoaderTest, setOUDTransitionRates) {
 
 TEST_F(DataLoaderTest, setInterventionTransitionRates) {
     std::unique_ptr<DataLoader> data_loader = DataLoader::Create();
+    data_loader->SetConfig("sim.conf");
     Matrix3d mat3d(1, 1, 1);
     mat3d(0, 0, 0) = 0.625523912484771;
     TimedMatrix3d mat4d = {{0, mat3d}};
@@ -317,6 +268,7 @@ TEST_F(DataLoaderTest, setInterventionTransitionRates) {
 
 TEST_F(DataLoaderTest, setOverdoseRates) {
     std::unique_ptr<DataLoader> data_loader = DataLoader::Create();
+    data_loader->SetConfig("sim.conf");
     Matrix3d mat3d(1, 1, 1);
     mat3d(0, 0, 0) = 0.00059346577560159;
     TimedMatrix3d mat4d = {{0, mat3d}};
@@ -328,6 +280,7 @@ TEST_F(DataLoaderTest, setOverdoseRates) {
 
 TEST_F(DataLoaderTest, setFatalOverdoseRates) {
     std::unique_ptr<DataLoader> data_loader = DataLoader::Create();
+    data_loader->SetConfig("sim.conf");
     Matrix3d mat3d(1, 1, 1);
     mat3d(0, 0, 0) = 0.216540329711774;
     TimedMatrix3d mat4d = {{0, mat3d}};
@@ -339,6 +292,7 @@ TEST_F(DataLoaderTest, setFatalOverdoseRates) {
 
 TEST_F(DataLoaderTest, setMortalityRates) {
     std::unique_ptr<DataLoader> data_loader = DataLoader::Create();
+    data_loader->SetConfig("sim.conf");
     Matrix3d mat3d(1, 1, 1);
     mat3d(0, 0, 0) = 6.8407483245769285e-06;
     data_loader->SetMortalityRates(mat3d);
@@ -349,6 +303,7 @@ TEST_F(DataLoaderTest, setMortalityRates) {
 
 TEST_F(DataLoaderTest, setInterventionInitRates) {
     std::unique_ptr<DataLoader> data_loader = DataLoader::Create();
+    data_loader->SetConfig("sim.conf");
     Matrix3d mat3d(1, 1, 1);
     mat3d(0, 0, 0) = 6.8407483245769285e-06;
     data_loader->SetInterventionInitRates(mat3d);
@@ -356,3 +311,6 @@ TEST_F(DataLoaderTest, setInterventionInitRates) {
     Matrix3d result = data_loader->GetInterventionInitRates();
     EXPECT_EQ(result(0, 0, 0), 6.8407483245769285e-06);
 }
+
+} // namespace testing
+} // namespace respond

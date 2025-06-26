@@ -4,7 +4,7 @@
 // Created Date: 2025-03-07                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-06-05                                                  //
+// Last Modified: 2025-06-26                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -21,137 +21,47 @@
 #include <unordered_map>
 #include <vector>
 
-#include <datamanagement/DataManagement.hpp>
-
 #include <respond/utils/logging.hpp>
+
+#include <respond/data_ops/base_loader.hpp>
 
 namespace respond {
 namespace data_ops {
-class BaseLoader {
+class BaseLoaderImpl : public virtual BaseLoader {
 public:
-    BaseLoader(const std::filesystem::path &directory = "",
-               const std::string &log_name = "console")
-        : directory(directory), logger_name(log_name) {
-        std::filesystem::path conf = directory / "sim.conf";
-        if (!std::filesystem::exists(conf)) {
-            respond::utils::LogError(logger_name,
-                                     "Config file not found during Loader "
-                                     "Construction. Expect Errors!");
-            return;
-        }
-        config = std::make_shared<Data::Config>(conf.string());
-        LoadConfig();
+    BaseLoaderImpl(const std::string &log_name = "console")
+        : logger_name(log_name) {}
+
+    Data::IDataTablePtr LoadDataTable(const std::string &path,
+                                      bool headers = true) {
+        return std::make_shared<Data::DataTable>(path, headers, ',');
     }
 
-    Data::IDataTablePtr ReadCSV(const std::string &path, bool headers = true) {
-        Data::IDataTablePtr table =
-            std::make_shared<Data::DataTable>(path, headers, ',');
-        return table;
+    void SetConfig(const std::string &config_file) {
+        if (std::filesystem::exists(config_file)) {
+            config = std::make_shared<Data::Config>(config_file);
+        } else {
+            respond::utils::LogError(logger_name, "Config file not found at " +
+                                                      config_file +
+                                                      ". Expect Errors!");
+        }
     }
 
     Data::IConfigablePtr GetConfig() const { return config; }
 
-    Data::IDataTablePtr LoadDataTable(const std::string &filename) {
-        return std::make_shared<Data::DataTable>(
-            (directory / filename).string());
-    }
-
+    [[deprecated("Will always return {\"na\"}.")]]
     std::vector<std::string> GetDemographicCombos() const {
-        return demographic_combos;
+        return {"na"};
     }
 
+    [[deprecated("No operation performed.")]]
     void SetDemographicCombos(const std::vector<std::string> &combos) {
-        demographic_combos = combos;
+        return;
     }
-
-    int GetAgeGroupShift() const { return age_group_shift; }
 
 protected:
-    Data::IConfigablePtr config;
+    Data::IConfigablePtr config = nullptr;
     const std::string logger_name;
-
-    // demographic
-    int age_group_shift;
-    std::vector<std::string> demographic_combos = {};
-
-private:
-    const std::filesystem::path directory;
-    void LoadConfig() {
-        if (!config) {
-            respond::utils::LogError(
-                logger_name,
-                "Config not found when trying to load from config file.");
-            return;
-        }
-
-        // Assumes ages are reported as XX_XX
-        age_group_shift = CalculateAgeShift(
-            config->getStringVector("demographic.age_groups"));
-
-        BuildDemographicCombinations();
-    }
-
-    int CalculateAgeShift(const std::vector<std::string> &ages) {
-        if (ages.empty()) {
-            respond::utils::LogWarning(
-                logger_name, "No ages found when attempting to calculate "
-                             "Age Shift! Setting Age Shift to 0...");
-            return 0;
-        }
-        std::string first_age_group = ages[0];
-        std::string delimiter = "_";
-        std::string first_age_string =
-            first_age_group.substr(0, first_age_group.find(delimiter));
-        int first_age = std::stoi(first_age_string);
-        first_age_group.erase(0,
-                              first_age_string.length() + delimiter.length());
-        int second_age = std::stoi(first_age_group);
-
-        // have to add 1 for inclusive first value
-        return (second_age - first_age) + 1;
-    }
-
-    void BuildDemographicCombinations() {
-        std::vector<std::string> demographics =
-            config->getSectionCategories("demographic");
-        std::vector<std::vector<std::string>> running_demographics;
-        for (std::string demographic : demographics) {
-            running_demographics.push_back(
-                config->getStringVector("demographic." + demographic));
-        }
-        std::vector<std::vector<std::string>> temp1;
-        std::vector<std::string> temp2;
-        RecursionHelper(temp1, temp2, running_demographics.begin(),
-                        running_demographics.end());
-        std::stringstream group;
-        for (std::vector<std::string> strList : temp1) {
-            group.clear();
-            for (std::string st : strList) {
-                std::transform(st.begin(), st.end(), st.begin(),
-                               [](unsigned char c) { return std::tolower(c); });
-                group << " " << st;
-            }
-            demographic_combos.push_back(group.str());
-        }
-    }
-
-    void RecursionHelper(
-        std::vector<std::vector<std::string>> &end_result,
-        std::vector<std::string> &running_total,
-        std::vector<std::vector<std::string>>::const_iterator current,
-        std::vector<std::vector<std::string>>::const_iterator final) {
-        if (current == final) {
-            end_result.push_back(running_total);
-            return;
-        }
-        const std::vector<std::string> &temp = *current;
-        for (std::vector<std::string>::const_iterator it = temp.begin();
-             it != temp.end(); it++) {
-            running_total.push_back(*it);
-            RecursionHelper(end_result, running_total, current + 1, final);
-            running_total.pop_back();
-        }
-    }
 };
 } // namespace data_ops
 } // namespace respond

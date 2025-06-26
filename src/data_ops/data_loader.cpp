@@ -4,7 +4,7 @@
 // Created Date: 2025-01-14                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-06-05                                                  //
+// Last Modified: 2025-06-26                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -30,16 +30,21 @@
 namespace respond {
 namespace data_ops {
 Matrix3d DataLoaderImpl::LoadInitialSample(const std::string &file) {
-    // INITIAL GROUP
+    auto config = GetConfig();
+    if (config == nullptr) {
+        respond::utils::LogError(
+            logger_name, "Config not set! Unable to Load Initial Sample...");
+        return {};
+    }
 
     Data::IDataTablePtr initial_cohort = LoadDataTable(file);
 
     std::vector<std::string> behaviors =
-        GetConfig()->getStringVector("state.behaviors");
+        config->getStringVector("state.behaviors");
     int number_behavior_states = behaviors.size();
     int number_demographic_combos = GetDemographicCombos().size();
     std::vector<std::string> interventions =
-        GetConfig()->getStringVector("state.interventions");
+        config->getStringVector("state.interventions");
     int number_intervention_states = interventions.size();
 
     initial_sample =
@@ -89,15 +94,21 @@ Matrix3d DataLoaderImpl::LoadInitialSample(const std::string &file) {
 TimedMatrix3d DataLoaderImpl::LoadEnteringSamples(
     const std::string &file, const std::string &entering_sample_intervention,
     const std::string &entering_sample_behavior) {
+    auto config = GetConfig();
+    if (config == nullptr) {
+        respond::utils::LogError(
+            logger_name, "Config not set! Unable to Load Entering Samples...");
+        return {};
+    }
 
     Data::IDataTablePtr entering_samples_table = LoadDataTable(file);
 
     std::vector<std::string> behaviors =
-        GetConfig()->getStringVector("state.behaviors");
+        config->getStringVector("state.behaviors");
     int number_behavior_states = behaviors.size();
     int number_demographic_combos = GetDemographicCombos().size();
     std::vector<std::string> interventions =
-        GetConfig()->getStringVector("state.interventions");
+        config->getStringVector("state.interventions");
     int number_intervention_states = interventions.size();
 
     auto itr = find(interventions.begin(), interventions.end(),
@@ -114,7 +125,7 @@ TimedMatrix3d DataLoaderImpl::LoadEnteringSamples(
 
     int start_time = 0;
     std::vector<int> entering_sample_change_times =
-        GetConfig()->getIntVector("simulation.entering_sample_change_times");
+        config->getIntVector("simulation.entering_sample_change_times");
     for (int i = 0; i < entering_sample_change_times.size(); ++i) {
         int changepoint = entering_sample_change_times[i];
         column.str(std::string());
@@ -147,21 +158,27 @@ TimedMatrix3d DataLoaderImpl::LoadEnteringSamples(
 }
 
 TimedMatrix3d DataLoaderImpl::LoadEnteringSamples(const std::string &file) {
+    auto config = GetConfig();
+    if (config == nullptr) {
+        respond::utils::LogError(
+            logger_name, "Config not set! Unable to Load Entering Samples...");
+        return {};
+    }
     Data::IDataTablePtr entering_cohort = LoadDataTable(file);
 
     std::vector<std::string> behaviors =
-        GetConfig()->getStringVector("state.behaviors");
+        config->getStringVector("state.behaviors");
     int number_behavior_states = behaviors.size();
     int number_demographic_combos = GetDemographicCombos().size();
     std::vector<std::string> interventions =
-        GetConfig()->getStringVector("state.interventions");
+        config->getStringVector("state.interventions");
     int number_intervention_states = interventions.size();
 
     std::string column_prefix = "cohort_size_change_";
     std::stringstream column;
     int start_time = 0;
     std::vector<int> entering_sample_change_times =
-        GetConfig()->getIntVector("simulation.entering_sample_change_times");
+        config->getIntVector("simulation.entering_sample_change_times");
     for (int e = 0; e < entering_sample_change_times.size(); ++e) {
         int changepoint = entering_sample_change_times[e];
         column.clear();
@@ -223,15 +240,22 @@ TimedMatrix3d DataLoaderImpl::LoadEnteringSamples(const std::string &file) {
 }
 
 Matrix3d DataLoaderImpl::LoadOUDTransitionRates(const std::string &file) {
+    auto config = GetConfig();
+    if (config == nullptr) {
+        respond::utils::LogError(
+            logger_name,
+            "Config not set! Unable to Load Behavior Transition Rates...");
+        return {};
+    }
 
     Data::IDataTablePtr behavior_transitions_table = LoadDataTable(file);
 
     std::vector<std::string> behaviors =
-        GetConfig()->getStringVector("state.behaviors");
+        config->getStringVector("state.behaviors");
     int number_behavior_states = behaviors.size();
     int number_demographic_combos = GetDemographicCombos().size();
     std::vector<std::string> interventions =
-        GetConfig()->getStringVector("state.interventions");
+        config->getStringVector("state.interventions");
     int number_intervention_states = interventions.size();
     // end dimensions of oudTransitionRates are number_intervention_states x
     // number_behavior_states^2 x demographics start with a vector of
@@ -286,15 +310,22 @@ Matrix3d DataLoaderImpl::LoadOUDTransitionRates(const std::string &file) {
 }
 
 Matrix3d DataLoaderImpl::LoadInterventionInitRates(const std::string &file) {
+    auto config = GetConfig();
+    if (config == nullptr) {
+        respond::utils::LogError(
+            logger_name,
+            "Config not set! Unable to Load Intervention Init Rates...");
+        return {};
+    }
 
     Data::IDataTablePtr intervention_init_table = LoadDataTable(file);
 
     std::vector<std::string> behaviors =
-        GetConfig()->getStringVector("state.behaviors");
+        config->getStringVector("state.behaviors");
     int number_behavior_states = behaviors.size();
     int number_demographic_combos = GetDemographicCombos().size();
     std::vector<std::string> interventions =
-        GetConfig()->getStringVector("state.interventions");
+        config->getStringVector("state.interventions");
     int number_intervention_states = interventions.size();
 
     Matrix3d running_transitions =
@@ -347,10 +378,17 @@ Matrix3d DataLoaderImpl::LoadInterventionInitRates(const std::string &file) {
 
 TimedMatrix3d
 DataLoaderImpl::LoadInterventionTransitionRates(const std::string &file) {
+    auto config = GetConfig();
+    if (config == nullptr) {
+        respond::utils::LogError(
+            logger_name,
+            "Config not set! Unable to Load Intervention Transition Rates...");
+        return {};
+    }
     Data::IDataTablePtr intervention_transitions_table = LoadDataTable(file);
 
     std::vector<int> intervention_change_times =
-        GetConfig()->getIntVector("simulation.intervention_change_times");
+        config->getIntVector("simulation.intervention_change_times");
 
     try {
         intervention_transition_rates = BuildTransitionRatesOverTime(
@@ -363,12 +401,18 @@ DataLoaderImpl::LoadInterventionTransitionRates(const std::string &file) {
 }
 
 TimedMatrix3d DataLoaderImpl::LoadOverdoseRates(const std::string &file) {
+    auto config = GetConfig();
+    if (config == nullptr) {
+        respond::utils::LogError(
+            logger_name, "Config not set! Unable to Load Overdose Rates...");
+        return {};
+    }
 
     Data::IDataTablePtr overdose_transitions_table = LoadDataTable(file);
 
     int start_time = 0;
     std::vector<int> overdose_change_times =
-        GetConfig()->getIntVector("simulation.overdose_change_times");
+        config->getIntVector("simulation.overdose_change_times");
     for (int i = 0; i < overdose_change_times.size(); ++i) {
         int timestep = overdose_change_times[i];
         std::stringstream column;
@@ -393,19 +437,26 @@ TimedMatrix3d DataLoaderImpl::LoadOverdoseRates(const std::string &file) {
 }
 
 TimedMatrix3d DataLoaderImpl::LoadFatalOverdoseRates(const std::string &file) {
+    auto config = GetConfig();
+    if (config == nullptr) {
+        respond::utils::LogError(
+            logger_name,
+            "Config not set! Unable to Load Fatal Overdose Rates...");
+        return {};
+    }
     Data::IDataTablePtr fatal_overdose_table = LoadDataTable(file);
 
     std::vector<std::string> behaviors =
-        GetConfig()->getStringVector("state.behaviors");
+        config->getStringVector("state.behaviors");
     int number_behavior_states = behaviors.size();
     int number_demographic_combos = GetDemographicCombos().size();
     std::vector<std::string> interventions =
-        GetConfig()->getStringVector("state.interventions");
+        config->getStringVector("state.interventions");
     int number_intervention_states = interventions.size();
 
     int start_time = 0;
     std::vector<int> overdose_change_times =
-        GetConfig()->getIntVector("simulation.overdose_change_times");
+        config->getIntVector("simulation.overdose_change_times");
     for (int i = 0; i < overdose_change_times.size(); ++i) {
         int timestep = overdose_change_times[i];
         std::stringstream column;
@@ -430,6 +481,12 @@ TimedMatrix3d DataLoaderImpl::LoadFatalOverdoseRates(const std::string &file) {
 
 Matrix3d DataLoaderImpl::LoadMortalityRates(
     const std::string &smr_file, const std::string &background_mortality_file) {
+    auto config = GetConfig();
+    if (config == nullptr) {
+        respond::utils::LogError(
+            logger_name, "Config not set! Unable to Load Mortality Rates...");
+        return {};
+    }
 
     // MORTALITY TRANSITIONS
     // mortality here refers to death from reasons other than oud and is
@@ -438,11 +495,11 @@ Matrix3d DataLoaderImpl::LoadMortalityRates(
     Data::IDataTablePtr temp = LoadDataTable(smr_file);
 
     std::vector<std::string> behaviors =
-        GetConfig()->getStringVector("state.behaviors");
+        config->getStringVector("state.behaviors");
     int number_behavior_states = behaviors.size();
     int number_demographic_combos = GetDemographicCombos().size();
     std::vector<std::string> interventions =
-        GetConfig()->getStringVector("state.interventions");
+        config->getStringVector("state.interventions");
     int number_intervention_states = interventions.size();
 
     std::vector<std::string> smr_column = temp->getColumn("SMR");
@@ -494,17 +551,24 @@ Matrix3d DataLoaderImpl::LoadMortalityRates(
 Matrix3d
 DataLoaderImpl::BuildInterventionMatrix(const Data::IDataTablePtr &table,
                                         std::string name, int timestep) {
+    auto config = GetConfig();
+    if (config == nullptr) {
+        respond::utils::LogError(
+            logger_name,
+            "Config not set! Unable to Build Intervention Matrix...");
+        return {};
+    }
 
     std::vector<std::string> behaviors =
-        GetConfig()->getStringVector("state.behaviors");
+        config->getStringVector("state.behaviors");
     int number_behavior_states = behaviors.size();
     int number_demographic_combos = GetDemographicCombos().size();
     std::vector<std::string> interventions =
-        GetConfig()->getStringVector("state.interventions");
+        config->getStringVector("state.interventions");
     int number_intervention_states = interventions.size();
 
     std::vector<int> intervention_change_times =
-        GetConfig()->getIntVector("simulation.intervention_change_times");
+        config->getIntVector("simulation.intervention_change_times");
 
     Matrix3d transition_matrix =
         CreateMatrix3d(number_intervention_states, number_behavior_states,
@@ -558,16 +622,23 @@ DataLoaderImpl::BuildInterventionMatrix(const Data::IDataTablePtr &table,
 Matrix3d
 DataLoaderImpl::CreateTransitionMatrix3d(const Data::IDataTablePtr &table,
                                          Dimension dimension, int timestep) {
+    auto config = GetConfig();
+    if (config == nullptr) {
+        respond::utils::LogError(
+            logger_name,
+            "Config not set! Unable to Create Transition Matrix...");
+        return {};
+    }
 
     std::shared_ptr<Data::DataTable> data_table =
         std::dynamic_pointer_cast<Data::DataTable>(table);
 
     std::vector<std::string> behaviors =
-        GetConfig()->getStringVector("state.behaviors");
+        config->getStringVector("state.behaviors");
     int number_behavior_states = behaviors.size();
     int number_demographic_combos = GetDemographicCombos().size();
     std::vector<std::string> interventions =
-        GetConfig()->getStringVector("state.interventions");
+        config->getStringVector("state.interventions");
     int number_intervention_states = interventions.size();
 
     Data::DataTable temp(*data_table);
@@ -626,13 +697,20 @@ DataLoaderImpl::BuildTransitionRatesOverTime(const std::vector<int> &ict,
 Matrix3d
 DataLoaderImpl::BuildOverdoseTransitions(Data::IDataTablePtr const &table,
                                          const std::string &key) {
+    auto config = GetConfig();
+    if (config == nullptr) {
+        respond::utils::LogError(
+            logger_name,
+            "Config not set! Unable to Build Overdose Transitions...");
+        return {};
+    }
 
     std::vector<std::string> behaviors =
-        GetConfig()->getStringVector("state.behaviors");
+        config->getStringVector("state.behaviors");
     int number_behavior_states = behaviors.size();
     int number_demographic_combos = GetDemographicCombos().size();
     std::vector<std::string> interventions =
-        GetConfig()->getStringVector("state.interventions");
+        config->getStringVector("state.interventions");
     int number_intervention_states = interventions.size();
 
     Matrix3d overdose_transitions =
@@ -659,12 +737,19 @@ DataLoaderImpl::BuildOverdoseTransitions(Data::IDataTablePtr const &table,
 Matrix3d
 DataLoaderImpl::BuildFatalOverdoseTransitions(Data::IDataTablePtr const &table,
                                               const std::string &key) {
+    auto config = GetConfig();
+    if (config == nullptr) {
+        respond::utils::LogError(
+            logger_name,
+            "Config not set! Unable to Build Fatal Overdose Transitions...");
+        return {};
+    }
     std::vector<std::string> behaviors =
-        GetConfig()->getStringVector("state.behaviors");
+        config->getStringVector("state.behaviors");
     int number_behavior_states = behaviors.size();
     int number_demographic_combos = GetDemographicCombos().size();
     std::vector<std::string> interventions =
-        GetConfig()->getStringVector("state.interventions");
+        config->getStringVector("state.interventions");
     int number_intervention_states = interventions.size();
 
     Matrix3d fatal_overdose_transitions =
@@ -735,9 +820,8 @@ Matrix3d DataLoaderImpl::DoubleToMatrix3d(double value, int first_dimension,
     return ret;
 }
 
-std::unique_ptr<DataLoader> DataLoader::Create(const std::string &directory,
-                                               const std::string &log_name) {
-    return std::make_unique<DataLoaderImpl>(directory, log_name);
+std::unique_ptr<DataLoader> DataLoader::Create(const std::string &log_name) {
+    return std::make_unique<DataLoaderImpl>(log_name);
 }
 } // namespace data_ops
 } // namespace respond
