@@ -21,25 +21,33 @@ When we assume \f$x_{t}\f$ is able to represent the state of the cohort at times
 
 Entering cohort transitions is the first step in the transition operation. Its actually extremely straightforward, it is a direct movement of people from the "entering cohort" state into the no treatment state.
 
+/f[
+x = e(x, t)
+\f]
+
 ## Behavior Transitions
 
-TODO
+\f[
+x = \Beta(x, t)
+\f]
 
 ## Intervention Transitions
 
-TODO
+\f[
+x = \Iota(x, t)
+\f]
 
 ## Behavior Transitions Post Intervention Transition
 
-TODO
+\Iota(x, t) = f(g(t, x))
 
 ## Overdose Transitions
 
-TODO
+x = \Omega(x, t)
 
 ## Background Mortality Transitions
 
-TODO
+x = \Mu(x, t)
 
 Previous: [Run](run.md)
 

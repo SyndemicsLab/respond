@@ -6,10 +6,10 @@ Currently the RESPOND model and overall Simdemics Modeling Library are in heavy 
 
 The code base started as a specific model and many of the library limitations are due to old code and notations being maintained. That being said, this is an area of continuous improvement so watch for updates:
 
-- Dataloaders currently only support RESPOND
-- The RESPOND model currently requires Dataloaders
-- Dataloaders make use of the csv file structure
-- Specific file names are required for Dataloaders
+- DataLoaders currently only support RESPOND
+- The RESPOND model currently requires DataLoaders
+- DataLoaders make use of the csv file structure
+- Specific file names are required for DataLoaders
 - Column names must be exact
 - Behavior and intervention names must be underscored instead of spaces or dashes
 - The model cannot be run on a GPU
@@ -25,6 +25,6 @@ Currently, there are a lot of limitations in the required data structure.
 - All oud columns should be renamed to behaviors
 - The Demographic structure still exists in the data without any impact to the model
 
-Previous: [Under the Hoold](math.md)
+Previous: [Under the Hold](math.md)
 
 Next: [FAQs](faq.md)
