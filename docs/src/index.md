@@ -75,7 +75,7 @@ FetchContent_MakeAvailable(respond)
 
 ### Script
 
-If you would prefer a single all-in-one script, our team has developed a script that works on any linux environment and finds packages wherever available. As such, the user needs simply run:
+If you would prefer a single, all-in-one script, our team has developed a script that works on any linux environment and finds packages wherever available. As such, the user needs simply run:
 
 ```shell
 ./tools/build.sh
