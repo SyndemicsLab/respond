@@ -25,13 +25,16 @@ Copyright (c) 2025 Syndemics Lab at Boston Medical Center
     <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
-    <script type="text/x-mathjax-config">
-MathJax.Hub.Config({
-  extensions: ["tex2jax.js"],
-  jax: ["input/TeX","output/HTML-CSS"],
-});
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script type="text/javascript">
+window.MathJax = {
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore',
+    processHtmlClass: 'tex2jax_process'
+  }
+};
 </script>
-<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
+<script type="text/javascript" id="MathJax-script" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
     <link href="doxygen.css" rel="stylesheet" type="text/css" />
     <link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
 <link href="doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
@@ -130,17 +133,18 @@ $(document).ready(function(){initNavTree('namespaces.html',''); initResizable();
 <div class="levels">[detail level <span onclick="javascript:toggleLevel(1);">1</span><span onclick="javascript:toggleLevel(2);">2</span><span onclick="javascript:toggleLevel(3);">3</span>]</div><table class="directory">
 <tr id="row_0_" class="even"><td class="entry"><span style="width:0px;display:inline-block;">&#160;</span><span id="arr_0_" class="arrow" onclick="toggleFolder('0_')">&#9660;</span><span class="icona"><span class="icon">N</span></span><a class="el" href="d9/de6/namespacerespond.html" target="_self">respond</a></td><td class="desc">General Namespace for all RESPOND repo related code </td></tr>
 <tr id="row_0_0_" class="odd"><td class="entry"><span style="width:16px;display:inline-block;">&#160;</span><span id="arr_0_0_" class="arrow" onclick="toggleFolder('0_0_')">&#9660;</span><span class="icona"><span class="icon">N</span></span><a class="el" href="d9/d37/namespacerespond_1_1data__ops.html" target="_self">data_ops</a></td><td class="desc">Namespace for all data operations </td></tr>
-<tr id="row_0_0_0_" class="even"><td class="entry"><span style="width:48px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="de/dd8/structrespond_1_1data__ops_1_1Cost.html" target="_self">Cost</a></td><td class="desc">Struct grouping together matrices containing cost information </td></tr>
-<tr id="row_0_0_1_" class="odd"><td class="entry"><span style="width:48px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="d1/d88/classrespond_1_1data__ops_1_1CostLoader.html" target="_self">CostLoader</a></td><td class="desc">Class to manage the Costing Data Necessary for RESPOND </td></tr>
-<tr id="row_0_0_2_" class="even"><td class="entry"><span style="width:48px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="db/d1e/classrespond_1_1data__ops_1_1DataFormatter.html" target="_self">DataFormatter</a></td><td class="desc">Class to handle the data formatting needs for RESPOND </td></tr>
-<tr id="row_0_0_3_" class="odd"><td class="entry"><span style="width:48px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="da/d16/classrespond_1_1data__ops_1_1DataLoader.html" target="_self">DataLoader</a></td><td class="desc">Class for Loading and Managing Data in RESPOND </td></tr>
-<tr id="row_0_0_4_" class="even"><td class="entry"><span style="width:48px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="d7/d58/structrespond_1_1data__ops_1_1History.html" target="_self">History</a></td><td class="desc">Struct grouping together matrices containing run history </td></tr>
-<tr id="row_0_0_5_" class="odd"><td class="entry"><span style="width:48px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="d1/d7e/structrespond_1_1data__ops_1_1Totals.html" target="_self">Totals</a></td><td class="desc">Struct grouping together matricies containing total cost effectiveness information </td></tr>
-<tr id="row_0_0_6_" class="even"><td class="entry"><span style="width:48px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="d6/dc5/classrespond_1_1data__ops_1_1UtilityLoader.html" target="_self">UtilityLoader</a></td><td class="desc">A class to load Utility Data from files </td></tr>
-<tr id="row_0_0_7_" class="odd"><td class="entry"><span style="width:48px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="db/dcb/classrespond_1_1data__ops_1_1Writer.html" target="_self">Writer</a></td><td class="desc">Class for writing all information from the model </td></tr>
-<tr id="row_0_1_" class="even"><td class="entry"><span style="width:16px;display:inline-block;">&#160;</span><span id="arr_0_1_" class="arrow" onclick="toggleFolder('0_1_')">&#9660;</span><span class="icona"><span class="icon">N</span></span><a class="el" href="d5/d8e/namespacerespond_1_1model.html" target="_self">model</a></td><td class="desc">A namespace for the respond model functionality </td></tr>
-<tr id="row_0_1_0_" class="odd"><td class="entry"><span style="width:48px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="db/dd0/classrespond_1_1model_1_1Respond.html" target="_self">Respond</a></td><td class="desc">Class describing the <a class="el" href="db/dd0/classrespond_1_1model_1_1Respond.html" title="Class describing the Respond model simulation.">Respond</a> model simulation </td></tr>
-<tr id="row_0_2_" class="even"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">N</span></span><a class="el" href="da/dba/namespacerespond_1_1utils.html" target="_self">utils</a></td><td class="desc">Namespace for misc utility functions and classes </td></tr>
+<tr id="row_0_0_0_" class="even"><td class="entry"><span style="width:48px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="d8/d12/classrespond_1_1data__ops_1_1BaseLoader.html" target="_self">BaseLoader</a></td><td class="desc"></td></tr>
+<tr id="row_0_0_1_" class="odd"><td class="entry"><span style="width:48px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="de/dd8/structrespond_1_1data__ops_1_1Cost.html" target="_self">Cost</a></td><td class="desc">Struct grouping together matrices containing cost information </td></tr>
+<tr id="row_0_0_2_" class="even"><td class="entry"><span style="width:48px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="d1/d88/classrespond_1_1data__ops_1_1CostLoader.html" target="_self">CostLoader</a></td><td class="desc">Class to manage the Costing Data Necessary for RESPOND </td></tr>
+<tr id="row_0_0_3_" class="odd"><td class="entry"><span style="width:48px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="db/d1e/classrespond_1_1data__ops_1_1DataFormatter.html" target="_self">DataFormatter</a></td><td class="desc">Class to handle the data formatting needs for RESPOND </td></tr>
+<tr id="row_0_0_4_" class="even"><td class="entry"><span style="width:48px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="da/d16/classrespond_1_1data__ops_1_1DataLoader.html" target="_self">DataLoader</a></td><td class="desc">Class for Loading and Managing Data in RESPOND </td></tr>
+<tr id="row_0_0_5_" class="odd"><td class="entry"><span style="width:48px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="d7/d58/structrespond_1_1data__ops_1_1History.html" target="_self">History</a></td><td class="desc">Struct grouping together matrices containing run history </td></tr>
+<tr id="row_0_0_6_" class="even"><td class="entry"><span style="width:48px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="d1/d7e/structrespond_1_1data__ops_1_1Totals.html" target="_self">Totals</a></td><td class="desc">Struct grouping together matricies containing total cost effectiveness information </td></tr>
+<tr id="row_0_0_7_" class="odd"><td class="entry"><span style="width:48px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="d6/dc5/classrespond_1_1data__ops_1_1UtilityLoader.html" target="_self">UtilityLoader</a></td><td class="desc">A class to load Utility Data from files </td></tr>
+<tr id="row_0_0_8_" class="even"><td class="entry"><span style="width:48px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="db/dcb/classrespond_1_1data__ops_1_1Writer.html" target="_self">Writer</a></td><td class="desc">Class for writing all information from the model </td></tr>
+<tr id="row_0_1_" class="odd"><td class="entry"><span style="width:16px;display:inline-block;">&#160;</span><span id="arr_0_1_" class="arrow" onclick="toggleFolder('0_1_')">&#9660;</span><span class="icona"><span class="icon">N</span></span><a class="el" href="d5/d8e/namespacerespond_1_1model.html" target="_self">model</a></td><td class="desc">A namespace for the respond model functionality </td></tr>
+<tr id="row_0_1_0_" class="even"><td class="entry"><span style="width:48px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="db/dd0/classrespond_1_1model_1_1Respond.html" target="_self">Respond</a></td><td class="desc">Class describing the <a class="el" href="db/dd0/classrespond_1_1model_1_1Respond.html" title="Class describing the Respond model simulation.">Respond</a> model simulation </td></tr>
+<tr id="row_0_2_" class="odd"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">N</span></span><a class="el" href="da/dba/namespacerespond_1_1utils.html" target="_self">utils</a></td><td class="desc">Namespace for misc utility functions and classes </td></tr>
 </table>
 </div><!-- directory -->
 </div><!-- contents -->
@@ -148,7 +152,7 @@ $(document).ready(function(){initNavTree('namespaces.html',''); initResizable();
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Tue Jun 24 2025 14:55:40 for RESPOND by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
+    <li class="footer">Generated on Tue Jul 1 2025 12:53:10 for RESPOND by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
   </ul>
 </div>
 </body>

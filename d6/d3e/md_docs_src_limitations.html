@@ -25,13 +25,16 @@ Copyright (c) 2025 Syndemics Lab at Boston Medical Center
     <link href="../../search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="../../search/searchdata.js"></script>
 <script type="text/javascript" src="../../search/search.js"></script>
-    <script type="text/x-mathjax-config">
-MathJax.Hub.Config({
-  extensions: ["tex2jax.js"],
-  jax: ["input/TeX","output/HTML-CSS"],
-});
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script type="text/javascript">
+window.MathJax = {
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore',
+    processHtmlClass: 'tex2jax_process'
+  }
+};
 </script>
-<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
+<script type="text/javascript" id="MathJax-script" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
     <link href="../../doxygen.css" rel="stylesheet" type="text/css" />
     <link href="../../doxygen-awesome.css" rel="stylesheet" type="text/css"/>
 <link href="../../doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
@@ -127,22 +130,22 @@ $(document).ready(function(){initNavTree('d6/d3e/md_docs_src_limitations.html','
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><p>Currently the RESPOND model and overall Simdemics Modeling Library are in heavy development. This means they have A LOT of current limitations. Any requests should be directed to the issues page on the github repository and the maintainers will work on them as permits. That being said, some readily identified limitations that have been identified are:</p>
-<h1><a class="anchor" id="autotoc_md27"></a>
+<h1><a class="anchor" id="autotoc_md34"></a>
 Library</h1>
 <p>The code base started as a specific model and many of the library limitations are due to old code and notations being maintained. That being said, this is an area of continuous improvement so watch for updates:</p>
 <ul>
-<li>Data Loaders currently only support RESPOND</li>
-<li>The RESPOND Model Currently requires Data Loaders</li>
-<li>Data Loaders make use of the csv file structure</li>
-<li>Specific file names are required for Data Loaders</li>
-<li>Column Names must be exact</li>
+<li><code>DataLoader</code> currently only supports RESPOND</li>
+<li>The RESPOND model currently requires <code>DataLoader</code></li>
+<li><code>DataLoader</code> makes use of the csv file structure</li>
+<li>Specific file names are required for <code>DataLoader</code></li>
+<li>Column names must be exact</li>
 <li>Behavior and intervention names must be underscored instead of spaces or dashes</li>
 <li>The model cannot be run on a GPU</li>
 <li>Windows hangs during unit tests</li>
 <li>There is no generalized linux build</li>
 <li>Installation requires adding the respond cmake folder path to the <code>CMAKE_PREFIX_PATH</code></li>
 </ul>
-<h1><a class="anchor" id="autotoc_md28"></a>
+<h1><a class="anchor" id="autotoc_md35"></a>
 Data</h1>
 <p>Currently, there are a lot of limitations in the required data structure.</p>
 <ul>
@@ -150,7 +153,7 @@ Data</h1>
 <li>All oud columns should be renamed to behaviors</li>
 <li>The Demographic structure still exists in the data without any impact to the model</li>
 </ul>
-<p>Previous: <a class="el" href="../../dd/d4c/md_docs_src_run.html">Run</a></p>
+<p>Previous: <a class="el" href="../../d6/df1/md_docs_src_math.html">Under the Hood</a></p>
 <p>Next: <a class="el" href="../../d8/d51/md_docs_src_faq.html">FAQs</a> </p>
 </div></div><!-- contents -->
 </div><!-- PageDoc -->
@@ -158,7 +161,7 @@ Data</h1>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Tue Jun 24 2025 14:55:40 for RESPOND by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
+    <li class="footer">Generated on Tue Jul 1 2025 12:53:10 for RESPOND by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
   </ul>
 </div>
 </body>

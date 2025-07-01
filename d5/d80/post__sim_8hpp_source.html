@@ -25,13 +25,16 @@ Copyright (c) 2025 Syndemics Lab at Boston Medical Center
     <link href="../../search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="../../search/searchdata.js"></script>
 <script type="text/javascript" src="../../search/search.js"></script>
-    <script type="text/x-mathjax-config">
-MathJax.Hub.Config({
-  extensions: ["tex2jax.js"],
-  jax: ["input/TeX","output/HTML-CSS"],
-});
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script type="text/javascript">
+window.MathJax = {
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore',
+    processHtmlClass: 'tex2jax_process'
+  }
+};
 </script>
-<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
+<script type="text/javascript" id="MathJax-script" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
     <link href="../../doxygen.css" rel="stylesheet" type="text/css" />
     <link href="../../doxygen-awesome.css" rel="stylesheet" type="text/css"/>
 <link href="../../doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
@@ -287,13 +290,13 @@ $(document).ready(function(){initNavTree('d5/d80/post__sim_8hpp_source.html','..
 <div class="line"><a id="l00188" name="l00188"></a><span class="lineno">  188</span>} <span class="comment">// namespace respond</span></div>
 <div class="line"><a id="l00189" name="l00189"></a><span class="lineno">  189</span> </div>
 <div class="line"><a id="l00190" name="l00190"></a><span class="lineno">  190</span><span class="preprocessor">#endif </span><span class="comment">// RESPOND_MODEL_POSTSIM_HPP_</span></div>
-<div class="ttc" id="aclassrespond_1_1data__ops_1_1CostLoader_html"><div class="ttname"><a href="../../d1/d88/classrespond_1_1data__ops_1_1CostLoader.html">respond::data_ops::CostLoader</a></div><div class="ttdoc">Class to manage the Costing Data Necessary for RESPOND.</div><div class="ttdef"><b>Definition:</b> cost_loader.hpp:25</div></div>
+<div class="ttc" id="aclassrespond_1_1data__ops_1_1CostLoader_html"><div class="ttname"><a href="../../d1/d88/classrespond_1_1data__ops_1_1CostLoader.html">respond::data_ops::CostLoader</a></div><div class="ttdoc">Class to manage the Costing Data Necessary for RESPOND.</div><div class="ttdef"><b>Definition:</b> cost_loader.hpp:27</div></div>
 <div class="ttc" id="aclassrespond_1_1data__ops_1_1CostLoader_html_a1b6fae65b4be6262614c413fdddb71d9"><div class="ttname"><a href="../../d1/d88/classrespond_1_1data__ops_1_1CostLoader.html#a1b6fae65b4be6262614c413fdddb71d9">respond::data_ops::CostLoader::GetTreatmentUtilizationCost</a></div><div class="ttdeci">virtual Matrix3d GetTreatmentUtilizationCost(const std::string &amp;perspective) const =0</div><div class="ttdoc">Getter for Treatment Utilization Costs.</div></div>
 <div class="ttc" id="aclassrespond_1_1data__ops_1_1CostLoader_html_a6e067a43a9336073363bfd1f4bd27027"><div class="ttname"><a href="../../d1/d88/classrespond_1_1data__ops_1_1CostLoader.html#a6e067a43a9336073363bfd1f4bd27027">respond::data_ops::CostLoader::GetFatalOverdoseCost</a></div><div class="ttdeci">virtual double GetFatalOverdoseCost(const std::string &amp;perspective) const =0</div><div class="ttdoc">Getter for Fatal Overdose Costs.</div></div>
 <div class="ttc" id="aclassrespond_1_1data__ops_1_1CostLoader_html_a90bae3229dc6c791e1664ee32fa3e20d"><div class="ttname"><a href="../../d1/d88/classrespond_1_1data__ops_1_1CostLoader.html#a90bae3229dc6c791e1664ee32fa3e20d">respond::data_ops::CostLoader::GetPharmaceuticalCost</a></div><div class="ttdeci">virtual Matrix3d GetPharmaceuticalCost(const std::string &amp;perspective) const =0</div><div class="ttdoc">Getter for Pharmaceutical Costs.</div></div>
 <div class="ttc" id="aclassrespond_1_1data__ops_1_1CostLoader_html_a93164f6398fbb566fe1578ab58a74dee"><div class="ttname"><a href="../../d1/d88/classrespond_1_1data__ops_1_1CostLoader.html#a93164f6398fbb566fe1578ab58a74dee">respond::data_ops::CostLoader::GetHealthcareUtilizationCost</a></div><div class="ttdeci">virtual Matrix3d GetHealthcareUtilizationCost(const std::string &amp;perspective) const =0</div><div class="ttdoc">Getter for Healthcare Utilization Costs.</div></div>
 <div class="ttc" id="aclassrespond_1_1data__ops_1_1CostLoader_html_ac824ced0a1c0f8f75c677cb31d474816"><div class="ttname"><a href="../../d1/d88/classrespond_1_1data__ops_1_1CostLoader.html#ac824ced0a1c0f8f75c677cb31d474816">respond::data_ops::CostLoader::GetNonFatalOverdoseCost</a></div><div class="ttdeci">virtual double GetNonFatalOverdoseCost(const std::string &amp;perspective) const =0</div><div class="ttdoc">Getter for Non Fatal Overdose Costs.</div></div>
-<div class="ttc" id="aclassrespond_1_1data__ops_1_1UtilityLoader_html"><div class="ttname"><a href="../../d6/dc5/classrespond_1_1data__ops_1_1UtilityLoader.html">respond::data_ops::UtilityLoader</a></div><div class="ttdoc">A class to load Utility Data from files.</div><div class="ttdef"><b>Definition:</b> utility_loader.hpp:25</div></div>
+<div class="ttc" id="aclassrespond_1_1data__ops_1_1UtilityLoader_html"><div class="ttname"><a href="../../d6/dc5/classrespond_1_1data__ops_1_1UtilityLoader.html">respond::data_ops::UtilityLoader</a></div><div class="ttdoc">A class to load Utility Data from files.</div><div class="ttdef"><b>Definition:</b> utility_loader.hpp:27</div></div>
 <div class="ttc" id="aclassrespond_1_1data__ops_1_1UtilityLoader_html_a210bf5ebaa3e546c7b8d45d9bcdd2d14"><div class="ttname"><a href="../../d6/dc5/classrespond_1_1data__ops_1_1UtilityLoader.html#a210bf5ebaa3e546c7b8d45d9bcdd2d14">respond::data_ops::UtilityLoader::GetOUDUtility</a></div><div class="ttdeci">virtual Matrix3d GetOUDUtility(const std::string &amp;perspective) const =0</div><div class="ttdoc">Get the OUD Utility for a specified perspective.</div></div>
 <div class="ttc" id="aclassrespond_1_1data__ops_1_1UtilityLoader_html_a3c5f9929e8fa09a7c3164a81cd013e00"><div class="ttname"><a href="../../d6/dc5/classrespond_1_1data__ops_1_1UtilityLoader.html#a3c5f9929e8fa09a7c3164a81cd013e00">respond::data_ops::UtilityLoader::GetSettingUtility</a></div><div class="ttdeci">virtual Matrix3d GetSettingUtility(const std::string &amp;perspective) const =0</div><div class="ttdoc">Get the Setting Utility for a specified perspective.</div></div>
 <div class="ttc" id="aclassrespond_1_1data__ops_1_1UtilityLoader_html_ace3a26756dbd63761a4b29e1e52b62a1"><div class="ttname"><a href="../../d6/dc5/classrespond_1_1data__ops_1_1UtilityLoader.html#ace3a26756dbd63761a4b29e1e52b62a1">respond::data_ops::UtilityLoader::GetBackgroundUtility</a></div><div class="ttdeci">virtual Matrix3d GetBackgroundUtility(const std::string &amp;perspective) const =0</div><div class="ttdoc">Get the Background Utility for a specified perspective.</div></div>
@@ -312,7 +315,7 @@ $(document).ready(function(){initNavTree('d5/d80/post__sim_8hpp_source.html','..
 <div class="ttc" id="anamespacerespond_1_1model_html_ac5ef40ec4c96af82c6e7703002a09cab"><div class="ttname"><a href="../../d5/d8e/namespacerespond_1_1model.html#ac5ef40ec4c96af82c6e7703002a09cab">respond::model::CalculateTotalCosts</a></div><div class="ttdeci">std::vector&lt; double &gt; CalculateTotalCosts(const data_ops::CostList &amp;cost_list)</div><div class="ttdoc">Calculate the total costs from a list of costs.</div><div class="ttdef"><b>Definition:</b> post_sim.hpp:172</div></div>
 <div class="ttc" id="anamespacerespond_1_1model_html_ad410c32ca0c87fa71a00a68500bdbaec"><div class="ttname"><a href="../../d5/d8e/namespacerespond_1_1model.html#ad410c32ca0c87fa71a00a68500bdbaec">respond::model::CalculateDiscount</a></div><div class="ttdeci">data_ops::Matrix3d CalculateDiscount(const data_ops::Matrix3d &amp;data, double discountRate, int N, bool isDiscrete=true)</div><div class="ttdoc">A function to calculate the discoutn for the given data.</div><div class="ttdef"><b>Definition:</b> post_sim.hpp:30</div></div>
 <div class="ttc" id="anamespacerespond_1_1model_html_ae4e058111b892af728391427014d7f0d"><div class="ttname"><a href="../../d5/d8e/namespacerespond_1_1model.html#ae4e058111b892af728391427014d7f0d">respond::model::CalculateUtilities</a></div><div class="ttdeci">data_ops::TimedMatrix3d CalculateUtilities(const data_ops::History &amp;history, const data_ops::UtilityLoader &amp;utility_loader, data_ops::UtilityType util_type, bool discount=false, double discount_rate=0.0)</div><div class="ttdoc">Calculate the utilities for the given history and utility data.</div><div class="ttdef"><b>Definition:</b> post_sim.hpp:105</div></div>
-<div class="ttc" id="anamespacerespond_html"><div class="ttname"><a href="../../d9/de6/namespacerespond.html">respond</a></div><div class="ttdoc">General Namespace for all RESPOND repo related code.</div><div class="ttdef"><b>Definition:</b> cost_loader.hpp:22</div></div>
+<div class="ttc" id="anamespacerespond_html"><div class="ttname"><a href="../../d9/de6/namespacerespond.html">respond</a></div><div class="ttdoc">General Namespace for all RESPOND repo related code.</div><div class="ttdef"><b>Definition:</b> base_loader.hpp:17</div></div>
 <div class="ttc" id="astructrespond_1_1data__ops_1_1Cost_html"><div class="ttname"><a href="../../de/dd8/structrespond_1_1data__ops_1_1Cost.html">respond::data_ops::Cost</a></div><div class="ttdoc">Struct grouping together matrices containing cost information.</div><div class="ttdef"><b>Definition:</b> data_types.hpp:58</div></div>
 <div class="ttc" id="astructrespond_1_1data__ops_1_1History_html"><div class="ttname"><a href="../../d7/d58/structrespond_1_1data__ops_1_1History.html">respond::data_ops::History</a></div><div class="ttdoc">Struct grouping together matrices containing run history.</div><div class="ttdef"><b>Definition:</b> data_types.hpp:49</div></div>
 </div><!-- fragment --></div><!-- contents -->
@@ -321,7 +324,7 @@ $(document).ready(function(){initNavTree('d5/d80/post__sim_8hpp_source.html','..
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="../../dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="../../dir_70501f13f5c9277fdfc6ec16bf603df6.html">respond</a></li><li class="navelem"><a class="el" href="../../dir_dac038285cf441957e9730d8fb44af17.html">model</a></li><li class="navelem"><b>post_sim.hpp</b></li>
-    <li class="footer">Generated on Tue Jun 24 2025 14:55:40 for RESPOND by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
+    <li class="footer">Generated on Tue Jul 1 2025 12:53:10 for RESPOND by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
   </ul>
 </div>
 </body>

@@ -25,13 +25,16 @@ Copyright (c) 2025 Syndemics Lab at Boston Medical Center
     <link href="../../search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="../../search/searchdata.js"></script>
 <script type="text/javascript" src="../../search/search.js"></script>
-    <script type="text/x-mathjax-config">
-MathJax.Hub.Config({
-  extensions: ["tex2jax.js"],
-  jax: ["input/TeX","output/HTML-CSS"],
-});
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script type="text/javascript">
+window.MathJax = {
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore',
+    processHtmlClass: 'tex2jax_process'
+  }
+};
 </script>
-<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
+<script type="text/javascript" id="MathJax-script" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
     <link href="../../doxygen.css" rel="stylesheet" type="text/css" />
     <link href="../../doxygen-awesome.css" rel="stylesheet" type="text/css"/>
 <link href="../../doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
@@ -152,16 +155,16 @@ sim.conf</h2>
 <li>cost</li>
 <li>output</li>
 </ul>
-<p>Each state governs a unique component of the model.</p>
+<p>Each set governs a unique component of the model.</p>
 <h3><a class="anchor" id="autotoc_md16"></a>
 simulation</h3>
 <p>The simulation section governs the basic parameters of the model. An example is given below:</p>
 <div class="fragment"><div class="line">[simulation]</div>
-<div class="line">duration                     = 52           # The Duration of the Simulation</div>
-<div class="line">intervention_change_times    = 52           # The Timesteps to Expect Intervention Probability Changes</div>
-<div class="line">entering_sample_change_times = 52           # The Timesteps to Expect Entering Sample Count Changes</div>
-<div class="line">overdose_change_times        = 52           # The Timesteps to Expect Overdose Probability Changes</div>
-<div class="line">stratified_entering_cohort   = false        # Whether to Stratify the Entering Cohort by Behavior and Intervention</div>
+<div class="line">duration                     = 52           # The duration of the simulation</div>
+<div class="line">intervention_change_times    = 52           # The timesteps to expect intervention probability changes</div>
+<div class="line">entering_sample_change_times = 52           # The timesteps to expect entering sample count changes</div>
+<div class="line">overdose_change_times        = 52           # The timesteps to expect overdose probability changes</div>
+<div class="line">stratified_entering_cohort   = false        # Whether to stratify the entering cohort by behavior and intervention</div>
 </div><!-- fragment --><h3><a class="anchor" id="autotoc_md17"></a>
 state</h3>
 <p>The state section governs the basic outline of the state matrix. The multiplication of the lengths of the values here gives us the size of the state space (i.e. 13 interventions and 4 behaviors = 13x4 = 52).</p>
@@ -179,11 +182,11 @@ demographic</h3>
 cost</h3>
 <p>This section governs the costing calculations as part of post-processing. The first parameter is always <code>cost_analysis</code> and flags whether or not to run cost calculations. By enabling costing, we know the model takes longer as all states must be recorded to calculate cost effectiveness at the given times. That being said, the example section:</p>
 <div class="fragment"><div class="line">[cost]</div>
-<div class="line">cost_analysis         = false               # Whether to calculate costs</div>
-<div class="line">cost_perspectives     = healthcare_system   # What perspective to use, must match with columns in the cost files</div>
-<div class="line">discount_rate         = 0.0025              # The discounting rate to apply to costs and utilities</div>
-<div class="line">reporting_interval    = 52                  # The interval length of which to calculate costs (i.e. 52 is a yearly reporting interval)</div>
-<div class="line">cost_category_outputs = false               # Whether to output costs in terms of their distinct categories</div>
+<div class="line">cost_analysis         = false                       # Whether to calculate costs</div>
+<div class="line">cost_perspectives     = healthcare_system, societal # What perspective to use, must match with columns in the cost files</div>
+<div class="line">discount_rate         = 0.0025                      # The discounting rate to apply to costs and utilities</div>
+<div class="line">reporting_interval    = 52                          # The interval length of which to calculate costs (i.e. 52 is a yearly reporting interval)</div>
+<div class="line">cost_category_outputs = false                       # Whether to output costs in terms of their distinct categories</div>
 </div><!-- fragment --><h3><a class="anchor" id="autotoc_md20"></a>
 output</h3>
 <p>Finally, the output section determines what the general model outputs should record. Included in here are whether to write the inputs, whether to pivot the results to a long format array matching R's expected notation, and more.</p>
@@ -215,7 +218,7 @@ Optional Input Tables</h1>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Tue Jun 24 2025 14:55:40 for RESPOND by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
+    <li class="footer">Generated on Tue Jul 1 2025 12:53:10 for RESPOND by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
   </ul>
 </div>
 </body>

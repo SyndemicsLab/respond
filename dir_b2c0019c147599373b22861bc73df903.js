@@ -1,5 +1,6 @@
 var dir_b2c0019c147599373b22861bc73df903 =
 [
+    [ "base_loader.hpp", "dc/de1/base__loader_8hpp_source.html", null ],
     [ "cost_loader.hpp", "d5/d63/cost__loader_8hpp_source.html", null ],
     [ "data_formatter.hpp", "dd/d2d/data__formatter_8hpp_source.html", null ],
     [ "data_loader.hpp", "dd/d45/data__loader_8hpp_source.html", null ],

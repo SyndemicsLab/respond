@@ -25,13 +25,16 @@ Copyright (c) 2025 Syndemics Lab at Boston Medical Center
     <link href="../../search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="../../search/searchdata.js"></script>
 <script type="text/javascript" src="../../search/search.js"></script>
-    <script type="text/x-mathjax-config">
-MathJax.Hub.Config({
-  extensions: ["tex2jax.js"],
-  jax: ["input/TeX","output/HTML-CSS"],
-});
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script type="text/javascript">
+window.MathJax = {
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore',
+    processHtmlClass: 'tex2jax_process'
+  }
+};
 </script>
-<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
+<script type="text/javascript" id="MathJax-script" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
     <link href="../../doxygen.css" rel="stylesheet" type="text/css" />
     <link href="../../doxygen-awesome.css" rel="stylesheet" type="text/css"/>
 <link href="../../doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
@@ -129,23 +132,26 @@ $(document).ready(function(){initNavTree('d1/d88/classrespond_1_1data__ops_1_1Co
 
 <p>This is the complete list of members for <a class="el" href="../../d1/d88/classrespond_1_1data__ops_1_1CostLoader.html">respond::data_ops::CostLoader</a>, including all inherited members.</p>
 <table class="directory">
-  <tr class="even"><td class="entry"><a class="el" href="../../d1/d88/classrespond_1_1data__ops_1_1CostLoader.html#a5d8dd157a6ec2caeaca74e04afc5fd27">Create</a>(const std::string &amp;directory=&quot;&quot;, const std::string &amp;log_name=&quot;console&quot;)</td><td class="entry"><a class="el" href="../../d1/d88/classrespond_1_1data__ops_1_1CostLoader.html">respond::data_ops::CostLoader</a></td><td class="entry"><span class="mlabel">static</span></td></tr>
-  <tr class="odd"><td class="entry"><a class="el" href="../../d1/d88/classrespond_1_1data__ops_1_1CostLoader.html#a6e067a43a9336073363bfd1f4bd27027">GetFatalOverdoseCost</a>(const std::string &amp;perspective) const =0</td><td class="entry"><a class="el" href="../../d1/d88/classrespond_1_1data__ops_1_1CostLoader.html">respond::data_ops::CostLoader</a></td><td class="entry"><span class="mlabel">pure virtual</span></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="../../d1/d88/classrespond_1_1data__ops_1_1CostLoader.html#a93164f6398fbb566fe1578ab58a74dee">GetHealthcareUtilizationCost</a>(const std::string &amp;perspective) const =0</td><td class="entry"><a class="el" href="../../d1/d88/classrespond_1_1data__ops_1_1CostLoader.html">respond::data_ops::CostLoader</a></td><td class="entry"><span class="mlabel">pure virtual</span></td></tr>
-  <tr class="odd"><td class="entry"><a class="el" href="../../d1/d88/classrespond_1_1data__ops_1_1CostLoader.html#ac824ced0a1c0f8f75c677cb31d474816">GetNonFatalOverdoseCost</a>(const std::string &amp;perspective) const =0</td><td class="entry"><a class="el" href="../../d1/d88/classrespond_1_1data__ops_1_1CostLoader.html">respond::data_ops::CostLoader</a></td><td class="entry"><span class="mlabel">pure virtual</span></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="../../d1/d88/classrespond_1_1data__ops_1_1CostLoader.html#a90bae3229dc6c791e1664ee32fa3e20d">GetPharmaceuticalCost</a>(const std::string &amp;perspective) const =0</td><td class="entry"><a class="el" href="../../d1/d88/classrespond_1_1data__ops_1_1CostLoader.html">respond::data_ops::CostLoader</a></td><td class="entry"><span class="mlabel">pure virtual</span></td></tr>
-  <tr class="odd"><td class="entry"><a class="el" href="../../d1/d88/classrespond_1_1data__ops_1_1CostLoader.html#a1b6fae65b4be6262614c413fdddb71d9">GetTreatmentUtilizationCost</a>(const std::string &amp;perspective) const =0</td><td class="entry"><a class="el" href="../../d1/d88/classrespond_1_1data__ops_1_1CostLoader.html">respond::data_ops::CostLoader</a></td><td class="entry"><span class="mlabel">pure virtual</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="../../d1/d88/classrespond_1_1data__ops_1_1CostLoader.html#a56b1498c8c080b753300263e376b9479">Create</a>(const std::string &amp;log_name=&quot;console&quot;)</td><td class="entry"><a class="el" href="../../d1/d88/classrespond_1_1data__ops_1_1CostLoader.html">respond::data_ops::CostLoader</a></td><td class="entry"><span class="mlabel">static</span></td></tr>
+  <tr bgcolor="#f0f0f0" class="odd"><td class="entry"><b>GetConfig</b>() const =0 (defined in <a class="el" href="../../d8/d12/classrespond_1_1data__ops_1_1BaseLoader.html">respond::data_ops::BaseLoader</a>)</td><td class="entry"><a class="el" href="../../d8/d12/classrespond_1_1data__ops_1_1BaseLoader.html">respond::data_ops::BaseLoader</a></td><td class="entry"><span class="mlabel">pure virtual</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="../../d1/d88/classrespond_1_1data__ops_1_1CostLoader.html#a6e067a43a9336073363bfd1f4bd27027">GetFatalOverdoseCost</a>(const std::string &amp;perspective) const =0</td><td class="entry"><a class="el" href="../../d1/d88/classrespond_1_1data__ops_1_1CostLoader.html">respond::data_ops::CostLoader</a></td><td class="entry"><span class="mlabel">pure virtual</span></td></tr>
+  <tr class="odd"><td class="entry"><a class="el" href="../../d1/d88/classrespond_1_1data__ops_1_1CostLoader.html#a93164f6398fbb566fe1578ab58a74dee">GetHealthcareUtilizationCost</a>(const std::string &amp;perspective) const =0</td><td class="entry"><a class="el" href="../../d1/d88/classrespond_1_1data__ops_1_1CostLoader.html">respond::data_ops::CostLoader</a></td><td class="entry"><span class="mlabel">pure virtual</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="../../d1/d88/classrespond_1_1data__ops_1_1CostLoader.html#ac824ced0a1c0f8f75c677cb31d474816">GetNonFatalOverdoseCost</a>(const std::string &amp;perspective) const =0</td><td class="entry"><a class="el" href="../../d1/d88/classrespond_1_1data__ops_1_1CostLoader.html">respond::data_ops::CostLoader</a></td><td class="entry"><span class="mlabel">pure virtual</span></td></tr>
+  <tr class="odd"><td class="entry"><a class="el" href="../../d1/d88/classrespond_1_1data__ops_1_1CostLoader.html#a90bae3229dc6c791e1664ee32fa3e20d">GetPharmaceuticalCost</a>(const std::string &amp;perspective) const =0</td><td class="entry"><a class="el" href="../../d1/d88/classrespond_1_1data__ops_1_1CostLoader.html">respond::data_ops::CostLoader</a></td><td class="entry"><span class="mlabel">pure virtual</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="../../d1/d88/classrespond_1_1data__ops_1_1CostLoader.html#a1b6fae65b4be6262614c413fdddb71d9">GetTreatmentUtilizationCost</a>(const std::string &amp;perspective) const =0</td><td class="entry"><a class="el" href="../../d1/d88/classrespond_1_1data__ops_1_1CostLoader.html">respond::data_ops::CostLoader</a></td><td class="entry"><span class="mlabel">pure virtual</span></td></tr>
+  <tr bgcolor="#f0f0f0" class="odd"><td class="entry"><b>LoadDataTable</b>(const std::string &amp;path, bool headers=true)=0 (defined in <a class="el" href="../../d8/d12/classrespond_1_1data__ops_1_1BaseLoader.html">respond::data_ops::BaseLoader</a>)</td><td class="entry"><a class="el" href="../../d8/d12/classrespond_1_1data__ops_1_1BaseLoader.html">respond::data_ops::BaseLoader</a></td><td class="entry"><span class="mlabel">pure virtual</span></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="../../d1/d88/classrespond_1_1data__ops_1_1CostLoader.html#a815d866fae151b97f843724b8cb51a6a">LoadHealthcareUtilizationCost</a>(const std::string &amp;file)=0</td><td class="entry"><a class="el" href="../../d1/d88/classrespond_1_1data__ops_1_1CostLoader.html">respond::data_ops::CostLoader</a></td><td class="entry"><span class="mlabel">pure virtual</span></td></tr>
   <tr class="odd"><td class="entry"><a class="el" href="../../d1/d88/classrespond_1_1data__ops_1_1CostLoader.html#a4f77f9730eb34d1343431dc5cc015fc1">LoadOverdoseCost</a>(const std::string &amp;file)=0</td><td class="entry"><a class="el" href="../../d1/d88/classrespond_1_1data__ops_1_1CostLoader.html">respond::data_ops::CostLoader</a></td><td class="entry"><span class="mlabel">pure virtual</span></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="../../d1/d88/classrespond_1_1data__ops_1_1CostLoader.html#af8f0cc5966a7fc437455a2047a198a0f">LoadPharmaceuticalCost</a>(const std::string &amp;file)=0</td><td class="entry"><a class="el" href="../../d1/d88/classrespond_1_1data__ops_1_1CostLoader.html">respond::data_ops::CostLoader</a></td><td class="entry"><span class="mlabel">pure virtual</span></td></tr>
   <tr class="odd"><td class="entry"><a class="el" href="../../d1/d88/classrespond_1_1data__ops_1_1CostLoader.html#a5ddf7f1a1dbc48c2ec7d4250dbff031e">LoadTreatmentUtilizationCost</a>(const std::string &amp;file)=0</td><td class="entry"><a class="el" href="../../d1/d88/classrespond_1_1data__ops_1_1CostLoader.html">respond::data_ops::CostLoader</a></td><td class="entry"><span class="mlabel">pure virtual</span></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="../../d1/d88/classrespond_1_1data__ops_1_1CostLoader.html#ad7f0c3476ffecde3b2b963a6276c3694">~CostLoader</a>()=default</td><td class="entry"><a class="el" href="../../d1/d88/classrespond_1_1data__ops_1_1CostLoader.html">respond::data_ops::CostLoader</a></td><td class="entry"><span class="mlabel">virtual</span></td></tr>
+  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>SetConfig</b>(const std::string &amp;config_file)=0 (defined in <a class="el" href="../../d8/d12/classrespond_1_1data__ops_1_1BaseLoader.html">respond::data_ops::BaseLoader</a>)</td><td class="entry"><a class="el" href="../../d8/d12/classrespond_1_1data__ops_1_1BaseLoader.html">respond::data_ops::BaseLoader</a></td><td class="entry"><span class="mlabel">pure virtual</span></td></tr>
+  <tr class="odd"><td class="entry"><a class="el" href="../../d1/d88/classrespond_1_1data__ops_1_1CostLoader.html#ad7f0c3476ffecde3b2b963a6276c3694">~CostLoader</a>()=default</td><td class="entry"><a class="el" href="../../d1/d88/classrespond_1_1data__ops_1_1CostLoader.html">respond::data_ops::CostLoader</a></td><td class="entry"><span class="mlabel">virtual</span></td></tr>
 </table></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Tue Jun 24 2025 14:55:40 for RESPOND by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
+    <li class="footer">Generated on Tue Jul 1 2025 12:53:10 for RESPOND by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
   </ul>
 </div>
 </body>

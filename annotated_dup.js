@@ -2,6 +2,7 @@ var annotated_dup =
 [
     [ "respond", "d9/de6/namespacerespond.html", [
       [ "data_ops", "d9/d37/namespacerespond_1_1data__ops.html", [
+        [ "BaseLoader", "d8/d12/classrespond_1_1data__ops_1_1BaseLoader.html", null ],
         [ "Cost", "de/dd8/structrespond_1_1data__ops_1_1Cost.html", null ],
         [ "CostLoader", "d1/d88/classrespond_1_1data__ops_1_1CostLoader.html", "d1/d88/classrespond_1_1data__ops_1_1CostLoader" ],
         [ "DataFormatter", "db/d1e/classrespond_1_1data__ops_1_1DataFormatter.html", "db/d1e/classrespond_1_1data__ops_1_1DataFormatter" ],

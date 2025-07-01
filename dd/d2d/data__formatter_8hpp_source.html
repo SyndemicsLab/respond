@@ -25,13 +25,16 @@ Copyright (c) 2025 Syndemics Lab at Boston Medical Center
     <link href="../../search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="../../search/searchdata.js"></script>
 <script type="text/javascript" src="../../search/search.js"></script>
-    <script type="text/x-mathjax-config">
-MathJax.Hub.Config({
-  extensions: ["tex2jax.js"],
-  jax: ["input/TeX","output/HTML-CSS"],
-});
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script type="text/javascript">
+window.MathJax = {
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore',
+    processHtmlClass: 'tex2jax_process'
+  }
+};
 </script>
-<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
+<script type="text/javascript" id="MathJax-script" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
     <link href="../../doxygen.css" rel="stylesheet" type="text/css" />
     <link href="../../doxygen-awesome.css" rel="stylesheet" type="text/css"/>
 <link href="../../doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
@@ -166,7 +169,7 @@ $(document).ready(function(){initNavTree('dd/d2d/data__formatter_8hpp_source.htm
 <div class="ttc" id="aclassrespond_1_1data__ops_1_1DataFormatter_html_adc91c02be95194b5dba456aa49069727"><div class="ttname"><a href="../../db/d1e/classrespond_1_1data__ops_1_1DataFormatter.html#adc91c02be95194b5dba456aa49069727">respond::data_ops::DataFormatter::Create</a></div><div class="ttdeci">static std::unique_ptr&lt; DataFormatter &gt; Create()</div><div class="ttdoc">Factory method to create an instance of DataFormatter.</div></div>
 <div class="ttc" id="anamespacerespond_1_1data__ops_html_a403c68684a3de1d00f2e7e00247738da"><div class="ttname"><a href="../../d9/d37/namespacerespond_1_1data__ops.html#a403c68684a3de1d00f2e7e00247738da">respond::data_ops::TimedMatrix3d</a></div><div class="ttdeci">std::map&lt; int, Matrix3d &gt; TimedMatrix3d</div><div class="ttdoc">Type alias for 3 Dimensional Eigen Tensors given time points.</div><div class="ttdef"><b>Definition:</b> data_types.hpp:31</div></div>
 <div class="ttc" id="anamespacerespond_1_1data__ops_html_a9c8a7116d1ff5d7a873530207a20d2ea"><div class="ttname"><a href="../../d9/d37/namespacerespond_1_1data__ops.html#a9c8a7116d1ff5d7a873530207a20d2ea">respond::data_ops::CostList</a></div><div class="ttdeci">std::vector&lt; Cost &gt; CostList</div><div class="ttdoc">Type alias for a vector of Cost objects.</div><div class="ttdef"><b>Definition:</b> data_types.hpp:68</div></div>
-<div class="ttc" id="anamespacerespond_html"><div class="ttname"><a href="../../d9/de6/namespacerespond.html">respond</a></div><div class="ttdoc">General Namespace for all RESPOND repo related code.</div><div class="ttdef"><b>Definition:</b> cost_loader.hpp:22</div></div>
+<div class="ttc" id="anamespacerespond_html"><div class="ttname"><a href="../../d9/de6/namespacerespond.html">respond</a></div><div class="ttdoc">General Namespace for all RESPOND repo related code.</div><div class="ttdef"><b>Definition:</b> base_loader.hpp:17</div></div>
 <div class="ttc" id="astructrespond_1_1data__ops_1_1History_html"><div class="ttname"><a href="../../d7/d58/structrespond_1_1data__ops_1_1History.html">respond::data_ops::History</a></div><div class="ttdoc">Struct grouping together matrices containing run history.</div><div class="ttdef"><b>Definition:</b> data_types.hpp:49</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
@@ -174,7 +177,7 @@ $(document).ready(function(){initNavTree('dd/d2d/data__formatter_8hpp_source.htm
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="../../dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="../../dir_70501f13f5c9277fdfc6ec16bf603df6.html">respond</a></li><li class="navelem"><a class="el" href="../../dir_b2c0019c147599373b22861bc73df903.html">data_ops</a></li><li class="navelem"><b>data_formatter.hpp</b></li>
-    <li class="footer">Generated on Tue Jun 24 2025 14:55:40 for RESPOND by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
+    <li class="footer">Generated on Tue Jul 1 2025 12:53:10 for RESPOND by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
   </ul>
 </div>
 </body>

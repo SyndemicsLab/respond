@@ -25,13 +25,16 @@ Copyright (c) 2025 Syndemics Lab at Boston Medical Center
     <link href="../../search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="../../search/searchdata.js"></script>
 <script type="text/javascript" src="../../search/search.js"></script>
-    <script type="text/x-mathjax-config">
-MathJax.Hub.Config({
-  extensions: ["tex2jax.js"],
-  jax: ["input/TeX","output/HTML-CSS"],
-});
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script type="text/javascript">
+window.MathJax = {
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore',
+    processHtmlClass: 'tex2jax_process'
+  }
+};
 </script>
-<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
+<script type="text/javascript" id="MathJax-script" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
     <link href="../../doxygen.css" rel="stylesheet" type="text/css" />
     <link href="../../doxygen-awesome.css" rel="stylesheet" type="text/css"/>
 <link href="../../doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
@@ -132,14 +135,15 @@ $(document).ready(function(){initNavTree('d8/d51/md_docs_src_faq.html','../../')
 <p><b>Q: How do I add an intervention state?</b> </p><blockquote class="doxtable">
 <p>&zwj;Adding an intervention state requires 2 steps. Firstly, you must add the intervention to the <code>state.interventions</code> section in the <code>sim.conf</code>. The second step requires you add the data for the intervention to each file stratified by intervention (i.e. <code>all_types_overdose.csv</code>, <code>block_init_effect.csv</code>, <code>block_trans.csv</code>, <code>init_cohort.csv</code>, <code>oud_trans.csv</code>, and <code>SMR.csv</code>). </p>
 </blockquote>
-<p>Previous: <a class="el" href="../../d6/d3e/md_docs_src_limitations.html">Limitations</a> </p>
+<p>Previous: <a class="el" href="../../d6/d3e/md_docs_src_limitations.html">Limitations</a></p>
+<p>Home: <a class="el" href="../../index.html#md_docs_src_index">Home</a> </p>
 </div></div><!-- contents -->
 </div><!-- PageDoc -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Tue Jun 24 2025 14:55:40 for RESPOND by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
+    <li class="footer">Generated on Tue Jul 1 2025 12:53:10 for RESPOND by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
   </ul>
 </div>
 </body>

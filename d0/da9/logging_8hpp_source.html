@@ -25,13 +25,16 @@ Copyright (c) 2025 Syndemics Lab at Boston Medical Center
     <link href="../../search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="../../search/searchdata.js"></script>
 <script type="text/javascript" src="../../search/search.js"></script>
-    <script type="text/x-mathjax-config">
-MathJax.Hub.Config({
-  extensions: ["tex2jax.js"],
-  jax: ["input/TeX","output/HTML-CSS"],
-});
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script type="text/javascript">
+window.MathJax = {
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore',
+    processHtmlClass: 'tex2jax_process'
+  }
+};
 </script>
-<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
+<script type="text/javascript" id="MathJax-script" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
     <link href="../../doxygen.css" rel="stylesheet" type="text/css" />
     <link href="../../doxygen-awesome.css" rel="stylesheet" type="text/css"/>
 <link href="../../doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
@@ -182,14 +185,14 @@ $(document).ready(function(){initNavTree('d0/da9/logging_8hpp_source.html','../.
 <div class="ttc" id="anamespacerespond_1_1utils_html_a962f5937fe85f65734b2bc24c523744e"><div class="ttname"><a href="../../da/dba/namespacerespond_1_1utils.html#a962f5937fe85f65734b2bc24c523744e">respond::utils::LogDebug</a></div><div class="ttdeci">void LogDebug(const std::string &amp;logger_name, const std::string &amp;message)</div><div class="ttdoc">Log a message as debug information.</div></div>
 <div class="ttc" id="anamespacerespond_1_1utils_html_ac03503783097793300b683fad021f8c6"><div class="ttname"><a href="../../da/dba/namespacerespond_1_1utils.html#ac03503783097793300b683fad021f8c6">respond::utils::LogWarning</a></div><div class="ttdeci">void LogWarning(const std::string &amp;logger_name, const std::string &amp;message)</div><div class="ttdoc">Log as message as a warning.</div></div>
 <div class="ttc" id="anamespacerespond_1_1utils_html_ade791186c990a5d9b8bff2f089b431e4"><div class="ttname"><a href="../../da/dba/namespacerespond_1_1utils.html#ade791186c990a5d9b8bff2f089b431e4">respond::utils::LogError</a></div><div class="ttdeci">void LogError(const std::string &amp;logger_name, const std::string &amp;message)</div><div class="ttdoc">Log a message as an error.</div></div>
-<div class="ttc" id="anamespacerespond_html"><div class="ttname"><a href="../../d9/de6/namespacerespond.html">respond</a></div><div class="ttdoc">General Namespace for all RESPOND repo related code.</div><div class="ttdef"><b>Definition:</b> cost_loader.hpp:22</div></div>
+<div class="ttc" id="anamespacerespond_html"><div class="ttname"><a href="../../d9/de6/namespacerespond.html">respond</a></div><div class="ttdoc">General Namespace for all RESPOND repo related code.</div><div class="ttdef"><b>Definition:</b> base_loader.hpp:17</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="../../dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="../../dir_70501f13f5c9277fdfc6ec16bf603df6.html">respond</a></li><li class="navelem"><a class="el" href="../../dir_dd69c4b9b805df1e7e0e532369e14982.html">utils</a></li><li class="navelem"><b>logging.hpp</b></li>
-    <li class="footer">Generated on Tue Jun 24 2025 14:55:40 for RESPOND by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
+    <li class="footer">Generated on Tue Jul 1 2025 12:53:10 for RESPOND by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
   </ul>
 </div>
 </body>

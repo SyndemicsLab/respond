@@ -25,13 +25,16 @@ Copyright (c) 2025 Syndemics Lab at Boston Medical Center
     <link href="../../search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="../../search/searchdata.js"></script>
 <script type="text/javascript" src="../../search/search.js"></script>
-    <script type="text/x-mathjax-config">
-MathJax.Hub.Config({
-  extensions: ["tex2jax.js"],
-  jax: ["input/TeX","output/HTML-CSS"],
-});
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script type="text/javascript">
+window.MathJax = {
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore',
+    processHtmlClass: 'tex2jax_process'
+  }
+};
 </script>
-<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
+<script type="text/javascript" id="MathJax-script" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
     <link href="../../doxygen.css" rel="stylesheet" type="text/css" />
     <link href="../../doxygen-awesome.css" rel="stylesheet" type="text/css"/>
 <link href="../../doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
@@ -201,7 +204,7 @@ $(document).ready(function(){initNavTree('de/d11/writer_8hpp_source.html','../..
 <div class="line"><a id="l00110" name="l00110"></a><span class="lineno">  110</span>} <span class="comment">// namespace respond</span></div>
 <div class="line"><a id="l00111" name="l00111"></a><span class="lineno">  111</span> </div>
 <div class="line"><a id="l00112" name="l00112"></a><span class="lineno">  112</span><span class="preprocessor">#endif </span><span class="comment">// RESPOND_DATAOPS_WRITER_HPP_</span></div>
-<div class="ttc" id="aclassrespond_1_1data__ops_1_1DataLoader_html"><div class="ttname"><a href="../../da/d16/classrespond_1_1data__ops_1_1DataLoader.html">respond::data_ops::DataLoader</a></div><div class="ttdoc">Class for Loading and Managing Data in RESPOND.</div><div class="ttdef"><b>Definition:</b> data_loader.hpp:27</div></div>
+<div class="ttc" id="aclassrespond_1_1data__ops_1_1DataLoader_html"><div class="ttname"><a href="../../da/d16/classrespond_1_1data__ops_1_1DataLoader.html">respond::data_ops::DataLoader</a></div><div class="ttdoc">Class for Loading and Managing Data in RESPOND.</div><div class="ttdef"><b>Definition:</b> data_loader.hpp:29</div></div>
 <div class="ttc" id="aclassrespond_1_1data__ops_1_1Writer_html"><div class="ttname"><a href="../../db/dcb/classrespond_1_1data__ops_1_1Writer.html">respond::data_ops::Writer</a></div><div class="ttdoc">Class for writing all information from the model.</div><div class="ttdef"><b>Definition:</b> writer.hpp:46</div></div>
 <div class="ttc" id="aclassrespond_1_1data__ops_1_1Writer_html_a3a31bb7f6d04523eda7641d62269c4ec"><div class="ttname"><a href="../../db/dcb/classrespond_1_1data__ops_1_1Writer.html#a3a31bb7f6d04523eda7641d62269c4ec">respond::data_ops::Writer::WriteInputData</a></div><div class="ttdeci">virtual std::string WriteInputData(const DataLoader &amp;data_loader, const std::string &amp;directory, const OutputType output_type) const =0</div><div class="ttdoc">Function used to write the input data to the specified directory.</div></div>
 <div class="ttc" id="aclassrespond_1_1data__ops_1_1Writer_html_a4d72b58061787481a19349551dbdfc1c"><div class="ttname"><a href="../../db/dcb/classrespond_1_1data__ops_1_1Writer.html#a4d72b58061787481a19349551dbdfc1c">respond::data_ops::Writer::Create</a></div><div class="ttdeci">static std::unique_ptr&lt; Writer &gt; Create(const std::string &amp;directory=&quot;&quot;, const std::string &amp;log_name=&quot;console&quot;)</div><div class="ttdoc">A factory method to create a Writer instance.</div></div>
@@ -214,7 +217,7 @@ $(document).ready(function(){initNavTree('de/d11/writer_8hpp_source.html','../..
 <div class="ttc" id="anamespacerespond_1_1data__ops_html_a49c1f5d5fe29ecd0a150f6efecf91517"><div class="ttname"><a href="../../d9/d37/namespacerespond_1_1data__ops.html#a49c1f5d5fe29ecd0a150f6efecf91517">respond::data_ops::WriterType</a></div><div class="ttdeci">WriterType</div><div class="ttdoc">Enum declaring the different types of writers available.</div><div class="ttdef"><b>Definition:</b> writer.hpp:28</div></div>
 <div class="ttc" id="anamespacerespond_1_1data__ops_html_a9c8a7116d1ff5d7a873530207a20d2ea"><div class="ttname"><a href="../../d9/d37/namespacerespond_1_1data__ops.html#a9c8a7116d1ff5d7a873530207a20d2ea">respond::data_ops::CostList</a></div><div class="ttdeci">std::vector&lt; Cost &gt; CostList</div><div class="ttdoc">Type alias for a vector of Cost objects.</div><div class="ttdef"><b>Definition:</b> data_types.hpp:68</div></div>
 <div class="ttc" id="anamespacerespond_1_1data__ops_html_af2e779225181d93ddf7256f4122a2f21"><div class="ttname"><a href="../../d9/d37/namespacerespond_1_1data__ops.html#af2e779225181d93ddf7256f4122a2f21">respond::data_ops::OutputType</a></div><div class="ttdeci">OutputType</div><div class="ttdoc">Enum declaring the different output types the writer can use.</div><div class="ttdef"><b>Definition:</b> writer.hpp:39</div></div>
-<div class="ttc" id="anamespacerespond_html"><div class="ttname"><a href="../../d9/de6/namespacerespond.html">respond</a></div><div class="ttdoc">General Namespace for all RESPOND repo related code.</div><div class="ttdef"><b>Definition:</b> cost_loader.hpp:22</div></div>
+<div class="ttc" id="anamespacerespond_html"><div class="ttname"><a href="../../d9/de6/namespacerespond.html">respond</a></div><div class="ttdoc">General Namespace for all RESPOND repo related code.</div><div class="ttdef"><b>Definition:</b> base_loader.hpp:17</div></div>
 <div class="ttc" id="astructrespond_1_1data__ops_1_1History_html"><div class="ttname"><a href="../../d7/d58/structrespond_1_1data__ops_1_1History.html">respond::data_ops::History</a></div><div class="ttdoc">Struct grouping together matrices containing run history.</div><div class="ttdef"><b>Definition:</b> data_types.hpp:49</div></div>
 <div class="ttc" id="astructrespond_1_1data__ops_1_1Totals_html"><div class="ttname"><a href="../../d1/d7e/structrespond_1_1data__ops_1_1Totals.html">respond::data_ops::Totals</a></div><div class="ttdoc">Struct grouping together matricies containing total cost effectiveness information.</div><div class="ttdef"><b>Definition:</b> data_types.hpp:79</div></div>
 </div><!-- fragment --></div><!-- contents -->
@@ -223,7 +226,7 @@ $(document).ready(function(){initNavTree('de/d11/writer_8hpp_source.html','../..
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="../../dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="../../dir_70501f13f5c9277fdfc6ec16bf603df6.html">respond</a></li><li class="navelem"><a class="el" href="../../dir_b2c0019c147599373b22861bc73df903.html">data_ops</a></li><li class="navelem"><b>writer.hpp</b></li>
-    <li class="footer">Generated on Tue Jun 24 2025 14:55:40 for RESPOND by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
+    <li class="footer">Generated on Tue Jul 1 2025 12:53:10 for RESPOND by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
   </ul>
 </div>
 </body>

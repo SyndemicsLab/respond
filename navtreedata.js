@@ -25,7 +25,7 @@
 var NAVTREE =
 [
   [ "RESPOND", "index.html", [
-    [ "RESPOND: An Opioid Use Disorder State Transition Model", "index.html", "index" ],
+    [ "Researching Effective Strategies to Prevent Opioid Use Disorder", "index.html", "index" ],
     [ "Installation", "d7/d63/md_docs_src_installation.html", [
       [ "Dependencies", "d7/d63/md_docs_src_installation.html#autotoc_md10", null ],
       [ "Installing From Source", "d7/d63/md_docs_src_installation.html#autotoc_md11", null ],
@@ -48,9 +48,17 @@ var NAVTREE =
       [ "Using the Executable", "dd/d4c/md_docs_src_run.html#autotoc_md24", null ],
       [ "Arguments", "dd/d4c/md_docs_src_run.html#autotoc_md25", null ]
     ] ],
+    [ "Under the Hood", "d6/df1/md_docs_src_math.html", [
+      [ "Entering Cohort Transitions", "d6/df1/md_docs_src_math.html#autotoc_md27", null ],
+      [ "Behavior Transitions", "d6/df1/md_docs_src_math.html#autotoc_md28", null ],
+      [ "Intervention Transitions", "d6/df1/md_docs_src_math.html#autotoc_md29", null ],
+      [ "Behavior Transitions Post Intervention Transition", "d6/df1/md_docs_src_math.html#autotoc_md30", null ],
+      [ "Overdose Transitions", "d6/df1/md_docs_src_math.html#autotoc_md31", null ],
+      [ "Background Mortality Transitions", "d6/df1/md_docs_src_math.html#autotoc_md32", null ]
+    ] ],
     [ "Limitations", "d6/d3e/md_docs_src_limitations.html", [
-      [ "Library", "d6/d3e/md_docs_src_limitations.html#autotoc_md27", null ],
-      [ "Data", "d6/d3e/md_docs_src_limitations.html#autotoc_md28", null ]
+      [ "Library", "d6/d3e/md_docs_src_limitations.html#autotoc_md34", null ],
+      [ "Data", "d6/d3e/md_docs_src_limitations.html#autotoc_md35", null ]
     ] ],
     [ "FAQs", "d8/d51/md_docs_src_faq.html", null ],
     [ "Namespaces", "namespaces.html", [
@@ -64,6 +72,7 @@ var NAVTREE =
     ] ],
     [ "Classes", "annotated.html", [
       [ "Class List", "annotated.html", "annotated_dup" ],
+      [ "Class Hierarchy", "hierarchy.html", "hierarchy" ],
       [ "Class Members", "functions.html", [
         [ "All", "functions.html", null ],
         [ "Functions", "functions_func.html", null ]
@@ -77,7 +86,8 @@ var NAVTREE =
 
 var NAVTREEINDEX =
 [
-"annotated.html"
+"annotated.html",
+"namespacemembers_enum.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

@@ -1,7 +1,6 @@
 var classrespond_1_1data__ops_1_1DataLoader =
 [
     [ "~DataLoader", "da/d16/classrespond_1_1data__ops_1_1DataLoader.html#a23312633aa1fafd55f7617fb2d04157a", null ],
-    [ "GetConfig", "da/d16/classrespond_1_1data__ops_1_1DataLoader.html#a6143a3280ea22f2f837aa246750648af", null ],
     [ "GetEnteringSamples", "da/d16/classrespond_1_1data__ops_1_1DataLoader.html#a13fb6e2e20fe2305d96c5212c2a82187", null ],
     [ "GetFatalOverdoseRates", "da/d16/classrespond_1_1data__ops_1_1DataLoader.html#a174527540772edad0b6f70004bfafb80", null ],
     [ "GetInitialSample", "da/d16/classrespond_1_1data__ops_1_1DataLoader.html#aebbbaba40d1c53b28b1be242dc4803ca", null ],

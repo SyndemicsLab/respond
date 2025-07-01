@@ -1,7 +1,13 @@
 var searchData=
 [
-  ['timedmatrix3d_0',['TimedMatrix3d',['../d9/d37/namespacerespond_1_1data__ops.html#a403c68684a3de1d00f2e7e00247738da',1,'respond::data_ops']]],
-  ['timedmatrix3dsummed_1',['TimedMatrix3dSummed',['../d9/d37/namespacerespond_1_1data__ops.html#a6c6483e25db7e87d019f7da3cfc2ffb9',1,'respond::data_ops']]],
-  ['timedmatrix3dsummedoverdimensions_2',['TimedMatrix3dSummedOverDimensions',['../d9/d37/namespacerespond_1_1data__ops.html#a614110df575cfd462fe352bac3aa779a',1,'respond::data_ops']]],
-  ['totals_3',['Totals',['../d1/d7e/structrespond_1_1data__ops_1_1Totals.html',1,'respond::data_ops']]]
+  ['setenteringsamples_0',['SetEnteringSamples',['../da/d16/classrespond_1_1data__ops_1_1DataLoader.html#a730b426ea9886d79816dad285c4fb4ef',1,'respond::data_ops::DataLoader']]],
+  ['setfataloverdoserates_1',['SetFatalOverdoseRates',['../da/d16/classrespond_1_1data__ops_1_1DataLoader.html#ae359bbf7fe5e59ed81c2d1e1a1e146d4',1,'respond::data_ops::DataLoader']]],
+  ['setinitialsample_2',['SetInitialSample',['../da/d16/classrespond_1_1data__ops_1_1DataLoader.html#adb0449991484687d4f7a35c98ec25822',1,'respond::data_ops::DataLoader']]],
+  ['setinterventioninitrates_3',['SetInterventionInitRates',['../da/d16/classrespond_1_1data__ops_1_1DataLoader.html#ae4ec90e825f1c29799b7044d2451d8e5',1,'respond::data_ops::DataLoader']]],
+  ['setinterventiontransitionrates_4',['SetInterventionTransitionRates',['../da/d16/classrespond_1_1data__ops_1_1DataLoader.html#acff630391c3846f5ee813164eabc4af8',1,'respond::data_ops::DataLoader']]],
+  ['setmortalityrates_5',['SetMortalityRates',['../da/d16/classrespond_1_1data__ops_1_1DataLoader.html#a78bc3dcf9ffaaf10bc670b7dac9859e9',1,'respond::data_ops::DataLoader']]],
+  ['setoudtransitionrates_6',['SetOUDTransitionRates',['../da/d16/classrespond_1_1data__ops_1_1DataLoader.html#aae77fd105d6e5c52f59fc0e6b76d030f',1,'respond::data_ops::DataLoader']]],
+  ['setoverdoserates_7',['SetOverdoseRates',['../da/d16/classrespond_1_1data__ops_1_1DataLoader.html#ac144697249e87bc560cdecf4c9e8080d',1,'respond::data_ops::DataLoader']]],
+  ['stringmap_8',['StringMap',['../d9/d37/namespacerespond_1_1data__ops.html#a8822cdb812ccd1aed6231e6875b77f0d',1,'respond::data_ops']]],
+  ['stringuomap_9',['StringUOMap',['../d9/d37/namespacerespond_1_1data__ops.html#aa27282eb0b84e7919fcfd7ed0a69a8e9',1,'respond::data_ops']]]
 ];

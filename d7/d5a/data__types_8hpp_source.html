@@ -25,13 +25,16 @@ Copyright (c) 2025 Syndemics Lab at Boston Medical Center
     <link href="../../search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="../../search/searchdata.js"></script>
 <script type="text/javascript" src="../../search/search.js"></script>
-    <script type="text/x-mathjax-config">
-MathJax.Hub.Config({
-  extensions: ["tex2jax.js"],
-  jax: ["input/TeX","output/HTML-CSS"],
-});
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script type="text/javascript">
+window.MathJax = {
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore',
+    processHtmlClass: 'tex2jax_process'
+  }
+};
 </script>
-<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
+<script type="text/javascript" id="MathJax-script" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
     <link href="../../doxygen.css" rel="stylesheet" type="text/css" />
     <link href="../../doxygen-awesome.css" rel="stylesheet" type="text/css"/>
 <link href="../../doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
@@ -208,7 +211,7 @@ $(document).ready(function(){initNavTree('d7/d5a/data__types_8hpp_source.html','
 <div class="ttc" id="anamespacerespond_1_1data__ops_html_aa27282eb0b84e7919fcfd7ed0a69a8e9"><div class="ttname"><a href="../../d9/d37/namespacerespond_1_1data__ops.html#aa27282eb0b84e7919fcfd7ed0a69a8e9">respond::data_ops::StringUOMap</a></div><div class="ttdeci">std::unordered_map&lt; std::string, T &gt; StringUOMap</div><div class="ttdoc">Type alias for a string unordered map.</div><div class="ttdef"><b>Definition:</b> data_types.hpp:39</div></div>
 <div class="ttc" id="anamespacerespond_1_1data__ops_html_aaaee4fab5451e7e3a8cf5a3fcb297ef2"><div class="ttname"><a href="../../d9/d37/namespacerespond_1_1data__ops.html#aaaee4fab5451e7e3a8cf5a3fcb297ef2">respond::data_ops::UtilityType</a></div><div class="ttdeci">UtilityType</div><div class="ttdoc">Enum for the ways we can calculate utility.</div><div class="ttdef"><b>Definition:</b> data_types.hpp:71</div></div>
 <div class="ttc" id="anamespacerespond_1_1data__ops_html_ad155676d8c8f4cf23fc1b52c865e140f"><div class="ttname"><a href="../../d9/d37/namespacerespond_1_1data__ops.html#ad155676d8c8f4cf23fc1b52c865e140f">respond::data_ops::Dimension</a></div><div class="ttdeci">Dimension</div><div class="ttdoc">Specification for each dimension in the Matrix3d.</div><div class="ttdef"><b>Definition:</b> data_types.hpp:42</div></div>
-<div class="ttc" id="anamespacerespond_html"><div class="ttname"><a href="../../d9/de6/namespacerespond.html">respond</a></div><div class="ttdoc">General Namespace for all RESPOND repo related code.</div><div class="ttdef"><b>Definition:</b> cost_loader.hpp:22</div></div>
+<div class="ttc" id="anamespacerespond_html"><div class="ttname"><a href="../../d9/de6/namespacerespond.html">respond</a></div><div class="ttdoc">General Namespace for all RESPOND repo related code.</div><div class="ttdef"><b>Definition:</b> base_loader.hpp:17</div></div>
 <div class="ttc" id="astructrespond_1_1data__ops_1_1Cost_html"><div class="ttname"><a href="../../de/dd8/structrespond_1_1data__ops_1_1Cost.html">respond::data_ops::Cost</a></div><div class="ttdoc">Struct grouping together matrices containing cost information.</div><div class="ttdef"><b>Definition:</b> data_types.hpp:58</div></div>
 <div class="ttc" id="astructrespond_1_1data__ops_1_1History_html"><div class="ttname"><a href="../../d7/d58/structrespond_1_1data__ops_1_1History.html">respond::data_ops::History</a></div><div class="ttdoc">Struct grouping together matrices containing run history.</div><div class="ttdef"><b>Definition:</b> data_types.hpp:49</div></div>
 <div class="ttc" id="astructrespond_1_1data__ops_1_1Totals_html"><div class="ttname"><a href="../../d1/d7e/structrespond_1_1data__ops_1_1Totals.html">respond::data_ops::Totals</a></div><div class="ttdoc">Struct grouping together matricies containing total cost effectiveness information.</div><div class="ttdef"><b>Definition:</b> data_types.hpp:79</div></div>
@@ -218,7 +221,7 @@ $(document).ready(function(){initNavTree('d7/d5a/data__types_8hpp_source.html','
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="../../dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="../../dir_70501f13f5c9277fdfc6ec16bf603df6.html">respond</a></li><li class="navelem"><a class="el" href="../../dir_b2c0019c147599373b22861bc73df903.html">data_ops</a></li><li class="navelem"><b>data_types.hpp</b></li>
-    <li class="footer">Generated on Tue Jun 24 2025 14:55:40 for RESPOND by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
+    <li class="footer">Generated on Tue Jul 1 2025 12:53:10 for RESPOND by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
   </ul>
 </div>
 </body>

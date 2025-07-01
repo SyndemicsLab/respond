@@ -25,13 +25,16 @@ Copyright (c) 2025 Syndemics Lab at Boston Medical Center
     <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
-    <script type="text/x-mathjax-config">
-MathJax.Hub.Config({
-  extensions: ["tex2jax.js"],
-  jax: ["input/TeX","output/HTML-CSS"],
-});
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script type="text/javascript">
+window.MathJax = {
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore',
+    processHtmlClass: 'tex2jax_process'
+  }
+};
 </script>
-<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
+<script type="text/javascript" id="MathJax-script" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
     <link href="doxygen.css" rel="stylesheet" type="text/css" />
     <link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
 <link href="doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
@@ -126,7 +129,7 @@ $(document).ready(function(){initNavTree('functions_func.html',''); initResizabl
 &#160;
 
 <h3><a id="index_c" name="index_c"></a>- c -</h3><ul>
-<li>Create()&#160;:&#160;<a class="el" href="d1/d88/classrespond_1_1data__ops_1_1CostLoader.html#a5d8dd157a6ec2caeaca74e04afc5fd27">respond::data_ops::CostLoader</a>, <a class="el" href="db/d1e/classrespond_1_1data__ops_1_1DataFormatter.html#adc91c02be95194b5dba456aa49069727">respond::data_ops::DataFormatter</a>, <a class="el" href="da/d16/classrespond_1_1data__ops_1_1DataLoader.html#a78922f013865551a7dc23604a82517ae">respond::data_ops::DataLoader</a>, <a class="el" href="d6/dc5/classrespond_1_1data__ops_1_1UtilityLoader.html#a9f4e0b9fc04f3712791e5cf3052a8906">respond::data_ops::UtilityLoader</a>, <a class="el" href="db/dcb/classrespond_1_1data__ops_1_1Writer.html#a4d72b58061787481a19349551dbdfc1c">respond::data_ops::Writer</a>, <a class="el" href="db/dd0/classrespond_1_1model_1_1Respond.html#aaea373167d9b6194818c9e4a4059e17b">respond::model::Respond</a></li>
+<li>Create()&#160;:&#160;<a class="el" href="d1/d88/classrespond_1_1data__ops_1_1CostLoader.html#a56b1498c8c080b753300263e376b9479">respond::data_ops::CostLoader</a>, <a class="el" href="db/d1e/classrespond_1_1data__ops_1_1DataFormatter.html#adc91c02be95194b5dba456aa49069727">respond::data_ops::DataFormatter</a>, <a class="el" href="da/d16/classrespond_1_1data__ops_1_1DataLoader.html#a74b0b0fdbf8d6bcbf7e4572cc63f93a9">respond::data_ops::DataLoader</a>, <a class="el" href="d6/dc5/classrespond_1_1data__ops_1_1UtilityLoader.html#a0b0df45e797d5fe9692fcbecfdad3da6">respond::data_ops::UtilityLoader</a>, <a class="el" href="db/dcb/classrespond_1_1data__ops_1_1Writer.html#a4d72b58061787481a19349551dbdfc1c">respond::data_ops::Writer</a>, <a class="el" href="db/dd0/classrespond_1_1model_1_1Respond.html#aaea373167d9b6194818c9e4a4059e17b">respond::model::Respond</a></li>
 </ul>
 
 
@@ -137,7 +140,6 @@ $(document).ready(function(){initNavTree('functions_func.html',''); initResizabl
 
 <h3><a id="index_g" name="index_g"></a>- g -</h3><ul>
 <li>GetBackgroundUtility()&#160;:&#160;<a class="el" href="d6/dc5/classrespond_1_1data__ops_1_1UtilityLoader.html#ace3a26756dbd63761a4b29e1e52b62a1">respond::data_ops::UtilityLoader</a></li>
-<li>GetConfig()&#160;:&#160;<a class="el" href="da/d16/classrespond_1_1data__ops_1_1DataLoader.html#a6143a3280ea22f2f837aa246750648af">respond::data_ops::DataLoader</a></li>
 <li>GetEnteringSamples()&#160;:&#160;<a class="el" href="da/d16/classrespond_1_1data__ops_1_1DataLoader.html#a13fb6e2e20fe2305d96c5212c2a82187">respond::data_ops::DataLoader</a></li>
 <li>GetFatalOverdoseCost()&#160;:&#160;<a class="el" href="d1/d88/classrespond_1_1data__ops_1_1CostLoader.html#a6e067a43a9336073363bfd1f4bd27027">respond::data_ops::CostLoader</a></li>
 <li>GetFatalOverdoseRates()&#160;:&#160;<a class="el" href="da/d16/classrespond_1_1data__ops_1_1DataLoader.html#a174527540772edad0b6f70004bfafb80">respond::data_ops::DataLoader</a></li>
@@ -207,6 +209,7 @@ $(document).ready(function(){initNavTree('functions_func.html',''); initResizabl
 <li>~DataFormatter()&#160;:&#160;<a class="el" href="db/d1e/classrespond_1_1data__ops_1_1DataFormatter.html#a826f0416a2a9b192eff3d24b48f66b08">respond::data_ops::DataFormatter</a></li>
 <li>~DataLoader()&#160;:&#160;<a class="el" href="da/d16/classrespond_1_1data__ops_1_1DataLoader.html#a23312633aa1fafd55f7617fb2d04157a">respond::data_ops::DataLoader</a></li>
 <li>~Respond()&#160;:&#160;<a class="el" href="db/dd0/classrespond_1_1model_1_1Respond.html#a0190832dce92f32ed7b3cfa993a1b6ff">respond::model::Respond</a></li>
+<li>~UtilityLoader()&#160;:&#160;<a class="el" href="d6/dc5/classrespond_1_1data__ops_1_1UtilityLoader.html#a0203430488ed5e790edb2e87c713871c">respond::data_ops::UtilityLoader</a></li>
 <li>~Writer()&#160;:&#160;<a class="el" href="db/dcb/classrespond_1_1data__ops_1_1Writer.html#a5016e3cd55d98c39b008dc8d2298579b">respond::data_ops::Writer</a></li>
 </ul>
 </div><!-- contents -->
@@ -214,7 +217,7 @@ $(document).ready(function(){initNavTree('functions_func.html',''); initResizabl
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Tue Jun 24 2025 14:55:40 for RESPOND by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
+    <li class="footer">Generated on Tue Jul 1 2025 12:53:10 for RESPOND by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
   </ul>
 </div>
 </body>

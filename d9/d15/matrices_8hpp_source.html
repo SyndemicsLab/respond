@@ -25,13 +25,16 @@ Copyright (c) 2025 Syndemics Lab at Boston Medical Center
     <link href="../../search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="../../search/searchdata.js"></script>
 <script type="text/javascript" src="../../search/search.js"></script>
-    <script type="text/x-mathjax-config">
-MathJax.Hub.Config({
-  extensions: ["tex2jax.js"],
-  jax: ["input/TeX","output/HTML-CSS"],
-});
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script type="text/javascript">
+window.MathJax = {
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore',
+    processHtmlClass: 'tex2jax_process'
+  }
+};
 </script>
-<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
+<script type="text/javascript" id="MathJax-script" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
     <link href="../../doxygen.css" rel="stylesheet" type="text/css" />
     <link href="../../doxygen-awesome.css" rel="stylesheet" type="text/css"/>
 <link href="../../doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
@@ -284,14 +287,14 @@ $(document).ready(function(){initNavTree('d9/d15/matrices_8hpp_source.html','../
 <div class="ttc" id="anamespacerespond_1_1data__ops_html_a77039712c8ee91c7bc14c3d79528993c"><div class="ttname"><a href="../../d9/d37/namespacerespond_1_1data__ops.html#a77039712c8ee91c7bc14c3d79528993c">respond::data_ops::CreateMatrix3d</a></div><div class="ttdeci">Matrix3d CreateMatrix3d(const int x_1, const int x_2, const int x_3)</div><div class="ttdoc">Function to create an zeroed out 3D Eigen Tensor.</div><div class="ttdef"><b>Definition:</b> matrices.hpp:32</div></div>
 <div class="ttc" id="anamespacerespond_1_1data__ops_html_a7f0c383f2bd83af7bf3387e3109b91b6"><div class="ttname"><a href="../../d9/d37/namespacerespond_1_1data__ops.html#a7f0c383f2bd83af7bf3387e3109b91b6">respond::data_ops::PrintTimedMatrix3d</a></div><div class="ttdeci">void PrintTimedMatrix3d(const TimedMatrix3d &amp;data, std::ostream &amp;stream)</div><div class="ttdoc">Function to print a 3D Eigent Tensor Map over its keys.</div><div class="ttdef"><b>Definition:</b> matrices.hpp:60</div></div>
 <div class="ttc" id="anamespacerespond_1_1data__ops_html_ad8b9178558bd0634c225af8276287798"><div class="ttname"><a href="../../d9/d37/namespacerespond_1_1data__ops.html#ad8b9178558bd0634c225af8276287798">respond::data_ops::MultiplyTimedMatrix3dByMatrix</a></div><div class="ttdeci">TimedMatrix3d MultiplyTimedMatrix3dByMatrix(const TimedMatrix3d &amp;state, const Matrix3d &amp;value)</div><div class="ttdoc">Function to multiply a TimedMatrix3d by a 3D Eigen Tensor.</div><div class="ttdef"><b>Definition:</b> matrices.hpp:168</div></div>
-<div class="ttc" id="anamespacerespond_html"><div class="ttname"><a href="../../d9/de6/namespacerespond.html">respond</a></div><div class="ttdoc">General Namespace for all RESPOND repo related code.</div><div class="ttdef"><b>Definition:</b> cost_loader.hpp:22</div></div>
+<div class="ttc" id="anamespacerespond_html"><div class="ttname"><a href="../../d9/de6/namespacerespond.html">respond</a></div><div class="ttdoc">General Namespace for all RESPOND repo related code.</div><div class="ttdef"><b>Definition:</b> base_loader.hpp:17</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="../../dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="../../dir_70501f13f5c9277fdfc6ec16bf603df6.html">respond</a></li><li class="navelem"><a class="el" href="../../dir_b2c0019c147599373b22861bc73df903.html">data_ops</a></li><li class="navelem"><b>matrices.hpp</b></li>
-    <li class="footer">Generated on Tue Jun 24 2025 14:55:40 for RESPOND by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
+    <li class="footer">Generated on Tue Jul 1 2025 12:53:10 for RESPOND by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
   </ul>
 </div>
 </body>

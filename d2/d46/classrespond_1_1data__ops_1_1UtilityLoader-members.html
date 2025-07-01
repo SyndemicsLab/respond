@@ -25,13 +25,16 @@ Copyright (c) 2025 Syndemics Lab at Boston Medical Center
     <link href="../../search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="../../search/searchdata.js"></script>
 <script type="text/javascript" src="../../search/search.js"></script>
-    <script type="text/x-mathjax-config">
-MathJax.Hub.Config({
-  extensions: ["tex2jax.js"],
-  jax: ["input/TeX","output/HTML-CSS"],
-});
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script type="text/javascript">
+window.MathJax = {
+  options: {
+    ignoreHtmlClass: 'tex2jax_ignore',
+    processHtmlClass: 'tex2jax_process'
+  }
+};
 </script>
-<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
+<script type="text/javascript" id="MathJax-script" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
     <link href="../../doxygen.css" rel="stylesheet" type="text/css" />
     <link href="../../doxygen-awesome.css" rel="stylesheet" type="text/css"/>
 <link href="../../doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
@@ -129,19 +132,23 @@ $(document).ready(function(){initNavTree('d6/dc5/classrespond_1_1data__ops_1_1Ut
 
 <p>This is the complete list of members for <a class="el" href="../../d6/dc5/classrespond_1_1data__ops_1_1UtilityLoader.html">respond::data_ops::UtilityLoader</a>, including all inherited members.</p>
 <table class="directory">
-  <tr class="even"><td class="entry"><a class="el" href="../../d6/dc5/classrespond_1_1data__ops_1_1UtilityLoader.html#a9f4e0b9fc04f3712791e5cf3052a8906">Create</a>(const std::string &amp;directory=&quot;&quot;, const std::string &amp;log_name=&quot;console&quot;)</td><td class="entry"><a class="el" href="../../d6/dc5/classrespond_1_1data__ops_1_1UtilityLoader.html">respond::data_ops::UtilityLoader</a></td><td class="entry"><span class="mlabel">static</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="../../d6/dc5/classrespond_1_1data__ops_1_1UtilityLoader.html#a0b0df45e797d5fe9692fcbecfdad3da6">Create</a>(const std::string &amp;log_name=&quot;console&quot;)</td><td class="entry"><a class="el" href="../../d6/dc5/classrespond_1_1data__ops_1_1UtilityLoader.html">respond::data_ops::UtilityLoader</a></td><td class="entry"><span class="mlabel">static</span></td></tr>
   <tr class="odd"><td class="entry"><a class="el" href="../../d6/dc5/classrespond_1_1data__ops_1_1UtilityLoader.html#ace3a26756dbd63761a4b29e1e52b62a1">GetBackgroundUtility</a>(const std::string &amp;perspective) const =0</td><td class="entry"><a class="el" href="../../d6/dc5/classrespond_1_1data__ops_1_1UtilityLoader.html">respond::data_ops::UtilityLoader</a></td><td class="entry"><span class="mlabel">pure virtual</span></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="../../d6/dc5/classrespond_1_1data__ops_1_1UtilityLoader.html#a210bf5ebaa3e546c7b8d45d9bcdd2d14">GetOUDUtility</a>(const std::string &amp;perspective) const =0</td><td class="entry"><a class="el" href="../../d6/dc5/classrespond_1_1data__ops_1_1UtilityLoader.html">respond::data_ops::UtilityLoader</a></td><td class="entry"><span class="mlabel">pure virtual</span></td></tr>
-  <tr class="odd"><td class="entry"><a class="el" href="../../d6/dc5/classrespond_1_1data__ops_1_1UtilityLoader.html#a3c5f9929e8fa09a7c3164a81cd013e00">GetSettingUtility</a>(const std::string &amp;perspective) const =0</td><td class="entry"><a class="el" href="../../d6/dc5/classrespond_1_1data__ops_1_1UtilityLoader.html">respond::data_ops::UtilityLoader</a></td><td class="entry"><span class="mlabel">pure virtual</span></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="../../d6/dc5/classrespond_1_1data__ops_1_1UtilityLoader.html#af096a0540e0791b9bcb2f1533e9870c2">LoadBackgroundUtility</a>(const std::string &amp;file)=0</td><td class="entry"><a class="el" href="../../d6/dc5/classrespond_1_1data__ops_1_1UtilityLoader.html">respond::data_ops::UtilityLoader</a></td><td class="entry"><span class="mlabel">pure virtual</span></td></tr>
+  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>GetConfig</b>() const =0 (defined in <a class="el" href="../../d8/d12/classrespond_1_1data__ops_1_1BaseLoader.html">respond::data_ops::BaseLoader</a>)</td><td class="entry"><a class="el" href="../../d8/d12/classrespond_1_1data__ops_1_1BaseLoader.html">respond::data_ops::BaseLoader</a></td><td class="entry"><span class="mlabel">pure virtual</span></td></tr>
+  <tr class="odd"><td class="entry"><a class="el" href="../../d6/dc5/classrespond_1_1data__ops_1_1UtilityLoader.html#a210bf5ebaa3e546c7b8d45d9bcdd2d14">GetOUDUtility</a>(const std::string &amp;perspective) const =0</td><td class="entry"><a class="el" href="../../d6/dc5/classrespond_1_1data__ops_1_1UtilityLoader.html">respond::data_ops::UtilityLoader</a></td><td class="entry"><span class="mlabel">pure virtual</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="../../d6/dc5/classrespond_1_1data__ops_1_1UtilityLoader.html#a3c5f9929e8fa09a7c3164a81cd013e00">GetSettingUtility</a>(const std::string &amp;perspective) const =0</td><td class="entry"><a class="el" href="../../d6/dc5/classrespond_1_1data__ops_1_1UtilityLoader.html">respond::data_ops::UtilityLoader</a></td><td class="entry"><span class="mlabel">pure virtual</span></td></tr>
+  <tr class="odd"><td class="entry"><a class="el" href="../../d6/dc5/classrespond_1_1data__ops_1_1UtilityLoader.html#af096a0540e0791b9bcb2f1533e9870c2">LoadBackgroundUtility</a>(const std::string &amp;file)=0</td><td class="entry"><a class="el" href="../../d6/dc5/classrespond_1_1data__ops_1_1UtilityLoader.html">respond::data_ops::UtilityLoader</a></td><td class="entry"><span class="mlabel">pure virtual</span></td></tr>
+  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>LoadDataTable</b>(const std::string &amp;path, bool headers=true)=0 (defined in <a class="el" href="../../d8/d12/classrespond_1_1data__ops_1_1BaseLoader.html">respond::data_ops::BaseLoader</a>)</td><td class="entry"><a class="el" href="../../d8/d12/classrespond_1_1data__ops_1_1BaseLoader.html">respond::data_ops::BaseLoader</a></td><td class="entry"><span class="mlabel">pure virtual</span></td></tr>
   <tr class="odd"><td class="entry"><a class="el" href="../../d6/dc5/classrespond_1_1data__ops_1_1UtilityLoader.html#a168d72809a8eb804704483095e43ed54">LoadOUDUtility</a>(const std::string &amp;file)=0</td><td class="entry"><a class="el" href="../../d6/dc5/classrespond_1_1data__ops_1_1UtilityLoader.html">respond::data_ops::UtilityLoader</a></td><td class="entry"><span class="mlabel">pure virtual</span></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="../../d6/dc5/classrespond_1_1data__ops_1_1UtilityLoader.html#a8f7c06ec4e6ee25e301e0b43d3a4289d">LoadSettingUtility</a>(const std::string &amp;file)=0</td><td class="entry"><a class="el" href="../../d6/dc5/classrespond_1_1data__ops_1_1UtilityLoader.html">respond::data_ops::UtilityLoader</a></td><td class="entry"><span class="mlabel">pure virtual</span></td></tr>
+  <tr bgcolor="#f0f0f0" class="odd"><td class="entry"><b>SetConfig</b>(const std::string &amp;config_file)=0 (defined in <a class="el" href="../../d8/d12/classrespond_1_1data__ops_1_1BaseLoader.html">respond::data_ops::BaseLoader</a>)</td><td class="entry"><a class="el" href="../../d8/d12/classrespond_1_1data__ops_1_1BaseLoader.html">respond::data_ops::BaseLoader</a></td><td class="entry"><span class="mlabel">pure virtual</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="../../d6/dc5/classrespond_1_1data__ops_1_1UtilityLoader.html#a0203430488ed5e790edb2e87c713871c">~UtilityLoader</a>()=default</td><td class="entry"><a class="el" href="../../d6/dc5/classrespond_1_1data__ops_1_1UtilityLoader.html">respond::data_ops::UtilityLoader</a></td><td class="entry"><span class="mlabel">virtual</span></td></tr>
 </table></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Tue Jun 24 2025 14:55:40 for RESPOND by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
+    <li class="footer">Generated on Tue Jul 1 2025 12:53:10 for RESPOND by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
   </ul>
 </div>
 </body>

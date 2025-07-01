@@ -1,5 +1,6 @@
 var namespacerespond_1_1data__ops =
 [
+    [ "BaseLoader", "d8/d12/classrespond_1_1data__ops_1_1BaseLoader.html", null ],
     [ "Cost", "de/dd8/structrespond_1_1data__ops_1_1Cost.html", null ],
     [ "CostLoader", "d1/d88/classrespond_1_1data__ops_1_1CostLoader.html", "d1/d88/classrespond_1_1data__ops_1_1CostLoader" ],
     [ "DataFormatter", "db/d1e/classrespond_1_1data__ops_1_1DataFormatter.html", "db/d1e/classrespond_1_1data__ops_1_1DataFormatter" ],
