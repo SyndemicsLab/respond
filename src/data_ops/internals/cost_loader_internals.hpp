@@ -4,7 +4,7 @@
 // Created Date: 2025-03-07                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-05-27                                                  //
+// Last Modified: 2025-06-23                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -28,11 +28,10 @@
 
 namespace respond {
 namespace data_ops {
-class CostLoaderImpl : public virtual CostLoader, public BaseLoader {
+class CostLoaderImpl : public virtual CostLoader, public BaseLoaderImpl {
 public:
-    CostLoaderImpl(const std::string &directory = "",
-                   const std::string &log_name = "console")
-        : BaseLoader(directory, log_name) {}
+    CostLoaderImpl(const std::string &logger_name = "console")
+        : BaseLoaderImpl(logger_name) {}
 
     ~CostLoaderImpl() = default;
 

@@ -4,7 +4,7 @@
 // Created Date: 2025-01-14                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-06-05                                                  //
+// Last Modified: 2025-06-26                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -44,14 +44,20 @@ UtilityLoaderImpl::LoadSettingUtility(const std::string &file) {
 }
 
 StringUOMap<Matrix3d> UtilityLoaderImpl::LoadUtility(const std::string &file) {
+    auto config = GetConfig();
+    if (config == nullptr) {
+        respond::utils::LogError(logger_name,
+                                 "Config not set! Unable to Load Utility...");
+        return {};
+    }
     Data::IDataTablePtr table = LoadDataTable(file);
     StringUOMap<Matrix3d> result;
 
     size_t number_behavior_states =
-        GetConfig()->getStringVector("state.behaviors").size();
+        config->getStringVector("state.behaviors").size();
     size_t number_demographic_combos = GetDemographicCombos().size();
     size_t number_intervention_states =
-        GetConfig()->getStringVector("state.interventions").size();
+        config->getStringVector("state.interventions").size();
 
     Matrix3d utilMatrix =
         CreateMatrix3d(number_intervention_states, number_behavior_states,
@@ -79,9 +85,8 @@ StringUOMap<Matrix3d> UtilityLoaderImpl::LoadUtility(const std::string &file) {
 }
 
 std::unique_ptr<UtilityLoader>
-UtilityLoader::Create(const std::string &directory,
-                      const std::string &log_name) {
-    return std::make_unique<UtilityLoaderImpl>(directory, log_name);
+UtilityLoader::Create(const std::string &log_name) {
+    return std::make_unique<UtilityLoaderImpl>(log_name);
 }
 } // namespace data_ops
 } // namespace respond

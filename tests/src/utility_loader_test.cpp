@@ -4,7 +4,7 @@
 // Created Date: 2025-01-14                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-06-06                                                  //
+// Last Modified: 2025-06-26                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -77,12 +77,13 @@ protected:
 
 TEST_F(UtilityLoaderTest, LoadBackgroundUtility) {
     std::unique_ptr<UtilityLoader> utility_loader = UtilityLoader::Create();
+    utility_loader->SetConfig("sim.conf");
     std::ofstream file_stream(file_name);
     file_stream << "agegrp,sex,utility" << std::endl
                 << "10_14,Male,0.922" << std::endl
                 << "10_14,Female,0.922";
 
-    std::cout << "Testing file write" << std::endl;
+    file_stream.close();
     utility_loader->LoadBackgroundUtility(file_name);
     Matrix3d result = utility_loader->GetBackgroundUtility("utility");
     // EXPECT_EQ(result(0, 0, 0), 0.922);
@@ -90,6 +91,7 @@ TEST_F(UtilityLoaderTest, LoadBackgroundUtility) {
 
 TEST_F(UtilityLoaderTest, OUDUtility) {
     std::unique_ptr<UtilityLoader> utility_loader = UtilityLoader::Create();
+    utility_loader->SetConfig("sim.conf");
     std::ofstream file_stream(file_name);
     file_stream << "block,oud,utility" << std::endl
                 << "No_Treatment,Active_Noninjection,0.626" << std::endl
@@ -107,6 +109,7 @@ TEST_F(UtilityLoaderTest, OUDUtility) {
 
 TEST_F(UtilityLoaderTest, settingUtility) {
     std::unique_ptr<UtilityLoader> utility_loader = UtilityLoader::Create();
+    utility_loader->SetConfig("sim.conf");
     std::ofstream file_stream(file_name);
     file_stream << "block,utility" << std::endl
                 << "No_Treatment,1" << std::endl

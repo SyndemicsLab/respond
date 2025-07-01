@@ -4,7 +4,7 @@
 // Created Date: 2025-01-14                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-05-29                                                  //
+// Last Modified: 2025-06-26                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -19,11 +19,16 @@
 
 #include <respond/data_ops/data_types.hpp>
 
+#include <respond/data_ops/base_loader.hpp>
+
 namespace respond {
 namespace data_ops {
 /// @brief A class to load Utility Data from files.
-class UtilityLoader {
+class UtilityLoader : public virtual BaseLoader {
 public:
+    /// @brief Default Deconstructor for the UtilityLoader class.
+    virtual ~UtilityLoader() = default;
+
     /// @brief Load the Background Utility Data from a file.
     /// @param file File path to background utility data.
     /// @return An unordered map of perspective names to utility matrices.
@@ -63,8 +68,7 @@ public:
     /// @param log_name Name of log file for logging messages.
     /// @return A unique pointer to a UtilityLoader.
     static std::unique_ptr<UtilityLoader>
-    Create(const std::string &directory = "",
-           const std::string &log_name = "console");
+    Create(const std::string &log_name = "console");
 };
 } // namespace data_ops
 } // namespace respond

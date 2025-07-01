@@ -7,3 +7,5 @@
 > Adding an intervention state requires 2 steps. Firstly, you must add the intervention to the `state.interventions` section in the `sim.conf`. The second step requires you add the data for the intervention to each file stratified by intervention (i.e. `all_types_overdose.csv`, `block_init_effect.csv`, `block_trans.csv`, `init_cohort.csv`, `oud_trans.csv`, and `SMR.csv`).
 
 Previous: [Limitations](limitations.md)
+
+Home: [Home](index.md)

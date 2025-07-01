@@ -30,6 +30,7 @@ PUBLIC
 target_include_directories(${PROJECT_NAME} 
     PRIVATE 
         "mocks/"
+        "constants/"
 )
 
 gtest_discover_tests(${PROJECT_NAME})

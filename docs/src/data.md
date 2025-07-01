@@ -27,7 +27,7 @@ The `sim.conf` file forms the backbone of the RESPOND model. It governs the gene
 - cost
 - output
 
-Each state governs a unique component of the model.
+Each set governs a unique component of the model.
 
 #### simulation
 
@@ -35,11 +35,11 @@ The simulation section governs the basic parameters of the model. An example is 
 
 ```ini
 [simulation]
-duration                     = 52           # The Duration of the Simulation
-intervention_change_times    = 52           # The Timesteps to Expect Intervention Probability Changes
-entering_sample_change_times = 52           # The Timesteps to Expect Entering Sample Count Changes
-overdose_change_times        = 52           # The Timesteps to Expect Overdose Probability Changes
-stratified_entering_cohort   = false        # Whether to Stratify the Entering Cohort by Behavior and Intervention
+duration                     = 52           # The duration of the simulation
+intervention_change_times    = 52           # The timesteps to expect intervention probability changes
+entering_sample_change_times = 52           # The timesteps to expect entering sample count changes
+overdose_change_times        = 52           # The timesteps to expect overdose probability changes
+stratified_entering_cohort   = false        # Whether to stratify the entering cohort by behavior and intervention
 ```
 
 #### state
@@ -69,11 +69,11 @@ This section governs the costing calculations as part of post-processing. The fi
 
 ```ini
 [cost]
-cost_analysis         = false               # Whether to calculate costs
-cost_perspectives     = healthcare_system   # What perspective to use, must match with columns in the cost files
-discount_rate         = 0.0025              # The discounting rate to apply to costs and utilities
-reporting_interval    = 52                  # The interval length of which to calculate costs (i.e. 52 is a yearly reporting interval)
-cost_category_outputs = false               # Whether to output costs in terms of their distinct categories
+cost_analysis         = false                       # Whether to calculate costs
+cost_perspectives     = healthcare_system, societal # What perspective to use, must match with columns in the cost files
+discount_rate         = 0.0025                      # The discounting rate to apply to costs and utilities
+reporting_interval    = 52                          # The interval length of which to calculate costs (i.e. 52 is a yearly reporting interval)
+cost_category_outputs = false                       # Whether to output costs in terms of their distinct categories
 ```
 
 #### output

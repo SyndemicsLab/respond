@@ -4,7 +4,7 @@
 // Created Date: 2025-01-14                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-05-27                                                  //
+// Last Modified: 2025-06-23                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -19,10 +19,12 @@
 
 #include <respond/data_ops/data_types.hpp>
 
+#include <respond/data_ops/base_loader.hpp>
+
 namespace respond {
 namespace data_ops {
 /// @brief Class to manage the Costing Data Necessary for RESPOND.
-class CostLoader {
+class CostLoader : public virtual BaseLoader {
 public:
     /// @brief Default Deconstructor for the Cost Loader class.
     virtual ~CostLoader() = default;
@@ -99,8 +101,7 @@ public:
     /// @param log_name Name of the logger to write to during errors.
     /// @return An instance of CostLoader.
     static std::unique_ptr<CostLoader>
-    Create(const std::string &directory = "",
-           const std::string &log_name = "console");
+    Create(const std::string &log_name = "console");
 };
 } // namespace data_ops
 } // namespace respond

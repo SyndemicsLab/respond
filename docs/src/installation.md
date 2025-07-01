@@ -1,6 +1,6 @@
 # Installation
 
-The RESPOND model is available to users through multiple methods. That being said, RESPOND has been built and tested on machines running ubuntu 24.04 and CI/CD tested on Windows machines. We recommend a basic installation either through building the source code or utilizing CMake's Fetch Content feature. We do plan to eventually work towards providing a debian package install as well.
+The RESPOND model is available to users through multiple methods. That being said, RESPOND has been built and tested on machines running ubuntu 24.04 and CI/CD tested on Windows machines. We recommend a basic installation either through building the source code or utilizing CMake's [FetchContent](https://cmake.org/cmake/help/latest/module/FetchContent.html) feature. We do plan to eventually work towards providing a debian package install as well.
 
 ## Dependencies
 

@@ -4,7 +4,7 @@
 // Created Date: 2025-03-17                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-06-05                                                  //
+// Last Modified: 2025-06-23                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -46,35 +46,53 @@ bool ArgChecks(int argc, char **argv, std::string &root, int &start, int &end) {
     return true;
 }
 
-void LoadDataLoader(respond::data_ops::DataLoader &data_loader) {
-    data_loader.LoadInitialSample("init_cohort.csv");
+void LoadDataLoader(respond::data_ops::DataLoader &data_loader,
+                    const std::filesystem::path &directory) {
+    data_loader.SetConfig((directory / "sim.conf").string());
+    data_loader.LoadInitialSample((directory / "init_cohort.csv").string());
     if (std::get<bool>(data_loader.GetConfig()->get(
             "simulation.stratified_entering_cohort", false))) {
-        data_loader.LoadEnteringSamples("entering_cohort.csv");
+        data_loader.LoadEnteringSamples(
+            (directory / "entering_cohort.csv").string());
     } else {
-        data_loader.LoadEnteringSamples("entering_cohort.csv", "No_Treatment",
-                                        "Active_Noninjection");
+        data_loader.LoadEnteringSamples(
+            (directory / "entering_cohort.csv").string(), "No_Treatment",
+            "Active_Noninjection");
     }
-    data_loader.LoadOUDTransitionRates("oud_trans.csv");
-    data_loader.LoadInterventionInitRates("block_init_effect.csv");
-    data_loader.LoadInterventionTransitionRates("block_trans.csv");
-    data_loader.LoadOverdoseRates("all_types_overdose.csv");
-    data_loader.LoadFatalOverdoseRates("fatal_overdose.csv");
-    data_loader.LoadMortalityRates("SMR.csv", "background_mortality.csv");
+    data_loader.LoadOUDTransitionRates((directory / "oud_trans.csv").string());
+    data_loader.LoadInterventionInitRates(
+        (directory / "block_init_effect.csv").string());
+    data_loader.LoadInterventionTransitionRates(
+        (directory / "block_trans.csv").string());
+    data_loader.LoadOverdoseRates(
+        (directory / "all_types_overdose.csv").string());
+    data_loader.LoadFatalOverdoseRates(
+        (directory / "fatal_overdose.csv").string());
+    data_loader.LoadMortalityRates(
+        (directory / "SMR.csv").string(),
+        (directory / "background_mortality.csv").string());
 }
 
-void LoadCostLoader(respond::data_ops::CostLoader &cost_loader) {
+void LoadCostLoader(respond::data_ops::CostLoader &cost_loader,
+                    const std::filesystem::path &directory) {
+    cost_loader.SetConfig((directory / "sim.conf").string());
     cost_loader.LoadHealthcareUtilizationCost(
-        "healthcare_utilization_cost.csv");
-    cost_loader.LoadOverdoseCost("overdose_cost.csv");
-    cost_loader.LoadPharmaceuticalCost("pharmaceutical_cost.csv");
-    cost_loader.LoadTreatmentUtilizationCost("treatment_utilization_cost.csv");
+        (directory / "healthcare_utilization_cost.csv").string());
+    cost_loader.LoadOverdoseCost((directory / "overdose_cost.csv").string());
+    cost_loader.LoadPharmaceuticalCost(
+        (directory / "pharmaceutical_cost.csv").string());
+    cost_loader.LoadTreatmentUtilizationCost(
+        (directory / "treatment_utilization_cost.csv").string());
 }
 
-void LoadUtilityLoader(respond::data_ops::UtilityLoader &utility_loader) {
-    utility_loader.LoadBackgroundUtility("bg_utility.csv");
-    utility_loader.LoadOUDUtility("oud_utility.csv");
-    utility_loader.LoadSettingUtility("setting_utility.csv");
+void LoadUtilityLoader(respond::data_ops::UtilityLoader &utility_loader,
+                       const std::filesystem::path &directory) {
+    utility_loader.SetConfig((directory / "sim.conf").string());
+    utility_loader.LoadBackgroundUtility(
+        (directory / "bg_utility.csv").string());
+    utility_loader.LoadOUDUtility((directory / "oud_utility.csv").string());
+    utility_loader.LoadSettingUtility(
+        (directory / "setting_utility.csv").string());
 }
 
 void DoPostSimulationCalculations(
@@ -85,17 +103,15 @@ void DoPostSimulationCalculations(
             data_loader.GetConfig()->get("cost.cost_analysis", false))) {
         return;
     }
-    auto cost_loader =
-        respond::data_ops::CostLoader::Create(input_set, logger_name);
+    auto cost_loader = respond::data_ops::CostLoader::Create(logger_name);
     respond::utils::LogInfo(logger_name, "CostLoader Created");
 
-    LoadCostLoader(*cost_loader);
+    LoadCostLoader(*cost_loader, input_set);
 
-    auto utility_loader =
-        respond::data_ops::UtilityLoader::Create(input_set, logger_name);
+    auto utility_loader = respond::data_ops::UtilityLoader::Create(logger_name);
     respond::utils::LogInfo(logger_name, "UtilityLoader Created");
 
-    LoadUtilityLoader(*utility_loader);
+    LoadUtilityLoader(*utility_loader, input_set);
 
     respond::data_ops::CostList base_costs;
     respond::data_ops::TimedMatrix3d base_utilities;
@@ -195,11 +211,11 @@ void execute(int argc, char **argv) {
 
             respond::utils::LogInfo(logger_name, "Logger Created");
 
-            auto data_loader = respond::data_ops::DataLoader::Create(
-                input_set.string(), logger_name);
+            auto data_loader =
+                respond::data_ops::DataLoader::Create(logger_name);
             respond::utils::LogInfo(logger_name, "DataLoader Created");
 
-            LoadDataLoader(*data_loader);
+            LoadDataLoader(*data_loader, input_set);
 
             auto respond = respond::model::Respond::Create(logger_name);
             respond->Run(*data_loader);

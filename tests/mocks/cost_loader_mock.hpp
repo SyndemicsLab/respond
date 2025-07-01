@@ -4,7 +4,7 @@
 // Created Date: 2025-01-14                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-05-27                                                  //
+// Last Modified: 2025-06-24                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -26,6 +26,13 @@ using namespace respond::data_ops;
 
 class MockCostLoader : public CostLoader {
 public:
+    MOCK_METHOD(Data::IDataTablePtr, LoadDataTable,
+                (const std::string &path, bool headers), (override));
+
+    MOCK_METHOD(void, SetConfig, (const std::string &config_file), (override));
+
+    MOCK_METHOD(Data::IConfigablePtr, GetConfig, (), (const, override));
+
     MOCK_METHOD((StringUOMap<Matrix3d>), LoadHealthcareUtilizationCost,
                 ((const std::string &)), (override));
 

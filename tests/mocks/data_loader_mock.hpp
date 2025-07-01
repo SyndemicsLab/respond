@@ -4,7 +4,7 @@
 // Created Date: 2025-01-14                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-06-05                                                  //
+// Last Modified: 2025-06-24                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -26,6 +26,13 @@ using namespace respond::data_ops;
 
 class MockDataLoader : public DataLoader {
 public:
+    MOCK_METHOD(Data::IDataTablePtr, LoadDataTable,
+                (const std::string &path, bool headers), (override));
+
+    MOCK_METHOD(void, SetConfig, (const std::string &config_file), (override));
+
+    MOCK_METHOD(Data::IConfigablePtr, GetConfig, (), (const, override));
+
     MOCK_METHOD(Matrix3d, GetInitialSample, (), (const, override));
 
     MOCK_METHOD(Matrix3d, GetEnteringSamples, (const int &), (const, override));
@@ -88,10 +95,6 @@ public:
 
     MOCK_METHOD(Matrix3d, LoadMortalityRates,
                 (const std::string &, const std::string &), (override));
-
-    MOCK_METHOD(Data::IConfigablePtr, GetConfig, (), (const, override));
-
-public:
 };
 
 #endif // RESPOND_TESTS_DATALOADERMOCK_HPP_

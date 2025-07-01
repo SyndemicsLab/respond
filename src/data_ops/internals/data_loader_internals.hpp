@@ -4,7 +4,7 @@
 // Created Date: 2025-03-07                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-06-05                                                  //
+// Last Modified: 2025-06-24                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -28,7 +28,7 @@
 
 namespace respond {
 namespace data_ops {
-class DataLoaderImpl : public virtual DataLoader, public BaseLoader {
+class DataLoaderImpl : public virtual DataLoader, public BaseLoaderImpl {
 public:
     /// @brief An alternative constructor for DataLoader for loading data
     /// when a Configuration object has already been created prior to
@@ -37,9 +37,8 @@ public:
     /// already-processed configuration file
     /// @param inputDir The name of the directory where input files are
     /// stored
-    DataLoaderImpl(const std::string &directory = "",
-                   const std::string &log_name = "console")
-        : BaseLoader(directory, log_name) {}
+    DataLoaderImpl(const std::string &logger_name = "console")
+        : BaseLoaderImpl(logger_name) {}
 
     ~DataLoaderImpl() = default;
 
@@ -138,8 +137,6 @@ public:
 
     Matrix3d LoadMortalityRates(std::string const &smrCSVName,
                                 std::string const &bgmCSVName) override;
-
-    Data::IConfigablePtr GetConfig() const { return BaseLoader::GetConfig(); }
 
 private:
     void FillTime(int &start, int const end, Matrix3d data,

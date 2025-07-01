@@ -4,7 +4,7 @@
 // Created Date: 2025-01-14                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-05-29                                                  //
+// Last Modified: 2025-06-24                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -20,11 +20,13 @@
 
 #include <respond/data_ops/data_types.hpp>
 
+#include <respond/data_ops/base_loader.hpp>
+
 namespace respond {
 namespace data_ops {
 
 /// @brief Class for Loading and Managing Data in RESPOND.
-class DataLoader {
+class DataLoader : public virtual BaseLoader {
 public:
     /// @brief Default Desctructor for the DataLoader class.
     virtual ~DataLoader() = default;
@@ -154,17 +156,12 @@ public:
     virtual Matrix3d LoadMortalityRates(const std::string &smr_file,
                                         const std::string &background_file) = 0;
 
-    /// @brief Getter for the Configuration object.
-    /// @return Configuration Object.
-    virtual Data::IConfigablePtr GetConfig() const = 0;
-
     /// @brief Factory method to create a DataLoader instance.
     /// @param directory Directory to load data from.
     /// @param log_name Log name for the DataLoader.
     /// @return A new DataLoader instance.
     static std::unique_ptr<DataLoader>
-    Create(const std::string &directory = "",
-           const std::string &log_name = "console");
+    Create(const std::string &log_name = "console");
 };
 } // namespace data_ops
 } // namespace respond
