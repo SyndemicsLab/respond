@@ -39,7 +39,7 @@
         },
         {
             "name": "gcc-debug",
-            "displayName": "gcc Debug",
+            "displayName": "Debug GCC Configuration",
             "description": "Target Linux with the GCC compiler, debug build type",
             "inherits": "configuration-common-linux",
             "cacheVariables": {
@@ -57,7 +57,7 @@
         },
         {
             "name": "gcc-release",
-            "displayName": "gcc Release",
+            "displayName": "Release GCC Configuration",
             "description": "Target Linux with the GCC compiler, release build type",
             "inherits": "configuration-common-linux",
             "cacheVariables": {
@@ -100,6 +100,7 @@
         },
         {
             "name": "gcc-release",
+            "displayName": "Release GCC Build",
             "inherits": "build-common",
             "configurePreset": "gcc-release"
         },
@@ -113,6 +114,7 @@
         },
         {
             "name": "gcc-debug",
+            "displayName": "Debug GCC Build",
             "inherits": "build-common",
             "configurePreset": "gcc-debug"
         },
@@ -143,28 +145,28 @@
         },
         {
             "name": "gcc-debug",
-            "displayName": "Strict",
+            "displayName": "Debug",
             "description": "Enable output and stop on failure",
             "inherits": "test-common",
             "configurePreset": "gcc-debug"
         },
         {
             "name": "gcc-release",
-            "displayName": "Strict",
+            "displayName": "Release",
             "description": "Enable output and stop on failure",
             "inherits": "test-common",
             "configurePreset": "gcc-release"
         },
         {
             "name": "gcc-debug-cluster",
-            "displayName": "Strict",
+            "displayName": "Debug Cluster",
             "description": "Enable output and stop on failure",
             "inherits": "test-common",
             "configurePreset": "gcc-debug-cluster"
         },
         {
             "name": "gcc-release-cluster",
-            "displayName": "Strict",
+            "displayName": "Release Cluster",
             "description": "Enable output and stop on failure",
             "inherits": "test-common",
             "configurePreset": "gcc-release-cluster"
@@ -182,6 +184,7 @@
     "workflowPresets": [
         {
             "name": "gcc-debug",
+            "displayName": "Debug GCC Workflow",
             "description": "Developer Debugging Workflow Without Installation",
             "steps": [
                 {
