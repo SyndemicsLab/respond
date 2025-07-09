@@ -321,8 +321,8 @@ TEST_F(DataLoaderTest, getConfig) {
     Data::ReturnType expected = 52;
     EXPECT_EQ(config->get("simulation.duration", tmp_int), expected);
     std::vector<std::string> behaviors =
-    {"Active_Noninjection", "Active_Injection", "Nonactive_Noninjection", 
-        "Nonactive_Injection"};
+        {"Active_Noninjection", "Active_Injection", "Nonactive_Noninjection", 
+         "Nonactive_Injection"};
     EXPECT_EQ(config->getStringVector("state.behaviors"), behaviors);
 }
 
