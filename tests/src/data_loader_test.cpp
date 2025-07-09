@@ -207,11 +207,11 @@ TEST_F(DataLoaderTest, interventionInitRates) {
     std::ofstream file_stream(file_name_1);
 
     file_stream << "agegrp,sex,initial_oud_state,to_intervention,Active_"
-                    "Noninjection,Active_Injection,Nonactive_Noninjection,"
-                    "Nonactive_Injection"
+                   "Noninjection,Active_Injection,Nonactive_Noninjection,"
+                   "Nonactive_Injection"
                 << std::endl
                 << "10_14,Male,Active_Noninjection,No_Treatment,"
-                    "0.4,0.3,0.2,0.1";
+                   "0.4,0.3,0.2,0.1";
     file_stream.close();
 
     data_loader->LoadInterventionInitRates(file_name_1);
@@ -333,16 +333,15 @@ TEST_F(DataLoaderTest, enteringSamplesFileOnly) {
     std::unique_ptr<DataLoader> data_loader = DataLoader::Create();
     data_loader->SetConfig("sim.conf");
     std::ofstream file_stream(file_name_1);
-    file_stream << "block,agegrp,sex,oud,cohort_size_change_1_52"
-                << std::endl
+    file_stream << "block,agegrp,sex,oud,cohort_size_change_1_52" << std::endl
                 << "No_Treatment,10_14,male,Active_Noninjection,"
-                "11.4389540364826"
+                   "11.4389540364826"
                 << std::endl
                 << "No_Treatment,10_14,female,Active_Noninjection,"
-                "7.10870959447953"
+                   "7.10870959447953"
                 << std::endl
                 << "No_Treatment,15_19,male,Active_Noninjection,"
-                "12.0934754686572";
+                   "12.0934754686572";
     file_stream.close();
 
     data_loader->LoadEnteringSamples(file_name_1);
