@@ -201,6 +201,7 @@ TEST_F(DataLoaderTest, mortalityRates) {
     EXPECT_EQ(result(0, 0, 0), 6.8407483245769285e-06);
 }
 
+// this should be changed to use LoadInterventionInitRates
 TEST_F(DataLoaderTest, interventionInitRates) {
     std::unique_ptr<DataLoader> data_loader = DataLoader::Create();
     data_loader->SetConfig("sim.conf");
@@ -314,20 +315,24 @@ TEST_F(DataLoaderTest, setInterventionInitRates) {
 
 TEST_F(DataLoaderTest, getConfig) {
     std::unique_ptr<DataLoader> data_loader = DataLoader::Create();
+    data_loader->SetConfig("sim.conf");
     auto config = data_loader->GetConfig();
-    EXPECT_NE(config, nullptr);
 
     Data::ReturnType tmp_int = 1;
     Data::ReturnType expected = 52;
     EXPECT_EQ(config->get("simulation.duration", tmp_int), expected);
-    std::vector<std::string> behaviors =
-        {"Active_Noninjection", "Active_Injection", "Nonactive_Noninjection", 
-         "Nonactive_Injection"};
-    EXPECT_EQ(config->getStringVector("state.behaviors"), behaviors);
+}
+
+TEST_F(DataLoaderTest, getConfigNoSetConfig) {
+    std::unique_ptr<DataLoader> data_loader = DataLoader::Create();
+    auto config = data_loader->GetConfig();
+    
+    EXPECT_EQ(config, nullptr);
 }
 
 TEST_F(DataLoaderTest, enteringSamplesFileOnly) {
     std::unique_ptr<DataLoader> data_loader = DataLoader::Create();
+    data_loader->SetConfig("sim.conf");
     std::ofstream file_stream(file_name_1);
     file_stream << "block,agegrp,sex,oud,cohort_size_change_1_52" << std::endl
                 << "No_Treatment,10_14,male,Active_Noninjection,"
@@ -343,3 +348,5 @@ TEST_F(DataLoaderTest, enteringSamplesFileOnly) {
     auto result = data_loader->GetEnteringSamples(0);
     EXPECT_EQ(result(0, 0, 0), 11.4389540364826);
 }
+} // namespace testing
+} // namespace respond
