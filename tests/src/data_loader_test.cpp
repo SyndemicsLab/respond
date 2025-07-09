@@ -312,5 +312,34 @@ TEST_F(DataLoaderTest, setInterventionInitRates) {
     EXPECT_EQ(result(0, 0, 0), 6.8407483245769285e-06);
 }
 
-} // namespace testing
-} // namespace respond
+TEST_F(DataLoaderTest, getConfig) {
+    std::unique_ptr<DataLoader> data_loader = DataLoader::Create();
+    auto config = data_loader->GetConfig();
+    EXPECT_NE(config, nullptr);
+
+    Data::ReturnType tmp_int = 1;
+    Data::ReturnType expected = 52;
+    EXPECT_EQ(config->get("simulation.duration", tmp_int), expected);
+    std::vector<std::string> behaviors =
+    {"Active_Noninjection", "Active_Injection", "Nonactive_Noninjection", 
+        "Nonactive_Injection"};
+    EXPECT_EQ(config->getStringVector("state.behaviors"), behaviors);
+}
+
+TEST_F(DataLoaderTest, enteringSamplesFileOnly) {
+    std::unique_ptr<DataLoader> data_loader = DataLoader::Create();
+    std::ofstream file_stream(file_name_1);
+    file_stream << "block,agegrp,sex,oud,cohort_size_change_1_52" << std::endl
+                << "No_Treatment,10_14,male,Active_Noninjection,"
+                "11.4389540364826" << std::endl
+                << "No_Treatment,10_14,female,Active_Noninjection,"
+                "7.10870959447953" << std::endl
+                << "No_Treatment,15_19,male,Active_Noninjection,"
+                "12.0934754686572";
+    file_stream.close();
+
+    data_loader->LoadEnteringSamples(file_name_1);
+
+    auto result = data_loader->GetEnteringSamples(0);
+    EXPECT_EQ(result(0, 0, 0), 11.4389540364826);
+}
