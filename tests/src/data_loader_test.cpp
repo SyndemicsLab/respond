@@ -205,19 +205,19 @@ TEST_F(DataLoaderTest, interventionInitRates) {
     std::unique_ptr<DataLoader> data_loader = DataLoader::Create();
     data_loader->SetConfig("sim.conf");
     std::ofstream file_stream(file_name_1);
-    file_stream
-        << "block,agegrp,sex,oud,counts" << std::endl
-        << "No_Treatment,10_14,Male,Active_Noninjection,2917.55795376043"
-        << std::endl
-        << "No_Treatment,10_14,Male,Active_Injection,977.390032367151"
-        << std::endl
-        << "No_Treatment,10_14,Male,Nonactive_Noninjection,288.995723856067";
+
+    file_stream << "agegrp,sex,initial_oud_state,to_intervention,Active_"
+                   "Noninjection,Active_Injection,Nonactive_Noninjection,"
+                   "Nonactive_Injection"
+                << std::endl
+                << "10_14,Male,Active_Noninjection,No_Treatment,"
+                   "0.4,0.3,0.2,0.1";
     file_stream.close();
 
-    data_loader->LoadInitialSample(file_name_1);
+    data_loader->LoadInterventionInitRates(file_name_1);
 
-    Matrix3d result = data_loader->GetInitialSample();
-    EXPECT_EQ(result(0, 0, 0), 2917.55795376043);
+    Matrix3d result = data_loader->GetInterventionInitRates();
+    EXPECT_EQ(result(0, 0, 0), 0.4);
 }
 
 TEST_F(DataLoaderTest, setInitialSample) {
@@ -312,5 +312,42 @@ TEST_F(DataLoaderTest, setInterventionInitRates) {
     EXPECT_EQ(result(0, 0, 0), 6.8407483245769285e-06);
 }
 
+TEST_F(DataLoaderTest, getConfig) {
+    std::unique_ptr<DataLoader> data_loader = DataLoader::Create();
+    data_loader->SetConfig("sim.conf");
+    auto config = data_loader->GetConfig();
+
+    Data::ReturnType tmp_int = 1;
+    Data::ReturnType expected = 52;
+    EXPECT_EQ(config->get("simulation.duration", tmp_int), expected);
+}
+
+TEST_F(DataLoaderTest, getConfigNoSetConfig) {
+    std::unique_ptr<DataLoader> data_loader = DataLoader::Create();
+    auto config = data_loader->GetConfig();
+
+    EXPECT_EQ(config, nullptr);
+}
+
+TEST_F(DataLoaderTest, enteringSamplesFileOnly) {
+    std::unique_ptr<DataLoader> data_loader = DataLoader::Create();
+    data_loader->SetConfig("sim.conf");
+    std::ofstream file_stream(file_name_1);
+    file_stream << "block,agegrp,sex,oud,cohort_size_change_1_52" << std::endl
+                << "No_Treatment,10_14,male,Active_Noninjection,"
+                   "11.4389540364826"
+                << std::endl
+                << "No_Treatment,10_14,female,Active_Noninjection,"
+                   "7.10870959447953"
+                << std::endl
+                << "No_Treatment,15_19,male,Active_Noninjection,"
+                   "12.0934754686572";
+    file_stream.close();
+
+    data_loader->LoadEnteringSamples(file_name_1);
+
+    auto result = data_loader->GetEnteringSamples(0);
+    EXPECT_EQ(result(0, 0, 0), 11.4389540364826);
+}
 } // namespace testing
 } // namespace respond
