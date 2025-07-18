@@ -91,7 +91,125 @@ pivot_long                      = true      # Whether to pivot the table to long
 
 ### Tabular Data
 
-TODO
+#### all_types_overdose.csv
+```ini
+intervention
+agegrp
+race
+sex
+oud
+overdose_1_52
+```
+
+#### background_mortality.csv
+```ini
+agegrp
+race
+sex
+death_prob
+```
+
+#### block_init_effect.csv
+```ini
+initial_oud_state
+to_intervention
+Active_Noninjection
+Active_injection
+Nonactive_Noninjection
+Nonactive_Injection
+```
+
+#### block_trans.csv
+```ini
+agegrp
+race
+sex
+oud
+initial_intervention
+No_Treatment_1_52
+Buprenorphine_1_52
+Naltrexone_1_52
+Methadone_1_52
+Detox_1_52
+Residential_1_52
+Corrections_1_52
+Post_Buprenorphine_1_52
+Post_Naltrexone_1_52
+Post_Methadone_1_52
+Post_Detox_1_52
+Post_Residential_1_52
+Post_Corrections_1_52
+```
+
+#### entering_cohort.csv
+```ini
+state
+cohort_size
+block
+agegrp
+sex
+race
+```
+
+#### fatal_overdose.csv
+```ini
+agegrp
+race
+sex
+percent_overdoses_fatal_1_52
+```
+
+#### init_cohort.csv
+```ini
+oud
+counts
+block
+agegrp
+sex
+race
+```
+
+#### oud_trans.csv
+```ini
+intervention
+agegrp
+race
+sex
+initial_oud
+Active_Noninjection
+Active_Injection
+Nonactive_Noninjection
+Nonactive_Injection
+```
+
+#### SMR.csv
+```ini
+block
+agegrp
+race
+sex
+oud
+SMR
+```
+
+#### targets.csv
+```ini
+Methadone
+Buprenorphine
+Naltrexone
+FOD
+year
+```
+
+#### utility.csv
+```ini
+block
+agegrp
+race
+sex
+background
+setting
+```
 
 ## Optional Input Tables
 
@@ -102,6 +220,40 @@ TODO
 - `pharmaceutical_cost.csv`
 - `setting_utility.csv`
 - `treatment_utilization_cost.csv`
+
+#### healthcare_utilization_cost.csv
+```ini
+block
+agegrp
+race
+sex
+oud
+healthcare_system
+```
+
+#### overdose_cost.csv
+```ini
+X
+healthcare_system
+```
+
+#### pharmaceutical_cost.csv
+```ini
+block
+healthcare_system
+```
+
+#### setting_utility.csv
+```ini
+block
+utility
+```
+
+#### treatment_utilization_cost.csv
+```ini
+block
+healthcare_system
+```
 
 Previous: [Installation](installation.md)
 
