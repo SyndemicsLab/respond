@@ -93,7 +93,6 @@ pivot_long                      = true      # Whether to pivot the table to long
 
 #### all_types_overdose.csv
 ```ini
-[all_types_overdose.csv]
 intervention
 agegrp
 race
@@ -104,7 +103,6 @@ overdose_1_52
 
 #### background_mortality.csv
 ```ini
-[background_mortality.csv]
 agegrp
 race
 sex
@@ -113,7 +111,6 @@ death_prob
 
 #### block_init_effect.csv
 ```ini
-[block_init_effect.csv]
 initial_oud_state
 to_intervention
 Active_Noninjection
@@ -124,7 +121,6 @@ Nonactive_Injection
 
 #### block_trans.csv
 ```ini
-[block_trans.csv]
 agegrp
 race
 sex
@@ -147,7 +143,6 @@ Post_Corrections_1_52
 
 #### entering_cohort.csv
 ```ini
-[entering_cohort.csv]
 state
 cohort_size
 block
@@ -158,7 +153,6 @@ race
 
 #### fatal_overdose.csv
 ```ini
-[fatal_overdose.csv]
 agegrp
 race
 sex
@@ -167,7 +161,6 @@ percent_overdoses_fatal_1_52
 
 #### init_cohort.csv
 ```ini
-[init_cohort.csv]
 oud
 counts
 block
@@ -178,7 +171,6 @@ race
 
 #### oud_trans.csv
 ```ini
-[oud_trans.csv]
 intervention
 agegrp
 race
@@ -192,7 +184,6 @@ Nonactive_Injection
 
 #### SMR.csv
 ```ini
-[SMR.csv]
 block
 agegrp
 race
@@ -203,7 +194,6 @@ SMR
 
 #### targets.csv
 ```ini
-[targets.csv]
 Methadone
 Buprenorphine
 Naltrexone
@@ -213,7 +203,6 @@ year
 
 #### utility.csv
 ```ini
-[utility.csv]
 block
 agegrp
 race
@@ -234,7 +223,6 @@ setting
 
 #### healthcare_utilization_cost.csv
 ```ini
-[healthcare_utilization_cost.csv]
 block
 agegrp
 race
@@ -245,28 +233,24 @@ healthcare_system
 
 #### overdose_cost.csv
 ```ini
-[overdose_cost.csv]
 X
 healthcare_system
 ```
 
 #### pharmaceutical_cost.csv
 ```ini
-[pharmaceutical_cost.csv]
 block
 healthcare_system
 ```
 
 #### setting_utility.csv
 ```ini
-[setting_utility.csv]
 block
 utility
 ```
 
 #### treatment_utilization_cost.csv
 ```ini
-[treatment_utilization_cost.csv]
 block
 healthcare_system
 ```
