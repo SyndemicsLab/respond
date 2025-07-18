@@ -198,8 +198,105 @@ output</h3>
 <div class="line">pivot_long                      = true      # Whether to pivot the table to long form as R expects (generally less human readable)</div>
 </div><!-- fragment --><h2><a class="anchor" id="autotoc_md21"></a>
 Tabular Data</h2>
-<p>TODO</p>
-<h1><a class="anchor" id="autotoc_md22"></a>
+<h3><a class="anchor" id="autotoc_md22"></a>
+all_types_overdose.csv</h3>
+<div class="fragment"><div class="line">intervention</div>
+<div class="line">agegrp</div>
+<div class="line">race</div>
+<div class="line">sex</div>
+<div class="line">oud</div>
+<div class="line">overdose_1_52</div>
+</div><!-- fragment --><h3><a class="anchor" id="autotoc_md23"></a>
+background_mortality.csv</h3>
+<div class="fragment"><div class="line">agegrp</div>
+<div class="line">race</div>
+<div class="line">sex</div>
+<div class="line">death_prob</div>
+</div><!-- fragment --><h3><a class="anchor" id="autotoc_md24"></a>
+block_init_effect.csv</h3>
+<div class="fragment"><div class="line">initial_oud_state</div>
+<div class="line">to_intervention</div>
+<div class="line">Active_Noninjection</div>
+<div class="line">Active_injection</div>
+<div class="line">Nonactive_Noninjection</div>
+<div class="line">Nonactive_Injection</div>
+</div><!-- fragment --><h3><a class="anchor" id="autotoc_md25"></a>
+block_trans.csv</h3>
+<div class="fragment"><div class="line">agegrp</div>
+<div class="line">race</div>
+<div class="line">sex</div>
+<div class="line">oud</div>
+<div class="line">initial_intervention</div>
+<div class="line">No_Treatment_1_52</div>
+<div class="line">Buprenorphine_1_52</div>
+<div class="line">Naltrexone_1_52</div>
+<div class="line">Methadone_1_52</div>
+<div class="line">Detox_1_52</div>
+<div class="line">Residential_1_52</div>
+<div class="line">Corrections_1_52</div>
+<div class="line">Post_Buprenorphine_1_52</div>
+<div class="line">Post_Naltrexone_1_52</div>
+<div class="line">Post_Methadone_1_52</div>
+<div class="line">Post_Detox_1_52</div>
+<div class="line">Post_Residential_1_52</div>
+<div class="line">Post_Corrections_1_52</div>
+</div><!-- fragment --><h3><a class="anchor" id="autotoc_md26"></a>
+entering_cohort.csv</h3>
+<div class="fragment"><div class="line">state</div>
+<div class="line">cohort_size</div>
+<div class="line">block</div>
+<div class="line">agegrp</div>
+<div class="line">sex</div>
+<div class="line">race</div>
+</div><!-- fragment --><h3><a class="anchor" id="autotoc_md27"></a>
+fatal_overdose.csv</h3>
+<div class="fragment"><div class="line">agegrp</div>
+<div class="line">race</div>
+<div class="line">sex</div>
+<div class="line">percent_overdoses_fatal_1_52</div>
+</div><!-- fragment --><h3><a class="anchor" id="autotoc_md28"></a>
+init_cohort.csv</h3>
+<div class="fragment"><div class="line">oud</div>
+<div class="line">counts</div>
+<div class="line">block</div>
+<div class="line">agegrp</div>
+<div class="line">sex</div>
+<div class="line">race</div>
+</div><!-- fragment --><h3><a class="anchor" id="autotoc_md29"></a>
+oud_trans.csv</h3>
+<div class="fragment"><div class="line">intervention</div>
+<div class="line">agegrp</div>
+<div class="line">race</div>
+<div class="line">sex</div>
+<div class="line">initial_oud</div>
+<div class="line">Active_Noninjection</div>
+<div class="line">Active_Injection</div>
+<div class="line">Nonactive_Noninjection</div>
+<div class="line">Nonactive_Injection</div>
+</div><!-- fragment --><h3><a class="anchor" id="autotoc_md30"></a>
+SMR.csv</h3>
+<div class="fragment"><div class="line">block</div>
+<div class="line">agegrp</div>
+<div class="line">race</div>
+<div class="line">sex</div>
+<div class="line">oud</div>
+<div class="line">SMR</div>
+</div><!-- fragment --><h3><a class="anchor" id="autotoc_md31"></a>
+targets.csv</h3>
+<div class="fragment"><div class="line">Methadone</div>
+<div class="line">Buprenorphine</div>
+<div class="line">Naltrexone</div>
+<div class="line">FOD</div>
+<div class="line">year</div>
+</div><!-- fragment --><h3><a class="anchor" id="autotoc_md32"></a>
+utility.csv</h3>
+<div class="fragment"><div class="line">block</div>
+<div class="line">agegrp</div>
+<div class="line">race</div>
+<div class="line">sex</div>
+<div class="line">background</div>
+<div class="line">setting</div>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md33"></a>
 Optional Input Tables</h1>
 <ul>
 <li><code>bg_utility.csv</code></li>
@@ -210,7 +307,31 @@ Optional Input Tables</h1>
 <li><code>setting_utility.csv</code></li>
 <li><code>treatment_utilization_cost.csv</code></li>
 </ul>
-<p>Previous: <a class="el" href="../../d7/d63/md_docs_src_installation.html">Installation</a></p>
+<h3><a class="anchor" id="autotoc_md34"></a>
+healthcare_utilization_cost.csv</h3>
+<div class="fragment"><div class="line">block</div>
+<div class="line">agegrp</div>
+<div class="line">race</div>
+<div class="line">sex</div>
+<div class="line">oud</div>
+<div class="line">healthcare_system</div>
+</div><!-- fragment --><h3><a class="anchor" id="autotoc_md35"></a>
+overdose_cost.csv</h3>
+<div class="fragment"><div class="line">X</div>
+<div class="line">healthcare_system</div>
+</div><!-- fragment --><h3><a class="anchor" id="autotoc_md36"></a>
+pharmaceutical_cost.csv</h3>
+<div class="fragment"><div class="line">block</div>
+<div class="line">healthcare_system</div>
+</div><!-- fragment --><h3><a class="anchor" id="autotoc_md37"></a>
+setting_utility.csv</h3>
+<div class="fragment"><div class="line">block</div>
+<div class="line">utility</div>
+</div><!-- fragment --><h3><a class="anchor" id="autotoc_md38"></a>
+treatment_utilization_cost.csv</h3>
+<div class="fragment"><div class="line">block</div>
+<div class="line">healthcare_system</div>
+</div><!-- fragment --><p>Previous: <a class="el" href="../../d7/d63/md_docs_src_installation.html">Installation</a></p>
 <p>Next: <a class="el" href="../../dd/d4c/md_docs_src_run.html">Run</a> </p>
 </div></div><!-- contents -->
 </div><!-- PageDoc -->
@@ -218,7 +339,7 @@ Optional Input Tables</h1>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Thu Jul 10 2025 15:53:48 for RESPOND by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
+    <li class="footer">Generated on Fri Jul 18 2025 21:29:56 for RESPOND by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
   </ul>
 </div>
 </body>

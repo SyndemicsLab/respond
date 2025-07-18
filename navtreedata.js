@@ -40,25 +40,37 @@ var NAVTREE =
           [ "cost", "d0/d1d/md_docs_src_data.html#autotoc_md19", null ],
           [ "output", "d0/d1d/md_docs_src_data.html#autotoc_md20", null ]
         ] ],
-        [ "Tabular Data", "d0/d1d/md_docs_src_data.html#autotoc_md21", null ]
+        [ "Tabular Data", "d0/d1d/md_docs_src_data.html#autotoc_md21", [
+          [ "all_types_overdose.csv", "d0/d1d/md_docs_src_data.html#autotoc_md22", null ],
+          [ "background_mortality.csv", "d0/d1d/md_docs_src_data.html#autotoc_md23", null ],
+          [ "block_init_effect.csv", "d0/d1d/md_docs_src_data.html#autotoc_md24", null ],
+          [ "block_trans.csv", "d0/d1d/md_docs_src_data.html#autotoc_md25", null ],
+          [ "entering_cohort.csv", "d0/d1d/md_docs_src_data.html#autotoc_md26", null ],
+          [ "fatal_overdose.csv", "d0/d1d/md_docs_src_data.html#autotoc_md27", null ],
+          [ "init_cohort.csv", "d0/d1d/md_docs_src_data.html#autotoc_md28", null ],
+          [ "oud_trans.csv", "d0/d1d/md_docs_src_data.html#autotoc_md29", null ],
+          [ "SMR.csv", "d0/d1d/md_docs_src_data.html#autotoc_md30", null ],
+          [ "targets.csv", "d0/d1d/md_docs_src_data.html#autotoc_md31", null ],
+          [ "utility.csv", "d0/d1d/md_docs_src_data.html#autotoc_md32", null ]
+        ] ]
       ] ],
-      [ "Optional Input Tables", "d0/d1d/md_docs_src_data.html#autotoc_md22", null ]
+      [ "Optional Input Tables", "d0/d1d/md_docs_src_data.html#autotoc_md33", null ]
     ] ],
     [ "Running the Model", "dd/d4c/md_docs_src_run.html", [
-      [ "Using the Executable", "dd/d4c/md_docs_src_run.html#autotoc_md24", null ],
-      [ "Arguments", "dd/d4c/md_docs_src_run.html#autotoc_md25", null ]
+      [ "Using the Executable", "dd/d4c/md_docs_src_run.html#autotoc_md40", null ],
+      [ "Arguments", "dd/d4c/md_docs_src_run.html#autotoc_md41", null ]
     ] ],
     [ "Under the Hood", "d6/df1/md_docs_src_math.html", [
-      [ "Entering Cohort Transitions", "d6/df1/md_docs_src_math.html#autotoc_md27", null ],
-      [ "Behavior Transitions", "d6/df1/md_docs_src_math.html#autotoc_md28", null ],
-      [ "Intervention Transitions", "d6/df1/md_docs_src_math.html#autotoc_md29", null ],
-      [ "Behavior Transitions Post Intervention Transition", "d6/df1/md_docs_src_math.html#autotoc_md30", null ],
-      [ "Overdose Transitions", "d6/df1/md_docs_src_math.html#autotoc_md31", null ],
-      [ "Background Mortality Transitions", "d6/df1/md_docs_src_math.html#autotoc_md32", null ]
+      [ "Entering Cohort Transitions", "d6/df1/md_docs_src_math.html#autotoc_md43", null ],
+      [ "Behavior Transitions", "d6/df1/md_docs_src_math.html#autotoc_md44", null ],
+      [ "Intervention Transitions", "d6/df1/md_docs_src_math.html#autotoc_md45", null ],
+      [ "Behavior Transitions Post Intervention Transition", "d6/df1/md_docs_src_math.html#autotoc_md46", null ],
+      [ "Overdose Transitions", "d6/df1/md_docs_src_math.html#autotoc_md47", null ],
+      [ "Background Mortality Transitions", "d6/df1/md_docs_src_math.html#autotoc_md48", null ]
     ] ],
     [ "Limitations", "d6/d3e/md_docs_src_limitations.html", [
-      [ "Library", "d6/d3e/md_docs_src_limitations.html#autotoc_md34", null ],
-      [ "Data", "d6/d3e/md_docs_src_limitations.html#autotoc_md35", null ]
+      [ "Library", "d6/d3e/md_docs_src_limitations.html#autotoc_md50", null ],
+      [ "Data", "d6/d3e/md_docs_src_limitations.html#autotoc_md51", null ]
     ] ],
     [ "FAQs", "d8/d51/md_docs_src_faq.html", null ],
     [ "Namespaces", "namespaces.html", [
@@ -87,7 +99,7 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "annotated.html",
-"namespacemembers_enum.html"
+"index.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';
