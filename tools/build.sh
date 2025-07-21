@@ -2,8 +2,10 @@
 # only execute these lines if the `module` command is present in the environment
 # used for the BU SCC
 if command -v module &>/dev/null; then
-    module load gcc/12.2.0
+    module load cmake/3.31.7
+    module load gcc/13.2.0
     module load boost/1.83.0
+    module load ninja/1.10.2
 fi
 
 # help message to be output either with the -h flag or when using invalid syntax
@@ -15,20 +17,14 @@ showhelp () {
     echo "h              Print this help screen."
     echo "t OPTION       Set the build type to OPTION"
     echo "               Options: [Debug|Release]"
-    echo "               Default: Debug"
-    echo "p              Build and run tests."
-    echo "b              Build Python Language Bindings"
-    echo "n              Build Benchmarking executable"
-} 
+    echo "               Default: Release"
+}
 
 # set default build type
-BUILDTYPE="Debug"
-RESPOND_BUILD_TESTS="OFF"
-BUILD_PYBINDINGS=""
-BUILD_BENCHMARK=""
+BUILDTYPE="Release"
 
 # process optional command line flags
-while getopts ":bhnpt:" option; do
+while getopts ":ht:" option; do
     case $option in
         h)
             showhelp
@@ -45,15 +41,6 @@ while getopts ":bhnpt:" option; do
                     ;;
             esac
             ;;
-        p)
-            RESPOND_BUILD_TESTS="ON"
-            ;;
-        b)
-            BUILD_PYBINDINGS="ON"
-            ;;
-        n)
-            BUILD_BENCHMARK="ON"
-            ;;
         \?)
             echo "Error: Invalid option flag provided!"
             showhelp
@@ -67,34 +54,17 @@ done
     # change to the top-level git folder
     TOPLEVEL="$(git rev-parse --show-toplevel)"
     cd "$TOPLEVEL" || exit
+
     # ensure the `build/` directory exists
     ([[ -d "build/" ]] && rm -rf build/*) || mkdir "build/"
-    (
-        cd "build" || exit
-        # build tests, if specified
-        CMAKE_COMMAND="cmake .. -DCMAKE_PREFIX_PATH=$CONDA_PREFIX -DCMAKE_BUILD_TYPE=$BUILDTYPE"
-        if [[ -n "$BUILD_TESTS" ]]; then
-            CMAKE_COMMAND="$CMAKE_COMMAND -DRESPOND_BUILD_TESTS=$BUILD_TESTS"
-        fi
-        # build Python language bindings, if specified
-        if [[ -n "$BUILD_PYBINDINGS" ]]; then
-            CMAKE_COMMAND="$CMAKE_COMMAND -DBUILD_PYBINDINGS=$BUILD_PYBINDINGS -DCMAKE_POSITION_INDEPENDENT_CODE=ON"
-        fi
-        # build benchmarking executable
-        if [[ -n "$BUILD_BENCHMARK" ]]; then
-            CMAKE_COMMAND="$CMAKE_COMMAND -DBUILD_BENCHMARK=$BUILD_BENCHMARK"
-        fi
-        # run the full build command as specified
-        $CMAKE_COMMAND
-        (
-            # determine the number of processing units available
-            CORES="$(nproc --all)"
-            # if CORES > 1 compile in parallel where possible
-            ([[ -n "$CORES" ]] && cmake --build . -j"$CORES") || cmake --build .
-        )
-        # run tests, if they built properly
-    )
-    if [[ (-n "$RESPOND_BUILD_TESTS") && (-f "build/tests/respondTests") ]]; then
-        build/tests/respondTests
-    fi
+
+    case $BUILDTYPE in
+        "Debug")
+            PRESET="gcc-debug"
+        ;;
+        "Release")
+            PRESET="gcc-release-cluster"
+            ;;
+    esac
+    cmake --workflow --preset "$PRESET" --fresh
 )
