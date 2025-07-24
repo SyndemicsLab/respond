@@ -4,13 +4,14 @@
 // Created Date: 2025-01-14                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-06-06                                                  //
-// Modified By: Matthew Carroll                                               //
+// Last Modified: 2025-07-24                                                  //
+// Modified By: Andrew Clark                                                  //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <respond/data_ops/writer.hpp>
+#include <respond/utils/logging.hpp>
 
 #include <fstream>
 #include <memory>
@@ -244,5 +245,56 @@ TEST_F(WriterTest, WriteTotalsData) {
     std::string expected = expected_strings.kWriterTestWriteTotalsDataExpected;
     std::string result =
         writer->WriteTotalsData(totals, "", OutputType::kString);
+    ASSERT_EQ(expected, result);
+}
+
+TEST_F(WriterTest, WriteTimedMatrix3dOutOfBoundsMatrixAccess) {
+    TimedMatrix3d utilities;
+    Matrix3d mat3d(1, 1, 1);
+    mat3d.setConstant(0.9);
+    utilities[0] = mat3d;
+
+    ASSERT_THROW(writer->WriteUtilityData(utilities, "", OutputType::kString), std::runtime_error);
+}
+
+TEST_F(WriterTest, WriteDirectoryDoesNotExist) {
+    std::string fake_dir = "FakeDir";
+    std::string expected = "failure\n\nfailure\n\nfailure\n\n"
+                            "failure\n\nfailure";
+
+
+    MockDataLoader data_loader;
+    Matrix3d behavior(9, 16, 1);
+    behavior.setConstant(0.9);
+
+    Matrix3d intervention(81, 4, 1);
+    intervention.setConstant(0.8);
+
+    Matrix3d standard(9, 4, 1);
+    standard.setConstant(0.7);
+
+    // WriteOUDTransitionRates
+    EXPECT_CALL(data_loader, GetOUDTransitionRates())
+        .WillRepeatedly(Return(behavior));
+
+    // WriteInterventionTransitionRates
+    EXPECT_CALL(data_loader, GetInterventionTransitionRates(_))
+        .WillRepeatedly(Return(intervention));
+
+    // WriteInterventionInitRates
+    EXPECT_CALL(data_loader, GetInterventionInitRates())
+        .WillRepeatedly(Return(behavior));
+
+    // WriteOverdoseRates
+    EXPECT_CALL(data_loader, GetOverdoseRates(_))
+        .WillRepeatedly(Return(standard));
+
+    // WriteFatalOverdoseRates
+    EXPECT_CALL(data_loader, GetFatalOverdoseRates(_))
+        .WillRepeatedly(Return(standard));
+    
+    std::string result =
+        writer->WriteInputData(data_loader, fake_dir, OutputType::kFile);
+
     ASSERT_EQ(expected, result);
 }
