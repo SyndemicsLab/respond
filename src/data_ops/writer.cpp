@@ -12,7 +12,6 @@
 
 #include "internals/writer_internals.hpp"
 
-#include <exception>
 #include <filesystem>
 #include <fstream>
 #include <regex>
@@ -238,14 +237,16 @@ std::string WriterImpl::WriteTimedMatrix3d(
                     index[static_cast<int>(Dimension::kIntervention)] = i;
                     index[static_cast<int>(Dimension::kOud)] = b;
                     index[static_cast<int>(Dimension::kDemographicCombo)] = d;
-                    const auto& dims = kv.second.dimensions();
-                    if (index[0] >= dims[0] || index[1] >= dims[1] || index[2] >= dims[2]) {
+                    const auto &dims = kv.second.dimensions();
+                    if (index[0] >= dims[0] || index[1] >= dims[1] ||
+                        index[2] >= dims[2]) {
                         std::stringstream msg;
                         msg << "Out of bounds matrix access at: [" << kv.first
                             << ", " << "(" << i << ", " << b << ", " << d
                             << ")]";
                         respond::utils::LogError(logger_name, msg.str());
-                        throw std::runtime_error("Out of bounds Matrix3d access.");
+                        throw std::runtime_error(
+                            "Out of bounds Matrix3d access.");
                     }
                     double value = kv.second(index[0], index[1], index[2]);
                     if (pivot) {
@@ -536,13 +537,13 @@ std::string WriterImpl::WriteContents(std::stringstream &stream,
                                       const std::string &path,
                                       OutputType output_type) const {
     if (output_type == OutputType::kFile) {
-        try{
+        try {
             std::filesystem::path p = (path.empty()) ? "temp.csv" : path;
             std::filesystem::path dir = p.parent_path();
             if (!dir.empty() && !std::filesystem::exists(dir)) {
-                respond::utils::LogWarning(logger_name,
-                                        "Unable to write contents, directory: " +
-                                            dir.string() + " does not exist...");
+                respond::utils::LogWarning(
+                    logger_name, "Unable to write contents, directory: " +
+                                     dir.string() + " does not exist...");
                 throw std::invalid_argument("Directory does not exist.");
             }
             std::ofstream file(p.string());

@@ -254,14 +254,14 @@ TEST_F(WriterTest, WriteTimedMatrix3dOutOfBoundsMatrixAccess) {
     mat3d.setConstant(0.9);
     utilities[0] = mat3d;
 
-    ASSERT_THROW(writer->WriteUtilityData(utilities, "", OutputType::kString), std::runtime_error);
+    ASSERT_THROW(writer->WriteUtilityData(utilities, "", OutputType::kString),
+                 std::runtime_error);
 }
 
 TEST_F(WriterTest, WriteDirectoryDoesNotExist) {
     std::string fake_dir = "FakeDir";
     std::string expected = "failure\n\nfailure\n\nfailure\n\n"
-                            "failure\n\nfailure";
-
+                           "failure\n\nfailure";
 
     MockDataLoader data_loader;
     Matrix3d behavior(9, 16, 1);
@@ -292,7 +292,7 @@ TEST_F(WriterTest, WriteDirectoryDoesNotExist) {
     // WriteFatalOverdoseRates
     EXPECT_CALL(data_loader, GetFatalOverdoseRates(_))
         .WillRepeatedly(Return(standard));
-    
+
     std::string result =
         writer->WriteInputData(data_loader, fake_dir, OutputType::kFile);
 
