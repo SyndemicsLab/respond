@@ -10,7 +10,7 @@
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <respond/utils/logging.hpp>
+#include <respond/data_ops/writer.hpp>
 
 #include <fstream>
 #include <memory>
