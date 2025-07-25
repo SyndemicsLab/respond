@@ -58,12 +58,12 @@ endif()
 # Building the Library
 # ---------------------------------------------------------------------------------------
 set(RESPOND_SRCS 
-    src/data_ops/cost_loader.cpp
-    src/data_ops/data_formatter.cpp
-    src/data_ops/data_loader.cpp
-    src/data_ops/utility_loader.cpp
-    src/data_ops/writer.cpp
-    src/model/simulation.cpp
+    src/preprocess/cost_loader.cpp
+    src/preprocess/data_formatter.cpp
+    src/preprocess/data_loader.cpp
+    src/preprocess/utility_loader.cpp
+    src/postprocess/writer.cpp
+    src/model/markov.cpp
     src/utils/logging.cpp
 )
 

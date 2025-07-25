@@ -1,30 +1,30 @@
 ////////////////////////////////////////////////////////////////////////////////
 // File: utility_loader_internals.hpp                                         //
 // Project: internals                                                         //
-// Created Date: 2025-03-12                                                   //
+// Created Date: 2025-07-07                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-06-23                                                  //
+// Last Modified: 2025-07-24                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef RESPOND_DATAOPS_UTILITYLOADERINTERNALS_HPP_
-#define RESPOND_DATAOPS_UTILITYLAODERINTERNALS_HPP_
+#ifndef RESPOND_PREPROCESS_UTILITYLOADERINTERNALS_HPP_
+#define RESPOND_PREPROCESS_UTILITYLAODERINTERNALS_HPP_
 
-#include <respond/data_ops/utility_loader.hpp>
+#include <respond/preprocess/utility_loader.hpp>
 
 #include <memory>
 #include <string>
 #include <unordered_map>
 
-#include <respond/data_ops/data_types.hpp>
+#include <respond/preprocess/data_types.hpp>
 
 #include "base_loader_internals.hpp"
 
 namespace respond {
-namespace data_ops {
+namespace preprocess {
 class UtilityLoaderImpl : public virtual UtilityLoader, public BaseLoaderImpl {
 public:
     UtilityLoaderImpl(const std::string &logger_name = "console")
@@ -76,7 +76,7 @@ private:
 
     StringUOMap<Matrix3d> LoadUtility(const std::string &file);
 };
-} // namespace data_ops
+} // namespace preprocess
 } // namespace respond
 
 #endif

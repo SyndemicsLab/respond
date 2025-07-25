@@ -1,28 +1,25 @@
 ////////////////////////////////////////////////////////////////////////////////
-// File: Writer.hpp                                                           //
-// Project: data_ops                                                          //
-// Created Date: 2025-01-14                                                   //
-// Author: Matthew Carroll                                                    //
+// File: writer.hpp                                                           //
+// Project: preprocess // Created Date: 2025-07-07 // Author: Matthew Carroll //
 // -----                                                                      //
-// Last Modified: 2025-05-29                                                  //
+// Last Modified: 2025-07-24                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef RESPOND_DATAOPS_WRITER_HPP_
-#define RESPOND_DATAOPS_WRITER_HPP_
+#ifndef RESPOND_POSTPROCESS_WRITER_HPP_
+#define RESPOND_POSTPROCESS_WRITER_HPP_
 
 #include <filesystem>
 #include <memory>
 #include <string>
 
-#include <respond/data_ops/data_loader.hpp>
-#include <respond/data_ops/data_types.hpp>
-#include <respond/data_ops/matrices.hpp>
+#include <respond/preprocess/data_loader.hpp>
+#include <respond/preprocess/data_types.hpp>
 
 namespace respond {
-namespace data_ops {
+namespace preprocess {
 
 /// @brief Enum declaring the different types of writers available.
 enum class WriterType : int {
@@ -106,7 +103,7 @@ public:
            const std::string &log_name = "console");
 };
 
-} // namespace data_ops
+} // namespace preprocess
 } // namespace respond
 
-#endif // RESPOND_DATAOPS_WRITER_HPP_
+#endif // RESPOND_POSTPROCESS_WRITER_HPP_

@@ -1,10 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 // File: data_loader.cpp                                                      //
-// Project: data_ops                                                          //
-// Created Date: 2025-01-14                                                   //
-// Author: Matthew Carroll                                                    //
+// Project: preprocess // Created Date: 2025-07-07 // Author: Matthew Carroll //
 // -----                                                                      //
-// Last Modified: 2025-06-26                                                  //
+// Last Modified: 2025-07-24                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -24,11 +22,11 @@
 #include <Eigen/Eigen>
 #include <datamanagement/DataManagement.hpp>
 
-#include <respond/data_ops/data_types.hpp>
+#include <respond/preprocess/data_types.hpp>
 #include <respond/utils/logging.hpp>
 
 namespace respond {
-namespace data_ops {
+namespace preprocess {
 Matrix3d DataLoaderImpl::LoadInitialSample(const std::string &file) {
     auto config = GetConfig();
     if (config == nullptr) {
@@ -823,5 +821,5 @@ Matrix3d DataLoaderImpl::DoubleToMatrix3d(double value, int first_dimension,
 std::unique_ptr<DataLoader> DataLoader::Create(const std::string &log_name) {
     return std::make_unique<DataLoaderImpl>(log_name);
 }
-} // namespace data_ops
+} // namespace preprocess
 } // namespace respond

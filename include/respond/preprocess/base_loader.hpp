@@ -1,21 +1,19 @@
 ////////////////////////////////////////////////////////////////////////////////
 // File: base_loader.hpp                                                      //
-// Project: data_ops                                                          //
-// Created Date: 2025-06-23                                                   //
-// Author: Matthew Carroll                                                    //
+// Project: preprocess // Created Date: 2025-07-07 // Author: Matthew Carroll //
 // -----                                                                      //
-// Last Modified: 2025-06-23                                                  //
+// Last Modified: 2025-07-24                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
 ////////////////////////////////////////////////////////////////////////////////
-#ifndef RESPOND_DATAOPS_BASELOADER_HPP_
-#define RESPOND_DATAOPS_BASELOADER_HPP_
+#ifndef RESPOND_PREPROCESS_BASELOADER_HPP_
+#define RESPOND_PREPROCESS_BASELOADER_HPP_
 
 #include <datamanagement/DataManagement.hpp>
 
 namespace respond {
-namespace data_ops {
+namespace preprocess {
 class BaseLoader {
 public:
     virtual Data::IDataTablePtr LoadDataTable(const std::string &path,
@@ -23,7 +21,7 @@ public:
     virtual void SetConfig(const std::string &config_file) = 0;
     virtual Data::IConfigablePtr GetConfig() const = 0;
 };
-} // namespace data_ops
+} // namespace preprocess
 } // namespace respond
 
-#endif // RESPOND_DATAOPS_BASELOADER_HPP_
+#endif // RESPOND_PREPROCESS_BASELOADER_HPP_

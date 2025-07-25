@@ -1,10 +1,10 @@
 ////////////////////////////////////////////////////////////////////////////////
 // File: cost_loader_mock.hpp                                                 //
 // Project: mocks                                                             //
-// Created Date: 2025-01-14                                                   //
+// Created Date: 2025-07-07                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-06-24                                                  //
+// Last Modified: 2025-07-24                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -13,16 +13,16 @@
 #ifndef RESPOND_TESTS_COSTLOADERMOCK_HPP_
 #define RESPOND_TESTS_COSTLOADERMOCK_HPP_
 
-#include <respond/data_ops/cost_loader.hpp>
+#include <respond/preprocess/cost_loader.hpp>
 
 #include <string>
 #include <unordered_map>
 
 #include <gmock/gmock.h>
 
-#include <respond/data_ops/matrices.hpp>
+#include <respond/preprocess/matrices.hpp>
 
-using namespace respond::data_ops;
+using namespace respond::preprocess;
 
 class MockCostLoader : public CostLoader {
 public:

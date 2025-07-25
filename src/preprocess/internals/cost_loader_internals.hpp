@@ -1,19 +1,19 @@
 ////////////////////////////////////////////////////////////////////////////////
 // File: cost_loader_internals.hpp                                            //
 // Project: internals                                                         //
-// Created Date: 2025-03-07                                                   //
+// Created Date: 2025-07-07                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-06-23                                                  //
+// Last Modified: 2025-07-24                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef RESPOND_DATAOPS_COSTLOADERINTERNALS_HPP_
-#define RESPOND_DATAOPS_COSTLOADERINTERNALS_HPP_
+#ifndef RESPOND_PREPROCESS_COSTLOADERINTERNALS_HPP_
+#define RESPOND_PREPROCESS_COSTLOADERINTERNALS_HPP_
 
-#include <respond/data_ops/cost_loader.hpp>
+#include <respond/preprocess/cost_loader.hpp>
 
 #include <memory>
 #include <string>
@@ -21,13 +21,13 @@
 
 #include <datamanagement/DataManagement.hpp>
 
-#include <respond/data_ops/matrices.hpp>
+#include <respond/preprocess/matrices.hpp>
 #include <respond/utils/logging.hpp>
 
 #include "base_loader_internals.hpp"
 
 namespace respond {
-namespace data_ops {
+namespace preprocess {
 class CostLoaderImpl : public virtual CostLoader, public BaseLoaderImpl {
 public:
     CostLoaderImpl(const std::string &logger_name = "console")
@@ -110,7 +110,7 @@ private:
     void LoadCostViaPerspective(StringUOMap<Matrix3d> &cost,
                                 StringUOMap<StringUOMap<double>> &cost_map);
 };
-} // namespace data_ops
+} // namespace preprocess
 } // namespace respond
 
-#endif // RESPOND_DATAOPS_COSTLOADERINTERNALS_HPP_
+#endif // RESPOND_PREPROCESS_COSTLOADERINTERNALS_HPP_

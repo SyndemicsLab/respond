@@ -1,10 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 // File: utility_loader.cpp                                                   //
-// Project: data_ops                                                          //
-// Created Date: 2025-01-14                                                   //
-// Author: Matthew Carroll                                                    //
+// Project: preprocess // Created Date: 2025-07-07 // Author: Matthew Carroll //
 // -----                                                                      //
-// Last Modified: 2025-06-26                                                  //
+// Last Modified: 2025-07-24                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -20,11 +18,11 @@
 #include <Eigen/Eigen>
 #include <datamanagement/DataManagement.hpp>
 
-#include <respond/data_ops/data_types.hpp>
-#include <respond/data_ops/matrices.hpp>
+#include <respond/preprocess/data_types.hpp>
+#include <respond/preprocess/matrices.hpp>
 
 namespace respond {
-namespace data_ops {
+namespace preprocess {
 StringUOMap<Matrix3d>
 UtilityLoaderImpl::LoadBackgroundUtility(const std::string &file) {
     this->background_utility = this->LoadUtility(file);
@@ -88,5 +86,5 @@ std::unique_ptr<UtilityLoader>
 UtilityLoader::Create(const std::string &log_name) {
     return std::make_unique<UtilityLoaderImpl>(log_name);
 }
-} // namespace data_ops
+} // namespace preprocess
 } // namespace respond

@@ -1,11 +1,9 @@
 ////////////////////////////////////////////////////////////////////////////////
-// File: Writer.cpp                                                           //
-// Project: data_ops                                                          //
-// Created Date: 2025-01-17                                                   //
-// Author: Matthew Carroll                                                    //
+// File: writer.cpp                                                           //
+// Project: respond                                                           //
 // -----                                                                      //
-// Last Modified: 2025-07-24                                                  //
-// Modified By: Andrew Clark                                                  //
+// Last Modified: 2025-08-05                                                  //
+// Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
 ////////////////////////////////////////////////////////////////////////////////
@@ -19,12 +17,11 @@
 #include <string>
 #include <vector>
 
-#include <respond/data_ops/data_types.hpp>
-#include <respond/data_ops/matrices.hpp>
+#include <respond/preprocess/data_types.hpp>
 #include <respond/utils/logging.hpp>
 
 namespace respond {
-namespace data_ops {
+namespace preprocess {
 std::string WriterImpl::WriteInputData(const DataLoader &data_loader,
                                        const std::string &directory,
                                        const OutputType output_type) const {
@@ -586,5 +583,5 @@ std::unique_ptr<Writer> Writer::Create(const std::string &directory,
                                        const std::string &log_name) {
     return std::make_unique<WriterImpl>(directory, log_name);
 }
-} // namespace data_ops
+} // namespace preprocess
 } // namespace respond

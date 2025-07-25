@@ -1,10 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 // File: cost_loader.cpp                                                      //
-// Project: data_ops                                                          //
-// Created Date: 2025-01-14                                                   //
-// Author: Matthew Carroll                                                    //
+// Project: preprocess // Created Date: 2025-07-07 // Author: Matthew Carroll //
 // -----                                                                      //
-// Last Modified: 2025-06-26                                                  //
+// Last Modified: 2025-07-24                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -15,12 +13,12 @@
 #include <string>
 #include <unordered_map>
 
-#include <respond/data_ops/data_types.hpp>
-#include <respond/data_ops/matrices.hpp>
+#include <respond/preprocess/data_types.hpp>
+#include <respond/preprocess/matrices.hpp>
 #include <respond/utils/logging.hpp>
 
 namespace respond {
-namespace data_ops {
+namespace preprocess {
 
 StringUOMap<Matrix3d>
 CostLoaderImpl::LoadHealthcareUtilizationCost(const std::string &file) {
@@ -254,5 +252,5 @@ std::unique_ptr<CostLoader> CostLoader::Create(const std::string &log_name) {
     return std::make_unique<CostLoaderImpl>(log_name);
 }
 
-} // namespace data_ops
+} // namespace preprocess
 } // namespace respond

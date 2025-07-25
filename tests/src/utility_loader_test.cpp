@@ -1,16 +1,16 @@
 ////////////////////////////////////////////////////////////////////////////////
 // File: utility_loader_test.cpp                                              //
 // Project: src                                                               //
-// Created Date: 2025-01-14                                                   //
+// Created Date: 2025-07-07                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-06-26                                                  //
+// Last Modified: 2025-07-24                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <respond/data_ops/utility_loader.hpp>
+#include <respond/preprocess/utility_loader.hpp>
 
 #include <filesystem>
 #include <fstream>
@@ -19,9 +19,9 @@
 
 #include <gtest/gtest.h>
 
-#include <respond/data_ops/matrices.hpp>
+#include <respond/preprocess/matrices.hpp>
 
-using namespace respond::data_ops;
+using namespace respond::preprocess;
 
 class UtilityLoaderTest : public ::testing::Test {
 protected:

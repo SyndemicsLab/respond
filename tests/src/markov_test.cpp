@@ -1,16 +1,16 @@
 ////////////////////////////////////////////////////////////////////////////////
 // File: simulation_test.cpp                                                  //
 // Project: src                                                               //
-// Created Date: 2025-01-14                                                   //
+// Created Date: 2025-07-07                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-06-06                                                  //
+// Last Modified: 2025-07-24                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <respond/model/simulation.hpp>
+#include <respond/model/markov.hpp>
 
 #include <fstream>
 #include <gtest/gtest.h>
@@ -18,10 +18,10 @@
 #include <memory>
 
 #include "data_loader_mock.hpp"
-#include <respond/data_ops/matrices.hpp>
+#include <respond/preprocess/matrices.hpp>
 
 using namespace respond::model;
-using namespace respond::data_ops;
+using namespace respond::preprocess;
 
 using ::testing::_;
 using ::testing::NiceMock;

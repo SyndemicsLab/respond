@@ -1,10 +1,10 @@
 ////////////////////////////////////////////////////////////////////////////////
 // File: exec.cpp                                                             //
 // Project: executable                                                        //
-// Created Date: 2025-03-17                                                   //
+// Created Date: 2025-06-06                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-06-23                                                  //
+// Last Modified: 2025-07-24                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -46,7 +46,7 @@ bool ArgChecks(int argc, char **argv, std::string &root, int &start, int &end) {
     return true;
 }
 
-void LoadDataLoader(respond::data_ops::DataLoader &data_loader,
+void LoadDataLoader(respond::preprocess::DataLoader &data_loader,
                     const std::filesystem::path &directory) {
     data_loader.SetConfig((directory / "sim.conf").string());
     data_loader.LoadInitialSample((directory / "init_cohort.csv").string());
@@ -73,7 +73,7 @@ void LoadDataLoader(respond::data_ops::DataLoader &data_loader,
         (directory / "background_mortality.csv").string());
 }
 
-void LoadCostLoader(respond::data_ops::CostLoader &cost_loader,
+void LoadCostLoader(respond::preprocess::CostLoader &cost_loader,
                     const std::filesystem::path &directory) {
     cost_loader.SetConfig((directory / "sim.conf").string());
     cost_loader.LoadHealthcareUtilizationCost(
@@ -85,7 +85,7 @@ void LoadCostLoader(respond::data_ops::CostLoader &cost_loader,
         (directory / "treatment_utilization_cost.csv").string());
 }
 
-void LoadUtilityLoader(respond::data_ops::UtilityLoader &utility_loader,
+void LoadUtilityLoader(respond::preprocess::UtilityLoader &utility_loader,
                        const std::filesystem::path &directory) {
     utility_loader.SetConfig((directory / "sim.conf").string());
     utility_loader.LoadBackgroundUtility(
@@ -96,26 +96,27 @@ void LoadUtilityLoader(respond::data_ops::UtilityLoader &utility_loader,
 }
 
 void DoPostSimulationCalculations(
-    const respond::data_ops::DataLoader &data_loader,
-    respond::data_ops::History history, const std::string &input_set,
+    const respond::preprocess::DataLoader &data_loader,
+    respond::preprocess::History history, const std::string &input_set,
     const std::string &output_directory, const std::string &logger_name) {
     if (!std::get<bool>(
             data_loader.GetConfig()->get("cost.cost_analysis", false))) {
         return;
     }
-    auto cost_loader = respond::data_ops::CostLoader::Create(logger_name);
+    auto cost_loader = respond::preprocess::CostLoader::Create(logger_name);
     respond::utils::LogInfo(logger_name, "CostLoader Created");
 
     LoadCostLoader(*cost_loader, input_set);
 
-    auto utility_loader = respond::data_ops::UtilityLoader::Create(logger_name);
+    auto utility_loader =
+        respond::preprocess::UtilityLoader::Create(logger_name);
     respond::utils::LogInfo(logger_name, "UtilityLoader Created");
 
     LoadUtilityLoader(*utility_loader, input_set);
 
-    respond::data_ops::CostList base_costs;
-    respond::data_ops::TimedMatrix3d base_utilities;
-    respond::data_ops::Totals totals;
+    respond::preprocess::CostList base_costs;
+    respond::preprocess::TimedMatrix3d base_utilities;
+    respond::preprocess::Totals totals;
 
     if (std::get<bool>(
             data_loader.GetConfig()->get("cost.cost_analysis", false))) {
@@ -129,13 +130,13 @@ void DoPostSimulationCalculations(
             data_loader.GetConfig()->getStringVector("cost.cost_perspectives"));
 
         base_utilities = respond::model::CalculateUtilities(
-            history, *utility_loader, respond::data_ops::UtilityType::kMin);
+            history, *utility_loader, respond::preprocess::UtilityType::kMin);
 
         double discount_rate = std::get<double>(
             data_loader.GetConfig()->get("cost.discount_rate", 0.0));
 
         if (discount_rate != 0.0) {
-            respond::data_ops::CostList disc_costs =
+            respond::preprocess::CostList disc_costs =
                 respond::model::CalculateCosts(
                     history, *cost_loader,
                     data_loader.GetConfig()->getStringVector(
@@ -144,12 +145,13 @@ void DoPostSimulationCalculations(
 
             total_disc_costs = respond::model::CalculateTotalCosts(disc_costs);
 
-            respond::data_ops::TimedMatrix3d disc_utilities =
+            respond::preprocess::TimedMatrix3d disc_utilities =
                 respond::model::CalculateUtilities(
                     history, *utility_loader,
-                    respond::data_ops::UtilityType::kMin, true, discount_rate);
+                    respond::preprocess::UtilityType::kMin, true,
+                    discount_rate);
             total_disc_utility =
-                respond::data_ops::TimedMatrix3dSummedOverDimensions(
+                respond::preprocess::TimedMatrix3dSummedOverDimensions(
                     disc_utilities);
 
             disc_life_years = respond::model::CalculateLifeYears(history, true,
@@ -159,14 +161,14 @@ void DoPostSimulationCalculations(
         totals.base_costs = respond::model::CalculateTotalCosts(base_costs);
         totals.base_life_years = respond::model::CalculateLifeYears(history);
         totals.base_utility =
-            respond::data_ops::TimedMatrix3dSummedOverDimensions(
+            respond::preprocess::TimedMatrix3dSummedOverDimensions(
                 base_utilities);
         totals.disc_costs = total_disc_costs;
         totals.disc_life_years = disc_life_years;
         totals.disc_utility = total_disc_utility;
     }
 
-    auto formatter = respond::data_ops::DataFormatter::Create();
+    auto formatter = respond::preprocess::DataFormatter::Create();
 
     std::vector<int> timesteps = data_loader.GetConfig()->getIntVector(
         "output.general_stats_output_timesteps");
@@ -174,14 +176,14 @@ void DoPostSimulationCalculations(
                                 std::get<bool>(data_loader.GetConfig()->get(
                                     "cost.cost_analysis", false)));
 
-    auto writer = respond::data_ops::Writer::Create(input_set, logger_name);
+    auto writer = respond::preprocess::Writer::Create(input_set, logger_name);
 
     writer->WriteCostData(base_costs, output_directory,
-                          respond::data_ops::OutputType::kFile);
+                          respond::preprocess::OutputType::kFile);
     writer->WriteUtilityData(base_utilities, output_directory,
-                             respond::data_ops::OutputType::kFile);
+                             respond::preprocess::OutputType::kFile);
     writer->WriteTotalsData(totals, output_directory,
-                            respond::data_ops::OutputType::kFile);
+                            respond::preprocess::OutputType::kFile);
 }
 
 void execute(int argc, char **argv) {
@@ -212,30 +214,31 @@ void execute(int argc, char **argv) {
             respond::utils::LogInfo(logger_name, "Logger Created");
 
             auto data_loader =
-                respond::data_ops::DataLoader::Create(logger_name);
+                respond::preprocess::DataLoader::Create(logger_name);
             respond::utils::LogInfo(logger_name, "DataLoader Created");
 
             LoadDataLoader(*data_loader, input_set);
 
             auto respond = respond::model::Respond::Create(logger_name);
             respond->Run(*data_loader);
-            respond::data_ops::History history = respond->GetHistory();
+            respond::preprocess::History history = respond->GetHistory();
 
             DoPostSimulationCalculations(
                 *data_loader, history, input_set.string(),
                 output_directory.string(), logger_name);
 
-            auto writer = respond::data_ops::Writer::Create(input_set.string(),
-                                                            logger_name);
+            auto writer = respond::preprocess::Writer::Create(
+                input_set.string(), logger_name);
 
             if (std::get<bool>(data_loader->GetConfig()->get(
                     "output.write_calibrated_inputs", false))) {
                 writer->WriteInputData(*data_loader, output_directory,
-                                       respond::data_ops::OutputType::kFile);
+                                       respond::preprocess::OutputType::kFile);
             } else {
 
-                writer->WriteHistoryData(history, output_directory,
-                                         respond::data_ops::OutputType::kFile);
+                writer->WriteHistoryData(
+                    history, output_directory,
+                    respond::preprocess::OutputType::kFile);
             }
 
             std::cout << "Output " << std::to_string(i) << " Complete"

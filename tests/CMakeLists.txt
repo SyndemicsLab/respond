@@ -12,8 +12,8 @@ add_executable(${PROJECT_NAME}
   src/data_loader_test.cpp
   src/logging_test.cpp
   src/matrices_test.cpp
-  src/post_sim_test.cpp
-  src/simulation_test.cpp
+  src/cost_effectiveness_test.cpp
+  src/markov_test.cpp
   src/utility_loader_test.cpp
   src/writer_test.cpp
 )

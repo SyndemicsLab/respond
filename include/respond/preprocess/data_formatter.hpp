@@ -1,24 +1,22 @@
 ////////////////////////////////////////////////////////////////////////////////
 // File: data_formatter.hpp                                                   //
-// Project: data_ops                                                          //
-// Created Date: 2025-03-12                                                   //
-// Author: Matthew Carroll                                                    //
+// Project: preprocess // Created Date: 2025-06-02 // Author: Matthew Carroll //
 // -----                                                                      //
-// Last Modified: 2025-05-27                                                  //
+// Last Modified: 2025-07-24                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
 ////////////////////////////////////////////////////////////////////////////////
-#ifndef RESPOND_DATAOPS_DATAFORMATTER_HPP_
-#define RESPOND_DATAOPS_DATAFORMATTER_HPP_
+#ifndef RESPOND_PREPROCESS_DATAFORMATTER_HPP_
+#define RESPOND_PREPROCESS_DATAFORMATTER_HPP_
 
 #include <memory>
 #include <vector>
 
-#include <respond/data_ops/data_types.hpp>
+#include <respond/preprocess/data_types.hpp>
 
 namespace respond {
-namespace data_ops {
+namespace preprocess {
 /// @brief Class to handle the data formatting needs for RESPOND.
 class DataFormatter {
 public:
@@ -40,7 +38,7 @@ public:
     /// @return An instance of DataFormatter.
     static std::unique_ptr<DataFormatter> Create();
 };
-} // namespace data_ops
+} // namespace preprocess
 } // namespace respond
 
-#endif // RESPOND_DATAOPS_DATAFORMATTER_HPP_
+#endif // RESPOND_PREPROCESS_DATAFORMATTER_HPP_

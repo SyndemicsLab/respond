@@ -1,18 +1,18 @@
 ////////////////////////////////////////////////////////////////////////////////
 // File: data_loader_internals.hpp                                            //
 // Project: internals                                                         //
-// Created Date: 2025-03-07                                                   //
+// Created Date: 2025-07-07                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-06-24                                                  //
+// Last Modified: 2025-07-24                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
 ////////////////////////////////////////////////////////////////////////////////
-#ifndef RESPOND_DATAOPS_DATALOADERINTERNALS_HPP_
-#define RESPOND_DATAOPS_DATALOADERINTERNALS_HPP_
+#ifndef RESPOND_PREPROCESS_DATALOADERINTERNALS_HPP_
+#define RESPOND_PREPROCESS_DATALOADERINTERNALS_HPP_
 
-#include <respond/data_ops/data_loader.hpp>
+#include <respond/preprocess/data_loader.hpp>
 
 #include <map>
 #include <memory>
@@ -21,13 +21,13 @@
 
 #include <datamanagement/DataManagement.hpp>
 
-#include <respond/data_ops/data_types.hpp>
-#include <respond/data_ops/matrices.hpp>
+#include <respond/preprocess/data_types.hpp>
+#include <respond/preprocess/matrices.hpp>
 
 #include "base_loader_internals.hpp"
 
 namespace respond {
-namespace data_ops {
+namespace preprocess {
 class DataLoaderImpl : public virtual DataLoader, public BaseLoaderImpl {
 public:
     /// @brief An alternative constructor for DataLoader for loading data
@@ -197,6 +197,6 @@ private:
     Matrix3d mortality_rates;
 };
 
-} // namespace data_ops
+} // namespace preprocess
 } // namespace respond
-#endif // RESPOND_DATAOPS_DATALOADERINTERNALS_HPP_
+#endif // RESPOND_PREPROCESS_DATALOADERINTERNALS_HPP_

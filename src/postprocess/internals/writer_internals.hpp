@@ -1,18 +1,18 @@
 ////////////////////////////////////////////////////////////////////////////////
 // File: writer_internals.hpp                                                 //
 // Project: internals                                                         //
-// Created Date: 2025-03-13                                                   //
+// Created Date: 2025-06-06                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-06-05                                                  //
+// Last Modified: 2025-07-24                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
 ////////////////////////////////////////////////////////////////////////////////
-#ifndef RESPOND_DATAOPS_WRITERINTERNALS_HPP_
-#define RESPOND_DATAOPS_WRITERINTERNALS_HPP_
+#ifndef RESPOND_POSTPROCESS_WRITERINTERNALS_HPP_
+#define RESPOND_POSTROCESS_WRITERINTERNALS_HPP_
 
-#include <respond/data_ops/writer.hpp>
+#include <respond/postprocess/writer.hpp>
 
 #include <algorithm>
 #include <filesystem>
@@ -23,13 +23,11 @@
 
 #include <datamanagement/DataManagement.hpp>
 
-#include <respond/data_ops/data_types.hpp>
+#include <respond/preprocess/data_types.hpp>
 #include <respond/utils/logging.hpp>
 
-#include "data_loader_internals.hpp"
-
 namespace respond {
-namespace data_ops {
+namespace preprocess {
 class WriterImpl : public virtual Writer {
 public:
     WriterImpl(const std::string &directory = "",
@@ -163,7 +161,7 @@ private:
                                         const std::string &directory,
                                         const OutputType output_type) const;
 };
-} // namespace data_ops
+} // namespace preprocess
 } // namespace respond
 
-#endif // RESPOND_DATAOPS_WRITERINTERNALS_HPP_
+#endif // RESPOND_POSTPROCESS_WRITERINTERNALS_HPP_

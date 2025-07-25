@@ -1,28 +1,28 @@
 ////////////////////////////////////////////////////////////////////////////////
 // File: data_formatter_internals.hpp                                         //
 // Project: internals                                                         //
-// Created Date: 2025-01-14                                                   //
+// Created Date: 2025-07-07                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-06-05                                                  //
+// Last Modified: 2025-07-24                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef RESPOND_DATAOPS_DATAFORMATTERINTERNALS_HPP_
-#define RESPOND_DATAOPS_DATAFORMATTERINTERNALS_HPP_
+#ifndef RESPOND_PREPROCESS_DATAFORMATTERINTERNALS_HPP_
+#define RESPOND_PREPROCESS_DATAFORMATTERINTERNALS_HPP_
 
-#include <respond/data_ops/data_formatter.hpp>
+#include <respond/preprocess/data_formatter.hpp>
 
 #include <memory>
 #include <vector>
 
-#include <respond/data_ops/data_types.hpp>
-#include <respond/data_ops/matrices.hpp>
+#include <respond/preprocess/data_types.hpp>
+#include <respond/preprocess/matrices.hpp>
 
 namespace respond {
-namespace data_ops {
+namespace preprocess {
 class DataFormatterImpl : public virtual DataFormatter {
 public:
     DataFormatterImpl() {};
@@ -38,7 +38,7 @@ private:
     TimedMatrix3d TrimAndAddTimedMatrix3d(const std::vector<int> &timesteps,
                                           const TimedMatrix3d &matrices);
 };
-} // namespace data_ops
+} // namespace preprocess
 } // namespace respond
 
-#endif // RESPOND_DATAOPS_DATAFORMATTERINTERNALS_HPP_
+#endif // RESPOND_PREPROCESS_DATAFORMATTERINTERNALS_HPP_
