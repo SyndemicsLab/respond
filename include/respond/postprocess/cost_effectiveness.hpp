@@ -4,7 +4,7 @@
 // Created Date: 2025-06-02                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-07-25                                                  //
+// Last Modified: 2025-07-28                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -15,21 +15,11 @@
 
 #include <Eigen/Dense>
 
-#include <respond/utils/data_types.hpp>
+#include <respond/utils/helpers.hpp>
+#include <respond/utils/types.hpp>
 
 namespace respond {
 namespace postprocess {
-
-template <class... Args>
-inline constexpr bool CheckVectorLengths(Args const &...args) {
-    if constexpr (sizeof...(Args) == 0) {
-        return true;
-    } else {
-        return [](auto const &first, auto const &...rest) {
-            return ((first.size() == rest.size()) && ...);
-        }(args...);
-    }
-}
 
 /// @brief A function to calculate the discoutn for the given data.
 /// @param data Data to be discounted.
@@ -77,6 +67,40 @@ inline utils::CostStamp StampCosts(const Eigen::VectorXd &state,
     return cost_stamp;
 }
 
+inline Eigen::VectorXd StampUtilities(const Eigen::VectorXd &state,
+                                      const Eigen::VectorXd &utility) {
+    if (state.size() != utility.size()) {
+        // log error: state and utility size mismatch
+        return Eigen::VectorXd::Ones(state.size());
+    }
+    return state.cwiseProduct(utility);
+}
+
+inline Eigen::VectorXd
+StampUtilitiesOverTime(const utils::HistoryOverTime &history,
+                       const Eigen::VectorXd &utility,
+                       utils::UtilityType util_type, bool discount = false,
+                       double discount_rate = 0.0) {
+    Eigen::VectorXd utilities = Eigen::VectorXd::Ones(utility.size());
+    for (const auto &kv : history) {
+        auto stamp = StampUtilities(kv.second.state, utility);
+        if (discount) {
+            stamp = Discount(stamp, discount_rate, kv.first);
+        }
+        switch (util_type) {
+        case utils::UtilityType::kMin:
+            utilities = utilities.cwiseMin(stamp);
+            break;
+        case utils::UtilityType::kMult:
+            utilities = utilities.cwiseProduct(stamp);
+            break;
+        default:
+            break;
+        }
+    }
+    return utilities;
+}
+
 inline utils::CostsOverTime StampCostsOverTime(
     const utils::HistoryOverTime &history_over_time,
     const Eigen::VectorXd &healthcare_costs, const Eigen::VectorXd &aod_costs,
@@ -105,8 +129,8 @@ CalculatePerspectives(const utils::HistoryOverTime &history_over_time,
                       const std::vector<Eigen::VectorXd> &pharma_costs,
                       const std::vector<Eigen::VectorXd> &treatment_costs,
                       bool discount = false, double discount_rate = 0.0) {
-    CheckVectorLengths(perspectives, healthcare_costs, aod_costs, fod_costs,
-                       pharma_costs, treatment_costs);
+    utils::CheckVectorLengths(perspectives, healthcare_costs, aod_costs,
+                              fod_costs, pharma_costs, treatment_costs);
     utils::CostPerspectives cost_perspectives;
     for (int i = 0; i < perspectives.size(); ++i) {
         cost_perspectives[perspectives[i]] = StampCostsOverTime(
@@ -116,94 +140,50 @@ CalculatePerspectives(const utils::HistoryOverTime &history_over_time,
     return cost_perspectives;
 }
 
-/// @brief Calculate the utilities for the given history and utility data.
-/// @param history History to calculate utilities over.
-/// @param utility_loader UtilityLoader containing the utility data.
-/// @param util_type Type of utility calculation to perform.
-/// @param discount Flag to indicate whether to apply discounting.
-/// @param discount_rate Discount rate to apply if discounting is enabled.
-/// @return The calculated utilities as a TimedMatrix3d object.
-inline preprocess::TimedMatrix3d
-CalculateUtilities(const preprocess::History &history,
-                   const preprocess::UtilityLoader &utility_loader,
-                   preprocess::UtilityType util_type, bool discount = false,
-                   double discount_rate = 0.0) {
-    std::vector<preprocess::Matrix3d> utilityMatrices = {
-        utility_loader.GetBackgroundUtility("utility"),
-        utility_loader.GetOUDUtility("utility"),
-        utility_loader.GetSettingUtility("utility")};
-
-    preprocess::Matrix3d util;
-    switch (util_type) {
-    case preprocess::UtilityType::kMin:
-        util = preprocess::Matrix3dVectorMinimum(utilityMatrices);
-        break;
-    case preprocess::UtilityType::kMult:
-        util = preprocess::Matrix3dVectorMultiplied(utilityMatrices);
-        break;
-    default:
-        break;
-    }
-
-    preprocess::TimedMatrix3d utilities =
-        preprocess::MultiplyTimedMatrix3dByMatrix(history.state_history, util);
-
-    if (!discount) {
-        return utilities;
-    }
-
-    for (auto kv : utilities) {
-        kv.second = CalculateDiscount(kv.second, discount_rate, kv.first);
-    }
-    return utilities;
-}
-
 /// @brief Calculate the life years from the history data.
 /// @param history History object containing the state history.
 /// @param provideDiscount Flag to indicate whether to apply discounting.
 /// @param discountRate Discount rate to apply if discounting is enabled.
 /// @return The total life years calculated from the state history.
-inline double CalculateLifeYears(const preprocess::History &history,
-                                 bool provideDiscount = false,
-                                 double discountRate = 0.0) {
-    if (history.state_history.size() <= 0) {
+inline double CalculateLifeYears(const utils::HistoryOverTime &history,
+                                 bool discount = false,
+                                 double discount_rate = 0.0) {
+    if (history.empty()) {
         // log no state vector
         return 0.0;
     }
 
-    preprocess::Matrix3d running_total(
-        history.state_history.begin()->second.dimensions());
-    running_total = running_total.setZero();
-
-    for (int t = 0; t < history.state_history.size(); ++t) {
-        running_total +=
-            ((provideDiscount) ? CalculateDiscount(history.state_history.at(t),
-                                                   discountRate, t)
-                               : history.state_history.at(t));
+    if (history.size() != 52) {
+        // warn that history does not have 52 weeks
+        return 0.0;
     }
-    Eigen::Tensor<double, 0> result = running_total.sum();
+
+    auto running_total =
+        Eigen::VectorXd::Zero(history.begin()->second.state.size());
+
+    for (int t = 0; t < history.size(); ++t) {
+        auto state = history.at(t).state;
+        running_total +=
+            ((discount) ? Discount(state, discount_rate, t) : state);
+    }
+    auto result = running_total.sum();
 
     // dividing by 52 to switch from life weeks to life years
-    return result(0) / 52.0;
+    return result / 52.0;
 }
 
 /// @brief Calculate the total costs from a list of costs.
 /// @param cost_list List of costs to calculate total costs from.
 /// @return A vector containing the total costs for each cost entry.
 inline std::vector<double>
-CalculateTotalCosts(const preprocess::CostList &cost_list) {
+CalculateTotalCosts(const utils::CostsOverTime &costs) {
     std::vector<double> result;
-    for (preprocess::Cost cost : cost_list) {
-        double totalCost =
-            preprocess::TimedMatrix3dSummedOverDimensions(
-                cost.healthcare_cost) +
-            preprocess::TimedMatrix3dSummedOverDimensions(
-                cost.fatal_overdose_cost) +
-            preprocess::TimedMatrix3dSummedOverDimensions(
-                cost.non_fatal_overdose_cost) +
-            preprocess::TimedMatrix3dSummedOverDimensions(cost.pharma_cost) +
-            preprocess::TimedMatrix3dSummedOverDimensions(cost.treatment_cost);
-        result.push_back(totalCost);
+    for (const auto &cost : costs) {
+        result.push_back(cost.second.healthcare.sum() +
+                         cost.second.non_fatal_overdoses.sum() +
+                         cost.second.fatal_overdoses.sum() +
+                         cost.second.pharmaceuticals.sum() +
+                         cost.second.treatments.sum());
     }
     return result;
 }

@@ -1,8 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
-// File: data_types.hpp                                                       //
+// File: types.hpp                                                            //
 // Project: preprocess // Created Date: 2025-07-07 // Author: Matthew Carroll //
 // -----                                                                      //
-// Last Modified: 2025-07-25                                                  //
+// Last Modified: 2025-07-28                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -13,6 +13,7 @@
 
 #include <map>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 #include <Eigen/Dense>

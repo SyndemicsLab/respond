@@ -2,7 +2,7 @@
 // File: utility_loader.hpp                                                   //
 // Project: preprocess // Created Date: 2025-07-07 // Author: Matthew Carroll //
 // -----                                                                      //
-// Last Modified: 2025-07-24                                                  //
+// Last Modified: 2025-07-28                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -15,7 +15,7 @@
 #include <string>
 #include <unordered_map>
 
-#include <respond/preprocess/data_types.hpp>
+#include <respond/utils/types.hpp>
 
 #include <respond/preprocess/base_loader.hpp>
 

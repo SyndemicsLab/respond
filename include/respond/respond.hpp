@@ -1,10 +1,10 @@
 ////////////////////////////////////////////////////////////////////////////////
 // File: respond.hpp                                                          //
 // Project: respond                                                           //
-// Created Date: 2025-06-06                                                   //
+// Created Date: 2025-06-02                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-07-25                                                  //
+// Last Modified: 2025-07-28                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -23,9 +23,9 @@
 #include "preprocess/cost_loader.hpp"
 #include "preprocess/data_formatter.hpp"
 #include "preprocess/data_loader.hpp"
-#include "preprocess/data_types.hpp"
 #include "preprocess/utility_loader.hpp"
 #include "utils/logging.hpp"
+#include "utils/types.hpp"
 
 namespace respond {
 Eigen::VectorXd Migration(Eigen::VectorXd &state,
