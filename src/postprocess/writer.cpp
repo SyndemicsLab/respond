@@ -17,8 +17,8 @@
 #include <string>
 #include <vector>
 
-#include <respond/preprocess/types.hpp>
 #include <respond/utils/logging.hpp>
+#include <respond/utils/types.hpp>
 
 namespace respond {
 namespace preprocess {

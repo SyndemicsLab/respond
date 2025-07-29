@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // File: data_loader_internals.hpp                                            //
-// Project: internals                                                         //
-// Created Date: 2025-06-02                                                   //
+// Project: respond                                                           //
+// Created Date: 2025-07-07                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
 // Last Modified: 2025-07-28                                                  //
@@ -21,8 +21,7 @@
 
 #include <datamanagement/DataManagement.hpp>
 
-#include <respond/preprocess/matrices.hpp>
-#include <respond/preprocess/types.hpp>
+#include <respond/utils/types.hpp>
 
 #include "base_loader_internals.hpp"
 

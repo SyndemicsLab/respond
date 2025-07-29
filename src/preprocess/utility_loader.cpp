@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // File: utility_loader.cpp                                                   //
-// Project: preprocess // Created Date: 2025-07-07 // Author: Matthew Carroll //
+// Project: respond                                                           //
 // -----                                                                      //
 // Last Modified: 2025-07-28                                                  //
 // Modified By: Matthew Carroll                                               //
@@ -18,8 +18,7 @@
 #include <Eigen/Eigen>
 #include <datamanagement/DataManagement.hpp>
 
-#include <respond/preprocess/matrices.hpp>
-#include <respond/preprocess/types.hpp>
+#include <respond/utils/types.hpp>
 
 namespace respond {
 namespace preprocess {

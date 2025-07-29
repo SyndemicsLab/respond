@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // File: cost_loader.cpp                                                      //
-// Project: preprocess // Created Date: 2025-07-07 // Author: Matthew Carroll //
+// Project: respond                                                           //
 // -----                                                                      //
 // Last Modified: 2025-07-28                                                  //
 // Modified By: Matthew Carroll                                               //
@@ -13,9 +13,8 @@
 #include <string>
 #include <unordered_map>
 
-#include <respond/preprocess/matrices.hpp>
-#include <respond/preprocess/types.hpp>
 #include <respond/utils/logging.hpp>
+#include <respond/utils/types.hpp>
 
 namespace respond {
 namespace preprocess {

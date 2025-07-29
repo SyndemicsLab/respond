@@ -1,10 +1,10 @@
 ////////////////////////////////////////////////////////////////////////////////
 // File: respond.hpp                                                          //
 // Project: respond                                                           //
-// Created Date: 2025-06-02                                                   //
+// Created Date: 2025-06-06                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-07-28                                                  //
+// Last Modified: 2025-07-29                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -34,7 +34,11 @@ Eigen::VectorXd Migration(Eigen::VectorXd &state,
         throw std::runtime_error(
             "Migration Transitions must have 1 Transition Matrix.");
     }
-    state *= transition[0];
+    if (state.size() != transition[0].size()) {
+        throw std::runtime_error("Unable to add Migration Transition Vector to "
+                                 "State Vector, mismatched sizes.");
+    }
+    state += transition[0];
     return state;
 }
 

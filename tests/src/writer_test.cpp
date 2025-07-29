@@ -18,7 +18,7 @@
 #include <datamanagement/DataManagement.hpp>
 #include <gtest/gtest.h>
 
-#include <respond/preprocess/types.hpp>
+#include <respond/utils/types.hpp>
 
 #include "data_loader_mock.hpp"
 #include "expected_strings.hpp"
