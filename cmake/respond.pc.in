@@ -8,5 +8,5 @@ Description: Syndemics Modeling Library
 URL: https://github.com/SyndemicsLab
 Version: @RESPOND_VERSION@
 CFlags: -I${includedir} @PKG_CONFIG_DEFINES@
-Libs: -L${libdir} -lspdlog -leigen -ldatamanagement
+Libs: -L${libdir} -lspdlog -leigen
 Requires: @PKG_CONFIG_REQUIRES@

@@ -4,22 +4,21 @@
 // Created Date: 2025-06-02                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-07-28                                                  //
+// Last Modified: 2025-07-30                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef RESPOND_POSTPROCESS_COSTEFFECTIVENESS_HPP_
-#define RESPOND_POSTPROCESS_COSTEFFECTIVENESS_HPP_
+#ifndef RESPOND_COSTEFFECTIVENESS_HPP_
+#define RESPOND_COSTEFFECTIVENESS_HPP_
 
 #include <Eigen/Dense>
 
-#include <respond/utils/helpers.hpp>
-#include <respond/utils/types.hpp>
+#include <respond/helpers.hpp>
+#include <respond/types.hpp>
 
 namespace respond {
-namespace postprocess {
 
 /// @brief A function to calculate the discoutn for the given data.
 /// @param data Data to be discounted.
@@ -37,9 +36,8 @@ inline Eigen::VectorXd Discount(const Eigen::VectorXd &data,
     return data - Eigen::VectorXd::Constant(data.size(), discount);
 }
 
-inline void DiscountCostStamp(utils::CostStamp &cost_stamp,
-                              double discount_rate, int week,
-                              bool is_discrete = true) {
+inline void DiscountCostStamp(CostStamp &cost_stamp, double discount_rate,
+                              int week, bool is_discrete = true) {
     cost_stamp.healthcare =
         Discount(cost_stamp.healthcare, discount_rate, week, is_discrete);
     cost_stamp.non_fatal_overdoses = Discount(cost_stamp.non_fatal_overdoses,
@@ -52,13 +50,13 @@ inline void DiscountCostStamp(utils::CostStamp &cost_stamp,
         Discount(cost_stamp.treatments, discount_rate, week, is_discrete);
 }
 
-inline utils::CostStamp StampCosts(const Eigen::VectorXd &state,
-                                   const Eigen::VectorXd &healthcare_costs,
-                                   const Eigen::VectorXd &aod_costs,
-                                   const Eigen::VectorXd &fod_costs,
-                                   const Eigen::VectorXd &pharma_costs,
-                                   const Eigen::VectorXd &treatment_costs) {
-    utils::CostStamp cost_stamp;
+inline CostStamp StampCosts(const Eigen::VectorXd &state,
+                            const Eigen::VectorXd &healthcare_costs,
+                            const Eigen::VectorXd &aod_costs,
+                            const Eigen::VectorXd &fod_costs,
+                            const Eigen::VectorXd &pharma_costs,
+                            const Eigen::VectorXd &treatment_costs) {
+    CostStamp cost_stamp;
     cost_stamp.healthcare = state * healthcare_costs;
     cost_stamp.non_fatal_overdoses = state * aod_costs;
     cost_stamp.fatal_overdoses = state * fod_costs;
@@ -76,11 +74,11 @@ inline Eigen::VectorXd StampUtilities(const Eigen::VectorXd &state,
     return state.cwiseProduct(utility);
 }
 
-inline Eigen::VectorXd
-StampUtilitiesOverTime(const utils::HistoryOverTime &history,
-                       const Eigen::VectorXd &utility,
-                       utils::UtilityType util_type, bool discount = false,
-                       double discount_rate = 0.0) {
+inline Eigen::VectorXd StampUtilitiesOverTime(const HistoryOverTime &history,
+                                              const Eigen::VectorXd &utility,
+                                              UtilityType util_type,
+                                              bool discount = false,
+                                              double discount_rate = 0.0) {
     Eigen::VectorXd utilities = Eigen::VectorXd::Ones(utility.size());
     for (const auto &kv : history) {
         auto stamp = StampUtilities(kv.second.state, utility);
@@ -88,10 +86,10 @@ StampUtilitiesOverTime(const utils::HistoryOverTime &history,
             stamp = Discount(stamp, discount_rate, kv.first);
         }
         switch (util_type) {
-        case utils::UtilityType::kMin:
+        case UtilityType::kMin:
             utilities = utilities.cwiseMin(stamp);
             break;
-        case utils::UtilityType::kMult:
+        case UtilityType::kMult:
             utilities = utilities.cwiseProduct(stamp);
             break;
         default:
@@ -101,13 +99,13 @@ StampUtilitiesOverTime(const utils::HistoryOverTime &history,
     return utilities;
 }
 
-inline utils::CostsOverTime StampCostsOverTime(
-    const utils::HistoryOverTime &history_over_time,
+inline CostsOverTime StampCostsOverTime(
+    const HistoryOverTime &history_over_time,
     const Eigen::VectorXd &healthcare_costs, const Eigen::VectorXd &aod_costs,
     const Eigen::VectorXd &fod_costs, const Eigen::VectorXd &pharma_costs,
     const Eigen::VectorXd &treatment_costs, bool discount = false,
     double discount_rate = 0.0) {
-    utils::CostsOverTime costs_over_time;
+    CostsOverTime costs_over_time;
     for (const auto &kv : history_over_time) {
         costs_over_time[kv.first] =
             StampCosts(kv.second.state, healthcare_costs, aod_costs, fod_costs,
@@ -120,8 +118,8 @@ inline utils::CostsOverTime StampCostsOverTime(
     return costs_over_time;
 }
 
-inline utils::CostPerspectives
-CalculatePerspectives(const utils::HistoryOverTime &history_over_time,
+inline CostPerspectives
+CalculatePerspectives(const HistoryOverTime &history_over_time,
                       const std::vector<std::string> &perspectives,
                       const std::vector<Eigen::VectorXd> &healthcare_costs,
                       const std::vector<Eigen::VectorXd> &aod_costs,
@@ -129,9 +127,9 @@ CalculatePerspectives(const utils::HistoryOverTime &history_over_time,
                       const std::vector<Eigen::VectorXd> &pharma_costs,
                       const std::vector<Eigen::VectorXd> &treatment_costs,
                       bool discount = false, double discount_rate = 0.0) {
-    utils::CheckVectorLengths(perspectives, healthcare_costs, aod_costs,
-                              fod_costs, pharma_costs, treatment_costs);
-    utils::CostPerspectives cost_perspectives;
+    CheckVectorLengths(perspectives, healthcare_costs, aod_costs, fod_costs,
+                       pharma_costs, treatment_costs);
+    CostPerspectives cost_perspectives;
     for (int i = 0; i < perspectives.size(); ++i) {
         cost_perspectives[perspectives[i]] = StampCostsOverTime(
             history_over_time, healthcare_costs[i], aod_costs[i], fod_costs[i],
@@ -145,7 +143,7 @@ CalculatePerspectives(const utils::HistoryOverTime &history_over_time,
 /// @param provideDiscount Flag to indicate whether to apply discounting.
 /// @param discountRate Discount rate to apply if discounting is enabled.
 /// @return The total life years calculated from the state history.
-inline double CalculateLifeYears(const utils::HistoryOverTime &history,
+inline double CalculateLifeYears(const HistoryOverTime &history,
                                  bool discount = false,
                                  double discount_rate = 0.0) {
     if (history.empty()) {
@@ -175,8 +173,7 @@ inline double CalculateLifeYears(const utils::HistoryOverTime &history,
 /// @brief Calculate the total costs from a list of costs.
 /// @param cost_list List of costs to calculate total costs from.
 /// @return A vector containing the total costs for each cost entry.
-inline std::vector<double>
-CalculateTotalCosts(const utils::CostsOverTime &costs) {
+inline std::vector<double> CalculateTotalCosts(const CostsOverTime &costs) {
     std::vector<double> result;
     for (const auto &cost : costs) {
         result.push_back(cost.second.healthcare.sum() +
@@ -187,7 +184,6 @@ CalculateTotalCosts(const utils::CostsOverTime &costs) {
     }
     return result;
 }
-} // namespace postprocess
 } // namespace respond
 
-#endif // RESPOND_POSTPROCESS_COSTEFFECTIVENESS_HPP_
+#endif // RESPOND_COSTEFFECTIVENESS_HPP_

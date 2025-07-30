@@ -58,13 +58,8 @@ endif()
 # Building the Library
 # ---------------------------------------------------------------------------------------
 set(RESPOND_SRCS 
-    src/preprocess/cost_loader.cpp
-    src/preprocess/data_formatter.cpp
-    src/preprocess/data_loader.cpp
-    src/preprocess/utility_loader.cpp
-    src/postprocess/writer.cpp
-    src/model/markov.cpp
-    src/utils/logging.cpp
+    src/markov.cpp
+    src/logging.cpp
 )
 
 if(RESPOND_BUILD_SHARED_LIBS)
@@ -94,15 +89,14 @@ endif()
 
 target_compile_definitions(respond PUBLIC RESPOND_COMPILED_LIB)
 target_include_directories(respond ${RESPOND_INCLUDES_LEVEL} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include>"
-                                                                  "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>"
-                                                                  PRIVATE "$<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/src>")
+"$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>" PRIVATE 
+"$<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/src>")
 
 include(MakeDependenciesAvailable)
 
 if (RESPOND_CALCULATE_COVERAGE)
     target_link_libraries(respond
     PUBLIC
-        datamanagement::datamanagement
         Eigen3::Eigen
     PRIVATE
         spdlog::spdlog
@@ -111,7 +105,6 @@ if (RESPOND_CALCULATE_COVERAGE)
 else()
     target_link_libraries(respond
     PUBLIC
-        datamanagement::datamanagement
         Eigen3::Eigen
     PRIVATE
         spdlog::spdlog

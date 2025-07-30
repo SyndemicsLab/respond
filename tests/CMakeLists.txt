@@ -7,15 +7,9 @@ if(PROJECT_IS_TOP_LEVEL OR NOT RESPOND_BUILD_TESTS)
 endif()
 
 add_executable(${PROJECT_NAME}
-  src/cost_loader_test.cpp
-  src/data_formatter_test.cpp
-  src/data_loader_test.cpp
   src/logging_test.cpp
-  src/matrices_test.cpp
   src/cost_effectiveness_test.cpp
   src/markov_test.cpp
-  src/utility_loader_test.cpp
-  src/writer_test.cpp
 )
 
 target_link_libraries(${PROJECT_NAME} 
@@ -24,7 +18,6 @@ PUBLIC
     Eigen3::Eigen
     spdlog::spdlog
     GTest::gmock_main
-    datamanagement::datamanagement
 )
 
 target_include_directories(${PROJECT_NAME} 

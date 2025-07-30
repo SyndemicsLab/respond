@@ -1,22 +1,20 @@
 ////////////////////////////////////////////////////////////////////////////////
 // File: logging.hpp                                                          //
-// Project: utils                                                             //
-// Created Date: 2025-03-10                                                   //
+// Project: respond                                                           //
+// Created Date: 2025-06-02                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-05-29                                                  //
+// Last Modified: 2025-07-30                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
 ////////////////////////////////////////////////////////////////////////////////
-#ifndef RESPOND_UTILS_LOGGING_HPP_
-#define RESPOND_UTILS_LOGGING_HPP_
+#ifndef RESPOND_LOGGING_HPP_
+#define RESPOND_LOGGING_HPP_
 
 #include <string>
 
 namespace respond {
-/// @brief Namespace for misc utility functions and classes.
-namespace utils {
 
 /// @brief Logging levels for the logger.
 enum class LogType : int {
@@ -63,7 +61,6 @@ void LogError(const std::string &logger_name, const std::string &message);
 /// @param message Message to log as debug information.
 void LogDebug(const std::string &logger_name, const std::string &message);
 
-} // namespace utils
 } // namespace respond
 
-#endif // RESPOND_UTILS_LOGGING_HPP_
+#endif // RESPOND_LOGGING_HPP_

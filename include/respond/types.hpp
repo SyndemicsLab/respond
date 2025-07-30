@@ -4,14 +4,14 @@
 // Created Date: 2025-06-02                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-07-28                                                  //
+// Last Modified: 2025-07-30                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef RESPOND_UTILS_DATATYPES_HPP_
-#define RESPOND_UTILS_DATATYPES_HPP_
+#ifndef RESPOND_DATATYPES_HPP_
+#define RESPOND_DATATYPES_HPP_
 
 #include <map>
 #include <string>
@@ -22,8 +22,6 @@
 
 /// @brief General Namespace for all RESPOND repo related code.
 namespace respond {
-/// @brief Namespace for all data operations.
-namespace utils {
 
 /// @brief Type alias for a string map
 /// @tparam T Type of key for the map
@@ -76,7 +74,6 @@ struct Totals {
     ResultSets discounted;
 };
 
-} // namespace utils
 } // namespace respond
 
-#endif // RESPOND_PREPROCESS_DATATYPES_HPP_
+#endif // RESPOND_DATATYPES_HPP_

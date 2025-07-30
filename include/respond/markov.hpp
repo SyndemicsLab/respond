@@ -1,31 +1,30 @@
 ////////////////////////////////////////////////////////////////////////////////
 // File: markov.hpp                                                           //
-// Project: model                                                             //
+// Project: respond                                                           //
 // Created Date: 2025-06-02                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-07-28                                                  //
+// Last Modified: 2025-07-30                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef RESPOND_MODEL_MARKOV_HPP_
-#define RESPOND_MODEL_MARKOV_HPP_
+#ifndef RESPOND_MARKOV_HPP_
+#define RESPOND_MARKOV_HPP_
 
 #include <memory>
 #include <string>
 
 #include <Eigen/Dense>
 
-#include <respond/utils/types.hpp>
+#include <respond/types.hpp>
 
 namespace respond {
 /// @brief A namespace for the respond model functionality.
-namespace model {
 
-using stamper = std::function<void(preprocess::HistoryStamp &, Eigen::VectorXd,
-                                   Eigen::VectorXd)>;
+using stamper =
+    std::function<void(HistoryStamp &, Eigen::VectorXd, Eigen::VectorXd)>;
 
 using transition_function = std::function<Eigen::VectorXd(
     Eigen::VectorXd &, const std::vector<Eigen::MatrixXd> &)>;
@@ -52,7 +51,7 @@ public:
 
     /// @brief Get the History from the simulation.
     /// @return A history object with the results of the latest run.
-    virtual preprocess::HistoryOverTime GetRunResults() const = 0;
+    virtual HistoryOverTime GetRunResults() const = 0;
 
     /// @brief Factory method to create a Respond instance.
     /// @param log_name Name of the logger to write errors to.
@@ -60,6 +59,5 @@ public:
     static std::unique_ptr<Markov>
     Create(const std::string &log_name = "console");
 };
-} // namespace model
 } // namespace respond
-#endif // RESPOND_MODEL_MARKOV_HPP_
+#endif // RESPOND_MARKOV_HPP_

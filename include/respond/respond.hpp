@@ -4,7 +4,7 @@
 // Created Date: 2025-06-06                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-07-29                                                  //
+// Last Modified: 2025-07-30                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -17,15 +17,10 @@
 
 #include <Eigen/Dense>
 
-#include "model/markov.hpp"
-#include "postprocess/cost_effectiveness.hpp"
-#include "postprocess/writer.hpp"
-#include "preprocess/cost_loader.hpp"
-#include "preprocess/data_formatter.hpp"
-#include "preprocess/data_loader.hpp"
-#include "preprocess/utility_loader.hpp"
-#include "utils/logging.hpp"
-#include "utils/types.hpp"
+#include <respond/cost_effectiveness.hpp>
+#include <respond/logging.hpp>
+#include <respond/markov.hpp>
+#include <respond/types.hpp>
 
 namespace respond {
 Eigen::VectorXd Migration(Eigen::VectorXd &state,

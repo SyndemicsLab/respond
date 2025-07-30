@@ -1,10 +1,10 @@
 ////////////////////////////////////////////////////////////////////////////////
 // File: markov.cpp                                                           //
 // Project: respond                                                           //
-// Created Date: 2025-07-07                                                   //
+// Created Date: 2025-06-02                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-07-28                                                  //
+// Last Modified: 2025-07-30                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -48,14 +48,14 @@ void MarkovImpl::Run(const int &num_steps) {
 
 void MarkovImpl::LogDebugPoint(const std::string &message,
                                const Eigen::MatrixXd &matrix) const {
-    respond::utils::LogDebug(_logger_name,
-                             "-------------------------------------------");
-    respond::utils::LogDebug(_logger_name, "Timestep: " + _time);
+    respond::LogDebug(_logger_name,
+                      "-------------------------------------------");
+    respond::LogDebug(_logger_name, "Timestep: " + _time);
     std::stringstream ss;
     ss << message << ": " << std::endl << matrix;
-    respond::utils::LogDebug(_logger_name, ss.str());
-    respond::utils::LogDebug(_logger_name,
-                             "-------------------------------------------");
+    respond::LogDebug(_logger_name, ss.str());
+    respond::LogDebug(_logger_name,
+                      "-------------------------------------------");
 }
 
 void MarkovImpl::Step(HistoryStamp &hs) {

@@ -4,17 +4,16 @@
 // Created Date: 2025-07-28                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-07-28                                                  //
+// Last Modified: 2025-07-30                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef RESPOND_UTILS_HELPERS_HPP_
-#define RESPOND_UTILS_HELPERS_HPP_
+#ifndef RESPOND_HELPERS_HPP_
+#define RESPOND_HELPERS_HPP_
 
 namespace respond {
-namespace utils {
 
 template <class... Args>
 inline constexpr bool CheckVectorLengths(Args const &...args) {
@@ -26,7 +25,6 @@ inline constexpr bool CheckVectorLengths(Args const &...args) {
         }(args...);
     }
 }
-} // namespace utils
 } // namespace respond
 
-#endif // RESPOND_UTILS_HELPERS_HPP_
+#endif // RESPOND_HELPERS_HPP_
