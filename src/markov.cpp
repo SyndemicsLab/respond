@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // File: markov.cpp                                                           //
 // Project: respond                                                           //
-// Created Date: 2025-06-02                                                   //
+// Created Date: 2025-07-07                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
 // Last Modified: 2025-07-30                                                  //
@@ -20,13 +20,10 @@
 
 #include <Eigen/Eigen>
 
-#include <respond/utils/logging.hpp>
-#include <respond/utils/types.hpp>
-
-using namespace respond::preprocess;
+#include <respond/logging.hpp>
+#include <respond/types.hpp>
 
 namespace respond {
-namespace model {
 
 void MarkovImpl::Run(const int &num_steps) {
     ResetTime();
@@ -73,5 +70,4 @@ void MarkovImpl::Step(HistoryStamp &hs) {
 std::unique_ptr<Markov> Markov::Create(const std::string &log_name) {
     return std::make_unique<MarkovImpl>(log_name);
 }
-} // namespace model
 } // namespace respond

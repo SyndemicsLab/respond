@@ -13,6 +13,8 @@
 #ifndef RESPOND_COSTEFFECTIVENESS_HPP_
 #define RESPOND_COSTEFFECTIVENESS_HPP_
 
+#include <iostream>
+
 #include <Eigen/Dense>
 
 #include <respond/helpers.hpp>
@@ -33,6 +35,8 @@ inline Eigen::VectorXd Discount(const Eigen::VectorXd &data,
                           ? (1 / pow((1.0 + (discount_rate) / 52.0), week))
                           : (exp(-discount_rate * (week / 52)));
 
+    std::cout << "Discount In Function: " << discount << std::endl;
+    std::cout << "Data In Function: " << data << std::endl;
     return data - Eigen::VectorXd::Constant(data.size(), discount);
 }
 
@@ -56,12 +60,17 @@ inline CostStamp StampCosts(const Eigen::VectorXd &state,
                             const Eigen::VectorXd &fod_costs,
                             const Eigen::VectorXd &pharma_costs,
                             const Eigen::VectorXd &treatment_costs) {
+    if (!CheckVectorLengths(state, healthcare_costs, aod_costs, fod_costs,
+                            pharma_costs, treatment_costs)) {
+        // log error: state and cost vectors size mismatch
+        return CostStamp{};
+    }
     CostStamp cost_stamp;
-    cost_stamp.healthcare = state * healthcare_costs;
-    cost_stamp.non_fatal_overdoses = state * aod_costs;
-    cost_stamp.fatal_overdoses = state * fod_costs;
-    cost_stamp.pharmaceuticals = state * pharma_costs;
-    cost_stamp.treatments = state * treatment_costs;
+    cost_stamp.healthcare = state.cwiseProduct(healthcare_costs);
+    cost_stamp.non_fatal_overdoses = state.cwiseProduct(aod_costs);
+    cost_stamp.fatal_overdoses = state.cwiseProduct(fod_costs);
+    cost_stamp.pharmaceuticals = state.cwiseProduct(pharma_costs);
+    cost_stamp.treatments = state.cwiseProduct(treatment_costs);
     return cost_stamp;
 }
 
@@ -72,6 +81,25 @@ inline Eigen::VectorXd StampUtilities(const Eigen::VectorXd &state,
         return Eigen::VectorXd::Ones(state.size());
     }
     return state.cwiseProduct(utility);
+}
+
+inline CostsOverTime StampCostsOverTime(
+    const HistoryOverTime &history_over_time,
+    const Eigen::VectorXd &healthcare_costs, const Eigen::VectorXd &aod_costs,
+    const Eigen::VectorXd &fod_costs, const Eigen::VectorXd &pharma_costs,
+    const Eigen::VectorXd &treatment_costs, bool discount = false,
+    double discount_rate = 0.0) {
+    CostsOverTime costs_over_time;
+    for (const auto &kv : history_over_time) {
+        costs_over_time[kv.first] =
+            StampCosts(kv.second.state, healthcare_costs, aod_costs, fod_costs,
+                       pharma_costs, treatment_costs);
+        if (discount) {
+            DiscountCostStamp(costs_over_time[kv.first], discount_rate,
+                              kv.first);
+        }
+    }
+    return costs_over_time;
 }
 
 inline Eigen::VectorXd StampUtilitiesOverTime(const HistoryOverTime &history,
@@ -97,25 +125,6 @@ inline Eigen::VectorXd StampUtilitiesOverTime(const HistoryOverTime &history,
         }
     }
     return utilities;
-}
-
-inline CostsOverTime StampCostsOverTime(
-    const HistoryOverTime &history_over_time,
-    const Eigen::VectorXd &healthcare_costs, const Eigen::VectorXd &aod_costs,
-    const Eigen::VectorXd &fod_costs, const Eigen::VectorXd &pharma_costs,
-    const Eigen::VectorXd &treatment_costs, bool discount = false,
-    double discount_rate = 0.0) {
-    CostsOverTime costs_over_time;
-    for (const auto &kv : history_over_time) {
-        costs_over_time[kv.first] =
-            StampCosts(kv.second.state, healthcare_costs, aod_costs, fod_costs,
-                       pharma_costs, treatment_costs);
-        if (discount) {
-            DiscountCostStamp(costs_over_time[kv.first], discount_rate,
-                              kv.first);
-        }
-    }
-    return costs_over_time;
 }
 
 inline CostPerspectives
@@ -156,7 +165,7 @@ inline double CalculateLifeYears(const HistoryOverTime &history,
         return 0.0;
     }
 
-    auto running_total =
+    Eigen::VectorXd running_total =
         Eigen::VectorXd::Zero(history.begin()->second.state.size());
 
     for (int t = 0; t < history.size(); ++t) {

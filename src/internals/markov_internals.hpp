@@ -1,18 +1,18 @@
 ////////////////////////////////////////////////////////////////////////////////
 // File: markov_internals.hpp                                                 //
-// Project: internals                                                         //
+// Project: respond                                                           //
 // Created Date: 2025-06-06                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-07-24                                                  //
+// Last Modified: 2025-07-30                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
 ////////////////////////////////////////////////////////////////////////////////
-#ifndef RESPOND_MODEL_MARKOVINTERNALS_HPP_
-#define RESPOND_MODEL_MARKOVINTERNALS_HPP_
+#ifndef RESPOND_MARKOVINTERNALS_HPP_
+#define RESPOND_MARKOVINTERNALS_HPP_
 
-#include <respond/model/markov.hpp>
+#include <respond/markov.hpp>
 
 #include <map>
 #include <string>
@@ -20,10 +20,7 @@
 
 #include <Eigen/Dense>
 
-using namespace respond::preprocess;
-
 namespace respond {
-namespace model {
 class MarkovImpl : public virtual Markov {
 public:
     /// @brief
@@ -104,7 +101,6 @@ private:
         };
     }
 };
-} // namespace model
 } // namespace respond
 
-#endif // RESPOND_MODEL_MARKOVINTERNALS_HPP_
+#endif // RESPOND_MARKOVINTERNALS_HPP_
