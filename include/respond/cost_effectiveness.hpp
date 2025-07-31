@@ -4,7 +4,7 @@
 // Created Date: 2025-06-02                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-07-30                                                  //
+// Last Modified: 2025-07-31                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -31,12 +31,10 @@ namespace respond {
 inline Eigen::VectorXd Discount(const Eigen::VectorXd &data,
                                 double discount_rate, int week,
                                 bool is_discrete = true) {
-    double discount = (is_discrete)
-                          ? (1 / pow((1.0 + (discount_rate) / 52.0), week))
-                          : (exp(-discount_rate * (week / 52)));
-
-    std::cout << "Discount In Function: " << discount << std::endl;
-    std::cout << "Data In Function: " << data << std::endl;
+    double total_weeks = 52.0;
+    double discount =
+        (is_discrete) ? (1 / pow((1.0 + (discount_rate) / total_weeks), week))
+                      : (exp(-discount_rate * (week / total_weeks)));
     return data - Eigen::VectorXd::Constant(data.size(), discount);
 }
 
@@ -107,12 +105,19 @@ inline Eigen::VectorXd StampUtilitiesOverTime(const HistoryOverTime &history,
                                               UtilityType util_type,
                                               bool discount = false,
                                               double discount_rate = 0.0) {
-    Eigen::VectorXd utilities = Eigen::VectorXd::Ones(utility.size());
+    Eigen::VectorXd utilities;
+    bool is_first_iteration = true;
     for (const auto &kv : history) {
         auto stamp = StampUtilities(kv.second.state, utility);
         if (discount) {
             stamp = Discount(stamp, discount_rate, kv.first);
         }
+        // If this is the first entry in the map, set the utilities vector
+        if (is_first_iteration) {
+            utilities = stamp;
+            is_first_iteration = false;
+        }
+
         switch (util_type) {
         case UtilityType::kMin:
             utilities = utilities.cwiseMin(stamp);
