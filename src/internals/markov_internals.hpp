@@ -4,7 +4,7 @@
 // Created Date: 2025-06-06                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-07-30                                                  //
+// Last Modified: 2025-07-31                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -29,6 +29,7 @@ public:
         const auto processor_count = std::thread::hardware_concurrency();
         Eigen::setNbThreads(processor_count);
         ResetTime();
+        _state = Eigen::VectorXd::Zero(0);
     }
 
     ~MarkovImpl() = default;
@@ -80,6 +81,8 @@ private:
         ResetHistory();
         HistoryStamp stamp;
         stamp.state = _state;
+        stamp.intervention_admissions = Eigen::VectorXd::Zero(_state.size());
+        stamp.overdoses = Eigen::VectorXd::Zero(_state.size());
         _history[0] = stamp;
     }
 

@@ -4,7 +4,7 @@
 // Created Date: 2025-06-02                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-07-30                                                  //
+// Last Modified: 2025-07-31                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -33,20 +33,20 @@ template <typename T> using StringUOMap = std::unordered_map<std::string, T>;
 
 /// @brief Struct grouping together matrices containing run history
 struct HistoryStamp {
-    Eigen::VectorXd state;
-    Eigen::VectorXd overdoses;
-    Eigen::VectorXd intervention_admissions;
+    Eigen::VectorXd state = Eigen::VectorXd::Zero(0);
+    Eigen::VectorXd overdoses = Eigen::VectorXd::Zero(0);
+    Eigen::VectorXd intervention_admissions = Eigen::VectorXd::Zero(0);
 };
 
 using HistoryOverTime = std::map<int, HistoryStamp>;
 
 /// @brief Struct grouping together matrices containing cost information
 struct CostStamp {
-    Eigen::VectorXd healthcare;
-    Eigen::VectorXd non_fatal_overdoses;
-    Eigen::VectorXd fatal_overdoses;
-    Eigen::VectorXd pharmaceuticals;
-    Eigen::VectorXd treatments;
+    Eigen::VectorXd healthcare = Eigen::VectorXd::Zero(0);
+    Eigen::VectorXd non_fatal_overdoses = Eigen::VectorXd::Zero(0);
+    Eigen::VectorXd fatal_overdoses = Eigen::VectorXd::Zero(0);
+    Eigen::VectorXd pharmaceuticals = Eigen::VectorXd::Zero(0);
+    Eigen::VectorXd treatments = Eigen::VectorXd::Zero(0);
 };
 
 using CostsOverTime = std::map<int, CostStamp>;

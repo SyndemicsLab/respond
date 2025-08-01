@@ -4,7 +4,7 @@
 // Created Date: 2025-06-06                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-07-30                                                  //
+// Last Modified: 2025-08-01                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -13,6 +13,7 @@
 #define RESPOND_HPP_
 
 #include <exception>
+#include <sstream>
 #include <vector>
 
 #include <Eigen/Dense>
@@ -43,7 +44,16 @@ Eigen::VectorXd Behavior(Eigen::VectorXd &state,
         throw std::runtime_error(
             "Behavior Transitions must have 1 Transition Matrix.");
     }
-    state *= transition[0];
+    if (state.rows() != transition[0].cols()) {
+        std::stringstream ss;
+        ss << "Unable to multiply behavior transition with "
+              "state, mismatched sizes. State size is (";
+        ss << state.rows() << ", " << state.cols();
+        ss << ") and transition size is (" << transition[0].rows() << ", ";
+        ss << transition[0].cols() << ").";
+        throw std::runtime_error(ss.str());
+    }
+    state = transition[0] * state;
     return state;
 }
 
@@ -53,17 +63,26 @@ Eigen::VectorXd Intervention(Eigen::VectorXd &state,
         throw std::runtime_error(
             "Intervention Transitions must have 2 Transition Matrices.");
     }
-    auto inter = state * transition[0]; // interventions
-    auto moved = (inter - state);       // calculate the people that moved
-    auto iie = moved * transition[1];   // transition the people that moved
 
-    if (moved.sum() != iie.sum()) {
+    Eigen::VectorXd zero_matrix = Eigen::VectorXd::Zero(state.size());
+
+    auto inter = transition[0] * state; // interventions
+    auto moved = (inter - state);       // calculate the people that moved
+
+    auto negatives = moved.cwiseMin(zero_matrix);
+    auto positives = moved.cwiseMax(zero_matrix);
+
+    auto iie = transition[1] * positives; // transition the people
+
+    if (positives.sum() != iie.sum()) {
         throw std::runtime_error(
             "Intervention Transitions must maintain the same number of people "
             "during the transition.");
     }
 
-    state = state - moved + iie; // add the people back to the state
+    auto total_moved = iie + negatives;
+
+    state += total_moved; // add the people back to the state
     return state;
 }
 
@@ -73,9 +92,24 @@ Eigen::VectorXd Overdose(Eigen::VectorXd &state,
         throw std::runtime_error(
             "Overdose Transitions must have 2 Transition Matrices.");
     }
-    auto overdoses = state * transition[0]; // overdose
-    state = overdoses * transition[1];      // transition fatal overdoses
-    return overdoses;                       // return number of total overdoses
+
+    Eigen::VectorXd zero_matrix = Eigen::VectorXd::Zero(state.size());
+    Eigen::VectorXd overdoses = state.cwiseProduct(transition[0]); // overdose
+
+    if (overdoses.size() != transition[1].size()) {
+        throw std::runtime_error("Fatal Overdose Transition is not the same "
+                                 "size as the state vector.");
+    }
+
+    auto fods = overdoses.cwiseProduct(transition[1]); // negatives
+
+    Eigen::VectorXd ods_moves = state - fods; // put the fods back
+    ods_moves.bottomRows(state.size() / 3) =
+        state.bottomRows(state.size() / 3) +
+        fods(Eigen::seqN(state.size() / 3, state.size() / 3));
+
+    state = ods_moves; // transition fatal overdoses
+    return overdoses;  // return number of total overdoses
 }
 
 Eigen::VectorXd Mortality(Eigen::VectorXd &state,
@@ -84,7 +118,7 @@ Eigen::VectorXd Mortality(Eigen::VectorXd &state,
         throw std::runtime_error(
             "Mortality Transitions must have 1 Transition Matrix.");
     }
-    state *= transition[0];
+    state = transition[0] * state;
     return state;
 }
 } // namespace respond

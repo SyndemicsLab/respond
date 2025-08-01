@@ -10,6 +10,7 @@ add_executable(${PROJECT_NAME}
   src/logging_test.cpp
   src/cost_effectiveness_test.cpp
   src/markov_test.cpp
+  src/respond_test.cpp
 )
 
 target_link_libraries(${PROJECT_NAME} 
