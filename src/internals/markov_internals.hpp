@@ -1,10 +1,10 @@
 ////////////////////////////////////////////////////////////////////////////////
 // File: markov_internals.hpp                                                 //
 // Project: respond                                                           //
-// Created Date: 2025-06-06                                                   //
+// Created Date: 2025-08-05                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-07-31                                                  //
+// Last Modified: 2025-08-05                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -34,6 +34,17 @@ public:
 
     ~MarkovImpl() = default;
 
+    MarkovImpl(const MarkovImpl &other) : MarkovImpl(other.GetLoggerName()) {
+        SetTransitions(other.GetTransitions());
+        SetState(other.GetState());
+    }
+
+    MarkovImpl &operator=(const MarkovImpl &other) {
+        MarkovImpl temp(GetLoggerName());
+        SetTransitions(other.GetTransitions());
+        SetState(other.GetState());
+    }
+
     void SetState(const Eigen::VectorXd &state_vector) override {
         _state = state_vector;
     }
@@ -57,6 +68,8 @@ public:
     void Run(const int &num_steps) override;
 
     HistoryOverTime GetRunResults() const override { return _history; }
+
+    std::string GetLoggerName() const override { return _logger_name; }
 
 private:
     const std::string _logger_name;

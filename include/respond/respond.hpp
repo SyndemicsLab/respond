@@ -1,10 +1,10 @@
 ////////////////////////////////////////////////////////////////////////////////
 // File: respond.hpp                                                          //
 // Project: respond                                                           //
-// Created Date: 2025-06-06                                                   //
+// Created Date: 2025-08-05                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-08-01                                                  //
+// Last Modified: 2025-08-05                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -23,7 +23,14 @@
 #include <respond/markov.hpp>
 #include <respond/types.hpp>
 
+/// @brief A namespace for the respond model functionality.
 namespace respond {
+
+/// @brief A function to model a migrating cohort.
+/// @param state The model state vector.
+/// @param transition A vector of size 1 containing an Eigen::VectorXd that
+/// migrates into/out of the state.
+/// @return The resultant model state vector.
 Eigen::VectorXd Migration(Eigen::VectorXd &state,
                           const std::vector<Eigen::MatrixXd> &transition) {
     if (transition.size() != 1) {
@@ -38,6 +45,11 @@ Eigen::VectorXd Migration(Eigen::VectorXd &state,
     return state;
 }
 
+/// @brief A function to model the relapsing/remitting behavior of SUD.
+/// @param state The model state vector.
+/// @param transition A vector of size 1 containing the transition matrix for
+/// the behavior changes.
+/// @return The resultant model state vector.
 Eigen::VectorXd Behavior(Eigen::VectorXd &state,
                          const std::vector<Eigen::MatrixXd> &transition) {
     if (transition.size() != 1) {
@@ -57,6 +69,12 @@ Eigen::VectorXd Behavior(Eigen::VectorXd &state,
     return state;
 }
 
+/// @brief A function to model the intervention changes of SUD.
+/// @param state The model state vector.
+/// @param transition A vector of size 2 containing first the transition matrix
+/// for intervention changes, and then second the behavior changes once going
+/// through an intervention change.
+/// @return The resultant model state vector.
 Eigen::VectorXd Intervention(Eigen::VectorXd &state,
                              const std::vector<Eigen::MatrixXd> &transition) {
     if (transition.size() != 2) {
@@ -86,6 +104,11 @@ Eigen::VectorXd Intervention(Eigen::VectorXd &state,
     return state;
 }
 
+/// @brief A function to model the overdoses within the SUD community.
+/// @param state The model state vector.
+/// @param transition A vector of size 2 containing first the transition matrix
+/// probability and second a vector of the chance of an overdose being fatal.
+/// @return The number of overdoses that occurred this iteration.
 Eigen::VectorXd Overdose(Eigen::VectorXd &state,
                          const std::vector<Eigen::MatrixXd> &transition) {
     if (transition.size() != 2) {
@@ -112,6 +135,11 @@ Eigen::VectorXd Overdose(Eigen::VectorXd &state,
     return overdoses;  // return number of total overdoses
 }
 
+/// @brief A function to model the mortality within the SUD community.
+/// @param state The model state vector.
+/// @param transition A vector of size 1 containing the transition matrix for
+/// background mortalities.
+/// @return The resultant state vector.
 Eigen::VectorXd Mortality(Eigen::VectorXd &state,
                           const std::vector<Eigen::MatrixXd> &transition) {
     if (transition.size() != 1) {

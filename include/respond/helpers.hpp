@@ -1,10 +1,10 @@
 ////////////////////////////////////////////////////////////////////////////////
 // File: helpers.hpp                                                          //
 // Project: respond                                                           //
-// Created Date: 2025-07-28                                                   //
+// Created Date: 2025-08-05                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-07-30                                                  //
+// Last Modified: 2025-08-05                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -15,6 +15,10 @@
 
 namespace respond {
 
+/// @brief A function used to check the lengths of a variable set of vectors.
+/// @tparam ...Args Variadic type for vectors.
+/// @param ...args The vectors to compare. Variadic for multiple vectors.
+/// @return true if all vectors are the same size, false if any are different.
 template <class... Args>
 inline constexpr bool CheckVectorLengths(Args const &...args) {
     if constexpr (sizeof...(Args) == 0) {

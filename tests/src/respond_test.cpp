@@ -1,10 +1,10 @@
 ////////////////////////////////////////////////////////////////////////////////
 // File: respond_test.cpp                                                     //
 // Project: respond                                                           //
-// Created Date: 2025-08-01                                                   //
+// Created Date: 2025-08-05                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-08-01                                                  //
+// Last Modified: 2025-08-05                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -27,13 +27,13 @@ protected:
     std::vector<Eigen::MatrixXd> transition_matrices;
     void SetUp() override {
         state = Eigen::VectorXd::Ones(6);
-        transition_matrices = {Eigen::MatrixXd::Identity(6, 6)};
+        transition_matrices.clear();
     }
     void TearDown() override {}
 };
 
 TEST_F(RespondTest, Migration_Function) {
-    transition_matrices.clear();
+
     Eigen::VectorXd t(6);
     t << -1, 0, 1, 0, 0, 0;
     transition_matrices.push_back(t);
@@ -46,7 +46,7 @@ TEST_F(RespondTest, Migration_Function) {
 }
 
 TEST_F(RespondTest, Behavior_Function) {
-    transition_matrices.clear();
+
     Eigen::MatrixXd t(6, 6);
     // clang-format off
     t << 1.0, 0.0, 0.0, 0.0, 0.0, 0.0,
@@ -66,7 +66,7 @@ TEST_F(RespondTest, Behavior_Function) {
 }
 
 TEST_F(RespondTest, Intervention_Function) {
-    transition_matrices.clear();
+
     Eigen::MatrixXd t1(6, 6);
     Eigen::MatrixXd t2(6, 6);
     // clang-format off
@@ -96,7 +96,7 @@ TEST_F(RespondTest, Intervention_Function) {
 }
 
 TEST_F(RespondTest, Overdose_Function) {
-    transition_matrices.clear();
+
     Eigen::VectorXd t1(6);
     t1 << 0.0, 0.0, 0.4, 0.2, 0.0, 0.0;
     Eigen::VectorXd t2 = Eigen::VectorXd::Constant(6, 0.25);
@@ -113,7 +113,6 @@ TEST_F(RespondTest, Overdose_Function) {
 }
 
 TEST_F(RespondTest, Mortality_Function) {
-    transition_matrices.clear();
     Eigen::MatrixXd t(6, 6);
     // clang-format off
     t << 1.0, 0.0, 0.0, 0.0, 0.0, 0.0,

@@ -1,10 +1,10 @@
 ////////////////////////////////////////////////////////////////////////////////
 // File: types.hpp                                                            //
 // Project: respond                                                           //
-// Created Date: 2025-06-02                                                   //
+// Created Date: 2025-08-05                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-07-31                                                  //
+// Last Modified: 2025-08-05                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -38,6 +38,7 @@ struct HistoryStamp {
     Eigen::VectorXd intervention_admissions = Eigen::VectorXd::Zero(0);
 };
 
+/// @brief A map of the timestep to the HistoryStamp.
 using HistoryOverTime = std::map<int, HistoryStamp>;
 
 /// @brief Struct grouping together matrices containing cost information
@@ -49,6 +50,7 @@ struct CostStamp {
     Eigen::VectorXd treatments = Eigen::VectorXd::Zero(0);
 };
 
+/// @brief A map of the timestep to the CostStamp.
 using CostsOverTime = std::map<int, CostStamp>;
 
 /// @brief Type alias for a vector of Cost objects
@@ -61,6 +63,7 @@ enum class UtilityType : int {
     kCount = 2 // Counter for Enum
 };
 
+/// @brief A struct for the final results.
 struct ResultSets {
     std::vector<double> summed_costs;
     double summed_life_years = 0.0;
