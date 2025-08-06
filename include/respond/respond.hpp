@@ -4,7 +4,7 @@
 // Created Date: 2025-08-05                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-08-05                                                  //
+// Last Modified: 2025-08-06                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -116,11 +116,15 @@ Eigen::VectorXd Overdose(Eigen::VectorXd &state,
             "Overdose Transitions must have 2 Transition Matrices.");
     }
 
-    Eigen::VectorXd zero_matrix = Eigen::VectorXd::Zero(state.size());
+    if (state.size() != transition[0].size()) {
+        throw std::runtime_error("Overdose Vector is not the same "
+                                 "size as the state vector.");
+    }
+
     Eigen::VectorXd overdoses = state.cwiseProduct(transition[0]); // overdose
 
     if (overdoses.size() != transition[1].size()) {
-        throw std::runtime_error("Fatal Overdose Transition is not the same "
+        throw std::runtime_error("Fatal Overdose Vector is not the same "
                                  "size as the state vector.");
     }
 
