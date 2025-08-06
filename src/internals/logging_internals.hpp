@@ -1,19 +1,19 @@
 ////////////////////////////////////////////////////////////////////////////////
 // File: logging_internals.hpp                                                //
-// Project: internals                                                         //
-// Created Date: 2025-03-10                                                   //
+// Project: respond                                                           //
+// Created Date: 2025-06-06                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-06-05                                                  //
+// Last Modified: 2025-07-30                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef RESPOND_UTILS_LOGGINGINTERNALS_HPP_
-#define RESPOND_UTILS_LOGGINGINTERNALS_HPP_
+#ifndef RESPOND_LOGGINGINTERNALS_HPP_
+#define RESPOND_LOGGINGINTERNALS_HPP_
 
-#include <respond/utils/logging.hpp>
+#include <respond/logging.hpp>
 
 #include <iostream>
 #include <string>
@@ -23,7 +23,6 @@
 #include <spdlog/spdlog.h>
 
 namespace respond {
-namespace utils {
 CreationStatus CheckIfExists(const std::string &logger_name) {
     return (spdlog::get(logger_name) != nullptr) ? CreationStatus::kExists
                                                  : CreationStatus::kNotCreated;
@@ -61,7 +60,6 @@ void log(const std::string &logger_name, const std::string &message,
     }
 }
 
-} // namespace utils
 } // namespace respond
 
-#endif // RESPOND_UTILS_LOGGINGINTERNALS_HPP_
+#endif // RESPOND_LOGGINGINTERNALS_HPP_

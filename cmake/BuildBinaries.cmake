@@ -1,8 +1,3 @@
-if(RESPOND_BUILD_EXECUTABLE OR RESPOND_BUILD_ALL)
-    message(STATUS "Building Executable")
-    add_subdirectory(extras/executable)
-endif()
-
 if(RESPOND_BUILD_TESTS OR RESPOND_BUILD_ALL)
     message(STATUS "Generating tests")
     if(RESPOND_CALCULATE_COVERAGE)

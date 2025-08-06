@@ -3,8 +3,8 @@
 #include "DataLoader.hpp"
 #include "Helpers.hpp"
 #include "PostSimulationCalculator.hpp"
-#include "Simulation.hpp"
 #include "Writer.hpp"
+#include "markov.hpp"
 #include "spdlog/sinks/basic_file_sink.h"
 #include "spdlog/spdlog.h"
 #include <algorithm>
@@ -42,17 +42,17 @@ static int respond_main(const int inputID) {
 
     logger->info("Logger Created");
 
-    std::shared_ptr<data_ops::IDataLoader> inputs =
-        std::make_shared<data_ops::DataLoader>(nullptr, inputSet.string(),
-                                               logger);
+    std::shared_ptr<preprocess::IDataLoader> inputs =
+        std::make_shared<preprocess::DataLoader>(nullptr, inputSet.string(),
+                                                 logger);
     logger->info("DataLoader Created");
 
-    std::shared_ptr<data_ops::ICostLoader> costLoader =
-        std::make_shared<data_ops::CostLoader>(inputSet.string());
+    std::shared_ptr<preprocess::ICostLoader> costLoader =
+        std::make_shared<preprocess::CostLoader>(inputSet.string());
     logger->info("CostLoader Created");
 
-    std::shared_ptr<data_ops::IUtilityLoader> utilityLoader =
-        std::make_shared<data_ops::UtilityLoader>(inputSet.string());
+    std::shared_ptr<preprocess::IUtilityLoader> utilityLoader =
+        std::make_shared<preprocess::UtilityLoader>(inputSet.string());
     logger->info("UtilityLoader Created");
 
     inputs->loadInitialSample("init_cohort.csv");
@@ -84,16 +84,16 @@ static int respond_main(const int inputID) {
 
     Simulation::Respond sim(inputs);
     sim.run();
-    data_ops::History history = sim.getHistory();
+    preprocess::History history = sim.getHistory();
 
-    data_ops::CostList basecosts;
-    data_ops::Matrix4d baseutilities;
+    preprocess::CostList basecosts;
+    preprocess::Matrix4d baseutilities;
     double baselifeYears = 0.0;
     std::vector<double> totalBaseCosts;
     double totalBaseUtility = 0.0;
 
-    data_ops::CostList disccosts;
-    data_ops::Matrix4d discutilities;
+    preprocess::CostList disccosts;
+    preprocess::Matrix4d discutilities;
     double disclifeYears;
     std::vector<double> totalDiscCosts;
     double totalDiscUtility = 0.0;
@@ -128,12 +128,12 @@ static int respond_main(const int inputID) {
     pivot_long = std::get<bool>(
         inputs->getConfig()->get("output.pivot_long", pivot_long));
 
-    data_ops::HistoryWriter historyWriter(
+    preprocess::HistoryWriter historyWriter(
         outputDir.string(), inputs->getInterventions(), inputs->getOUDStates(),
         inputs->getDemographics(), inputs->getDemographicCombos(),
-        outputTimesteps, data_ops::WriteType::FILE, pivot_long);
+        outputTimesteps, preprocess::WriteType::FILE, pivot_long);
 
-    data_ops::DataFormatter formatter;
+    preprocess::DataFormatter formatter;
 
     formatter.extractTimesteps(outputTimesteps, history, basecosts,
                                baseutilities, costLoader->getCostSwitch());
@@ -144,41 +144,41 @@ static int respond_main(const int inputID) {
     writeParameters = std::get<bool>(inputs->getConfig()->get(
         "output.write_calibrated_inputs", writeParameters));
     if (writeParameters) {
-        data_ops::InputWriter ipWriter(outputDir.string(), outputTimesteps,
-                                       data_ops::WriteType::FILE);
+        preprocess::InputWriter ipWriter(outputDir.string(), outputTimesteps,
+                                         preprocess::WriteType::FILE);
         ipWriter.writeParameters(inputs);
     }
 
     // Probably want to figure out the right way to do this
     if (costLoader->getCostSwitch()) {
-        data_ops::CostWriter costWriter(
+        preprocess::CostWriter costWriter(
             outputDir.string(), inputs->getInterventions(),
             inputs->getOUDStates(), inputs->getDemographics(),
             inputs->getDemographicCombos(), outputTimesteps,
-            data_ops::WriteType::FILE, pivot_long);
+            preprocess::WriteType::FILE, pivot_long);
         costWriter.writeCosts(basecosts);
     }
     if (utilityLoader->getCostSwitch()) {
-        data_ops::UtilityWriter utilityWriter(
+        preprocess::UtilityWriter utilityWriter(
             outputDir.string(), inputs->getInterventions(),
             inputs->getOUDStates(), inputs->getDemographics(),
             inputs->getDemographicCombos(), outputTimesteps,
-            data_ops::WriteType::FILE, pivot_long);
+            preprocess::WriteType::FILE, pivot_long);
         utilityWriter.writeUtilities(baseutilities);
     }
     if (costLoader->getCostSwitch()) {
-        data_ops::Totals totals;
+        preprocess::Totals totals;
         totals.baseCosts = totalBaseCosts;
         totals.baseLifeYears = baselifeYears;
         totals.baseUtility = totalBaseUtility;
         totals.discCosts = totalDiscCosts;
         totals.discLifeYears = disclifeYears;
         totals.discUtility = totalDiscUtility;
-        data_ops::TotalsWriter totalsWriter(
+        preprocess::TotalsWriter totalsWriter(
             outputDir.string(), inputs->getInterventions(),
             inputs->getOUDStates(), inputs->getDemographics(),
             inputs->getDemographicCombos(), outputTimesteps,
-            data_ops::WriteType::FILE);
+            preprocess::WriteType::FILE);
         totalsWriter.writeTotals(totals);
     }
 

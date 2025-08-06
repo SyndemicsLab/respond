@@ -44,7 +44,6 @@
             "inherits": "configuration-common-linux",
             "cacheVariables": {
                 "CMAKE_BUILD_TYPE": "Debug",
-                "RESPOND_BUILD_EXECUTABLE": "ON",
                 "RESPOND_BUILD_TESTS": "ON",
                 "RESPOND_CALCULATE_COVERAGE": "ON",
                 "RESPOND_BUILD_BENCH": "OFF",
@@ -62,7 +61,6 @@
             "inherits": "configuration-common-linux",
             "cacheVariables": {
                 "CMAKE_BUILD_TYPE": "Release",
-                "RESPOND_BUILD_EXECUTABLE": "ON",
                 "RESPOND_BUILD_TESTS": "OFF",
                 "RESPOND_CALCULATE_COVERAGE": "OFF",
                 "RESPOND_BUILD_BENCH": "OFF",
@@ -79,17 +77,11 @@
         },
         {
             "name": "gcc-release-cluster",
-            "inherits": "gcc-release",
-            "cacheVariables": {
-                "CMAKE_PREFIX_PATH": "${fileDir}/lib/sqlitecpp"
-            }
+            "inherits": "gcc-release"
         },
         {
             "name": "gcc-debug-cluster",
-            "inherits": "gcc-debug",
-            "cacheVariables": {
-                "CMAKE_PREFIX_PATH": "${fileDir}/lib/sqlitecpp"
-            }
+            "inherits": "gcc-debug"
         }
     ],
     "buildPresets": [
