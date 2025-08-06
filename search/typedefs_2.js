@@ -1,5 +1,6 @@
 var searchData=
 [
-  ['stringmap_0',['StringMap',['../d9/d37/namespacerespond_1_1data__ops.html#a8822cdb812ccd1aed6231e6875b77f0d',1,'respond::data_ops']]],
-  ['stringuomap_1',['StringUOMap',['../d9/d37/namespacerespond_1_1data__ops.html#aa27282eb0b84e7919fcfd7ed0a69a8e9',1,'respond::data_ops']]]
+  ['stamper_0',['stamper',['../d9/de6/namespacerespond.html#acd201fce9e332995af5bf98fa61d3d90',1,'respond']]],
+  ['stringmap_1',['StringMap',['../d9/de6/namespacerespond.html#a65769752f5000f255bf5072701e5a850',1,'respond']]],
+  ['stringuomap_2',['StringUOMap',['../d9/de6/namespacerespond.html#ab098ddf2c8c02d2741570986c39ce732',1,'respond']]]
 ];

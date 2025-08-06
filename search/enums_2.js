@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['logtype_0',['LogType',['../da/dba/namespacerespond_1_1utils.html#a12dde1d039e9fa61525418298f3508fc',1,'respond::utils']]]
+  ['utilitytype_0',['UtilityType',['../d9/de6/namespacerespond.html#a6e204491c4805e758f997a02e805f3a8',1,'respond']]]
 ];

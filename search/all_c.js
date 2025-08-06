@@ -1,11 +1,12 @@
 var searchData=
 [
-  ['data_5fops_0',['data_ops',['../d9/d37/namespacerespond_1_1data__ops.html',1,'respond']]],
-  ['model_1',['model',['../d5/d8e/namespacerespond_1_1model.html',1,'respond']]],
-  ['researching_20effective_20strategies_20to_20prevent_20opioid_20use_20disorder_2',['Researching Effective Strategies to Prevent Opioid Use Disorder',['../index.html',1,'']]],
-  ['respond_3',['respond',['../d9/de6/namespacerespond.html',1,'']]],
-  ['respond_4',['Respond',['../db/dd0/classrespond_1_1model_1_1Respond.html',1,'respond::model']]],
-  ['run_5',['Run',['../db/dd0/classrespond_1_1model_1_1Respond.html#a49c65db9353bfeb1a851203e81b76a44',1,'respond::model::Respond']]],
-  ['running_20the_20model_6',['Running the Model',['../dd/d4c/md_docs_src_run.html',1,'']]],
-  ['utils_7',['utils',['../da/dba/namespacerespond_1_1utils.html',1,'respond']]]
+  ['setstate_0',['SetState',['../df/d1c/classrespond_1_1Markov.html#a32d502266979f9218c253923dc691d5f',1,'respond::Markov']]],
+  ['settransitions_1',['SetTransitions',['../df/d1c/classrespond_1_1Markov.html#a4532a4cf79c6872122e297fe5621aecc',1,'respond::Markov']]],
+  ['stampcosts_2',['StampCosts',['../d9/de6/namespacerespond.html#a6d1590e8e70c54d7ebe99b5e9cbda97a',1,'respond']]],
+  ['stampcostsovertime_3',['StampCostsOverTime',['../d9/de6/namespacerespond.html#aab972fe627aefe0608e46fa762495bd4',1,'respond']]],
+  ['stamper_4',['stamper',['../d9/de6/namespacerespond.html#acd201fce9e332995af5bf98fa61d3d90',1,'respond']]],
+  ['stamputilities_5',['StampUtilities',['../d9/de6/namespacerespond.html#aab0bc2b839c26bfa623402762464681a',1,'respond']]],
+  ['stamputilitiesovertime_6',['StampUtilitiesOverTime',['../d9/de6/namespacerespond.html#a782503dde2e2ae2661ddb790dd6fc6f3',1,'respond']]],
+  ['stringmap_7',['StringMap',['../d9/de6/namespacerespond.html#a65769752f5000f255bf5072701e5a850',1,'respond']]],
+  ['stringuomap_8',['StringUOMap',['../d9/de6/namespacerespond.html#ab098ddf2c8c02d2741570986c39ce732',1,'respond']]]
 ];

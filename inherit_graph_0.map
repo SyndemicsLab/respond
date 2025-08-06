@@ -1,6 +1,0 @@
-<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$d8/d12/classrespond_1_1data__ops_1_1BaseLoader.html" title=" " alt="" coords="5,69,155,109"/>
-<area shape="rect" id="node2" href="$d1/d88/classrespond_1_1data__ops_1_1CostLoader.html" title="Class to manage the Costing Data Necessary for RESPOND." alt="" coords="203,5,352,45"/>
-<area shape="rect" id="node3" href="$da/d16/classrespond_1_1data__ops_1_1DataLoader.html" title="Class for Loading and Managing Data in RESPOND." alt="" coords="203,69,352,109"/>
-<area shape="rect" id="node4" href="$d6/dc5/classrespond_1_1data__ops_1_1UtilityLoader.html" title="A class to load Utility Data from files." alt="" coords="203,133,352,173"/>
-</map>

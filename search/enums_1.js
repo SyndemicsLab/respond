@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['dimension_0',['Dimension',['../d9/d37/namespacerespond_1_1data__ops.html#ad155676d8c8f4cf23fc1b52c865e140f',1,'respond::data_ops']]]
+  ['logtype_0',['LogType',['../d9/de6/namespacerespond.html#abcbb31ad7ec52697894b7c78561d9115',1,'respond']]]
 ];

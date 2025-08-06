@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['costlist_0',['CostList',['../d9/d37/namespacerespond_1_1data__ops.html#a9c8a7116d1ff5d7a873530207a20d2ea',1,'respond::data_ops']]]
+  ['costperspectives_0',['CostPerspectives',['../d9/de6/namespacerespond.html#adb86f203a1365d1c6d14862697d68ee7',1,'respond']]],
+  ['costsovertime_1',['CostsOverTime',['../d9/de6/namespacerespond.html#a4cc0cbf2665d25a61bb84a15bf82e09b',1,'respond']]]
 ];

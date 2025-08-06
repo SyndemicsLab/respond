@@ -127,33 +127,1216 @@ $(document).ready(function(){initNavTree('d9/de6/namespacerespond.html','../../'
 
 <div class="header">
   <div class="summary">
-<a href="#namespaces">Namespaces</a>  </div>
+<a href="#nested-classes">Classes</a> &#124;
+<a href="#typedef-members">Typedefs</a> &#124;
+<a href="#enum-members">Enumerations</a> &#124;
+<a href="#func-members">Functions</a>  </div>
   <div class="headertitle"><div class="title">respond Namespace Reference</div></div>
 </div><!--header-->
 <div class="contents">
 
-<p>General Namespace for all RESPOND repo related code.  
-</p>
+<p>A namespace for the respond model functionality.  
+<a href="../../d9/de6/namespacerespond.html#details">More...</a></p>
 <table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
-Namespaces</h2></td></tr>
-<tr class="memitem:d9/d37/namespacerespond_1_1data__ops"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d9/d37/namespacerespond_1_1data__ops.html">data_ops</a></td></tr>
-<tr class="memdesc:d9/d37/namespacerespond_1_1data__ops"><td class="mdescLeft">&#160;</td><td class="mdescRight">Namespace for all data operations. <br /></td></tr>
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
+Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d8/dba/structrespond_1_1CostStamp.html">CostStamp</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Struct grouping together matrices containing cost information.  <a href="../../d8/dba/structrespond_1_1CostStamp.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:d5/d8e/namespacerespond_1_1model"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d5/d8e/namespacerespond_1_1model.html">model</a></td></tr>
-<tr class="memdesc:d5/d8e/namespacerespond_1_1model"><td class="mdescLeft">&#160;</td><td class="mdescRight">A namespace for the respond model functionality. <br /></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d0/da5/structrespond_1_1HistoryStamp.html">HistoryStamp</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Struct grouping together matrices containing run history.  <a href="../../d0/da5/structrespond_1_1HistoryStamp.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:da/dba/namespacerespond_1_1utils"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/dba/namespacerespond_1_1utils.html">utils</a></td></tr>
-<tr class="memdesc:da/dba/namespacerespond_1_1utils"><td class="mdescLeft">&#160;</td><td class="mdescRight">Namespace for misc utility functions and classes. <br /></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/d1c/classrespond_1_1Markov.html">Markov</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Class describing the Respond model simulation.  <a href="../../df/d1c/classrespond_1_1Markov.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d5/dc6/structrespond_1_1ResultSets.html">ResultSets</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A struct for the final results.  <a href="../../d5/dc6/structrespond_1_1ResultSets.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dd/daf/structrespond_1_1Totals.html">Totals</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Struct grouping together matricies containing total cost effectiveness information.  <a href="../../dd/daf/structrespond_1_1Totals.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="typedef-members" name="typedef-members"></a>
+Typedefs</h2></td></tr>
+<tr class="memitem:acd201fce9e332995af5bf98fa61d3d90"><td class="memItemLeft" align="right" valign="top"><a id="acd201fce9e332995af5bf98fa61d3d90" name="acd201fce9e332995af5bf98fa61d3d90"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><b>stamper</b> = std::function&lt; void(<a class="el" href="../../d0/da5/structrespond_1_1HistoryStamp.html">HistoryStamp</a> &amp;, Eigen::VectorXd, Eigen::VectorXd)&gt;</td></tr>
+<tr class="memdesc:acd201fce9e332995af5bf98fa61d3d90"><td class="mdescLeft">&#160;</td><td class="mdescRight">type for a general function to apply a stamp within a model step. <br /></td></tr>
+<tr class="separator:acd201fce9e332995af5bf98fa61d3d90"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a928eecd66f9cc7ff91f067489093d90b"><td class="memItemLeft" align="right" valign="top"><a id="a928eecd66f9cc7ff91f067489093d90b" name="a928eecd66f9cc7ff91f067489093d90b"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><b>transition_function</b> = std::function&lt; Eigen::VectorXd(Eigen::VectorXd &amp;, const std::vector&lt; Eigen::MatrixXd &gt; &amp;)&gt;</td></tr>
+<tr class="memdesc:a928eecd66f9cc7ff91f067489093d90b"><td class="mdescLeft">&#160;</td><td class="mdescRight">type for a general function to apply a transition to the model state. <br /></td></tr>
+<tr class="separator:a928eecd66f9cc7ff91f067489093d90b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acbc9130e8db50cc6faf2dc45f1a91677"><td class="memItemLeft" align="right" valign="top"><a id="acbc9130e8db50cc6faf2dc45f1a91677" name="acbc9130e8db50cc6faf2dc45f1a91677"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><b>transition</b> = std::pair&lt; <a class="el" href="../../d9/de6/namespacerespond.html#a928eecd66f9cc7ff91f067489093d90b">transition_function</a>, std::vector&lt; Eigen::MatrixXd &gt; &gt;</td></tr>
+<tr class="memdesc:acbc9130e8db50cc6faf2dc45f1a91677"><td class="mdescLeft">&#160;</td><td class="mdescRight">The pair of functions and transition matrices. <br /></td></tr>
+<tr class="separator:acbc9130e8db50cc6faf2dc45f1a91677"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a65769752f5000f255bf5072701e5a850"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a65769752f5000f255bf5072701e5a850"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="../../d9/de6/namespacerespond.html#a65769752f5000f255bf5072701e5a850">StringMap</a> = std::map&lt; std::string, T &gt;</td></tr>
+<tr class="memdesc:a65769752f5000f255bf5072701e5a850"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type alias for a string map.  <br /></td></tr>
+<tr class="separator:a65769752f5000f255bf5072701e5a850"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab098ddf2c8c02d2741570986c39ce732"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:ab098ddf2c8c02d2741570986c39ce732"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="../../d9/de6/namespacerespond.html#ab098ddf2c8c02d2741570986c39ce732">StringUOMap</a> = std::unordered_map&lt; std::string, T &gt;</td></tr>
+<tr class="memdesc:ab098ddf2c8c02d2741570986c39ce732"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type alias for a string unordered map.  <br /></td></tr>
+<tr class="separator:ab098ddf2c8c02d2741570986c39ce732"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:add7ecd2a0ac4d8b22511245a9e13d4e0"><td class="memItemLeft" align="right" valign="top"><a id="add7ecd2a0ac4d8b22511245a9e13d4e0" name="add7ecd2a0ac4d8b22511245a9e13d4e0"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><b>HistoryOverTime</b> = std::map&lt; int, <a class="el" href="../../d0/da5/structrespond_1_1HistoryStamp.html">HistoryStamp</a> &gt;</td></tr>
+<tr class="memdesc:add7ecd2a0ac4d8b22511245a9e13d4e0"><td class="mdescLeft">&#160;</td><td class="mdescRight">A map of the timestep to the <a class="el" href="../../d0/da5/structrespond_1_1HistoryStamp.html" title="Struct grouping together matrices containing run history.">HistoryStamp</a>. <br /></td></tr>
+<tr class="separator:add7ecd2a0ac4d8b22511245a9e13d4e0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4cc0cbf2665d25a61bb84a15bf82e09b"><td class="memItemLeft" align="right" valign="top"><a id="a4cc0cbf2665d25a61bb84a15bf82e09b" name="a4cc0cbf2665d25a61bb84a15bf82e09b"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><b>CostsOverTime</b> = std::map&lt; int, <a class="el" href="../../d8/dba/structrespond_1_1CostStamp.html">CostStamp</a> &gt;</td></tr>
+<tr class="memdesc:a4cc0cbf2665d25a61bb84a15bf82e09b"><td class="mdescLeft">&#160;</td><td class="mdescRight">A map of the timestep to the <a class="el" href="../../d8/dba/structrespond_1_1CostStamp.html" title="Struct grouping together matrices containing cost information.">CostStamp</a>. <br /></td></tr>
+<tr class="separator:a4cc0cbf2665d25a61bb84a15bf82e09b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adb86f203a1365d1c6d14862697d68ee7"><td class="memItemLeft" align="right" valign="top"><a id="adb86f203a1365d1c6d14862697d68ee7" name="adb86f203a1365d1c6d14862697d68ee7"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><b>CostPerspectives</b> = std::map&lt; std::string, <a class="el" href="../../d9/de6/namespacerespond.html#a4cc0cbf2665d25a61bb84a15bf82e09b">CostsOverTime</a> &gt;</td></tr>
+<tr class="memdesc:adb86f203a1365d1c6d14862697d68ee7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type alias for a vector of Cost objects. <br /></td></tr>
+<tr class="separator:adb86f203a1365d1c6d14862697d68ee7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
+Enumerations</h2></td></tr>
+<tr class="memitem:abcbb31ad7ec52697894b7c78561d9115"><td class="memItemLeft" align="right" valign="top"><a id="abcbb31ad7ec52697894b7c78561d9115" name="abcbb31ad7ec52697894b7c78561d9115"></a>enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d9/de6/namespacerespond.html#abcbb31ad7ec52697894b7c78561d9115">LogType</a> : int { <br />
+&#160;&#160;<b>kInfo</b> = 0
+, <b>kWarn</b> = 1
+, <b>kError</b> = 2
+, <b>kDebug</b> = 3
+, <br />
+&#160;&#160;<b>kCount</b> = 4
+<br />
+ }</td></tr>
+<tr class="memdesc:abcbb31ad7ec52697894b7c78561d9115"><td class="mdescLeft">&#160;</td><td class="mdescRight">Logging levels for the logger. <br /></td></tr>
+<tr class="separator:abcbb31ad7ec52697894b7c78561d9115"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0f87de9dfb0a4bd6785ced80523b6d89"><td class="memItemLeft" align="right" valign="top"><a id="a0f87de9dfb0a4bd6785ced80523b6d89" name="a0f87de9dfb0a4bd6785ced80523b6d89"></a>enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d9/de6/namespacerespond.html#a0f87de9dfb0a4bd6785ced80523b6d89">CreationStatus</a> : int { <br />
+&#160;&#160;<b>kError</b> = -1
+, <b>kSuccess</b> = 0
+, <b>kExists</b> = 1
+, <b>kNotCreated</b> = 2
+, <br />
+&#160;&#160;<b>kCount</b> = 4
+<br />
+ }</td></tr>
+<tr class="memdesc:a0f87de9dfb0a4bd6785ced80523b6d89"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creation status of the logger. <br /></td></tr>
+<tr class="separator:a0f87de9dfb0a4bd6785ced80523b6d89"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6e204491c4805e758f997a02e805f3a8"><td class="memItemLeft" align="right" valign="top"><a id="a6e204491c4805e758f997a02e805f3a8" name="a6e204491c4805e758f997a02e805f3a8"></a>enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d9/de6/namespacerespond.html#a6e204491c4805e758f997a02e805f3a8">UtilityType</a> : int { <b>kMin</b> = 0
+, <b>kMult</b> = 1
+, <b>kCount</b> = 2
+ }</td></tr>
+<tr class="memdesc:a6e204491c4805e758f997a02e805f3a8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enum for the ways we can calculate utility. <br /></td></tr>
+<tr class="separator:a6e204491c4805e758f997a02e805f3a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
+Functions</h2></td></tr>
+<tr class="memitem:aff33f7a9838050006f43f43993a3e1fb"><td class="memItemLeft" align="right" valign="top">Eigen::VectorXd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d9/de6/namespacerespond.html#aff33f7a9838050006f43f43993a3e1fb">Discount</a> (const Eigen::VectorXd &amp;data, double discount_rate, int week, bool is_discrete=true, double total_weeks=52.0)</td></tr>
+<tr class="memdesc:aff33f7a9838050006f43f43993a3e1fb"><td class="mdescLeft">&#160;</td><td class="mdescRight">A function to calculate the discoutn for the given data.  <br /></td></tr>
+<tr class="separator:aff33f7a9838050006f43f43993a3e1fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0236d5e5b7f2f6c8e3672af8044c8bd1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d9/de6/namespacerespond.html#a0236d5e5b7f2f6c8e3672af8044c8bd1">DiscountCostStamp</a> (<a class="el" href="../../d8/dba/structrespond_1_1CostStamp.html">CostStamp</a> &amp;cost_stamp, double discount_rate, int week, bool is_discrete=true, double total_weeks=52.0)</td></tr>
+<tr class="memdesc:a0236d5e5b7f2f6c8e3672af8044c8bd1"><td class="mdescLeft">&#160;</td><td class="mdescRight">A function used to apply the discount to a cost stamp.  <br /></td></tr>
+<tr class="separator:a0236d5e5b7f2f6c8e3672af8044c8bd1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6d1590e8e70c54d7ebe99b5e9cbda97a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="../../d8/dba/structrespond_1_1CostStamp.html">CostStamp</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d9/de6/namespacerespond.html#a6d1590e8e70c54d7ebe99b5e9cbda97a">StampCosts</a> (const Eigen::VectorXd &amp;state, const Eigen::VectorXd &amp;healthcare_costs, const Eigen::VectorXd &amp;aod_costs, const Eigen::VectorXd &amp;fod_costs, const Eigen::VectorXd &amp;pharma_costs, const Eigen::VectorXd &amp;treatment_costs)</td></tr>
+<tr class="memdesc:a6d1590e8e70c54d7ebe99b5e9cbda97a"><td class="mdescLeft">&#160;</td><td class="mdescRight">A function to stamp the costs at a given state.  <br /></td></tr>
+<tr class="separator:a6d1590e8e70c54d7ebe99b5e9cbda97a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aab0bc2b839c26bfa623402762464681a"><td class="memItemLeft" align="right" valign="top">Eigen::VectorXd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d9/de6/namespacerespond.html#aab0bc2b839c26bfa623402762464681a">StampUtilities</a> (const Eigen::VectorXd &amp;state, const Eigen::VectorXd &amp;utility)</td></tr>
+<tr class="memdesc:aab0bc2b839c26bfa623402762464681a"><td class="mdescLeft">&#160;</td><td class="mdescRight">A function to stamp the utilities at a given time.  <br /></td></tr>
+<tr class="separator:aab0bc2b839c26bfa623402762464681a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aab972fe627aefe0608e46fa762495bd4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="../../d9/de6/namespacerespond.html#a4cc0cbf2665d25a61bb84a15bf82e09b">CostsOverTime</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d9/de6/namespacerespond.html#aab972fe627aefe0608e46fa762495bd4">StampCostsOverTime</a> (const <a class="el" href="../../d9/de6/namespacerespond.html#add7ecd2a0ac4d8b22511245a9e13d4e0">HistoryOverTime</a> &amp;history_over_time, const Eigen::VectorXd &amp;healthcare_costs, const Eigen::VectorXd &amp;aod_costs, const Eigen::VectorXd &amp;fod_costs, const Eigen::VectorXd &amp;pharma_costs, const Eigen::VectorXd &amp;treatment_costs, bool discount=false, double discount_rate=0.0, double total_weeks=52.0)</td></tr>
+<tr class="memdesc:aab972fe627aefe0608e46fa762495bd4"><td class="mdescLeft">&#160;</td><td class="mdescRight">A function to stamp the costs over a period of time.  <br /></td></tr>
+<tr class="separator:aab972fe627aefe0608e46fa762495bd4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a782503dde2e2ae2661ddb790dd6fc6f3"><td class="memItemLeft" align="right" valign="top">Eigen::VectorXd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d9/de6/namespacerespond.html#a782503dde2e2ae2661ddb790dd6fc6f3">StampUtilitiesOverTime</a> (const <a class="el" href="../../d9/de6/namespacerespond.html#add7ecd2a0ac4d8b22511245a9e13d4e0">HistoryOverTime</a> &amp;history, const Eigen::VectorXd &amp;utility, <a class="el" href="../../d9/de6/namespacerespond.html#a6e204491c4805e758f997a02e805f3a8">UtilityType</a> util_type, bool discount=false, double discount_rate=0.0, double total_weeks=52.0)</td></tr>
+<tr class="memdesc:a782503dde2e2ae2661ddb790dd6fc6f3"><td class="mdescLeft">&#160;</td><td class="mdescRight">A function to stamp the utilities over a period of time.  <br /></td></tr>
+<tr class="separator:a782503dde2e2ae2661ddb790dd6fc6f3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a10676e26c8db9db8a4849132b6502056"><td class="memItemLeft" align="right" valign="top"><a class="el" href="../../d9/de6/namespacerespond.html#adb86f203a1365d1c6d14862697d68ee7">CostPerspectives</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d9/de6/namespacerespond.html#a10676e26c8db9db8a4849132b6502056">CalculatePerspectives</a> (const <a class="el" href="../../d9/de6/namespacerespond.html#add7ecd2a0ac4d8b22511245a9e13d4e0">HistoryOverTime</a> &amp;history_over_time, const std::vector&lt; std::string &gt; &amp;perspectives, const std::vector&lt; Eigen::VectorXd &gt; &amp;healthcare_costs, const std::vector&lt; Eigen::VectorXd &gt; &amp;aod_costs, const std::vector&lt; Eigen::VectorXd &gt; &amp;fod_costs, const std::vector&lt; Eigen::VectorXd &gt; &amp;pharma_costs, const std::vector&lt; Eigen::VectorXd &gt; &amp;treatment_costs, bool discount=false, double discount_rate=0.0, double total_weeks=52.0)</td></tr>
+<tr class="memdesc:a10676e26c8db9db8a4849132b6502056"><td class="mdescLeft">&#160;</td><td class="mdescRight">A function to calculate costs over history by the given perspective.  <br /></td></tr>
+<tr class="separator:a10676e26c8db9db8a4849132b6502056"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3c606842a8735ca562abd5937e7a90ab"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d9/de6/namespacerespond.html#a3c606842a8735ca562abd5937e7a90ab">CalculateLifeYears</a> (const <a class="el" href="../../d9/de6/namespacerespond.html#add7ecd2a0ac4d8b22511245a9e13d4e0">HistoryOverTime</a> &amp;history, bool discount=false, double discount_rate=0.0, double total_weeks=52.0)</td></tr>
+<tr class="memdesc:a3c606842a8735ca562abd5937e7a90ab"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculate the life years from the history data.  <br /></td></tr>
+<tr class="separator:a3c606842a8735ca562abd5937e7a90ab"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaba69dd26f3ad0274e6f8ec73e61c94d"><td class="memItemLeft" align="right" valign="top">std::vector&lt; double &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d9/de6/namespacerespond.html#aaba69dd26f3ad0274e6f8ec73e61c94d">CalculateTotalCosts</a> (const <a class="el" href="../../d9/de6/namespacerespond.html#a4cc0cbf2665d25a61bb84a15bf82e09b">CostsOverTime</a> &amp;costs)</td></tr>
+<tr class="memdesc:aaba69dd26f3ad0274e6f8ec73e61c94d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculate the total costs from a list of costs.  <br /></td></tr>
+<tr class="separator:aaba69dd26f3ad0274e6f8ec73e61c94d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a95047c311414fb96473ffa1b7defca43"><td class="memTemplParams" colspan="2">template&lt;class... Args&gt; </td></tr>
+<tr class="memitem:a95047c311414fb96473ffa1b7defca43"><td class="memTemplItemLeft" align="right" valign="top">constexpr bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="../../d9/de6/namespacerespond.html#a95047c311414fb96473ffa1b7defca43">CheckVectorLengths</a> (Args const &amp;...args)</td></tr>
+<tr class="memdesc:a95047c311414fb96473ffa1b7defca43"><td class="mdescLeft">&#160;</td><td class="mdescRight">A function used to check the lengths of a variable set of vectors.  <br /></td></tr>
+<tr class="separator:a95047c311414fb96473ffa1b7defca43"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a251e7b9086b9fe4b1c4e1fba029438b6"><td class="memItemLeft" align="right" valign="top"><a class="el" href="../../d9/de6/namespacerespond.html#a0f87de9dfb0a4bd6785ced80523b6d89">CreationStatus</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d9/de6/namespacerespond.html#a251e7b9086b9fe4b1c4e1fba029438b6">CreateFileLogger</a> (const std::string &amp;logger_name, const std::string &amp;filepath)</td></tr>
+<tr class="memdesc:a251e7b9086b9fe4b1c4e1fba029438b6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a logger with the specified name and file path.  <br /></td></tr>
+<tr class="separator:a251e7b9086b9fe4b1c4e1fba029438b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a67e9ae999877d24de63aec20177be26b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d9/de6/namespacerespond.html#a67e9ae999877d24de63aec20177be26b">LogInfo</a> (const std::string &amp;logger_name, const std::string &amp;message)</td></tr>
+<tr class="memdesc:a67e9ae999877d24de63aec20177be26b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Log a message as information.  <br /></td></tr>
+<tr class="separator:a67e9ae999877d24de63aec20177be26b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a62d33c5dbafca1df08cbda2991424777"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d9/de6/namespacerespond.html#a62d33c5dbafca1df08cbda2991424777">LogWarning</a> (const std::string &amp;logger_name, const std::string &amp;message)</td></tr>
+<tr class="memdesc:a62d33c5dbafca1df08cbda2991424777"><td class="mdescLeft">&#160;</td><td class="mdescRight">Log as message as a warning.  <br /></td></tr>
+<tr class="separator:a62d33c5dbafca1df08cbda2991424777"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5ecee2abfe36df79cac03950afde31f6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d9/de6/namespacerespond.html#a5ecee2abfe36df79cac03950afde31f6">LogError</a> (const std::string &amp;logger_name, const std::string &amp;message)</td></tr>
+<tr class="memdesc:a5ecee2abfe36df79cac03950afde31f6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Log a message as an error.  <br /></td></tr>
+<tr class="separator:a5ecee2abfe36df79cac03950afde31f6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a11719adf40a951ebf71284ef23401adb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d9/de6/namespacerespond.html#a11719adf40a951ebf71284ef23401adb">LogDebug</a> (const std::string &amp;logger_name, const std::string &amp;message)</td></tr>
+<tr class="memdesc:a11719adf40a951ebf71284ef23401adb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Log a message as debug information.  <br /></td></tr>
+<tr class="separator:a11719adf40a951ebf71284ef23401adb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa1df9ba4d59dd236dfda6c059f546903"><td class="memItemLeft" align="right" valign="top">Eigen::VectorXd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d9/de6/namespacerespond.html#aa1df9ba4d59dd236dfda6c059f546903">Migration</a> (Eigen::VectorXd &amp;state, const std::vector&lt; Eigen::MatrixXd &gt; &amp;<a class="el" href="../../d9/de6/namespacerespond.html#acbc9130e8db50cc6faf2dc45f1a91677">transition</a>)</td></tr>
+<tr class="memdesc:aa1df9ba4d59dd236dfda6c059f546903"><td class="mdescLeft">&#160;</td><td class="mdescRight">A function to model a migrating cohort.  <br /></td></tr>
+<tr class="separator:aa1df9ba4d59dd236dfda6c059f546903"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1904d4dcdd973a887773d7d03070cd4b"><td class="memItemLeft" align="right" valign="top">Eigen::VectorXd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d9/de6/namespacerespond.html#a1904d4dcdd973a887773d7d03070cd4b">Behavior</a> (Eigen::VectorXd &amp;state, const std::vector&lt; Eigen::MatrixXd &gt; &amp;<a class="el" href="../../d9/de6/namespacerespond.html#acbc9130e8db50cc6faf2dc45f1a91677">transition</a>)</td></tr>
+<tr class="memdesc:a1904d4dcdd973a887773d7d03070cd4b"><td class="mdescLeft">&#160;</td><td class="mdescRight">A function to model the relapsing/remitting behavior of SUD.  <br /></td></tr>
+<tr class="separator:a1904d4dcdd973a887773d7d03070cd4b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab75309fd37905fee50cd3bf2baf931f9"><td class="memItemLeft" align="right" valign="top">Eigen::VectorXd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d9/de6/namespacerespond.html#ab75309fd37905fee50cd3bf2baf931f9">Intervention</a> (Eigen::VectorXd &amp;state, const std::vector&lt; Eigen::MatrixXd &gt; &amp;<a class="el" href="../../d9/de6/namespacerespond.html#acbc9130e8db50cc6faf2dc45f1a91677">transition</a>)</td></tr>
+<tr class="memdesc:ab75309fd37905fee50cd3bf2baf931f9"><td class="mdescLeft">&#160;</td><td class="mdescRight">A function to model the intervention changes of SUD.  <br /></td></tr>
+<tr class="separator:ab75309fd37905fee50cd3bf2baf931f9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a81af952eb03a284e3c1e2eccb3c4a88c"><td class="memItemLeft" align="right" valign="top">Eigen::VectorXd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d9/de6/namespacerespond.html#a81af952eb03a284e3c1e2eccb3c4a88c">Overdose</a> (Eigen::VectorXd &amp;state, const std::vector&lt; Eigen::MatrixXd &gt; &amp;<a class="el" href="../../d9/de6/namespacerespond.html#acbc9130e8db50cc6faf2dc45f1a91677">transition</a>)</td></tr>
+<tr class="memdesc:a81af952eb03a284e3c1e2eccb3c4a88c"><td class="mdescLeft">&#160;</td><td class="mdescRight">A function to model the overdoses within the SUD community.  <br /></td></tr>
+<tr class="separator:a81af952eb03a284e3c1e2eccb3c4a88c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aab7c829eb9dbbf40f834e3a805e75a61"><td class="memItemLeft" align="right" valign="top">Eigen::VectorXd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d9/de6/namespacerespond.html#aab7c829eb9dbbf40f834e3a805e75a61">Mortality</a> (Eigen::VectorXd &amp;state, const std::vector&lt; Eigen::MatrixXd &gt; &amp;<a class="el" href="../../d9/de6/namespacerespond.html#acbc9130e8db50cc6faf2dc45f1a91677">transition</a>)</td></tr>
+<tr class="memdesc:aab7c829eb9dbbf40f834e3a805e75a61"><td class="mdescLeft">&#160;</td><td class="mdescRight">A function to model the mortality within the SUD community.  <br /></td></tr>
+<tr class="separator:aab7c829eb9dbbf40f834e3a805e75a61"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>General Namespace for all RESPOND repo related code. </p>
+</div><h2 class="groupheader">Typedef Documentation</h2>
+<a id="a65769752f5000f255bf5072701e5a850" name="a65769752f5000f255bf5072701e5a850"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a65769752f5000f255bf5072701e5a850">&#9670;&#160;</a></span>StringMap</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="../../d9/de6/namespacerespond.html#a65769752f5000f255bf5072701e5a850">respond::StringMap</a> = typedef std::map&lt;std::string, T&gt;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">T</td><td>Type of key for the map </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ab098ddf2c8c02d2741570986c39ce732" name="ab098ddf2c8c02d2741570986c39ce732"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab098ddf2c8c02d2741570986c39ce732">&#9670;&#160;</a></span>StringUOMap</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="../../d9/de6/namespacerespond.html#ab098ddf2c8c02d2741570986c39ce732">respond::StringUOMap</a> = typedef std::unordered_map&lt;std::string, T&gt;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">T</td><td>Type of key for the unordered map </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<h2 class="groupheader">Function Documentation</h2>
+<a id="a1904d4dcdd973a887773d7d03070cd4b" name="a1904d4dcdd973a887773d7d03070cd4b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1904d4dcdd973a887773d7d03070cd4b">&#9670;&#160;</a></span>Behavior()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">Eigen::VectorXd respond::Behavior </td>
+          <td>(</td>
+          <td class="paramtype">Eigen::VectorXd &amp;&#160;</td>
+          <td class="paramname"><em>state</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; Eigen::MatrixXd &gt; &amp;&#160;</td>
+          <td class="paramname"><em>transition</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">state</td><td>The model state vector. </td></tr>
+    <tr><td class="paramname">transition</td><td>A vector of size 1 containing the transition matrix for the behavior changes. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The resultant model state vector. </dd></dl>
+
+</div>
+</div>
+<a id="a3c606842a8735ca562abd5937e7a90ab" name="a3c606842a8735ca562abd5937e7a90ab"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3c606842a8735ca562abd5937e7a90ab">&#9670;&#160;</a></span>CalculateLifeYears()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">double respond::CalculateLifeYears </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="../../d9/de6/namespacerespond.html#add7ecd2a0ac4d8b22511245a9e13d4e0">HistoryOverTime</a> &amp;&#160;</td>
+          <td class="paramname"><em>history</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>discount</em> = <code>false</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>discount_rate</em> = <code>0.0</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>total_weeks</em> = <code>52.0</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">history</td><td>History object containing the state history. </td></tr>
+    <tr><td class="paramname">provideDiscount</td><td>Flag to indicate whether to apply discounting. </td></tr>
+    <tr><td class="paramname">discountRate</td><td>Discount rate to apply if discounting is enabled. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The total life years calculated from the state history. </dd></dl>
+
+</div>
+</div>
+<a id="a10676e26c8db9db8a4849132b6502056" name="a10676e26c8db9db8a4849132b6502056"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a10676e26c8db9db8a4849132b6502056">&#9670;&#160;</a></span>CalculatePerspectives()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="../../d9/de6/namespacerespond.html#adb86f203a1365d1c6d14862697d68ee7">CostPerspectives</a> respond::CalculatePerspectives </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="../../d9/de6/namespacerespond.html#add7ecd2a0ac4d8b22511245a9e13d4e0">HistoryOverTime</a> &amp;&#160;</td>
+          <td class="paramname"><em>history_over_time</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; std::string &gt; &amp;&#160;</td>
+          <td class="paramname"><em>perspectives</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; Eigen::VectorXd &gt; &amp;&#160;</td>
+          <td class="paramname"><em>healthcare_costs</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; Eigen::VectorXd &gt; &amp;&#160;</td>
+          <td class="paramname"><em>aod_costs</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; Eigen::VectorXd &gt; &amp;&#160;</td>
+          <td class="paramname"><em>fod_costs</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; Eigen::VectorXd &gt; &amp;&#160;</td>
+          <td class="paramname"><em>pharma_costs</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; Eigen::VectorXd &gt; &amp;&#160;</td>
+          <td class="paramname"><em>treatment_costs</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>discount</em> = <code>false</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>discount_rate</em> = <code>0.0</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>total_weeks</em> = <code>52.0</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">history_over_time</td><td>The state history of the model. </td></tr>
+    <tr><td class="paramname">perspectives</td><td>The cost perspective to consider. </td></tr>
+    <tr><td class="paramname">healthcare_costs</td><td>The healthcare costs to apply to the states. </td></tr>
+    <tr><td class="paramname">aod_costs</td><td>The all overdoses costs to apply to the states. </td></tr>
+    <tr><td class="paramname">fod_costs</td><td>The fatal overdose costs to apply to the states. </td></tr>
+    <tr><td class="paramname">pharma_costs</td><td>The pharmaceutical costs to apply to the states. </td></tr>
+    <tr><td class="paramname">treatment_costs</td><td>The treatment costs to apply to the states. </td></tr>
+    <tr><td class="paramname">discount</td><td>Whether or not to apply a discount to each stamp. </td></tr>
+    <tr><td class="paramname">discount_rate</td><td>The rate of discount to apply. </td></tr>
+    <tr><td class="paramname">total_weeks</td><td>The total number of weeks in the simulation. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Cost stamps over time per perspective. </dd></dl>
+
+</div>
+</div>
+<a id="aaba69dd26f3ad0274e6f8ec73e61c94d" name="aaba69dd26f3ad0274e6f8ec73e61c94d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aaba69dd26f3ad0274e6f8ec73e61c94d">&#9670;&#160;</a></span>CalculateTotalCosts()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt; double &gt; respond::CalculateTotalCosts </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="../../d9/de6/namespacerespond.html#a4cc0cbf2665d25a61bb84a15bf82e09b">CostsOverTime</a> &amp;&#160;</td>
+          <td class="paramname"><em>costs</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">cost_list</td><td>List of costs to calculate total costs from. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>A vector containing the total costs for each cost entry. </dd></dl>
+
+</div>
+</div>
+<a id="a95047c311414fb96473ffa1b7defca43" name="a95047c311414fb96473ffa1b7defca43"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a95047c311414fb96473ffa1b7defca43">&#9670;&#160;</a></span>CheckVectorLengths()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class... Args&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">constexpr bool respond::CheckVectorLengths </td>
+          <td>(</td>
+          <td class="paramtype">Args const &amp;...&#160;</td>
+          <td class="paramname"><em>args</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">constexpr</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">...Args</td><td>Variadic type for vectors. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">...args</td><td>The vectors to compare. Variadic for multiple vectors. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>true if all vectors are the same size, false if any are different. </dd></dl>
+
+</div>
+</div>
+<a id="a251e7b9086b9fe4b1c4e1fba029438b6" name="a251e7b9086b9fe4b1c4e1fba029438b6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a251e7b9086b9fe4b1c4e1fba029438b6">&#9670;&#160;</a></span>CreateFileLogger()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="../../d9/de6/namespacerespond.html#a0f87de9dfb0a4bd6785ced80523b6d89">CreationStatus</a> respond::CreateFileLogger </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>logger_name</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>filepath</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">logger_name</td><td>logger name to be created. </td></tr>
+    <tr><td class="paramname">filepath</td><td>file path where the logger will write logs. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>CreationStatus indicating the result of the logger creation. </dd></dl>
+
+</div>
+</div>
+<a id="aff33f7a9838050006f43f43993a3e1fb" name="aff33f7a9838050006f43f43993a3e1fb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aff33f7a9838050006f43f43993a3e1fb">&#9670;&#160;</a></span>Discount()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">Eigen::VectorXd respond::Discount </td>
+          <td>(</td>
+          <td class="paramtype">const Eigen::VectorXd &amp;&#160;</td>
+          <td class="paramname"><em>data</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>discount_rate</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>week</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>is_discrete</em> = <code>true</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>total_weeks</em> = <code>52.0</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">data</td><td>Data to be discounted. </td></tr>
+    <tr><td class="paramname">discountRate</td><td>Discount rate to apply to the data. </td></tr>
+    <tr><td class="paramname">N</td><td>Number of weeks to discount over. </td></tr>
+    <tr><td class="paramname">isDiscrete</td><td>Whether the discount is a discrete or continuous discount. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>A matrix with the discounted data. </dd></dl>
+
+</div>
+</div>
+<a id="a0236d5e5b7f2f6c8e3672af8044c8bd1" name="a0236d5e5b7f2f6c8e3672af8044c8bd1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0236d5e5b7f2f6c8e3672af8044c8bd1">&#9670;&#160;</a></span>DiscountCostStamp()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void respond::DiscountCostStamp </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="../../d8/dba/structrespond_1_1CostStamp.html">CostStamp</a> &amp;&#160;</td>
+          <td class="paramname"><em>cost_stamp</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>discount_rate</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>week</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>is_discrete</em> = <code>true</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>total_weeks</em> = <code>52.0</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">cost_stamp</td><td>The cost stamp to apply a discount to. </td></tr>
+    <tr><td class="paramname">discount_rate</td><td>The discount rate to apply to the cost stamp. </td></tr>
+    <tr><td class="paramname">week</td><td>The week of the simulation this cost stamp applies to. </td></tr>
+    <tr><td class="paramname">is_discrete</td><td>Whether or not the discount should be discrete. </td></tr>
+    <tr><td class="paramname">total_weeks</td><td>How many total weeks were run through the simulation. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ab75309fd37905fee50cd3bf2baf931f9" name="ab75309fd37905fee50cd3bf2baf931f9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab75309fd37905fee50cd3bf2baf931f9">&#9670;&#160;</a></span>Intervention()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">Eigen::VectorXd respond::Intervention </td>
+          <td>(</td>
+          <td class="paramtype">Eigen::VectorXd &amp;&#160;</td>
+          <td class="paramname"><em>state</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; Eigen::MatrixXd &gt; &amp;&#160;</td>
+          <td class="paramname"><em>transition</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">state</td><td>The model state vector. </td></tr>
+    <tr><td class="paramname">transition</td><td>A vector of size 2 containing first the transition matrix for intervention changes, and then second the behavior changes once going through an intervention change. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The resultant model state vector. </dd></dl>
+
+</div>
+</div>
+<a id="a11719adf40a951ebf71284ef23401adb" name="a11719adf40a951ebf71284ef23401adb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a11719adf40a951ebf71284ef23401adb">&#9670;&#160;</a></span>LogDebug()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void respond::LogDebug </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>logger_name</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>message</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">logger_name</td><td>Logger name to log the message to. </td></tr>
+    <tr><td class="paramname">message</td><td>Message to log as debug information. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a5ecee2abfe36df79cac03950afde31f6" name="a5ecee2abfe36df79cac03950afde31f6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5ecee2abfe36df79cac03950afde31f6">&#9670;&#160;</a></span>LogError()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void respond::LogError </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>logger_name</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>message</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">logger_name</td><td>Logger name to log the message to. </td></tr>
+    <tr><td class="paramname">message</td><td>Message to log as an error. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a67e9ae999877d24de63aec20177be26b" name="a67e9ae999877d24de63aec20177be26b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a67e9ae999877d24de63aec20177be26b">&#9670;&#160;</a></span>LogInfo()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void respond::LogInfo </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>logger_name</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>message</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">logger_name</td><td>Logger name to log the message to. </td></tr>
+    <tr><td class="paramname">message</td><td>Message to log as information. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a62d33c5dbafca1df08cbda2991424777" name="a62d33c5dbafca1df08cbda2991424777"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a62d33c5dbafca1df08cbda2991424777">&#9670;&#160;</a></span>LogWarning()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void respond::LogWarning </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>logger_name</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>message</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">logger_name</td><td>Logger name to log the message to. </td></tr>
+    <tr><td class="paramname">message</td><td>Message to log as a warning. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="aa1df9ba4d59dd236dfda6c059f546903" name="aa1df9ba4d59dd236dfda6c059f546903"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa1df9ba4d59dd236dfda6c059f546903">&#9670;&#160;</a></span>Migration()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">Eigen::VectorXd respond::Migration </td>
+          <td>(</td>
+          <td class="paramtype">Eigen::VectorXd &amp;&#160;</td>
+          <td class="paramname"><em>state</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; Eigen::MatrixXd &gt; &amp;&#160;</td>
+          <td class="paramname"><em>transition</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">state</td><td>The model state vector. </td></tr>
+    <tr><td class="paramname">transition</td><td>A vector of size 1 containing an Eigen::VectorXd that migrates into/out of the state. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The resultant model state vector. </dd></dl>
+
+</div>
+</div>
+<a id="aab7c829eb9dbbf40f834e3a805e75a61" name="aab7c829eb9dbbf40f834e3a805e75a61"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aab7c829eb9dbbf40f834e3a805e75a61">&#9670;&#160;</a></span>Mortality()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">Eigen::VectorXd respond::Mortality </td>
+          <td>(</td>
+          <td class="paramtype">Eigen::VectorXd &amp;&#160;</td>
+          <td class="paramname"><em>state</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; Eigen::MatrixXd &gt; &amp;&#160;</td>
+          <td class="paramname"><em>transition</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">state</td><td>The model state vector. </td></tr>
+    <tr><td class="paramname">transition</td><td>A vector of size 1 containing the transition matrix for background mortalities. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The resultant state vector. </dd></dl>
+
+</div>
+</div>
+<a id="a81af952eb03a284e3c1e2eccb3c4a88c" name="a81af952eb03a284e3c1e2eccb3c4a88c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a81af952eb03a284e3c1e2eccb3c4a88c">&#9670;&#160;</a></span>Overdose()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">Eigen::VectorXd respond::Overdose </td>
+          <td>(</td>
+          <td class="paramtype">Eigen::VectorXd &amp;&#160;</td>
+          <td class="paramname"><em>state</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; Eigen::MatrixXd &gt; &amp;&#160;</td>
+          <td class="paramname"><em>transition</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">state</td><td>The model state vector. </td></tr>
+    <tr><td class="paramname">transition</td><td>A vector of size 2 containing first the transition matrix probability and second a vector of the chance of an overdose being fatal. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The number of overdoses that occurred this iteration. </dd></dl>
+
+</div>
+</div>
+<a id="a6d1590e8e70c54d7ebe99b5e9cbda97a" name="a6d1590e8e70c54d7ebe99b5e9cbda97a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6d1590e8e70c54d7ebe99b5e9cbda97a">&#9670;&#160;</a></span>StampCosts()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="../../d8/dba/structrespond_1_1CostStamp.html">CostStamp</a> respond::StampCosts </td>
+          <td>(</td>
+          <td class="paramtype">const Eigen::VectorXd &amp;&#160;</td>
+          <td class="paramname"><em>state</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const Eigen::VectorXd &amp;&#160;</td>
+          <td class="paramname"><em>healthcare_costs</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const Eigen::VectorXd &amp;&#160;</td>
+          <td class="paramname"><em>aod_costs</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const Eigen::VectorXd &amp;&#160;</td>
+          <td class="paramname"><em>fod_costs</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const Eigen::VectorXd &amp;&#160;</td>
+          <td class="paramname"><em>pharma_costs</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const Eigen::VectorXd &amp;&#160;</td>
+          <td class="paramname"><em>treatment_costs</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">state</td><td>The state at which to capture the costs. </td></tr>
+    <tr><td class="paramname">healthcare_costs</td><td>The healthcare costs to apply. </td></tr>
+    <tr><td class="paramname">aod_costs</td><td>The all overdose costs to apply. </td></tr>
+    <tr><td class="paramname">fod_costs</td><td>The fatal overdose costs to apply. </td></tr>
+    <tr><td class="paramname">pharma_costs</td><td>The pharmaceutical costs to apply. </td></tr>
+    <tr><td class="paramname">treatment_costs</td><td>The treatment costs to apply. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>A new cost stamp given the costs and state. </dd></dl>
+
+</div>
+</div>
+<a id="aab972fe627aefe0608e46fa762495bd4" name="aab972fe627aefe0608e46fa762495bd4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aab972fe627aefe0608e46fa762495bd4">&#9670;&#160;</a></span>StampCostsOverTime()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="../../d9/de6/namespacerespond.html#a4cc0cbf2665d25a61bb84a15bf82e09b">CostsOverTime</a> respond::StampCostsOverTime </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="../../d9/de6/namespacerespond.html#add7ecd2a0ac4d8b22511245a9e13d4e0">HistoryOverTime</a> &amp;&#160;</td>
+          <td class="paramname"><em>history_over_time</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const Eigen::VectorXd &amp;&#160;</td>
+          <td class="paramname"><em>healthcare_costs</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const Eigen::VectorXd &amp;&#160;</td>
+          <td class="paramname"><em>aod_costs</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const Eigen::VectorXd &amp;&#160;</td>
+          <td class="paramname"><em>fod_costs</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const Eigen::VectorXd &amp;&#160;</td>
+          <td class="paramname"><em>pharma_costs</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const Eigen::VectorXd &amp;&#160;</td>
+          <td class="paramname"><em>treatment_costs</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>discount</em> = <code>false</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>discount_rate</em> = <code>0.0</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>total_weeks</em> = <code>52.0</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">history_over_time</td><td>The state history of the model. </td></tr>
+    <tr><td class="paramname">healthcare_costs</td><td>The healthcare costs to apply to the states. </td></tr>
+    <tr><td class="paramname">aod_costs</td><td>The all overdoses costs to apply to the states. </td></tr>
+    <tr><td class="paramname">fod_costs</td><td>The fatal overdose costs to apply to the states. </td></tr>
+    <tr><td class="paramname">pharma_costs</td><td>The pharmaceutical costs to apply to the states. </td></tr>
+    <tr><td class="paramname">treatment_costs</td><td>The treatment costs to apply to the states. </td></tr>
+    <tr><td class="paramname">discount</td><td>Whether or not to apply a discount to each stamp. </td></tr>
+    <tr><td class="paramname">discount_rate</td><td>The rate of discount to apply. </td></tr>
+    <tr><td class="paramname">total_weeks</td><td>The total number of weeks in the simulation. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The Cost Stamps over the model history. </dd></dl>
+
+</div>
+</div>
+<a id="aab0bc2b839c26bfa623402762464681a" name="aab0bc2b839c26bfa623402762464681a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aab0bc2b839c26bfa623402762464681a">&#9670;&#160;</a></span>StampUtilities()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">Eigen::VectorXd respond::StampUtilities </td>
+          <td>(</td>
+          <td class="paramtype">const Eigen::VectorXd &amp;&#160;</td>
+          <td class="paramname"><em>state</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const Eigen::VectorXd &amp;&#160;</td>
+          <td class="paramname"><em>utility</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">state</td><td>The state at which to capture the utilities. </td></tr>
+    <tr><td class="paramname">utility</td><td>The utility value to capture. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>A new vector containing the utility given the state and utility. </dd></dl>
+
+</div>
+</div>
+<a id="a782503dde2e2ae2661ddb790dd6fc6f3" name="a782503dde2e2ae2661ddb790dd6fc6f3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a782503dde2e2ae2661ddb790dd6fc6f3">&#9670;&#160;</a></span>StampUtilitiesOverTime()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">Eigen::VectorXd respond::StampUtilitiesOverTime </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="../../d9/de6/namespacerespond.html#add7ecd2a0ac4d8b22511245a9e13d4e0">HistoryOverTime</a> &amp;&#160;</td>
+          <td class="paramname"><em>history</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const Eigen::VectorXd &amp;&#160;</td>
+          <td class="paramname"><em>utility</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="../../d9/de6/namespacerespond.html#a6e204491c4805e758f997a02e805f3a8">UtilityType</a>&#160;</td>
+          <td class="paramname"><em>util_type</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>discount</em> = <code>false</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>discount_rate</em> = <code>0.0</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>total_weeks</em> = <code>52.0</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">history</td><td>The state history of the model. </td></tr>
+    <tr><td class="paramname">utility</td><td>The utility value to capture. </td></tr>
+    <tr><td class="paramname">util_type</td><td>Either Multiplicative or Minimum. </td></tr>
+    <tr><td class="paramname">discount</td><td>Whether or not to apply a discount to each stamp. </td></tr>
+    <tr><td class="paramname">discount_rate</td><td>The rate of discount to apply. </td></tr>
+    <tr><td class="paramname">total_weeks</td><td>The total number of weeks in the simulation. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The total utility of the history. </dd></dl>
+
+</div>
+</div>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="../../d9/de6/namespacerespond.html">respond</a></li>
-    <li class="footer">Generated on Fri Jul 25 2025 18:30:20 for RESPOND by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
+    <li class="footer">Generated on Wed Aug 6 2025 14:25:15 for RESPOND by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
   </ul>
 </div>
 </body>

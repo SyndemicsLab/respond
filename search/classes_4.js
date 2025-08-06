@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['respond_0',['Respond',['../db/dd0/classrespond_1_1model_1_1Respond.html',1,'respond::model']]]
+  ['totals_0',['Totals',['../dd/daf/structrespond_1_1Totals.html',1,'respond']]]
 ];

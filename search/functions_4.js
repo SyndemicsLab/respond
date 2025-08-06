@@ -1,7 +1,7 @@
 var searchData=
 [
-  ['matrix3dvectorminimum_0',['Matrix3dVectorMinimum',['../d9/d37/namespacerespond_1_1data__ops.html#a46ffb9748b2144d2bd0ff19f49f68478',1,'respond::data_ops']]],
-  ['matrix3dvectormultiplied_1',['Matrix3dVectorMultiplied',['../d9/d37/namespacerespond_1_1data__ops.html#a0a8036f659c49e68fde26fac07d3b816',1,'respond::data_ops']]],
-  ['multiplytimedmatrix3dbydouble_2',['MultiplyTimedMatrix3dByDouble',['../d9/d37/namespacerespond_1_1data__ops.html#a75b74858fc8695c726423928d341fb22',1,'respond::data_ops']]],
-  ['multiplytimedmatrix3dbymatrix_3',['MultiplyTimedMatrix3dByMatrix',['../d9/d37/namespacerespond_1_1data__ops.html#ad8b9178558bd0634c225af8276287798',1,'respond::data_ops']]]
+  ['getloggername_0',['GetLoggerName',['../df/d1c/classrespond_1_1Markov.html#a14679b9f03a36c2bb13b12f566f28efd',1,'respond::Markov']]],
+  ['getrunresults_1',['GetRunResults',['../df/d1c/classrespond_1_1Markov.html#aeab2b149736b6b8a053a6c4b3e44cd93',1,'respond::Markov']]],
+  ['getstate_2',['GetState',['../df/d1c/classrespond_1_1Markov.html#a2127704575576d56a93c3e173c903234',1,'respond::Markov']]],
+  ['gettransitions_3',['GetTransitions',['../df/d1c/classrespond_1_1Markov.html#a5c1bba4a138eadf103d502654cdc9991',1,'respond::Markov']]]
 ];
