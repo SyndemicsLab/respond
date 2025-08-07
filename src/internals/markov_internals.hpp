@@ -41,8 +41,9 @@ public:
 
     MarkovImpl &operator=(const MarkovImpl &other) {
         MarkovImpl temp(GetLoggerName());
-        temp->SetTransitions(other.GetTransitions());
-        temp->SetState(other.GetState());
+
+        temp.SetTransitions(other.GetTransitions());
+        temp.SetState(other.GetState());
         return temp;
     }
 
