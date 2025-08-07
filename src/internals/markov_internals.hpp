@@ -4,8 +4,8 @@
 // Created Date: 2025-08-05                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-08-05                                                  //
-// Modified By: Matthew Carroll                                               //
+// Last Modified: 2025-08-07                                                  //
+// Modified By: Andrew Clark                                                  //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
 ////////////////////////////////////////////////////////////////////////////////
@@ -41,8 +41,10 @@ public:
 
     MarkovImpl &operator=(const MarkovImpl &other) {
         MarkovImpl temp(GetLoggerName());
-        SetTransitions(other.GetTransitions());
-        SetState(other.GetState());
+
+        temp.SetTransitions(other.GetTransitions());
+        temp.SetState(other.GetState());
+        return temp;
     }
 
     void SetState(const Eigen::VectorXd &state_vector) override {
