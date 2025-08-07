@@ -43,6 +43,7 @@ public:
         MarkovImpl temp(GetLoggerName());
         SetTransitions(other.GetTransitions());
         SetState(other.GetState());
+        return temp;
     }
 
     void SetState(const Eigen::VectorXd &state_vector) override {
