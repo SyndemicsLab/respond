@@ -40,11 +40,10 @@ public:
     }
 
     MarkovImpl &operator=(const MarkovImpl &other) {
-        MarkovImpl temp(GetLoggerName());
-
-        temp.SetTransitions(other.GetTransitions());
-        temp.SetState(other.GetState());
-        return temp;
+        _logger_name = other.GetLoggerName();
+        this->SetTransitions(other.GetTransitions());
+        this->SetState(other.GetState());
+        return *this;
     }
 
     void SetState(const Eigen::VectorXd &state_vector) override {
@@ -74,7 +73,7 @@ public:
     std::string GetLoggerName() const override { return _logger_name; }
 
 private:
-    const std::string _logger_name;
+    std::string _logger_name;
     Eigen::VectorXd _state;
     std::vector<transition> _transitions = {};
     std::map<int, stamper> _stamper_functions;
