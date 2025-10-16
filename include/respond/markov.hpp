@@ -4,7 +4,7 @@
 // Created Date: 2025-08-05                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-08-05                                                  //
+// Last Modified: 2025-10-16                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -70,6 +70,8 @@ public:
     /// @brief Getter for the logger name.
     /// @return The name of the logger.
     virtual std::string GetLoggerName() const = 0;
+
+    virtual std::unique_ptr<Markov> clone() const = 0;
 
     /// @brief Factory method to create a Markov instance.
     /// @param log_name Name of the logger to write errors to.

@@ -4,8 +4,8 @@
 // Created Date: 2025-08-05                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-08-07                                                  //
-// Modified By: Andrew Clark                                                  //
+// Last Modified: 2025-10-16                                                  //
+// Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
 ////////////////////////////////////////////////////////////////////////////////
@@ -34,17 +34,16 @@ public:
 
     ~MarkovImpl() = default;
 
+    std::unique_ptr<Markov> clone() const override {
+        return std::make_unique<MarkovImpl>(*this);
+    }
+
     MarkovImpl(const MarkovImpl &other) : MarkovImpl(other.GetLoggerName()) {
         SetTransitions(other.GetTransitions());
         SetState(other.GetState());
     }
 
-    MarkovImpl &operator=(const MarkovImpl &other) {
-        _logger_name = other.GetLoggerName();
-        this->SetTransitions(other.GetTransitions());
-        this->SetState(other.GetState());
-        return *this;
-    }
+    MarkovImpl &operator=(const MarkovImpl &other) = delete;
 
     void SetState(const Eigen::VectorXd &state_vector) override {
         _state = state_vector;
