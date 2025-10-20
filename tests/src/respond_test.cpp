@@ -4,7 +4,7 @@
 // Created Date: 2025-08-05                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-08-05                                                  //
+// Last Modified: 2025-10-16                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -68,7 +68,6 @@ TEST_F(RespondTest, Behavior_Function) {
 TEST_F(RespondTest, Intervention_Function) {
 
     Eigen::MatrixXd t1(6, 6);
-    Eigen::MatrixXd t2(6, 6);
     // clang-format off
     t1 << 1.0, 0.0, 0.0, 0.0, 0.0, 0.0,
           0.0, 1.0, 0.0, 0.0, 0.0, 0.0,
@@ -76,22 +75,13 @@ TEST_F(RespondTest, Intervention_Function) {
           0.0, 0.0, 0.8, 0.9, 0.0, 0.0,
           0.0, 0.0, 0.0, 0.0, 1.0, 0.0,
           0.0, 0.0, 0.0, 0.0, 0.0, 1.0;
-    
-    t2 << 1.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-          0.0, 1.0, 0.0, 0.0, 0.0, 0.0,
-          0.0, 0.0, 0.7, 0.6, 0.0, 0.0,
-          0.0, 0.0, 0.3, 0.4, 0.0, 0.0,
-          0.0, 0.0, 0.0, 0.0, 1.0, 0.0,
-          0.0, 0.0, 0.0, 0.0, 0.0, 1.0;
     // clang-format on
 
     transition_matrices.push_back(t1);
-    transition_matrices.push_back(t2);
 
     auto result = Intervention(state, transition_matrices);
     Eigen::VectorXd expected(6);
-    expected << 1.0, 1.0, 0.72, 1.28, 1.0, 1.0;
-
+    expected << 1.0, 1.0, 0.3, 1.7, 1.0, 1.0;
     EXPECT_TRUE(result.isApprox(expected));
 }
 

@@ -4,7 +4,7 @@
 // Created Date: 2025-08-05                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-08-06                                                  //
+// Last Modified: 2025-10-20                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -71,36 +71,27 @@ Eigen::VectorXd Behavior(Eigen::VectorXd &state,
 
 /// @brief A function to model the intervention changes of SUD.
 /// @param state The model state vector.
-/// @param transition A vector of size 2 containing first the transition matrix
-/// for intervention changes, and then second the behavior changes once going
-/// through an intervention change.
+/// @param transition A vector of size 1 containing the transition matrix
+/// for intervention changes.
 /// @return The resultant model state vector.
 Eigen::VectorXd Intervention(Eigen::VectorXd &state,
                              const std::vector<Eigen::MatrixXd> &transition) {
-    if (transition.size() != 2) {
+    if (transition.size() != 1) {
         throw std::runtime_error(
-            "Intervention Transitions must have 2 Transition Matrices.");
+            "Intervention Transitions must have 1 Transition Matrix.");
     }
 
     Eigen::VectorXd zero_matrix = Eigen::VectorXd::Zero(state.size());
-
-    auto inter = transition[0] * state; // interventions
-    auto moved = (inter - state);       // calculate the people that moved
-
-    auto negatives = moved.cwiseMin(zero_matrix);
-    auto positives = moved.cwiseMax(zero_matrix);
-
-    auto iie = transition[1] * positives; // transition the people
-
-    if (positives.sum() != iie.sum()) {
-        throw std::runtime_error(
-            "Intervention Transitions must maintain the same number of people "
-            "during the transition.");
+    if (state.rows() != transition[0].cols()) {
+        std::stringstream ss;
+        ss << "Unable to multiply intervention transition with "
+              "state, mismatched sizes. State size is (";
+        ss << state.rows() << ", " << state.cols();
+        ss << ") and transition size is (" << transition[0].rows() << ", ";
+        ss << transition[0].cols() << ").";
+        throw std::runtime_error(ss.str());
     }
-
-    auto total_moved = iie + negatives;
-
-    state += total_moved; // add the people back to the state
+    state = transition[0] * state;
     return state;
 }
 

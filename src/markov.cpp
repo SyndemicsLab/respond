@@ -4,7 +4,7 @@
 // Created Date: 2025-07-07                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-07-30                                                  //
+// Last Modified: 2025-10-16                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -35,10 +35,17 @@ void MarkovImpl::Run(const int &num_steps) {
 
     while (_time < num_steps) {
         HistoryStamp stamp;
+#ifndef NDEBUG
+        respond::LogDebug(_logger_name, "Started Timestep: " + _time);
+#endif
         Step(stamp);
         // Writing the history after the timestep is complete
         stamp.state = _state;
         _history[_time + 1] = stamp;
+#ifndef NDEBUG
+        respond::LogDebug(_logger_name, " | Completed Timestep: " +
+                                            std::to_string(_time) + "\n");
+#endif
         ++_time;
     }
 }
