@@ -4,7 +4,7 @@
 // Created Date: 2025-08-05                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-10-16                                                  //
+// Last Modified: 2025-10-20                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
@@ -78,7 +78,7 @@ Eigen::VectorXd Intervention(Eigen::VectorXd &state,
                              const std::vector<Eigen::MatrixXd> &transition) {
     if (transition.size() != 1) {
         throw std::runtime_error(
-            "Intervention Transitions must have 1 Transition Matrices.");
+            "Intervention Transitions must have 1 Transition Matrix.");
     }
 
     Eigen::VectorXd zero_matrix = Eigen::VectorXd::Zero(state.size());
