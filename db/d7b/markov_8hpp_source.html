@@ -135,7 +135,7 @@ $(document).ready(function(){initNavTree('db/d7b/markov_8hpp_source.html','../..
 <div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="comment">// Created Date: 2025-08-05                                                   //</span></div>
 <div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="comment">// Author: Matthew Carroll                                                    //</span></div>
 <div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="comment">// -----                                                                      //</span></div>
-<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="comment">// Last Modified: 2025-08-05                                                  //</span></div>
+<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="comment">// Last Modified: 2025-10-16                                                  //</span></div>
 <div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="comment">// Modified By: Matthew Carroll                                               //</span></div>
 <div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span><span class="comment">// -----                                                                      //</span></div>
 <div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span><span class="comment">// Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //</span></div>
@@ -180,11 +180,13 @@ $(document).ready(function(){initNavTree('db/d7b/markov_8hpp_source.html','../..
 <div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span> </div>
 <div class="line"><a id="l00072" name="l00072"></a><span class="lineno"><a class="line" href="../../df/d1c/classrespond_1_1Markov.html#a14679b9f03a36c2bb13b12f566f28efd">   72</a></span>    <span class="keyword">virtual</span> std::string <a class="code hl_function" href="../../df/d1c/classrespond_1_1Markov.html#a14679b9f03a36c2bb13b12f566f28efd">GetLoggerName</a>() <span class="keyword">const</span> = 0;</div>
 <div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span> </div>
-<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span>    <span class="keyword">static</span> std::unique_ptr&lt;Markov&gt;</div>
-<div class="line"><a id="l00078" name="l00078"></a><span class="lineno"><a class="line" href="../../df/d1c/classrespond_1_1Markov.html#a4ccacd9a6126f048a7fd4032a28a8e98">   78</a></span>    <a class="code hl_function" href="../../df/d1c/classrespond_1_1Markov.html#a4ccacd9a6126f048a7fd4032a28a8e98">Create</a>(<span class="keyword">const</span> std::string &amp;log_name = <span class="stringliteral">&quot;console&quot;</span>);</div>
-<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span>};</div>
-<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span>} <span class="comment">// namespace respond</span></div>
-<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span><span class="preprocessor">#endif </span><span class="comment">// RESPOND_MARKOV_HPP_</span></div>
+<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span>    <span class="keyword">virtual</span> std::unique_ptr&lt;Markov&gt; clone() <span class="keyword">const</span> = 0;</div>
+<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span> </div>
+<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span>    <span class="keyword">static</span> std::unique_ptr&lt;Markov&gt;</div>
+<div class="line"><a id="l00080" name="l00080"></a><span class="lineno"><a class="line" href="../../df/d1c/classrespond_1_1Markov.html#a4ccacd9a6126f048a7fd4032a28a8e98">   80</a></span>    <a class="code hl_function" href="../../df/d1c/classrespond_1_1Markov.html#a4ccacd9a6126f048a7fd4032a28a8e98">Create</a>(<span class="keyword">const</span> std::string &amp;log_name = <span class="stringliteral">&quot;console&quot;</span>);</div>
+<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span>};</div>
+<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span>} <span class="comment">// namespace respond</span></div>
+<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span><span class="preprocessor">#endif </span><span class="comment">// RESPOND_MARKOV_HPP_</span></div>
 <div class="ttc" id="aclassrespond_1_1Markov_html"><div class="ttname"><a href="../../df/d1c/classrespond_1_1Markov.html">respond::Markov</a></div><div class="ttdoc">Class describing the Respond model simulation.</div><div class="ttdef"><b>Definition:</b> markov.hpp:37</div></div>
 <div class="ttc" id="aclassrespond_1_1Markov_html_a14679b9f03a36c2bb13b12f566f28efd"><div class="ttname"><a href="../../df/d1c/classrespond_1_1Markov.html#a14679b9f03a36c2bb13b12f566f28efd">respond::Markov::GetLoggerName</a></div><div class="ttdeci">virtual std::string GetLoggerName() const =0</div><div class="ttdoc">Getter for the logger name.</div></div>
 <div class="ttc" id="aclassrespond_1_1Markov_html_a2127704575576d56a93c3e173c903234"><div class="ttname"><a href="../../df/d1c/classrespond_1_1Markov.html#a2127704575576d56a93c3e173c903234">respond::Markov::GetState</a></div><div class="ttdeci">virtual Eigen::VectorXd GetState() const =0</div><div class="ttdoc">Getter for the state vector.</div></div>
@@ -208,7 +210,7 @@ $(document).ready(function(){initNavTree('db/d7b/markov_8hpp_source.html','../..
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="../../dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="../../dir_70501f13f5c9277fdfc6ec16bf603df6.html">respond</a></li><li class="navelem"><b>markov.hpp</b></li>
-    <li class="footer">Generated on Wed Oct 15 2025 13:46:36 for RESPOND by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
+    <li class="footer">Generated on Mon Oct 20 2025 13:39:09 for RESPOND by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
   </ul>
 </div>
 </body>
