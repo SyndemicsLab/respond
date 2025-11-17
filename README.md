@@ -19,6 +19,9 @@ This repository houses a complete rewrite of the original [RESPOND model](https:
 
 The [original RESPOND model](https://github.com/SyndemicsLab/RESPONDv1/tree/main) was built using a combination of the R and C++ programming languages. This proved computationally slow and required a very skilled developer at the core of the software knowing all of the intricate details. As such, it proved incredibly difficult to onboard new engineers, analysts, and researchers to the model. Worse yet, in order to make changes to the model, all requirements inevitably filtered back to the software engineer. Following the software "inversion of control" paradigm, this refactoring focused on abstracting the model to it's core components and allowing users to customize it to their needs rather than a general rigid structure.
 
+## Releases
+As of **2025-11-17**, this repository is going through a refactor to transition from being a C++ library to a framework used through language bindings. Release [v0.3.0](https://github.com/SyndemicsLab/respond/releases/tag/v0.3.0) is the last version of the executable
+
 ## CMake
 
 RESPOND makes full use of the CMake build system. It is a common tool used throughout the C++ user-base and we utilize it for dependency management, linking, and testing. As C++ has poor package management, we intentionally decided to move our focus away from tools such as conan and vcpkg and stay with pure CMake. Not to say we would never publish with such package managers, but it is not a core focus of the refactor/engineering team.
@@ -48,10 +51,6 @@ For tests we require:
 
 - [GoogleTest](https://github.com/google/googletest)
 
-## Build
-
-This is, by nature, a C++ library. This means that the default behavior is not to provide an executable for the model, but rather a set of callable functions to design your own model. However, we have a distinct use case for an executable and building a model, and as such we provide the ability to build and install this executable. This is directly controlled via the `RESPOND_BUILD_EXECUTABLE` variable.
-
 ### Local
 
 If you would like to clone and build this locally, it is a relatively straightforward process:
@@ -64,7 +63,7 @@ cmake --workflow --preset gcc-release
 
 And then the model is build and installed. Our default location is a build directory in the repository, but the CMake Install Directory can be pointed to wherever the user desires.
 
-### Fetch Content
+### FetchContent
 
 If you would like to make use of Fetch Content to extract the library:
 
@@ -82,29 +81,8 @@ FetchContent_MakeAvailable(respond)
 
 ### Script
 
-If you would prefer a single, all in one, script. Our team has developed a script that works on any linux environment and finds packages wherever available. As such, the user needs simply run:
+If you would prefer a single, all in one, script. Our team has developed a script that works on any Linux environment and finds packages wherever available. As such, the user need simply run:
 
 ```shell
 ./tools/build.sh
-```
-
-## Running the RESPOND Executable
-
-If you choose to use our provided executable, running the model requires a set of input files. The input files required are:
-
-1. `all_types_overdose.csv`
-2. `background_mortality.csv`
-3. `block_init_effect.csv`
-4. `block_trans.csv`
-5. `entering_cohort.csv`
-6. `fatal_overdose.csv`
-7. `init_cohort.csv`
-8. `oud_trans.csv`
-9. `sim.conf`
-10. `SMR.csv`
-
-These are all put into a folder titled `input<number>` where the number is replaced with the ID of the input. Then, after these folders are created and RESPOND is built we simply run the command:
-
-```bash
-./build/extras/respond_exe <input_start> <input_end>
 ```
