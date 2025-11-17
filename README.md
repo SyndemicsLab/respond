@@ -20,7 +20,7 @@ This repository houses a complete rewrite of the original [RESPOND model](https:
 The [original RESPOND model](https://github.com/SyndemicsLab/RESPONDv1/tree/main) was built using a combination of the R and C++ programming languages. This proved computationally slow and required a very skilled developer at the core of the software knowing all of the intricate details. As such, it proved incredibly difficult to onboard new engineers, analysts, and researchers to the model. Worse yet, in order to make changes to the model, all requirements inevitably filtered back to the software engineer. Following the software "inversion of control" paradigm, this refactoring focused on abstracting the model to it's core components and allowing users to customize it to their needs rather than a general rigid structure.
 
 ## Releases
-As of **2025-11-17**, this repository is going through a refactor to transition from being a C++ library to a framework used through language bindings. Release [v0.3.0](https://github.com/SyndemicsLab/respond/releases/tag/v0.3.0) is the last version of the executable
+As of **2025-11-17**, this repository is going through a refactor to transition from being a C++ library to a framework used through language bindings. Release [v0.3.0](https://github.com/SyndemicsLab/respond/releases/tag/v0.3.0) is the last version that includes the executable.
 
 ## CMake
 
