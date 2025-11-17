@@ -1,14 +1,12 @@
 # RESPOND: An Opioid Use Disorder State Transition Model
 
-<a href="https://www.syndemicslab.org/hep-ce"><img align="right" src="https://github.com/SyndemicsLab/.github/blob/main/profile/images/RESPOND.png" alt="RESPOND Logo" height="120" /></a>
+<a href="https://www.syndemicslab.org/respond"><img align="right" src="https://github.com/SyndemicsLab/.github/blob/main/profile/images/RESPOND.png" alt="RESPOND Logo" height="120" /></a>
 
 [![Docs](https://github.com/SyndemicsLab/respond/actions/workflows/deploy-docs.yml/badge.svg)](https://github.com/SyndemicsLab/respond/actions/workflows/deploy-docs.yml)
-
 [![Tests](https://github.com/SyndemicsLab/respond/actions/workflows/test-ubuntu.yml/badge.svg)](https://github.com/SyndemicsLab/respond/actions/workflows/test-ubuntu.yml)
-
 [![Coverage](https://github.com/SyndemicsLab/respond/actions/workflows/coverage.yml/badge.svg)](https://github.com/SyndemicsLab/respond/actions/workflows/coverage.yml)
 
-This repository houses a complete rewrite of the original [RESPOND model](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0310763), first created by the [Syndemics Lab](https://www.syndemicslab.org) in 2018 with a focus on 3 primary goals:
+This is the home of the [RESPOND model](), first created by the [Syndemics Lab](https://www.syndemicslab.org) in 2018, rewritten with a focus on four primary goals:
 
 1. Improve the Maintainability/Scalability of the Model
 2. Improve the Overall Efficiency of the Model
@@ -33,7 +31,7 @@ We natively support 4 different build workflows with the `CMakePresets.json` fil
 3. `gcc-release-cluster`
 4. `gcc-debug-cluster`
 
-Unless you are explicitly using a linux based computing cluster, we highly recommend choosing one of the first two build processes. In the future, we do intend to expand to additional compilers and operating systems beyond GCC and Linux.
+Unless you are explicitly using a Linux based computing cluster, we highly recommend choosing one of the first two build processes. In the future, we do intend to expand to additional compilers and operating systems beyond GCC and Linux.
 
 Overall, we make use of 11 custom CMake variables. They are found in the [options.cmake file](cmake/options.cmake) and all are set accordingly in the `CMakePresets.json`.
 
@@ -47,8 +45,7 @@ The required dependencies are:
 - [Eigen](https://gitlab.com/libeigen/eigen)
 - [spdlog](https://github.com/gabime/spdlog)
 
-For tests we require:
-
+Building tests is optional, but when doing so it requires:
 - [GoogleTest](https://github.com/google/googletest)
 
 ### Local
@@ -86,3 +83,6 @@ If you would prefer a single, all in one, script. Our team has developed a scrip
 ```shell
 ./tools/build.sh
 ```
+
+## References
+1. https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0310763
