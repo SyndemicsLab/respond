@@ -6,7 +6,7 @@
 [![Tests](https://github.com/SyndemicsLab/respond/actions/workflows/test-ubuntu.yml/badge.svg)](https://github.com/SyndemicsLab/respond/actions/workflows/test-ubuntu.yml)
 [![Coverage](https://github.com/SyndemicsLab/respond/actions/workflows/coverage.yml/badge.svg)](https://github.com/SyndemicsLab/respond/actions/workflows/coverage.yml)
 
-This is the home of the [RESPOND model](), first created by the [Syndemics Lab](https://www.syndemicslab.org) in 2018, rewritten with a focus on four primary goals:
+This is the home of the [RESPOND model](https://syndemicslab.github.io/respond)[1], first created by the [Syndemics Lab](https://www.syndemicslab.org) in 2018, now rewritten with a focus on four primary goals:
 
 1. Improve the Maintainability/Scalability of the Model
 2. Improve the Overall Efficiency of the Model
@@ -85,4 +85,4 @@ If you would prefer a single, all in one, script. Our team has developed a scrip
 ```
 
 ## References
-1. https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0310763
+1. Madushani RWMA, Wang J, Weitz M, Linas BP, White LF, Chrysanthopoulou SA (2025) Empirical calibration of a simulation model of opioid use disorder. PLoS ONE 20(3): e0310763. https://doi.org/10.1371/journal.pone.0310763
