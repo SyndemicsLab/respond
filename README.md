@@ -11,7 +11,7 @@ This is the home of the [RESPOND model](https://syndemicslab.github.io/respond)[
 1. Improve the Maintainability/Scalability of the Model
 2. Improve the Overall Efficiency of the Model
 3. Improve the Portability
-4. Improve testing
+4. Improve Testing
 
 ## RESPONDv1
 
