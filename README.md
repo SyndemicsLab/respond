@@ -1,23 +1,24 @@
+# ⚠ NOTICE ⚠
+This repository is under active development and is not currently in a state for public use. If you wish to use RESPOND, please refer to release [v0.3.0](https://github.com/SyndemicsLab/respond/releases/tag/v0.3.0) for a functioning executable.
+
 # RESPOND: An Opioid Use Disorder State Transition Model
 
-<a href="https://www.syndemicslab.org/hep-ce"><img align="right" src="https://github.com/SyndemicsLab/.github/blob/main/profile/images/RESPOND.png" alt="RESPOND Logo" height="120" /></a>
+<a href="https://www.syndemicslab.org/respond"><img align="right" src="https://github.com/SyndemicsLab/.github/blob/main/profile/images/RESPOND.png" alt="RESPOND Logo" height="120" /></a>
 
 [![Docs](https://github.com/SyndemicsLab/respond/actions/workflows/deploy-docs.yml/badge.svg)](https://github.com/SyndemicsLab/respond/actions/workflows/deploy-docs.yml)
-
 [![Tests](https://github.com/SyndemicsLab/respond/actions/workflows/test-ubuntu.yml/badge.svg)](https://github.com/SyndemicsLab/respond/actions/workflows/test-ubuntu.yml)
-
 [![Coverage](https://github.com/SyndemicsLab/respond/actions/workflows/coverage.yml/badge.svg)](https://github.com/SyndemicsLab/respond/actions/workflows/coverage.yml)
 
-This repository houses a complete rewrite of the original [RESPOND model](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0310763), first created by the [Syndemics Lab](https://www.syndemicslab.org) in 2018 with a focus on 3 primary goals:
+This is the home of the [RESPOND model](https://syndemicslab.github.io/respond)[1], first created by the [Syndemics Lab](https://www.syndemicslab.org) in 2018, now rewritten with a focus on four primary goals:
 
 1. Improve the Maintainability/Scalability of the Model
 2. Improve the Overall Efficiency of the Model
 3. Improve the Portability
-4. Improve testing
+4. Improve Testing
 
 ## RESPONDv1
 
-The [original RESPOND model](https://github.com/SyndemicsLab/RESPONDv1/tree/main) was built using a combination of the R and C++ programming languages. This proved computationally slow and required a very skilled developer at the core of the software knowing all of the intricate details. As such, it proved incredibly difficult to onboard new engineers, analysts, and researchers to the model. Worse yet, in order to make changes to the model, all requirements inevitably filtered back to the software engineer. Following the software "inversion of control" paradigm, this refactoring focused on abstracting the model to it's core components and allowing users to customize it to their needs rather than a general rigid structure.
+The [original RESPOND model](https://github.com/SyndemicsLab/RESPONDv1/tree/main) was built using a combination of the R and C++ programming languages. This proved computationally slow, and it required a very skilled developer who actively remembered all of the details at the core of the software. As such, it proved incredibly difficult to onboard new engineers, analysts, and researchers to the model. Worse yet, in order to make changes to the model, all requirements inevitably filtered back to the software engineer. Following the software "inversion of control" paradigm, this refactoring focused on abstracting the model to its core components and allowing users to customize it to their needs rather than holding to a general rigid structure.
 
 ## CMake
 
@@ -30,7 +31,7 @@ We natively support 4 different build workflows with the `CMakePresets.json` fil
 3. `gcc-release-cluster`
 4. `gcc-debug-cluster`
 
-Unless you are explicitly using a linux based computing cluster, we highly recommend choosing one of the first two build processes. In the future, we do intend to expand to additional compilers and operating systems beyond GCC and Linux.
+Unless you are explicitly using a Linux based computing cluster, we highly recommend choosing one of the first two build processes. In the future, we do intend to expand to additional compilers and operating systems beyond GCC and Linux.
 
 Overall, we make use of 11 custom CMake variables. They are found in the [options.cmake file](cmake/options.cmake) and all are set accordingly in the `CMakePresets.json`.
 
@@ -44,13 +45,8 @@ The required dependencies are:
 - [Eigen](https://gitlab.com/libeigen/eigen)
 - [spdlog](https://github.com/gabime/spdlog)
 
-For tests we require:
-
+Building tests is optional, but when doing so it requires:
 - [GoogleTest](https://github.com/google/googletest)
-
-## Build
-
-This is, by nature, a C++ library. This means that the default behavior is not to provide an executable for the model, but rather a set of callable functions to design your own model. However, we have a distinct use case for an executable and building a model, and as such we provide the ability to build and install this executable. This is directly controlled via the `RESPOND_BUILD_EXECUTABLE` variable.
 
 ### Local
 
@@ -64,7 +60,7 @@ cmake --workflow --preset gcc-release
 
 And then the model is build and installed. Our default location is a build directory in the repository, but the CMake Install Directory can be pointed to wherever the user desires.
 
-### Fetch Content
+### FetchContent
 
 If you would like to make use of Fetch Content to extract the library:
 
@@ -82,29 +78,11 @@ FetchContent_MakeAvailable(respond)
 
 ### Script
 
-If you would prefer a single, all in one, script. Our team has developed a script that works on any linux environment and finds packages wherever available. As such, the user needs simply run:
+If you would prefer a single, all in one, script. Our team has developed a script that works on any Linux environment and finds packages wherever available. As such, the user need simply run:
 
 ```shell
 ./tools/build.sh
 ```
 
-## Running the RESPOND Executable
-
-If you choose to use our provided executable, running the model requires a set of input files. The input files required are:
-
-1. `all_types_overdose.csv`
-2. `background_mortality.csv`
-3. `block_init_effect.csv`
-4. `block_trans.csv`
-5. `entering_cohort.csv`
-6. `fatal_overdose.csv`
-7. `init_cohort.csv`
-8. `oud_trans.csv`
-9. `sim.conf`
-10. `SMR.csv`
-
-These are all put into a folder titled `input<number>` where the number is replaced with the ID of the input. Then, after these folders are created and RESPOND is built we simply run the command:
-
-```bash
-./build/extras/respond_exe <input_start> <input_end>
-```
+## References
+1. Madushani RWMA, Wang J, Weitz M, Linas BP, White LF, Chrysanthopoulou SA (2025) Empirical calibration of a simulation model of opioid use disorder. PLoS ONE 20(3): e0310763. https://doi.org/10.1371/journal.pone.0310763
