@@ -1,7 +1,5 @@
-# NOTICE
-As of **2025-11-17**, this repository is going through a refactor to transition from being a C++ library to a framework used through language bindings. Release [v0.3.0](https://github.com/SyndemicsLab/respond/releases/tag/v0.3.0) is the last version that includes the executable.
-
-<hr />
+# ⚠ NOTICE ⚠
+This repository is under active development and is not currently in a state for public use. If you wish to use RESPOND, please refer to release [v0.3.0](https://github.com/SyndemicsLab/respond/releases/tag/v0.3.0) for a functioning executable.
 
 # RESPOND: An Opioid Use Disorder State Transition Model
 
