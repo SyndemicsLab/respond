@@ -1,3 +1,8 @@
+# NOTICE
+As of **2025-11-17**, this repository is going through a refactor to transition from being a C++ library to a framework used through language bindings. Release [v0.3.0](https://github.com/SyndemicsLab/respond/releases/tag/v0.3.0) is the last version that includes the executable.
+
+<hr />
+
 # RESPOND: An Opioid Use Disorder State Transition Model
 
 <a href="https://www.syndemicslab.org/respond"><img align="right" src="https://github.com/SyndemicsLab/.github/blob/main/profile/images/RESPOND.png" alt="RESPOND Logo" height="120" /></a>
@@ -16,9 +21,6 @@ This is the home of the [RESPOND model](https://syndemicslab.github.io/respond)[
 ## RESPONDv1
 
 The [original RESPOND model](https://github.com/SyndemicsLab/RESPONDv1/tree/main) was built using a combination of the R and C++ programming languages. This proved computationally slow, and it required a very skilled developer who actively remembered all of the details at the core of the software. As such, it proved incredibly difficult to onboard new engineers, analysts, and researchers to the model. Worse yet, in order to make changes to the model, all requirements inevitably filtered back to the software engineer. Following the software "inversion of control" paradigm, this refactoring focused on abstracting the model to its core components and allowing users to customize it to their needs rather than holding to a general rigid structure.
-
-## Releases
-As of **2025-11-17**, this repository is going through a refactor to transition from being a C++ library to a framework used through language bindings. Release [v0.3.0](https://github.com/SyndemicsLab/respond/releases/tag/v0.3.0) is the last version that includes the executable.
 
 ## CMake
 
