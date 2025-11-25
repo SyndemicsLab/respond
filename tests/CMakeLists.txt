@@ -6,24 +6,23 @@ if(PROJECT_IS_TOP_LEVEL OR NOT RESPOND_BUILD_TESTS)
     return()
 endif()
 
-add_executable(${PROJECT_NAME}
-  src/logging_test.cpp
-  src/cost_effectiveness_test.cpp
-  src/markov_test.cpp
-  src/respond_test.cpp
-)
+add_executable(respond_tests)
 
-target_link_libraries(${PROJECT_NAME} 
+target_sources(respond_tests
+    PRIVATE
+        src/logging_test.cpp
+        src/cost_effectiveness_test.cpp
+        src/markov_test.cpp
+        src/respond_test.cpp
+        mocks/markov_mock.hpp
+    )
+
+target_link_libraries(respond_tests 
 PUBLIC 
-    respond
+    respond_model
     Eigen3::Eigen
     spdlog::spdlog
     GTest::gmock_main
-)
-
-target_include_directories(${PROJECT_NAME} 
-    PRIVATE 
-        "mocks/"
 )
 
 gtest_discover_tests(${PROJECT_NAME})

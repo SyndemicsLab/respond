@@ -47,7 +47,6 @@
                 "RESPOND_BUILD_TESTS": "ON",
                 "RESPOND_CALCULATE_COVERAGE": "ON",
                 "RESPOND_BUILD_BENCH": "OFF",
-                "RESPOND_BUILD_SHARED_LIBS": "OFF",
                 "RESPOND_BUILD_WARNINGS": "ON",
                 "RESPOND_SYSTEM_INCLUDES": "OFF",
                 "RESPOND_INSTALL": "OFF",
@@ -64,12 +63,10 @@
                 "RESPOND_BUILD_TESTS": "OFF",
                 "RESPOND_CALCULATE_COVERAGE": "OFF",
                 "RESPOND_BUILD_BENCH": "OFF",
-                "RESPOND_BUILD_SHARED_LIBS": "OFF",
                 "RESPOND_BUILD_WARNINGS": "OFF",
                 "RESPOND_SYSTEM_INCLUDES": "OFF",
                 "RESPOND_INSTALL": "ON",
-                "RESPOND_NO_EXCEPTIONS": "OFF",
-                "RESPOND_RUN_OMP": "ON"
+                "RESPOND_NO_EXCEPTIONS": "OFF"
             },
             "warnings": {
                 "dev": false
