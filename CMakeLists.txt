@@ -1,5 +1,4 @@
 cmake_minimum_required(VERSION 3.27)
-# list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 set(PRIVATE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 include(${PRIVATE_MODULE_PATH}/utils.cmake)
 respond_extract_version()
