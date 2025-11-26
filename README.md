@@ -1,4 +1,5 @@
-# ⚠ NOTICE ⚠
+# :warning: NOTICE :warning:
+
 This repository is under active development and is not currently in a state for public use. If you wish to use RESPOND, please refer to release [v0.3.0](https://github.com/SyndemicsLab/respond/releases/tag/v0.3.0) for a functioning executable.
 
 # RESPOND: An Opioid Use Disorder State Transition Model
@@ -9,7 +10,7 @@ This repository is under active development and is not currently in a state for 
 [![Tests](https://github.com/SyndemicsLab/respond/actions/workflows/test-ubuntu.yml/badge.svg)](https://github.com/SyndemicsLab/respond/actions/workflows/test-ubuntu.yml)
 [![Coverage](https://github.com/SyndemicsLab/respond/actions/workflows/coverage.yml/badge.svg)](https://github.com/SyndemicsLab/respond/actions/workflows/coverage.yml)
 
-This is the home of the [RESPOND model](https://syndemicslab.github.io/respond)[1], first created by the [Syndemics Lab](https://www.syndemicslab.org) in 2018, now rewritten with a focus on four primary goals:
+This is the home of the [RESPOND model](https://syndemicslab.github.io/respond) [1], first created by the [Syndemics Lab](https://www.syndemicslab.org) in 2018, now rewritten with a focus on four primary goals:
 
 1. Improve the Maintainability/Scalability of the Model
 2. Improve the Overall Efficiency of the Model
@@ -46,6 +47,7 @@ The required dependencies are:
 - [spdlog](https://github.com/gabime/spdlog)
 
 Building tests is optional, but when doing so it requires:
+
 - [GoogleTest](https://github.com/google/googletest)
 
 ### Local
@@ -60,6 +62,14 @@ cmake --workflow --preset gcc-release
 
 And then the model is build and installed. Our default location is a build directory in the repository, but the CMake Install Directory can be pointed to wherever the user desires.
 
+## Installations
+
+As this is a library, we are currently working on expanding the ability to install and work with RESPOND. If building a new project using CMake we encourage the use of `FetchContent`. However, we do also provide debian and tarball installations as well. We are currently working on building a Windows executable as well.
+
+### Debian
+
+To access our debian installer, please navigate to the release you wish to install and download the `.deb`. From there a simple `sudo dpkg -i respond-xxx.deb` command will result in the appropriate installation. The only files added are the public headers, the compiled static library, and the cmake configuration files.
+
 ### FetchContent
 
 If you would like to make use of Fetch Content to extract the library:
@@ -69,16 +79,21 @@ include(FetchContent)
 FetchContent_Declare(
     respond
     GIT_REPOSITORY https://github.com/SyndemicsLab/respond.git
-    GIT_TAG main
+    GIT_TAG 5d4dde64b2e1f4ca4cea26851b82000379dbf7cb
+    OVERRIDE_FIND_PACKAGE
 )
-option(RESPOND_INSTALL "Enable install for respond project" ON)
-option(RESPOND_BUILD_TESTS "Disable testing for RESPOND" OFF)
-FetchContent_MakeAvailable(respond)
+set(RESPOND_INSTALL ON)
+find_package(respond REQUIRED)
+
+target_link_libraries(${PROJECT_NAME}
+    PRIVATE
+        respond::respond_model
+)
 ```
 
 ### Script
 
-If you would prefer a single, all in one, script. Our team has developed a script that works on any Linux environment and finds packages wherever available. As such, the user need simply run:
+If you would prefer a single bash script to add the project to the build tree, the user runs:
 
 ```shell
 ./tools/build.sh
