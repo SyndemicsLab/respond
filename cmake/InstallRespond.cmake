@@ -1,11 +1,9 @@
 message(STATUS "Installing respond version ${RESPOND_VERSION}...")
 
 set(project_config "${CMAKE_CURRENT_LIST_DIR}/respondConfig.cmake")
-set(export_dest_dir "${CMAKE_INSTALL_LIBDIR}/cmake/respond")
+set(export_dest_dir "${CMAKE_INSTALL_LIBDIR}/respond")
+set(export_cmake_dir "${CMAKE_INSTALL_LIBDIR}/cmake/respond")
 set(version_config_file "${CMAKE_CURRENT_BINARY_DIR}/respondConfigVersion.cmake")
-
-set(pkgconfig_install_dir "${CMAKE_INSTALL_LIBDIR}/pkgconfig")
-set(pkg_config "${CMAKE_BINARY_DIR}/${PROJECT_NAME}.pc")
 
 #-------------------------------------------------------------------------------
 # Include files
@@ -20,7 +18,7 @@ install(
 
 install(
     EXPORT respondTargets
-    DESTINATION ${export_dest_dir}
+    DESTINATION ${export_cmake_dir}
     NAMESPACE respond::
 )
 
@@ -35,30 +33,20 @@ install(
     FILES
         ${project_config}
         ${version_config_file}
-    DESTINATION ${export_dest_dir}
+    DESTINATION ${export_cmake_dir}
 )
 
 #-------------------------------------------------------------------------------
-# Install pkg-config file
+# CPack Options for RESPOND
 #-------------------------------------------------------------------------------
-# if(IS_ABSOLUTE "${CMAKE_INSTALL_INCLUDEDIR}")
-#     set(PKG_CONFIG_INCLUDEDIR "${CMAKE_INSTALL_INCLUDEDIR}")
-# else()
-#     set(PKG_CONFIG_INCLUDEDIR "\${prefix}/${CMAKE_INSTALL_INCLUDEDIR}")
-# endif()
-# if(IS_ABSOLUTE "${CMAKE_INSTALL_LIBDIR}")
-#     set(PKG_CONFIG_LIBDIR "${CMAKE_INSTALL_LIBDIR}")
-# else()
-#     set(PKG_CONFIG_LIBDIR "\${exec_prefix}/${CMAKE_INSTALL_LIBDIR}")
-# endif()
-# get_target_property(PKG_CONFIG_DEFINES respond INTERFACE_COMPILE_DEFINITIONS)
-# string(REPLACE ";" " -D" PKG_CONFIG_DEFINES "${PKG_CONFIG_DEFINES}")
-# string(CONCAT PKG_CONFIG_DEFINES "-D" "${PKG_CONFIG_DEFINES}")
-# configure_file("cmake/${PROJECT_NAME}.pc.in" "${pkg_config}" @ONLY)
-# install(FILES "${pkg_config}" DESTINATION "${pkgconfig_install_dir}")
-
+configure_file(
+    "${PROJECT_SOURCE_DIR}/cmake/respondCPackOptions.cmake.in"
+    "${PROJECT_BINARY_DIR}/respondCPackOptions.cmake"
+    @ONLY
+)
+set(CPACK_PROJECT_CONFIG_FILE "${PROJECT_BINARY_DIR}/respondCPackOptions.cmake")
 
 #-------------------------------------------------------------------------------
 # Support creation of installable packages
 #-------------------------------------------------------------------------------
-# include(cmake/respondCPack.cmake)
+include(CPack)

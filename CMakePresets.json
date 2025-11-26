@@ -166,7 +166,8 @@
             "name": "gcc-release",
             "configurePreset": "gcc-release",
             "generators": [
-                "TGZ"
+                "TGZ",
+                "DEB"
             ]
         }
     ],

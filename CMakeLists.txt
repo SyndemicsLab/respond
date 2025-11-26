@@ -79,18 +79,6 @@ target_sources(respond_model
             include/respond/version.hpp
     )
 
-#-------------------------------------------------------------------------------
-# Windows and MSVC specific settings
-#-------------------------------------------------------------------------------
-if(WIN32)
-    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/version.rc.in ${CMAKE_CURRENT_BINARY_DIR}/version.rc @ONLY)
-    list(APPEND RESPOND_SRCS ${CMAKE_CURRENT_BINARY_DIR}/version.rc)
-endif()
-
-if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-    target_compile_options(respond_model PUBLIC $<$<AND:$<CXX_COMPILER_ID:MSVC>,$<NOT:$<COMPILE_LANGUAGE:CUDA>>>:/wd4251/wd4275>)
-endif()
-
 include(${PRIVATE_MODULE_PATH}/MakeDependenciesAvailable.cmake)
 
 set(private_deps spdlog::spdlog)
