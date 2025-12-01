@@ -1,0 +1,12 @@
+@PACKAGE_INIT@
+
+include(CMakeFindDependencyMacro)
+
+find_dependency(Eigen3 REQUIRED)
+find_dependency(spdlog REQUIRED)
+
+if(@RESPOND_BUILD_TESTS@)
+    find_dependency(GTest REQUIRED) # Only if tests are build
+endif()
+
+include("${CMAKE_CURRENT_LIST_DIR}/respondTargets.cmake")

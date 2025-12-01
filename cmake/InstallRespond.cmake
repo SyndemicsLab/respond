@@ -1,6 +1,5 @@
 message(STATUS "Installing respond version ${RESPOND_VERSION}...")
 
-set(project_config "${CMAKE_CURRENT_LIST_DIR}/respondConfig.cmake")
 set(export_dest_dir "${CMAKE_INSTALL_LIBDIR}/respond")
 set(export_cmake_dir "${CMAKE_INSTALL_LIBDIR}/cmake/respond")
 set(version_config_file "${CMAKE_CURRENT_BINARY_DIR}/respondConfigVersion.cmake")
@@ -23,6 +22,13 @@ install(
 )
 
 include(CMakePackageConfigHelpers)
+
+configure_file(
+    "${PROJECT_SOURCE_DIR}/cmake/respondConfig.cmake.in"
+    "${PROJECT_BINARY_DIR}/respondConfig.cmake"
+    @ONLY
+)
+set(project_config "${PROJECT_BINARY_DIR}/respondConfig.cmake")
 
 write_basic_package_version_file(
   ${version_config_file}
