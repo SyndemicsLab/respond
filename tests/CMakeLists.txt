@@ -10,10 +10,10 @@ add_executable(respond_tests)
 
 target_sources(respond_tests
     PRIVATE
-        src/logging_test.cpp
-        src/cost_effectiveness_test.cpp
-        src/markov_test.cpp
-        src/respond_test.cpp
+        logging_test.cpp
+        cost_effectiveness_test.cpp
+        markov_test.cpp
+        respond_test.cpp
         mocks/markov_mock.hpp
     )
 
