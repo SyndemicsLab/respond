@@ -1,10 +1,10 @@
 include(FetchContent)
 
-include(LoadEigen)
-include(LoadSpdlog)
+include(${PRIVATE_MODULE_PATH}/LoadEigen.cmake)
+include(${PRIVATE_MODULE_PATH}/LoadSpdlog.cmake)
 
 if(RESPOND_BUILD_TESTS STREQUAL "ON")
-    include(LoadGtest)
+    include(${PRIVATE_MODULE_PATH}/LoadGtest.cmake)
     FetchContent_MakeAvailable(Eigen3 spdlog googletest)
     include(GoogleTest)
 elseif(RESPOND_BUILD_TESTS STREQUAL "OFF")

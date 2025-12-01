@@ -1,39 +1,36 @@
 cmake_minimum_required(VERSION 3.27)
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
-
-include(utils)
+set(PRIVATE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
+include(${PRIVATE_MODULE_PATH}/utils.cmake)
 respond_extract_version()
 
 project(respond VERSION ${RESPOND_VERSION} LANGUAGES CXX)
 
 message(STATUS "Build respond: ${RESPOND_VERSION}")
 
-include(GNUInstallDirs)
-
-# ---------------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 # Set default build to release
-# ---------------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
     set(CMAKE_BUILD_TYPE "Release" CACHE STRING "Choose Release or Debug" FORCE)
 endif()
 
-# ---------------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 # Compiler config
-# ---------------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# ---------------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 # Windows CXX Extensions
-# ---------------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 set(CMAKE_CXX_EXTENSIONS OFF)
 if(CMAKE_SYSTEM_NAME MATCHES "CYGWIN" OR CMAKE_SYSTEM_NAME MATCHES "MSYS" OR CMAKE_SYSTEM_NAME MATCHES "MINGW")
     set(CMAKE_CXX_EXTENSIONS ON)
 endif()
 
-# ---------------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 # Set RESPOND_MASTER_PROJECT to ON if we are building respond directly
-# ---------------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 if(NOT DEFINED RESPOND_MASTER_PROJECT)
     if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
         set(RESPOND_MASTER_PROJECT ON)
@@ -42,82 +39,68 @@ if(NOT DEFINED RESPOND_MASTER_PROJECT)
     endif()
 endif()
 
-# ---------------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 # Set all default options
-# ---------------------------------------------------------------------------------------
-include(options)
+#-------------------------------------------------------------------------------
+include(${PRIVATE_MODULE_PATH}/options.cmake)
 
-# ---------------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 # Set position independent code
-# ---------------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 if(RESPOND_BUILD_PIC)
     set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 endif()
 
-# ---------------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 # Building the Library
-# ---------------------------------------------------------------------------------------
-set(RESPOND_SRCS 
-    src/markov.cpp
-    src/logging.cpp
-)
+#-------------------------------------------------------------------------------
+add_library(respond_model)
+add_library(respond::respond_model ALIAS respond_model)
 
-if(RESPOND_BUILD_SHARED_LIBS)
-    if(WIN32)
-        configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/version.rc.in ${CMAKE_CURRENT_BINARY_DIR}/version.rc @ONLY)
-        list(APPEND RESPOND_SRCS ${CMAKE_CURRENT_BINARY_DIR}/version.rc)
-    endif()
-    add_library(respond SHARED ${RESPOND_SRCS} ${RESPOND_ALL_HEADERS})
-    target_compile_definitions(respond PUBLIC RESPOND_SHARED_LIB)
-    if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-        target_compile_options(respond PUBLIC $<$<AND:$<CXX_COMPILER_ID:MSVC>,$<NOT:$<COMPILE_LANGUAGE:CUDA>>>:/wd4251
-                                             /wd4275>)
-    endif()
-else()
-    add_library(respond STATIC ${RESPOND_SRCS} ${RESPOND_ALL_HEADERS})
-endif()
+target_sources(respond_model
+    PRIVATE
+        src/markov.cpp
+        src/logging.cpp
+        src/internals/logging_internals.hpp
+        src/internals/markov_internals.hpp
 
-# ---------------------------------------------------------------------------------------
-# Alias for importing
-# ---------------------------------------------------------------------------------------
-add_library(respond::respond ALIAS respond)
+    PUBLIC
+        FILE_SET HEADERS
+        BASE_DIRS
+            include
+        FILES
+            include/respond/cost_effectiveness.hpp
+            include/respond/helpers.hpp
+            include/respond/logging.hpp
+            include/respond/markov.hpp
+            include/respond/respond.hpp
+            include/respond/types.hpp
+            include/respond/version.hpp
+    )
 
-set(RESPOND_INCLUDES_LEVEL "")
-if(RESPOND_SYSTEM_INCLUDES)
-    set(RESPOND_INCLUDES_LEVEL "SYSTEM")
-endif()
+include(${PRIVATE_MODULE_PATH}/MakeDependenciesAvailable.cmake)
 
-target_compile_definitions(respond PUBLIC RESPOND_COMPILED_LIB)
-target_include_directories(respond ${RESPOND_INCLUDES_LEVEL} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include>"
-"$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>" PRIVATE 
-"$<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/src>")
-
-include(MakeDependenciesAvailable)
+set(private_deps spdlog::spdlog)
 
 if (RESPOND_CALCULATE_COVERAGE)
-    target_link_libraries(respond
-    PUBLIC
-        Eigen3::Eigen
-    PRIVATE
-        spdlog::spdlog
-        gcov
-    )
-else()
-    target_link_libraries(respond
-    PUBLIC
-        Eigen3::Eigen
-    PRIVATE
-        spdlog::spdlog
-    )
+    list(APPEND private_deps gcov)
 endif()
 
-set_target_properties(respond PROPERTIES VERSION ${RESPOND_VERSION} SOVERSION ${RESPOND_VERSION_MAJOR}.${RESPOND_VERSION_MINOR})
+target_link_libraries(respond_model
+PUBLIC
+    Eigen3::Eigen
+PRIVATE
+    ${private_deps}
+)
 
-include(BuildBinaries)
+set_target_properties(respond_model PROPERTIES VERSION ${RESPOND_VERSION} SOVERSION ${RESPOND_VERSION_MAJOR}.${RESPOND_VERSION_MINOR})
 
-# ---------------------------------------------------------------------------------------
+include(${PRIVATE_MODULE_PATH}/BuildBinaries.cmake)
+
+#-------------------------------------------------------------------------------
 # Install
-# ---------------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
+include(GNUInstallDirs)
 if(RESPOND_INSTALL)
-    include(InstallRespond)
+    include(${PRIVATE_MODULE_PATH}/InstallRespond.cmake)
 endif()
