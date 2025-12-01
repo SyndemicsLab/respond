@@ -62,13 +62,15 @@ cmake --workflow --preset gcc-release
 
 And then the model is build and installed. Our default location is a build directory in the repository, but the CMake Install Directory can be pointed to wherever the user desires.
 
-## Installations
+## Installation
 
 As this is a library, we are currently working on expanding the ability to install and work with RESPOND. If building a new project using CMake we encourage the use of `FetchContent`. However, we do also provide debian and tarball installations as well. We are currently working on building a Windows executable as well.
 
 ### Debian
 
-To access our debian installer, please navigate to the release you wish to install and download the `.deb`. From there a simple `sudo dpkg -i respond-xxx.deb` command will result in the appropriate installation. The only files added are the public headers, the compiled static library, and the cmake configuration files.
+To access our Debian installer, please navigate to the [release](https://github.com/SyndemicsLab/respond/releases) you wish to install and download the Debian package (`.deb`).
+
+From there, a simple 
 
 ### FetchContent
 
@@ -93,7 +95,7 @@ target_link_libraries(${PROJECT_NAME}
 
 ### Script
 
-If you would prefer a single bash script to add the project to the build tree, the user runs:
+If you would prefer a single bash script to add the project to the build tree, run:
 
 ```shell
 ./tools/build.sh
