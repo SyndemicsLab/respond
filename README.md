@@ -70,7 +70,13 @@ As this is a library, we are currently working on expanding the ability to insta
 
 To access our Debian installer, please navigate to the [release](https://github.com/SyndemicsLab/respond/releases) you wish to install and download the Debian package (`.deb`).
 
-From there, a simple 
+From there, a simple
+
+```bash
+sudo dpkg -i respond-xxx.deb
+```  
+
+command will result in the appropriate installation. The only files added are the public headers, the compiled static library, and the CMake configuration files.
 
 ### FetchContent
 
