@@ -200,20 +200,6 @@
             "description": "Enable output and stop on failure",
             "inherits": "default-test",
             "configurePreset": "debug-gcc-linux-static-config"
-        },
-        {
-            "name": "release-gcc-linux-shared-test",
-            "displayName": "Release-Shared",
-            "description": "Enable output and stop on failure",
-            "inherits": "default-test",
-            "configurePreset": "release-gcc-linux-shared-config"
-        },
-        {
-            "name": "release-gcc-linux-static-test",
-            "displayName": "Release-Static",
-            "description": "Enable output and stop on failure",
-            "inherits": "default-test",
-            "configurePreset": "release-gcc-linux-static-config"
         }
     ],
     "packagePresets": [
@@ -273,44 +259,6 @@
                 {
                     "type": "test",
                     "name": "debug-gcc-linux-static-test"
-                }
-            ]
-        },
-        {
-            "name": "test-release-gcc-linux-shared-workflow",
-            "displayName": "Test Release Shared Library Workflow",
-            "description": "Testing the gcc release shared library workflow without packaging",
-            "steps": [
-                {
-                    "type": "configure",
-                    "name": "release-gcc-linux-shared-config"
-                },
-                {
-                    "type": "build",
-                    "name": "release-gcc-linux-shared-build"
-                },
-                {
-                    "type": "test",
-                    "name": "release-gcc-linux-shared-test"
-                }
-            ]
-        },
-        {
-            "name": "test-release-gcc-linux-static-workflow",
-            "displayName": "Test Release Static Library Workflow",
-            "description": "Testing the gcc release static library workflow without packaging",
-            "steps": [
-                {
-                    "type": "configure",
-                    "name": "release-gcc-linux-static-config"
-                },
-                {
-                    "type": "build",
-                    "name": "release-gcc-linux-static-build"
-                },
-                {
-                    "type": "test",
-                    "name": "release-gcc-linux-static-test"
                 }
             ]
         },

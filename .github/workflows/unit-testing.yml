@@ -1,4 +1,5 @@
-name: Build All Workflow
+name: Respond Unit Testing
+# Schema: https://json.schemastore.org/github-action.json
 
 on:
   push:
@@ -16,7 +17,7 @@ jobs:
         build-variant: [shared, static]
     steps:
       - name: Checkout Respond Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3
 
       - name: Install Eigen3
         uses: kupns-aka-kupa/setup-eigen3@master
@@ -33,10 +34,6 @@ jobs:
         run: >
           cmake --preset debug-gcc-linux-${{matrix.build-variant}}-config
 
-      - name: Build Project
+      - name: Run Testing Workflow
         run: >
-          cmake --build --preset debug-gcc-linux-${{matrix.build-variant}}-build
-
-      - name: Test Project
-        run: >
-          cmake --build --preset debug-gcc-linux-${{matrix.build-variant}}-build --target test
+          cmake --workflow --preset test-debug-gcc-linux-${{matrix.build-variant}}-workflow

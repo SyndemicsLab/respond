@@ -1,5 +1,5 @@
 ---
-name: Code Coverage
+name: Respond Code Coverage
 # Schema: https://json.schemastore.org/github-action.json
 
 on:
