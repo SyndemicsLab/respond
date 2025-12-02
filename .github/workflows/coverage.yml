@@ -36,6 +36,10 @@ jobs:
 
       - name: Build Project
         run: >
+          cmake --build --preset debug-gcc-linux-shared-build
+
+      - name: Test Project
+        run: >
           cmake --build --preset debug-gcc-linux-shared-build --target test
 
       - name: Generate gcovr report

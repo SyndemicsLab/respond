@@ -35,4 +35,8 @@ jobs:
 
       - name: Build Project
         run: >
+          cmake --build --preset debug-gcc-linux-${{matrix.build-variant}}-build
+
+      - name: Test Project
+        run: >
           cmake --build --preset debug-gcc-linux-${{matrix.build-variant}}-build --target test
