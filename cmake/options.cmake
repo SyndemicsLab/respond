@@ -3,6 +3,9 @@ option(RESPOND_BUILD_ALL "Build all artifacts" OFF)
 # build position independent code
 option(RESPOND_BUILD_PIC "Build position independent code (-fPIC)" OFF)
 
+# build shared libraries
+option(BUILD_SHARED_LIBS "Build shared libraries instead of static libraries" OFF)
+
 # testing options
 option(RESPOND_BUILD_TESTS "Build tests" ON)
 
