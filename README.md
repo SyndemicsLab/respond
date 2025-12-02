@@ -8,8 +8,8 @@ This repository is under active development and is not currently in a state for 
 
 [![Docs](https://github.com/SyndemicsLab/respond/actions/workflows/deploy-docs.yml/badge.svg)](https://github.com/SyndemicsLab/respond/actions/workflows/deploy-docs.yml)
 [![Tests](https://github.com/SyndemicsLab/respond/actions/workflows/test-ubuntu.yml/badge.svg)](https://github.com/SyndemicsLab/respond/actions/workflows/test-ubuntu.yml)
-[![Coverage](https://github.com/SyndemicsLab/respond/actions/workflows/coverage.yml/badge.svg)](https://github.com/SyndemicsLab/respond/actions/workflows/coverage.yml)
-![Coverage](https://gist.githubusercontent.com/MJC598/10e746e28df5d23e91689b01493435a0/raw/respond-cobertura-coverage.json)
+![Endpoint Badge](https://img.shields.io/endpoint?url=https%3A%2F%2Fgist.githubusercontent.com%2FMJC598%2F10e746e28df5d23e91689b01493435a0%2Fraw%2Frespond-cobertura-coverage.json)
+
 
 This is the home of the [RESPOND model](https://syndemicslab.github.io/respond) [1], first created by the [Syndemics Lab](https://www.syndemicslab.org) in 2018, now rewritten with a focus on four primary goals:
 
