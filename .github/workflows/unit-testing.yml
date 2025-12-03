@@ -1,0 +1,39 @@
+name: Respond Unit Testing
+# Schema: https://json.schemastore.org/github-action.json
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  unit-testing:
+    name: Testing ${{matrix.os}} ${{matrix.build-variant}} build
+    runs-on: ${{matrix.os}}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        build-variant: [shared, static]
+    steps:
+      - name: Checkout Respond Repository
+        uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3
+
+      - name: Install Eigen3
+        uses: kupns-aka-kupa/setup-eigen3@master
+        id: install-eigen3
+        with:
+          version: 3.4.0
+        env:
+          CMAKE_GENERATOR: Ninja
+
+      - name: Configure Project
+        env:
+          EIGEN3_INCLUDE_DIR: ${{ steps.install-eigen3.outputs.EIGEN3_INCLUDE_DIR }}
+          EIGEN3_DIR: ${{ steps.install-eigen3.outputs.EIGEN3_DIR}}
+        run: >
+          cmake --preset debug-gcc-linux-${{matrix.build-variant}}-config
+
+      - name: Run Testing Workflow
+        run: >
+          cmake --workflow --preset test-debug-gcc-linux-${{matrix.build-variant}}-workflow

@@ -1,67 +1,53 @@
-name: Code Coverage
+---
+name: Respond Code Coverage
+# Schema: https://json.schemastore.org/github-action.json
 
 on:
-    push:
-        branches: [ "main" ]
-    pull_request:
-        branches: [ "main" ]
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
 
 jobs:
-    build:
-        name: ubuntu-latest, Debug
-        runs-on: ubuntu-latest
-        steps:
-            - name: Checkout Respond Repository
-              uses: actions/checkout@v4
+  build:
+    name: Calculate Code Coverage
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Respond Repository
+        uses: actions/checkout@v4
 
-            - name: Install Boost
-              uses: MarkusJx/install-boost@v2.4.5
-              id: install-boost
-              with:
-                boost_version: 1.86.0
-                platform_version: 22.04
+      - name: Install gcovr
+        run: pip install gcovr
 
-            - name: Install Eigen3
-              uses: kupns-aka-kupa/setup-eigen3@master
-              id: install-eigen3
-              with:
-                version: 3.4.0
-              env:
-                CMAKE_GENERATOR: Ninja
+      - name: Install Eigen3
+        uses: kupns-aka-kupa/setup-eigen3@master
+        id: install-eigen3
+        with:
+          version: 3.4.0
+        env:
+          CMAKE_GENERATOR: Ninja
 
-            - name: Configure Project
-              env:
-                BOOST_ROOT: ${{ steps.install-boost.outputs.BOOST_ROOT }}
-                EIGEN3_INCLUDE_DIR: ${{ steps.install-eigen3.outputs.EIGEN3_INCLUDE_DIR }}
-                EIGEN3_DIR: ${{ steps.install-eigen3.outputs.EIGEN3_DIR}}
-              run: >
-                cmake
-                -B ${{github.workspace}}/build
-                -D RESPOND_BUILD_PIC=ON -D RESPOND_BUILD_EXECUTABLE=OFF -D RESPOND_BUILD_TESTS=ON -D RESPOND_CALCULATE_COVERAGE=ON -D RESPOND_BUILD_BENCH=OFF -D RESPOND_BUILD_WARNINGS=ON -D RESPOND_BUILD_SHARED_LIBS=OFF -D CMAKE_BUILD_TYPE:STRING=Debug
+      - name: Configure Project
+        env:
+          EIGEN3_INCLUDE_DIR: ${{ steps.install-eigen3.outputs.EIGEN3_INCLUDE_DIR }}
+          EIGEN3_DIR: ${{ steps.install-eigen3.outputs.EIGEN3_DIR}}
+        run: >
+          cmake --preset debug-gcc-linux-shared-config
 
-            - name: Build Project
-              run: >
-                cmake
-                --build ${{github.workspace}}/build
-                --config Debug
+      - name: Build Project
+        run: >
+          cmake --build --preset debug-gcc-linux-shared-build
 
-            - name: Run Tests
-              run: |
-                ./build/tests/respond_tests
-            
-            - name: Check Test Coverage
-              uses: threeal/gcovr-action@v1.1.0
-              with:
-                working-directory: ${{github.workspace}}
-                excludes: |
-                    Eigen3/*
-                    boost/*
-                    datamanagement/*
-                    gtest/*
-                    googletest/*
-                    build/*
-                fail-under-line: 80
-                html-out: coverage.html
-                html-details: true
-                html-title: TESPOND Test Coverage Report
-                html-theme: github.green
+      - name: Test Project
+        run: >
+          cmake --build --preset debug-gcc-linux-shared-build --target test
+
+      - name: Generate gcovr report
+        run: |
+          gcovr -r . --xml-pretty -o coverage.xml
+
+      - name: Generate Coverage Badge
+        uses: GaelGirodon/ci-badges-action@v1
+        with:
+          gist-id: 10e746e28df5d23e91689b01493435a0
+          token: ${{secrets.GIST_BADGE_TOKEN}}
