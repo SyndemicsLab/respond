@@ -1,6 +1,11 @@
 services:
-    respond:
-        image: respond
+    debian_builder:
         build:
             context: .
-            dockerfile: ./Dockerfile
+            dockerfile: ./docker/deb/Dockerfile
+        command: tail -f /dev/null
+    rpm_builder:
+        build:
+            context: .
+            dockerfile: ./docker/rpm/Dockerfile
+        command: tail -f /dev/null
