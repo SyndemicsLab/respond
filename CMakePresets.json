@@ -208,18 +208,45 @@
             "description": "Settings for all packages",
             "hidden": true,
             "generators": [
-                "TGZ",
+                "TGZ"
+            ]
+        },
+        {
+            "name": "debian-package",
+            "inherits": "default-package",
+            "description": "Settings building a Debian Package",
+            "hidden": true,
+            "generators": [
                 "DEB"
             ]
         },
         {
-            "name": "release-gcc-linux-shared-package",
+            "name": "rpm-package",
             "inherits": "default-package",
+            "description": "Settings building an RPM Package",
+            "hidden": true,
+            "generators": [
+                "RPM"
+            ]
+        },
+        {
+            "name": "release-gcc-debian-shared-package",
+            "inherits": "debian-package",
             "configurePreset": "release-gcc-linux-shared-config"
         },
         {
-            "name": "release-gcc-linux-static-package",
-            "inherits": "default-package",
+            "name": "release-gcc-debian-static-package",
+            "inherits": "debian-package",
+            "configurePreset": "release-gcc-linux-static-config"
+        },
+        {
+            "name": "release-gcc-rpm-shared-package",
+            "inherits": "rpm-package",
+            "configurePreset": "release-gcc-linux-shared-config"
+        },
+        {
+            "name": "release-gcc-rpm-static-package",
+            "inherits": "rpm-package",
             "configurePreset": "release-gcc-linux-static-config"
         }
     ],
@@ -263,9 +290,9 @@
             ]
         },
         {
-            "name": "package-release-gcc-linux-shared-workflow",
-            "displayName": "Package Release Shared Library Workflow",
-            "description": "Packaging the release gcc shared library",
+            "name": "package-release-gcc-debian-shared-workflow",
+            "displayName": "Debian Package Release Shared Library Workflow",
+            "description": "Packaging the release gcc shared library with debian",
             "steps": [
                 {
                     "type": "configure",
@@ -277,14 +304,14 @@
                 },
                 {
                     "type": "package",
-                    "name": "release-gcc-linux-shared-package"
+                    "name": "release-gcc-debian-shared-package"
                 }
             ]
         },
         {
-            "name": "package-release-gcc-linux-static-workflow",
-            "displayName": "Package Release Static Library Workflow",
-            "description": "Packaging the release gcc static library",
+            "name": "package-release-gcc-debian-static-workflow",
+            "displayName": "Debian Package Release Static Library Workflow",
+            "description": "Packaging the release gcc static library with debian",
             "steps": [
                 {
                     "type": "configure",
@@ -296,7 +323,45 @@
                 },
                 {
                     "type": "package",
-                    "name": "release-gcc-linux-static-package"
+                    "name": "release-gcc-debian-static-package"
+                }
+            ]
+        },
+        {
+            "name": "package-release-gcc-rpm-shared-workflow",
+            "displayName": "RPM Package Release Shared Library Workflow",
+            "description": "Packaging the release gcc shared library as an RPM",
+            "steps": [
+                {
+                    "type": "configure",
+                    "name": "release-gcc-linux-shared-config"
+                },
+                {
+                    "type": "build",
+                    "name": "release-gcc-linux-shared-build"
+                },
+                {
+                    "type": "package",
+                    "name": "release-gcc-rpm-shared-package"
+                }
+            ]
+        },
+        {
+            "name": "package-release-gcc-rpm-static-workflow",
+            "displayName": "RPM Package Release Static Library Workflow",
+            "description": "Packaging the release gcc static library as an RPM",
+            "steps": [
+                {
+                    "type": "configure",
+                    "name": "release-gcc-linux-static-config"
+                },
+                {
+                    "type": "build",
+                    "name": "release-gcc-linux-static-build"
+                },
+                {
+                    "type": "package",
+                    "name": "release-gcc-rpm-static-package"
                 }
             ]
         }

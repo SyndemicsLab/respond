@@ -1,0 +1,9 @@
+services:
+    debian_builder:
+        build:
+            context: .
+            dockerfile: ./docker/deb/Dockerfile
+    rpm_builder:
+        build:
+            context: .
+            dockerfile: ./docker/rpm/Dockerfile

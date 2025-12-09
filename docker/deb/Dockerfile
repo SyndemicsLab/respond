@@ -1,4 +1,4 @@
-FROM gcc:latest
+FROM gcc:latest AS builder
 
 RUN apt-get update && \
     apt-get install -y cmake && \
@@ -9,5 +9,7 @@ WORKDIR /respond
 COPY . /respond
 
 RUN mkdir build && \
-    cmake --preset debug-gcc-linux-static-config && \
-    cmake --workflow --preset test-debug-gcc-linux-static-workflow
+    cmake --workflow --preset package-release-gcc-debian-shared-workflow 
+
+FROM debian:stable-slim
+COPY --from=builder /respond/build/shared/*.deb .
