@@ -41,12 +41,6 @@ jobs:
                   fi
               shell: bash
 
-            - name: List directory contents after potential error
-              if: failure()
-              run: |
-                  echo "Listing contents of current directory:"
-                  ls -laR . # Lists all files and directories recursively
-
             - name: Run Testing Workflow
               run: |
                   if [ "${{ matrix.os }}" == "ubuntu-latest" ]; then
@@ -57,3 +51,10 @@ jobs:
                       cmake --workflow --preset test-debug-microsoft-${{matrix.build-variant}}-workflow
                   fi
               shell: bash
+              continue-on-error: true
+
+            - name: List directory contents after potential error
+              if: failure()
+              run: |
+                  echo "Listing contents of current directory:"
+                  ls -laR . # Lists all files and directories recursively
