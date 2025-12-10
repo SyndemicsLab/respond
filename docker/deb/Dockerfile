@@ -9,7 +9,7 @@ WORKDIR /respond
 COPY . /respond
 
 RUN mkdir build && \
-    cmake --workflow --preset package-release-gcc-debian-shared-workflow 
+    cmake --workflow --preset package-release-debian-shared-workflow 
 
 FROM debian:stable-slim
 COPY --from=builder /respond/build/shared/*.deb .

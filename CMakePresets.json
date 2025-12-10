@@ -8,35 +8,59 @@
     "include": [],
     "configurePresets": [
         {
-            "name": "default-shared-config",
+            "name": "shared-config",
             "description": "General Configuration Settings for All Shared Configs",
             "hidden": true,
-            "generator": "Ninja",
             "binaryDir": "${sourceDir}/build/shared",
             "cacheVariables": {
                 "BUILD_SHARED_LIBS": "ON"
             }
         },
         {
-            "name": "default-static-config",
+            "name": "static-config",
             "description": "General Configuration Settings for All Static Configs",
             "hidden": true,
-            "generator": "Ninja",
             "binaryDir": "${sourceDir}/build/static",
             "cacheVariables": {
                 "BUILD_SHARED_LIBS": "OFF"
             }
         },
         {
-            "name": "linux-shared-config",
-            "description": "Linux Configuration Settings for GCC and Clang",
+            "name": "linux-config",
+            "description": "Linux Configuration Settings",
             "hidden": true,
-            "inherits": "default-shared-config",
-            "condition": {
-                "type": "equals",
-                "lhs": "${hostSystemName}",
-                "rhs": "Linux"
-            },
+            "generator": "Ninja"
+        },
+        {
+            "name": "microsoft-config",
+            "description": "Windows Configuration Settings",
+            "hidden": true,
+            "generator": "MinGW Makefiles"
+        },
+        {
+            "name": "debug-config",
+            "description": "Debugger Configuration",
+            "hidden": true,
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug",
+                "RESPOND_BUILD_TESTS": "ON",
+                "RESPOND_CALCULATE_COVERAGE": "ON"
+            }
+        },
+        {
+            "name": "release-config",
+            "description": "Release Configuration",
+            "hidden": true,
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release",
+                "RESPOND_BUILD_TESTS": "OFF",
+                "RESPOND_CALCULATE_COVERAGE": "OFF"
+            }
+        },
+        {
+            "name": "default-respond-config",
+            "description": "Default Respond Configuration Settings",
+            "hidden": true,
             "architecture": {
                 "value": "x64",
                 "strategy": "external"
@@ -46,40 +70,7 @@
                 "strategy": "external"
             },
             "cacheVariables": {
-                "RESPOND_BUILD_PIC": "ON"
-            }
-        },
-        {
-            "name": "linux-static-config",
-            "description": "Linux Configuration Settings for GCC and Clang",
-            "hidden": true,
-            "inherits": "default-static-config",
-            "condition": {
-                "type": "equals",
-                "lhs": "${hostSystemName}",
-                "rhs": "Linux"
-            },
-            "architecture": {
-                "value": "x64",
-                "strategy": "external"
-            },
-            "toolset": {
-                "value": "host=x64",
-                "strategy": "external"
-            },
-            "cacheVariables": {
-                "RESPOND_BUILD_PIC": "ON"
-            }
-        },
-        {
-            "name": "debug-gcc-linux-shared-config",
-            "displayName": "Debug GCC Shared Library Configuration",
-            "description": "Target Linux with the GCC compiler, debug build type",
-            "inherits": "linux-shared-config",
-            "cacheVariables": {
-                "CMAKE_BUILD_TYPE": "Debug",
-                "RESPOND_BUILD_TESTS": "ON",
-                "RESPOND_CALCULATE_COVERAGE": "ON",
+                "RESPOND_BUILD_PIC": "ON",
                 "RESPOND_BUILD_BENCH": "OFF",
                 "RESPOND_BUILD_WARNINGS": "ON",
                 "RESPOND_SYSTEM_INCLUDES": "OFF",
@@ -88,58 +79,92 @@
             }
         },
         {
-            "name": "debug-gcc-linux-static-config",
-            "displayName": "Debug GCC Static Library Configuration",
-            "description": "Target Linux with the GCC compiler, debug build type",
-            "inherits": "linux-static-config",
-            "cacheVariables": {
-                "CMAKE_BUILD_TYPE": "Debug",
-                "RESPOND_BUILD_TESTS": "ON",
-                "RESPOND_CALCULATE_COVERAGE": "ON",
-                "RESPOND_BUILD_BENCH": "OFF",
-                "RESPOND_BUILD_WARNINGS": "ON",
-                "RESPOND_SYSTEM_INCLUDES": "OFF",
-                "RESPOND_INSTALL": "OFF",
-                "RESPOND_NO_EXCEPTIONS": "OFF"
-            }
+            "name": "debug-linux-shared-config",
+            "displayName": "Debug, Linux, Shared",
+            "description": "Target a linux distro to create a debuggable shared library",
+            "inherits": [
+                "debug-config",
+                "linux-config",
+                "shared-config",
+                "default-respond-config"
+            ]
         },
         {
-            "name": "release-gcc-linux-shared-config",
-            "displayName": "Release GCC Shared Library Configuration",
-            "description": "Target Linux with the GCC compiler, release build type",
-            "inherits": "linux-shared-config",
-            "cacheVariables": {
-                "CMAKE_BUILD_TYPE": "Release",
-                "RESPOND_BUILD_TESTS": "OFF",
-                "RESPOND_CALCULATE_COVERAGE": "OFF",
-                "RESPOND_BUILD_BENCH": "OFF",
-                "RESPOND_BUILD_WARNINGS": "OFF",
-                "RESPOND_SYSTEM_INCLUDES": "OFF",
-                "RESPOND_INSTALL": "ON",
-                "RESPOND_NO_EXCEPTIONS": "OFF"
-            },
-            "warnings": {
-                "dev": false
-            }
+            "name": "debug-linux-static-config",
+            "displayName": "Debug, Linux, Static",
+            "description": "Target a linux distro to create a debuggable static library",
+            "inherits": [
+                "debug-config",
+                "linux-config",
+                "static-config",
+                "default-respond-config"
+            ]
         },
         {
-            "name": "release-gcc-linux-static-config",
-            "displayName": "Release GCC Static Library Configuration",
-            "description": "Target Linux with the GCC compiler, release build type",
-            "inherits": "linux-static-config",
-            "cacheVariables": {
-                "CMAKE_BUILD_TYPE": "Release",
-                "RESPOND_BUILD_TESTS": "OFF",
-                "RESPOND_CALCULATE_COVERAGE": "OFF",
-                "RESPOND_BUILD_BENCH": "OFF",
-                "RESPOND_BUILD_WARNINGS": "OFF",
-                "RESPOND_SYSTEM_INCLUDES": "OFF",
-                "RESPOND_INSTALL": "ON",
-                "RESPOND_NO_EXCEPTIONS": "OFF"
-            },
-            "warnings": {
-                "dev": false
-            }
+            "name": "release-linux-shared-config",
+            "displayName": "Release, Linux, Shared",
+            "description": "Target a linux distro to create a release shared library",
+            "inherits": [
+                "release-config",
+                "linux-config",
+                "shared-config",
+                "default-respond-config"
+            ]
+        },
+        {
+            "name": "release-linux-static-config",
+            "displayName": "Release, Linux, Static",
+            "description": "Target a linux distro to create a release static library",
+            "inherits": [
+                "release-config",
+                "linux-config",
+                "static-config",
+                "default-respond-config"
+            ]
+        },
+        {
+            "name": "debug-microsoft-shared-config",
+            "displayName": "Debug, Microsoft, Shared",
+            "description": "Target a Microsoft distro to create a debuggable shared library",
+            "inherits": [
+                "debug-config",
+                "microsoft-config",
+                "shared-config",
+                "default-respond-config"
+            ]
+        },
+        {
+            "name": "debug-microsoft-static-config",
+            "displayName": "Debug, Microsoft, Static",
+            "description": "Target a microsoft distro to create a debuggable static library",
+            "inherits": [
+                "debug-config",
+                "microsoft-config",
+                "static-config",
+                "default-respond-config"
+            ]
+        },
+        {
+            "name": "release-microsoft-shared-config",
+            "displayName": "Release, Microsoft, Shared",
+            "description": "Target a microsoft distro to create a release shared library",
+            "inherits": [
+                "release-config",
+                "microsoft-config",
+                "shared-config",
+                "default-respond-config"
+            ]
+        },
+        {
+            "name": "release-microsoft-static-config",
+            "displayName": "Release, Microsoft, Static",
+            "description": "Target a microsoft distro to create a release static library",
+            "inherits": [
+                "release-config",
+                "microsoft-config",
+                "static-config",
+                "default-respond-config"
+            ]
         }
     ],
     "buildPresets": [
@@ -149,28 +174,52 @@
             "jobs": 8
         },
         {
-            "name": "release-gcc-linux-shared-build",
-            "displayName": "Release GCC Shared Build",
+            "name": "release-linux-shared-build",
+            "displayName": "Release Linux Shared Build",
             "inherits": "default-build",
-            "configurePreset": "release-gcc-linux-shared-config"
+            "configurePreset": "release-linux-shared-config"
         },
         {
-            "name": "release-gcc-linux-static-build",
-            "displayName": "Release GCC Static Build",
+            "name": "release-linux-static-build",
+            "displayName": "Release Linux Static Build",
             "inherits": "default-build",
-            "configurePreset": "release-gcc-linux-static-config"
+            "configurePreset": "release-linux-static-config"
         },
         {
-            "name": "debug-gcc-linux-shared-build",
-            "displayName": "Debug GCC Shared Build",
+            "name": "debug-linux-shared-build",
+            "displayName": "Debug Linux Shared Build",
             "inherits": "default-build",
-            "configurePreset": "debug-gcc-linux-shared-config"
+            "configurePreset": "debug-linux-shared-config"
         },
         {
-            "name": "debug-gcc-linux-static-build",
-            "displayName": "Debug GCC Static Build",
+            "name": "debug-linux-static-build",
+            "displayName": "Debug Linux Static Build",
             "inherits": "default-build",
-            "configurePreset": "debug-gcc-linux-static-config"
+            "configurePreset": "debug-linux-static-config"
+        },
+        {
+            "name": "release-microsoft-shared-build",
+            "displayName": "Release Microsoft Shared Build",
+            "inherits": "default-build",
+            "configurePreset": "release-microsoft-shared-config"
+        },
+        {
+            "name": "release-microsoft-static-build",
+            "displayName": "Release Microsoft Static Build",
+            "inherits": "default-build",
+            "configurePreset": "release-microsoft-static-config"
+        },
+        {
+            "name": "debug-microsoft-shared-build",
+            "displayName": "Debug Microsoft Shared Build",
+            "inherits": "default-build",
+            "configurePreset": "debug-microsoft-shared-config"
+        },
+        {
+            "name": "debug-microsoft-static-build",
+            "displayName": "Debug Microsoft Static Build",
+            "inherits": "default-build",
+            "configurePreset": "debug-microsoft-static-config"
         }
     ],
     "testPresets": [
@@ -188,18 +237,32 @@
             }
         },
         {
-            "name": "debug-gcc-linux-shared-test",
-            "displayName": "Debug-Shared",
+            "name": "debug-linux-shared-test",
+            "displayName": "Test, Debug, Linux, Shared",
             "description": "Enable output and stop on failure",
             "inherits": "default-test",
-            "configurePreset": "debug-gcc-linux-shared-config"
+            "configurePreset": "debug-linux-shared-config"
         },
         {
-            "name": "debug-gcc-linux-static-test",
-            "displayName": "Debug-Static",
+            "name": "debug-linux-static-test",
+            "displayName": "Test, Debug, Linux, Static",
             "description": "Enable output and stop on failure",
             "inherits": "default-test",
-            "configurePreset": "debug-gcc-linux-static-config"
+            "configurePreset": "debug-linux-static-config"
+        },
+        {
+            "name": "debug-microsoft-shared-test",
+            "displayName": "Test, Debug, Microsoft, Shared",
+            "description": "Enable output and stop on failure",
+            "inherits": "default-test",
+            "configurePreset": "debug-microsoft-shared-config"
+        },
+        {
+            "name": "debug-microsoft-static-test",
+            "displayName": "Test, Debug, Microsoft, Static",
+            "description": "Enable output and stop on failure",
+            "inherits": "default-test",
+            "configurePreset": "debug-microsoft-static-config"
         }
     ],
     "packagePresets": [
@@ -230,138 +293,233 @@
             ]
         },
         {
-            "name": "release-gcc-debian-shared-package",
+            "name": "nsis-package",
+            "inherits": "default-package",
+            "description": "Settings building an NSIS Package",
+            "hidden": true,
+            "generators": [
+                "NSIS"
+            ]
+        },
+        {
+            "name": "release-debian-shared-package",
             "inherits": "debian-package",
-            "configurePreset": "release-gcc-linux-shared-config"
+            "configurePreset": "release-linux-shared-config"
         },
         {
-            "name": "release-gcc-debian-static-package",
+            "name": "release-debian-static-package",
             "inherits": "debian-package",
-            "configurePreset": "release-gcc-linux-static-config"
+            "configurePreset": "release-linux-static-config"
         },
         {
-            "name": "release-gcc-rpm-shared-package",
+            "name": "release-rpm-shared-package",
             "inherits": "rpm-package",
-            "configurePreset": "release-gcc-linux-shared-config"
+            "configurePreset": "release-linux-shared-config"
         },
         {
-            "name": "release-gcc-rpm-static-package",
+            "name": "release-rpm-static-package",
             "inherits": "rpm-package",
-            "configurePreset": "release-gcc-linux-static-config"
+            "configurePreset": "release-linux-static-config"
+        },
+        {
+            "name": "release-nsis-shared-package",
+            "inherits": "nsis-package",
+            "configurePreset": "release-microsoft-shared-config"
+        },
+        {
+            "name": "release-nsis-static-package",
+            "inherits": "nsis-package",
+            "configurePreset": "release-microsoft-static-config"
         }
     ],
     "workflowPresets": [
         {
-            "name": "test-debug-gcc-linux-shared-workflow",
-            "displayName": "Test Debug Shared Library Workflow",
-            "description": "Testing the gcc debug shared library workflow without packaging",
+            "name": "test-debug-linux-shared-workflow",
+            "displayName": "Test, Debug, Linux, Shared",
+            "description": "Testing the debug shared library workflow.",
             "steps": [
                 {
                     "type": "configure",
-                    "name": "debug-gcc-linux-shared-config"
+                    "name": "debug-linux-shared-config"
                 },
                 {
                     "type": "build",
-                    "name": "debug-gcc-linux-shared-build"
+                    "name": "debug-linux-shared-build"
                 },
                 {
                     "type": "test",
-                    "name": "debug-gcc-linux-shared-test"
+                    "name": "debug-linux-shared-test"
                 }
             ]
         },
         {
-            "name": "test-debug-gcc-linux-static-workflow",
-            "displayName": "Test Debug Static Library Workflow",
-            "description": "Testing the gcc debug static library workflow without packaging",
+            "name": "test-debug-linux-static-workflow",
+            "displayName": "Test, Debug, Linux, Static",
+            "description": "Testing the debug static library workflow.",
             "steps": [
                 {
                     "type": "configure",
-                    "name": "debug-gcc-linux-static-config"
+                    "name": "debug-linux-static-config"
                 },
                 {
                     "type": "build",
-                    "name": "debug-gcc-linux-static-build"
+                    "name": "debug-linux-static-build"
                 },
                 {
                     "type": "test",
-                    "name": "debug-gcc-linux-static-test"
+                    "name": "debug-linux-static-test"
                 }
             ]
         },
         {
-            "name": "package-release-gcc-debian-shared-workflow",
-            "displayName": "Debian Package Release Shared Library Workflow",
-            "description": "Packaging the release gcc shared library with debian",
+            "name": "test-debug-microsoft-shared-workflow",
+            "displayName": "Test, Debug, Microsoft, Shared",
+            "description": "Testing the debug shared library workflow.",
             "steps": [
                 {
                     "type": "configure",
-                    "name": "release-gcc-linux-shared-config"
+                    "name": "debug-microsoft-shared-config"
                 },
                 {
                     "type": "build",
-                    "name": "release-gcc-linux-shared-build"
+                    "name": "debug-microsoft-shared-build"
                 },
                 {
-                    "type": "package",
-                    "name": "release-gcc-debian-shared-package"
+                    "type": "test",
+                    "name": "debug-microsoft-shared-test"
                 }
             ]
         },
         {
-            "name": "package-release-gcc-debian-static-workflow",
-            "displayName": "Debian Package Release Static Library Workflow",
-            "description": "Packaging the release gcc static library with debian",
+            "name": "test-debug-microsoft-static-workflow",
+            "displayName": "Test, Debug, Microsoft, Static",
+            "description": "Testing the debug static library workflow.",
             "steps": [
                 {
                     "type": "configure",
-                    "name": "release-gcc-linux-static-config"
+                    "name": "debug-microsoft-static-config"
                 },
                 {
                     "type": "build",
-                    "name": "release-gcc-linux-static-build"
+                    "name": "debug-microsoft-static-build"
                 },
                 {
-                    "type": "package",
-                    "name": "release-gcc-debian-static-package"
+                    "type": "test",
+                    "name": "debug-microsoft-static-test"
                 }
             ]
         },
         {
-            "name": "package-release-gcc-rpm-shared-workflow",
-            "displayName": "RPM Package Release Shared Library Workflow",
-            "description": "Packaging the release gcc shared library as an RPM",
+            "name": "package-release-debian-shared-workflow",
+            "displayName": "Package, Release, Debian, Shared",
+            "description": "Packaging the release shared library with debian",
             "steps": [
                 {
                     "type": "configure",
-                    "name": "release-gcc-linux-shared-config"
+                    "name": "release-linux-shared-config"
                 },
                 {
                     "type": "build",
-                    "name": "release-gcc-linux-shared-build"
+                    "name": "release-linux-shared-build"
                 },
                 {
                     "type": "package",
-                    "name": "release-gcc-rpm-shared-package"
+                    "name": "release-debian-shared-package"
                 }
             ]
         },
         {
-            "name": "package-release-gcc-rpm-static-workflow",
-            "displayName": "RPM Package Release Static Library Workflow",
-            "description": "Packaging the release gcc static library as an RPM",
+            "name": "package-release-debian-static-workflow",
+            "displayName": "Package, Release, Debian, Static",
+            "description": "Packaging the release static library with debian",
             "steps": [
                 {
                     "type": "configure",
-                    "name": "release-gcc-linux-static-config"
+                    "name": "release-linux-static-config"
                 },
                 {
                     "type": "build",
-                    "name": "release-gcc-linux-static-build"
+                    "name": "release-linux-static-build"
                 },
                 {
                     "type": "package",
-                    "name": "release-gcc-rpm-static-package"
+                    "name": "release-debian-static-package"
+                }
+            ]
+        },
+        {
+            "name": "package-release-rpm-shared-workflow",
+            "displayName": "Package, Release, RPM, Shared",
+            "description": "Packaging the release shared library with RPM",
+            "steps": [
+                {
+                    "type": "configure",
+                    "name": "release-linux-shared-config"
+                },
+                {
+                    "type": "build",
+                    "name": "release-linux-shared-build"
+                },
+                {
+                    "type": "package",
+                    "name": "release-rpm-shared-package"
+                }
+            ]
+        },
+        {
+            "name": "package-release-rpm-static-workflow",
+            "displayName": "Package, Release, RPM, Static",
+            "description": "Packaging the release static library with RPM",
+            "steps": [
+                {
+                    "type": "configure",
+                    "name": "release-linux-static-config"
+                },
+                {
+                    "type": "build",
+                    "name": "release-linux-static-build"
+                },
+                {
+                    "type": "package",
+                    "name": "release-rpm-static-package"
+                }
+            ]
+        },
+        {
+            "name": "package-release-nsis-shared-workflow",
+            "displayName": "Package, Release, NSIS, Shared",
+            "description": "Packaging the release shared library with NSIS",
+            "steps": [
+                {
+                    "type": "configure",
+                    "name": "release-microsoft-shared-config"
+                },
+                {
+                    "type": "build",
+                    "name": "release-microsoft-shared-build"
+                },
+                {
+                    "type": "package",
+                    "name": "release-nsis-shared-package"
+                }
+            ]
+        },
+        {
+            "name": "package-release-nsis-static-workflow",
+            "displayName": "Package, Release, NSIS, Static",
+            "description": "Packaging the release static library with NSIS",
+            "steps": [
+                {
+                    "type": "configure",
+                    "name": "release-microsoft-static-config"
+                },
+                {
+                    "type": "build",
+                    "name": "release-microsoft-static-build"
+                },
+                {
+                    "type": "package",
+                    "name": "release-nsis-static-package"
                 }
             ]
         }
