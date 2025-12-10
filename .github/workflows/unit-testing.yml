@@ -13,7 +13,7 @@ jobs:
         runs-on: ${{matrix.os}}
         strategy:
             matrix:
-                os: [ubuntu-latest, windows-latest]
+                os: [ubuntu-latest, windows-2019]
                 build-variant: [shared, static]
         steps:
             - name: Checkout Respond Repository
@@ -28,7 +28,7 @@ jobs:
                   CMAKE_GENERATOR: Ninja
 
             - name: Install MinGW
-              if: matrix.os == 'windows-latest'
+              if: matrix.os == 'windows-2019'
               uses: msys2/setup-msys2@v2
               with:
                   msystem: MINGW64
@@ -41,7 +41,7 @@ jobs:
                   if [ "${{ matrix.os }}" == "ubuntu-latest" ]; then
                       echo "Building Linux"
                       cmake --preset debug-linux-${{matrix.build-variant}}-config
-                  elif [ "${{ matrix.os}}" == "windows-latest" ]; then
+                  elif [ "${{ matrix.os}}" == "windows-2019" ]; then
                       echo "Building Windows"
                       cmake --preset debug-microsoft-${{matrix.build-variant}}-config
                   fi
@@ -59,7 +59,7 @@ jobs:
                   if [ "${{ matrix.os }}" == "ubuntu-latest" ]; then
                       echo "Testing Linux"
                       cmake --workflow --preset test-debug-linux-${{matrix.build-variant}}-workflow
-                  elif [ "${{ matrix.os}}" == "windows-latest" ]; then
+                  elif [ "${{ matrix.os}}" == "windows-2019" ]; then
                       echo "Testing Microsoft"
                       cmake --workflow --preset test-debug-microsoft-${{matrix.build-variant}}-workflow
                   fi
