@@ -40,6 +40,13 @@ jobs:
                       cmake --preset debug-microsoft-${{matrix.build-variant}}-config
                   fi
               shell: bash
+              continue-on-error: true
+
+            - name: List directory contents after potential error
+              run: |
+                  echo "Listing contents of current directory:"
+                  ls -laR build/ # Lists all files and directories recursively
+              shell: bash
 
             - name: Run Testing Workflow
               run: |
@@ -50,11 +57,4 @@ jobs:
                       echo "Testing Microsoft"
                       cmake --workflow --preset test-debug-microsoft-${{matrix.build-variant}}-workflow
                   fi
-              shell: bash
-              continue-on-error: true
-
-            - name: List directory contents after potential error
-              run: |
-                  echo "Listing contents of current directory:"
-                  ls -laR . # Lists all files and directories recursively
               shell: bash
