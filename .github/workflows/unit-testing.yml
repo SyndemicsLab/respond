@@ -57,3 +57,4 @@ jobs:
               run: |
                   echo "Listing contents of current directory:"
                   ls -laR . # Lists all files and directories recursively
+              shell: bash
