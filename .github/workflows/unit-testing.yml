@@ -53,7 +53,7 @@ jobs:
                   if [ "${{ matrix.os }}" == "ubuntu-latest" ]; then
                       echo "Testing Linux"
                       cmake --workflow --preset test-debug-linux-${{matrix.build-variant}}-workflow
-                  elif [ "${{ matrix.os}}" == "windows-latest" ]; then
+                  elif [ "${{ matrix.os}}" == "windows-2019" ]; then
                       echo "Testing Microsoft"
                       cmake --workflow --preset test-debug-microsoft-${{matrix.build-variant}}-workflow
                   fi
