@@ -39,6 +39,7 @@ jobs:
                       echo "Building Windows"
                       cmake --preset debug-microsoft-${{matrix.build-variant}}-config
                   fi
+              shell: bash
 
             - name: Run Testing Workflow
               run: |
@@ -49,3 +50,4 @@ jobs:
                       echo "Testing Microsoft"
                       cmake --workflow --preset test-debug-microsoft-${{matrix.build-variant}}-workflow
                   fi
+              shell: bash
