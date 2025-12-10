@@ -14,7 +14,7 @@ jobs:
         strategy:
             matrix:
                 os: [ubuntu-latest, windows-latest]
-                build-variant: [shared, static]
+                build-variant: [static]
         steps:
             - name: Checkout Respond Repository
               uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3
