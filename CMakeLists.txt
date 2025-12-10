@@ -8,6 +8,13 @@ project(respond VERSION ${RESPOND_VERSION} LANGUAGES CXX)
 message(STATUS "Build respond: ${RESPOND_VERSION}")
 
 #-------------------------------------------------------------------------------
+# Make all targets build to top level folders in build directory
+#-------------------------------------------------------------------------------
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+
+#-------------------------------------------------------------------------------
 # Set default build to release
 #-------------------------------------------------------------------------------
 if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
