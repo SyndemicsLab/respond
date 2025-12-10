@@ -14,7 +14,7 @@ jobs:
         strategy:
             matrix:
                 os: [ubuntu-latest, windows-latest]
-                build-variant: [static]
+                build-variant: [shared, static]
         steps:
             - name: Checkout Respond Repository
               uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3
@@ -36,6 +36,14 @@ jobs:
                       echo "Building Linux"
                       cmake --preset debug-linux-${{matrix.build-variant}}-config
                   elif [ "${{ matrix.os}}" == "windows-latest" ]; then
+                      echo "Root Directory"
+                      ls -la
+                      echo "build Directory"
+                      ls -la build/
+                      echo "shared Directory"
+                      ls -la build/shared
+                      echo "test Directory"
+                      ls -la build/shared/tests
                       echo "Building Windows"
                       cmake --preset debug-microsoft-${{matrix.build-variant}}-config
                   fi
