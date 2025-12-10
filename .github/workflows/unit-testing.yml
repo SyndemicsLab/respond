@@ -48,3 +48,4 @@ jobs:
                   elif [ "${{ matrix.os}}" == "windows-latest" ]; then
                       echo "Testing Microsoft"
                       cmake --workflow --preset test-debug-microsoft-${{matrix.build-variant}}-workflow
+                  fi
