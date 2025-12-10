@@ -54,7 +54,6 @@ jobs:
               continue-on-error: true
 
             - name: List directory contents after potential error
-              if: failure()
               run: |
                   echo "Listing contents of current directory:"
                   ls -laR . # Lists all files and directories recursively
