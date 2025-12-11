@@ -9,8 +9,3 @@ services:
             context: .
             dockerfile: ./docker/rpm/Dockerfile
         command: tail -f /dev/null
-    win_builder:
-        build:
-            context: .
-            dockerfile: ./docker/win/Dockerfile
-        command: tail -f /dev/null
