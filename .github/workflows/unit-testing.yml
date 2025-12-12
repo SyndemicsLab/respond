@@ -2,38 +2,66 @@ name: Respond Unit Testing
 # Schema: https://json.schemastore.org/github-action.json
 
 on:
-  push:
-    branches: ["main"]
-  pull_request:
-    branches: ["main"]
+    push:
+        branches: ["main"]
+    pull_request:
+        branches: ["main"]
 
 jobs:
-  unit-testing:
-    name: Testing ${{matrix.os}} ${{matrix.build-variant}} build
-    runs-on: ${{matrix.os}}
-    strategy:
-      matrix:
-        os: [ubuntu-latest]
-        build-variant: [shared, static]
-    steps:
-      - name: Checkout Respond Repository
-        uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3
+    unit-testing:
+        name: Testing ${{matrix.os}} ${{matrix.build-variant}} build
+        runs-on: ${{matrix.os}}
+        strategy:
+            matrix:
+                os: [ubuntu-latest, windows-latest]
+                build-variant: [shared, static]
+        steps:
+            - name: Checkout Respond Repository
+              uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3
 
-      - name: Install Eigen3
-        uses: kupns-aka-kupa/setup-eigen3@master
-        id: install-eigen3
-        with:
-          version: 3.4.0
-        env:
-          CMAKE_GENERATOR: Ninja
+            - name: Install Eigen3
+              uses: kupns-aka-kupa/setup-eigen3@master
+              id: install-eigen3
+              with:
+                  version: 3.4.0
+              env:
+                  CMAKE_GENERATOR: Ninja
 
-      - name: Configure Project
-        env:
-          EIGEN3_INCLUDE_DIR: ${{ steps.install-eigen3.outputs.EIGEN3_INCLUDE_DIR }}
-          EIGEN3_DIR: ${{ steps.install-eigen3.outputs.EIGEN3_DIR}}
-        run: >
-          cmake --preset debug-gcc-linux-${{matrix.build-variant}}-config
+            - name: Install MinGW
+              if: matrix.os == 'windows-latest'
+              uses: msys2/setup-msys2@v2
+              with:
+                  msystem: MINGW64
 
-      - name: Run Testing Workflow
-        run: >
-          cmake --workflow --preset test-debug-gcc-linux-${{matrix.build-variant}}-workflow
+            - name: Configure Project
+              env:
+                  EIGEN3_INCLUDE_DIR: ${{ steps.install-eigen3.outputs.EIGEN3_INCLUDE_DIR }}
+                  EIGEN3_DIR: ${{ steps.install-eigen3.outputs.EIGEN3_DIR}}
+              run: |
+                  if [ "${{ matrix.os }}" == "ubuntu-latest" ]; then
+                      echo "Building Linux"
+                      cmake --preset debug-linux-${{matrix.build-variant}}-config
+                  elif [ "${{ matrix.os}}" == "windows-latest" ]; then
+                      echo "Building Windows"
+                      cmake --preset debug-microsoft-${{matrix.build-variant}}-config
+                  fi
+              shell: bash
+              continue-on-error: true
+
+            - name: List directory contents after potential error
+              run: |
+                  echo "Listing contents of current directory:"
+                  ls -laR build/ # Lists all files and directories recursively
+              shell: bash
+
+            - name: Run Testing Workflow
+              run: |
+                  if [ "${{ matrix.os }}" == "ubuntu-latest" ]; then
+                      echo "Testing Linux"
+                      cmake --workflow --preset test-debug-linux-${{matrix.build-variant}}-workflow
+                  elif [ "${{ matrix.os}}" == "windows-latest" &&  "${{matrix.build-variant}}" == "static"]; then
+                      echo "Testing Microsoft"
+                      cmake --workflow --preset test-debug-microsoft-${{matrix.build-variant}}-workflow
+                  fi
+              timeout-minutes: 5
+              shell: bash

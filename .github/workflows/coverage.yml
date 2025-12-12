@@ -3,51 +3,51 @@ name: Respond Code Coverage
 # Schema: https://json.schemastore.org/github-action.json
 
 on:
-  push:
-    branches: ["main"]
-  pull_request:
-    branches: ["main"]
+    push:
+        branches: ["main"]
+    pull_request:
+        branches: ["main"]
 
 jobs:
-  build:
-    name: Calculate Code Coverage
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Respond Repository
-        uses: actions/checkout@v4
+    build:
+        name: Calculate Code Coverage
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout Respond Repository
+              uses: actions/checkout@v4
 
-      - name: Install gcovr
-        run: pip install gcovr
+            - name: Install gcovr
+              run: pip install gcovr
 
-      - name: Install Eigen3
-        uses: kupns-aka-kupa/setup-eigen3@master
-        id: install-eigen3
-        with:
-          version: 3.4.0
-        env:
-          CMAKE_GENERATOR: Ninja
+            - name: Install Eigen3
+              uses: kupns-aka-kupa/setup-eigen3@master
+              id: install-eigen3
+              with:
+                  version: 3.4.0
+              env:
+                  CMAKE_GENERATOR: Ninja
 
-      - name: Configure Project
-        env:
-          EIGEN3_INCLUDE_DIR: ${{ steps.install-eigen3.outputs.EIGEN3_INCLUDE_DIR }}
-          EIGEN3_DIR: ${{ steps.install-eigen3.outputs.EIGEN3_DIR}}
-        run: >
-          cmake --preset debug-gcc-linux-shared-config
+            - name: Configure Project
+              env:
+                  EIGEN3_INCLUDE_DIR: ${{ steps.install-eigen3.outputs.EIGEN3_INCLUDE_DIR }}
+                  EIGEN3_DIR: ${{ steps.install-eigen3.outputs.EIGEN3_DIR}}
+              run: >
+                  cmake --preset debug-linux-shared-config
 
-      - name: Build Project
-        run: >
-          cmake --build --preset debug-gcc-linux-shared-build
+            - name: Build Project
+              run: >
+                  cmake --build --preset debug-linux-shared-build
 
-      - name: Test Project
-        run: >
-          cmake --build --preset debug-gcc-linux-shared-build --target test
+            - name: Test Project
+              run: >
+                  cmake --build --preset debug-linux-shared-build --target test
 
-      - name: Generate gcovr report
-        run: |
-          gcovr -r . --xml-pretty -o coverage.xml
+            - name: Generate gcovr report
+              run: |
+                  gcovr -r . --xml-pretty -o coverage.xml
 
-      - name: Generate Coverage Badge
-        uses: GaelGirodon/ci-badges-action@v1
-        with:
-          gist-id: 10e746e28df5d23e91689b01493435a0
-          token: ${{secrets.GIST_BADGE_TOKEN}}
+            - name: Generate Coverage Badge
+              uses: GaelGirodon/ci-badges-action@v1
+              with:
+                  gist-id: 10e746e28df5d23e91689b01493435a0
+                  token: ${{secrets.GIST_BADGE_TOKEN}}
