@@ -1,6 +1,6 @@
 ---
-name: Pull Request
-about: Prepare to Merge Code to Main
+name: Pull Request to Default
+about: Submit code to be merged into the default branch
 title: ''
 labels: ''
 assignees: ''
@@ -12,6 +12,5 @@ assignees: ''
 
 ## Checklist before merging
 
-- [ ] If its a core feature, I have added through test.
-- [ ] Do we need to implement analytics?
-- [ ] Will this be part of a product update? If yes, please write one phrase about this update
+- [ ] If adding a core feature, I've added related tests.
+- [ ] This is part of a [product update](https://www.chameleon.io/blog/product-updates), and I've added an explanation of what is different to the changelog.
