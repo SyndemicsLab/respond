@@ -5,7 +5,7 @@ list(APPEND CMAKE_MESSAGE_INDENT "  ")
 FetchContent_Declare(
     Eigen3
     GIT_REPOSITORY https://gitlab.com/libeigen/eigen.git
-    GIT_TAG 5.0.1
+    GIT_TAG "3.4.0"
     FIND_PACKAGE_ARGS NAMES Eigen3
 )
 
