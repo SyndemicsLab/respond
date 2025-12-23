@@ -16,46 +16,7 @@ The [original RESPOND model](https://github.com/SyndemicsLab/RESPONDv1/tree/main
 
 RESPOND makes full use of the CMake build system. It is a common tool used throughout the C++ user-base and we utilize it for dependency management, linking, and testing. As C++ has poor package management, we intentionally decided to move our focus away from tools such as conan and vcpkg and stay with pure CMake. Not to say we would never publish with such package managers, but it is not a core focus of the refactor/engineering team.
 
-We natively support 4 different build workflows with the `CMakePresets.json` file. They are:
-
-1. `gcc-release`
-2. `gcc-debug`
-3. `gcc-release-cluster`
-4. `gcc-debug-cluster`
-
-Unless you are explicitly using a linux based computing cluster, we highly recommend choosing one of the first two build processes. In the future, we do intend to expand to additional compilers and operating systems beyond GCC and Linux.
-
-Overall, we make use of 11 custom CMake variables. They are found in the [options.cmake file](cmake/options.cmake) and all are set accordingly in the `CMakePresets.json`.
-
-## Dependencies
-
-We make abundant use of the CMake `FetchContent` feature released in CMake 3.11. We utilize features added in CMake 3.24 to check if the package is previously installed, so the minimum required version of CMake is **3.24**.
-
-The required dependencies are:
-
-- [DataManagement](https://github.com/SyndemicsLab/DataManagement)
-- [Eigen](https://gitlab.com/libeigen/eigen)
-- [spdlog](https://github.com/gabime/spdlog)
-
-For tests we require:
-
-- [GoogleTest](https://github.com/google/googletest)
-
-## Build
-
-This is, by nature, a C++ library. This means that the default behavior is not to provide an executable for the model, but rather a set of callable functions to design your own model. However, we have a distinct use case for an executable and building a model, and as such we provide the ability to build and install this executable. This is directly controlled via the `RESPOND_BUILD_EXECUTABLE` variable.
-
-### Local
-
-If you would like to clone and build this locally, it is a relatively straightforward process:
-
-```shell
-git clone https://github.com/SyndemicsLab/respond.git
-cd respond
-cmake --workflow --preset gcc-release
-```
-
-And then the model is build and installed. Our default location is a build directory in the repository, but the CMake Install Directory can be pointed to wherever the user desires.
+Currently our CMake supports 10 different workflows. They are named using the following convention: `<exetype>-<versiontype>-<os>-<shared/static>-workflow`. Please consult the CMakePresets.json or run `cmake --workflow --list-presets` to see the entire list.
 
 ### Fetch Content
 
@@ -73,20 +34,21 @@ option(RESPOND_BUILD_TESTS "Disable testing for RESPOND" OFF)
 FetchContent_MakeAvailable(respond)
 ```
 
-### Script
+## Dependencies
 
-If you would prefer a single, all-in-one script, our team has developed a script that works on any linux environment and finds packages wherever available. As such, the user needs simply run:
+As mentioned above, we utilize the  CMake `FetchContent` feature released in CMake 3.11. Additionally, we utilize features added in CMake 3.24 to check if the package is previously installed, so the minimum required version of CMake is **3.24**.
 
-```shell
-./tools/build.sh
-```
+The required dependencies are:
 
-## Running the RESPOND Executable
+- [Eigen](https://gitlab.com/libeigen/eigen)
+- [spdlog](https://github.com/gabime/spdlog)
 
-If you choose to use our provided executable, running the model requires a set of input files. The input files required are described in the [data section](data.md). These are all put into a folder titled `input<number>` where the number is replaced with the ID of the input. Then, after these folders are created and RESPOND is built we simply run the command:
+For tests we require:
 
-```bash
-./build/extras/executable/respond_exe <input_start> <input_end>
-```
+- [GoogleTest](https://github.com/google/googletest)
+
+## Install Packages
+
+As part of our automated workflow, we provide several different installable packages as part of each release. They can be found on each [tagged release on our GitHub](https://github.com/SyndemicsLab/respond/tags). Currently we provide RPM and Debian installers for static and shared libraries, and a NSIS windows static library installer. For a step-by-step procedure of building the package from source, please check the [installation documentation](installation.md).
 
 Next: [Installation](installation.md)
