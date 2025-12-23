@@ -62,7 +62,7 @@ window.MathJax = {
                             <td id="projectlogo"><img alt="Logo" src="../../Syndemics_main_logo_50px.png" /></td>
                             <td id="projectalign">
                                 <div id="projectname">RESPOND<span
-                                        id="projectnumber">&#160;2.0.1</span>
+                                        id="projectnumber">&#160;2.2.0</span>
                                 </div>
                                 <div id="projectbrief">Researching Effective Strategies to Prevent Opioid Death</div>
                             </td>
@@ -130,48 +130,32 @@ $(document).ready(function(){initNavTree('d6/df1/md_docs_src_math.html','../../'
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><p>The RESPOND model is built on the idea that we can model opioid use disorder as a state transition model. We also maintain the Markov properties such that the RESPOND model is a completely Markovian model. Represented mathematically, this means that the next step depends exclusively on the current conditions and the transition probabilities as shown in equation 1.</p>
-<p class="formulaDsp">
-\[
-x_{t+1} = M_{t}^{T}x_{t}
-\]
-</p>
-<p>When we assume \(x_{t}\) is able to represent the state of the cohort at timestep \(t\), this means that the model is concerned with representing the transition matrix \(M\). RESPOND represents this transition matrix as a series of sequential operations. They are:</p>
+<p>$$ x_{t+1} = M_{t}^{T}x_{t} $$</p>
+<p>When we assume $x_{t}$ is able to represent the state of the cohort at timestep $t$, this means that the model is concerned with representing the transition matrix $M$. RESPOND represents this transition matrix as a series of sequential operations. They are:</p>
 <ol type="1">
 <li>Entering Cohort Transitions</li>
-<li>Behavior Transitions</li>
 <li>Intervention Transitions</li>
-<li>Behavior Transitions Post Intervention Transition</li>
+<li>Behavior Transitions</li>
 <li>Overdose Transitions</li>
 <li>Background Mortality Transitions</li>
 </ol>
 <p><b>Note:</b> A large deviation from v1, RESPOND now considers the "Entering Cohort" and "Death" counts as states in the state matrix. This is required in order to allow for the entering cohort transition to function as part of the transition matrix and not exist as an extra component added into equation 1.</p>
-<h1><a class="anchor" id="autotoc_md43"></a>
+<h1><a class="anchor" id="autotoc_md37"></a>
 Entering Cohort Transitions</h1>
 <p>Entering cohort transitions is the first step in the transition operation. Its actually extremely straightforward, it is a direct movement of people from the "entering cohort" state into the no treatment state.</p>
-<p>/f[ x = e(x, t) \f]</p>
-<h1><a class="anchor" id="autotoc_md44"></a>
-Behavior Transitions</h1>
-<p class="formulaDsp">
-\[
-x = \Beta(x, t)
-\]
-</p>
-<h1><a class="anchor" id="autotoc_md45"></a>
+<p>$x = e(x, t)$</p>
+<h1><a class="anchor" id="autotoc_md38"></a>
 Intervention Transitions</h1>
-<p class="formulaDsp">
-\[
-x = \Iota(x, t)
-\]
-</p>
-<h1><a class="anchor" id="autotoc_md46"></a>
-Behavior Transitions Post Intervention Transition</h1>
-<p>\Iota(x, t) = f(g(t, x))</p>
-<h1><a class="anchor" id="autotoc_md47"></a>
+<p>$x = \Iota(x, t)$</p>
+<h1><a class="anchor" id="autotoc_md39"></a>
+Behavior Transitions</h1>
+<p>$x = \Beta(x, t)$</p>
+<h1><a class="anchor" id="autotoc_md40"></a>
 Overdose Transitions</h1>
-<p>x = \Omega(x, t)</p>
-<h1><a class="anchor" id="autotoc_md48"></a>
+<p>$x = \Omega(x, t)$</p>
+<h1><a class="anchor" id="autotoc_md41"></a>
 Background Mortality Transitions</h1>
-<p>x = \Mu(x, t)</p>
+<p>$x = \Mu(x, t)$</p>
 <p>Previous: <a class="el" href="../../dd/d4c/md_docs_src_run.html">Run</a></p>
 <p>Next: <a class="el" href="../../d6/d3e/md_docs_src_limitations.html">Limitations</a> </p>
 </div></div><!-- contents -->
@@ -180,7 +164,7 @@ Background Mortality Transitions</h1>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Tue Dec 16 2025 19:46:00 for RESPOND by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
+    <li class="footer">Generated on Tue Dec 23 2025 20:06:20 for RESPOND by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
   </ul>
 </div>
 </body>

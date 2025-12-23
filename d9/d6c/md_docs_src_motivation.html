@@ -14,7 +14,7 @@ Copyright (c) 2025 Syndemics Lab at Boston Medical Center
     <meta http-equiv="X-UA-Compatible" content="IE=11" />
     <meta name="generator" content="Doxygen 1.9.6" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>RESPOND: respond::HistoryStamp Struct Reference</title>
+    <title>RESPOND: Why RESPOND?</title>
     <link href="../../tabs.css" rel="stylesheet" type="text/css" />
     <script type="text/javascript" src="../../jquery.js"></script>
     <script type="text/javascript" src="../../dynsections.js"></script>
@@ -100,7 +100,7 @@ $(function() {
 </div>
 <script type="text/javascript">
 /* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
-$(document).ready(function(){initNavTree('d0/da5/structrespond_1_1HistoryStamp.html','../../'); initResizable(); });
+$(document).ready(function(){initNavTree('d9/d6c/md_docs_src_motivation.html','../../'); initResizable(); });
 /* @license-end */
 </script>
 <div id="doc-content">
@@ -125,40 +125,32 @@ $(document).ready(function(){initNavTree('d0/da5/structrespond_1_1HistoryStamp.h
 </div>
 </div>
 
-<div class="header">
-  <div class="summary">
-<a href="#pub-attribs">Public Attributes</a> &#124;
-<a href="../../d1/d65/structrespond_1_1HistoryStamp-members.html">List of all members</a>  </div>
-  <div class="headertitle"><div class="title">respond::HistoryStamp Struct Reference</div></div>
+<div><div class="header">
+  <div class="headertitle"><div class="title">Why RESPOND? </div></div>
 </div><!--header-->
 <div class="contents">
-
-<p>Struct grouping together matrices containing run history.  
-</p>
-
-<p><code>#include &lt;<a class="el" href="../../dd/de3/types_8hpp_source.html">types.hpp</a>&gt;</code></p>
-<table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
-Public Attributes</h2></td></tr>
-<tr class="memitem:accb665e9d0432bfc9f514e49894a4829"><td class="memItemLeft" align="right" valign="top"><a id="accb665e9d0432bfc9f514e49894a4829" name="accb665e9d0432bfc9f514e49894a4829"></a>
-Eigen::VectorXd&#160;</td><td class="memItemRight" valign="bottom"><b>state</b> = Eigen::VectorXd::Zero(0)</td></tr>
-<tr class="separator:accb665e9d0432bfc9f514e49894a4829"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa94d745573d64136659cf29b4da564dd"><td class="memItemLeft" align="right" valign="top"><a id="aa94d745573d64136659cf29b4da564dd" name="aa94d745573d64136659cf29b4da564dd"></a>
-Eigen::VectorXd&#160;</td><td class="memItemRight" valign="bottom"><b>overdoses</b> = Eigen::VectorXd::Zero(0)</td></tr>
-<tr class="separator:aa94d745573d64136659cf29b4da564dd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa5a998932e52b8e6ccd890a1763ed951"><td class="memItemLeft" align="right" valign="top"><a id="aa5a998932e52b8e6ccd890a1763ed951" name="aa5a998932e52b8e6ccd890a1763ed951"></a>
-Eigen::VectorXd&#160;</td><td class="memItemRight" valign="bottom"><b>intervention_admissions</b> = Eigen::VectorXd::Zero(0)</td></tr>
-<tr class="separator:aa5a998932e52b8e6ccd890a1763ed951"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table>
-<hr/>The documentation for this struct was generated from the following file:<ul>
-<li><a class="el" href="../../dd/de3/types_8hpp_source.html">types.hpp</a></li>
-</ul>
-</div><!-- contents -->
+<div class="textblock"><p>The RESPOND model was first developed in 2018 as a response to the rapid rise in opioid use disorder (OUD) cases across the country. Funded by the National Institute on Drug Abuse (NIDA), RESPOND was developed to study care options for OUD and various cost effectiveness measurements to inform system-level change and provide evidence to policy makers to make informed options for the community.</p>
+<h1><a class="anchor" id="autotoc_md7"></a>
+Costing and Utility</h1>
+<p>A core outcome of interest for the RESPOND model is the cost effectiveness of policy alternatives. Because modeling lets us test alternatives to the current policy, the natural questions that always follow a proposed policy change are:</p>
+<ol type="1">
+<li>How much money does it cost?</li>
+<li>How many people would it help?</li>
+</ol>
+<p>Answering these questions is the goal of cost effectiveness modeling. Noticably, cost effectiveness is not about spending the least amount of money, but rather spending the entire allocated amount of money in a way that effectively helps the most amount of people.</p>
+<p>This is a particularly difficult challenge for cohort based models as such models do not model individual people. Instead, cohort models replicate changes in the population. This means that cost effectiveness must be considered on a population level. Given the Markovian nature of the model, we can apply our cost metrics to the final state of the model. So, we are able to completely remove cost effectiveness from the model runtime and apply it as a post processing procedure when indicated by the person running the analysis.</p>
+<h1><a class="anchor" id="autotoc_md8"></a>
+Why Refactor?</h1>
+<p>This new edition of RESPOND (informally called v2) was written to help maintainability of the model and enable faster development and extension on the base product. Written initially in R, RESPOND was proving very difficult to extend to new studies. The graph was a rigidly developed structure that required code edits to incorporate new treatment and behavior options, which rapidly proved a major bottleneck with the rise of fentanyl, drug adulteration and stimulant mixing, and changes in confounding health conditions. Thus, we re-designed the model to be a state transition model with flexible dimensions to expand as needed.</p>
+<p>Part of the refactor was transitioning away from the R programming language. While we recognize various benefits of the R language, we felt we wanted more control over the model and wanted to natively operate in C++ so that we could build out packages for various languages rather than be confined to R for all future development. We also believe that the object oriented nature of the model was better represented in languages like C++.</p>
+<p>Previous: <a class="el" href="../../index.html#md_docs_src_index">Home</a></p>
+<p>Next: <a class="el" href="../../d7/d63/md_docs_src_installation.html">Installation</a> </p>
+</div></div><!-- contents -->
+</div><!-- PageDoc -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="../../d9/de6/namespacerespond.html">respond</a></li><li class="navelem"><a class="el" href="../../d0/da5/structrespond_1_1HistoryStamp.html">HistoryStamp</a></li>
     <li class="footer">Generated on Tue Dec 23 2025 20:06:20 for RESPOND by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
   </ul>
 </div>

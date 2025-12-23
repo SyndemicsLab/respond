@@ -62,7 +62,7 @@ window.MathJax = {
                             <td id="projectlogo"><img alt="Logo" src="Syndemics_main_logo_50px.png" /></td>
                             <td id="projectalign">
                                 <div id="projectname">RESPOND<span
-                                        id="projectnumber">&#160;2.0.1</span>
+                                        id="projectnumber">&#160;2.2.0</span>
                                 </div>
                                 <div id="projectbrief">Researching Effective Strategies to Prevent Opioid Death</div>
                             </td>
@@ -142,39 +142,8 @@ RESPONDv1</h1>
 <h1><a class="anchor" id="autotoc_md2"></a>
 CMake</h1>
 <p>RESPOND makes full use of the CMake build system. It is a common tool used throughout the C++ user-base and we utilize it for dependency management, linking, and testing. As C++ has poor package management, we intentionally decided to move our focus away from tools such as conan and vcpkg and stay with pure CMake. Not to say we would never publish with such package managers, but it is not a core focus of the refactor/engineering team.</p>
-<p>We natively support 4 different build workflows with the <code>CMakePresets.json</code> file. They are:</p>
-<ol type="1">
-<li><code>gcc-release</code></li>
-<li><code>gcc-debug</code></li>
-<li><code>gcc-release-cluster</code></li>
-<li><code>gcc-debug-cluster</code></li>
-</ol>
-<p>Unless you are explicitly using a linux based computing cluster, we highly recommend choosing one of the first two build processes. In the future, we do intend to expand to additional compilers and operating systems beyond GCC and Linux.</p>
-<p>Overall, we make use of 11 custom CMake variables. They are found in the <a href="cmake/options.cmake">options.cmake file</a> and all are set accordingly in the <code>CMakePresets.json</code>.</p>
-<h1><a class="anchor" id="autotoc_md3"></a>
-Dependencies</h1>
-<p>We make abundant use of the CMake <code>FetchContent</code> feature released in CMake 3.11. We utilize features added in CMake 3.24 to check if the package is previously installed, so the minimum required version of CMake is <b>3.24</b>.</p>
-<p>The required dependencies are:</p>
-<ul>
-<li><a href="https://github.com/SyndemicsLab/DataManagement">DataManagement</a></li>
-<li><a href="https://gitlab.com/libeigen/eigen">Eigen</a></li>
-<li><a href="https://github.com/gabime/spdlog">spdlog</a></li>
-</ul>
-<p>For tests we require:</p>
-<ul>
-<li><a href="https://github.com/google/googletest">GoogleTest</a></li>
-</ul>
-<h1><a class="anchor" id="autotoc_md4"></a>
-Build</h1>
-<p>This is, by nature, a C++ library. This means that the default behavior is not to provide an executable for the model, but rather a set of callable functions to design your own model. However, we have a distinct use case for an executable and building a model, and as such we provide the ability to build and install this executable. This is directly controlled via the <code>RESPOND_BUILD_EXECUTABLE</code> variable.</p>
-<h2><a class="anchor" id="autotoc_md5"></a>
-Local</h2>
-<p>If you would like to clone and build this locally, it is a relatively straightforward process:</p>
-<div class="fragment"><div class="line">git clone https://github.com/SyndemicsLab/respond.git</div>
-<div class="line">cd respond</div>
-<div class="line">cmake --workflow --preset gcc-release</div>
-</div><!-- fragment --><p>And then the model is build and installed. Our default location is a build directory in the repository, but the CMake Install Directory can be pointed to wherever the user desires.</p>
-<h2><a class="anchor" id="autotoc_md6"></a>
+<p>Currently our CMake supports 10 different workflows. They are named using the following convention: <code>&lt;exetype&gt;-&lt;versiontype&gt;-&lt;os&gt;-&lt;shared/static&gt;-workflow</code>. Please consult the CMakePresets.json or run <code>cmake --workflow --list-presets</code> to see the entire list.</p>
+<h2><a class="anchor" id="autotoc_md3"></a>
 Fetch Content</h2>
 <p>If you would like to make use of Fetch Content to extract the library:</p>
 <div class="fragment"><div class="line">include(FetchContent)</div>
@@ -186,22 +155,29 @@ Fetch Content</h2>
 <div class="line">option(RESPOND_INSTALL &quot;Enable install for respond project&quot; ON)</div>
 <div class="line">option(RESPOND_BUILD_TESTS &quot;Disable testing for RESPOND&quot; OFF)</div>
 <div class="line">FetchContent_MakeAvailable(respond)</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md7"></a>
-Script</h2>
-<p>If you would prefer a single, all-in-one script, our team has developed a script that works on any linux environment and finds packages wherever available. As such, the user needs simply run:</p>
-<div class="fragment"><div class="line">./tools/build.sh</div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md8"></a>
-Running the RESPOND Executable</h1>
-<p>If you choose to use our provided executable, running the model requires a set of input files. The input files required are described in the <a class="el" href="d0/d1d/md_docs_src_data.html">data section</a>. These are all put into a folder titled <code>input&lt;number&gt;</code> where the number is replaced with the ID of the input. Then, after these folders are created and RESPOND is built we simply run the command:</p>
-<div class="fragment"><div class="line">./build/extras/executable/respond_exe &lt;input_start&gt; &lt;input_end&gt;</div>
-</div><!-- fragment --><p>Next: <a class="el" href="d7/d63/md_docs_src_installation.html">Installation</a> </p>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md4"></a>
+Dependencies</h1>
+<p>As mentioned above, we utilize the CMake <code>FetchContent</code> feature released in CMake 3.11. Additionally, we utilize features added in CMake 3.24 to check if the package is previously installed, so the minimum required version of CMake is <b>3.24</b>.</p>
+<p>The required dependencies are:</p>
+<ul>
+<li><a href="https://gitlab.com/libeigen/eigen">Eigen</a></li>
+<li><a href="https://github.com/gabime/spdlog">spdlog</a></li>
+</ul>
+<p>For tests we require:</p>
+<ul>
+<li><a href="https://github.com/google/googletest">GoogleTest</a></li>
+</ul>
+<h1><a class="anchor" id="autotoc_md5"></a>
+Install Packages</h1>
+<p>As part of our automated workflow, we provide several different installable packages as part of each release. They can be found on each <a href="https://github.com/SyndemicsLab/respond/tags">tagged release on our GitHub</a>. Currently we provide RPM and Debian installers for static and shared libraries, and a NSIS windows static library installer. For a step-by-step procedure of building the package from source, please check the <a class="el" href="d7/d63/md_docs_src_installation.html">installation documentation</a>.</p>
+<p>Next: <a class="el" href="d9/d6c/md_docs_src_motivation.html">Motivation</a> </p>
 </div></div><!-- PageDoc -->
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Tue Dec 16 2025 19:46:00 for RESPOND by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
+    <li class="footer">Generated on Tue Dec 23 2025 20:06:20 for RESPOND by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
   </ul>
 </div>
 </body>

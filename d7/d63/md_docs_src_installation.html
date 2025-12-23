@@ -62,7 +62,7 @@ window.MathJax = {
                             <td id="projectlogo"><img alt="Logo" src="../../Syndemics_main_logo_50px.png" /></td>
                             <td id="projectalign">
                                 <div id="projectname">RESPOND<span
-                                        id="projectnumber">&#160;2.0.1</span>
+                                        id="projectnumber">&#160;2.2.0</span>
                                 </div>
                                 <div id="projectbrief">Researching Effective Strategies to Prevent Opioid Death</div>
                             </td>
@@ -129,26 +129,41 @@ $(document).ready(function(){initNavTree('d7/d63/md_docs_src_installation.html',
   <div class="headertitle"><div class="title">Installation </div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p>The RESPOND model is available to users through multiple methods. That being said, RESPOND has been built and tested on machines running ubuntu 24.04 and CI/CD tested on Windows machines. We recommend a basic installation either through building the source code or utilizing CMake's <a href="https://cmake.org/cmake/help/latest/module/FetchContent.html">FetchContent</a> feature. We do plan to eventually work towards providing a debian package install as well.</p>
+<div class="textblock"><p>The RESPOND library can be installed via the executable packages built during the GitHub Actions workflow, building the Docker images, or by installing and building the source code. Our CMake is also designed to allow for usage with the <code>FetchContent</code> process for easy integration with any CMake projects. For library versions in different programming languages, please view the <code>respondpy</code> library.</p>
 <h1><a class="anchor" id="autotoc_md10"></a>
 Dependencies</h1>
-<p>RESPOND has several dependencies that require being satistifed before installation. This is primarily a concern if you intend to build from source as FetchContent should generally manage the dependencies if installed that way. Our <code>FetchContent_Declare</code> statements all attempt to <code>find_package</code> before downloading so if you choose to make use of specific versions of these dependencies you simply install the dependencies before attempting to install RESPOND.</p>
-<p><b>Note:</b> DataManagement is a Syndemics Lab library and under heavy development. It is <em>NOT</em> recommended to attempt to install a separate version.</p>
-<ul>
-<li><a href="https://github.com/SyndemicsLab/DataManagement">DataManagement</a></li>
-<li><a href="https://eigen.tuxfamily.org/index.php?title=Main_Page">Eigen</a></li>
-<li><a href="https://github.com/gabime/spdlog">Spdlog</a></li>
-</ul>
+<p>While we do handle our own dependency management, either via package installation or source building, we believe it is important to inform users of the external projects they will be installing alongside RESPOND. Our package has 2 core dependencies (<code>Eigen</code> and <code>spdlog</code>) and an additional dependency for the testing executable (<code>gtest</code>).</p>
+<p><a href="https://libeigen.gitlab.io/documentation/">Eigen</a> is a widely used C++ linear algebra library. It allows for rapid development of matrix operations as well as converting matrices between GPU and CPU tensors. As RESPOND is a Markov model, we are able to provide speedups through linear algebra techniques and Eigen is the core allowing those speedups.</p>
+<p>The <a href="https://github.com/gabime/spdlog">spdlog</a> library is how we are able to write logs during runtime. We log various warnings and errors that could potentially arrive during runtime such as mathematical limitations of data and the assumptions we make if we are able to smooth over issues. By default, we attempt to resolve a few simple issues (i.e. if no data is found for transitions we assume everyone is retained in the same state) but this information is always logged to the output via the spdlog library.</p>
 <h1><a class="anchor" id="autotoc_md11"></a>
+Installing From Packages</h1>
+<p>We distribute the executable installers two ways:</p>
+<ol type="1">
+<li>On our tagged builds</li>
+<li>Through Docker images</li>
+</ol>
+<p>The tagged builds can be found <a href="https://github.com/SyndemicsLab/respond/tags">on our GitHub page</a>. The Docker containers can be built with Docker compose by simply running <code>docker compose up</code> and then downloading the built executable file.</p>
+<h1><a class="anchor" id="autotoc_md12"></a>
 Installing From Source</h1>
-<p>In order to install from source, clone the repository and run cmake. We provide workflows in the <code>CMakePresets.json</code> and encourage the use of them for easy building. Our primary workflow is built using the <a href="https://gcc.gnu.org/">GCC compiler</a> and the <a href="https://ninja-build.org/">Ninja build system</a>.</p>
+<p>In order to install the library from source, clone the repository and run CMake. We provide workflows in the <code>CMakePresets.json</code> and encourage the use of them for easy building.</p>
+<h2><a class="anchor" id="autotoc_md13"></a>
+Building without Packaging or Testing</h2>
 <div class="fragment"><div class="line">git clone https://github.com/SyndemicsLab/respond.git</div>
 <div class="line">cd respond</div>
-<div class="line">cmake --workflow gcc-release</div>
-</div><!-- fragment --><p>We also provide a debug version that is slower, but prints more to the logger to help debug problems:</p>
-<div class="fragment"><div class="line">cmake --workflow gcc-debug</div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md12"></a>
-Installing With CMake</h1>
+<div class="line">cmake --preset debug-linux-static-config</div>
+<div class="line">cmake --build --preset debug-linux-static-build</div>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md14"></a>
+Testing</h2>
+<div class="fragment"><div class="line">git clone https://github.com/SyndemicsLab/respond.git</div>
+<div class="line">cd respond</div>
+<div class="line">cmake --workflow --preset test-debug-linux-static-workflow</div>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md15"></a>
+Packaging</h2>
+<div class="fragment"><div class="line">git clone https://github.com/SyndemicsLab/respond.git</div>
+<div class="line">cd respond</div>
+<div class="line">cmake --workflow --preset package-release-debian-static-workflow</div>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md16"></a>
+Fetch Content</h1>
 <p>Since CMake 3.11, the <code>FetchContent</code> tool has been available to users. Early on in the design process, we made the decision to progress under the assumption that CMake will handle our dependencies and additional package managers can be installed as necessary and included in toolchain files. To install via <code>FetchContent</code> simply do:</p>
 <div class="fragment"><div class="line">include(FetchContent)</div>
 <div class="line">FetchContent_Declare(</div>
@@ -160,7 +175,7 @@ Installing With CMake</h1>
 <div class="line">option(RESPOND_BUILD_TESTS &quot;Disable testing for respond&quot; OFF)</div>
 <div class="line">FetchContent_MakeAvailable(respond)</div>
 </div><!-- fragment --><p>This should produce a corresponding <code>respondConfig.cmake</code> file for CMake linking and installation.</p>
-<p>Previous: <a class="el" href="../../index.html#md_docs_src_index">Home</a></p>
+<p>Previous: <a class="el" href="../../d9/d6c/md_docs_src_motivation.html">Motivation</a></p>
 <p>Next: <a class="el" href="../../d0/d1d/md_docs_src_data.html">Data</a> </p>
 </div></div><!-- contents -->
 </div><!-- PageDoc -->
@@ -168,7 +183,7 @@ Installing With CMake</h1>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Tue Dec 16 2025 19:46:00 for RESPOND by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
+    <li class="footer">Generated on Tue Dec 23 2025 20:06:20 for RESPOND by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
   </ul>
 </div>
 </body>
