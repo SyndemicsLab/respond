@@ -7,15 +7,7 @@ The RESPOND model is packaged as a library, but for ease of use we do also provi
 The required inputs are listed below:
 
 - `sim.conf`
-- `all_types_overdose.csv`
-- `background_mortality.csv`
-- `block_init_effect.csv`
-- `block_trans.csv`
-- `entering_cohort.csv`
-- `fatal_overdose.csv`
-- `init_cohort.csv`
-- `oud_trans.csv`
-- `SMR.csv`
+- `inputs.db`
 
 ### sim.conf
 
@@ -27,7 +19,7 @@ The `sim.conf` file forms the backbone of the RESPOND model. It governs the gene
 - cost
 - output
 
-Each set governs a unique component of the model.
+Each set governs a unique component of the model. An example can be found in the [examples folder](https://github.com/SyndemicsLab/respond/blob/main/extras/examples/sim.conf).
 
 #### simulation
 
@@ -91,127 +83,25 @@ pivot_long                      = true      # Whether to pivot the table to long
 
 ### Tabular Data
 
-#### all_types_overdose.csv
-```ini
-intervention
-agegrp
-race
-sex
-oud
-overdose_1_52
-```
+The tabular data is now stored in a SQLite database titled `inputs.db`. The database schema can be created via the file `create_db.sql` found alongside the `sim.conf` in the [examples folder of the repository]((https://github.com/SyndemicsLab/respond/blob/main/extras/examples)). The schema consists of 13 tables:
 
-#### background_mortality.csv
-```ini
-agegrp
-race
-sex
-death_prob
-```
+- background_mortality
+- behavior
+- behavior_transition
+- cohort
+- cohort_demographics
+- demographics
+- initial_population
+- intervention
+- intervention_transition
+- overdose
+- overdose_fatality
+- population_change
+- smr
 
-#### block_init_effect.csv
-```ini
-initial_oud_state
-to_intervention
-Active_Noninjection
-Active_injection
-Nonactive_Noninjection
-Nonactive_Injection
-```
+## Cost Effectiveness Inputs
 
-#### block_trans.csv
-```ini
-agegrp
-race
-sex
-oud
-initial_intervention
-No_Treatment_1_52
-Buprenorphine_1_52
-Naltrexone_1_52
-Methadone_1_52
-Detox_1_52
-Residential_1_52
-Corrections_1_52
-Post_Buprenorphine_1_52
-Post_Naltrexone_1_52
-Post_Methadone_1_52
-Post_Detox_1_52
-Post_Residential_1_52
-Post_Corrections_1_52
-```
-
-#### entering_cohort.csv
-```ini
-state
-cohort_size
-block
-agegrp
-sex
-race
-```
-
-#### fatal_overdose.csv
-```ini
-agegrp
-race
-sex
-percent_overdoses_fatal_1_52
-```
-
-#### init_cohort.csv
-```ini
-oud
-counts
-block
-agegrp
-sex
-race
-```
-
-#### oud_trans.csv
-```ini
-intervention
-agegrp
-race
-sex
-initial_oud
-Active_Noninjection
-Active_Injection
-Nonactive_Noninjection
-Nonactive_Injection
-```
-
-#### SMR.csv
-```ini
-block
-agegrp
-race
-sex
-oud
-SMR
-```
-
-#### targets.csv
-```ini
-Methadone
-Buprenorphine
-Naltrexone
-FOD
-year
-```
-
-#### utility.csv
-```ini
-block
-agegrp
-race
-sex
-background
-setting
-```
-
-## Optional Input Tables
+After running the model, we have post processing operations that can be applied to the final state to calculate cost effectiveness metrics. These have traditionally been governed by the following CSVs:
 
 - `bg_utility.csv`
 - `healthcare_utilization_cost.csv`
@@ -221,7 +111,12 @@ setting
 - `setting_utility.csv`
 - `treatment_utilization_cost.csv`
 
+### File Breakdown
+
+Below are a breakdown of each file:
+
 #### healthcare_utilization_cost.csv
+
 ```ini
 block
 agegrp
@@ -232,24 +127,28 @@ healthcare_system
 ```
 
 #### overdose_cost.csv
+
 ```ini
 X
 healthcare_system
 ```
 
 #### pharmaceutical_cost.csv
+
 ```ini
 block
 healthcare_system
 ```
 
 #### setting_utility.csv
+
 ```ini
 block
 utility
 ```
 
 #### treatment_utilization_cost.csv
+
 ```ini
 block
 healthcare_system
