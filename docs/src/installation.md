@@ -1,34 +1,54 @@
 # Installation
 
-The RESPOND model is available to users through multiple methods. That being said, RESPOND has been built and tested on machines running ubuntu 24.04 and CI/CD tested on Windows machines. We recommend a basic installation either through building the source code or utilizing CMake's [FetchContent](https://cmake.org/cmake/help/latest/module/FetchContent.html) feature. We do plan to eventually work towards providing a debian package install as well.
+The RESPOND library can be installed via the executable packages built during the GitHub Actions workflow, building the Docker images, or by installing and building the source code. Our CMake is also designed to allow for usage with the `FetchContent` process for easy integration with any CMake projects. For library versions in different programming languages, please view the `respondpy` library.
 
 ## Dependencies
 
-RESPOND has several dependencies that require being satistifed before installation. This is primarily a concern if you intend to build from source as FetchContent should generally manage the dependencies if installed that way. Our `FetchContent_Declare` statements all attempt to `find_package` before downloading so if you choose to make use of specific versions of these dependencies you simply install the dependencies before attempting to install RESPOND.
+While we do handle our own dependency management, either via package installation or source building, we believe it is important to inform users of the external projects they will be installing alongside RESPOND. Our package has 2 core dependencies (`Eigen` and `spdlog`) and an additional dependency for the testing executable (`gtest`).
 
-**Note:** DataManagement is a Syndemics Lab library and under heavy development. It is *NOT* recommended to attempt to install a separate version.
+[Eigen](https://libeigen.gitlab.io/documentation/) is a widely used C++ linear algebra library. It allows for rapid development of matrix operations as well as converting matrices between GPU and CPU tensors. As RESPOND is a Markov model, we are able to provide speedups through linear algebra techniques and Eigen is the core allowing those speedups.
 
-- [DataManagement](https://github.com/SyndemicsLab/DataManagement)
-- [Eigen](https://eigen.tuxfamily.org/index.php?title=Main_Page)
-- [Spdlog](https://github.com/gabime/spdlog)
+The [spdlog](https://github.com/gabime/spdlog) library is how we are able to write logs during runtime. We log various warnings and errors that could potentially arrive during runtime such as mathematical limitations of data and the assumptions we make if we are able to smooth over issues. By default, we attempt to resolve a few simple issues (i.e. if no data is found for transitions we assume everyone is retained in the same state) but this information is always logged to the output via the spdlog library.
+
+## Installing From Packages
+
+We distribute the executable installers two ways:
+
+1. On our tagged builds
+2. Through Docker images
+
+The tagged builds can be found [on our GitHub page](https://github.com/SyndemicsLab/respond/tags). The Docker containers can be built with Docker compose by simply running `docker compose up` and then downloading the built executable file.
 
 ## Installing From Source
 
-In order to install from source, clone the repository and run cmake. We provide workflows in the `CMakePresets.json` and encourage the use of them for easy building. Our primary workflow is built using the [GCC compiler](https://gcc.gnu.org/) and the [Ninja build system](https://ninja-build.org/).
+In order to install the library from source, clone the repository and run CMake. We provide workflows in the `CMakePresets.json` and encourage the use of them for easy building.
+
+### Building without Packaging or Testing
 
 ```bash
 git clone https://github.com/SyndemicsLab/respond.git
 cd respond
-cmake --workflow gcc-release
+cmake --preset debug-linux-static-config
+cmake --build --preset debug-linux-static-build
 ```
 
-We also provide a debug version that is slower, but prints more to the logger to help debug problems:
+### Testing
 
 ```bash
-cmake --workflow gcc-debug
+git clone https://github.com/SyndemicsLab/respond.git
+cd respond
+cmake --workflow --preset test-debug-linux-static-workflow
 ```
 
-## Installing With CMake
+### Packaging
+
+```bash
+git clone https://github.com/SyndemicsLab/respond.git
+cd respond
+cmake --workflow --preset package-release-debian-static-workflow
+```
+
+## Fetch Content
 
 Since CMake 3.11, the `FetchContent` tool has been available to users. Early on in the design process, we made the decision to progress under the assumption that CMake will handle our dependencies and additional package managers can be installed as necessary and included in toolchain files. To install via `FetchContent` simply do:
 
@@ -46,6 +66,6 @@ FetchContent_MakeAvailable(respond)
 
 This should produce a corresponding `respondConfig.cmake` file for CMake linking and installation.
 
-Previous: [Home](index.md)
+Previous: [Motivation](motivation.md)
 
 Next: [Data](data.md)

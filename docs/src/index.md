@@ -51,4 +51,4 @@ For tests we require:
 
 As part of our automated workflow, we provide several different installable packages as part of each release. They can be found on each [tagged release on our GitHub](https://github.com/SyndemicsLab/respond/tags). Currently we provide RPM and Debian installers for static and shared libraries, and a NSIS windows static library installer. For a step-by-step procedure of building the package from source, please check the [installation documentation](installation.md).
 
-Next: [Installation](installation.md)
+Next: [Motivation](motivation.md)
