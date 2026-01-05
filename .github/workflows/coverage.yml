@@ -27,20 +27,12 @@ jobs:
               env:
                   CMAKE_GENERATOR: Ninja
 
-            - name: Configure Project
+            - name: Build and Test Project
               env:
                   EIGEN3_INCLUDE_DIR: ${{ steps.install-eigen3.outputs.EIGEN3_INCLUDE_DIR }}
                   EIGEN3_DIR: ${{ steps.install-eigen3.outputs.EIGEN3_DIR}}
               run: >
-                  cmake --preset debug-linux-shared-config
-
-            - name: Build Project
-              run: >
-                  cmake --build --preset debug-linux-shared-build
-
-            - name: Test Project
-              run: >
-                  cmake --build --preset debug-linux-shared-build --target test
+                  cmake --workflow --preset test-debug-linux-static-workflow
 
             - name: Generate gcovr report
               run: |
