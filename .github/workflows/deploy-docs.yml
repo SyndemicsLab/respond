@@ -3,45 +3,60 @@ name: Docs
 # Controls when the action will run. Triggers the workflow on push or pull request
 # events but only for the master branch
 on:
-  push:
-    branches: ["main"] 
-  workflow_dispatch:
-  
+    push:
+        branches: ["main"]
+    workflow_dispatch:
+
 jobs:
-  deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          submodules: "true"
-  
-      - name: Install dependencies
-        run: sudo apt-get update && sudo apt-get install -y wget graphviz rsync
-        shell: bash
-  
-      - name: Install Doxygen v1.9.6
-        run: |
-          transformed_version=$(echo "1.9.6" | tr '.' '_')
-          wget https://github.com/doxygen/doxygen/releases/download/Release_${transformed_version}/doxygen-1.9.6.linux.bin.tar.gz
-          tar -xzf doxygen-1.9.6.linux.bin.tar.gz
-          sudo mv doxygen-1.9.6/bin/doxygen /usr/local/bin/doxygen
-        shell: bash
-  
-      - name: Generate Doxygen Documentation
-        run: doxygen Doxyfile
-        shell: bash
-        
-      - name: Create .nojekyll (ensures pages with underscores work on gh pages)
-        run: touch docs/doxygen/html/.nojekyll
-        shell: bash
-  
-      - name: Deploy to GitHub Pages
-        uses: JamesIves/github-pages-deploy-action@v4
-        with:
-          repository-name: SyndemicsLab/respond
-          branch: gh-pages
-          folder: docs/doxygen/html
-          target-folder: ./
-          ssh-key: ${{ secrets.RESPOND_DOCS_DEPLOY_SSH_PRIVATE }}
-          token: ${{ secrets.OAUTH_TOKEN }}
+    deploy:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
+              with:
+                  submodules: "true"
+
+            - name: Install dependencies
+              run: sudo apt-get update && sudo apt-get install -y wget graphviz rsync
+              shell: bash
+
+            - name: Install Doxygen v1.9.6
+              run: |
+                  transformed_version=$(echo "1.9.6" | tr '.' '_')
+                  wget https://github.com/doxygen/doxygen/releases/download/Release_${transformed_version}/doxygen-1.9.6.linux.bin.tar.gz
+                  tar -xzf doxygen-1.9.6.linux.bin.tar.gz
+                  sudo mv doxygen-1.9.6/bin/doxygen /usr/local/bin/doxygen
+              shell: bash
+
+            - name: Install Eigen3
+              uses: kupns-aka-kupa/setup-eigen3@master
+              id: install-eigen3
+              with:
+                  version: 3.4.0
+              env:
+                  CMAKE_GENERATOR: Ninja
+
+            - name: Configure Project
+              env:
+                  EIGEN3_INCLUDE_DIR: ${{ steps.install-eigen3.outputs.EIGEN3_INCLUDE_DIR }}
+                  EIGEN3_DIR: ${{ steps.install-eigen3.outputs.EIGEN3_DIR}}
+              run: >
+                  cmake --config --preset release-linux-shared-config
+
+            - name: Generate Doxygen Documentation
+              run: doxygen Doxyfile
+              shell: bash
+
+            - name: Create .nojekyll (ensures pages with underscores work on gh pages)
+              run: touch docs/doxygen/html/.nojekyll
+              shell: bash
+
+            - name: Deploy to GitHub Pages
+              uses: JamesIves/github-pages-deploy-action@v4
+              with:
+                  repository-name: SyndemicsLab/respond
+                  branch: gh-pages
+                  folder: docs/doxygen/html
+                  target-folder: ./
+                  ssh-key: ${{ secrets.RESPOND_DOCS_DEPLOY_SSH_PRIVATE }}
+                  token: ${{ secrets.OAUTH_TOKEN }}
