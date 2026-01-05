@@ -12,3 +12,8 @@ if(RESPOND_BUILD_BENCH OR RESPOND_BUILD_ALL)
     message(STATUS "Generating benchmarks")
     add_subdirectory(extras/benchmarking)
 endif()
+
+if(RESPOND_BUILD_DOCS OR RESPOND_BUILD_ALL)
+    message(STATUS "Generating documentation")
+    include(${PRIVATE_MODULE_PATH}/LoadDoxygenIsAwesome.cmake)
+endif()
