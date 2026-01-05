@@ -38,5 +38,5 @@ jobs:
               uses: svenstaro/upload-release-action@v2
               with:
                   repo_token: ${{ secrets.GITHUB_TOKEN }}
-                  file: build/${{ matrix.build-variant }}/respond-*.deb
+                  file: ${{ github.workspace }}/build/${{ matrix.build-variant }}/*.deb
                   tag: ${{ github.ref }}
