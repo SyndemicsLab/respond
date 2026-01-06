@@ -6,6 +6,9 @@ option(RESPOND_BUILD_PIC "Build position independent code (-fPIC)" OFF)
 # build shared libraries
 option(BUILD_SHARED_LIBS "Build shared libraries instead of static libraries" ON)
 
+# build documentation
+option(RESPOND_BUILD_DOCS "Build Documentation" ON)
+
 # testing options
 option(RESPOND_BUILD_TESTS "Build tests" OFF)
 
