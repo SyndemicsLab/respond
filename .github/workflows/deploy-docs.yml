@@ -41,7 +41,7 @@ jobs:
                   EIGEN3_INCLUDE_DIR: ${{ steps.install-eigen3.outputs.EIGEN3_INCLUDE_DIR }}
                   EIGEN3_DIR: ${{ steps.install-eigen3.outputs.EIGEN3_DIR}}
               run: >
-                  cmake --config --preset release-linux-shared-config
+                  cmake --preset release-linux-shared-config
 
             - name: Generate Doxygen Documentation
               run: doxygen Doxyfile
