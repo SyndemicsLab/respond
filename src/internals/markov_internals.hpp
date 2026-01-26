@@ -94,6 +94,7 @@ private:
         stamp.intervention_admissions = Eigen::VectorXd::Zero(_state.size());
         stamp.total_overdoses = Eigen::VectorXd::Zero(_state.size());
         stamp.fatal_overdoses = Eigen::VectorXd::Zero(_state.size());
+        stamp.background_mortality = Eigen::VectorXd::Zero(_state.size());
         _history[0] = stamp;
     }
 };

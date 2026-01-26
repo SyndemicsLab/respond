@@ -31,7 +31,7 @@ namespace respond {
 /// @param transition A vector of size 1 containing an Eigen::VectorXd that
 /// migrates into/out of the state.
 /// @return The resultant model state vector.
-Eigen::VectorXd Migration(Eigen::VectorXd &state,
+Eigen::VectorXd Migration(const Eigen::VectorXd &state,
                           const std::vector<Eigen::MatrixXd> &transition,
                           HistoryStamp &stamp) {
     if (transition.size() != 1) {
@@ -42,8 +42,8 @@ Eigen::VectorXd Migration(Eigen::VectorXd &state,
         throw std::runtime_error("Unable to add Migration Transition Vector to "
                                  "State Vector, mismatched sizes.");
     }
-    state += transition[0];
-    return state;
+    auto new_state = state + transition[0];
+    return new_state;
 }
 
 /// @brief A function to model the relapsing/remitting behavior of SUD.
@@ -51,7 +51,7 @@ Eigen::VectorXd Migration(Eigen::VectorXd &state,
 /// @param transition A vector of size 1 containing the transition matrix for
 /// the behavior changes.
 /// @return The resultant model state vector.
-Eigen::VectorXd Behavior(Eigen::VectorXd &state,
+Eigen::VectorXd Behavior(const Eigen::VectorXd &state,
                          const std::vector<Eigen::MatrixXd> &transition,
                          HistoryStamp &stamp) {
     if (transition.size() != 1) {
@@ -67,8 +67,8 @@ Eigen::VectorXd Behavior(Eigen::VectorXd &state,
         ss << transition[0].cols() << ").";
         throw std::runtime_error(ss.str());
     }
-    state = transition[0] * state;
-    return state;
+    auto new_state = transition[0] * state;
+    return new_state;
 }
 
 /// @brief A function to model the intervention changes of SUD.
@@ -76,7 +76,7 @@ Eigen::VectorXd Behavior(Eigen::VectorXd &state,
 /// @param transition A vector of size 1 containing the transition matrix
 /// for intervention changes.
 /// @return The resultant model state vector.
-Eigen::VectorXd Intervention(Eigen::VectorXd &state,
+Eigen::VectorXd Intervention(const Eigen::VectorXd &state,
                              const std::vector<Eigen::MatrixXd> &transition,
                              HistoryStamp &stamp) {
     if (transition.size() != 1) {
@@ -109,7 +109,7 @@ Eigen::VectorXd Intervention(Eigen::VectorXd &state,
 /// @param transition A vector of size 2 containing first the transition matrix
 /// probability and second a vector of the chance of an overdose being fatal.
 /// @return The number of overdoses that occurred this iteration.
-Eigen::VectorXd Overdose(Eigen::VectorXd &state,
+Eigen::VectorXd Overdose(const Eigen::VectorXd &state,
                          const std::vector<Eigen::MatrixXd> &transition,
                          HistoryStamp &stamp) {
     if (transition.size() != 2) {
@@ -129,11 +129,10 @@ Eigen::VectorXd Overdose(Eigen::VectorXd &state,
         throw std::runtime_error("Fatal Overdose Vector is not the same "
                                  "size as the state vector.");
     }
-    Eigen::VectorXd fods = overdoses.cwiseProduct(transition[1]); // negatives
-
-    stamp.fatal_overdoses = fods; // Add fatal overdoses to stamp
-    state -= fods;                // remove fods from state
-    return state;                 // return the final state
+    auto fods = overdoses.cwiseProduct(transition[1]); // negatives
+    stamp.fatal_overdoses = fods;  // Add fatal overdoses to stamp
+    auto new_state = state - fods; // remove fods from state
+    return new_state;
 }
 
 /// @brief A function to model the mortality within the SUD community.
@@ -141,15 +140,17 @@ Eigen::VectorXd Overdose(Eigen::VectorXd &state,
 /// @param transition A vector of size 1 containing the transition matrix for
 /// background mortalities.
 /// @return The resultant state vector.
-Eigen::VectorXd Mortality(Eigen::VectorXd &state,
+Eigen::VectorXd Mortality(const Eigen::VectorXd &state,
                           const std::vector<Eigen::MatrixXd> &transition,
                           HistoryStamp &stamp) {
     if (transition.size() != 1) {
         throw std::runtime_error(
             "Mortality Transitions must have 1 Transition Matrix.");
     }
-    state = transition[0] * state;
-    return state;
+    auto deaths = transition[0] * state; // calculate the deaths
+    stamp.background_mortality = deaths; // store the deaths
+    auto new_state = state - deaths;     // remove deaths from state
+    return new_state;
 }
 } // namespace respond
 

@@ -24,7 +24,8 @@ namespace respond {
 
 /// @brief type for a general function to apply a transition to the model state.
 using transition_function = std::function<Eigen::VectorXd(
-    Eigen::VectorXd &, const std::vector<Eigen::MatrixXd> &, HistoryStamp &)>;
+    const Eigen::VectorXd &, const std::vector<Eigen::MatrixXd> &,
+    HistoryStamp &)>;
 
 /// @brief The pair of functions and transition matrices.
 using transition = std::pair<transition_function, std::vector<Eigen::MatrixXd>>;

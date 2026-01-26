@@ -37,6 +37,7 @@ struct HistoryStamp {
     Eigen::VectorXd total_overdoses = Eigen::VectorXd::Zero(0);
     Eigen::VectorXd fatal_overdoses = Eigen::VectorXd::Zero(0);
     Eigen::VectorXd intervention_admissions = Eigen::VectorXd::Zero(0);
+    Eigen::VectorXd background_mortality = Eigen::VectorXd::Zero(0);
 };
 
 /// @brief A map of the timestep to the HistoryStamp.
