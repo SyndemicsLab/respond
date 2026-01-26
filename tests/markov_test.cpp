@@ -41,7 +41,7 @@ TEST_F(MarkovTest, SingleStep) {
     auto markov = Markov::Create("test_logger");
     markov->SetState(Eigen::VectorXd::Ones(5));
 
-    transition t = {[](Eigen::VectorXd &state,
+    transition t = {[](const Eigen::VectorXd &state,
                        const std::vector<Eigen::MatrixXd> &transitions,
                        HistoryStamp &hs) { return state + transitions[0]; },
                     {Eigen::VectorXd::Ones(5)}};
@@ -57,7 +57,7 @@ TEST_F(MarkovTest, MultipleTransitions) {
     auto markov = Markov::Create("test_logger");
     markov->SetState(Eigen::VectorXd::Ones(5));
 
-    transition t = {[](Eigen::VectorXd &state,
+    transition t = {[](const Eigen::VectorXd &state,
                        const std::vector<Eigen::MatrixXd> &transitions,
                        HistoryStamp &hs) { return state + transitions[0]; },
                     {Eigen::VectorXd::Ones(5)}};
