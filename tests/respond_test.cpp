@@ -103,20 +103,15 @@ TEST_F(RespondTest, Overdose_Function) {
 }
 
 TEST_F(RespondTest, Mortality_Function) {
-    Eigen::MatrixXd t(6, 6);
+    Eigen::VectorXd t(6);
     // clang-format off
-    t << 1.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-         0.0, 1.0, 0.0, 0.0, 0.0, 0.0,
-         0.0, 0.0, 0.9, 0.0, 0.0, 0.0,
-         0.0, 0.0, 0.0, 0.2, 0.0, 0.0,
-         0.0, 0.0, 0.1, 0.0, 1.0, 0.0,
-         0.0, 0.0, 0.0, 0.8, 0.0, 1.0;
+    t << 1.0, 1.0, 0.9, 0.2, 0.0, 0.0;
     // clang-format on
     transition_matrices.push_back(t);
 
     auto result = Mortality(state, transition_matrices, stamp);
     Eigen::VectorXd expected(6);
-    expected << 1.0, 1.0, 0.9, 0.2, 1.1, 1.8;
+    expected << 0.0, 0.0, 0.1, 0.8, 1.0, 1.0;
 
     EXPECT_TRUE(result.isApprox(expected));
 }

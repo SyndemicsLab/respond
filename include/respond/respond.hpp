@@ -147,9 +147,9 @@ Eigen::VectorXd Mortality(const Eigen::VectorXd &state,
         throw std::runtime_error(
             "Mortality Transitions must have 1 Transition Matrix.");
     }
-    auto deaths = transition[0] * state; // calculate the deaths
-    stamp.background_mortality = deaths; // store the deaths
-    auto new_state = state - deaths;     // remove deaths from state
+    auto deaths = state.cwiseProduct(transition[0]); // calculate the deaths
+    stamp.background_mortality = deaths;             // store the deaths
+    auto new_state = state - deaths;                 // remove deaths from state
     return new_state;
 }
 } // namespace respond
