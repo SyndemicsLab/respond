@@ -135,10 +135,10 @@ $(document).ready(function(){initNavTree('dd/de3/types_8hpp_source.html','../../
 <div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="comment">// Created Date: 2025-08-05                                                   //</span></div>
 <div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="comment">// Author: Matthew Carroll                                                    //</span></div>
 <div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="comment">// -----                                                                      //</span></div>
-<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="comment">// Last Modified: 2025-08-05                                                  //</span></div>
+<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="comment">// Last Modified: 2026-01-26                                                  //</span></div>
 <div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="comment">// Modified By: Matthew Carroll                                               //</span></div>
 <div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span><span class="comment">// -----                                                                      //</span></div>
-<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span><span class="comment">// Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //</span></div>
+<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span><span class="comment">// Copyright (c) 2025-2026 Syndemics Lab at Boston Medical Center             //</span></div>
 <div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span><span class="comment"></span> </div>
 <div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span><span class="preprocessor">#ifndef RESPOND_DATATYPES_HPP_</span></div>
 <div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span><span class="preprocessor">#define RESPOND_DATATYPES_HPP_</span></div>
@@ -158,62 +158,64 @@ $(document).ready(function(){initNavTree('dd/de3/types_8hpp_source.html','../../
 <div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span> </div>
 <div class="line"><a id="l00035" name="l00035"></a><span class="lineno"><a class="line" href="../../d0/da5/structrespond_1_1HistoryStamp.html">   35</a></span><span class="keyword">struct </span><a class="code hl_struct" href="../../d0/da5/structrespond_1_1HistoryStamp.html">HistoryStamp</a> {</div>
 <div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span>    Eigen::VectorXd state = Eigen::VectorXd::Zero(0);</div>
-<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span>    Eigen::VectorXd overdoses = Eigen::VectorXd::Zero(0);</div>
-<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span>    Eigen::VectorXd intervention_admissions = Eigen::VectorXd::Zero(0);</div>
-<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span>};</div>
-<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span> </div>
-<div class="line"><a id="l00042" name="l00042"></a><span class="lineno"><a class="line" href="../../d9/de6/namespacerespond.html#add7ecd2a0ac4d8b22511245a9e13d4e0">   42</a></span><span class="keyword">using </span><a class="code hl_typedef" href="../../d9/de6/namespacerespond.html#add7ecd2a0ac4d8b22511245a9e13d4e0">HistoryOverTime</a> = std::map&lt;int, HistoryStamp&gt;;</div>
-<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span> </div>
-<div class="line"><a id="l00045" name="l00045"></a><span class="lineno"><a class="line" href="../../d8/dba/structrespond_1_1CostStamp.html">   45</a></span><span class="keyword">struct </span><a class="code hl_struct" href="../../d8/dba/structrespond_1_1CostStamp.html">CostStamp</a> {</div>
-<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span>    Eigen::VectorXd healthcare = Eigen::VectorXd::Zero(0);</div>
-<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>    Eigen::VectorXd non_fatal_overdoses = Eigen::VectorXd::Zero(0);</div>
-<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>    Eigen::VectorXd fatal_overdoses = Eigen::VectorXd::Zero(0);</div>
-<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>    Eigen::VectorXd pharmaceuticals = Eigen::VectorXd::Zero(0);</div>
-<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span>    Eigen::VectorXd treatments = Eigen::VectorXd::Zero(0);</div>
-<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>};</div>
-<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span> </div>
-<div class="line"><a id="l00054" name="l00054"></a><span class="lineno"><a class="line" href="../../d9/de6/namespacerespond.html#a4cc0cbf2665d25a61bb84a15bf82e09b">   54</a></span><span class="keyword">using </span><a class="code hl_typedef" href="../../d9/de6/namespacerespond.html#a4cc0cbf2665d25a61bb84a15bf82e09b">CostsOverTime</a> = std::map&lt;int, CostStamp&gt;;</div>
-<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span> </div>
-<div class="line"><a id="l00057" name="l00057"></a><span class="lineno"><a class="line" href="../../d9/de6/namespacerespond.html#adb86f203a1365d1c6d14862697d68ee7">   57</a></span><span class="keyword">using </span><a class="code hl_typedef" href="../../d9/de6/namespacerespond.html#adb86f203a1365d1c6d14862697d68ee7">CostPerspectives</a> = std::map&lt;std::string, CostsOverTime&gt;;</div>
-<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span> </div>
-<div class="line"><a id="l00060" name="l00060"></a><span class="lineno"><a class="line" href="../../d9/de6/namespacerespond.html#a6e204491c4805e758f997a02e805f3a8">   60</a></span><span class="keyword">enum class</span> <a class="code hl_enumeration" href="../../d9/de6/namespacerespond.html#a6e204491c4805e758f997a02e805f3a8">UtilityType</a> : <span class="keywordtype">int</span> {</div>
-<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span>    kMin = 0,  <span class="comment">// Calculate Minimum</span></div>
-<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span>    kMult = 1, <span class="comment">// Calculate Multiplicative</span></div>
-<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>    kCount = 2 <span class="comment">// Counter for Enum</span></div>
-<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span>};</div>
-<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span> </div>
-<div class="line"><a id="l00067" name="l00067"></a><span class="lineno"><a class="line" href="../../d5/dc6/structrespond_1_1ResultSets.html">   67</a></span><span class="keyword">struct </span><a class="code hl_struct" href="../../d5/dc6/structrespond_1_1ResultSets.html">ResultSets</a> {</div>
-<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span>    std::vector&lt;double&gt; summed_costs;</div>
-<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span>    <span class="keywordtype">double</span> summed_life_years = 0.0;</div>
-<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span>    <span class="keywordtype">double</span> summed_utility = 0.0;</div>
-<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span>};</div>
-<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span> </div>
-<div class="line"><a id="l00075" name="l00075"></a><span class="lineno"><a class="line" href="../../dd/daf/structrespond_1_1Totals.html">   75</a></span><span class="keyword">struct </span><a class="code hl_struct" href="../../dd/daf/structrespond_1_1Totals.html">Totals</a> {</div>
-<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span>    <a class="code hl_struct" href="../../d5/dc6/structrespond_1_1ResultSets.html">ResultSets</a> base;</div>
-<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span>    <a class="code hl_struct" href="../../d5/dc6/structrespond_1_1ResultSets.html">ResultSets</a> discounted;</div>
-<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span>};</div>
-<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span> </div>
-<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span>} <span class="comment">// namespace respond</span></div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span>    Eigen::VectorXd total_overdoses = Eigen::VectorXd::Zero(0);</div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span>    Eigen::VectorXd fatal_overdoses = Eigen::VectorXd::Zero(0);</div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span>    Eigen::VectorXd intervention_admissions = Eigen::VectorXd::Zero(0);</div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span>    Eigen::VectorXd background_mortality = Eigen::VectorXd::Zero(0);</div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span>};</div>
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span> </div>
+<div class="line"><a id="l00044" name="l00044"></a><span class="lineno"><a class="line" href="../../d9/de6/namespacerespond.html#add7ecd2a0ac4d8b22511245a9e13d4e0">   44</a></span><span class="keyword">using </span><a class="code hl_typedef" href="../../d9/de6/namespacerespond.html#add7ecd2a0ac4d8b22511245a9e13d4e0">HistoryOverTime</a> = std::map&lt;int, HistoryStamp&gt;;</div>
+<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span> </div>
+<div class="line"><a id="l00047" name="l00047"></a><span class="lineno"><a class="line" href="../../d8/dba/structrespond_1_1CostStamp.html">   47</a></span><span class="keyword">struct </span><a class="code hl_struct" href="../../d8/dba/structrespond_1_1CostStamp.html">CostStamp</a> {</div>
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>    Eigen::VectorXd healthcare = Eigen::VectorXd::Zero(0);</div>
+<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>    Eigen::VectorXd non_fatal_overdoses = Eigen::VectorXd::Zero(0);</div>
+<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span>    Eigen::VectorXd fatal_overdoses = Eigen::VectorXd::Zero(0);</div>
+<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>    Eigen::VectorXd pharmaceuticals = Eigen::VectorXd::Zero(0);</div>
+<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span>    Eigen::VectorXd treatments = Eigen::VectorXd::Zero(0);</div>
+<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span>};</div>
+<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span> </div>
+<div class="line"><a id="l00056" name="l00056"></a><span class="lineno"><a class="line" href="../../d9/de6/namespacerespond.html#a4cc0cbf2665d25a61bb84a15bf82e09b">   56</a></span><span class="keyword">using </span><a class="code hl_typedef" href="../../d9/de6/namespacerespond.html#a4cc0cbf2665d25a61bb84a15bf82e09b">CostsOverTime</a> = std::map&lt;int, CostStamp&gt;;</div>
+<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span> </div>
+<div class="line"><a id="l00059" name="l00059"></a><span class="lineno"><a class="line" href="../../d9/de6/namespacerespond.html#adb86f203a1365d1c6d14862697d68ee7">   59</a></span><span class="keyword">using </span><a class="code hl_typedef" href="../../d9/de6/namespacerespond.html#adb86f203a1365d1c6d14862697d68ee7">CostPerspectives</a> = std::map&lt;std::string, CostsOverTime&gt;;</div>
+<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span> </div>
+<div class="line"><a id="l00062" name="l00062"></a><span class="lineno"><a class="line" href="../../d9/de6/namespacerespond.html#a6e204491c4805e758f997a02e805f3a8">   62</a></span><span class="keyword">enum class</span> <a class="code hl_enumeration" href="../../d9/de6/namespacerespond.html#a6e204491c4805e758f997a02e805f3a8">UtilityType</a> : <span class="keywordtype">int</span> {</div>
+<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>    kMin = 0,  <span class="comment">// Calculate Minimum</span></div>
+<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span>    kMult = 1, <span class="comment">// Calculate Multiplicative</span></div>
+<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span>    kCount = 2 <span class="comment">// Counter for Enum</span></div>
+<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>};</div>
+<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span> </div>
+<div class="line"><a id="l00069" name="l00069"></a><span class="lineno"><a class="line" href="../../d5/dc6/structrespond_1_1ResultSets.html">   69</a></span><span class="keyword">struct </span><a class="code hl_struct" href="../../d5/dc6/structrespond_1_1ResultSets.html">ResultSets</a> {</div>
+<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span>    std::vector&lt;double&gt; summed_costs;</div>
+<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span>    <span class="keywordtype">double</span> summed_life_years = 0.0;</div>
+<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span>    <span class="keywordtype">double</span> summed_utility = 0.0;</div>
+<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span>};</div>
+<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span> </div>
+<div class="line"><a id="l00077" name="l00077"></a><span class="lineno"><a class="line" href="../../dd/daf/structrespond_1_1Totals.html">   77</a></span><span class="keyword">struct </span><a class="code hl_struct" href="../../dd/daf/structrespond_1_1Totals.html">Totals</a> {</div>
+<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span>    <a class="code hl_struct" href="../../d5/dc6/structrespond_1_1ResultSets.html">ResultSets</a> base;</div>
+<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span>    <a class="code hl_struct" href="../../d5/dc6/structrespond_1_1ResultSets.html">ResultSets</a> discounted;</div>
+<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span>};</div>
 <div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span> </div>
-<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span><span class="preprocessor">#endif </span><span class="comment">// RESPOND_DATATYPES_HPP_</span></div>
+<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span>} <span class="comment">// namespace respond</span></div>
+<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span> </div>
+<div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span><span class="preprocessor">#endif </span><span class="comment">// RESPOND_DATATYPES_HPP_</span></div>
 <div class="ttc" id="anamespacerespond_html"><div class="ttname"><a href="../../d9/de6/namespacerespond.html">respond</a></div><div class="ttdoc">A namespace for the respond model functionality.</div><div class="ttdef"><b>Definition:</b> cost_effectiveness.hpp:23</div></div>
-<div class="ttc" id="anamespacerespond_html_a4cc0cbf2665d25a61bb84a15bf82e09b"><div class="ttname"><a href="../../d9/de6/namespacerespond.html#a4cc0cbf2665d25a61bb84a15bf82e09b">respond::CostsOverTime</a></div><div class="ttdeci">std::map&lt; int, CostStamp &gt; CostsOverTime</div><div class="ttdoc">A map of the timestep to the CostStamp.</div><div class="ttdef"><b>Definition:</b> types.hpp:54</div></div>
+<div class="ttc" id="anamespacerespond_html_a4cc0cbf2665d25a61bb84a15bf82e09b"><div class="ttname"><a href="../../d9/de6/namespacerespond.html#a4cc0cbf2665d25a61bb84a15bf82e09b">respond::CostsOverTime</a></div><div class="ttdeci">std::map&lt; int, CostStamp &gt; CostsOverTime</div><div class="ttdoc">A map of the timestep to the CostStamp.</div><div class="ttdef"><b>Definition:</b> types.hpp:56</div></div>
 <div class="ttc" id="anamespacerespond_html_a65769752f5000f255bf5072701e5a850"><div class="ttname"><a href="../../d9/de6/namespacerespond.html#a65769752f5000f255bf5072701e5a850">respond::StringMap</a></div><div class="ttdeci">std::map&lt; std::string, T &gt; StringMap</div><div class="ttdoc">Type alias for a string map.</div><div class="ttdef"><b>Definition:</b> types.hpp:28</div></div>
-<div class="ttc" id="anamespacerespond_html_a6e204491c4805e758f997a02e805f3a8"><div class="ttname"><a href="../../d9/de6/namespacerespond.html#a6e204491c4805e758f997a02e805f3a8">respond::UtilityType</a></div><div class="ttdeci">UtilityType</div><div class="ttdoc">Enum for the ways we can calculate utility.</div><div class="ttdef"><b>Definition:</b> types.hpp:60</div></div>
+<div class="ttc" id="anamespacerespond_html_a6e204491c4805e758f997a02e805f3a8"><div class="ttname"><a href="../../d9/de6/namespacerespond.html#a6e204491c4805e758f997a02e805f3a8">respond::UtilityType</a></div><div class="ttdeci">UtilityType</div><div class="ttdoc">Enum for the ways we can calculate utility.</div><div class="ttdef"><b>Definition:</b> types.hpp:62</div></div>
 <div class="ttc" id="anamespacerespond_html_ab098ddf2c8c02d2741570986c39ce732"><div class="ttname"><a href="../../d9/de6/namespacerespond.html#ab098ddf2c8c02d2741570986c39ce732">respond::StringUOMap</a></div><div class="ttdeci">std::unordered_map&lt; std::string, T &gt; StringUOMap</div><div class="ttdoc">Type alias for a string unordered map.</div><div class="ttdef"><b>Definition:</b> types.hpp:32</div></div>
-<div class="ttc" id="anamespacerespond_html_adb86f203a1365d1c6d14862697d68ee7"><div class="ttname"><a href="../../d9/de6/namespacerespond.html#adb86f203a1365d1c6d14862697d68ee7">respond::CostPerspectives</a></div><div class="ttdeci">std::map&lt; std::string, CostsOverTime &gt; CostPerspectives</div><div class="ttdoc">Type alias for a vector of Cost objects.</div><div class="ttdef"><b>Definition:</b> types.hpp:57</div></div>
-<div class="ttc" id="anamespacerespond_html_add7ecd2a0ac4d8b22511245a9e13d4e0"><div class="ttname"><a href="../../d9/de6/namespacerespond.html#add7ecd2a0ac4d8b22511245a9e13d4e0">respond::HistoryOverTime</a></div><div class="ttdeci">std::map&lt; int, HistoryStamp &gt; HistoryOverTime</div><div class="ttdoc">A map of the timestep to the HistoryStamp.</div><div class="ttdef"><b>Definition:</b> types.hpp:42</div></div>
-<div class="ttc" id="astructrespond_1_1CostStamp_html"><div class="ttname"><a href="../../d8/dba/structrespond_1_1CostStamp.html">respond::CostStamp</a></div><div class="ttdoc">Struct grouping together matrices containing cost information.</div><div class="ttdef"><b>Definition:</b> types.hpp:45</div></div>
+<div class="ttc" id="anamespacerespond_html_adb86f203a1365d1c6d14862697d68ee7"><div class="ttname"><a href="../../d9/de6/namespacerespond.html#adb86f203a1365d1c6d14862697d68ee7">respond::CostPerspectives</a></div><div class="ttdeci">std::map&lt; std::string, CostsOverTime &gt; CostPerspectives</div><div class="ttdoc">Type alias for a vector of Cost objects.</div><div class="ttdef"><b>Definition:</b> types.hpp:59</div></div>
+<div class="ttc" id="anamespacerespond_html_add7ecd2a0ac4d8b22511245a9e13d4e0"><div class="ttname"><a href="../../d9/de6/namespacerespond.html#add7ecd2a0ac4d8b22511245a9e13d4e0">respond::HistoryOverTime</a></div><div class="ttdeci">std::map&lt; int, HistoryStamp &gt; HistoryOverTime</div><div class="ttdoc">A map of the timestep to the HistoryStamp.</div><div class="ttdef"><b>Definition:</b> types.hpp:44</div></div>
+<div class="ttc" id="astructrespond_1_1CostStamp_html"><div class="ttname"><a href="../../d8/dba/structrespond_1_1CostStamp.html">respond::CostStamp</a></div><div class="ttdoc">Struct grouping together matrices containing cost information.</div><div class="ttdef"><b>Definition:</b> types.hpp:47</div></div>
 <div class="ttc" id="astructrespond_1_1HistoryStamp_html"><div class="ttname"><a href="../../d0/da5/structrespond_1_1HistoryStamp.html">respond::HistoryStamp</a></div><div class="ttdoc">Struct grouping together matrices containing run history.</div><div class="ttdef"><b>Definition:</b> types.hpp:35</div></div>
-<div class="ttc" id="astructrespond_1_1ResultSets_html"><div class="ttname"><a href="../../d5/dc6/structrespond_1_1ResultSets.html">respond::ResultSets</a></div><div class="ttdoc">A struct for the final results.</div><div class="ttdef"><b>Definition:</b> types.hpp:67</div></div>
-<div class="ttc" id="astructrespond_1_1Totals_html"><div class="ttname"><a href="../../dd/daf/structrespond_1_1Totals.html">respond::Totals</a></div><div class="ttdoc">Struct grouping together matricies containing total cost effectiveness information.</div><div class="ttdef"><b>Definition:</b> types.hpp:75</div></div>
+<div class="ttc" id="astructrespond_1_1ResultSets_html"><div class="ttname"><a href="../../d5/dc6/structrespond_1_1ResultSets.html">respond::ResultSets</a></div><div class="ttdoc">A struct for the final results.</div><div class="ttdef"><b>Definition:</b> types.hpp:69</div></div>
+<div class="ttc" id="astructrespond_1_1Totals_html"><div class="ttname"><a href="../../dd/daf/structrespond_1_1Totals.html">respond::Totals</a></div><div class="ttdoc">Struct grouping together matricies containing total cost effectiveness information.</div><div class="ttdef"><b>Definition:</b> types.hpp:77</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="../../dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="../../dir_70501f13f5c9277fdfc6ec16bf603df6.html">respond</a></li><li class="navelem"><b>types.hpp</b></li>
-    <li class="footer">Generated on Tue Jan 6 2026 17:26:33 for RESPOND by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
+    <li class="footer">Generated on Tue Jan 27 2026 15:30:57 for RESPOND by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
   </ul>
 </div>
 </body>

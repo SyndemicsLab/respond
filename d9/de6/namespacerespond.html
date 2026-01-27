@@ -158,16 +158,12 @@ Classes</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="typedef-members" name="typedef-members"></a>
 Typedefs</h2></td></tr>
-<tr class="memitem:acd201fce9e332995af5bf98fa61d3d90"><td class="memItemLeft" align="right" valign="top"><a id="acd201fce9e332995af5bf98fa61d3d90" name="acd201fce9e332995af5bf98fa61d3d90"></a>
-using&#160;</td><td class="memItemRight" valign="bottom"><b>stamper</b> = std::function&lt; void(<a class="el" href="../../d0/da5/structrespond_1_1HistoryStamp.html">HistoryStamp</a> &amp;, Eigen::VectorXd, Eigen::VectorXd)&gt;</td></tr>
-<tr class="memdesc:acd201fce9e332995af5bf98fa61d3d90"><td class="mdescLeft">&#160;</td><td class="mdescRight">type for a general function to apply a stamp within a model step. <br /></td></tr>
-<tr class="separator:acd201fce9e332995af5bf98fa61d3d90"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a928eecd66f9cc7ff91f067489093d90b"><td class="memItemLeft" align="right" valign="top"><a id="a928eecd66f9cc7ff91f067489093d90b" name="a928eecd66f9cc7ff91f067489093d90b"></a>
-using&#160;</td><td class="memItemRight" valign="bottom"><b>transition_function</b> = std::function&lt; Eigen::VectorXd(Eigen::VectorXd &amp;, const std::vector&lt; Eigen::MatrixXd &gt; &amp;)&gt;</td></tr>
-<tr class="memdesc:a928eecd66f9cc7ff91f067489093d90b"><td class="mdescLeft">&#160;</td><td class="mdescRight">type for a general function to apply a transition to the model state. <br /></td></tr>
-<tr class="separator:a928eecd66f9cc7ff91f067489093d90b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a96cc4e10c1c90f0767284d6a82ea8225"><td class="memItemLeft" align="right" valign="top"><a id="a96cc4e10c1c90f0767284d6a82ea8225" name="a96cc4e10c1c90f0767284d6a82ea8225"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><b>transition_function</b> = std::function&lt; Eigen::VectorXd(const Eigen::VectorXd &amp;, const std::vector&lt; Eigen::MatrixXd &gt; &amp;, <a class="el" href="../../d0/da5/structrespond_1_1HistoryStamp.html">HistoryStamp</a> &amp;)&gt;</td></tr>
+<tr class="memdesc:a96cc4e10c1c90f0767284d6a82ea8225"><td class="mdescLeft">&#160;</td><td class="mdescRight">type for a general function to apply a transition to the model state. <br /></td></tr>
+<tr class="separator:a96cc4e10c1c90f0767284d6a82ea8225"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acbc9130e8db50cc6faf2dc45f1a91677"><td class="memItemLeft" align="right" valign="top"><a id="acbc9130e8db50cc6faf2dc45f1a91677" name="acbc9130e8db50cc6faf2dc45f1a91677"></a>
-using&#160;</td><td class="memItemRight" valign="bottom"><b>transition</b> = std::pair&lt; <a class="el" href="../../d9/de6/namespacerespond.html#a928eecd66f9cc7ff91f067489093d90b">transition_function</a>, std::vector&lt; Eigen::MatrixXd &gt; &gt;</td></tr>
+using&#160;</td><td class="memItemRight" valign="bottom"><b>transition</b> = std::pair&lt; <a class="el" href="../../d9/de6/namespacerespond.html#a96cc4e10c1c90f0767284d6a82ea8225">transition_function</a>, std::vector&lt; Eigen::MatrixXd &gt; &gt;</td></tr>
 <tr class="memdesc:acbc9130e8db50cc6faf2dc45f1a91677"><td class="mdescLeft">&#160;</td><td class="mdescRight">The pair of functions and transition matrices. <br /></td></tr>
 <tr class="separator:acbc9130e8db50cc6faf2dc45f1a91677"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a65769752f5000f255bf5072701e5a850"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
@@ -270,21 +266,21 @@ Functions</h2></td></tr>
 <tr class="memitem:a11719adf40a951ebf71284ef23401adb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d9/de6/namespacerespond.html#a11719adf40a951ebf71284ef23401adb">LogDebug</a> (const std::string &amp;logger_name, const std::string &amp;message)</td></tr>
 <tr class="memdesc:a11719adf40a951ebf71284ef23401adb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Log a message as debug information.  <br /></td></tr>
 <tr class="separator:a11719adf40a951ebf71284ef23401adb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa1df9ba4d59dd236dfda6c059f546903"><td class="memItemLeft" align="right" valign="top">Eigen::VectorXd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d9/de6/namespacerespond.html#aa1df9ba4d59dd236dfda6c059f546903">Migration</a> (Eigen::VectorXd &amp;state, const std::vector&lt; Eigen::MatrixXd &gt; &amp;<a class="el" href="../../d9/de6/namespacerespond.html#acbc9130e8db50cc6faf2dc45f1a91677">transition</a>)</td></tr>
-<tr class="memdesc:aa1df9ba4d59dd236dfda6c059f546903"><td class="mdescLeft">&#160;</td><td class="mdescRight">A function to model a migrating cohort.  <br /></td></tr>
-<tr class="separator:aa1df9ba4d59dd236dfda6c059f546903"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1904d4dcdd973a887773d7d03070cd4b"><td class="memItemLeft" align="right" valign="top">Eigen::VectorXd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d9/de6/namespacerespond.html#a1904d4dcdd973a887773d7d03070cd4b">Behavior</a> (Eigen::VectorXd &amp;state, const std::vector&lt; Eigen::MatrixXd &gt; &amp;<a class="el" href="../../d9/de6/namespacerespond.html#acbc9130e8db50cc6faf2dc45f1a91677">transition</a>)</td></tr>
-<tr class="memdesc:a1904d4dcdd973a887773d7d03070cd4b"><td class="mdescLeft">&#160;</td><td class="mdescRight">A function to model the relapsing/remitting behavior of SUD.  <br /></td></tr>
-<tr class="separator:a1904d4dcdd973a887773d7d03070cd4b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab75309fd37905fee50cd3bf2baf931f9"><td class="memItemLeft" align="right" valign="top">Eigen::VectorXd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d9/de6/namespacerespond.html#ab75309fd37905fee50cd3bf2baf931f9">Intervention</a> (Eigen::VectorXd &amp;state, const std::vector&lt; Eigen::MatrixXd &gt; &amp;<a class="el" href="../../d9/de6/namespacerespond.html#acbc9130e8db50cc6faf2dc45f1a91677">transition</a>)</td></tr>
-<tr class="memdesc:ab75309fd37905fee50cd3bf2baf931f9"><td class="mdescLeft">&#160;</td><td class="mdescRight">A function to model the intervention changes of SUD.  <br /></td></tr>
-<tr class="separator:ab75309fd37905fee50cd3bf2baf931f9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a81af952eb03a284e3c1e2eccb3c4a88c"><td class="memItemLeft" align="right" valign="top">Eigen::VectorXd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d9/de6/namespacerespond.html#a81af952eb03a284e3c1e2eccb3c4a88c">Overdose</a> (Eigen::VectorXd &amp;state, const std::vector&lt; Eigen::MatrixXd &gt; &amp;<a class="el" href="../../d9/de6/namespacerespond.html#acbc9130e8db50cc6faf2dc45f1a91677">transition</a>)</td></tr>
-<tr class="memdesc:a81af952eb03a284e3c1e2eccb3c4a88c"><td class="mdescLeft">&#160;</td><td class="mdescRight">A function to model the overdoses within the SUD community.  <br /></td></tr>
-<tr class="separator:a81af952eb03a284e3c1e2eccb3c4a88c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aab7c829eb9dbbf40f834e3a805e75a61"><td class="memItemLeft" align="right" valign="top">Eigen::VectorXd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d9/de6/namespacerespond.html#aab7c829eb9dbbf40f834e3a805e75a61">Mortality</a> (Eigen::VectorXd &amp;state, const std::vector&lt; Eigen::MatrixXd &gt; &amp;<a class="el" href="../../d9/de6/namespacerespond.html#acbc9130e8db50cc6faf2dc45f1a91677">transition</a>)</td></tr>
-<tr class="memdesc:aab7c829eb9dbbf40f834e3a805e75a61"><td class="mdescLeft">&#160;</td><td class="mdescRight">A function to model the mortality within the SUD community.  <br /></td></tr>
-<tr class="separator:aab7c829eb9dbbf40f834e3a805e75a61"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1d10c58fe4262dee71ef6b57e682961f"><td class="memItemLeft" align="right" valign="top">Eigen::VectorXd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d9/de6/namespacerespond.html#a1d10c58fe4262dee71ef6b57e682961f">Migration</a> (const Eigen::VectorXd &amp;state, const std::vector&lt; Eigen::MatrixXd &gt; &amp;<a class="el" href="../../d9/de6/namespacerespond.html#acbc9130e8db50cc6faf2dc45f1a91677">transition</a>, <a class="el" href="../../d0/da5/structrespond_1_1HistoryStamp.html">HistoryStamp</a> &amp;stamp)</td></tr>
+<tr class="memdesc:a1d10c58fe4262dee71ef6b57e682961f"><td class="mdescLeft">&#160;</td><td class="mdescRight">A function to model a migrating cohort.  <br /></td></tr>
+<tr class="separator:a1d10c58fe4262dee71ef6b57e682961f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a665c07cbe0b8a8fcd878d13c21a3b67f"><td class="memItemLeft" align="right" valign="top">Eigen::VectorXd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d9/de6/namespacerespond.html#a665c07cbe0b8a8fcd878d13c21a3b67f">Behavior</a> (const Eigen::VectorXd &amp;state, const std::vector&lt; Eigen::MatrixXd &gt; &amp;<a class="el" href="../../d9/de6/namespacerespond.html#acbc9130e8db50cc6faf2dc45f1a91677">transition</a>, <a class="el" href="../../d0/da5/structrespond_1_1HistoryStamp.html">HistoryStamp</a> &amp;stamp)</td></tr>
+<tr class="memdesc:a665c07cbe0b8a8fcd878d13c21a3b67f"><td class="mdescLeft">&#160;</td><td class="mdescRight">A function to model the relapsing/remitting behavior of SUD.  <br /></td></tr>
+<tr class="separator:a665c07cbe0b8a8fcd878d13c21a3b67f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a43ae8b480486062ace1021d0b83f872a"><td class="memItemLeft" align="right" valign="top">Eigen::VectorXd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d9/de6/namespacerespond.html#a43ae8b480486062ace1021d0b83f872a">Intervention</a> (const Eigen::VectorXd &amp;state, const std::vector&lt; Eigen::MatrixXd &gt; &amp;<a class="el" href="../../d9/de6/namespacerespond.html#acbc9130e8db50cc6faf2dc45f1a91677">transition</a>, <a class="el" href="../../d0/da5/structrespond_1_1HistoryStamp.html">HistoryStamp</a> &amp;stamp)</td></tr>
+<tr class="memdesc:a43ae8b480486062ace1021d0b83f872a"><td class="mdescLeft">&#160;</td><td class="mdescRight">A function to model the intervention changes of SUD.  <br /></td></tr>
+<tr class="separator:a43ae8b480486062ace1021d0b83f872a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4c86b3c70cef512a31ca0ac58641b2c9"><td class="memItemLeft" align="right" valign="top">Eigen::VectorXd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d9/de6/namespacerespond.html#a4c86b3c70cef512a31ca0ac58641b2c9">Overdose</a> (const Eigen::VectorXd &amp;state, const std::vector&lt; Eigen::MatrixXd &gt; &amp;<a class="el" href="../../d9/de6/namespacerespond.html#acbc9130e8db50cc6faf2dc45f1a91677">transition</a>, <a class="el" href="../../d0/da5/structrespond_1_1HistoryStamp.html">HistoryStamp</a> &amp;stamp)</td></tr>
+<tr class="memdesc:a4c86b3c70cef512a31ca0ac58641b2c9"><td class="mdescLeft">&#160;</td><td class="mdescRight">A function to model the overdoses within the SUD community.  <br /></td></tr>
+<tr class="separator:a4c86b3c70cef512a31ca0ac58641b2c9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8c009f78a4ce13392a0a88e5a3291201"><td class="memItemLeft" align="right" valign="top">Eigen::VectorXd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d9/de6/namespacerespond.html#a8c009f78a4ce13392a0a88e5a3291201">Mortality</a> (const Eigen::VectorXd &amp;state, const std::vector&lt; Eigen::MatrixXd &gt; &amp;<a class="el" href="../../d9/de6/namespacerespond.html#acbc9130e8db50cc6faf2dc45f1a91677">transition</a>, <a class="el" href="../../d0/da5/structrespond_1_1HistoryStamp.html">HistoryStamp</a> &amp;stamp)</td></tr>
+<tr class="memdesc:a8c009f78a4ce13392a0a88e5a3291201"><td class="mdescLeft">&#160;</td><td class="mdescRight">A function to model the background mortality within the SUD community.  <br /></td></tr>
+<tr class="separator:a8c009f78a4ce13392a0a88e5a3291201"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>General Namespace for all RESPOND repo related code. </p>
@@ -334,8 +330,8 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="a1904d4dcdd973a887773d7d03070cd4b" name="a1904d4dcdd973a887773d7d03070cd4b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1904d4dcdd973a887773d7d03070cd4b">&#9670;&#160;</a></span>Behavior()</h2>
+<a id="a665c07cbe0b8a8fcd878d13c21a3b67f" name="a665c07cbe0b8a8fcd878d13c21a3b67f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a665c07cbe0b8a8fcd878d13c21a3b67f">&#9670;&#160;</a></span>Behavior()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -343,14 +339,20 @@ template&lt;typename T &gt; </div>
         <tr>
           <td class="memname">Eigen::VectorXd respond::Behavior </td>
           <td>(</td>
-          <td class="paramtype">Eigen::VectorXd &amp;&#160;</td>
+          <td class="paramtype">const Eigen::VectorXd &amp;&#160;</td>
           <td class="paramname"><em>state</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const std::vector&lt; Eigen::MatrixXd &gt; &amp;&#160;</td>
-          <td class="paramname"><em>transition</em>&#160;</td>
+          <td class="paramname"><em>transition</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="../../d0/da5/structrespond_1_1HistoryStamp.html">HistoryStamp</a> &amp;&#160;</td>
+          <td class="paramname"><em>stamp</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -765,8 +767,8 @@ template&lt;class... Args&gt; </div>
 
 </div>
 </div>
-<a id="ab75309fd37905fee50cd3bf2baf931f9" name="ab75309fd37905fee50cd3bf2baf931f9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab75309fd37905fee50cd3bf2baf931f9">&#9670;&#160;</a></span>Intervention()</h2>
+<a id="a43ae8b480486062ace1021d0b83f872a" name="a43ae8b480486062ace1021d0b83f872a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a43ae8b480486062ace1021d0b83f872a">&#9670;&#160;</a></span>Intervention()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -774,14 +776,20 @@ template&lt;class... Args&gt; </div>
         <tr>
           <td class="memname">Eigen::VectorXd respond::Intervention </td>
           <td>(</td>
-          <td class="paramtype">Eigen::VectorXd &amp;&#160;</td>
+          <td class="paramtype">const Eigen::VectorXd &amp;&#160;</td>
           <td class="paramname"><em>state</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const std::vector&lt; Eigen::MatrixXd &gt; &amp;&#160;</td>
-          <td class="paramname"><em>transition</em>&#160;</td>
+          <td class="paramname"><em>transition</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="../../d0/da5/structrespond_1_1HistoryStamp.html">HistoryStamp</a> &amp;&#160;</td>
+          <td class="paramname"><em>stamp</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -941,8 +949,8 @@ template&lt;class... Args&gt; </div>
 
 </div>
 </div>
-<a id="aa1df9ba4d59dd236dfda6c059f546903" name="aa1df9ba4d59dd236dfda6c059f546903"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa1df9ba4d59dd236dfda6c059f546903">&#9670;&#160;</a></span>Migration()</h2>
+<a id="a1d10c58fe4262dee71ef6b57e682961f" name="a1d10c58fe4262dee71ef6b57e682961f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1d10c58fe4262dee71ef6b57e682961f">&#9670;&#160;</a></span>Migration()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -950,14 +958,20 @@ template&lt;class... Args&gt; </div>
         <tr>
           <td class="memname">Eigen::VectorXd respond::Migration </td>
           <td>(</td>
-          <td class="paramtype">Eigen::VectorXd &amp;&#160;</td>
+          <td class="paramtype">const Eigen::VectorXd &amp;&#160;</td>
           <td class="paramname"><em>state</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const std::vector&lt; Eigen::MatrixXd &gt; &amp;&#160;</td>
-          <td class="paramname"><em>transition</em>&#160;</td>
+          <td class="paramname"><em>transition</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="../../d0/da5/structrespond_1_1HistoryStamp.html">HistoryStamp</a> &amp;&#160;</td>
+          <td class="paramname"><em>stamp</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -977,8 +991,8 @@ template&lt;class... Args&gt; </div>
 
 </div>
 </div>
-<a id="aab7c829eb9dbbf40f834e3a805e75a61" name="aab7c829eb9dbbf40f834e3a805e75a61"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aab7c829eb9dbbf40f834e3a805e75a61">&#9670;&#160;</a></span>Mortality()</h2>
+<a id="a8c009f78a4ce13392a0a88e5a3291201" name="a8c009f78a4ce13392a0a88e5a3291201"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8c009f78a4ce13392a0a88e5a3291201">&#9670;&#160;</a></span>Mortality()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -986,14 +1000,20 @@ template&lt;class... Args&gt; </div>
         <tr>
           <td class="memname">Eigen::VectorXd respond::Mortality </td>
           <td>(</td>
-          <td class="paramtype">Eigen::VectorXd &amp;&#160;</td>
+          <td class="paramtype">const Eigen::VectorXd &amp;&#160;</td>
           <td class="paramname"><em>state</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const std::vector&lt; Eigen::MatrixXd &gt; &amp;&#160;</td>
-          <td class="paramname"><em>transition</em>&#160;</td>
+          <td class="paramname"><em>transition</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="../../d0/da5/structrespond_1_1HistoryStamp.html">HistoryStamp</a> &amp;&#160;</td>
+          <td class="paramname"><em>stamp</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -1013,8 +1033,8 @@ template&lt;class... Args&gt; </div>
 
 </div>
 </div>
-<a id="a81af952eb03a284e3c1e2eccb3c4a88c" name="a81af952eb03a284e3c1e2eccb3c4a88c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a81af952eb03a284e3c1e2eccb3c4a88c">&#9670;&#160;</a></span>Overdose()</h2>
+<a id="a4c86b3c70cef512a31ca0ac58641b2c9" name="a4c86b3c70cef512a31ca0ac58641b2c9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4c86b3c70cef512a31ca0ac58641b2c9">&#9670;&#160;</a></span>Overdose()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1022,14 +1042,20 @@ template&lt;class... Args&gt; </div>
         <tr>
           <td class="memname">Eigen::VectorXd respond::Overdose </td>
           <td>(</td>
-          <td class="paramtype">Eigen::VectorXd &amp;&#160;</td>
+          <td class="paramtype">const Eigen::VectorXd &amp;&#160;</td>
           <td class="paramname"><em>state</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const std::vector&lt; Eigen::MatrixXd &gt; &amp;&#160;</td>
-          <td class="paramname"><em>transition</em>&#160;</td>
+          <td class="paramname"><em>transition</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="../../d0/da5/structrespond_1_1HistoryStamp.html">HistoryStamp</a> &amp;&#160;</td>
+          <td class="paramname"><em>stamp</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -1336,7 +1362,7 @@ template&lt;class... Args&gt; </div>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="../../d9/de6/namespacerespond.html">respond</a></li>
-    <li class="footer">Generated on Tue Jan 6 2026 17:26:33 for RESPOND by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
+    <li class="footer">Generated on Tue Jan 27 2026 15:30:57 for RESPOND by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
   </ul>
 </div>
 </body>
