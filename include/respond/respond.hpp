@@ -4,7 +4,7 @@
 // Created Date: 2025-08-05                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-01-26                                                  //
+// Last Modified: 2026-01-27                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025-2026 Syndemics Lab at Boston Medical Center             //
@@ -135,7 +135,8 @@ Eigen::VectorXd Overdose(const Eigen::VectorXd &state,
     return new_state;
 }
 
-/// @brief A function to model the mortality within the SUD community.
+/// @brief A function to model the background mortality within the SUD
+/// community.
 /// @param state The model state vector.
 /// @param transition A vector of size 1 containing the transition matrix for
 /// background mortalities.
