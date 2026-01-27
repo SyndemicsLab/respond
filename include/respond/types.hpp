@@ -4,10 +4,10 @@
 // Created Date: 2025-08-05                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-08-05                                                  //
+// Last Modified: 2026-01-26                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
-// Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
+// Copyright (c) 2025-2026 Syndemics Lab at Boston Medical Center             //
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef RESPOND_DATATYPES_HPP_
@@ -34,8 +34,10 @@ template <typename T> using StringUOMap = std::unordered_map<std::string, T>;
 /// @brief Struct grouping together matrices containing run history
 struct HistoryStamp {
     Eigen::VectorXd state = Eigen::VectorXd::Zero(0);
-    Eigen::VectorXd overdoses = Eigen::VectorXd::Zero(0);
+    Eigen::VectorXd total_overdoses = Eigen::VectorXd::Zero(0);
+    Eigen::VectorXd fatal_overdoses = Eigen::VectorXd::Zero(0);
     Eigen::VectorXd intervention_admissions = Eigen::VectorXd::Zero(0);
+    Eigen::VectorXd background_mortality = Eigen::VectorXd::Zero(0);
 };
 
 /// @brief A map of the timestep to the HistoryStamp.

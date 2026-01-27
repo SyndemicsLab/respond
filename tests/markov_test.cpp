@@ -4,10 +4,10 @@
 // Created Date: 2025-06-06                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-10-16                                                  //
+// Last Modified: 2026-01-26                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
-// Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
+// Copyright (c) 2025-2026 Syndemics Lab at Boston Medical Center             //
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <respond/markov.hpp>
@@ -34,17 +34,16 @@ TEST_F(MarkovTest, ZeroDuration) {
     auto expected = Eigen::VectorXd::Zero(0);
     EXPECT_TRUE(results[0].state.isApprox(expected));
     EXPECT_TRUE(results[0].intervention_admissions.isApprox(expected));
-    EXPECT_TRUE(results[0].overdoses.isApprox(expected));
+    EXPECT_TRUE(results[0].total_overdoses.isApprox(expected));
 }
 
 TEST_F(MarkovTest, SingleStep) {
     auto markov = Markov::Create("test_logger");
     markov->SetState(Eigen::VectorXd::Ones(5));
 
-    transition t = {[](Eigen::VectorXd &state,
-                       const std::vector<Eigen::MatrixXd> &transitions) {
-                        return state + transitions[0];
-                    },
+    transition t = {[](const Eigen::VectorXd &state,
+                       const std::vector<Eigen::MatrixXd> &transitions,
+                       HistoryStamp &hs) { return state + transitions[0]; },
                     {Eigen::VectorXd::Ones(5)}};
     markov->SetTransitions({t});
 
@@ -58,10 +57,9 @@ TEST_F(MarkovTest, MultipleTransitions) {
     auto markov = Markov::Create("test_logger");
     markov->SetState(Eigen::VectorXd::Ones(5));
 
-    transition t = {[](Eigen::VectorXd &state,
-                       const std::vector<Eigen::MatrixXd> &transitions) {
-                        return state + transitions[0];
-                    },
+    transition t = {[](const Eigen::VectorXd &state,
+                       const std::vector<Eigen::MatrixXd> &transitions,
+                       HistoryStamp &hs) { return state + transitions[0]; },
                     {Eigen::VectorXd::Ones(5)}};
     markov->SetTransitions({t, t, t, t, t});
 
@@ -69,10 +67,6 @@ TEST_F(MarkovTest, MultipleTransitions) {
     auto results = markov->GetRunResults();
 
     EXPECT_TRUE(results[1].state.isApprox(Eigen::VectorXd::Constant(5, 6.0)));
-    EXPECT_TRUE(results[1].intervention_admissions.isApprox(
-        Eigen::VectorXd::Constant(5, 0.0)));
-    EXPECT_TRUE(
-        results[1].overdoses.isApprox(Eigen::VectorXd::Constant(5, 5.0)));
 }
 
 TEST_F(MarkovTest, CopyConstructor) {

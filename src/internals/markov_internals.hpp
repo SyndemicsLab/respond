@@ -4,10 +4,10 @@
 // Created Date: 2025-08-05                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-10-16                                                  //
+// Last Modified: 2026-01-26                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
-// Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
+// Copyright (c) 2025-2026 Syndemics Lab at Boston Medical Center             //
 ////////////////////////////////////////////////////////////////////////////////
 #ifndef RESPOND_MARKOVINTERNALS_HPP_
 #define RESPOND_MARKOVINTERNALS_HPP_
@@ -75,7 +75,6 @@ private:
     std::string _logger_name;
     Eigen::VectorXd _state;
     std::vector<transition> _transitions = {};
-    std::map<int, stamper> _stamper_functions;
     int _time = 0;
     HistoryOverTime _history = {};
 
@@ -88,33 +87,15 @@ private:
 
     void ResetHistory() { _history.clear(); }
 
-    void ResetStamperFunctions() { _stamper_functions.clear(); }
-
-    void WriteFirstHistoryStamp() {
+    void RecordInitialHistoryStamp() {
         ResetHistory();
         HistoryStamp stamp;
         stamp.state = _state;
         stamp.intervention_admissions = Eigen::VectorXd::Zero(_state.size());
-        stamp.overdoses = Eigen::VectorXd::Zero(_state.size());
+        stamp.total_overdoses = Eigen::VectorXd::Zero(_state.size());
+        stamp.fatal_overdoses = Eigen::VectorXd::Zero(_state.size());
+        stamp.background_mortality = Eigen::VectorXd::Zero(_state.size());
         _history[0] = stamp;
-    }
-
-    void WriteDefaultStamperFunctions() {
-        ResetStamperFunctions();
-        // Setup the Stamper Functions
-        _stamper_functions[2] = [](HistoryStamp &hs, Eigen::VectorXd state,
-                                   Eigen::VectorXd moud_movements) {
-            Eigen::VectorXd admissions = state - moud_movements;
-            Eigen::VectorXd mat = Eigen::VectorXd::Zero(admissions.size());
-
-            admissions = admissions.cwiseMax(mat);
-            hs.intervention_admissions = admissions;
-        };
-
-        _stamper_functions[3] = [](HistoryStamp &hs, Eigen::VectorXd state,
-                                   Eigen::VectorXd od_movements) {
-            hs.overdoses = od_movements;
-        };
     }
 };
 } // namespace respond

@@ -4,10 +4,10 @@
 // Created Date: 2025-07-07                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-10-16                                                  //
+// Last Modified: 2026-01-26                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
-// Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
+// Copyright (c) 2025-2026 Syndemics Lab at Boston Medical Center             //
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "internals/markov_internals.hpp"
@@ -29,9 +29,9 @@ void MarkovImpl::Run(const int &num_steps) {
     ResetTime();
 
     // All histories now start with t = 0
-    WriteFirstHistoryStamp();
+    RecordInitialHistoryStamp();
 
-    WriteDefaultStamperFunctions();
+    // WriteDefaultStamperFunctions();
 
     while (_time < num_steps) {
         HistoryStamp stamp;
@@ -65,12 +65,7 @@ void MarkovImpl::LogDebugPoint(const std::string &message,
 void MarkovImpl::Step(HistoryStamp &hs) {
     for (int i = 0; i < _transitions.size(); ++i) {
         transition t = _transitions[i];
-        auto temp = (t.first)(_state, t.second);
-        auto it = _stamper_functions.find(i);
-        if (it != _stamper_functions.end()) {
-            it->second(hs, _state, temp);
-        }
-        _state = temp;
+        _state = (t.first)(_state, t.second, hs);
     }
 }
 

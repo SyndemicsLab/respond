@@ -4,10 +4,10 @@
 // Created Date: 2025-08-05                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-10-16                                                  //
+// Last Modified: 2026-01-26                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
-// Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
+// Copyright (c) 2025-2026 Syndemics Lab at Boston Medical Center             //
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef RESPOND_MARKOV_HPP_
@@ -22,13 +22,10 @@
 
 namespace respond {
 
-/// @brief type for a general function to apply a stamp within a model step.
-using stamper =
-    std::function<void(HistoryStamp &, Eigen::VectorXd, Eigen::VectorXd)>;
-
 /// @brief type for a general function to apply a transition to the model state.
 using transition_function = std::function<Eigen::VectorXd(
-    Eigen::VectorXd &, const std::vector<Eigen::MatrixXd> &)>;
+    const Eigen::VectorXd &, const std::vector<Eigen::MatrixXd> &,
+    HistoryStamp &)>;
 
 /// @brief The pair of functions and transition matrices.
 using transition = std::pair<transition_function, std::vector<Eigen::MatrixXd>>;

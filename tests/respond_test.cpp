@@ -4,10 +4,10 @@
 // Created Date: 2025-08-05                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-12-01                                                  //
+// Last Modified: 2026-01-26                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
-// Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
+// Copyright (c) 2025-2026 Syndemics Lab at Boston Medical Center             //
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <respond/respond.hpp>
@@ -25,6 +25,7 @@ class RespondTest : public ::testing::Test {
 protected:
     Eigen::VectorXd state;
     std::vector<Eigen::MatrixXd> transition_matrices;
+    HistoryStamp stamp;
     void SetUp() override {
         state = Eigen::VectorXd::Ones(6);
         transition_matrices.clear();
@@ -38,7 +39,7 @@ TEST_F(RespondTest, Migration_Function) {
     t << -1, 0, 1, 0, 0, 0;
     transition_matrices.push_back(t);
 
-    auto result = Migration(state, transition_matrices);
+    auto result = Migration(state, transition_matrices, stamp);
     Eigen::VectorXd expected(6);
     expected << 0, 1, 2, 1, 1, 1;
 
@@ -58,7 +59,7 @@ TEST_F(RespondTest, Behavior_Function) {
     // clang-format on
     transition_matrices.push_back(t);
 
-    auto result = Behavior(state, transition_matrices);
+    auto result = Behavior(state, transition_matrices, stamp);
     Eigen::VectorXd expected(6);
     expected << 1.0, 1.0, 1.1, 0.9, 1.0, 1.0;
 
@@ -79,7 +80,7 @@ TEST_F(RespondTest, Intervention_Function) {
 
     transition_matrices.push_back(t1);
 
-    auto result = Intervention(state, transition_matrices);
+    auto result = Intervention(state, transition_matrices, stamp);
     Eigen::VectorXd expected(6);
     expected << 1.0, 1.0, 0.3, 1.7, 1.0, 1.0;
     EXPECT_TRUE(result.isApprox(expected));
@@ -94,29 +95,23 @@ TEST_F(RespondTest, Overdose_Function) {
     transition_matrices.push_back(t1);
     transition_matrices.push_back(t2);
 
-    auto result = Overdose(state, transition_matrices);
+    auto result = Overdose(state, transition_matrices, stamp);
     Eigen::VectorXd expected(6);
-    expected << 1.0, 1.0, 0.9, 0.95, 1.1, 1.05;
+    expected << 1.0, 1.0, 0.9, 0.95, 1.0, 1.0;
 
-    EXPECT_TRUE(state.isApprox(expected));
-    EXPECT_TRUE(result.isApprox(t1));
+    EXPECT_TRUE(result.isApprox(expected));
 }
 
 TEST_F(RespondTest, Mortality_Function) {
-    Eigen::MatrixXd t(6, 6);
+    Eigen::VectorXd t(6);
     // clang-format off
-    t << 1.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-         0.0, 1.0, 0.0, 0.0, 0.0, 0.0,
-         0.0, 0.0, 0.9, 0.0, 0.0, 0.0,
-         0.0, 0.0, 0.0, 0.2, 0.0, 0.0,
-         0.0, 0.0, 0.1, 0.0, 1.0, 0.0,
-         0.0, 0.0, 0.0, 0.8, 0.0, 1.0;
+    t << 1.0, 1.0, 0.9, 0.2, 0.0, 0.0;
     // clang-format on
     transition_matrices.push_back(t);
 
-    auto result = Mortality(state, transition_matrices);
+    auto result = Mortality(state, transition_matrices, stamp);
     Eigen::VectorXd expected(6);
-    expected << 1.0, 1.0, 0.9, 0.2, 1.1, 1.8;
+    expected << 0.0, 0.0, 0.1, 0.8, 1.0, 1.0;
 
     EXPECT_TRUE(result.isApprox(expected));
 }
