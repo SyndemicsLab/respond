@@ -15,43 +15,13 @@
 
 #include <memory>
 #include <string>
+#include <vector>
 
 #include <Eigen/Dense>
 
-#include <respond/types.hpp>
+#include <respond/transition.hpp>
 
 namespace respond {
-
-/// @brief A helper class to hold Transitions
-class Transition {
-public:
-    /// @brief A vector of matrices containing the transition matrices to
-    /// multiply.
-    std::vector<Eigen::MatrixXd> transition_matrices;
-
-    void SetCallback(std::function<Eigen::VectorXd(
-                         const Eigen::VectorXd &,
-                         const std::vector<Eigen::MatrixXd> &, HistoryStamp &)>
-                         cb) {
-        _callback = std::move(cb);
-    }
-
-    Eigen::VectorXd Execute(const Eigen::VectorXd &a,
-                            const std::vector<Eigen::MatrixXd> &b,
-                            HistoryStamp &c) {
-        if (_callback) {
-            return _callback(a, b, c);
-        }
-        return a;
-    }
-
-private:
-    /// @brief The callback function to apply.
-    std::function<Eigen::VectorXd(const Eigen::VectorXd &,
-                                  const std::vector<Eigen::MatrixXd> &,
-                                  HistoryStamp &)>
-        _callback;
-};
 
 /// @brief Class describing the Respond model simulation.
 class Markov {

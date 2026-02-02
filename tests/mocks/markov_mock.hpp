@@ -19,7 +19,7 @@
 #include <Eigen/Dense>
 #include <gmock/gmock.h>
 
-#include <respond/types.hpp>
+#include <respond/transition.hpp>
 
 namespace respond {
 class MockMarkov : public virtual Markov {

@@ -81,6 +81,7 @@ target_sources(respond_model
             include/respond/logging.hpp
             include/respond/markov.hpp
             include/respond/respond.hpp
+            include/respond/transition.hpp
             include/respond/types.hpp
             include/respond/version.hpp
     )
