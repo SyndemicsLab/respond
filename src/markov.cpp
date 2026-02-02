@@ -4,7 +4,7 @@
 // Created Date: 2025-07-07                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-01-26                                                  //
+// Last Modified: 2026-02-02                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025-2026 Syndemics Lab at Boston Medical Center             //
@@ -63,9 +63,8 @@ void MarkovImpl::LogDebugPoint(const std::string &message,
 }
 
 void MarkovImpl::Step(HistoryStamp &hs) {
-    for (int i = 0; i < _transitions.size(); ++i) {
-        transition t = _transitions[i];
-        _state = (t.first)(_state, t.second, hs);
+    for (Transition t : _transitions) {
+        _state = t.Execute(_state, t.transition_matrices, hs);
     }
 }
 

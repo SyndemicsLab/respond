@@ -4,7 +4,7 @@
 // Created Date: 2025-08-05                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-01-26                                                  //
+// Last Modified: 2026-02-02                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025-2026 Syndemics Lab at Boston Medical Center             //
@@ -22,14 +22,6 @@
 
 /// @brief General Namespace for all RESPOND repo related code.
 namespace respond {
-
-/// @brief Type alias for a string map
-/// @tparam T Type of key for the map
-template <typename T> using StringMap = std::map<std::string, T>;
-
-/// @brief Type alias for a string unordered map
-/// @tparam T Type of key for the unordered map
-template <typename T> using StringUOMap = std::unordered_map<std::string, T>;
 
 /// @brief Struct grouping together matrices containing run history
 struct HistoryStamp {

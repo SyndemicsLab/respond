@@ -4,7 +4,7 @@
 // Created Date: 2025-08-05                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-01-26                                                  //
+// Last Modified: 2026-02-02                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025-2026 Syndemics Lab at Boston Medical Center             //
@@ -50,18 +50,18 @@ public:
     }
     Eigen::VectorXd GetState() const override { return _state; }
 
-    void SetTransitions(const std::vector<transition> &tr) override {
+    void SetTransitions(const std::vector<Transition> &transitions) override {
         _transitions.clear();
         // This is required for a deep copy of the matrices from the vector
-        for (const auto &t : tr) {
+        for (const auto &t : transitions) {
             _transitions.push_back(t);
         }
     }
-    std::vector<transition> GetTransitions() const override {
+    std::vector<Transition> GetTransitions() const override {
         return _transitions;
     }
 
-    void AddTransition(const transition &transition) override {
+    void AddTransition(const Transition &transition) override {
         _transitions.push_back(transition);
     }
 
@@ -74,7 +74,7 @@ public:
 private:
     std::string _logger_name;
     Eigen::VectorXd _state;
-    std::vector<transition> _transitions = {};
+    std::vector<Transition> _transitions = {};
     int _time = 0;
     HistoryOverTime _history = {};
 

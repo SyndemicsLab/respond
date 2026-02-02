@@ -4,7 +4,7 @@
 // Created Date: 2025-08-05                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-01-26                                                  //
+// Last Modified: 2026-02-02                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025-2026 Syndemics Lab at Boston Medical Center             //
@@ -22,13 +22,36 @@
 
 namespace respond {
 
-/// @brief type for a general function to apply a transition to the model state.
-using transition_function = std::function<Eigen::VectorXd(
-    const Eigen::VectorXd &, const std::vector<Eigen::MatrixXd> &,
-    HistoryStamp &)>;
+/// @brief A helper class to hold Transitions
+class Transition {
+public:
+    /// @brief A vector of matrices containing the transition matrices to
+    /// multiply.
+    std::vector<Eigen::MatrixXd> transition_matrices;
 
-/// @brief The pair of functions and transition matrices.
-using transition = std::pair<transition_function, std::vector<Eigen::MatrixXd>>;
+    void SetCallback(std::function<Eigen::VectorXd(
+                         const Eigen::VectorXd &,
+                         const std::vector<Eigen::MatrixXd> &, HistoryStamp &)>
+                         cb) {
+        _callback = std::move(cb);
+    }
+
+    Eigen::VectorXd Execute(const Eigen::VectorXd &a,
+                            const std::vector<Eigen::MatrixXd> &b,
+                            HistoryStamp &c) {
+        if (_callback) {
+            return _callback(a, b, c);
+        }
+        return a;
+    }
+
+private:
+    /// @brief The callback function to apply.
+    std::function<Eigen::VectorXd(const Eigen::VectorXd &,
+                                  const std::vector<Eigen::MatrixXd> &,
+                                  HistoryStamp &)>
+        _callback;
+};
 
 /// @brief Class describing the Respond model simulation.
 class Markov {
@@ -46,15 +69,15 @@ public:
 
     /// @brief Setter for the transition operations.
     /// @param transitions A vector of transition operations and matrices.
-    virtual void SetTransitions(const std::vector<transition> &transitions) = 0;
+    virtual void SetTransitions(const std::vector<Transition> &transitions) = 0;
 
     /// @brief Getter for the transition operations.
     /// @return Vector of transition operations and matrices.
-    virtual std::vector<transition> GetTransitions() const = 0;
+    virtual std::vector<Transition> GetTransitions() const = 0;
 
     /// @brief Add a single transition operation to the vector.
     /// @param transition A transition operation and the matrices.
-    virtual void AddTransition(const transition &transition) = 0;
+    virtual void AddTransition(const Transition &transition) = 0;
 
     /// @brief Core function to Run the Markov model.
     /// @param num_steps The number of steps to run through the model.

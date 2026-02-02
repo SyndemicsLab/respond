@@ -4,7 +4,7 @@
 // Created Date: 2025-06-06                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-01-26                                                  //
+// Last Modified: 2026-02-02                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025-2026 Syndemics Lab at Boston Medical Center             //
@@ -26,6 +26,12 @@ protected:
     void TearDown() override {}
 };
 
+Eigen::VectorXd test_func(const Eigen::VectorXd &s,
+                          const std::vector<Eigen::MatrixXd> &t,
+                          HistoryStamp &h) {
+    return s + t[0];
+}
+
 TEST_F(MarkovTest, ZeroDuration) {
     auto markov = Markov::Create("test_logger");
     markov->Run(0);
@@ -41,10 +47,9 @@ TEST_F(MarkovTest, SingleStep) {
     auto markov = Markov::Create("test_logger");
     markov->SetState(Eigen::VectorXd::Ones(5));
 
-    transition t = {[](const Eigen::VectorXd &state,
-                       const std::vector<Eigen::MatrixXd> &transitions,
-                       HistoryStamp &hs) { return state + transitions[0]; },
-                    {Eigen::VectorXd::Ones(5)}};
+    Transition t;
+    t.SetCallback(test_func);
+    t.transition_matrices = {Eigen::VectorXd::Ones(5)};
     markov->SetTransitions({t});
 
     markov->Run(1);
@@ -57,12 +62,11 @@ TEST_F(MarkovTest, MultipleTransitions) {
     auto markov = Markov::Create("test_logger");
     markov->SetState(Eigen::VectorXd::Ones(5));
 
-    transition t = {[](const Eigen::VectorXd &state,
-                       const std::vector<Eigen::MatrixXd> &transitions,
-                       HistoryStamp &hs) { return state + transitions[0]; },
-                    {Eigen::VectorXd::Ones(5)}};
-    markov->SetTransitions({t, t, t, t, t});
+    Transition t;
+    t.SetCallback(test_func);
+    t.transition_matrices = {Eigen::VectorXd::Ones(5)};
 
+    markov->SetTransitions({t, t, t, t, t});
     markov->Run(1);
     auto results = markov->GetRunResults();
 
