@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
-// File: transition.hpp                                                       //
+// File: transition_base.hpp                                                  //
 // Project: respond                                                           //
-// Created Date: 2026-02-02                                                   //
+// Created Date: 2026-02-05                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
 // Last Modified: 2026-02-05                                                  //
@@ -9,38 +9,41 @@
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
 ////////////////////////////////////////////////////////////////////////////////
+#ifndef RESPOND_INTERNALS_TRANSITION_BASE_HPP_
+#define RESPOND_INTERNALS_TRANSITION_BASE_HPP_
 
-#ifndef RESPOND_TRANSITION_HPP_
-#define RESPOND_TRANSITION_HPP_
-
-#include <map>
-#include <string>
-
-#include <Eigen/Dense>
-
-#include <respond/history.hpp>
+#include <respond/transition.hpp>
 
 namespace respond {
 
-/// @brief A helper class to hold Transitions
-class Transition {
+class TransitionBase : public virtual Transition {
 public:
-    // Run the execute function and return the final state. Do not edit the
-    // parameter state, but do edit the history provided. Nothing in the
-    // Transition object should change.
-    virtual Eigen::VectorXd
-    Execute(const Eigen::VectorXd &s,
-            std::map<std::string, History> &h) const = 0;
+    TransitionBase(const std::string &name, const std::string &log_name)
+        : _name(name), _log_name(log_name) {}
+    virtual ~TransitionBase() = default;
     // Add a Transition Matrix to the set. We have no need to edit it once it's
     // been added, just use it. Thus, we don't need full ownership (reference)
     // and can accept the const type.
-    virtual void AddTransitionMatrix(const Eigen::MatrixXd &m) = 0;
+    void AddTransitionMatrix(const Eigen::MatrixXd &m) override {
+        _transition_matrices.push_back(m);
+    }
     // Get the name of the Transition. No need to edit the object and do not
     // need user to edit the name.
-    virtual const std::string &GetTransitionName() const = 0;
+    const std::string &GetTransitionName() const override { return _name; }
     // Clear out all the stored Eigen::MatrixXd values
-    virtual void ClearTransitionMatrices() = 0;
+    void ClearTransitionMatrices() override { _transition_matrices.clear(); }
+
+protected:
+    const std::vector<Eigen::MatrixXd> &GetTransitionMatrices() const {
+        return _transition_matrices;
+    }
+
+private:
+    std::string _name;
+    std::string _log_name;
+    std::vector<Eigen::MatrixXd> _transition_matrices;
 };
+
 } // namespace respond
 
-#endif
+#endif // RESPOND_INTERNALS_TRANSITION_BASE_HPP_

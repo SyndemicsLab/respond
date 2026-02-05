@@ -1,26 +1,26 @@
 ////////////////////////////////////////////////////////////////////////////////
-// File: markov.cpp                                                           //
+// File: transition_factory.hpp                                               //
 // Project: respond                                                           //
-// Created Date: 2025-07-07                                                   //
+// Created Date: 2026-02-05                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
 // Last Modified: 2026-02-05                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
-// Copyright (c) 2025-2026 Syndemics Lab at Boston Medical Center             //
+// Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
 ////////////////////////////////////////////////////////////////////////////////
-
-#include "internals/markov.hpp"
+#ifndef RESPOND_TRANSITION_FACTORY_HPP_
+#define RESPOND_TRANSITION_FACTORY_HPP_
 
 #include <memory>
-#include <string>
 
-#include <respond/model.hpp>
+#include <transition.hpp>
 
 namespace respond {
-
-std::unique_ptr<Model> Model::Create(const std::string &name,
-                                     const std::string &log_name) {
-    return std::make_unique<Markov>(name, log_name);
-}
+class TransitionFactory {
+    static std::unique_ptr<Transition>
+    CreateTransition(const std::string &type, const std::string &log_name);
+};
 } // namespace respond
+
+#endif // RESPOND_TRANSITION_FACTORY_HPP_
