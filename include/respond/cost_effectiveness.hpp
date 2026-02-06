@@ -18,7 +18,6 @@
 #include <Eigen/Dense>
 
 #include <respond/history.hpp>
-#include <respond/types.hpp>
 
 namespace respond {
 
