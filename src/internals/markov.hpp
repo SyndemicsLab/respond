@@ -89,6 +89,7 @@ public:
     void SetState(const Eigen::VectorXd &s) override { _state = s; }
     // return const & to limit to observation of the state
     Eigen::VectorXd GetState() const override { return _state; }
+    // return the transitions
     const std::vector<std::unique_ptr<Transition>> &GetTransitions() const {
         return _transition_vector;
     }

@@ -53,6 +53,15 @@ public:
         return *this;
     }
 
+    // Comparisons
+    // Overload the == operator
+    bool operator==(const History &other) const {
+        return GetHistoryName() == other.GetHistoryName() &&
+               GetLogName() == other.GetLogName() &&
+               GetStateMap() == other.GetStateMap();
+    }
+    bool operator!=(const History &other) const { return !(*this == other); }
+
     // Getters
     std::map<int, Eigen::VectorXd> GetStateMap() const { return _state; }
     std::string GetHistoryName() const { return _name; }
