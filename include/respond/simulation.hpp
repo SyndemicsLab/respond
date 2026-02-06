@@ -4,7 +4,7 @@
 // Created Date: 2026-02-05                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-02-05                                                  //
+// Last Modified: 2026-02-06                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
@@ -42,7 +42,7 @@ public:
     void AddModel(std::unique_ptr<Model> model) {
         // because push_back is a move operation we're taking over ownership of
         // the unique pointer
-        _models.push_back(model);
+        _models.push_back(std::move(model));
     }
 
     std::vector<std::string> GetModelNames() const {
@@ -63,9 +63,8 @@ public:
             ret;
         for (const auto &model : _models) {
             std::map<std::string, std::vector<Eigen::VectorXd>> inner_ret;
-            for (const auto &history : model->GetHistories()) {
-                inner_ret[history.GetHistoryName()] =
-                    history.GetStateAsVector();
+            for (const auto &kv : model->GetHistories()) {
+                inner_ret[kv.first] = kv.second.GetStateAsVector();
             }
             ret[model->GetModelName()] = inner_ret;
         }
@@ -76,9 +75,9 @@ public:
     GetModelHistoryNames() const {
         std::vector<std::pair<std::string, std::string>> ret;
         for (const auto &model : _models) {
-            for (const auto &history : model->GetHistories()) {
-                std::pair<std::string, std::string> p = {
-                    model->GetModelName(), history.GetHistoryName()};
+            for (const auto &kv : model->GetHistories()) {
+                std::pair<std::string, std::string> p = {model->GetModelName(),
+                                                         kv.first};
                 ret.push_back(p);
             }
         }

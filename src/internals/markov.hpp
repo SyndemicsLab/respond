@@ -98,7 +98,7 @@ public:
     void RunTransitions() override {
         auto histories = GetHistories();
         for (const auto &t : _transition_vector) {
-            t->Execute(GetState(), histories);
+            SetState(t->Execute(GetState(), histories));
         }
         SetHistories(histories);
     }
