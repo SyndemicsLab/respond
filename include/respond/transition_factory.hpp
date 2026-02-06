@@ -18,6 +18,7 @@
 
 namespace respond {
 class TransitionFactory {
+public:
     static std::unique_ptr<Transition>
     CreateTransition(const std::string &type, const std::string &log_name);
 };

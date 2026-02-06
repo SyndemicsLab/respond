@@ -14,6 +14,7 @@
 #define RESPOND_TRANSITION_HPP_
 
 #include <map>
+#include <memory>
 #include <string>
 
 #include <Eigen/Dense>

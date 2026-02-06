@@ -106,6 +106,9 @@ private:
     std::map<int, Eigen::VectorXd> _state;
 
     int GetNextTimestep() {
+        if (_state.empty()) {
+            return 0;
+        }
         int largest_timestep = _state.rbegin()->first;
         return largest_timestep + 1;
     }
