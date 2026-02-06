@@ -4,7 +4,7 @@
 // Created Date: 2026-02-05                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-02-05                                                  //
+// Last Modified: 2026-02-06                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
@@ -14,7 +14,7 @@
 
 #include <memory>
 
-#include <transition.hpp>
+#include <respond/transition.hpp>
 
 namespace respond {
 class TransitionFactory {

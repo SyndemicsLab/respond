@@ -4,7 +4,7 @@
 // Created Date: 2026-02-02                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-02-05                                                  //
+// Last Modified: 2026-02-06                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
@@ -25,6 +25,7 @@ namespace respond {
 /// @brief A helper class to hold Transitions
 class Transition {
 public:
+    virtual ~Transition() = default;
     // Run the execute function and return the final state. Do not edit the
     // parameter state, but do edit the history provided. Nothing in the
     // Transition object should change.
@@ -37,9 +38,13 @@ public:
     virtual void AddTransitionMatrix(const Eigen::MatrixXd &m) = 0;
     // Get the name of the Transition. No need to edit the object and do not
     // need user to edit the name.
-    virtual const std::string &GetTransitionName() const = 0;
+    virtual std::string GetTransitionName() const = 0;
     // Clear out all the stored Eigen::MatrixXd values
     virtual void ClearTransitionMatrices() = 0;
+    // Get Log Name
+    virtual std::string GetLogName() const = 0;
+    // Clone
+    virtual std::unique_ptr<Transition> clone() const = 0;
 };
 } // namespace respond
 

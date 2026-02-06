@@ -4,7 +4,7 @@
 // Created Date: 2026-02-05                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-02-05                                                  //
+// Last Modified: 2026-02-06                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
@@ -40,23 +40,23 @@ public:
         return *this;
     }
     History(History &&other) noexcept {
-        _state = std::exchange(other.GetStateMap(), {});
-        _name = std::exchange(other.GetHistoryName(), "state");
-        _log_name = std::exchange(other.GetLogName(), "console");
+        _state = other.GetStateMap();
+        _name = other.GetHistoryName();
+        _log_name = other.GetLogName();
     }
     History &operator=(History &&other) noexcept {
         if (this != &other) {
-            _state = std::exchange(other.GetStateMap(), {});
-            _name = std::exchange(other.GetHistoryName(), "state");
-            _log_name = std::exchange(other.GetLogName(), "console");
+            _state = other.GetStateMap();
+            _name = other.GetHistoryName();
+            _log_name = other.GetLogName();
         }
         return *this;
     }
 
     // Getters
-    const std::map<int, Eigen::VectorXd> &GetStateMap() const { return _state; }
-    const std::string &GetHistoryName() const { return _name; }
-    const std::string &GetLogName() const { return _log_name; }
+    std::map<int, Eigen::VectorXd> GetStateMap() const { return _state; }
+    std::string GetHistoryName() const { return _name; }
+    std::string GetLogName() const { return _log_name; }
 
     std::vector<Eigen::VectorXd> GetStateAsVector() const {
         std::vector<Eigen::VectorXd> ret;

@@ -4,7 +4,7 @@
 // Created Date: 2026-02-05                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-02-05                                                  //
+// Last Modified: 2026-02-06                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
@@ -41,7 +41,7 @@ public:
         _name = other.GetModelName();
         _log_name = other.GetLogName();
         for (const auto &t : other.GetTransitions()) {
-            AddTransition(std::make_unique<Transition>(*t));
+            AddTransition(t->clone());
         }
     }
     Markov &operator=(const Markov &other) {
@@ -50,7 +50,7 @@ public:
             _name = other.GetModelName();
             _log_name = other.GetLogName();
             for (const auto &t : other.GetTransitions()) {
-                AddTransition(std::make_unique<Transition>(*t));
+                AddTransition(t->clone());
             }
         }
         return *this;
@@ -58,27 +58,27 @@ public:
 
     // Move
     Markov(Markov &&other) noexcept {
-        _state = std::exchange(other.GetState(), {});
-        _name = std::exchange(other.GetModelName(), "markov");
-        _log_name = std::exchange(other.GetLogName(), "console");
+        _state = other.GetState();
+        _name = other.GetModelName();
+        _log_name = other.GetLogName();
         for (const auto &t : other.GetTransitions()) {
             // we copy it specifically because we don't want to let people move
             // the unique pointers out of the original model (i.e. force a const
             // constraint on the GetTransitions function)
-            AddTransition(std::make_unique<Transition>(*t));
+            AddTransition(t->clone());
         }
         other.ClearTransitions();
     }
     Markov &operator=(Markov &&other) noexcept {
         if (this != &other) {
-            _state = std::exchange(other.GetState(), {});
-            _name = std::exchange(other.GetModelName(), "markov");
-            _log_name = std::exchange(other.GetLogName(), "console");
+            _state = other.GetState();
+            _name = other.GetModelName();
+            _log_name = other.GetLogName();
             for (const auto &t : other.GetTransitions()) {
                 // we copy it specifically because we don't want to let people
                 // move the unique pointers out of the original model (i.e.
                 // force a const constraint on the GetTransitions function)
-                AddTransition(std::make_unique<Transition>(*t));
+                AddTransition(t->clone());
             }
             other.ClearTransitions();
         }
@@ -88,20 +88,22 @@ public:
     // anticipate making a copy of the vector
     void SetState(const Eigen::VectorXd &s) override { _state = s; }
     // return const & to limit to observation of the state
-    const Eigen::VectorXd &GetState() const override { return _state; }
+    Eigen::VectorXd GetState() const override { return _state; }
     const std::vector<std::unique_ptr<Transition>> &GetTransitions() const {
         return _transition_vector;
     }
 
     // manipulate the state vector
     void RunTransitions() override {
+        auto histories = GetHistories();
         for (const auto &t : _transition_vector) {
-            t->Execute(GetState(), GetMutableHistories());
+            t->Execute(GetState(), histories);
         }
+        SetHistories(histories);
     }
     // assume ownership of the Transition
-    void AddTransition(std::unique_ptr<Transition> t) override {
-        _transition_vector.push_back(t);
+    void AddTransition(const std::unique_ptr<Transition> &t) override {
+        _transition_vector.push_back(t->clone());
     }
     // get the names of each transition we own
     std::vector<std::string> GetTransitionNames() const override {
@@ -114,28 +116,25 @@ public:
     // delete all the Transition unique_ptrs by clearing the vector
     void ClearTransitions() override { _transition_vector.clear(); }
 
-    virtual void SetHistories(const std::vector<History> &h) override {
+    virtual void
+    SetHistories(const std::map<std::string, History> &h) override {
         _histories = h;
     }
     // return const & to limit to observation of the state. Need copy ability of
     // History, but let that be the History's responsibility
-    const std::vector<History> &GetHistories() const override {
+    std::map<std::string, History> GetHistories() const override {
         return _histories;
     }
     // getter for model name
-    const std::string &GetModelName() const override { return _name; }
-    const std::string &GetLogName() const override { return _log_name; }
+    std::string GetModelName() const override { return _name; }
+    std::string GetLogName() const override { return _log_name; }
 
 private:
     std::vector<std::unique_ptr<Transition>> _transition_vector;
     Eigen::VectorXd _state;
     std::string _name;
     std::string _log_name;
-    std::vector<History> _histories;
-
-    // return const & to limit to observation of the state. Need copy ability of
-    // History, but let that be the History's responsibility
-    std::vector<History> &GetMutableHistories() { return _histories; }
+    std::map<std::string, History> _histories;
 };
 } // namespace respond
 

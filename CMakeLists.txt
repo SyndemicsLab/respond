@@ -3,8 +3,16 @@ set(PRIVATE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 include(${PRIVATE_MODULE_PATH}/utils.cmake)
 respond_extract_version()
 
-project(respond VERSION ${RESPOND_VERSION} LANGUAGES CXX)
+#-------------------------------------------------------------------------------
+# Compiler config
+#-------------------------------------------------------------------------------
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+#-------------------------------------------------------------------------------
+# Project Setup
+#-------------------------------------------------------------------------------
+project(respond VERSION ${RESPOND_VERSION} LANGUAGES CXX)
 message(STATUS "Build respond: ${RESPOND_VERSION}")
 
 #-------------------------------------------------------------------------------
@@ -17,15 +25,16 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 #-------------------------------------------------------------------------------
 # Set default build to release
 #-------------------------------------------------------------------------------
+# This is a standard recipe for setting a default build type
+set(_default_build_type "Release")
 if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
-    set(CMAKE_BUILD_TYPE "Release" CACHE STRING "Choose Release or Debug" FORCE)
+    message(STATUS "Setting build type to '${_default_build_type}' as none was specified.")
+    set(CMAKE_BUILD_TYPE
+        "${_default_build_type}"
+        CACHE STRING "Choose the type of build." FORCE)
+    # Set the possible values of build type for cmake-gui
+    set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release")
 endif()
-
-#-------------------------------------------------------------------------------
-# Compiler config
-#-------------------------------------------------------------------------------
-set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 #-------------------------------------------------------------------------------
 # Windows CXX Extensions
@@ -64,32 +73,27 @@ endif()
 add_library(respond_model)
 add_library(respond::respond_model ALIAS respond_model)
 
+file(GLOB_RECURSE RESPOND_HEADERS include/respond/*.hpp)
+file(GLOB RESPOND_INTERNAL_HEADERS CONFIGURE_DEPENDS src/internals/*.hpp)
+file(GLOB RESPOND_SOURCE_FILES CONFIGURE_DEPENDS src/*.cpp)
+
 target_sources(respond_model
     PRIVATE
-        src/markov.cpp
-        src/logging.cpp
-        src/internals/logging_internals.hpp
-        src/internals/markov_internals.hpp
-
+        ${RESPOND_INTERNAL_HEADERS}
+        ${RESPOND_SOURCE_FILES}
     PUBLIC
         FILE_SET HEADERS
         BASE_DIRS
             include
         FILES
-            include/respond/cost_effectiveness.hpp
-            include/respond/helpers.hpp
-            include/respond/logging.hpp
-            include/respond/markov.hpp
-            include/respond/respond.hpp
-            include/respond/transition.hpp
-            include/respond/types.hpp
-            include/respond/version.hpp
+            ${RESPOND_HEADERS}
     )
 
+#-------------------------------------------------------------------------------
+# Linking Libraries
+#-------------------------------------------------------------------------------
 include(${PRIVATE_MODULE_PATH}/MakeDependenciesAvailable.cmake)
-
 set(private_deps spdlog::spdlog)
-
 if (RESPOND_CALCULATE_COVERAGE)
     list(APPEND private_deps gcov)
 endif()
@@ -101,6 +105,9 @@ PRIVATE
     ${private_deps}
 )
 
+#-------------------------------------------------------------------------------
+# Setting library details
+#-------------------------------------------------------------------------------
 set_target_properties(respond_model PROPERTIES VERSION ${RESPOND_VERSION} SOVERSION ${RESPOND_VERSION_MAJOR}.${RESPOND_VERSION_MINOR})
 
 include(${PRIVATE_MODULE_PATH}/BuildBinaries.cmake)

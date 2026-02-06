@@ -4,7 +4,7 @@
 // Created Date: 2026-02-05                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-02-05                                                  //
+// Last Modified: 2026-02-06                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
@@ -29,9 +29,11 @@ public:
     }
     // Get the name of the Transition. No need to edit the object and do not
     // need user to edit the name.
-    const std::string &GetTransitionName() const override { return _name; }
+    std::string GetTransitionName() const override { return _name; }
     // Clear out all the stored Eigen::MatrixXd values
     void ClearTransitionMatrices() override { _transition_matrices.clear(); }
+
+    std::string GetLogName() const override { return _log_name; }
 
 protected:
     const std::vector<Eigen::MatrixXd> &GetTransitionMatrices() const {
