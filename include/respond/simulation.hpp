@@ -67,12 +67,16 @@ public:
         std::map<std::string,
                  std::map<std::string, std::vector<Eigen::VectorXd>>>
             ret;
+        int model_idx = 0;
         for (const auto &model : _models) {
             std::map<std::string, std::vector<Eigen::VectorXd>> inner_ret;
             for (const auto &kv : model->GetHistories()) {
                 inner_ret[kv.first] = kv.second.GetStateAsVector();
             }
-            ret[model->GetModelName()] = inner_ret;
+            std::string entry = "Model: " + std::to_string(model_idx) + " - " +
+                                model->GetModelName();
+            ret[entry] = inner_ret;
+            model_idx++;
         }
         return ret;
     }
