@@ -28,6 +28,7 @@ class Simulation {
 public:
     Simulation() : Simulation("console") {}
     Simulation(const std::string &log_name) : _log_name(log_name) {}
+    ~Simulation() = default;
 
     /// @brief The core function to run the simulation. Runs all models
     /// associated with the simulation.
@@ -96,14 +97,15 @@ public:
     ///     4. Intervention Admissions
     ///     5. Background Mortality
     /// @return A vector of the default history objects.
-    std::map<std::string, History> CreateDefaultHistories() {
+    static std::map<std::string, History>
+    CreateDefaultHistories(const std::string &log_name) {
         std::vector<std::string> names = {
             "state", "total_overdose", "fatal_overdose",
             "intervention_admission", "background_death"};
 
         std::map<std::string, History> ret;
         for (const auto &n : names) {
-            History h(n, _log_name);
+            History h(n, log_name);
             ret[n] = h;
         }
         return ret;

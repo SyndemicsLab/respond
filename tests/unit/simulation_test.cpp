@@ -12,11 +12,12 @@
 
 #include <respond/simulation.hpp>
 
+#include <algorithm>
 #include <memory>
 
 #include <gtest/gtest.h>
 
-#include "../mocks/transition_mock.hpp"
+#include "../mocks/model_mock.hpp"
 
 using ::testing::_;
 using ::testing::NiceMock;
@@ -26,18 +27,127 @@ namespace respond {
 namespace testing {
 class SimulationTest : public ::testing::Test {
 public:
-    std::unique_ptr<Model> markov;
-    Eigen::VectorXd state;
-
 protected:
-    void SetUp() override {
-        markov = Model::Create("markov", "test_logger");
-        state = Eigen::VectorXd(3);
-        state << 1.0f, 2.0f, 3.0f;
-    }
-    void TearDown() override { markov.reset(); }
+    void SetUp() override {}
+    void TearDown() override {}
 };
 
-TEST_F(SimulationTest, Logger) {}
+TEST_F(SimulationTest, ConstructGetLogger) {
+    Simulation s;
+    ASSERT_EQ(s.GetLogName(), "console");
+}
+
+TEST_F(SimulationTest, GetSetModel) {
+    auto mock = std::make_unique<NiceMock<MockModel>>();
+    auto cloned = std::make_unique<NiceMock<MockModel>>();
+    EXPECT_CALL(*mock, clone())
+        .WillOnce(Return(::testing::ByMove(std::move(cloned))));
+
+    std::unique_ptr<Model> upmm = std::move(mock);
+    Simulation s;
+    s.AddModel(upmm);
+    ASSERT_EQ(s.GetModels().size(), 1);
+}
+
+TEST_F(SimulationTest, ClearModels) {
+    auto mock = std::make_unique<NiceMock<MockModel>>();
+    auto cloned = std::make_unique<NiceMock<MockModel>>();
+    EXPECT_CALL(*mock, clone())
+        .WillOnce(Return(::testing::ByMove(std::move(cloned))));
+
+    std::unique_ptr<Model> upmm = std::move(mock);
+    Simulation s;
+    s.AddModel(upmm);
+    s.ClearModels();
+    ASSERT_EQ(s.GetModels().size(), 0);
+}
+
+TEST_F(SimulationTest, GetModelNames) {
+    auto mock = std::make_unique<NiceMock<MockModel>>();
+    auto cloned = std::make_unique<NiceMock<MockModel>>();
+    auto expected = "test_model_name";
+    EXPECT_CALL(*cloned, GetModelName()).WillOnce(Return(expected));
+    EXPECT_CALL(*mock, clone())
+        .WillOnce(Return(::testing::ByMove(std::move(cloned))));
+
+    std::unique_ptr<Model> upmm = std::move(mock);
+    Simulation s;
+    s.AddModel(upmm);
+    auto result = s.GetModelNames();
+    ASSERT_EQ(result.size(), 1);
+    ASSERT_EQ(result[0], expected);
+}
+
+TEST_F(SimulationTest, GetModelHistories) {
+    auto mock = std::make_unique<NiceMock<MockModel>>();
+    auto cloned = std::make_unique<NiceMock<MockModel>>();
+
+    std::map<std::string, History> hv;
+    History h("temp", "test_logger");
+    Eigen::VectorXd state = Eigen::VectorXd(3);
+    state << 1.0f, 2.0f, 3.0f;
+    h.AddState(state);
+    hv["temp"] = h;
+
+    std::map<std::string, std::vector<Eigen::VectorXd>> h_map;
+    h_map["temp"] = h.GetStateAsVector();
+
+    std::map<std::string, std::map<std::string, std::vector<Eigen::VectorXd>>>
+        expected;
+    expected["temp_model"] = h_map;
+
+    ON_CALL(*cloned, GetModelName()).WillByDefault(Return("temp_model"));
+
+    EXPECT_CALL(*cloned, GetHistories()).WillOnce(Return(hv));
+    ON_CALL(*mock, clone())
+        .WillByDefault(Return(::testing::ByMove(std::move(cloned))));
+
+    std::unique_ptr<Model> upmm = std::move(mock);
+    Simulation s;
+    s.AddModel(upmm);
+    ASSERT_EQ(s.GetModelHistories(), expected);
+}
+
+TEST_F(SimulationTest, GetHistoryNames) {
+    auto mock = std::make_unique<NiceMock<MockModel>>();
+    auto cloned = std::make_unique<NiceMock<MockModel>>();
+
+    std::string model_name = "temp_model";
+    std::string history_name = "temp_history";
+
+    std::map<std::string, History> hv;
+    History h("temp", "test_logger");
+    hv[history_name] = h;
+
+    std::vector<std::pair<std::string, std::string>> expected = {
+        {model_name, history_name}};
+
+    ON_CALL(*cloned, GetModelName()).WillByDefault(Return(model_name));
+
+    EXPECT_CALL(*cloned, GetHistories()).WillOnce(Return(hv));
+    ON_CALL(*mock, clone())
+        .WillByDefault(Return(::testing::ByMove(std::move(cloned))));
+
+    std::unique_ptr<Model> upmm = std::move(mock);
+    Simulation s;
+    s.AddModel(upmm);
+    ASSERT_EQ(s.GetModelHistoryNames(), expected);
+}
+
+TEST_F(SimulationTest, CreateDefaultHistories) {
+    std::vector<std::string> expected = {
+        "state", "total_overdose", "fatal_overdose", "intervention_admission",
+        "background_death"};
+
+    std::sort(expected.begin(), expected.end());
+
+    Simulation s;
+    auto defaults = s.CreateDefaultHistories("test_logger");
+    std::vector<std::string> results;
+    for (const auto &kv : defaults) {
+        results.push_back(kv.first);
+    }
+    ASSERT_EQ(results, expected);
+}
 } // namespace testing
 } // namespace respond

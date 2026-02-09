@@ -4,7 +4,7 @@
 // Created Date: 2025-08-01                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-02-06                                                  //
+// Last Modified: 2026-02-09                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025-2026 Syndemics Lab at Boston Medical Center             //
@@ -12,6 +12,7 @@
 #ifndef RESPOND_TESTS_MODELMOCK_HPP_
 #define RESPOND_TESTS_MODELMOCK_HPP_
 
+#include <respond/history.hpp>
 #include <respond/model.hpp>
 
 #include <map>
@@ -39,10 +40,11 @@ public:
     MOCK_METHOD(void, ClearTransitions, (), (override));
     MOCK_METHOD((std::map<std::string, History>), GetHistories, (),
                 (const, override));
-    MOCK_METHOD(void, SetHistories, (const std::map<std::string, History> &),
+    MOCK_METHOD(void, SetHistories, ((const std::map<std::string, History> &)),
                 (override));
     MOCK_METHOD(std::string, GetModelName, (), (const, override));
     MOCK_METHOD(std::string, GetLogName, (), (const, override));
+    MOCK_METHOD((std::unique_ptr<Model>), clone, (), (const, override));
 };
 } // namespace testing
 } // namespace respond
