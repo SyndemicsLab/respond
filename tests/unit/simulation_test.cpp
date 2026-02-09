@@ -94,7 +94,7 @@ TEST_F(SimulationTest, GetModelHistories) {
 
     std::map<std::string, std::map<std::string, std::vector<Eigen::VectorXd>>>
         expected;
-    expected["temp_model"] = h_map;
+    expected["Model: 0 - temp_model"] = h_map;
 
     ON_CALL(*cloned, GetModelName()).WillByDefault(Return("temp_model"));
 
