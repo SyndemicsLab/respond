@@ -4,7 +4,7 @@
 // Created Date: 2026-02-05                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-02-06                                                  //
+// Last Modified: 2026-02-09                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
@@ -24,6 +24,7 @@
 namespace respond {
 class Model {
 public:
+    // default destructor
     virtual ~Model() = default;
     // anticipate making a copy of the vector
     virtual void SetState(const Eigen::VectorXd &) = 0;
@@ -52,6 +53,16 @@ public:
     /// @return An instance of Markov.
     static std::unique_ptr<Model>
     Create(const std::string &name, const std::string &log_name = "console");
+
+    // Copy Control
+    Model(const Model &) = delete;
+    Model &operator=(const Model &) = delete;
+    virtual std::unique_ptr<Model> clone() const = 0;
+
+protected:
+    // default constructor required for subclasses, but do not want people to
+    // use this
+    Model() = default;
 };
 } // namespace respond
 

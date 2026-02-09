@@ -4,7 +4,7 @@
 // Created Date: 2026-02-02                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-02-06                                                  //
+// Last Modified: 2026-02-09                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
@@ -45,7 +45,14 @@ public:
     // Get Log Name
     virtual std::string GetLogName() const = 0;
     // Clone
+    Transition(const Transition &) = delete;
+    Transition &operator=(const Transition &) = delete;
     virtual std::unique_ptr<Transition> clone() const = 0;
+
+protected:
+    // default constructor required for subclasses, but do not want people to
+    // use this
+    Transition() = default;
 };
 } // namespace respond
 

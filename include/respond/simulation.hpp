@@ -4,7 +4,7 @@
 // Created Date: 2026-02-05                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-02-06                                                  //
+// Last Modified: 2026-02-09                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
@@ -26,7 +26,8 @@
 namespace respond {
 class Simulation {
 public:
-    Simulation(const std::string &log_name = "console") : _log_name(log_name) {}
+    Simulation() : Simulation("console") {}
+    Simulation(const std::string &log_name) : _log_name(log_name) {}
 
     /// @brief The core function to run the simulation. Runs all models
     /// associated with the simulation.
@@ -39,10 +40,14 @@ public:
         }
     }
 
-    void AddModel(std::unique_ptr<Model> model) {
+    void AddModel(const std::unique_ptr<Model> &model) {
         // because push_back is a move operation we're taking over ownership of
         // the unique pointer
-        _models.push_back(std::move(model));
+        _models.push_back(model->clone());
+    }
+
+    const std::vector<std::unique_ptr<Model>> &GetModels() const {
+        return _models;
     }
 
     std::vector<std::string> GetModelNames() const {
@@ -104,10 +109,28 @@ public:
         return ret;
     }
 
-    const std::string &GetLogName() const { return _log_name; }
+    std::string GetLogName() const { return _log_name; }
+
+    // Copying object
+    Simulation(const Simulation &other) : _log_name(other.GetLogName()) {
+        ClearModels();
+        for (const auto &m : other.GetModels()) {
+            _models.push_back(m->clone());
+        }
+    }
+    Simulation &operator=(const Simulation &other) {
+        if (this != &other) {
+            ClearModels();
+            _log_name = other.GetLogName();
+            for (const auto &m : other.GetModels()) {
+                _models.push_back(m->clone());
+            }
+        }
+        return *this;
+    }
 
 private:
-    const std::string _log_name;
+    std::string _log_name;
     std::vector<std::unique_ptr<Model>> _models;
 };
 } // namespace respond

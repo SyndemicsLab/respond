@@ -33,7 +33,7 @@ target_sources(respond_tests
 
 target_include_directories(respond_tests
     PRIVATE
-        ${RESPOND_TEST_MOCKS}
+        "mocks/"
 )
 
 target_link_libraries(respond_tests 

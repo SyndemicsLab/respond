@@ -4,7 +4,7 @@
 // Created Date: 2026-02-05                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-02-06                                                  //
+// Last Modified: 2026-02-09                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
@@ -26,6 +26,7 @@
 namespace respond {
 class Markov : public virtual Model {
 public:
+    Markov() : Markov("markov", "console") {}
     Markov(const std::string &name, const std::string &log_name)
         : _name(name), _log_name(log_name) {
         const auto processor_count = std::thread::hardware_concurrency();
@@ -36,36 +37,20 @@ public:
     ~Markov() = default;
 
     // Copy
-    Markov(const Markov &other) {
-        SetState(other.GetState());
-        _name = other.GetModelName();
-        _log_name = other.GetLogName();
-        for (const auto &t : other.GetTransitions()) {
-            AddTransition(t->clone());
+    std::unique_ptr<Model> clone() const override {
+        auto np = Model::Create(GetModelName(), GetLogName());
+        for (const auto &t : GetTransitions()) {
+            np->AddTransition(t->clone());
         }
+        return np;
     }
-    Markov &operator=(const Markov &other) {
-        if (this != &other) {
-            _state = other.GetState();
-            _name = other.GetModelName();
-            _log_name = other.GetLogName();
-            for (const auto &t : other.GetTransitions()) {
-                AddTransition(t->clone());
-            }
-        }
-        return *this;
-    }
-
     // Move
     Markov(Markov &&other) noexcept {
         _state = other.GetState();
         _name = other.GetModelName();
         _log_name = other.GetLogName();
         for (const auto &t : other.GetTransitions()) {
-            // we copy it specifically because we don't want to let people move
-            // the unique pointers out of the original model (i.e. force a const
-            // constraint on the GetTransitions function)
-            AddTransition(t->clone());
+            AddTransition(std::move(t));
         }
         other.ClearTransitions();
     }
@@ -75,10 +60,7 @@ public:
             _name = other.GetModelName();
             _log_name = other.GetLogName();
             for (const auto &t : other.GetTransitions()) {
-                // we copy it specifically because we don't want to let people
-                // move the unique pointers out of the original model (i.e.
-                // force a const constraint on the GetTransitions function)
-                AddTransition(t->clone());
+                AddTransition(std::move(t));
             }
             other.ClearTransitions();
         }
