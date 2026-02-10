@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
-// File: respond.hpp                                                          //
+// File: transition_factory.hpp                                               //
 // Project: respond                                                           //
-// Created Date: 2026-02-06                                                   //
+// Created Date: 2026-02-05                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
 // Last Modified: 2026-02-06                                                  //
@@ -9,16 +9,19 @@
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
 ////////////////////////////////////////////////////////////////////////////////
-#ifndef RESPOND_RESPOND_HPP_
-#define RESPOND_RESPOND_HPP_
+#ifndef RESPOND_TRANSITION_FACTORY_HPP_
+#define RESPOND_TRANSITION_FACTORY_HPP_
 
-#include <respond/cost_effectiveness.hpp>
-#include <respond/history.hpp>
-#include <respond/logging.hpp>
-#include <respond/model.hpp>
-#include <respond/simulation.hpp>
+#include <memory>
+
 #include <respond/transition.hpp>
-#include <respond/transition_factory.hpp>
-#include <respond/version.hpp>
 
-#endif // RESPOND_RESPOND_HPP_
+namespace respond {
+class TransitionFactory {
+public:
+    static std::unique_ptr<Transition>
+    CreateTransition(const std::string &type, const std::string &log_name);
+};
+} // namespace respond
+
+#endif // RESPOND_TRANSITION_FACTORY_HPP_

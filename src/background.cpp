@@ -1,0 +1,39 @@
+////////////////////////////////////////////////////////////////////////////////
+// File: background.cpp                                                       //
+// Project: respond                                                           //
+// Created Date: 2026-02-05                                                   //
+// Author: Matthew Carroll                                                    //
+// -----                                                                      //
+// Last Modified: 2026-02-05                                                  //
+// Modified By: Matthew Carroll                                               //
+// -----                                                                      //
+// Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
+////////////////////////////////////////////////////////////////////////////////
+
+#include "internals/background.hpp"
+
+#include <memory>
+#include <string>
+
+namespace respond {
+Eigen::VectorXd
+BackgroundDeath::Execute(const Eigen::VectorXd &state,
+                         std::map<std::string, History> &h) const {
+    if (GetTransitionMatrices().size() != 1) {
+        throw std::runtime_error(
+            "Mortality Transitions must have 1 Transition Matrix.");
+    }
+    auto deaths =
+        state.cwiseProduct(GetTransitionMatrices()[0]); // calculate the deaths
+    if (h.find("background_death") != h.end()) {
+        h["background_death"].AddState(deaths);
+    }
+    auto new_state = state - deaths; // remove deaths from state
+    return new_state;
+}
+
+std::unique_ptr<Transition>
+BackgroundDeath::Create(const std::string &name, const std::string &log_name) {
+    return std::make_unique<BackgroundDeath>(name, log_name);
+}
+} // namespace respond
