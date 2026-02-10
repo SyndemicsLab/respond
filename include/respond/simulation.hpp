@@ -18,8 +18,6 @@
 #include <utility>
 #include <vector>
 
-#include <iostream>
-
 #include <Eigen/Dense>
 
 #include <respond/history.hpp>
