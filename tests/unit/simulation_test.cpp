@@ -4,7 +4,7 @@
 // Created Date: 2026-02-09                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-02-09                                                  //
+// Last Modified: 2026-02-10                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
@@ -92,9 +92,8 @@ TEST_F(SimulationTest, GetModelHistories) {
     std::map<std::string, std::vector<Eigen::VectorXd>> h_map;
     h_map["temp"] = h.GetStateAsVector();
 
-    std::map<std::string, std::map<std::string, std::vector<Eigen::VectorXd>>>
-        expected;
-    expected["Model: 0 - temp_model"] = h_map;
+    std::vector<std::map<std::string, std::vector<Eigen::VectorXd>>> expected;
+    expected.push_back(h_map);
 
     ON_CALL(*cloned, GetModelName()).WillByDefault(Return("temp_model"));
 

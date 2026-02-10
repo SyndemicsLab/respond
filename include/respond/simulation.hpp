@@ -4,7 +4,7 @@
 // Created Date: 2026-02-05                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-02-09                                                  //
+// Last Modified: 2026-02-10                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
@@ -17,6 +17,8 @@
 #include <string>
 #include <utility>
 #include <vector>
+
+#include <iostream>
 
 #include <Eigen/Dense>
 
@@ -61,21 +63,16 @@ public:
 
     void ClearModels() { _models.clear(); }
 
-    const std::map<std::string,
-                   std::map<std::string, std::vector<Eigen::VectorXd>>>
+    const std::vector<std::map<std::string, std::vector<Eigen::VectorXd>>>
     GetModelHistories() const {
-        std::map<std::string,
-                 std::map<std::string, std::vector<Eigen::VectorXd>>>
-            ret;
+        std::vector<std::map<std::string, std::vector<Eigen::VectorXd>>> ret;
         int model_idx = 0;
         for (const auto &model : _models) {
             std::map<std::string, std::vector<Eigen::VectorXd>> inner_ret;
             for (const auto &kv : model->GetHistories()) {
                 inner_ret[kv.first] = kv.second.GetStateAsVector();
             }
-            std::string entry = "Model: " + std::to_string(model_idx) + " - " +
-                                model->GetModelName();
-            ret[entry] = inner_ret;
+            ret.push_back(inner_ret);
             model_idx++;
         }
         return ret;

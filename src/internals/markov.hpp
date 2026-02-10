@@ -4,7 +4,7 @@
 // Created Date: 2026-02-05                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-02-09                                                  //
+// Last Modified: 2026-02-10                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
@@ -39,6 +39,8 @@ public:
     // Copy
     std::unique_ptr<Model> clone() const override {
         auto np = Model::Create(GetModelName(), GetLogName());
+        np->SetState(GetState());
+        np->SetHistories(GetHistories());
         for (const auto &t : GetTransitions()) {
             np->AddTransition(t->clone());
         }
@@ -81,6 +83,9 @@ public:
         auto histories = GetHistories();
         for (const auto &t : _transition_vector) {
             SetState(t->Execute(GetState(), histories));
+        }
+        if (histories.find("state") != histories.end()) {
+            histories["state"].AddState(GetState());
         }
         SetHistories(histories);
     }
