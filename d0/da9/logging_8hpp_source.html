@@ -62,7 +62,7 @@ window.MathJax = {
                             <td id="projectlogo"><img alt="Logo" src="../../Syndemics_main_logo_50px.png" /></td>
                             <td id="projectalign">
                                 <div id="projectname">RESPOND<span
-                                        id="projectnumber">&#160;2.2.1</span>
+                                        id="projectnumber">&#160;2.3.0</span>
                                 </div>
                                 <div id="projectbrief">Researching Effective Strategies to Prevent Opioid Death</div>
                             </td>
@@ -144,9 +144,9 @@ $(document).ready(function(){initNavTree('d0/da9/logging_8hpp_source.html','../.
 <div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span> </div>
 <div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span><span class="preprocessor">#include &lt;string&gt;</span></div>
 <div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span> </div>
-<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span><span class="keyword">namespace </span><a class="code hl_namespace" href="../../d9/de6/namespacerespond.html">respond</a> {</div>
+<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span><span class="keyword">namespace </span>respond {</div>
 <div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span> </div>
-<div class="line"><a id="l00020" name="l00020"></a><span class="lineno"><a class="line" href="../../d9/de6/namespacerespond.html#abcbb31ad7ec52697894b7c78561d9115">   20</a></span><span class="keyword">enum class</span> <a class="code hl_enumeration" href="../../d9/de6/namespacerespond.html#abcbb31ad7ec52697894b7c78561d9115">LogType</a> : <span class="keywordtype">int</span> {</div>
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span><span class="keyword">enum class</span> LogType : <span class="keywordtype">int</span> {</div>
 <div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span>    kInfo = 0,  <span class="comment">// Information Messages</span></div>
 <div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span>    kWarn = 1,  <span class="comment">// Warning Messages</span></div>
 <div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span>    kError = 2, <span class="comment">// Error Messages</span></div>
@@ -154,7 +154,7 @@ $(document).ready(function(){initNavTree('d0/da9/logging_8hpp_source.html','../.
 <div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span>    kCount = 4  <span class="comment">// Enum Counter</span></div>
 <div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span>};</div>
 <div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span> </div>
-<div class="line"><a id="l00029" name="l00029"></a><span class="lineno"><a class="line" href="../../d9/de6/namespacerespond.html#a0f87de9dfb0a4bd6785ced80523b6d89">   29</a></span><span class="keyword">enum class</span> <a class="code hl_enumeration" href="../../d9/de6/namespacerespond.html#a0f87de9dfb0a4bd6785ced80523b6d89">CreationStatus</a> : <span class="keywordtype">int</span> {</div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span><span class="keyword">enum class</span> CreationStatus : <span class="keywordtype">int</span> {</div>
 <div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span>    kError = -1,     <span class="comment">// Error Creating Logger</span></div>
 <div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span>    kSuccess = 0,    <span class="comment">// Logger Created Successfully</span></div>
 <div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span>    kExists = 1,     <span class="comment">// Logger Already Exists</span></div>
@@ -162,35 +162,27 @@ $(document).ready(function(){initNavTree('d0/da9/logging_8hpp_source.html','../.
 <div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span>    kCount = 4       <span class="comment">// Enum Counter</span></div>
 <div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span>};</div>
 <div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span> </div>
-<div class="line"><a id="l00041" name="l00041"></a><span class="lineno"><a class="line" href="../../d9/de6/namespacerespond.html#a251e7b9086b9fe4b1c4e1fba029438b6">   41</a></span><a class="code hl_enumeration" href="../../d9/de6/namespacerespond.html#a0f87de9dfb0a4bd6785ced80523b6d89">CreationStatus</a> <a class="code hl_function" href="../../d9/de6/namespacerespond.html#a251e7b9086b9fe4b1c4e1fba029438b6">CreateFileLogger</a>(<span class="keyword">const</span> std::string &amp;logger_name,</div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span>CreationStatus CreateFileLogger(<span class="keyword">const</span> std::string &amp;logger_name,</div>
 <div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span>                                <span class="keyword">const</span> std::string &amp;filepath);</div>
 <div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span> </div>
-<div class="line"><a id="l00047" name="l00047"></a><span class="lineno"><a class="line" href="../../d9/de6/namespacerespond.html#a67e9ae999877d24de63aec20177be26b">   47</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="../../d9/de6/namespacerespond.html#a67e9ae999877d24de63aec20177be26b">LogInfo</a>(<span class="keyword">const</span> std::string &amp;logger_name, <span class="keyword">const</span> std::string &amp;message);</div>
+<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span><span class="keywordtype">void</span> LogInfo(<span class="keyword">const</span> std::string &amp;logger_name, <span class="keyword">const</span> std::string &amp;message);</div>
 <div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span> </div>
-<div class="line"><a id="l00052" name="l00052"></a><span class="lineno"><a class="line" href="../../d9/de6/namespacerespond.html#a62d33c5dbafca1df08cbda2991424777">   52</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="../../d9/de6/namespacerespond.html#a62d33c5dbafca1df08cbda2991424777">LogWarning</a>(<span class="keyword">const</span> std::string &amp;logger_name, <span class="keyword">const</span> std::string &amp;message);</div>
+<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span><span class="keywordtype">void</span> LogWarning(<span class="keyword">const</span> std::string &amp;logger_name, <span class="keyword">const</span> std::string &amp;message);</div>
 <div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span> </div>
-<div class="line"><a id="l00057" name="l00057"></a><span class="lineno"><a class="line" href="../../d9/de6/namespacerespond.html#a5ecee2abfe36df79cac03950afde31f6">   57</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="../../d9/de6/namespacerespond.html#a5ecee2abfe36df79cac03950afde31f6">LogError</a>(<span class="keyword">const</span> std::string &amp;logger_name, <span class="keyword">const</span> std::string &amp;message);</div>
+<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span><span class="keywordtype">void</span> LogError(<span class="keyword">const</span> std::string &amp;logger_name, <span class="keyword">const</span> std::string &amp;message);</div>
 <div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span> </div>
-<div class="line"><a id="l00062" name="l00062"></a><span class="lineno"><a class="line" href="../../d9/de6/namespacerespond.html#a11719adf40a951ebf71284ef23401adb">   62</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="../../d9/de6/namespacerespond.html#a11719adf40a951ebf71284ef23401adb">LogDebug</a>(<span class="keyword">const</span> std::string &amp;logger_name, <span class="keyword">const</span> std::string &amp;message);</div>
+<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span><span class="keywordtype">void</span> LogDebug(<span class="keyword">const</span> std::string &amp;logger_name, <span class="keyword">const</span> std::string &amp;message);</div>
 <div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span> </div>
 <div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span>} <span class="comment">// namespace respond</span></div>
 <div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span> </div>
 <div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span><span class="preprocessor">#endif </span><span class="comment">// RESPOND_LOGGING_HPP_</span></div>
-<div class="ttc" id="anamespacerespond_html"><div class="ttname"><a href="../../d9/de6/namespacerespond.html">respond</a></div><div class="ttdoc">A namespace for the respond model functionality.</div><div class="ttdef"><b>Definition:</b> cost_effectiveness.hpp:23</div></div>
-<div class="ttc" id="anamespacerespond_html_a0f87de9dfb0a4bd6785ced80523b6d89"><div class="ttname"><a href="../../d9/de6/namespacerespond.html#a0f87de9dfb0a4bd6785ced80523b6d89">respond::CreationStatus</a></div><div class="ttdeci">CreationStatus</div><div class="ttdoc">Creation status of the logger.</div><div class="ttdef"><b>Definition:</b> logging.hpp:29</div></div>
-<div class="ttc" id="anamespacerespond_html_a11719adf40a951ebf71284ef23401adb"><div class="ttname"><a href="../../d9/de6/namespacerespond.html#a11719adf40a951ebf71284ef23401adb">respond::LogDebug</a></div><div class="ttdeci">void LogDebug(const std::string &amp;logger_name, const std::string &amp;message)</div><div class="ttdoc">Log a message as debug information.</div></div>
-<div class="ttc" id="anamespacerespond_html_a251e7b9086b9fe4b1c4e1fba029438b6"><div class="ttname"><a href="../../d9/de6/namespacerespond.html#a251e7b9086b9fe4b1c4e1fba029438b6">respond::CreateFileLogger</a></div><div class="ttdeci">CreationStatus CreateFileLogger(const std::string &amp;logger_name, const std::string &amp;filepath)</div><div class="ttdoc">Create a logger with the specified name and file path.</div></div>
-<div class="ttc" id="anamespacerespond_html_a5ecee2abfe36df79cac03950afde31f6"><div class="ttname"><a href="../../d9/de6/namespacerespond.html#a5ecee2abfe36df79cac03950afde31f6">respond::LogError</a></div><div class="ttdeci">void LogError(const std::string &amp;logger_name, const std::string &amp;message)</div><div class="ttdoc">Log a message as an error.</div></div>
-<div class="ttc" id="anamespacerespond_html_a62d33c5dbafca1df08cbda2991424777"><div class="ttname"><a href="../../d9/de6/namespacerespond.html#a62d33c5dbafca1df08cbda2991424777">respond::LogWarning</a></div><div class="ttdeci">void LogWarning(const std::string &amp;logger_name, const std::string &amp;message)</div><div class="ttdoc">Log as message as a warning.</div></div>
-<div class="ttc" id="anamespacerespond_html_a67e9ae999877d24de63aec20177be26b"><div class="ttname"><a href="../../d9/de6/namespacerespond.html#a67e9ae999877d24de63aec20177be26b">respond::LogInfo</a></div><div class="ttdeci">void LogInfo(const std::string &amp;logger_name, const std::string &amp;message)</div><div class="ttdoc">Log a message as information.</div></div>
-<div class="ttc" id="anamespacerespond_html_abcbb31ad7ec52697894b7c78561d9115"><div class="ttname"><a href="../../d9/de6/namespacerespond.html#abcbb31ad7ec52697894b7c78561d9115">respond::LogType</a></div><div class="ttdeci">LogType</div><div class="ttdoc">Logging levels for the logger.</div><div class="ttdef"><b>Definition:</b> logging.hpp:20</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="../../dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="../../dir_70501f13f5c9277fdfc6ec16bf603df6.html">respond</a></li><li class="navelem"><b>logging.hpp</b></li>
-    <li class="footer">Generated on Tue Jan 27 2026 15:36:15 for RESPOND by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
+    <li class="footer">Generated on Tue Feb 10 2026 21:28:54 for RESPOND by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
   </ul>
 </div>
 </body>

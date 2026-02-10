@@ -1,10 +1,10 @@
 var annotated_dup =
 [
-    [ "respond", "d9/de6/namespacerespond.html", [
-      [ "CostStamp", "d8/dba/structrespond_1_1CostStamp.html", null ],
-      [ "HistoryStamp", "d0/da5/structrespond_1_1HistoryStamp.html", null ],
-      [ "Markov", "df/d1c/classrespond_1_1Markov.html", "df/d1c/classrespond_1_1Markov" ],
-      [ "ResultSets", "d5/dc6/structrespond_1_1ResultSets.html", null ],
-      [ "Totals", "dd/daf/structrespond_1_1Totals.html", null ]
+    [ "respond", null, [
+      [ "History", "d8/dd8/classrespond_1_1History.html", null ],
+      [ "Model", "d4/d00/classrespond_1_1Model.html", null ],
+      [ "Simulation", "de/d27/classrespond_1_1Simulation.html", "de/d27/classrespond_1_1Simulation" ],
+      [ "Transition", "de/d15/classrespond_1_1Transition.html", null ],
+      [ "TransitionFactory", "d7/dad/classrespond_1_1TransitionFactory.html", null ]
     ] ]
 ];

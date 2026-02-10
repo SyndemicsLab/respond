@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['coststamp_0',['CostStamp',['../d8/dba/structrespond_1_1CostStamp.html',1,'respond']]]
+  ['history_0',['History',['../d8/dd8/classrespond_1_1History.html',1,'respond']]]
 ];
