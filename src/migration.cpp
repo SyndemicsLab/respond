@@ -4,7 +4,7 @@
 // Created Date: 2026-02-05                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-02-05                                                  //
+// Last Modified: 2026-02-12                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
@@ -26,8 +26,10 @@ Eigen::VectorXd Migration::Execute(const Eigen::VectorXd &state,
         throw std::runtime_error("Unable to add Migration Transition Vector to "
                                  "State Vector, mismatched sizes.");
     }
-    auto new_state = state + GetTransitionMatrices()[0];
-    return new_state;
+    auto subtracted = state + GetTransitionMatrices()[0];
+    auto zero_stop = subtracted.array().max(
+        Eigen::VectorXd::Zero(subtracted.size()).array());
+    return zero_stop;
 }
 
 std::unique_ptr<Transition> Migration::Create(const std::string &name,
