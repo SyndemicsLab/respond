@@ -156,6 +156,7 @@ private:
         histories["total_overdose"].AddState(Eigen::VectorXd::Zero(size));
         histories["fatal_overdose"].AddState(Eigen::VectorXd::Zero(size));
         histories["background_death"].AddState(Eigen::VectorXd::Zero(size));
+        SetHistories(histories);
     }
 };
 } // namespace respond
