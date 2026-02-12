@@ -4,7 +4,7 @@
 // Created Date: 2026-02-06                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-02-10                                                  //
+// Last Modified: 2026-02-12                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
@@ -86,7 +86,7 @@ TEST_F(RespondTest, RunTransitionsInModel) {
 }
 
 TEST_F(RespondTest, RunSimulationOneStep) {
-    markov->SetHistories(Simulation::CreateDefaultHistories("test_logger"));
+    markov->CreateDefaultHistories();
 
     markov->SetState(init_state);
 
@@ -108,7 +108,7 @@ TEST_F(RespondTest, RunSimulationOneStep) {
 
     Simulation sim("test_logger");
     sim.AddModel(markov);
-    sim.Run(1);
+    sim.Run();
 
     auto histories = sim.GetModelHistories();
     ASSERT_EQ(histories.size(), 1);
@@ -124,6 +124,21 @@ TEST_F(RespondTest, RunSimulationOneStep) {
     Eigen::Vector3d final_state;
     final_state << 0.76715528791564891, 0.72320370216816077, 1.037712429738102;
     ASSERT_TRUE(state_history[0].isApprox(final_state));
+}
+
+TEST_F(RespondTest, CreateDefaultHistories) {
+    std::vector<std::string> expected = {
+        "state", "total_overdose", "fatal_overdose", "intervention_admission",
+        "background_death"};
+
+    std::sort(expected.begin(), expected.end());
+
+    markov->CreateDefaultHistories();
+    std::vector<std::string> results;
+    for (const auto &kv : markov->GetHistories()) {
+        results.push_back(kv.first);
+    }
+    ASSERT_EQ(results, expected);
 }
 
 } // namespace testing

@@ -33,12 +33,10 @@ public:
     /// @brief The core function to run the simulation. Runs all models
     /// associated with the simulation.
     /// @param duration The number of steps to take for each model.
-    void Run(const int &duration) {
-        // for (int i = 0; i < duration; ++i) {
+    void Run() {
         for (const auto &model : _models) {
             model->RunTransitions();
         }
-        // }
     }
 
     void AddModel(const std::unique_ptr<Model> &model) {
@@ -85,27 +83,6 @@ public:
                                                          kv.first};
                 ret.push_back(p);
             }
-        }
-        return ret;
-    }
-
-    /// @brief The default histories are:
-    ///     1. State
-    ///     2. Total Overdoses
-    ///     3. Fatal Overdoses
-    ///     4. Intervention Admissions
-    ///     5. Background Mortality
-    /// @return A vector of the default history objects.
-    static std::map<std::string, History>
-    CreateDefaultHistories(const std::string &log_name) {
-        std::vector<std::string> names = {
-            "state", "total_overdose", "fatal_overdose",
-            "intervention_admission", "background_death"};
-
-        std::map<std::string, History> ret;
-        for (const auto &n : names) {
-            History h(n, log_name);
-            ret[n] = h;
         }
         return ret;
     }

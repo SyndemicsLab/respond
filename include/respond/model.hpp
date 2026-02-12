@@ -4,7 +4,7 @@
 // Created Date: 2026-02-05                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-02-09                                                  //
+// Last Modified: 2026-02-12                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
@@ -41,6 +41,8 @@ public:
     // return const & to limit to observation of the state. Need copy ability of
     // History, but let that be the History's responsibility
     virtual std::map<std::string, History> GetHistories() const = 0;
+
+    virtual void CreateDefaultHistories() = 0;
 
     virtual void SetHistories(const std::map<std::string, History> &h) = 0;
     // getter for model name
