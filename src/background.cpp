@@ -33,6 +33,10 @@ BackgroundDeath::Execute(const Eigen::VectorXd &state,
             "The state is not larger than the estimated background deaths!");
     }
     auto new_state = state - deaths; // remove deaths from state
+
+    if (h.find("background_death") != h.end()) {
+        h["state"].AddState(new_state);
+    }
     return new_state;
 }
 

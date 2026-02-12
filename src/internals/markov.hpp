@@ -105,9 +105,6 @@ public:
         for (const auto &t : _transition_vector) {
             SetState(t->Execute(GetState(), histories));
         }
-        if (histories.find("state") != histories.end()) {
-            histories["state"].AddState(GetState());
-        }
         SetHistories(histories);
     }
     // assume ownership of the Transition
