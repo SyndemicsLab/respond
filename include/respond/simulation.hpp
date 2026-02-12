@@ -4,7 +4,7 @@
 // Created Date: 2026-02-05                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-02-10                                                  //
+// Last Modified: 2026-02-12                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
@@ -34,11 +34,11 @@ public:
     /// associated with the simulation.
     /// @param duration The number of steps to take for each model.
     void Run(const int &duration) {
-        for (int i = 0; i < duration; ++i) {
-            for (const auto &model : _models) {
-                model->RunTransitions();
-            }
+        // for (int i = 0; i < duration; ++i) {
+        for (const auto &model : _models) {
+            model->RunTransitions();
         }
+        // }
     }
 
     void AddModel(const std::unique_ptr<Model> &model) {
