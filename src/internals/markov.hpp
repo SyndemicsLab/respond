@@ -4,7 +4,7 @@
 // Created Date: 2026-02-05                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-02-10                                                  //
+// Last Modified: 2026-02-12                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
@@ -78,14 +78,32 @@ public:
         return _transition_vector;
     }
 
+    /// @brief The default histories are:
+    ///     1. State
+    ///     2. Total Overdoses
+    ///     3. Fatal Overdoses
+    ///     4. Intervention Admissions
+    ///     5. Background Mortality
+    /// @return A vector of the default history objects.
+    void CreateDefaultHistories() override {
+        std::vector<std::string> names = {
+            "state", "total_overdose", "fatal_overdose",
+            "intervention_admission", "background_death"};
+
+        std::map<std::string, History> ret;
+        for (const auto &n : names) {
+            History h(n, GetLogName());
+            ret[n] = h;
+        }
+        SetHistories(ret);
+    }
+
     // manipulate the state vector
     void RunTransitions() override {
+        SetupHistory();
         auto histories = GetHistories();
         for (const auto &t : _transition_vector) {
             SetState(t->Execute(GetState(), histories));
-        }
-        if (histories.find("state") != histories.end()) {
-            histories["state"].AddState(GetState());
         }
         SetHistories(histories);
     }
@@ -123,6 +141,23 @@ private:
     std::string _name;
     std::string _log_name;
     std::map<std::string, History> _histories;
+
+    void SetupHistory() {
+        auto histories = GetHistories();
+        if (histories.empty()) {
+            CreateDefaultHistories();
+            histories = GetHistories();
+        }
+        histories["state"].AddState(GetState());
+        auto size = GetState().size();
+
+        histories["intervention_admission"].AddState(
+            Eigen::VectorXd::Zero(size));
+        histories["total_overdose"].AddState(Eigen::VectorXd::Zero(size));
+        histories["fatal_overdose"].AddState(Eigen::VectorXd::Zero(size));
+        histories["background_death"].AddState(Eigen::VectorXd::Zero(size));
+        SetHistories(histories);
+    }
 };
 } // namespace respond
 

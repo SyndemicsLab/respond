@@ -4,7 +4,7 @@
 // Created Date: 2026-02-05                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-02-05                                                  //
+// Last Modified: 2026-02-12                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
@@ -28,7 +28,15 @@ BackgroundDeath::Execute(const Eigen::VectorXd &state,
     if (h.find("background_death") != h.end()) {
         h["background_death"].AddState(deaths);
     }
+    if (!(state.array() >= deaths.array()).all()) {
+        std::runtime_error(
+            "The state is not larger than the estimated background deaths!");
+    }
     auto new_state = state - deaths; // remove deaths from state
+
+    if (h.find("background_death") != h.end()) {
+        h["state"].AddState(new_state);
+    }
     return new_state;
 }
 

@@ -4,7 +4,7 @@
 // Created Date: 2025-08-01                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-02-09                                                  //
+// Last Modified: 2026-02-12                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025-2026 Syndemics Lab at Boston Medical Center             //
@@ -45,6 +45,7 @@ public:
     MOCK_METHOD(std::string, GetModelName, (), (const, override));
     MOCK_METHOD(std::string, GetLogName, (), (const, override));
     MOCK_METHOD((std::unique_ptr<Model>), clone, (), (const, override));
+    MOCK_METHOD(void, CreateDefaultHistories, (), (override));
 };
 } // namespace testing
 } // namespace respond

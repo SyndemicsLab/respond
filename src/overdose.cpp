@@ -4,7 +4,7 @@
 // Created Date: 2026-02-05                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-02-05                                                  //
+// Last Modified: 2026-02-12                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
@@ -41,6 +41,10 @@ Eigen::VectorXd Overdose::Execute(const Eigen::VectorXd &state,
     auto fods = overdoses.cwiseProduct(GetTransitionMatrices()[1]); // negatives
     if (h.find("fatal_overdose") != h.end()) {
         h["fatal_overdose"].AddState(fods);
+    }
+    if (!(state.array() >= fods.array()).all()) {
+        std::runtime_error(
+            "The state is not larger than the estimated fatal overdoses!");
     }
     auto new_state = state - fods; // remove fods from state
     return new_state;

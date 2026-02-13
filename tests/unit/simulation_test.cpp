@@ -4,7 +4,7 @@
 // Created Date: 2026-02-09                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-02-10                                                  //
+// Last Modified: 2026-02-12                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
@@ -133,20 +133,5 @@ TEST_F(SimulationTest, GetHistoryNames) {
     ASSERT_EQ(s.GetModelHistoryNames(), expected);
 }
 
-TEST_F(SimulationTest, CreateDefaultHistories) {
-    std::vector<std::string> expected = {
-        "state", "total_overdose", "fatal_overdose", "intervention_admission",
-        "background_death"};
-
-    std::sort(expected.begin(), expected.end());
-
-    Simulation s;
-    auto defaults = s.CreateDefaultHistories("test_logger");
-    std::vector<std::string> results;
-    for (const auto &kv : defaults) {
-        results.push_back(kv.first);
-    }
-    ASSERT_EQ(results, expected);
-}
 } // namespace testing
 } // namespace respond
