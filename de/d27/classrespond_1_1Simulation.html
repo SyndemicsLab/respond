@@ -128,7 +128,6 @@ $(document).ready(function(){initNavTree('de/d27/classrespond_1_1Simulation.html
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
-<a href="#pub-static-methods">Static Public Member Functions</a> &#124;
 <a href="../../d9/dc4/classrespond_1_1Simulation-members.html">List of all members</a>  </div>
   <div class="headertitle"><div class="title">respond::Simulation Class Reference</div></div>
 </div><!--header-->
@@ -139,9 +138,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a5438cd165b1c9e53107b21ca093a28ba"><td class="memItemLeft" align="right" valign="top"><a id="a5438cd165b1c9e53107b21ca093a28ba" name="a5438cd165b1c9e53107b21ca093a28ba"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>Simulation</b> (const std::string &amp;log_name)</td></tr>
 <tr class="separator:a5438cd165b1c9e53107b21ca093a28ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8da65d189d47067ddf744f2e2245caed"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d27/classrespond_1_1Simulation.html#a8da65d189d47067ddf744f2e2245caed">Run</a> (const int &amp;duration)</td></tr>
-<tr class="memdesc:a8da65d189d47067ddf744f2e2245caed"><td class="mdescLeft">&#160;</td><td class="mdescRight">The core function to run the simulation. Runs all models associated with the simulation.  <br /></td></tr>
-<tr class="separator:a8da65d189d47067ddf744f2e2245caed"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2bfeaf65d7386e0bf36a4549253dfe0b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d27/classrespond_1_1Simulation.html#a2bfeaf65d7386e0bf36a4549253dfe0b">Run</a> ()</td></tr>
+<tr class="memdesc:a2bfeaf65d7386e0bf36a4549253dfe0b"><td class="mdescLeft">&#160;</td><td class="mdescRight">The core function to run the simulation. Runs all models associated with the simulation.  <br /></td></tr>
+<tr class="separator:a2bfeaf65d7386e0bf36a4549253dfe0b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aebf1197f15e2b7eae43dfffed80c1254"><td class="memItemLeft" align="right" valign="top"><a id="aebf1197f15e2b7eae43dfffed80c1254" name="aebf1197f15e2b7eae43dfffed80c1254"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>AddModel</b> (const std::unique_ptr&lt; <a class="el" href="../../d4/d00/classrespond_1_1Model.html">Model</a> &gt; &amp;model)</td></tr>
 <tr class="separator:aebf1197f15e2b7eae43dfffed80c1254"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -169,50 +168,10 @@ std::string&#160;</td><td class="memItemRight" valign="bottom"><b>GetLogName</b>
 <tr class="memitem:ad738dfbf25d8f298791594ea3a2f4f46"><td class="memItemLeft" align="right" valign="top"><a id="ad738dfbf25d8f298791594ea3a2f4f46" name="ad738dfbf25d8f298791594ea3a2f4f46"></a>
 <a class="el" href="../../de/d27/classrespond_1_1Simulation.html">Simulation</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator=</b> (const <a class="el" href="../../de/d27/classrespond_1_1Simulation.html">Simulation</a> &amp;other)</td></tr>
 <tr class="separator:ad738dfbf25d8f298791594ea3a2f4f46"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
-Static Public Member Functions</h2></td></tr>
-<tr class="memitem:aeb01a277337220a03c2ca0734073fd47"><td class="memItemLeft" align="right" valign="top">static std::map&lt; std::string, <a class="el" href="../../d8/dd8/classrespond_1_1History.html">History</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d27/classrespond_1_1Simulation.html#aeb01a277337220a03c2ca0734073fd47">CreateDefaultHistories</a> (const std::string &amp;log_name)</td></tr>
-<tr class="memdesc:aeb01a277337220a03c2ca0734073fd47"><td class="mdescLeft">&#160;</td><td class="mdescRight">The default histories are:  <br /></td></tr>
-<tr class="separator:aeb01a277337220a03c2ca0734073fd47"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="aeb01a277337220a03c2ca0734073fd47" name="aeb01a277337220a03c2ca0734073fd47"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aeb01a277337220a03c2ca0734073fd47">&#9670;&#160;</a></span>CreateDefaultHistories()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static std::map&lt; std::string, <a class="el" href="../../d8/dd8/classrespond_1_1History.html">History</a> &gt; respond::Simulation::CreateDefaultHistories </td>
-          <td>(</td>
-          <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>log_name</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<ol type="1">
-<li>State</li>
-<li>Total Overdoses</li>
-<li>Fatal Overdoses</li>
-<li>Intervention Admissions</li>
-<li>Background Mortality <dl class="section return"><dt>Returns</dt><dd>A vector of the default history objects. </dd></dl>
-</li>
-</ol>
-
-</div>
-</div>
-<a id="a8da65d189d47067ddf744f2e2245caed" name="a8da65d189d47067ddf744f2e2245caed"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8da65d189d47067ddf744f2e2245caed">&#9670;&#160;</a></span>Run()</h2>
+<a id="a2bfeaf65d7386e0bf36a4549253dfe0b" name="a2bfeaf65d7386e0bf36a4549253dfe0b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2bfeaf65d7386e0bf36a4549253dfe0b">&#9670;&#160;</a></span>Run()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -223,8 +182,7 @@ Static Public Member Functions</h2></td></tr>
         <tr>
           <td class="memname">void respond::Simulation::Run </td>
           <td>(</td>
-          <td class="paramtype">const int &amp;&#160;</td>
-          <td class="paramname"><em>duration</em></td><td>)</td>
+          <td class="paramname"></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -252,7 +210,7 @@ Static Public Member Functions</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><b>respond</b></li><li class="navelem"><a class="el" href="../../de/d27/classrespond_1_1Simulation.html">Simulation</a></li>
-    <li class="footer">Generated on Tue Feb 10 2026 21:28:54 for RESPOND by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
+    <li class="footer">Generated on Fri Feb 13 2026 16:41:10 for RESPOND by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
   </ul>
 </div>
 </body>

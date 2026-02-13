@@ -135,7 +135,7 @@ $(document).ready(function(){initNavTree('d3/d27/simulation_8hpp_source.html','.
 <div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="comment">// Created Date: 2026-02-05                                                   //</span></div>
 <div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="comment">// Author: Matthew Carroll                                                    //</span></div>
 <div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="comment">// -----                                                                      //</span></div>
-<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="comment">// Last Modified: 2026-02-10                                                  //</span></div>
+<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="comment">// Last Modified: 2026-02-12                                                  //</span></div>
 <div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="comment">// Modified By: Matthew Carroll                                               //</span></div>
 <div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span><span class="comment">// -----                                                                      //</span></div>
 <div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span><span class="comment">// Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //</span></div>
@@ -160,114 +160,96 @@ $(document).ready(function(){initNavTree('d3/d27/simulation_8hpp_source.html','.
 <div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span>    <a class="code hl_class" href="../../de/d27/classrespond_1_1Simulation.html">Simulation</a>(<span class="keyword">const</span> std::string &amp;log_name) : _log_name(log_name) {}</div>
 <div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span>    <a class="code hl_class" href="../../de/d27/classrespond_1_1Simulation.html">~Simulation</a>() = <span class="keywordflow">default</span>;</div>
 <div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span> </div>
-<div class="line"><a id="l00036" name="l00036"></a><span class="lineno"><a class="line" href="../../de/d27/classrespond_1_1Simulation.html#a8da65d189d47067ddf744f2e2245caed">   36</a></span>    <span class="keywordtype">void</span> <a class="code hl_function" href="../../de/d27/classrespond_1_1Simulation.html#a8da65d189d47067ddf744f2e2245caed">Run</a>(<span class="keyword">const</span> <span class="keywordtype">int</span> &amp;duration) {</div>
-<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span>        <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; duration; ++i) {</div>
-<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span>            <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span> &amp;model : _models) {</div>
-<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span>                model-&gt;RunTransitions();</div>
-<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span>            }</div>
-<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span>        }</div>
-<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span>    }</div>
-<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span> </div>
-<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span>    <span class="keywordtype">void</span> AddModel(<span class="keyword">const</span> std::unique_ptr&lt;Model&gt; &amp;model) {</div>
-<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span>        <span class="comment">// because push_back is a move operation we&#39;re taking over ownership of</span></div>
-<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span>        <span class="comment">// the unique pointer</span></div>
-<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>        _models.push_back(model-&gt;clone());</div>
-<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>    }</div>
-<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span> </div>
-<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span>    <span class="keyword">const</span> std::vector&lt;std::unique_ptr&lt;Model&gt;&gt; &amp;GetModels()<span class="keyword"> const </span>{</div>
-<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>        <span class="keywordflow">return</span> _models;</div>
-<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span>    }</div>
-<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span> </div>
-<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span>    std::vector&lt;std::string&gt; GetModelNames()<span class="keyword"> const </span>{</div>
-<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>        std::vector&lt;std::string&gt; ret;</div>
-<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span>        <span class="keywordflow">for</span> (<span class="keyword">auto</span> &amp;m : _models) {</div>
-<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>            ret.push_back(m-&gt;GetModelName());</div>
-<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span>        }</div>
-<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span>        <span class="keywordflow">return</span> ret;</div>
-<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span>    }</div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno"><a class="line" href="../../de/d27/classrespond_1_1Simulation.html#a2bfeaf65d7386e0bf36a4549253dfe0b">   36</a></span>    <span class="keywordtype">void</span> <a class="code hl_function" href="../../de/d27/classrespond_1_1Simulation.html#a2bfeaf65d7386e0bf36a4549253dfe0b">Run</a>() {</div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span>        <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span> &amp;model : _models) {</div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span>            model-&gt;RunTransitions();</div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span>        }</div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span>    }</div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span> </div>
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span>    <span class="keywordtype">void</span> AddModel(<span class="keyword">const</span> std::unique_ptr&lt;Model&gt; &amp;model) {</div>
+<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span>        <span class="comment">// because push_back is a move operation we&#39;re taking over ownership of</span></div>
+<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span>        <span class="comment">// the unique pointer</span></div>
+<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span>        _models.push_back(model-&gt;clone());</div>
+<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span>    }</div>
+<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span> </div>
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>    <span class="keyword">const</span> std::vector&lt;std::unique_ptr&lt;Model&gt;&gt; &amp;GetModels()<span class="keyword"> const </span>{</div>
+<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>        <span class="keywordflow">return</span> _models;</div>
+<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span>    }</div>
+<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span> </div>
+<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span>    std::vector&lt;std::string&gt; GetModelNames()<span class="keyword"> const </span>{</div>
+<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span>        std::vector&lt;std::string&gt; ret;</div>
+<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span>        <span class="keywordflow">for</span> (<span class="keyword">auto</span> &amp;m : _models) {</div>
+<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>            ret.push_back(m-&gt;GetModelName());</div>
+<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span>        }</div>
+<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>        <span class="keywordflow">return</span> ret;</div>
+<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span>    }</div>
+<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span> </div>
+<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span>    <span class="keywordtype">void</span> ClearModels() { _models.clear(); }</div>
 <div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span> </div>
-<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span>    <span class="keywordtype">void</span> ClearModels() { _models.clear(); }</div>
-<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span> </div>
-<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span>    <span class="keyword">const</span> std::vector&lt;std::map&lt;std::string, std::vector&lt;Eigen::VectorXd&gt;&gt;&gt;</div>
-<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span>    GetModelHistories()<span class="keyword"> const </span>{</div>
-<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>        std::vector&lt;std::map&lt;std::string, std::vector&lt;Eigen::VectorXd&gt;&gt;&gt; ret;</div>
-<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span>        <span class="keywordtype">int</span> model_idx = 0;</div>
-<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span>        <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span> &amp;model : _models) {</div>
-<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span>            std::map&lt;std::string, std::vector&lt;Eigen::VectorXd&gt;&gt; inner_ret;</div>
-<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span>            <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span> &amp;kv : model-&gt;GetHistories()) {</div>
-<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span>                inner_ret[kv.first] = kv.second.GetStateAsVector();</div>
-<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span>            }</div>
-<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span>            ret.push_back(inner_ret);</div>
-<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span>            model_idx++;</div>
-<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span>        }</div>
-<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span>        <span class="keywordflow">return</span> ret;</div>
-<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span>    }</div>
-<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span> </div>
-<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span>    <span class="keyword">const</span> std::vector&lt;std::pair&lt;std::string, std::string&gt;&gt;</div>
-<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span>    GetModelHistoryNames()<span class="keyword"> const </span>{</div>
-<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span>        std::vector&lt;std::pair&lt;std::string, std::string&gt;&gt; ret;</div>
-<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span>        <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span> &amp;model : _models) {</div>
-<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span>            <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span> &amp;kv : model-&gt;GetHistories()) {</div>
-<div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span>                std::pair&lt;std::string, std::string&gt; p = {model-&gt;GetModelName(),</div>
-<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span>                                                         kv.first};</div>
-<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span>                ret.push_back(p);</div>
-<div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span>            }</div>
-<div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span>        }</div>
-<div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span>        <span class="keywordflow">return</span> ret;</div>
-<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span>    }</div>
+<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span>    <span class="keyword">const</span> std::vector&lt;std::map&lt;std::string, std::vector&lt;Eigen::VectorXd&gt;&gt;&gt;</div>
+<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>    GetModelHistories()<span class="keyword"> const </span>{</div>
+<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span>        std::vector&lt;std::map&lt;std::string, std::vector&lt;Eigen::VectorXd&gt;&gt;&gt; ret;</div>
+<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span>        <span class="keywordtype">int</span> model_idx = 0;</div>
+<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>        <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span> &amp;model : _models) {</div>
+<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span>            std::map&lt;std::string, std::vector&lt;Eigen::VectorXd&gt;&gt; inner_ret;</div>
+<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span>            <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span> &amp;kv : model-&gt;GetHistories()) {</div>
+<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span>                inner_ret[kv.first] = kv.second.GetStateAsVector();</div>
+<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span>            }</div>
+<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span>            ret.push_back(inner_ret);</div>
+<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span>            model_idx++;</div>
+<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span>        }</div>
+<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span>        <span class="keywordflow">return</span> ret;</div>
+<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span>    }</div>
+<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span> </div>
+<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span>    <span class="keyword">const</span> std::vector&lt;std::pair&lt;std::string, std::string&gt;&gt;</div>
+<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span>    GetModelHistoryNames()<span class="keyword"> const </span>{</div>
+<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span>        std::vector&lt;std::pair&lt;std::string, std::string&gt;&gt; ret;</div>
+<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span>        <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span> &amp;model : _models) {</div>
+<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span>            <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span> &amp;kv : model-&gt;GetHistories()) {</div>
+<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span>                std::pair&lt;std::string, std::string&gt; p = {model-&gt;GetModelName(),</div>
+<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span>                                                         kv.first};</div>
+<div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span>                ret.push_back(p);</div>
+<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span>            }</div>
+<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span>        }</div>
+<div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span>        <span class="keywordflow">return</span> ret;</div>
+<div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span>    }</div>
+<div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span> </div>
+<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span>    std::string GetLogName()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> _log_name; }</div>
 <div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span> </div>
-<div class="line"><a id="l00099" name="l00099"></a><span class="lineno">   99</span>    <span class="keyword">static</span> std::map&lt;std::string, History&gt;</div>
-<div class="line"><a id="l00100" name="l00100"></a><span class="lineno"><a class="line" href="../../de/d27/classrespond_1_1Simulation.html#aeb01a277337220a03c2ca0734073fd47">  100</a></span>    <a class="code hl_function" href="../../de/d27/classrespond_1_1Simulation.html#aeb01a277337220a03c2ca0734073fd47">CreateDefaultHistories</a>(<span class="keyword">const</span> std::string &amp;log_name) {</div>
-<div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span>        std::vector&lt;std::string&gt; names = {</div>
-<div class="line"><a id="l00102" name="l00102"></a><span class="lineno">  102</span>            <span class="stringliteral">&quot;state&quot;</span>, <span class="stringliteral">&quot;total_overdose&quot;</span>, <span class="stringliteral">&quot;fatal_overdose&quot;</span>,</div>
-<div class="line"><a id="l00103" name="l00103"></a><span class="lineno">  103</span>            <span class="stringliteral">&quot;intervention_admission&quot;</span>, <span class="stringliteral">&quot;background_death&quot;</span>};</div>
-<div class="line"><a id="l00104" name="l00104"></a><span class="lineno">  104</span> </div>
-<div class="line"><a id="l00105" name="l00105"></a><span class="lineno">  105</span>        std::map&lt;std::string, History&gt; ret;</div>
-<div class="line"><a id="l00106" name="l00106"></a><span class="lineno">  106</span>        <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span> &amp;n : names) {</div>
-<div class="line"><a id="l00107" name="l00107"></a><span class="lineno">  107</span>            <a class="code hl_class" href="../../d8/dd8/classrespond_1_1History.html">History</a> h(n, log_name);</div>
-<div class="line"><a id="l00108" name="l00108"></a><span class="lineno">  108</span>            ret[n] = h;</div>
-<div class="line"><a id="l00109" name="l00109"></a><span class="lineno">  109</span>        }</div>
-<div class="line"><a id="l00110" name="l00110"></a><span class="lineno">  110</span>        <span class="keywordflow">return</span> ret;</div>
-<div class="line"><a id="l00111" name="l00111"></a><span class="lineno">  111</span>    }</div>
-<div class="line"><a id="l00112" name="l00112"></a><span class="lineno">  112</span> </div>
-<div class="line"><a id="l00113" name="l00113"></a><span class="lineno">  113</span>    std::string GetLogName()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> _log_name; }</div>
-<div class="line"><a id="l00114" name="l00114"></a><span class="lineno">  114</span> </div>
-<div class="line"><a id="l00115" name="l00115"></a><span class="lineno">  115</span>    <span class="comment">// Copying object</span></div>
-<div class="line"><a id="l00116" name="l00116"></a><span class="lineno">  116</span>    Simulation(<span class="keyword">const</span> Simulation &amp;other) : _log_name(other.GetLogName()) {</div>
-<div class="line"><a id="l00117" name="l00117"></a><span class="lineno">  117</span>        ClearModels();</div>
-<div class="line"><a id="l00118" name="l00118"></a><span class="lineno">  118</span>        <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span> &amp;m : other.GetModels()) {</div>
-<div class="line"><a id="l00119" name="l00119"></a><span class="lineno">  119</span>            _models.push_back(m-&gt;clone());</div>
-<div class="line"><a id="l00120" name="l00120"></a><span class="lineno">  120</span>        }</div>
-<div class="line"><a id="l00121" name="l00121"></a><span class="lineno">  121</span>    }</div>
-<div class="line"><a id="l00122" name="l00122"></a><span class="lineno">  122</span>    Simulation &amp;operator=(<span class="keyword">const</span> Simulation &amp;other) {</div>
-<div class="line"><a id="l00123" name="l00123"></a><span class="lineno">  123</span>        <span class="keywordflow">if</span> (<span class="keyword">this</span> != &amp;other) {</div>
-<div class="line"><a id="l00124" name="l00124"></a><span class="lineno">  124</span>            ClearModels();</div>
-<div class="line"><a id="l00125" name="l00125"></a><span class="lineno">  125</span>            _log_name = other.GetLogName();</div>
-<div class="line"><a id="l00126" name="l00126"></a><span class="lineno">  126</span>            <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span> &amp;m : other.GetModels()) {</div>
-<div class="line"><a id="l00127" name="l00127"></a><span class="lineno">  127</span>                _models.push_back(m-&gt;clone());</div>
-<div class="line"><a id="l00128" name="l00128"></a><span class="lineno">  128</span>            }</div>
-<div class="line"><a id="l00129" name="l00129"></a><span class="lineno">  129</span>        }</div>
-<div class="line"><a id="l00130" name="l00130"></a><span class="lineno">  130</span>        <span class="keywordflow">return</span> *<span class="keyword">this</span>;</div>
-<div class="line"><a id="l00131" name="l00131"></a><span class="lineno">  131</span>    }</div>
-<div class="line"><a id="l00132" name="l00132"></a><span class="lineno">  132</span> </div>
-<div class="line"><a id="l00133" name="l00133"></a><span class="lineno">  133</span><span class="keyword">private</span>:</div>
-<div class="line"><a id="l00134" name="l00134"></a><span class="lineno">  134</span>    std::string _log_name;</div>
-<div class="line"><a id="l00135" name="l00135"></a><span class="lineno">  135</span>    std::vector&lt;std::unique_ptr&lt;Model&gt;&gt; _models;</div>
-<div class="line"><a id="l00136" name="l00136"></a><span class="lineno">  136</span>};</div>
-<div class="line"><a id="l00137" name="l00137"></a><span class="lineno">  137</span>} <span class="comment">// namespace respond</span></div>
-<div class="line"><a id="l00138" name="l00138"></a><span class="lineno">  138</span> </div>
-<div class="line"><a id="l00139" name="l00139"></a><span class="lineno">  139</span><span class="preprocessor">#endif </span><span class="comment">// RESPOND_SIMULATION_HPP_</span></div>
-<div class="ttc" id="aclassrespond_1_1History_html"><div class="ttname"><a href="../../d8/dd8/classrespond_1_1History.html">respond::History</a></div><div class="ttdef"><b>Definition:</b> history.hpp:21</div></div>
+<div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span>    <span class="comment">// Copying object</span></div>
+<div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span>    Simulation(<span class="keyword">const</span> Simulation &amp;other) : _log_name(other.GetLogName()) {</div>
+<div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span>        ClearModels();</div>
+<div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span>        <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span> &amp;m : other.GetModels()) {</div>
+<div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span>            _models.push_back(m-&gt;clone());</div>
+<div class="line"><a id="l00097" name="l00097"></a><span class="lineno">   97</span>        }</div>
+<div class="line"><a id="l00098" name="l00098"></a><span class="lineno">   98</span>    }</div>
+<div class="line"><a id="l00099" name="l00099"></a><span class="lineno">   99</span>    Simulation &amp;operator=(<span class="keyword">const</span> Simulation &amp;other) {</div>
+<div class="line"><a id="l00100" name="l00100"></a><span class="lineno">  100</span>        <span class="keywordflow">if</span> (<span class="keyword">this</span> != &amp;other) {</div>
+<div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span>            ClearModels();</div>
+<div class="line"><a id="l00102" name="l00102"></a><span class="lineno">  102</span>            _log_name = other.GetLogName();</div>
+<div class="line"><a id="l00103" name="l00103"></a><span class="lineno">  103</span>            <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span> &amp;m : other.GetModels()) {</div>
+<div class="line"><a id="l00104" name="l00104"></a><span class="lineno">  104</span>                _models.push_back(m-&gt;clone());</div>
+<div class="line"><a id="l00105" name="l00105"></a><span class="lineno">  105</span>            }</div>
+<div class="line"><a id="l00106" name="l00106"></a><span class="lineno">  106</span>        }</div>
+<div class="line"><a id="l00107" name="l00107"></a><span class="lineno">  107</span>        <span class="keywordflow">return</span> *<span class="keyword">this</span>;</div>
+<div class="line"><a id="l00108" name="l00108"></a><span class="lineno">  108</span>    }</div>
+<div class="line"><a id="l00109" name="l00109"></a><span class="lineno">  109</span> </div>
+<div class="line"><a id="l00110" name="l00110"></a><span class="lineno">  110</span><span class="keyword">private</span>:</div>
+<div class="line"><a id="l00111" name="l00111"></a><span class="lineno">  111</span>    std::string _log_name;</div>
+<div class="line"><a id="l00112" name="l00112"></a><span class="lineno">  112</span>    std::vector&lt;std::unique_ptr&lt;Model&gt;&gt; _models;</div>
+<div class="line"><a id="l00113" name="l00113"></a><span class="lineno">  113</span>};</div>
+<div class="line"><a id="l00114" name="l00114"></a><span class="lineno">  114</span>} <span class="comment">// namespace respond</span></div>
+<div class="line"><a id="l00115" name="l00115"></a><span class="lineno">  115</span> </div>
+<div class="line"><a id="l00116" name="l00116"></a><span class="lineno">  116</span><span class="preprocessor">#endif </span><span class="comment">// RESPOND_SIMULATION_HPP_</span></div>
 <div class="ttc" id="aclassrespond_1_1Simulation_html"><div class="ttname"><a href="../../de/d27/classrespond_1_1Simulation.html">respond::Simulation</a></div><div class="ttdef"><b>Definition:</b> simulation.hpp:27</div></div>
-<div class="ttc" id="aclassrespond_1_1Simulation_html_a8da65d189d47067ddf744f2e2245caed"><div class="ttname"><a href="../../de/d27/classrespond_1_1Simulation.html#a8da65d189d47067ddf744f2e2245caed">respond::Simulation::Run</a></div><div class="ttdeci">void Run(const int &amp;duration)</div><div class="ttdoc">The core function to run the simulation. Runs all models associated with the simulation.</div><div class="ttdef"><b>Definition:</b> simulation.hpp:36</div></div>
-<div class="ttc" id="aclassrespond_1_1Simulation_html_aeb01a277337220a03c2ca0734073fd47"><div class="ttname"><a href="../../de/d27/classrespond_1_1Simulation.html#aeb01a277337220a03c2ca0734073fd47">respond::Simulation::CreateDefaultHistories</a></div><div class="ttdeci">static std::map&lt; std::string, History &gt; CreateDefaultHistories(const std::string &amp;log_name)</div><div class="ttdoc">The default histories are:</div><div class="ttdef"><b>Definition:</b> simulation.hpp:100</div></div>
+<div class="ttc" id="aclassrespond_1_1Simulation_html_a2bfeaf65d7386e0bf36a4549253dfe0b"><div class="ttname"><a href="../../de/d27/classrespond_1_1Simulation.html#a2bfeaf65d7386e0bf36a4549253dfe0b">respond::Simulation::Run</a></div><div class="ttdeci">void Run()</div><div class="ttdoc">The core function to run the simulation. Runs all models associated with the simulation.</div><div class="ttdef"><b>Definition:</b> simulation.hpp:36</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="../../dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="../../dir_70501f13f5c9277fdfc6ec16bf603df6.html">respond</a></li><li class="navelem"><b>simulation.hpp</b></li>
-    <li class="footer">Generated on Tue Feb 10 2026 21:28:54 for RESPOND by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
+    <li class="footer">Generated on Fri Feb 13 2026 16:41:10 for RESPOND by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
   </ul>
 </div>
 </body>
