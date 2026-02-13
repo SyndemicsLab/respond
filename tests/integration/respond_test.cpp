@@ -4,7 +4,7 @@
 // Created Date: 2026-02-06                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-02-12                                                  //
+// Last Modified: 2026-02-13                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
@@ -119,11 +119,13 @@ TEST_F(RespondTest, RunSimulationOneStep) {
     }
 
     auto state_history = mm_histories.at("state");
-    ASSERT_EQ(state_history.size(), 1);
+    // 2 because it carries the initial state and 1 step
+    ASSERT_EQ(state_history.size(), 2);
 
     Eigen::Vector3d final_state;
+    ASSERT_TRUE(state_history[0].isApprox(init_state));
     final_state << 0.76715528791564891, 0.72320370216816077, 1.037712429738102;
-    ASSERT_TRUE(state_history[0].isApprox(final_state));
+    ASSERT_TRUE(state_history[1].isApprox(final_state));
 }
 
 TEST_F(RespondTest, CreateDefaultHistories) {
