@@ -4,7 +4,7 @@
 // Created Date: 2025-03-06                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-02-09                                                  //
+// Last Modified: 2026-02-17                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025-2026 Syndemics Lab at Boston Medical Center             //
@@ -15,7 +15,7 @@
 
 #define RESPOND_VER_MAJOR 2
 #define RESPOND_VER_MINOR 3
-#define RESPOND_VER_PATCH 0
+#define RESPOND_VER_PATCH 1
 
 #define RESPOND_TO_VERSION(major, minor, patch)                                \
     (major * 10000 + minor * 100 + patch)
