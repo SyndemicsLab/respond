@@ -3,7 +3,7 @@ name: Respond Unit Testing
 
 on:
     push:
-        branches: ["main", "hotfix/windows-build"]
+        branches: ["main"]
     pull_request:
         branches: ["main"]
 
