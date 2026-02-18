@@ -99,7 +99,7 @@ target_link_libraries(${PROJECT_NAME}
 If you would prefer a single bash script to add the project to the build tree, run:
 
 ```shell
-./tools/build.sh
+tools/build.sh
 ```
 
 ## Running RESPOND
