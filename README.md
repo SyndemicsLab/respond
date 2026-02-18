@@ -1,13 +1,9 @@
-# :warning: NOTICE :warning:
-
-This repository is under active development and is not currently in a state for public use. If you wish to use RESPOND, please refer to release [v0.3.0](https://github.com/SyndemicsLab/respond/releases/tag/v0.3.0) for a functioning executable.
-
 # RESPOND: An Opioid Use Disorder State Transition Model
 
 <a href="https://www.syndemicslab.org/respond"><img align="right" src="https://github.com/SyndemicsLab/.github/blob/main/profile/images/RESPOND.png" alt="RESPOND Logo" height="120" /></a>
 
 [![Docs](https://github.com/SyndemicsLab/respond/actions/workflows/deploy-docs.yml/badge.svg)](https://github.com/SyndemicsLab/respond/actions/workflows/deploy-docs.yml)
-[![Tests](https://github.com/SyndemicsLab/respond/actions/workflows/test-ubuntu.yml/badge.svg)](https://github.com/SyndemicsLab/respond/actions/workflows/unit-testing.yml)
+[![Tests](https://github.com/SyndemicsLab/respond/actions/workflows/unit-testing.yml/badge.svg)](https://github.com/SyndemicsLab/respond/actions/workflows/unit-testing.yml)
 ![Endpoint Badge](https://img.shields.io/endpoint?url=https%3A%2F%2Fgist.githubusercontent.com%2FMJC598%2F10e746e28df5d23e91689b01493435a0%2Fraw%2Frespond-cobertura-coverage.json)
 
 This is the home of the [RESPOND model](https://syndemicslab.github.io/respond) [1], first created by the [Syndemics Lab](https://www.syndemicslab.org) in 2018, now rewritten with a focus on four primary goals:
@@ -73,7 +69,7 @@ From there, a simple
 
 ```bash
 sudo dpkg -i respond-xxx.deb
-```  
+```
 
 command will result in the appropriate installation. The only files added are the public headers, the compiled static library, and the CMake configuration files.
 
@@ -103,8 +99,19 @@ target_link_libraries(${PROJECT_NAME}
 If you would prefer a single bash script to add the project to the build tree, run:
 
 ```shell
-./tools/build.sh
+tools/build.sh
 ```
+
+## Running RESPOND
+
+The recommended way to use the RESPOND model is via the [Python
+package][respondpy], with [source on GitHub][respondpy-git].
+
+If you wish to use RESPOND via a local executable, please refer to release
+[v0.3.0](https://github.com/SyndemicsLab/respond/releases/tag/v0.3.0).
 
 ## References
 1. Madushani RWMA, Wang J, Weitz M, Linas BP, White LF, Chrysanthopoulou SA (2025) Empirical calibration of a simulation model of opioid use disorder. PLoS ONE 20(3): e0310763. https://doi.org/10.1371/journal.pone.0310763
+
+[respondpy]: https://pypi.org/project/respondpy/
+[respondpy-git]: https://github.com/SyndemicsLab/respondpy
