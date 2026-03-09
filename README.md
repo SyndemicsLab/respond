@@ -5,6 +5,7 @@
 [![Docs](https://github.com/SyndemicsLab/respond/actions/workflows/deploy-docs.yml/badge.svg)](https://github.com/SyndemicsLab/respond/actions/workflows/deploy-docs.yml)
 [![Tests](https://github.com/SyndemicsLab/respond/actions/workflows/unit-testing.yml/badge.svg)](https://github.com/SyndemicsLab/respond/actions/workflows/unit-testing.yml)
 ![Endpoint Badge](https://img.shields.io/endpoint?url=https%3A%2F%2Fgist.githubusercontent.com%2FMJC598%2F10e746e28df5d23e91689b01493435a0%2Fraw%2Frespond-cobertura-coverage.json)
+[![DOI](https://zenodo.org/badge/670613861.svg)](https://doi.org/10.5281/zenodo.18903324)
 
 This is the home of the [RESPOND model](https://syndemicslab.github.io/respond) [1], first created by the [Syndemics Lab](https://www.syndemicslab.org) in 2018, now rewritten with a focus on four primary goals:
 
