@@ -1,0 +1,30 @@
+cff-version: 1.2.0
+title: "RESPOND: Researching Effective Strategies to Prevent Opioid Use Disorder"
+version: 2.3.2
+license: "AGPLv3"
+type: software
+abstract: "This is the RESPOND simulation model built and used by the Syndemics Lab at Boston Medical Center. It implements a population level Markov model to study cost effectiveness impacts of policy decisions surrounding substance use."
+message: "If you use this software, please cite it as below."
+authors:
+  - given-names: Matthew
+    family-names: Carroll
+    affiliation: Syndemics Lab at Boston Medical Center
+    orcid: "https://orcid.org/0009-0006-9869-2763"
+  - given-names: Dimitri
+    family-names: Baptiste
+    affiliation: Syndemics Lab at Boston Medical Center
+    orcid: "https://orcid.org/0009-0003-3223-4346"
+  - given-names: Andrew
+    family-names: Clark
+    affiliation: Syndemics Lab at Boston Medical Center
+    orcid: ""
+  - given-names: Hana
+    family-names: Zwick
+    affiliation: Syndemics Lab at Boston Medical Center
+    orcid: "https://orcid.org/0009-0006-7128-4735"
+
+keywords:
+  - modeling
+  - substance use disorder
+  - health economics
+  - decision science
