@@ -15,16 +15,24 @@
 #include <memory>
 #include <string>
 
+#include <respond/logging.hpp>
+#include <spdlog/spdlog.h>
+
 namespace respond {
 Eigen::VectorXd Migration::Execute(const Eigen::VectorXd &state,
                                    std::map<std::string, History> &h) const {
     if (GetTransitionMatrices().size() != 1) {
-        throw std::runtime_error(
-            "Migration Transitions must have 1 Transition Matrix.");
+        std::string error_msg = "Migration error: Expected 1 transition matrix, got " +
+                                std::to_string(GetTransitionMatrices().size());
+        LogError(GetLogName(), error_msg);
+        throw std::runtime_error(error_msg);
     }
     if (state.size() != GetTransitionMatrices()[0].size()) {
-        throw std::runtime_error("Unable to add Migration Transition Vector to "
-                                 "State Vector, mismatched sizes.");
+        std::string error_msg = "Migration error: State size (" +
+                                std::to_string(state.size()) + ") does not match transition matrix size (" +
+                                std::to_string(GetTransitionMatrices()[0].size()) + ")";
+        LogError(GetLogName(), error_msg);
+        throw std::runtime_error(error_msg);
     }
     auto subtracted = state + GetTransitionMatrices()[0];
     auto zero_stop = subtracted.array().max(

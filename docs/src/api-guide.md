@@ -325,7 +325,153 @@ respond::Simulation sim2 = sim1;  // All models are cloned
 // Modifications to sim2 don't affect sim1
 ```
 
-## Troubleshooting
+## Parallel Execution with Shared Logging
+
+When running multiple models in parallel, all loggers can safely write to the same file using RESPOND's shared sink functionality. This ensures thread-safe logging without file corruption.
+
+### Basic Parallel Logging Setup
+
+```cpp
+#include <respond/logging.hpp>
+#include <respond/model.hpp>
+#include <thread>
+#include <vector>
+
+int main() {
+    // Configure shared logging (all loggers write to same file)
+    respond::SetLogPattern(respond::LogPattern::kThreadSafe);
+    respond::SetFlushInterval(3);  // Auto-flush every 3 seconds
+    
+    // Create multiple loggers that share the same file sink
+    respond::CreateSharedLogger("model_1");
+    respond::CreateSharedLogger("model_2");
+    respond::CreateSharedLogger("model_3");
+    
+    // Now multiple threads can safely write to shared log
+    return 0;
+}
+```
+
+### Running Models in Parallel with Unified Logging
+
+```cpp
+#include <respond/logging.hpp>
+#include <respond/simulation.hpp>
+#include <thread>
+#include <vector>
+
+void RunSimulation(int id, const std::string& log_file) {
+    std::string logger_name = "model_" + std::to_string(id);
+    
+    // Create logger that uses shared sink
+    respond::CreateSharedLogger(logger_name);
+    
+    // Create and run simulation
+    respond::Simulation sim(logger_name);
+    auto model = respond::Model::Create("model", logger_name);
+    
+    // Configure model...
+    Eigen::VectorXd initial_state = Eigen::VectorXd::Zero(50);
+    initial_state(0) = 1000;
+    model->SetState(initial_state);
+    
+    // Add transitions...
+    sim.AddModel(model);
+    
+    // Run simulation
+    for (int t = 0; t < 52; ++t) {
+        sim.Run();
+    }
+    
+    // Flush logs for this model
+    respond::FlushAllLoggers();
+}
+
+int main() {
+    // Setup shared logging once
+    respond::SetLogPattern(respond::LogPattern::kThreadSafe);
+    respond::SetFlushInterval(0);  // Flush immediately
+    
+    const int num_threads = 4;
+    std::vector<std::thread> threads;
+    
+    // Launch parallel simulations
+    for (int i = 0; i < num_threads; ++i) {
+        threads.emplace_back(RunSimulation, i, "unified.log");
+    }
+    
+    // Wait for all to complete
+    for (auto& t : threads) {
+        t.join();
+    }
+    
+    // All output safely written to unified.log
+    return 0;
+}
+```
+
+### Shared Logger Pattern Options
+
+The `LogPattern` enum controls log format for all shared loggers:
+
+- **`kSimple`**: Minimal format `[logger_name] message`
+- **`kStandard`**: Includes time and thread ID (default)
+- **`kDetailed`**: Full timestamp with milliseconds; best for debugging
+- **`kThreadSafe`**: Optimized for concurrent writes with sequence numbers
+
+```cpp
+// Change pattern anytime
+respond::SetLogPattern(respond::LogPattern::kDetailed);
+
+// Query current pattern
+auto current = respond::GetLogPattern();
+
+// Get pattern as string for programmatic use
+std::string pattern_str = respond::LoggingConfig::GetPatternString(current);
+```
+
+### Monitoring Shared Loggers
+
+```cpp
+// Check if logger exists
+bool exists = (respond::CheckLoggerExists("model_1") == respond::CreationStatus::kExists);
+
+// Get detailed logger information
+std::string info = respond::GetLoggerInfo("model_1");
+// Returns: "Logger: model_1\n  Level: debug\n  Sinks: 1"
+
+// Set individual logger level
+respond::SetLoggerLevel("model_1", spdlog::level::info);
+
+// Flush all loggers immediately
+respond::FlushAllLoggers();
+```
+
+### Thread-Safe File Sink Management
+
+The `CreateSharedFileSink` function creates file sinks that are automatically cached and reused:
+
+```cpp
+// Create or get cached sink for filepath
+auto sink = respond::CreateSharedFileSink("logs/simulation.log");
+// If called again with same path, returns existing sink (no duplicate file handles)
+
+// Multiple loggers using same sink (no file conflicts)
+respond::CreateSharedLogger("logger_1");  // Uses default sink
+respond::CreateSharedLogger("logger_2");  // Uses same sink
+// Both logger_1 and logger_2 write to same file safely
+```
+
+### Best Practices for Parallel Logging
+
+1. **Call `SetLogPattern()` once** at program startup, before creating any loggers
+2. **Call `CreateSharedLogger()` instead of `CreateFileLogger()`** when using parallel execution
+3. **Use `kThreadSafe` pattern** when logs will have high concurrent write volume
+4. **Set `FlushInterval(0)`** for critical logging; use `FlushInterval(3-5)` for performance
+5. **Call `FlushAllLoggers()`** at end of main before exit to ensure all writes complete
+6. **Monitor logger levels** with `GetLoggerInfo()` when debugging multi-model runs
+
+
 
 - **Assertion failures**: Ensure matrix dimensions match state vector size before adding to transitions
 - **Empty histories**: Call `CreateDefaultHistories()` after model setup or manually add histories

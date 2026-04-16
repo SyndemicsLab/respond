@@ -15,22 +15,29 @@
 #include <memory>
 #include <string>
 
+#include <respond/logging.hpp>
+#include <spdlog/spdlog.h>
+
 namespace respond {
 Eigen::VectorXd Behavior::Execute(const Eigen::VectorXd &state,
                                   std::map<std::string, History> &h) const {
     if (GetTransitionMatrices().size() != 1) {
-        throw std::runtime_error(
-            "Behavior Transitions must have 1 Transition Matrix.");
+        std::string error_msg =
+            "Behavior error: Expected 1 transition matrix, got " +
+            std::to_string(GetTransitionMatrices().size());
+        LogError(GetLogName(), error_msg);
+        throw std::runtime_error(error_msg);
     }
     if (state.rows() != GetTransitionMatrices()[0].cols()) {
         std::stringstream ss;
-        ss << "Unable to multiply behavior transition with "
-              "state, mismatched sizes. State size is (";
-        ss << state.rows() << ", " << state.cols();
-        ss << ") and transition size is (" << GetTransitionMatrices()[0].rows()
-           << ", ";
-        ss << GetTransitionMatrices()[0].cols() << ").";
-        throw std::runtime_error(ss.str());
+        ss << "Behavior error: State dimension mismatch. State size is ("
+           << state.rows() << ", " << state.cols()
+           << ") but transition matrix expects ("
+           << GetTransitionMatrices()[0].rows() << ", "
+           << GetTransitionMatrices()[0].cols() << ")";
+        std::string error_msg = ss.str();
+        LogError(GetLogName(), error_msg);
+        throw std::runtime_error(error_msg);
     }
     auto new_state = GetTransitionMatrices()[0] * state;
     return new_state;

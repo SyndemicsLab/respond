@@ -15,17 +15,25 @@
 #include <memory>
 #include <string>
 
+#include <respond/logging.hpp>
+#include <spdlog/spdlog.h>
+
 namespace respond {
 Eigen::VectorXd Overdose::Execute(const Eigen::VectorXd &state,
                                   std::map<std::string, History> &h) const {
     if (GetTransitionMatrices().size() != 2) {
-        throw std::runtime_error(
-            "Overdose Transitions must have 2 Transition Matrices.");
+        std::string error_msg = "Overdose error: Expected 2 transition matrices, got " + 
+                                std::to_string(GetTransitionMatrices().size());
+        LogError(GetLogName(), error_msg);
+        throw std::runtime_error(error_msg);
     }
 
     if (state.size() != GetTransitionMatrices()[0].size()) {
-        throw std::runtime_error("Overdose Vector is not the same "
-                                 "size as the state vector.");
+        std::string error_msg = "Overdose error: State size (" + 
+                                std::to_string(state.size()) + ") does not match transition matrix size (" +
+                                std::to_string(GetTransitionMatrices()[0].size()) + ")";
+        LogError(GetLogName(), error_msg);
+        throw std::runtime_error(error_msg);
     }
     Eigen::VectorXd overdoses =
         state.cwiseProduct(GetTransitionMatrices()[0]); // overdose
@@ -35,16 +43,21 @@ Eigen::VectorXd Overdose::Execute(const Eigen::VectorXd &state,
     }
 
     if (overdoses.size() != GetTransitionMatrices()[1].size()) {
-        throw std::runtime_error("Fatal Overdose Vector is not the same "
-                                 "size as the state vector.");
+        std::string error_msg = "Overdose error: Fatal overdose vector size (" +
+                                std::to_string(overdoses.size()) + ") does not match transition matrix size (" +
+                                std::to_string(GetTransitionMatrices()[1].size()) + ")";
+        LogError(GetLogName(), error_msg);
+        throw std::runtime_error(error_msg);
     }
     auto fods = overdoses.cwiseProduct(GetTransitionMatrices()[1]); // negatives
     if (h.find("fatal_overdose") != h.end()) {
         h["fatal_overdose"].AddState(fods);
     }
     if (!(state.array() >= fods.array()).all()) {
-        std::runtime_error(
-            "The state is not larger than the estimated fatal overdoses!");
+        std::string error_msg = "Overdose error: State values are less than estimated fatal overdoses. " +
+                                std::to_string((state.array() < fods.array()).count()) + " elements affected";
+        LogError(GetLogName(), error_msg);
+        throw std::runtime_error(error_msg);
     }
     auto new_state = state - fods; // remove fods from state
     return new_state;
