@@ -22,48 +22,83 @@
 #include <respond/transition.hpp>
 
 namespace respond {
+/// @brief Abstract base class representing a state transition model.
+/// Models manage a state vector, execute transitions, and maintain history of
+/// state changes. Subclasses must implement state management, transition
+/// execution, and history tracking.
 class Model {
 public:
-    // default destructor
+    /// @brief Virtual destructor for proper polymorphic cleanup.
     virtual ~Model() = default;
-    // anticipate making a copy of the vector
-    virtual void SetState(const Eigen::VectorXd &) = 0;
-    // return const & to limit to observation of the state
+
+    /// @brief Sets the current state of the model.
+    /// @param state The state vector to set. A copy is made internally.
+    virtual void SetState(const Eigen::VectorXd &state) = 0;
+
+    /// @brief Retrieves the current state of the model.
+    /// @return A copy of the current state vector (limited to observation).
     virtual Eigen::VectorXd GetState() const = 0;
-    // manipulate the state vector
+
+    /// @brief Executes all registered transitions on the current state.
+    /// Transitions are applied in the order they were added and may modify
+    /// history.
     virtual void RunTransitions() = 0;
-    // assume ownership of the Transition
+
+    /// @brief Adds a transition to the model.
+    /// @param t A unique_ptr to a Transition object. The model assumes
+    /// ownership.
     virtual void AddTransition(const std::unique_ptr<Transition> &t) = 0;
-    // get the names of each transition we own
+
+    /// @brief Retrieves the names of all registered transitions.
+    /// @return Vector of transition names in the order they were added.
     virtual std::vector<std::string> GetTransitionNames() const = 0;
-    // delete all the Transition unique_ptrs by clearing the vector
+
+    /// @brief Clears all registered transitions.
+    /// Deletes all stored Transition unique_ptrs.
     virtual void ClearTransitions() = 0;
-    // return const & to limit to observation of the state. Need copy ability of
-    // History, but let that be the History's responsibility
+
+    /// @brief Retrieves the history records for all state variables.
+    /// @return A map of history names to History objects containing state
+    /// trajectories.
     virtual std::map<std::string, History> GetHistories() const = 0;
 
+    /// @brief Creates default history tracking for the model.
+    /// This method initializes standard history records based on the model's
+    /// state.
     virtual void CreateDefaultHistories() = 0;
 
+    /// @brief Sets the history records for the model.
+    /// @param h A map of history names to History objects.
     virtual void SetHistories(const std::map<std::string, History> &h) = 0;
-    // getter for model name
+
+    /// @brief Retrieves the name identifier for this model.
+    /// @return The model's name as a string.
     virtual std::string GetModelName() const = 0;
-    // getter for log name
+
+    /// @brief Retrieves the logger name used by this model.
+    /// @return The name of the associated logger.
     virtual std::string GetLogName() const = 0;
 
-    /// @brief Factory method to create a Markov instance.
-    /// @param log_name Name of the logger to write errors to.
-    /// @return An instance of Markov.
+    /// @brief Factory method to create a Model instance.
+    /// @param name The name identifier for the model to create.
+    /// @param log_name Name of the logger for this model (default: "console").
+    /// @return A unique_ptr to the newly created Model instance.
     static std::unique_ptr<Model>
     Create(const std::string &name, const std::string &log_name = "console");
 
-    // Copy Control
+    /// @brief Deleted copy constructor (models are non-copyable by public API).
     Model(const Model &) = delete;
+    /// @brief Deleted copy assignment operator (models are non-copyable by
+    /// public API).
     Model &operator=(const Model &) = delete;
+
+    /// @brief Creates a deep copy of this model.
+    /// @return A unique_ptr to an independent copy of this model.
     virtual std::unique_ptr<Model> clone() const = 0;
 
 protected:
-    // default constructor required for subclasses, but do not want people to
-    // use this
+    /// @brief Protected default constructor for subclass initialization.
+    /// Not intended for direct public use.
     Model() = default;
 };
 } // namespace respond

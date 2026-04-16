@@ -34,10 +34,14 @@ jobs:
                   echo "Building Linux"
                   cmake --workflow --preset package-release-debian-${{matrix.build-variant}}-workflow
               shell: bash
+            - name: Create a zip file with specific files/folders
+              shell: powershell
+              run: |
+                  Compress-Archive -Path "${{ github.workspace }}/build/${{ matrix.build-variant }}/*.deb" -DestinationPath "${{ matrix.build-variant }}.zip"
             - name: Upload Debian Package to Release
               uses: svenstaro/upload-release-action@v2
               with:
                   repo_token: ${{ secrets.GITHUB_TOKEN }}
-                  file: ${{ github.workspace }}/build/${{ matrix.build-variant }}/*.deb
+                  file: "${{ matrix.build-variant }}.zip"
                   file_glob: true
                   tag: ${{ github.ref }}

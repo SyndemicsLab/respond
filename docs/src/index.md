@@ -51,4 +51,41 @@ For tests we require:
 
 As part of our automated workflow, we provide several different installable packages as part of each release. They can be found on each [tagged release on our GitHub](https://github.com/SyndemicsLab/respond/tags). Currently we provide RPM and Debian installers for static and shared libraries, and a NSIS windows static library installer. For a step-by-step procedure of building the package from source, please check the [installation documentation](installation.md).
 
+## Documentation
+
+This documentation covers both user and developer perspectives:
+
+- **[Installation](installation.md)** - Build and installation instructions
+- **[Motivation](motivation.md)** - Model design and goals
+- **[Architecture and Design](architecture.md)** - Design patterns, component architecture, and extensibility
+- **[C++ API Guide](api-guide.md)** - Developer guide for using RESPOND as a library
+- **[Data Management](data.md)** - Configuration and data requirements
+- **[Running the Model](run.md)** - Executing simulations
+- **[Math Background](math.md)** - Mathematical foundations
+- **[Limitations](limitations.md)** - Known constraints and future work
+- **[FAQs](faq.md)** - Frequently asked questions
+
+## Quick Start for Developers
+
+To use RESPOND in your C++ project:
+
+```cmake
+include(FetchContent)
+FetchContent_Declare(
+    respond
+    GIT_REPOSITORY https://github.com/SyndemicsLab/respond.git
+    GIT_TAG main
+)
+option(RESPOND_INSTALL "Enable install for respond project" ON)
+option(RESPOND_BUILD_TESTS "Disable testing for RESPOND" OFF)
+FetchContent_MakeAvailable(respond)
+
+target_link_libraries(${PROJECT_NAME}
+    PRIVATE
+        respond::respond_model
+)
+```
+
+Then see the [C++ API Guide](api-guide.md) for usage examples and best practices.
+
 Next: [Motivation](motivation.md)
