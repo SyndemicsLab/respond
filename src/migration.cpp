@@ -22,15 +22,17 @@ namespace respond {
 Eigen::VectorXd Migration::Execute(const Eigen::VectorXd &state,
                                    std::map<std::string, History> &h) const {
     if (GetTransitionMatrices().size() != 1) {
-        std::string error_msg = "Migration error: Expected 1 transition matrix, got " +
-                                std::to_string(GetTransitionMatrices().size());
+        std::string error_msg =
+            "Migration error: Expected 1 transition matrix, got " +
+            std::to_string(GetTransitionMatrices().size());
         LogError(GetLogName(), error_msg);
         throw std::runtime_error(error_msg);
     }
     if (state.size() != GetTransitionMatrices()[0].size()) {
-        std::string error_msg = "Migration error: State size (" +
-                                std::to_string(state.size()) + ") does not match transition matrix size (" +
-                                std::to_string(GetTransitionMatrices()[0].size()) + ")";
+        std::string error_msg =
+            "Migration error: State size (" + std::to_string(state.size()) +
+            ") does not match transition matrix size (" +
+            std::to_string(GetTransitionMatrices()[0].size()) + ")";
         LogError(GetLogName(), error_msg);
         throw std::runtime_error(error_msg);
     }

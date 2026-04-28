@@ -22,16 +22,18 @@ namespace respond {
 Eigen::VectorXd Overdose::Execute(const Eigen::VectorXd &state,
                                   std::map<std::string, History> &h) const {
     if (GetTransitionMatrices().size() != 2) {
-        std::string error_msg = "Overdose error: Expected 2 transition matrices, got " + 
-                                std::to_string(GetTransitionMatrices().size());
+        std::string error_msg =
+            "Overdose error: Expected 2 transition matrices, got " +
+            std::to_string(GetTransitionMatrices().size());
         LogError(GetLogName(), error_msg);
         throw std::runtime_error(error_msg);
     }
 
     if (state.size() != GetTransitionMatrices()[0].size()) {
-        std::string error_msg = "Overdose error: State size (" + 
-                                std::to_string(state.size()) + ") does not match transition matrix size (" +
-                                std::to_string(GetTransitionMatrices()[0].size()) + ")";
+        std::string error_msg =
+            "Overdose error: State size (" + std::to_string(state.size()) +
+            ") does not match transition matrix size (" +
+            std::to_string(GetTransitionMatrices()[0].size()) + ")";
         LogError(GetLogName(), error_msg);
         throw std::runtime_error(error_msg);
     }
@@ -43,9 +45,11 @@ Eigen::VectorXd Overdose::Execute(const Eigen::VectorXd &state,
     }
 
     if (overdoses.size() != GetTransitionMatrices()[1].size()) {
-        std::string error_msg = "Overdose error: Fatal overdose vector size (" +
-                                std::to_string(overdoses.size()) + ") does not match transition matrix size (" +
-                                std::to_string(GetTransitionMatrices()[1].size()) + ")";
+        std::string error_msg =
+            "Overdose error: Fatal overdose vector size (" +
+            std::to_string(overdoses.size()) +
+            ") does not match transition matrix size (" +
+            std::to_string(GetTransitionMatrices()[1].size()) + ")";
         LogError(GetLogName(), error_msg);
         throw std::runtime_error(error_msg);
     }
@@ -54,8 +58,11 @@ Eigen::VectorXd Overdose::Execute(const Eigen::VectorXd &state,
         h["fatal_overdose"].AddState(fods);
     }
     if (!(state.array() >= fods.array()).all()) {
-        std::string error_msg = "Overdose error: State values are less than estimated fatal overdoses. " +
-                                std::to_string((state.array() < fods.array()).count()) + " elements affected";
+        std::string error_msg =
+            "Overdose error: State values are less than estimated fatal "
+            "overdoses. " +
+            std::to_string((state.array() < fods.array()).count()) +
+            " elements affected";
         LogError(GetLogName(), error_msg);
         throw std::runtime_error(error_msg);
     }

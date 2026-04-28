@@ -44,10 +44,11 @@ TransitionFactory::CreateTransition(const std::string &type,
     } else if (type_copy == "background_death") {
         return BackgroundDeath::Create(type, log_name);
     }
-    
+
     // Invalid transition type
-    std::string error_msg = "Invalid transition type: '" + type + 
-                           "'. Supported types: migration, behavior, intervention, overdose, background_death";
+    std::string error_msg = "Invalid transition type: '" + type +
+                            "'. Supported types: migration, behavior, "
+                            "intervention, overdose, background_death";
     LogError(log_name, error_msg);
     return nullptr;
 }

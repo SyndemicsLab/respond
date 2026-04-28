@@ -125,6 +125,23 @@
             ]
         },
         {
+            "name": "benchmark-linux-static-config",
+            "displayName": "Benchmark, Linux, Static",
+            "description": "Target a linux distro to build release benchmark artifacts",
+            "inherits": [
+                "release-config",
+                "linux-config",
+                "static-config",
+                "default-respond-config"
+            ],
+            "cacheVariables": {
+                "RESPOND_BUILD_BENCH": "ON",
+                "RESPOND_BUILD_TESTS": "OFF",
+                "RESPOND_BUILD_DOCS": "OFF",
+                "RESPOND_INSTALL": "OFF"
+            }
+        },
+        {
             "name": "debug-microsoft-shared-config",
             "displayName": "Debug, Microsoft, Shared",
             "description": "Target a Microsoft distro to create a debuggable shared library",
@@ -198,6 +215,12 @@
             "displayName": "Debug Linux Static Build",
             "inherits": "default-build",
             "configurePreset": "debug-linux-static-config"
+        },
+        {
+            "name": "benchmark-linux-static-build",
+            "displayName": "Benchmark Linux Static Build",
+            "inherits": "default-build",
+            "configurePreset": "benchmark-linux-static-config"
         },
         {
             "name": "release-microsoft-shared-build",
@@ -408,6 +431,21 @@
                 {
                     "type": "test",
                     "name": "debug-microsoft-static-test"
+                }
+            ]
+        },
+        {
+            "name": "benchmark-linux-static-workflow",
+            "displayName": "Benchmark, Linux, Static",
+            "description": "Build benchmark artifacts for performance testing.",
+            "steps": [
+                {
+                    "type": "configure",
+                    "name": "benchmark-linux-static-config"
+                },
+                {
+                    "type": "build",
+                    "name": "benchmark-linux-static-build"
                 }
             ]
         },

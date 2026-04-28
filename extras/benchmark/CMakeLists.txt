@@ -1,19 +1,13 @@
 cmake_minimum_required(VERSION 3.27)
-project(respondBench CXX)
-
-find_package(benchmark REQUIRED)
-find_package(spdlog REQUIRED)
+project(respond_benchmark LANGUAGES CXX)
 
 add_executable(${PROJECT_NAME}
-  src/BENCHMARK_respond.cpp
+    src/benchmark_respond.cpp
 )
 
-target_include_directories(respond PRIVATE
-  ${PROJECT_SOURCE_DIR}/lib/DataManagement/include
-)
+target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_20)
 
-target_link_libraries(${PROJECT_NAME} PUBLIC benchmark::benchmark)
-target_link_libraries(${PROJECT_NAME} PUBLIC spdlog::spdlog)
-target_link_libraries(${PROJECT_NAME} PUBLIC matrixify)
-target_link_libraries(${PROJECT_NAME} PUBLIC simrunner)
-target_link_libraries(${PROJECT_NAME} PUBLIC DataManagement)
+target_link_libraries(${PROJECT_NAME}
+    PRIVATE
+        respond::respond_model
+)

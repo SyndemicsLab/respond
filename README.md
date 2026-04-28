@@ -22,12 +22,13 @@ The [original RESPOND model](https://github.com/SyndemicsLab/RESPONDv1/tree/main
 
 RESPOND makes full use of the CMake build system. It is a common tool used throughout the C++ user-base and we utilize it for dependency management, linking, and testing. As C++ has poor package management, we intentionally decided to move our focus away from tools such as conan and vcpkg and stay with pure CMake. Not to say we would never publish with such package managers, but it is not a core focus of the refactor/engineering team.
 
-We natively support 4 different build workflows with the `CMakePresets.json` file. They are:
+We natively support 5 different build workflows with the `CMakePresets.json` file. They are:
 
 1. `test-debug-gcc-linux-shared-workflow`
 2. `test-debug-gcc-linux-static-workflow`
 3. `package-release-gcc-linux-shared-workflow`
 4. `package-release-gcc-linux-static-workflow`
+5. `benchmark-linux-static-workflow`
 
 These workflows follow the pattern `{function}-{build}-gcc-linux-{library}-workflow` and have corresponding presets for build, test, and package. As we adopt more operating systems and compilers we will expand beyond gcc and linux.
 
