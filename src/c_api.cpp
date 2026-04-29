@@ -97,9 +97,8 @@ respond_status BuildMatrix(const double *data, size_t rows, size_t cols,
                         RESPOND_STATUS_INVALID_ARGUMENT);
     }
 
-    *out_matrix =
-        Eigen::MatrixXd::Zero(static_cast<Eigen::Index>(rows),
-                              static_cast<Eigen::Index>(cols));
+    *out_matrix = Eigen::MatrixXd::Zero(static_cast<Eigen::Index>(rows),
+                                        static_cast<Eigen::Index>(cols));
 
     for (size_t r = 0; r < rows; ++r) {
         for (size_t c = 0; c < cols; ++c) {
@@ -241,8 +240,8 @@ respond_status respond_model_run_transitions(respond_model_handle *model) {
     }
 }
 
-respond_status respond_model_create_default_histories(
-    respond_model_handle *model) {
+respond_status
+respond_model_create_default_histories(respond_model_handle *model) {
     ClearError();
     try {
         auto status = CheckModel(model);
@@ -259,8 +258,9 @@ respond_status respond_model_create_default_histories(
     }
 }
 
-respond_status respond_model_add_transition(
-    respond_model_handle *model, const respond_transition_handle *transition) {
+respond_status
+respond_model_add_transition(respond_model_handle *model,
+                             const respond_transition_handle *transition) {
     ClearError();
     try {
         auto model_status = CheckModel(model);
@@ -311,9 +311,8 @@ respond_status respond_transition_create(const char *type, const char *log_name,
         std::string logger_name = (log_name == nullptr) ? "console" : log_name;
 
         auto handle = std::make_unique<respond_transition_handle>();
-        handle->transition =
-            respond::TransitionFactory::CreateTransition(transition_type,
-                                                         logger_name);
+        handle->transition = respond::TransitionFactory::CreateTransition(
+            transition_type, logger_name);
         if (!handle->transition) {
             return SetError("Transition creation returned null.");
         }
@@ -421,8 +420,8 @@ respond_status respond_simulation_create(const char *log_name,
 
 void respond_simulation_destroy(respond_simulation_handle *sim) { delete sim; }
 
-respond_status respond_simulation_add_model(
-    respond_simulation_handle *sim, const respond_model_handle *model) {
+respond_status respond_simulation_add_model(respond_simulation_handle *sim,
+                                            const respond_model_handle *model) {
     ClearError();
     try {
         auto sim_status = CheckSimulation(sim);
@@ -499,9 +498,10 @@ respond_simulation_get_model_count(const respond_simulation_handle *sim,
     }
 }
 
-respond_status respond_simulation_get_model_state_size(
-    const respond_simulation_handle *sim, size_t model_index,
-    size_t *out_length) {
+respond_status
+respond_simulation_get_model_state_size(const respond_simulation_handle *sim,
+                                        size_t model_index,
+                                        size_t *out_length) {
     ClearError();
     try {
         auto status = CheckSimulation(sim);
@@ -530,9 +530,10 @@ respond_status respond_simulation_get_model_state_size(
     }
 }
 
-respond_status respond_simulation_get_model_state(
-    const respond_simulation_handle *sim, size_t model_index, double *out_data,
-    size_t out_data_length) {
+respond_status
+respond_simulation_get_model_state(const respond_simulation_handle *sim,
+                                   size_t model_index, double *out_data,
+                                   size_t out_data_length) {
     ClearError();
     try {
         auto status = CheckSimulation(sim);
