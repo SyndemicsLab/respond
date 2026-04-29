@@ -12,6 +12,7 @@
 #ifndef RESPOND_RESPOND_HPP_
 #define RESPOND_RESPOND_HPP_
 
+#include <respond/c_api.h>
 #include <respond/cost_effectiveness.hpp>
 #include <respond/history.hpp>
 #include <respond/logging.hpp>

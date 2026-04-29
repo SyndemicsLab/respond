@@ -211,6 +211,66 @@ auto model = respond::Model::Create("my_model", "my_logger");
 respond::CreateFileLogger("my_logger", "path/to/logfile.log");
 ```
 
+## C ABI for FFI Integrations
+
+RESPOND also includes a small C ABI in `respond/c_api.h` for foreign function
+interface (FFI) consumers that do not want to bind directly to C++ classes.
+This layer is language-agnostic and can be used by R, Python, Julia, Rust, or
+any runtime with C interop.
+
+### Design Notes
+
+- Uses opaque handles (`respond_model_handle`, `respond_transition_handle`,
+  `respond_simulation_handle`)
+- Returns explicit status codes (`respond_status`) instead of throwing
+  exceptions
+- Captures the most recent thread-local error via
+  `respond_get_last_error_message()`
+- Accepts contiguous `double` buffers for vectors and row-major matrices
+
+### Minimal C Example
+
+```c
+#include <respond/c_api.h>
+#include <stdio.h>
+
+int main(void) {
+    respond_model_handle *model = NULL;
+    respond_transition_handle *behavior = NULL;
+
+    if (respond_model_create("markov", "console", &model) != RESPOND_STATUS_OK) {
+        fprintf(stderr, "%s\n", respond_get_last_error_message());
+        return 1;
+    }
+
+    if (respond_transition_create("behavior", "console", &behavior) != RESPOND_STATUS_OK) {
+        fprintf(stderr, "%s\n", respond_get_last_error_message());
+        respond_model_destroy(model);
+        return 1;
+    }
+
+    const double matrix[9] = {
+        0.3, 0.2, 0.1,
+        0.4, 0.2, 0.1,
+        0.3, 0.4, 0.1
+    };
+    const double state[3] = {1.3, 1.1, 1.8};
+    double out_state[3] = {0.0, 0.0, 0.0};
+
+    if (respond_model_set_state(model, state, 3) != RESPOND_STATUS_OK ||
+        respond_transition_add_matrix(behavior, matrix, 3, 3) != RESPOND_STATUS_OK ||
+        respond_model_add_transition(model, behavior) != RESPOND_STATUS_OK ||
+        respond_model_run_transitions(model) != RESPOND_STATUS_OK ||
+        respond_model_get_state(model, out_state, 3) != RESPOND_STATUS_OK) {
+        fprintf(stderr, "%s\n", respond_get_last_error_message());
+    }
+
+    respond_transition_destroy(behavior);
+    respond_model_destroy(model);
+    return 0;
+}
+```
+
 ## Complete Example
 
 ```cpp
@@ -471,7 +531,7 @@ respond::CreateSharedLogger("logger_2");  // Uses same sink
 5. **Call `FlushAllLoggers()`** at end of main before exit to ensure all writes complete
 6. **Monitor logger levels** with `GetLoggerInfo()` when debugging multi-model runs
 
-
+### Troubleshooting
 
 - **Assertion failures**: Ensure matrix dimensions match state vector size before adding to transitions
 - **Empty histories**: Call `CreateDefaultHistories()` after model setup or manually add histories
