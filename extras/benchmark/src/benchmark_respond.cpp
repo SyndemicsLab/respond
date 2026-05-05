@@ -60,11 +60,13 @@ struct BenchmarkConfig {
     int warmup_iterations = 5;
     int sample_iterations = 25;
     int repetitions = 3;
+    int history_capture_interval = 1;
 };
 
 struct TimedRunResult {
     double elapsed_ns = 0.0;
     double checksum = 0.0;
+    std::size_t recorded_points = 0;
 };
 
 struct Statistics {
@@ -163,6 +165,8 @@ void PrintUsage(const char *program_name) {
            "5)\n"
         << "  --samples <n>      Timed samples per repetition (default: 25)\n"
         << "  --repetitions <n>  Independent repetitions (default: 3)\n"
+        << "  --history-capture-interval <n>  Record every n timesteps "
+           "(default: 1)\n"
         << "  --help             Show this help\n";
 }
 
@@ -226,6 +230,11 @@ BenchmarkConfig ParseArgs(int argc, char **argv) {
                 ParsePositiveInt(require_value(arg), "--repetitions");
             continue;
         }
+        if (arg == "--history-capture-interval") {
+            config.history_capture_interval = ParsePositiveInt(
+                require_value(arg), "--history-capture-interval");
+            continue;
+        }
 
         throw std::invalid_argument("Unknown argument: " + std::string(arg));
     }
@@ -261,8 +270,12 @@ Eigen::VectorXd MakeRateVector(std::size_t n, double base_rate,
     return v;
 }
 
-std::unique_ptr<respond::Model> BuildModel(std::size_t state_size) {
+std::unique_ptr<respond::Model> BuildModel(std::size_t state_size,
+                                           int history_capture_interval,
+                                           int final_timestep) {
     auto model = respond::Model::Create("benchmark_model", "console");
+    model->SetHistoryCaptureInterval(history_capture_interval);
+    model->SetFinalTimestep(final_timestep);
 
     auto behavior =
         respond::TransitionFactory::CreateTransition("behavior", "console");
@@ -294,7 +307,8 @@ std::unique_ptr<respond::Model> BuildModel(std::size_t state_size) {
 TimedRunResult TimeOneSample(respond::Model &model,
                              const Eigen::VectorXd &initial_state, int steps) {
     model.SetState(initial_state);
-    model.SetHistories({});
+    model.ClearHistories();
+    model.SetFinalTimestep(steps);
 
     const auto start = Clock::now();
     for (int i = 0; i < steps; ++i) {
@@ -303,11 +317,18 @@ TimedRunResult TimeOneSample(respond::Model &model,
     const auto end = Clock::now();
 
     const double checksum = model.GetState().sum();
+    std::size_t recorded_points = 0;
+    const auto histories = model.GetHistories();
+    const auto state_history = histories.find("state");
+    if (state_history != histories.end()) {
+        recorded_points = state_history->second.GetRecordedTimesteps().size();
+    }
     DoNotOptimize(checksum);
     ClobberMemory();
 
     return {.elapsed_ns = Nanoseconds(end - start).count(),
-            .checksum = checksum};
+            .checksum = checksum,
+            .recorded_points = recorded_points};
 }
 
 Statistics ComputeStats(std::vector<double> samples_ns) {
@@ -351,11 +372,12 @@ void PrintConfig(const BenchmarkConfig &config) {
               << "steps        : " << config.steps << "\n"
               << "warmup       : " << config.warmup_iterations << "\n"
               << "samples      : " << config.sample_iterations << "\n"
-              << "repetitions  : " << config.repetitions << "\n\n";
+              << "repetitions  : " << config.repetitions << "\n"
+              << "hist every   : " << config.history_capture_interval << "\n\n";
 }
 
 void PrintStatsRow(const std::string &label, const Statistics &stats, int steps,
-                   double checksum) {
+                   double checksum, std::size_t recorded_points) {
     const double mean_ms = ToMilliseconds(stats.mean_ns);
     const double median_ms = ToMilliseconds(stats.median_ns);
     const double p95_ms = ToMilliseconds(stats.p95_ns);
@@ -369,8 +391,9 @@ void PrintStatsRow(const std::string &label, const Statistics &stats, int steps,
               << std::setw(12) << median_ms << std::setw(12) << p95_ms
               << std::setw(12) << min_ms << std::setw(12) << max_ms
               << std::setw(12) << stddev_ms << std::setw(14)
-              << std::setprecision(1) << ns_per_step << std::setw(14)
-              << std::setprecision(4) << checksum << "\n";
+              << std::setprecision(1) << ns_per_step << std::setw(12)
+              << recorded_points << std::setw(14) << std::setprecision(4)
+              << checksum << "\n";
 }
 
 } // namespace
@@ -390,15 +413,19 @@ int main(int argc, char **argv) {
                   << std::setw(12) << "mean_ms" << std::setw(12) << "p50_ms"
                   << std::setw(12) << "p95_ms" << std::setw(12) << "min_ms"
                   << std::setw(12) << "max_ms" << std::setw(12) << "std_ms"
-                  << std::setw(14) << "ns/step" << std::setw(14) << "checksum"
+                  << std::setw(14) << "ns/step" << std::setw(12) << "state_pts"
+                  << std::setw(14) << "checksum"
                   << "\n";
-        std::cout << std::string(110, '-') << "\n";
+        std::cout << std::string(122, '-') << "\n";
 
         double final_checksum = 0.0;
+        std::size_t final_recorded_points = 0;
 
         for (int repetition = 0; repetition < config.repetitions;
              ++repetition) {
-            auto model = BuildModel(config.state_size);
+            auto model =
+                BuildModel(config.state_size, config.history_capture_interval,
+                           config.steps);
 
             Eigen::VectorXd initial_state = Eigen::VectorXd::Constant(
                 static_cast<Eigen::Index>(config.state_size), 1'000.0);
@@ -419,16 +446,18 @@ int main(int argc, char **argv) {
                 sample_ns.push_back(sample.elapsed_ns);
                 all_samples_ns.push_back(sample.elapsed_ns);
                 final_checksum = sample.checksum;
+                final_recorded_points = sample.recorded_points;
             }
 
             const Statistics rep_stats = ComputeStats(sample_ns);
             PrintStatsRow("rep" + std::to_string(repetition + 1), rep_stats,
-                          config.steps, final_checksum);
+                          config.steps, final_checksum, final_recorded_points);
         }
 
-        std::cout << std::string(110, '-') << "\n";
+        std::cout << std::string(122, '-') << "\n";
         const Statistics overall = ComputeStats(all_samples_ns);
-        PrintStatsRow("overall", overall, config.steps, final_checksum);
+        PrintStatsRow("overall", overall, config.steps, final_checksum,
+                      final_recorded_points);
 
         return 0;
     } catch (const std::exception &ex) {

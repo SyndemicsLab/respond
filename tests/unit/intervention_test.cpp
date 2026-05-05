@@ -73,11 +73,11 @@ TEST_F(InterventionTest, GoodExecuteWriteHistory) {
     auto expected_return = tran_matrix * state;
     auto expected_admissions =
         (expected_return - state).cwiseMax(Eigen::VectorXd::Zero(3));
-    auto hist_result =
-        histories["intervention_admission"].GetStateAsVector()[0];
 
     EXPECT_TRUE(result.isApprox(expected_return));
-    EXPECT_TRUE(hist_result.isApprox(expected_admissions));
+    EXPECT_TRUE(histories["intervention_admission"].HasPendingState());
+    EXPECT_TRUE(histories["intervention_admission"].GetPendingState()
+                    .isApprox(expected_admissions));
 }
 } // namespace testing
 } // namespace respond

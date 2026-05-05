@@ -35,6 +35,7 @@ cmake --build build/bench --target respond_benchmark
 ./build/bench/bin/respond_benchmark \
   --state-size 64 \
   --steps 52 \
+  --history-capture-interval 1 \
   --warmup 5 \
   --samples 500 \
   --repetitions 3
@@ -60,6 +61,7 @@ Each repetition reports:
 - `min_ms` / `max_ms`: observed range
 - `std_ms`: standard deviation
 - `ns/step`: normalized cost per simulation timestep
+- `state_pts`: number of recorded state-history points captured per sample
 - `checksum`: final state sum sink to guard against optimization artifacts
 
 Use the `overall` row for broad comparisons and repetition rows to detect instability.

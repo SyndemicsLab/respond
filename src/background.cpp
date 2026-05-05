@@ -32,7 +32,7 @@ BackgroundDeath::Execute(const Eigen::VectorXd &state,
     auto deaths =
         state.cwiseProduct(GetTransitionMatrices()[0]); // calculate the deaths
     if (h.find("background_death") != h.end()) {
-        h["background_death"].AddState(deaths);
+        h["background_death"].AccumulateState(deaths);
     }
     if (!(state.array() >= deaths.array()).all()) {
         std::string error_msg =
@@ -44,10 +44,6 @@ BackgroundDeath::Execute(const Eigen::VectorXd &state,
         throw std::runtime_error(error_msg);
     }
     auto new_state = state - deaths; // remove deaths from state
-
-    if (h.find("background_death") != h.end()) {
-        h["state"].AddState(new_state);
-    }
     return new_state;
 }
 

@@ -94,6 +94,18 @@ public:
         return ret;
     }
 
+    /// @brief Retrieves sparse history objects for all models.
+    /// @return Vector of maps (one per model) mapping history names to sparse
+    /// History objects.
+    const std::vector<std::map<std::string, History>>
+    GetModelSparseHistories() const {
+        std::vector<std::map<std::string, History>> ret;
+        for (const auto &model : _models) {
+            ret.push_back(model->GetHistories());
+        }
+        return ret;
+    }
+
     /// @brief Retrieves pairs of (model name, history name) for all histories.
     /// @return Vector of pairs associating each history with its parent model.
     const std::vector<std::pair<std::string, std::string>>

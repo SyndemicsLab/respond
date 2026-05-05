@@ -71,6 +71,26 @@ public:
     /// @param h A map of history names to History objects.
     virtual void SetHistories(const std::map<std::string, History> &h) = 0;
 
+    /// @brief Clears all history records and resets history tracking state.
+    virtual void ClearHistories() = 0;
+
+    /// @brief Sets the global history capture interval for this model.
+    /// @param interval Record every interval timesteps. Values less than 1
+    /// default to full capture.
+    virtual void SetHistoryCaptureInterval(int interval) = 0;
+
+    /// @brief Retrieves the global history capture interval.
+    /// @return The active capture interval. A value of 1 means full capture.
+    virtual int GetHistoryCaptureInterval() const = 0;
+
+    /// @brief Sets the final timestep that must always be recorded.
+    /// @param final_timestep The final simulation timestep.
+    virtual void SetFinalTimestep(int final_timestep) = 0;
+
+    /// @brief Retrieves the final timestep forced into history output.
+    /// @return The configured final simulation timestep, or -1 if unset.
+    virtual int GetFinalTimestep() const = 0;
+
     /// @brief Retrieves the name identifier for this model.
     /// @return The model's name as a string.
     virtual std::string GetModelName() const = 0;

@@ -41,7 +41,7 @@ Eigen::VectorXd Overdose::Execute(const Eigen::VectorXd &state,
         state.cwiseProduct(GetTransitionMatrices()[0]); // overdose
     // Add total overdoses to stamp
     if (h.find("total_overdose") != h.end()) {
-        h["total_overdose"].AddState(overdoses);
+        h["total_overdose"].AccumulateState(overdoses);
     }
 
     if (overdoses.size() != GetTransitionMatrices()[1].size()) {
@@ -55,7 +55,7 @@ Eigen::VectorXd Overdose::Execute(const Eigen::VectorXd &state,
     }
     auto fods = overdoses.cwiseProduct(GetTransitionMatrices()[1]); // negatives
     if (h.find("fatal_overdose") != h.end()) {
-        h["fatal_overdose"].AddState(fods);
+        h["fatal_overdose"].AccumulateState(fods);
     }
     if (!(state.array() >= fods.array()).all()) {
         std::string error_msg =

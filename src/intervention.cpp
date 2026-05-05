@@ -47,7 +47,7 @@ Eigen::VectorXd Intervention::Execute(const Eigen::VectorXd &state,
     Eigen::VectorXd admissions = moved - state;
     admissions = admissions.cwiseMax(Eigen::VectorXd::Zero(admissions.size()));
     if (h.find("intervention_admission") != h.end()) {
-        h["intervention_admission"].AddState(admissions);
+        h["intervention_admission"].AccumulateState(admissions);
     }
 
     return moved;
