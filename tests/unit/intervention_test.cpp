@@ -4,7 +4,7 @@
 // Created Date: 2026-02-06                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-02-06                                                  //
+// Last Modified: 2026-05-06                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
@@ -76,8 +76,8 @@ TEST_F(InterventionTest, GoodExecuteWriteHistory) {
 
     EXPECT_TRUE(result.isApprox(expected_return));
     EXPECT_TRUE(histories["intervention_admission"].HasPendingState());
-    EXPECT_TRUE(histories["intervention_admission"].GetPendingState()
-                    .isApprox(expected_admissions));
+    EXPECT_TRUE(histories["intervention_admission"].GetPendingState().isApprox(
+        expected_admissions));
 }
 } // namespace testing
 } // namespace respond

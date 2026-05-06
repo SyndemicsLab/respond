@@ -4,7 +4,7 @@
 // Created Date: 2026-02-06                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-02-06                                                  //
+// Last Modified: 2026-05-06                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
@@ -90,8 +90,8 @@ TEST_F(OverdoseTest, GoodExecuteWriteTotalOverdoseHistory) {
 
     EXPECT_TRUE(result.isApprox(expected_return));
     EXPECT_TRUE(histories["total_overdose"].HasPendingState());
-    EXPECT_TRUE(histories["total_overdose"].GetPendingState().isApprox(
-        overdoses));
+    EXPECT_TRUE(
+        histories["total_overdose"].GetPendingState().isApprox(overdoses));
 }
 
 TEST_F(OverdoseTest, GoodExecuteWriteFatalOverdoseHistory) {
@@ -123,8 +123,8 @@ TEST_F(OverdoseTest, GoodExecuteWriteAllHistory) {
     auto fods = overdoses.cwiseProduct(tran_matrix);
     auto expected_return = state - fods;
 
-    EXPECT_TRUE(histories["total_overdose"].GetPendingState().isApprox(
-        overdoses));
+    EXPECT_TRUE(
+        histories["total_overdose"].GetPendingState().isApprox(overdoses));
     EXPECT_TRUE(histories["fatal_overdose"].GetPendingState().isApprox(fods));
     EXPECT_TRUE(result.isApprox(expected_return));
 }

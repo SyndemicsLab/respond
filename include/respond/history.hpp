@@ -4,7 +4,7 @@
 // Created Date: 2026-02-05                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-02-06                                                  //
+// Last Modified: 2026-05-06                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
@@ -211,8 +211,8 @@ public:
             timestep = GetNextTimestep();
         }
 
-        const auto existing = std::find(_timesteps.begin(), _timesteps.end(),
-                                        timestep);
+        const auto existing =
+            std::find(_timesteps.begin(), _timesteps.end(), timestep);
         if (existing != _timesteps.end()) {
             const auto index =
                 static_cast<size_t>(existing - _timesteps.begin());

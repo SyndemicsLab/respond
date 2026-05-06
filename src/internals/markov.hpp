@@ -4,7 +4,7 @@
 // Created Date: 2026-02-05                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-02-12                                                  //
+// Last Modified: 2026-05-06                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
@@ -102,8 +102,8 @@ public:
             History("fatal_overdose", GetLogName(), HistoryMode::Accumulated);
         ret["intervention_admission"] = History(
             "intervention_admission", GetLogName(), HistoryMode::Accumulated);
-        ret["background_death"] = History("background_death", GetLogName(),
-                                             HistoryMode::Accumulated);
+        ret["background_death"] =
+            History("background_death", GetLogName(), HistoryMode::Accumulated);
         SetHistories(ret);
     }
 
@@ -225,12 +225,10 @@ private:
         const auto size = _state.size();
         _histories["intervention_admission"].FlushPendingState(
             _current_timestep, size);
-        _histories["total_overdose"].FlushPendingState(_current_timestep,
-                                                        size);
-        _histories["fatal_overdose"].FlushPendingState(_current_timestep,
-                                                        size);
+        _histories["total_overdose"].FlushPendingState(_current_timestep, size);
+        _histories["fatal_overdose"].FlushPendingState(_current_timestep, size);
         _histories["background_death"].FlushPendingState(_current_timestep,
-                                                          size);
+                                                         size);
         _initial_history_recorded = true;
     }
 
