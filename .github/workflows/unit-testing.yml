@@ -3,9 +3,9 @@ name: Respond Unit Testing
 
 on:
     push:
-        branches: [ "main" ]
+        branches: ["main"]
     pull_request:
-        branches: [ "main" ]
+        branches: ["main"]
 
 jobs:
     unit-testing:
@@ -13,11 +13,17 @@ jobs:
         runs-on: ${{matrix.os}}
         strategy:
             matrix:
-                os: [ ubuntu-latest, windows-latest ]
-                build-variant: [ shared, static ]
+                os: [ubuntu-latest, windows-latest]
+                build-variant: [shared, static]
         steps:
             - name: Checkout Respond Repository
               uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3
+
+            - name: Build Boost
+              uses: egor-tensin/build-boost@v2.0.1
+              with:
+                  version: 1.84.0
+                  libraries: property_tree
 
             - name: Install Eigen3
               uses: kupns-aka-kupa/setup-eigen3@master
