@@ -43,7 +43,12 @@ jobs:
                       cmake --preset debug-linux-${{matrix.build-variant}}-config
                   elif [ "${{ matrix.os}}" == "windows-latest" ]; then
                       echo "Building Windows"
-                      cmake --preset debug-microsoft-${{matrix.build-variant}}-config
+                      if [ "${{ matrix.build-variant }}" == "shared" ]; then
+                          echo "Disabling coverage for windows shared build to avoid hanging tests"
+                          cmake --preset debug-microsoft-shared-config -DRESPOND_CALCULATE_COVERAGE=OFF
+                      else
+                          cmake --preset debug-microsoft-static-config
+                      fi
                   fi
               shell: bash
 
@@ -60,7 +65,8 @@ jobs:
                       cmake --workflow --preset test-debug-linux-${{matrix.build-variant}}-workflow
                   elif [ "${{ matrix.os }}" == "windows-latest" ]; then
                       echo "Testing Microsoft"
-                      cmake --workflow --preset test-debug-microsoft-${{matrix.build-variant}}-workflow
+                      cmake --build --preset debug-microsoft-${{matrix.build-variant}}-build
+                      ctest --preset debug-microsoft-${{matrix.build-variant}}-test --output-on-failure
                   fi
               timeout-minutes: 15
               shell: bash
