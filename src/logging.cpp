@@ -14,7 +14,6 @@
 
 #include "internals/logging_internals.hpp"
 
-#include <chrono>
 #include <iostream>
 
 namespace respond {
@@ -30,10 +29,6 @@ CreationStatus CreateFileLogger(const std::string &logger_name,
         std::string pattern =
             LoggingConfig::GetPatternString(LoggingConfig::GetPattern());
         spdlog::set_pattern(pattern);
-        int flush_interval = LoggingConfig::GetFlushInterval();
-        if (flush_interval > 0) {
-            spdlog::flush_every(std::chrono::seconds(flush_interval));
-        }
         spdlog::basic_logger_mt(logger_name, filepath);
     } catch (const spdlog::spdlog_ex &ex) {
         std::string error_msg = "Failed to create file logger '" + logger_name +
@@ -91,11 +86,6 @@ CreationStatus CreateSharedLogger(const std::string &logger_name) {
 
         spdlog::register_logger(logger);
 
-        int flush_interval = LoggingConfig::GetFlushInterval();
-        if (flush_interval > 0) {
-            spdlog::flush_every(std::chrono::seconds(flush_interval));
-        }
-
         return CreationStatus::kSuccess;
     } catch (const spdlog::spdlog_ex &ex) {
         std::string error_msg = "Failed to create shared logger '" +
@@ -109,12 +99,7 @@ void SetLogPattern(LogPattern pattern) { LoggingConfig::SetPattern(pattern); }
 
 LogPattern GetLogPattern() { return LoggingConfig::GetPattern(); }
 
-void SetFlushInterval(int seconds) {
-    LoggingConfig::SetFlushInterval(seconds);
-    if (seconds > 0) {
-        spdlog::flush_every(std::chrono::seconds(seconds));
-    }
-}
+void SetFlushInterval(int seconds) { LoggingConfig::SetFlushInterval(seconds); }
 
 void FlushAllLoggers() {
     spdlog::apply_all(

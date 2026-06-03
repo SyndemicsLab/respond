@@ -43,12 +43,7 @@ jobs:
                       cmake --preset debug-linux-${{matrix.build-variant}}-config
                   elif [ "${{ matrix.os}}" == "windows-latest" ]; then
                       echo "Building Windows"
-                      if [ "${{ matrix.build-variant }}" == "shared" ]; then
-                          echo "Disabling coverage for windows shared build to avoid hanging tests"
-                          cmake --preset debug-microsoft-shared-config -DRESPOND_CALCULATE_COVERAGE=OFF
-                      else
-                          cmake --preset debug-microsoft-static-config
-                      fi
+                      cmake --preset debug-microsoft-${{matrix.build-variant}}-config
                   fi
               shell: bash
 
@@ -65,20 +60,7 @@ jobs:
                       cmake --workflow --preset test-debug-linux-${{matrix.build-variant}}-workflow
                   elif [ "${{ matrix.os }}" == "windows-latest" ]; then
                       echo "Testing Microsoft"
-                      cmake --build --preset debug-microsoft-${{matrix.build-variant}}-build
-
-                      if [ "${{ matrix.build-variant }}" == "shared" ]; then
-                          echo "Windows shared diagnostics: direct gtest process run"
-                          timeout 180s ./build/shared/bin/respond_tests.exe --gtest_filter=BackgroundDeathTest.NoTransitionMatrices --gtest_also_run_disabled_tests
-
-                          echo "Windows shared diagnostics: same test via CTest"
-                          timeout 300s ctest --preset debug-microsoft-shared-test -R "^BackgroundDeathTest\\.NoTransitionMatrices$" -VV --output-on-failure
-
-                          echo "Windows shared diagnostics: full suite via CTest"
-                          timeout 900s ctest --preset debug-microsoft-shared-test --output-on-failure -VV
-                      else
-                          ctest --preset debug-microsoft-${{matrix.build-variant}}-test --output-on-failure
-                      fi
+                      cmake --workflow --preset test-debug-microsoft-${{matrix.build-variant}}-workflow
                   fi
               timeout-minutes: 15
               shell: bash
