@@ -66,7 +66,19 @@ jobs:
                   elif [ "${{ matrix.os }}" == "windows-latest" ]; then
                       echo "Testing Microsoft"
                       cmake --build --preset debug-microsoft-${{matrix.build-variant}}-build
-                      ctest --preset debug-microsoft-${{matrix.build-variant}}-test --output-on-failure
+
+                      if [ "${{ matrix.build-variant }}" == "shared" ]; then
+                          echo "Windows shared diagnostics: direct gtest process run"
+                          timeout 180s ./build/shared/bin/respond_tests.exe --gtest_filter=BackgroundDeathTest.NoTransitionMatrices --gtest_also_run_disabled_tests
+
+                          echo "Windows shared diagnostics: same test via CTest"
+                          timeout 300s ctest --preset debug-microsoft-shared-test -R "^BackgroundDeathTest\\.NoTransitionMatrices$" -VV --output-on-failure
+
+                          echo "Windows shared diagnostics: full suite via CTest"
+                          timeout 900s ctest --preset debug-microsoft-shared-test --output-on-failure -VV
+                      else
+                          ctest --preset debug-microsoft-${{matrix.build-variant}}-test --output-on-failure
+                      fi
                   fi
               timeout-minutes: 15
               shell: bash
