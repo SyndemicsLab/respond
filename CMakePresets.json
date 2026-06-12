@@ -259,6 +259,11 @@
             "execution": {
                 "noTestsAction": "error",
                 "stopOnFailure": true
+            },
+            "filter": {
+                "include": {
+                    "name": "respond_*"
+                }
             }
         },
         {
