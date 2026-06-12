@@ -89,6 +89,69 @@ TEST_F(MarkovTest, RunTransitions) {
     markov->RunTransitions();
 }
 
+TEST_F(MarkovTest, RunTransitionsAccumulatesDefaultHistories) {
+    markov->SetState(state);
+    markov->RunTransitions();
+
+    Eigen::VectorXd next_state = state * 2.0;
+    markov->SetState(next_state);
+    markov->RunTransitions();
+
+    const auto histories = markov->GetHistories();
+    ASSERT_EQ(histories.size(), 5u);
+
+    const auto state_history = histories.at("state").GetStateAsVector();
+    ASSERT_EQ(state_history.size(), 3u);
+    EXPECT_TRUE(state_history[0].isApprox(state));
+    EXPECT_TRUE(state_history[1].isApprox(state));
+    EXPECT_TRUE(state_history[2].isApprox(next_state));
+
+    const auto overdose_history =
+        histories.at("total_overdose").GetStateAsVector();
+    ASSERT_EQ(overdose_history.size(), 3u);
+    EXPECT_TRUE(overdose_history[0].isZero());
+    EXPECT_TRUE(overdose_history[1].isZero());
+    EXPECT_TRUE(overdose_history[2].isZero());
+}
+
+TEST_F(MarkovTest, SparseHistoryCaptureRecordsRequestedAndFinalTimesteps) {
+    markov->SetHistoryCaptureInterval(2);
+    markov->SetFinalTimestep(5);
+    markov->SetState(state);
+
+    for (int step = 0; step < 5; ++step) {
+        markov->RunTransitions();
+    }
+
+    const auto histories = markov->GetHistories();
+    const auto &timesteps = histories.at("state").GetRecordedTimesteps();
+    std::vector<int> expected = {0, 2, 4, 5};
+    ASSERT_EQ(timesteps, expected);
+}
+
+TEST_F(MarkovTest, ClearHistoriesResetsTrackingState) {
+    markov->SetHistoryCaptureInterval(2);
+    markov->SetFinalTimestep(4);
+    markov->SetState(state);
+
+    markov->RunTransitions();
+    markov->RunTransitions();
+    markov->ClearHistories();
+
+    Eigen::VectorXd next_state = state * 3.0;
+    markov->SetState(next_state);
+    markov->RunTransitions();
+
+    const auto histories = markov->GetHistories();
+    const auto &timesteps = histories.at("state").GetRecordedTimesteps();
+    std::vector<int> expected = {0};
+    ASSERT_EQ(timesteps, expected);
+
+    const auto &states = histories.at("state").GetRecordedStates();
+    ASSERT_EQ(states.size(), 1u);
+    EXPECT_TRUE(states[0].isApprox(next_state));
+}
+
 TEST_F(MarkovTest, ClearTransitions) {
     // When Markov::AddTransition copies the transition it calls `clone()` on
     // the provided object. Make the mock return a heap-allocated mock that

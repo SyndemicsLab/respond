@@ -3,6 +3,8 @@
 # To modify the Doxyfile, edit docs/Doxyfile.in and re-run CMake. It will build the new Doxyfile at the root of the build tree.
 Doxyfile
 
+*.log
+
 .metadata
 bin/
 tmp/

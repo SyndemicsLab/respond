@@ -4,7 +4,7 @@
 // Created Date: 2026-02-06                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-02-06                                                  //
+// Last Modified: 2026-05-06                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
@@ -83,14 +83,15 @@ TEST_F(OverdoseTest, GoodExecuteWriteTotalOverdoseHistory) {
     tran->AddTransitionMatrix(tran_matrix);
     tran->AddTransitionMatrix(tran_matrix);
     auto result = tran->Execute(state, histories);
-    auto od_result = histories["total_overdose"].GetStateAsVector()[0];
 
     auto overdoses = state.cwiseProduct(tran_matrix);
     auto fods = overdoses.cwiseProduct(tran_matrix);
     auto expected_return = state - fods;
 
     EXPECT_TRUE(result.isApprox(expected_return));
-    EXPECT_TRUE(od_result.isApprox(overdoses));
+    EXPECT_TRUE(histories["total_overdose"].HasPendingState());
+    EXPECT_TRUE(
+        histories["total_overdose"].GetPendingState().isApprox(overdoses));
 }
 
 TEST_F(OverdoseTest, GoodExecuteWriteFatalOverdoseHistory) {
@@ -99,13 +100,13 @@ TEST_F(OverdoseTest, GoodExecuteWriteFatalOverdoseHistory) {
     tran->AddTransitionMatrix(tran_matrix);
     tran->AddTransitionMatrix(tran_matrix);
     auto result = tran->Execute(state, histories);
-    auto fod_result = histories["fatal_overdose"].GetStateAsVector()[0];
 
     auto overdoses = state.cwiseProduct(tran_matrix);
     auto fods = overdoses.cwiseProduct(tran_matrix);
     auto expected_return = state - fods;
 
-    EXPECT_TRUE(fod_result.isApprox(fods));
+    EXPECT_TRUE(histories["fatal_overdose"].HasPendingState());
+    EXPECT_TRUE(histories["fatal_overdose"].GetPendingState().isApprox(fods));
     EXPECT_TRUE(result.isApprox(expected_return));
 }
 
@@ -117,15 +118,14 @@ TEST_F(OverdoseTest, GoodExecuteWriteAllHistory) {
     tran->AddTransitionMatrix(tran_matrix);
     tran->AddTransitionMatrix(tran_matrix);
     auto result = tran->Execute(state, histories);
-    auto od_result = histories["total_overdose"].GetStateAsVector()[0];
-    auto fod_result = histories["fatal_overdose"].GetStateAsVector()[0];
 
     auto overdoses = state.cwiseProduct(tran_matrix);
     auto fods = overdoses.cwiseProduct(tran_matrix);
     auto expected_return = state - fods;
 
-    EXPECT_TRUE(od_result.isApprox(overdoses));
-    EXPECT_TRUE(fod_result.isApprox(fods));
+    EXPECT_TRUE(
+        histories["total_overdose"].GetPendingState().isApprox(overdoses));
+    EXPECT_TRUE(histories["fatal_overdose"].GetPendingState().isApprox(fods));
     EXPECT_TRUE(result.isApprox(expected_return));
 }
 } // namespace testing

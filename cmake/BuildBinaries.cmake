@@ -10,7 +10,7 @@ endif()
 
 if(RESPOND_BUILD_BENCH OR RESPOND_BUILD_ALL)
     message(STATUS "Generating benchmarks")
-    add_subdirectory(extras/benchmarking)
+    add_subdirectory(extras/benchmark)
 endif()
 
 if(RESPOND_BUILD_DOCS OR RESPOND_BUILD_ALL)

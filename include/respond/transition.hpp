@@ -23,35 +23,56 @@
 
 namespace respond {
 
-/// @brief A helper class to hold Transitions
+/// @brief Abstract base class representing a state transition operation.
+/// Transitions apply transformation matrices to state vectors and update
+/// history records. Subclasses define specific types of transitions (e.g.,
+/// Markov, background death, behavior).
 class Transition {
 public:
+    /// @brief Virtual destructor for proper polymorphic cleanup.
     virtual ~Transition() = default;
-    // Run the execute function and return the final state. Do not edit the
-    // parameter state, but do edit the history provided. Nothing in the
-    // Transition object should change.
+
+    /// @brief Executes this transition, applying it to a state vector.
+    /// The input state is not modified; history records are updated with the
+    /// transition effects.
+    /// @param s The current state vector (not modified).
+    /// @param h The history records to update (may be modified by this
+    /// transition).
+    /// @return The resulting state vector after applying this transition.
     virtual Eigen::VectorXd
     Execute(const Eigen::VectorXd &s,
             std::map<std::string, History> &h) const = 0;
-    // Add a Transition Matrix to the set. We have no need to edit it once it's
-    // been added, just use it. Thus, we don't need full ownership (reference)
-    // and can accept the const type.
+
+    /// @brief Adds a transformation matrix to this transition.
+    /// The matrix is stored for use during Execute() calls.
+    /// @param m The transition matrix to add (not modified by this transition).
     virtual void AddTransitionMatrix(const Eigen::MatrixXd &m) = 0;
-    // Get the name of the Transition. No need to edit the object and do not
-    // need user to edit the name.
+
+    /// @brief Retrieves the name/type of this transition.
+    /// @return The transition's identifier as a string.
     virtual std::string GetTransitionName() const = 0;
-    // Clear out all the stored Eigen::MatrixXd values
+
+    /// @brief Clears all stored transition matrices.
     virtual void ClearTransitionMatrices() = 0;
-    // Get Log Name
+
+    /// @brief Retrieves the logger name used by this transition.
+    /// @return The associated logger's name.
     virtual std::string GetLogName() const = 0;
-    // Clone
+
+    /// @brief Deleted copy constructor (transitions are non-copyable by public
+    /// API).
     Transition(const Transition &) = delete;
+    /// @brief Deleted copy assignment operator (transitions are non-copyable by
+    /// public API).
     Transition &operator=(const Transition &) = delete;
+
+    /// @brief Creates a deep copy of this transition.
+    /// @return A unique_ptr to an independent copy of this transition.
     virtual std::unique_ptr<Transition> clone() const = 0;
 
 protected:
-    // default constructor required for subclasses, but do not want people to
-    // use this
+    /// @brief Protected default constructor for subclass initialization.
+    /// Not intended for direct public use.
     Transition() = default;
 };
 } // namespace respond

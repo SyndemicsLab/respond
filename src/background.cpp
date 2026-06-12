@@ -15,28 +15,35 @@
 #include <memory>
 #include <string>
 
+#include <respond/logging.hpp>
+#include <spdlog/spdlog.h>
+
 namespace respond {
 Eigen::VectorXd
 BackgroundDeath::Execute(const Eigen::VectorXd &state,
                          std::map<std::string, History> &h) const {
     if (GetTransitionMatrices().size() != 1) {
-        throw std::runtime_error(
-            "Mortality Transitions must have 1 Transition Matrix.");
+        std::string error_msg =
+            "Background death error: Expected 1 transition matrix, got " +
+            std::to_string(GetTransitionMatrices().size());
+        LogError(GetLogName(), error_msg);
+        throw std::runtime_error(error_msg);
     }
     auto deaths =
         state.cwiseProduct(GetTransitionMatrices()[0]); // calculate the deaths
     if (h.find("background_death") != h.end()) {
-        h["background_death"].AddState(deaths);
+        h["background_death"].AccumulateState(deaths);
     }
     if (!(state.array() >= deaths.array()).all()) {
-        std::runtime_error(
-            "The state is not larger than the estimated background deaths!");
+        std::string error_msg =
+            "Background death error: State values are less than estimated "
+            "deaths. " +
+            std::to_string((state.array() < deaths.array()).count()) +
+            " elements affected";
+        LogError(GetLogName(), error_msg);
+        throw std::runtime_error(error_msg);
     }
     auto new_state = state - deaths; // remove deaths from state
-
-    if (h.find("background_death") != h.end()) {
-        h["state"].AddState(new_state);
-    }
     return new_state;
 }
 

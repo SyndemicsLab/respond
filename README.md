@@ -22,12 +22,13 @@ The [original RESPOND model](https://github.com/SyndemicsLab/RESPONDv1/tree/main
 
 RESPOND makes full use of the CMake build system. It is a common tool used throughout the C++ user-base and we utilize it for dependency management, linking, and testing. As C++ has poor package management, we intentionally decided to move our focus away from tools such as conan and vcpkg and stay with pure CMake. Not to say we would never publish with such package managers, but it is not a core focus of the refactor/engineering team.
 
-We natively support 4 different build workflows with the `CMakePresets.json` file. They are:
+We natively support 5 different build workflows with the `CMakePresets.json` file. They are:
 
 1. `test-debug-gcc-linux-shared-workflow`
 2. `test-debug-gcc-linux-static-workflow`
 3. `package-release-gcc-linux-shared-workflow`
 4. `package-release-gcc-linux-static-workflow`
+5. `benchmark-linux-static-workflow`
 
 These workflows follow the pattern `{function}-{build}-gcc-linux-{library}-workflow` and have corresponding presets for build, test, and package. As we adopt more operating systems and compilers we will expand beyond gcc and linux.
 
@@ -105,14 +106,76 @@ tools/build.sh
 
 ## Running RESPOND
 
-The recommended way to use the RESPOND model is via the [Python
-package][respondpy], with [source on GitHub][respondpy-git].
+The recommended way to use the RESPOND model is via the [Python package][respondpy], with [source on GitHub][respondpy-git].
 
-If you wish to use RESPOND via a local executable, please refer to release
-[v0.3.0](https://github.com/SyndemicsLab/respond/releases/tag/v0.3.0).
+For C++ developers wishing to use RESPOND as a library, please refer to the [C++ API Guide][api-guide] in the documentation for usage examples, design patterns, and best practices.
+
+If you wish to use RESPOND via a legacy local executable, please refer to release [v0.3.0](https://github.com/SyndemicsLab/respond/releases/tag/v0.3.0).
+
+## Documentation
+
+Complete documentation is available in the [`docs/src/`](docs/src) directory:
+
+- **[C++ API Guide][api-guide]** - Developer guide for using RESPOND as a C++ library
+- **[Architecture and Design](docs/src/architecture.md)** - Design patterns, component architecture, and extensibility
+- **[Data Management](docs/src/data.md)** - Configuration files and data requirements
+- **[Installation](docs/src/installation.md)** - Build and installation instructions
+- **[Running the Model](docs/src/run.md)** - Execution instructions
+- **[Math Background](docs/src/math.md)** - Mathematical foundations and equations
+- **[Limitations](docs/src/limitations.md)** - Known constraints and future work
+- **[FAQs](docs/src/faq.md)** - Frequently asked questions
+
+For auto-generated API documentation, build and open the Doxygen output at `build/docs/doxygen/html/index.html`.
+
+## Quick Start for C++ Developers
+
+### Using via CMake FetchContent
+
+If building a new project with CMake, use `FetchContent`:
+
+```cmake
+include(FetchContent)
+FetchContent_Declare(
+    respond
+    GIT_REPOSITORY https://github.com/SyndemicsLab/respond.git
+    GIT_TAG main
+    OVERRIDE_FIND_PACKAGE
+)
+set(RESPOND_INSTALL ON)
+find_package(respond REQUIRED)
+
+target_link_libraries(${PROJECT_NAME}
+    PRIVATE
+        respond::respond_model
+)
+```
+
+Then see the [C++ API Guide][api-guide] for usage examples.
+
+### Building Documentation
+
+To build the Doxygen documentation:
+
+```shell
+cmake --build build/static --target doxygen_docs
+```
+
+Open `build/static/docs/doxygen/html/index.html` in a browser.
+
+### Running Tests
+
+After building with tests enabled:
+
+```shell
+cmake --workflow --preset test-debug-gcc-linux-static-workflow
+```
+
+Tests verify all core components (models, transitions, history tracking).
 
 ## References
+
 1. Madushani RWMA, Wang J, Weitz M, Linas BP, White LF, Chrysanthopoulou SA (2025) Empirical calibration of a simulation model of opioid use disorder. PLoS ONE 20(3): e0310763. https://doi.org/10.1371/journal.pone.0310763
 
 [respondpy]: https://pypi.org/project/respondpy/
 [respondpy-git]: https://github.com/SyndemicsLab/respondpy
+[api-guide]: docs/src/api-guide.md

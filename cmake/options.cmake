@@ -16,7 +16,7 @@ option(RESPOND_BUILD_TESTS "Build tests" OFF)
 option(RESPOND_CALCULATE_COVERAGE "Calculate Code Coverage" OFF)
 
 # bench options
-option(RESPOND_BUILD_BENCH "Build benchmarks (Requires https://github.com/google/benchmark.git to be installed)" OFF)
+option(RESPOND_BUILD_BENCH "Build benchmarks" OFF)
 
 # compile level warning and exception options
 option(RESPOND_BUILD_WARNINGS "Enable compiler warnings" OFF)
