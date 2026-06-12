@@ -13,7 +13,7 @@ jobs:
         runs-on: ${{matrix.os}}
         strategy:
             matrix:
-                os: [ubuntu-latest, windows-latest]
+                os: [ubuntu-latest, windows-latest, macos-latest]
                 build-variant: [shared, static]
         steps:
             - name: Checkout Respond Repository
@@ -25,23 +25,6 @@ jobs:
               with:
                   msystem: MINGW64
 
-            - name: Configure Project
-              run: |
-                  if [ "${{ matrix.os }}" == "ubuntu-latest" ]; then
-                      echo "Building Linux"
-                      cmake --preset debug-linux-${{matrix.build-variant}}-config
-                  elif [ "${{ matrix.os}}" == "windows-latest" ]; then
-                      echo "Building Windows"
-                      cmake --preset debug-microsoft-${{matrix.build-variant}}-config
-                  fi
-              shell: bash
-
-            - name: List directory contents after potential error
-              run: |
-                  echo "Listing contents of current directory:"
-                  ls -laR build/ # Lists all files and directories recursively
-              shell: bash
-
             - name: Run Testing Workflow
               run: |
                   if [ "${{ matrix.os }}" == "ubuntu-latest" ]; then
@@ -50,6 +33,9 @@ jobs:
                   elif [ "${{ matrix.os }}" == "windows-latest" ]; then
                       echo "Testing Microsoft"
                       cmake --workflow --preset test-debug-microsoft-${{matrix.build-variant}}-workflow
+                  elif [ "${{ matrix.os }}" == "macos-latest" ]; then
+                      echo "Testing Microsoft"
+                      cmake --workflow --preset test-debug-linux-${{matrix.build-variant}}-workflow
                   fi
-              timeout-minutes: 15
+              timeout-minutes: 10
               shell: bash
