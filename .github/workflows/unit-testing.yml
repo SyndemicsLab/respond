@@ -26,9 +26,6 @@ jobs:
                   msystem: MINGW64
 
             - name: Configure Project
-              env:
-                  EIGEN3_INCLUDE_DIR: ${{ steps.install-eigen3.outputs.EIGEN3_INCLUDE_DIR }}
-                  EIGEN3_DIR: ${{ steps.install-eigen3.outputs.EIGEN3_DIR}}
               run: |
                   if [ "${{ matrix.os }}" == "ubuntu-latest" ]; then
                       echo "Building Linux"
