@@ -47,6 +47,12 @@ jobs:
               run: doxygen Doxyfile
               shell: bash
 
+            - name: Remove polyfill references from generated HTML
+              run: |
+                  find docs/doxygen/html -type f -name '*.html' -print0 |
+                      xargs -0 sed -i '/polyfill\.io\/v3\/polyfill\.min\.js/d'
+              shell: bash
+
             - name: Create .nojekyll (ensures pages with underscores work on gh pages)
               run: touch docs/doxygen/html/.nojekyll
               shell: bash
