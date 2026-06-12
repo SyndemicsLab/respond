@@ -33,10 +33,10 @@ jobs:
                   elif [ "${{ matrix.os }}" == "windows-latest" ]; then
                       echo "Testing Microsoft"
                       cmake --workflow --preset test-debug-microsoft-${{matrix.build-variant}}-workflow
+                  elif [ "${{ matrix.os }}" == "macos-latest" ]; then
+                      echo "Testing MacOS"
+                      brew install gcc
+                      cmake --workflow --preset test-debug-linux-${{matrix.build-variant}}-workflow
                   fi
-              #   elif [ "${{ matrix.os }}" == "macos-latest" ]; then
-              #       echo "Testing Microsoft"
-              #       cmake --workflow --preset test-debug-linux-${{matrix.build-variant}}-workflow
-
               timeout-minutes: 10
               shell: bash
