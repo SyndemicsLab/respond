@@ -62,7 +62,7 @@ Copyright (c) 2025 Syndemics Lab at Boston Medical Center
                             <td id="projectlogo"><img alt="Logo" src="../../Syndemics_main_logo_50px.png" /></td>
                             <td id="projectalign">
                                 <div id="projectname">RESPOND<span
-                                        id="projectnumber">&#160;2.3.2</span>
+                                        id="projectnumber">&#160;2.4.0</span>
                                 </div>
                                 <div id="projectbrief">Researching Effective Strategies to Prevent Opioid Death</div>
                             </td>
@@ -129,63 +129,159 @@ $(document).ready(function(){initNavTree('d4/d00/classrespond_1_1Model.html','..
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-static-methods">Static Public Member Functions</a> &#124;
+<a href="#pro-methods">Protected Member Functions</a> &#124;
 <a href="../../de/ddb/classrespond_1_1Model-members.html">List of all members</a>  </div>
   <div class="headertitle"><div class="title">respond::Model Class Reference<span class="mlabels"><span class="mlabel">abstract</span></span></div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>Abstract base class representing a state transition model. Models manage a state vector, execute transitions, and maintain history of state changes. Subclasses must implement state management, transition execution, and history tracking.  
+</p>
+
+<p><code>#include &lt;<a class="el" href="../../dc/ddc/model_8hpp_source.html">model.hpp</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a7163828e4d52d2fb9803b66931acad00"><td class="memItemLeft" align="right" valign="top"><a id="a7163828e4d52d2fb9803b66931acad00" name="a7163828e4d52d2fb9803b66931acad00"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>SetState</b> (const Eigen::VectorXd &amp;)=0</td></tr>
-<tr class="separator:a7163828e4d52d2fb9803b66931acad00"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a218d6dbe7f879bc6bd2e9572f6abba43"><td class="memItemLeft" align="right" valign="top"><a id="a218d6dbe7f879bc6bd2e9572f6abba43" name="a218d6dbe7f879bc6bd2e9572f6abba43"></a>
-virtual Eigen::VectorXd&#160;</td><td class="memItemRight" valign="bottom"><b>GetState</b> () const =0</td></tr>
+<tr class="memitem:a99d184a7664f6abf7f4007e2ccb66817"><td class="memItemLeft" align="right" valign="top"><a id="a99d184a7664f6abf7f4007e2ccb66817" name="a99d184a7664f6abf7f4007e2ccb66817"></a>
+virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~Model</b> ()=default</td></tr>
+<tr class="memdesc:a99d184a7664f6abf7f4007e2ccb66817"><td class="mdescLeft">&#160;</td><td class="mdescRight">Virtual destructor for proper polymorphic cleanup. <br /></td></tr>
+<tr class="separator:a99d184a7664f6abf7f4007e2ccb66817"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a33e60e2bc44f0d0808dbc1bf58875a91"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d4/d00/classrespond_1_1Model.html#a33e60e2bc44f0d0808dbc1bf58875a91">SetState</a> (const Eigen::VectorXd &amp;state)=0</td></tr>
+<tr class="memdesc:a33e60e2bc44f0d0808dbc1bf58875a91"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the current state of the model.  <br /></td></tr>
+<tr class="separator:a33e60e2bc44f0d0808dbc1bf58875a91"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a218d6dbe7f879bc6bd2e9572f6abba43"><td class="memItemLeft" align="right" valign="top">virtual Eigen::VectorXd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d4/d00/classrespond_1_1Model.html#a218d6dbe7f879bc6bd2e9572f6abba43">GetState</a> () const =0</td></tr>
+<tr class="memdesc:a218d6dbe7f879bc6bd2e9572f6abba43"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieves the current state of the model.  <br /></td></tr>
 <tr class="separator:a218d6dbe7f879bc6bd2e9572f6abba43"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a343a386db860237c390f198e096214fb"><td class="memItemLeft" align="right" valign="top"><a id="a343a386db860237c390f198e096214fb" name="a343a386db860237c390f198e096214fb"></a>
 virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>RunTransitions</b> ()=0</td></tr>
+<tr class="memdesc:a343a386db860237c390f198e096214fb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Executes all registered transitions on the current state. Transitions are applied in the order they were added and may modify history. <br /></td></tr>
 <tr class="separator:a343a386db860237c390f198e096214fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7375981768eb9fb1e0f84d12c991b483"><td class="memItemLeft" align="right" valign="top"><a id="a7375981768eb9fb1e0f84d12c991b483" name="a7375981768eb9fb1e0f84d12c991b483"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>AddTransition</b> (const std::unique_ptr&lt; <a class="el" href="../../de/d15/classrespond_1_1Transition.html">Transition</a> &gt; &amp;t)=0</td></tr>
+<tr class="memitem:a7375981768eb9fb1e0f84d12c991b483"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d4/d00/classrespond_1_1Model.html#a7375981768eb9fb1e0f84d12c991b483">AddTransition</a> (const std::unique_ptr&lt; <a class="el" href="../../de/d15/classrespond_1_1Transition.html">Transition</a> &gt; &amp;t)=0</td></tr>
+<tr class="memdesc:a7375981768eb9fb1e0f84d12c991b483"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds a transition to the model.  <br /></td></tr>
 <tr class="separator:a7375981768eb9fb1e0f84d12c991b483"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4427cf243f889a7751df4741ada69d31"><td class="memItemLeft" align="right" valign="top"><a id="a4427cf243f889a7751df4741ada69d31" name="a4427cf243f889a7751df4741ada69d31"></a>
-virtual std::vector&lt; std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>GetTransitionNames</b> () const =0</td></tr>
+<tr class="memitem:a4427cf243f889a7751df4741ada69d31"><td class="memItemLeft" align="right" valign="top">virtual std::vector&lt; std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d4/d00/classrespond_1_1Model.html#a4427cf243f889a7751df4741ada69d31">GetTransitionNames</a> () const =0</td></tr>
+<tr class="memdesc:a4427cf243f889a7751df4741ada69d31"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieves the names of all registered transitions.  <br /></td></tr>
 <tr class="separator:a4427cf243f889a7751df4741ada69d31"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3c8997fc02c31c226e6f051d29f6590d"><td class="memItemLeft" align="right" valign="top"><a id="a3c8997fc02c31c226e6f051d29f6590d" name="a3c8997fc02c31c226e6f051d29f6590d"></a>
 virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>ClearTransitions</b> ()=0</td></tr>
+<tr class="memdesc:a3c8997fc02c31c226e6f051d29f6590d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clears all registered transitions. Deletes all stored <a class="el" href="../../de/d15/classrespond_1_1Transition.html" title="Abstract base class representing a state transition operation. Transitions apply transformation matri...">Transition</a> unique_ptrs. <br /></td></tr>
 <tr class="separator:a3c8997fc02c31c226e6f051d29f6590d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a45458f22f93028a0eec1d028d4fb0a31"><td class="memItemLeft" align="right" valign="top"><a id="a45458f22f93028a0eec1d028d4fb0a31" name="a45458f22f93028a0eec1d028d4fb0a31"></a>
-virtual std::map&lt; std::string, <a class="el" href="../../d8/dd8/classrespond_1_1History.html">History</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>GetHistories</b> () const =0</td></tr>
+<tr class="memitem:a45458f22f93028a0eec1d028d4fb0a31"><td class="memItemLeft" align="right" valign="top">virtual std::map&lt; std::string, <a class="el" href="../../d8/dd8/classrespond_1_1History.html">History</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d4/d00/classrespond_1_1Model.html#a45458f22f93028a0eec1d028d4fb0a31">GetHistories</a> () const =0</td></tr>
+<tr class="memdesc:a45458f22f93028a0eec1d028d4fb0a31"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieves the history records for all state variables.  <br /></td></tr>
 <tr class="separator:a45458f22f93028a0eec1d028d4fb0a31"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ada74231919972654b97fd9da39cfa29d"><td class="memItemLeft" align="right" valign="top"><a id="ada74231919972654b97fd9da39cfa29d" name="ada74231919972654b97fd9da39cfa29d"></a>
 virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>CreateDefaultHistories</b> ()=0</td></tr>
+<tr class="memdesc:ada74231919972654b97fd9da39cfa29d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates default history tracking for the model. This method initializes standard history records based on the model's state. <br /></td></tr>
 <tr class="separator:ada74231919972654b97fd9da39cfa29d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a78a600a786c98f83b86961f4b985e3bd"><td class="memItemLeft" align="right" valign="top"><a id="a78a600a786c98f83b86961f4b985e3bd" name="a78a600a786c98f83b86961f4b985e3bd"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>SetHistories</b> (const std::map&lt; std::string, <a class="el" href="../../d8/dd8/classrespond_1_1History.html">History</a> &gt; &amp;h)=0</td></tr>
+<tr class="memitem:a78a600a786c98f83b86961f4b985e3bd"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d4/d00/classrespond_1_1Model.html#a78a600a786c98f83b86961f4b985e3bd">SetHistories</a> (const std::map&lt; std::string, <a class="el" href="../../d8/dd8/classrespond_1_1History.html">History</a> &gt; &amp;h)=0</td></tr>
+<tr class="memdesc:a78a600a786c98f83b86961f4b985e3bd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the history records for the model.  <br /></td></tr>
 <tr class="separator:a78a600a786c98f83b86961f4b985e3bd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a74944047162dfc04fe067a7e9ef5051d"><td class="memItemLeft" align="right" valign="top"><a id="a74944047162dfc04fe067a7e9ef5051d" name="a74944047162dfc04fe067a7e9ef5051d"></a>
-virtual std::string&#160;</td><td class="memItemRight" valign="bottom"><b>GetModelName</b> () const =0</td></tr>
+<tr class="memitem:ad917b8b7f375aafa4415b421270cef77"><td class="memItemLeft" align="right" valign="top"><a id="ad917b8b7f375aafa4415b421270cef77" name="ad917b8b7f375aafa4415b421270cef77"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>ClearHistories</b> ()=0</td></tr>
+<tr class="memdesc:ad917b8b7f375aafa4415b421270cef77"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clears all history records and resets history tracking state. <br /></td></tr>
+<tr class="separator:ad917b8b7f375aafa4415b421270cef77"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af61e47e16b1862006e86ae6aac0bd899"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d4/d00/classrespond_1_1Model.html#af61e47e16b1862006e86ae6aac0bd899">SetHistoryCaptureInterval</a> (int interval)=0</td></tr>
+<tr class="memdesc:af61e47e16b1862006e86ae6aac0bd899"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the global history capture interval for this model.  <br /></td></tr>
+<tr class="separator:af61e47e16b1862006e86ae6aac0bd899"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6492eebcc8f64b8a2c8b0f77fea7b146"><td class="memItemLeft" align="right" valign="top">virtual int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d4/d00/classrespond_1_1Model.html#a6492eebcc8f64b8a2c8b0f77fea7b146">GetHistoryCaptureInterval</a> () const =0</td></tr>
+<tr class="memdesc:a6492eebcc8f64b8a2c8b0f77fea7b146"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieves the global history capture interval.  <br /></td></tr>
+<tr class="separator:a6492eebcc8f64b8a2c8b0f77fea7b146"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a675ccc69675f0e70b46d698030b2b76e"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d4/d00/classrespond_1_1Model.html#a675ccc69675f0e70b46d698030b2b76e">SetFinalTimestep</a> (int final_timestep)=0</td></tr>
+<tr class="memdesc:a675ccc69675f0e70b46d698030b2b76e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the final timestep that must always be recorded.  <br /></td></tr>
+<tr class="separator:a675ccc69675f0e70b46d698030b2b76e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a98f260c265238fdbb446064fa72080a3"><td class="memItemLeft" align="right" valign="top">virtual int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d4/d00/classrespond_1_1Model.html#a98f260c265238fdbb446064fa72080a3">GetFinalTimestep</a> () const =0</td></tr>
+<tr class="memdesc:a98f260c265238fdbb446064fa72080a3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieves the final timestep forced into history output.  <br /></td></tr>
+<tr class="separator:a98f260c265238fdbb446064fa72080a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a74944047162dfc04fe067a7e9ef5051d"><td class="memItemLeft" align="right" valign="top">virtual std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d4/d00/classrespond_1_1Model.html#a74944047162dfc04fe067a7e9ef5051d">GetModelName</a> () const =0</td></tr>
+<tr class="memdesc:a74944047162dfc04fe067a7e9ef5051d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieves the name identifier for this model.  <br /></td></tr>
 <tr class="separator:a74944047162dfc04fe067a7e9ef5051d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a621d9de8d990ad00f5c3ada16ed91ec3"><td class="memItemLeft" align="right" valign="top"><a id="a621d9de8d990ad00f5c3ada16ed91ec3" name="a621d9de8d990ad00f5c3ada16ed91ec3"></a>
-virtual std::string&#160;</td><td class="memItemRight" valign="bottom"><b>GetLogName</b> () const =0</td></tr>
+<tr class="memitem:a621d9de8d990ad00f5c3ada16ed91ec3"><td class="memItemLeft" align="right" valign="top">virtual std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d4/d00/classrespond_1_1Model.html#a621d9de8d990ad00f5c3ada16ed91ec3">GetLogName</a> () const =0</td></tr>
+<tr class="memdesc:a621d9de8d990ad00f5c3ada16ed91ec3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieves the logger name used by this model.  <br /></td></tr>
 <tr class="separator:a621d9de8d990ad00f5c3ada16ed91ec3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8f484bc5faa075e8e484609946288607"><td class="memItemLeft" align="right" valign="top"><a id="a8f484bc5faa075e8e484609946288607" name="a8f484bc5faa075e8e484609946288607"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>Model</b> (const <a class="el" href="../../d4/d00/classrespond_1_1Model.html">Model</a> &amp;)=delete</td></tr>
+<tr class="memdesc:a8f484bc5faa075e8e484609946288607"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deleted copy constructor (models are non-copyable by public API). <br /></td></tr>
 <tr class="separator:a8f484bc5faa075e8e484609946288607"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a30206bf5548bf29c33ebcaa93cf6a745"><td class="memItemLeft" align="right" valign="top"><a id="a30206bf5548bf29c33ebcaa93cf6a745" name="a30206bf5548bf29c33ebcaa93cf6a745"></a>
 <a class="el" href="../../d4/d00/classrespond_1_1Model.html">Model</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator=</b> (const <a class="el" href="../../d4/d00/classrespond_1_1Model.html">Model</a> &amp;)=delete</td></tr>
+<tr class="memdesc:a30206bf5548bf29c33ebcaa93cf6a745"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deleted copy assignment operator (models are non-copyable by public API). <br /></td></tr>
 <tr class="separator:a30206bf5548bf29c33ebcaa93cf6a745"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a32412cb3739bc1cd738a93607022c46b"><td class="memItemLeft" align="right" valign="top"><a id="a32412cb3739bc1cd738a93607022c46b" name="a32412cb3739bc1cd738a93607022c46b"></a>
-virtual std::unique_ptr&lt; <a class="el" href="../../d4/d00/classrespond_1_1Model.html">Model</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>clone</b> () const =0</td></tr>
+<tr class="memitem:a32412cb3739bc1cd738a93607022c46b"><td class="memItemLeft" align="right" valign="top">virtual std::unique_ptr&lt; <a class="el" href="../../d4/d00/classrespond_1_1Model.html">Model</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d4/d00/classrespond_1_1Model.html#a32412cb3739bc1cd738a93607022c46b">clone</a> () const =0</td></tr>
+<tr class="memdesc:a32412cb3739bc1cd738a93607022c46b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a deep copy of this model.  <br /></td></tr>
 <tr class="separator:a32412cb3739bc1cd738a93607022c46b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
 <tr class="memitem:ac837a382694b08e5941578a9a2bb5c66"><td class="memItemLeft" align="right" valign="top">static std::unique_ptr&lt; <a class="el" href="../../d4/d00/classrespond_1_1Model.html">Model</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d4/d00/classrespond_1_1Model.html#ac837a382694b08e5941578a9a2bb5c66">Create</a> (const std::string &amp;name, const std::string &amp;log_name=&quot;console&quot;)</td></tr>
-<tr class="memdesc:ac837a382694b08e5941578a9a2bb5c66"><td class="mdescLeft">&#160;</td><td class="mdescRight">Factory method to create a Markov instance.  <br /></td></tr>
+<tr class="memdesc:ac837a382694b08e5941578a9a2bb5c66"><td class="mdescLeft">&#160;</td><td class="mdescRight">Factory method to create a <a class="el" href="../../d4/d00/classrespond_1_1Model.html" title="Abstract base class representing a state transition model. Models manage a state vector,...">Model</a> instance.  <br /></td></tr>
 <tr class="separator:ac837a382694b08e5941578a9a2bb5c66"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-methods" name="pro-methods"></a>
+Protected Member Functions</h2></td></tr>
+<tr class="memitem:acde260cb4aafb84ed5efc4f26b894ca3"><td class="memItemLeft" align="right" valign="top"><a id="acde260cb4aafb84ed5efc4f26b894ca3" name="acde260cb4aafb84ed5efc4f26b894ca3"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>Model</b> ()=default</td></tr>
+<tr class="memdesc:acde260cb4aafb84ed5efc4f26b894ca3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Protected default constructor for subclass initialization. Not intended for direct public use. <br /></td></tr>
+<tr class="separator:acde260cb4aafb84ed5efc4f26b894ca3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a id="a7375981768eb9fb1e0f84d12c991b483" name="a7375981768eb9fb1e0f84d12c991b483"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7375981768eb9fb1e0f84d12c991b483">&#9670;&#160;</a></span>AddTransition()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void respond::Model::AddTransition </td>
+          <td>(</td>
+          <td class="paramtype">const std::unique_ptr&lt; <a class="el" href="../../de/d15/classrespond_1_1Transition.html">Transition</a> &gt; &amp;&#160;</td>
+          <td class="paramname"><em>t</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">t</td><td>A unique_ptr to a <a class="el" href="../../de/d15/classrespond_1_1Transition.html" title="Abstract base class representing a state transition operation. Transitions apply transformation matri...">Transition</a> object. The model assumes ownership. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a32412cb3739bc1cd738a93607022c46b" name="a32412cb3739bc1cd738a93607022c46b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a32412cb3739bc1cd738a93607022c46b">&#9670;&#160;</a></span>clone()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual std::unique_ptr&lt; <a class="el" href="../../d4/d00/classrespond_1_1Model.html">Model</a> &gt; respond::Model::clone </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="section return"><dt>Returns</dt><dd>A unique_ptr to an independent copy of this model. </dd></dl>
+
+</div>
+</div>
 <a id="ac837a382694b08e5941578a9a2bb5c66" name="ac837a382694b08e5941578a9a2bb5c66"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ac837a382694b08e5941578a9a2bb5c66">&#9670;&#160;</a></span>Create()</h2>
 
@@ -221,11 +317,322 @@ Static Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">log_name</td><td>Name of the logger to write errors to. </td></tr>
+    <tr><td class="paramname">name</td><td>The name identifier for the model to create. </td></tr>
+    <tr><td class="paramname">log_name</td><td>Name of the logger for this model (default: "console"). </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>An instance of Markov. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>A unique_ptr to the newly created <a class="el" href="../../d4/d00/classrespond_1_1Model.html" title="Abstract base class representing a state transition model. Models manage a state vector,...">Model</a> instance. </dd></dl>
+
+</div>
+</div>
+<a id="a98f260c265238fdbb446064fa72080a3" name="a98f260c265238fdbb446064fa72080a3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a98f260c265238fdbb446064fa72080a3">&#9670;&#160;</a></span>GetFinalTimestep()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual int respond::Model::GetFinalTimestep </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="section return"><dt>Returns</dt><dd>The configured final simulation timestep, or -1 if unset. </dd></dl>
+
+</div>
+</div>
+<a id="a45458f22f93028a0eec1d028d4fb0a31" name="a45458f22f93028a0eec1d028d4fb0a31"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a45458f22f93028a0eec1d028d4fb0a31">&#9670;&#160;</a></span>GetHistories()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual std::map&lt; std::string, <a class="el" href="../../d8/dd8/classrespond_1_1History.html">History</a> &gt; respond::Model::GetHistories </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="section return"><dt>Returns</dt><dd>A map of history names to <a class="el" href="../../d8/dd8/classrespond_1_1History.html" title="Tracks and manages state vector history over time. History records state snapshots at discrete timest...">History</a> objects containing state trajectories. </dd></dl>
+
+</div>
+</div>
+<a id="a6492eebcc8f64b8a2c8b0f77fea7b146" name="a6492eebcc8f64b8a2c8b0f77fea7b146"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6492eebcc8f64b8a2c8b0f77fea7b146">&#9670;&#160;</a></span>GetHistoryCaptureInterval()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual int respond::Model::GetHistoryCaptureInterval </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="section return"><dt>Returns</dt><dd>The active capture interval. A value of 1 means full capture. </dd></dl>
+
+</div>
+</div>
+<a id="a621d9de8d990ad00f5c3ada16ed91ec3" name="a621d9de8d990ad00f5c3ada16ed91ec3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a621d9de8d990ad00f5c3ada16ed91ec3">&#9670;&#160;</a></span>GetLogName()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual std::string respond::Model::GetLogName </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="section return"><dt>Returns</dt><dd>The name of the associated logger. </dd></dl>
+
+</div>
+</div>
+<a id="a74944047162dfc04fe067a7e9ef5051d" name="a74944047162dfc04fe067a7e9ef5051d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a74944047162dfc04fe067a7e9ef5051d">&#9670;&#160;</a></span>GetModelName()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual std::string respond::Model::GetModelName </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="section return"><dt>Returns</dt><dd>The model's name as a string. </dd></dl>
+
+</div>
+</div>
+<a id="a218d6dbe7f879bc6bd2e9572f6abba43" name="a218d6dbe7f879bc6bd2e9572f6abba43"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a218d6dbe7f879bc6bd2e9572f6abba43">&#9670;&#160;</a></span>GetState()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual Eigen::VectorXd respond::Model::GetState </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="section return"><dt>Returns</dt><dd>A copy of the current state vector (limited to observation). </dd></dl>
+
+</div>
+</div>
+<a id="a4427cf243f889a7751df4741ada69d31" name="a4427cf243f889a7751df4741ada69d31"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4427cf243f889a7751df4741ada69d31">&#9670;&#160;</a></span>GetTransitionNames()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual std::vector&lt; std::string &gt; respond::Model::GetTransitionNames </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="section return"><dt>Returns</dt><dd>Vector of transition names in the order they were added. </dd></dl>
+
+</div>
+</div>
+<a id="a675ccc69675f0e70b46d698030b2b76e" name="a675ccc69675f0e70b46d698030b2b76e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a675ccc69675f0e70b46d698030b2b76e">&#9670;&#160;</a></span>SetFinalTimestep()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void respond::Model::SetFinalTimestep </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>final_timestep</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">final_timestep</td><td>The final simulation timestep. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a78a600a786c98f83b86961f4b985e3bd" name="a78a600a786c98f83b86961f4b985e3bd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a78a600a786c98f83b86961f4b985e3bd">&#9670;&#160;</a></span>SetHistories()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void respond::Model::SetHistories </td>
+          <td>(</td>
+          <td class="paramtype">const std::map&lt; std::string, <a class="el" href="../../d8/dd8/classrespond_1_1History.html">History</a> &gt; &amp;&#160;</td>
+          <td class="paramname"><em>h</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">h</td><td>A map of history names to <a class="el" href="../../d8/dd8/classrespond_1_1History.html" title="Tracks and manages state vector history over time. History records state snapshots at discrete timest...">History</a> objects. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="af61e47e16b1862006e86ae6aac0bd899" name="af61e47e16b1862006e86ae6aac0bd899"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af61e47e16b1862006e86ae6aac0bd899">&#9670;&#160;</a></span>SetHistoryCaptureInterval()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void respond::Model::SetHistoryCaptureInterval </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>interval</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">interval</td><td>Record every interval timesteps. Values less than 1 default to full capture. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a33e60e2bc44f0d0808dbc1bf58875a91" name="a33e60e2bc44f0d0808dbc1bf58875a91"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a33e60e2bc44f0d0808dbc1bf58875a91">&#9670;&#160;</a></span>SetState()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void respond::Model::SetState </td>
+          <td>(</td>
+          <td class="paramtype">const Eigen::VectorXd &amp;&#160;</td>
+          <td class="paramname"><em>state</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">state</td><td>The state vector to set. A copy is made internally. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -238,7 +645,7 @@ Static Public Member Functions</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><b>respond</b></li><li class="navelem"><a class="el" href="../../d4/d00/classrespond_1_1Model.html">Model</a></li>
-    <li class="footer">Generated on Fri Jun 12 2026 16:36:31 for RESPOND by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
+    <li class="footer">Generated on Mon Jun 15 2026 19:58:29 for RESPOND by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
   </ul>
 </div>
 </body>

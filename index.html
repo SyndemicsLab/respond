@@ -62,7 +62,7 @@ Copyright (c) 2025 Syndemics Lab at Boston Medical Center
                             <td id="projectlogo"><img alt="Logo" src="Syndemics_main_logo_50px.png" /></td>
                             <td id="projectalign">
                                 <div id="projectname">RESPOND<span
-                                        id="projectnumber">&#160;2.3.2</span>
+                                        id="projectnumber">&#160;2.4.0</span>
                                 </div>
                                 <div id="projectbrief">Researching Effective Strategies to Prevent Opioid Death</div>
                             </td>
@@ -170,6 +170,38 @@ Dependencies</h1>
 <h1><a class="anchor" id="autotoc_md5"></a>
 Install Packages</h1>
 <p>As part of our automated workflow, we provide several different installable packages as part of each release. They can be found on each <a href="https://github.com/SyndemicsLab/respond/tags">tagged release on our GitHub</a>. Currently we provide RPM and Debian installers for static and shared libraries, and a NSIS windows static library installer. For a step-by-step procedure of building the package from source, please check the <a class="el" href="d7/d63/md_docs_src_installation.html">installation documentation</a>.</p>
+<h1><a class="anchor" id="autotoc_md6"></a>
+Documentation</h1>
+<p>This documentation covers both user and developer perspectives:</p>
+<ul>
+<li><b><a class="el" href="d7/d63/md_docs_src_installation.html">Installation</a></b> - Build and installation instructions</li>
+<li><b><a class="el" href="d9/d6c/md_docs_src_motivation.html">Motivation</a></b> - Model design and goals</li>
+<li><b><a class="el" href="d2/d4f/md_docs_src_architecture.html">Architecture and Design</a></b> - Design patterns, component architecture, and extensibility</li>
+<li><b><a class="el" href="d2/deb/md_docs_src_api_guide.html">C++ API Guide</a></b> - Developer guide for using RESPOND as a library</li>
+<li><b><a class="el" href="d0/d1d/md_docs_src_data.html">Data Management</a></b> - Configuration and data requirements</li>
+<li><b><a class="el" href="dd/d4c/md_docs_src_run.html">Running the Model</a></b> - Executing simulations</li>
+<li><b><a class="el" href="d6/df1/md_docs_src_math.html">Math Background</a></b> - Mathematical foundations</li>
+<li><b><a class="el" href="d6/d3e/md_docs_src_limitations.html">Limitations</a></b> - Known constraints and future work</li>
+<li><b><a class="el" href="d8/d51/md_docs_src_faq.html">FAQs</a></b> - Frequently asked questions</li>
+</ul>
+<h1><a class="anchor" id="autotoc_md7"></a>
+Quick Start for Developers</h1>
+<p>To use RESPOND in your C++ project:</p>
+<div class="fragment"><div class="line">include(FetchContent)</div>
+<div class="line">FetchContent_Declare(</div>
+<div class="line">    respond</div>
+<div class="line">    GIT_REPOSITORY https://github.com/SyndemicsLab/respond.git</div>
+<div class="line">    GIT_TAG main</div>
+<div class="line">)</div>
+<div class="line">option(RESPOND_INSTALL &quot;Enable install for respond project&quot; ON)</div>
+<div class="line">option(RESPOND_BUILD_TESTS &quot;Disable testing for RESPOND&quot; OFF)</div>
+<div class="line">FetchContent_MakeAvailable(respond)</div>
+<div class="line"> </div>
+<div class="line">target_link_libraries(${PROJECT_NAME}</div>
+<div class="line">    PRIVATE</div>
+<div class="line">        respond::respond_model</div>
+<div class="line">)</div>
+</div><!-- fragment --><p>Then see the <a class="el" href="d2/deb/md_docs_src_api_guide.html">C++ API Guide</a> for usage examples and best practices.</p>
 <p>Next: <a class="el" href="d9/d6c/md_docs_src_motivation.html">Motivation</a> </p>
 </div></div><!-- PageDoc -->
 </div><!-- contents -->
@@ -177,7 +209,7 @@ Install Packages</h1>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Fri Jun 12 2026 16:36:31 for RESPOND by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
+    <li class="footer">Generated on Mon Jun 15 2026 19:58:29 for RESPOND by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
   </ul>
 </div>
 </body>

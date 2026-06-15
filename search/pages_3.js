@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['managing_20the_20data_0',['Managing the Data',['../d0/d1d/md_docs_src_data.html',1,'']]]
+  ['installation_0',['Installation',['../d7/d63/md_docs_src_installation.html',1,'']]]
 ];

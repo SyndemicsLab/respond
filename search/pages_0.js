@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['faqs_0',['FAQs',['../d8/d51/md_docs_src_faq.html',1,'']]]
+  ['architecture_20and_20design_0',['Architecture and Design',['../d2/d4f/md_docs_src_architecture.html',1,'']]]
 ];

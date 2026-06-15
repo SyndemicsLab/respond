@@ -62,7 +62,7 @@ Copyright (c) 2025 Syndemics Lab at Boston Medical Center
                             <td id="projectlogo"><img alt="Logo" src="../../Syndemics_main_logo_50px.png" /></td>
                             <td id="projectalign">
                                 <div id="projectname">RESPOND<span
-                                        id="projectnumber">&#160;2.3.2</span>
+                                        id="projectnumber">&#160;2.4.0</span>
                                 </div>
                                 <div id="projectbrief">Researching Effective Strategies to Prevent Opioid Death</div>
                             </td>
@@ -132,49 +132,770 @@ $(document).ready(function(){initNavTree('d8/dd8/classrespond_1_1History.html','
   <div class="headertitle"><div class="title">respond::History Class Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>Tracks and manages state vector history over time. <a class="el" href="../../d8/dd8/classrespond_1_1History.html" title="Tracks and manages state vector history over time. History records state snapshots at discrete timest...">History</a> records state snapshots at discrete timesteps, enabling analysis of state trajectories during model execution. Supports sparse timesteps (gaps are filled with zero vectors).  
+</p>
+
+<p><code>#include &lt;<a class="el" href="../../d4/de1/history_8hpp_source.html">history.hpp</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a3e048dc2dc530ea0340b41ad1caf3f64"><td class="memItemLeft" align="right" valign="top"><a id="a3e048dc2dc530ea0340b41ad1caf3f64" name="a3e048dc2dc530ea0340b41ad1caf3f64"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>History</b> (const std::string &amp;name=&quot;state&quot;, const std::string &amp;log_name=&quot;console&quot;)</td></tr>
+<tr class="memitem:a3e048dc2dc530ea0340b41ad1caf3f64"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d8/dd8/classrespond_1_1History.html#a3e048dc2dc530ea0340b41ad1caf3f64">History</a> (const std::string &amp;name=&quot;state&quot;, const std::string &amp;log_name=&quot;console&quot;)</td></tr>
+<tr class="memdesc:a3e048dc2dc530ea0340b41ad1caf3f64"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructs a <a class="el" href="../../d8/dd8/classrespond_1_1History.html" title="Tracks and manages state vector history over time. History records state snapshots at discrete timest...">History</a> tracker.  <br /></td></tr>
 <tr class="separator:a3e048dc2dc530ea0340b41ad1caf3f64"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adf59033c30431898b4a14d4daebdeba5"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d8/dd8/classrespond_1_1History.html#adf59033c30431898b4a14d4daebdeba5">History</a> (const std::string &amp;name, const std::string &amp;log_name, HistoryMode mode)</td></tr>
+<tr class="memdesc:adf59033c30431898b4a14d4daebdeba5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructs a <a class="el" href="../../d8/dd8/classrespond_1_1History.html" title="Tracks and manages state vector history over time. History records state snapshots at discrete timest...">History</a> tracker with an explicit recording mode.  <br /></td></tr>
+<tr class="separator:adf59033c30431898b4a14d4daebdeba5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a455d1420dd82d8a95f3d8616c52fc761"><td class="memItemLeft" align="right" valign="top"><a id="a455d1420dd82d8a95f3d8616c52fc761" name="a455d1420dd82d8a95f3d8616c52fc761"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>~History</b> ()=default</td></tr>
+<tr class="memdesc:a455d1420dd82d8a95f3d8616c52fc761"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destructor (default). <br /></td></tr>
+<tr class="separator:a455d1420dd82d8a95f3d8616c52fc761"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a65d97091d6049b40eea5964c68df7e83"><td class="memItemLeft" align="right" valign="top"><a id="a65d97091d6049b40eea5964c68df7e83" name="a65d97091d6049b40eea5964c68df7e83"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>History</b> (const <a class="el" href="../../d8/dd8/classrespond_1_1History.html">History</a> &amp;other)</td></tr>
+<tr class="memdesc:a65d97091d6049b40eea5964c68df7e83"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy constructor implementing the Rule of Five. Creates an independent copy of the history state and metadata. <br /></td></tr>
 <tr class="separator:a65d97091d6049b40eea5964c68df7e83"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a331d9fcda76d63fead3be11d13951519"><td class="memItemLeft" align="right" valign="top"><a id="a331d9fcda76d63fead3be11d13951519" name="a331d9fcda76d63fead3be11d13951519"></a>
-<a class="el" href="../../d8/dd8/classrespond_1_1History.html">History</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator=</b> (const <a class="el" href="../../d8/dd8/classrespond_1_1History.html">History</a> &amp;other)</td></tr>
+<tr class="memitem:a331d9fcda76d63fead3be11d13951519"><td class="memItemLeft" align="right" valign="top"><a class="el" href="../../d8/dd8/classrespond_1_1History.html">History</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d8/dd8/classrespond_1_1History.html#a331d9fcda76d63fead3be11d13951519">operator=</a> (const <a class="el" href="../../d8/dd8/classrespond_1_1History.html">History</a> &amp;other)</td></tr>
+<tr class="memdesc:a331d9fcda76d63fead3be11d13951519"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy assignment operator implementing the Rule of Five.  <br /></td></tr>
 <tr class="separator:a331d9fcda76d63fead3be11d13951519"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9bcd9640574ea6bb0a6318d7ec4f03c3"><td class="memItemLeft" align="right" valign="top"><a id="a9bcd9640574ea6bb0a6318d7ec4f03c3" name="a9bcd9640574ea6bb0a6318d7ec4f03c3"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>History</b> (<a class="el" href="../../d8/dd8/classrespond_1_1History.html">History</a> &amp;&amp;other) noexcept</td></tr>
+<tr class="memitem:a9bcd9640574ea6bb0a6318d7ec4f03c3"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d8/dd8/classrespond_1_1History.html#a9bcd9640574ea6bb0a6318d7ec4f03c3">History</a> (<a class="el" href="../../d8/dd8/classrespond_1_1History.html">History</a> &amp;&amp;other) noexcept</td></tr>
+<tr class="memdesc:a9bcd9640574ea6bb0a6318d7ec4f03c3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Move constructor implementing the Rule of Five.  <br /></td></tr>
 <tr class="separator:a9bcd9640574ea6bb0a6318d7ec4f03c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3cd48b0bf142df0f704b21c097a5e1fe"><td class="memItemLeft" align="right" valign="top"><a id="a3cd48b0bf142df0f704b21c097a5e1fe" name="a3cd48b0bf142df0f704b21c097a5e1fe"></a>
-<a class="el" href="../../d8/dd8/classrespond_1_1History.html">History</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator=</b> (<a class="el" href="../../d8/dd8/classrespond_1_1History.html">History</a> &amp;&amp;other) noexcept</td></tr>
+<tr class="memitem:a3cd48b0bf142df0f704b21c097a5e1fe"><td class="memItemLeft" align="right" valign="top"><a class="el" href="../../d8/dd8/classrespond_1_1History.html">History</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d8/dd8/classrespond_1_1History.html#a3cd48b0bf142df0f704b21c097a5e1fe">operator=</a> (<a class="el" href="../../d8/dd8/classrespond_1_1History.html">History</a> &amp;&amp;other) noexcept</td></tr>
+<tr class="memdesc:a3cd48b0bf142df0f704b21c097a5e1fe"><td class="mdescLeft">&#160;</td><td class="mdescRight">Move assignment operator implementing the Rule of Five.  <br /></td></tr>
 <tr class="separator:a3cd48b0bf142df0f704b21c097a5e1fe"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aef7ac5e06938f0f3b152dec7fd1c49e1"><td class="memItemLeft" align="right" valign="top"><a id="aef7ac5e06938f0f3b152dec7fd1c49e1" name="aef7ac5e06938f0f3b152dec7fd1c49e1"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>operator==</b> (const <a class="el" href="../../d8/dd8/classrespond_1_1History.html">History</a> &amp;other) const</td></tr>
+<tr class="memitem:aef7ac5e06938f0f3b152dec7fd1c49e1"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d8/dd8/classrespond_1_1History.html#aef7ac5e06938f0f3b152dec7fd1c49e1">operator==</a> (const <a class="el" href="../../d8/dd8/classrespond_1_1History.html">History</a> &amp;other) const</td></tr>
+<tr class="memdesc:aef7ac5e06938f0f3b152dec7fd1c49e1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Equality comparison operator.  <br /></td></tr>
 <tr class="separator:aef7ac5e06938f0f3b152dec7fd1c49e1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9a5fc6309f5f16026af9fa478907c9ea"><td class="memItemLeft" align="right" valign="top"><a id="a9a5fc6309f5f16026af9fa478907c9ea" name="a9a5fc6309f5f16026af9fa478907c9ea"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>operator!=</b> (const <a class="el" href="../../d8/dd8/classrespond_1_1History.html">History</a> &amp;other) const</td></tr>
+<tr class="memitem:a9a5fc6309f5f16026af9fa478907c9ea"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d8/dd8/classrespond_1_1History.html#a9a5fc6309f5f16026af9fa478907c9ea">operator!=</a> (const <a class="el" href="../../d8/dd8/classrespond_1_1History.html">History</a> &amp;other) const</td></tr>
+<tr class="memdesc:a9a5fc6309f5f16026af9fa478907c9ea"><td class="mdescLeft">&#160;</td><td class="mdescRight">Inequality comparison operator.  <br /></td></tr>
 <tr class="separator:a9a5fc6309f5f16026af9fa478907c9ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a77b38948e81243f26ff84f2fbf7c9b6d"><td class="memItemLeft" align="right" valign="top"><a id="a77b38948e81243f26ff84f2fbf7c9b6d" name="a77b38948e81243f26ff84f2fbf7c9b6d"></a>
-std::map&lt; int, Eigen::VectorXd &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>GetStateMap</b> () const</td></tr>
+<tr class="memitem:a77b38948e81243f26ff84f2fbf7c9b6d"><td class="memItemLeft" align="right" valign="top">std::map&lt; int, Eigen::VectorXd &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d8/dd8/classrespond_1_1History.html#a77b38948e81243f26ff84f2fbf7c9b6d">GetStateMap</a> () const</td></tr>
+<tr class="memdesc:a77b38948e81243f26ff84f2fbf7c9b6d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieves the complete state map (timestep -&gt; state vector).  <br /></td></tr>
 <tr class="separator:a77b38948e81243f26ff84f2fbf7c9b6d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a02bca6664a793290af860e1764aee660"><td class="memItemLeft" align="right" valign="top"><a id="a02bca6664a793290af860e1764aee660" name="a02bca6664a793290af860e1764aee660"></a>
-std::string&#160;</td><td class="memItemRight" valign="bottom"><b>GetHistoryName</b> () const</td></tr>
+<tr class="memitem:af09dc4fd78931c856f420c85b702a638"><td class="memItemLeft" align="right" valign="top">const std::vector&lt; int &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d8/dd8/classrespond_1_1History.html#af09dc4fd78931c856f420c85b702a638">GetRecordedTimesteps</a> () const</td></tr>
+<tr class="memdesc:af09dc4fd78931c856f420c85b702a638"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieves the recorded timesteps without densifying gaps.  <br /></td></tr>
+<tr class="separator:af09dc4fd78931c856f420c85b702a638"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a341a57e94ad484be25b7cec81af31ee8"><td class="memItemLeft" align="right" valign="top">const std::vector&lt; Eigen::VectorXd &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d8/dd8/classrespond_1_1History.html#a341a57e94ad484be25b7cec81af31ee8">GetRecordedStates</a> () const</td></tr>
+<tr class="memdesc:a341a57e94ad484be25b7cec81af31ee8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieves the recorded state vectors without densifying gaps.  <br /></td></tr>
+<tr class="separator:a341a57e94ad484be25b7cec81af31ee8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa3837362bd5d6bd07b41599a24f86014"><td class="memItemLeft" align="right" valign="top">HistoryMode&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d8/dd8/classrespond_1_1History.html#aa3837362bd5d6bd07b41599a24f86014">GetHistoryMode</a> () const</td></tr>
+<tr class="memdesc:aa3837362bd5d6bd07b41599a24f86014"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieves the configured history recording mode.  <br /></td></tr>
+<tr class="separator:aa3837362bd5d6bd07b41599a24f86014"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa4a93040de74f5c6863bd76b8449f30c"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d8/dd8/classrespond_1_1History.html#aa4a93040de74f5c6863bd76b8449f30c">HasPendingState</a> () const</td></tr>
+<tr class="memdesc:aa4a93040de74f5c6863bd76b8449f30c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Indicates whether an accumulated history has pending state.  <br /></td></tr>
+<tr class="separator:aa4a93040de74f5c6863bd76b8449f30c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a335079248ab29b026bd4069419256a25"><td class="memItemLeft" align="right" valign="top">Eigen::VectorXd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d8/dd8/classrespond_1_1History.html#a335079248ab29b026bd4069419256a25">GetPendingState</a> () const</td></tr>
+<tr class="memdesc:a335079248ab29b026bd4069419256a25"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieves the pending accumulated state.  <br /></td></tr>
+<tr class="separator:a335079248ab29b026bd4069419256a25"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6948e3842315d84afc8a7c091169d70b"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d8/dd8/classrespond_1_1History.html#a6948e3842315d84afc8a7c091169d70b">GetLatestRecordedTimestep</a> () const</td></tr>
+<tr class="memdesc:a6948e3842315d84afc8a7c091169d70b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieves the latest recorded timestep.  <br /></td></tr>
+<tr class="separator:a6948e3842315d84afc8a7c091169d70b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a02bca6664a793290af860e1764aee660"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d8/dd8/classrespond_1_1History.html#a02bca6664a793290af860e1764aee660">GetHistoryName</a> () const</td></tr>
+<tr class="memdesc:a02bca6664a793290af860e1764aee660"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieves the identifier name of this history.  <br /></td></tr>
 <tr class="separator:a02bca6664a793290af860e1764aee660"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a27d48be577d256c60c9da085d9f339a4"><td class="memItemLeft" align="right" valign="top"><a id="a27d48be577d256c60c9da085d9f339a4" name="a27d48be577d256c60c9da085d9f339a4"></a>
-std::string&#160;</td><td class="memItemRight" valign="bottom"><b>GetLogName</b> () const</td></tr>
+<tr class="memitem:a27d48be577d256c60c9da085d9f339a4"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d8/dd8/classrespond_1_1History.html#a27d48be577d256c60c9da085d9f339a4">GetLogName</a> () const</td></tr>
+<tr class="memdesc:a27d48be577d256c60c9da085d9f339a4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieves the logger name for this history.  <br /></td></tr>
 <tr class="separator:a27d48be577d256c60c9da085d9f339a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a965303b8bb23d2b03132ecc5d1c670d3"><td class="memItemLeft" align="right" valign="top"><a id="a965303b8bb23d2b03132ecc5d1c670d3" name="a965303b8bb23d2b03132ecc5d1c670d3"></a>
-std::vector&lt; Eigen::VectorXd &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>GetStateAsVector</b> () const</td></tr>
+<tr class="memitem:a965303b8bb23d2b03132ecc5d1c670d3"><td class="memItemLeft" align="right" valign="top">std::vector&lt; Eigen::VectorXd &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d8/dd8/classrespond_1_1History.html#a965303b8bb23d2b03132ecc5d1c670d3">GetStateAsVector</a> () const</td></tr>
+<tr class="memdesc:a965303b8bb23d2b03132ecc5d1c670d3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Converts the sparse history map to a contiguous vector of states. Gaps in timesteps are filled with zero vectors of appropriate dimension.  <br /></td></tr>
 <tr class="separator:a965303b8bb23d2b03132ecc5d1c670d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7b3fb643ecadc65fd545a16313a6b58c"><td class="memItemLeft" align="right" valign="top"><a id="a7b3fb643ecadc65fd545a16313a6b58c" name="a7b3fb643ecadc65fd545a16313a6b58c"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>AddState</b> (const Eigen::VectorXd &amp;state, int timestep=-1)</td></tr>
+<tr class="memitem:a7b3fb643ecadc65fd545a16313a6b58c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d8/dd8/classrespond_1_1History.html#a7b3fb643ecadc65fd545a16313a6b58c">AddState</a> (const Eigen::VectorXd &amp;state, int timestep=-1)</td></tr>
+<tr class="memdesc:a7b3fb643ecadc65fd545a16313a6b58c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Records a state vector at a specific or automatic timestep.  <br /></td></tr>
 <tr class="separator:a7b3fb643ecadc65fd545a16313a6b58c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adb22eb2432f2b4137c20f9d72bb923d8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d8/dd8/classrespond_1_1History.html#adb22eb2432f2b4137c20f9d72bb923d8">RecordSnapshot</a> (const Eigen::VectorXd &amp;state, int timestep)</td></tr>
+<tr class="memdesc:adb22eb2432f2b4137c20f9d72bb923d8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Records a snapshot value at a concrete timestep.  <br /></td></tr>
+<tr class="separator:adb22eb2432f2b4137c20f9d72bb923d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac131e8cbeb8d04265b19625342eebc5d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d8/dd8/classrespond_1_1History.html#ac131e8cbeb8d04265b19625342eebc5d">AccumulateState</a> (const Eigen::VectorXd &amp;state)</td></tr>
+<tr class="memdesc:ac131e8cbeb8d04265b19625342eebc5d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds a contribution to an accumulated history.  <br /></td></tr>
+<tr class="separator:ac131e8cbeb8d04265b19625342eebc5d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9c57e6669f5db486fa60f1a01dfe7a9b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d8/dd8/classrespond_1_1History.html#a9c57e6669f5db486fa60f1a01dfe7a9b">FlushPendingState</a> (int timestep, Eigen::Index state_size)</td></tr>
+<tr class="memdesc:a9c57e6669f5db486fa60f1a01dfe7a9b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Flushes pending accumulated state into a recorded timestep.  <br /></td></tr>
+<tr class="separator:a9c57e6669f5db486fa60f1a01dfe7a9b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5d975ca9b2bfcd0bd2b48e352e1e3588"><td class="memItemLeft" align="right" valign="top"><a id="a5d975ca9b2bfcd0bd2b48e352e1e3588" name="a5d975ca9b2bfcd0bd2b48e352e1e3588"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>Clear</b> ()</td></tr>
+<tr class="memdesc:a5d975ca9b2bfcd0bd2b48e352e1e3588"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clears all recorded state history. <br /></td></tr>
 <tr class="separator:a5d975ca9b2bfcd0bd2b48e352e1e3588"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a id="a3e048dc2dc530ea0340b41ad1caf3f64" name="a3e048dc2dc530ea0340b41ad1caf3f64"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3e048dc2dc530ea0340b41ad1caf3f64">&#9670;&#160;</a></span>History() <span class="overload">[1/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">respond::History::History </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>name</em> = <code>&quot;state&quot;</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>log_name</em> = <code>&quot;console&quot;</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">name</td><td>The identifier for this history (default: "state"). </td></tr>
+    <tr><td class="paramname">log_name</td><td>The logger name for error reporting (default: "console"). </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="adf59033c30431898b4a14d4daebdeba5" name="adf59033c30431898b4a14d4daebdeba5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adf59033c30431898b4a14d4daebdeba5">&#9670;&#160;</a></span>History() <span class="overload">[2/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">respond::History::History </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>name</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>log_name</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">HistoryMode&#160;</td>
+          <td class="paramname"><em>mode</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">name</td><td>The identifier for this history. </td></tr>
+    <tr><td class="paramname">log_name</td><td>The logger name for error reporting. </td></tr>
+    <tr><td class="paramname">mode</td><td>Whether the history stores snapshots or accumulations. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a9bcd9640574ea6bb0a6318d7ec4f03c3" name="a9bcd9640574ea6bb0a6318d7ec4f03c3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9bcd9640574ea6bb0a6318d7ec4f03c3">&#9670;&#160;</a></span>History() <span class="overload">[3/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">respond::History::History </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="../../d8/dd8/classrespond_1_1History.html">History</a> &amp;&amp;&#160;</td>
+          <td class="paramname"><em>other</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">other</td><td>The history to move from (leaves original state unchanged per current implementation). </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a id="ac131e8cbeb8d04265b19625342eebc5d" name="ac131e8cbeb8d04265b19625342eebc5d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac131e8cbeb8d04265b19625342eebc5d">&#9670;&#160;</a></span>AccumulateState()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void respond::History::AccumulateState </td>
+          <td>(</td>
+          <td class="paramtype">const Eigen::VectorXd &amp;&#160;</td>
+          <td class="paramname"><em>state</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">state</td><td>The per-step contribution to accumulate. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a7b3fb643ecadc65fd545a16313a6b58c" name="a7b3fb643ecadc65fd545a16313a6b58c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7b3fb643ecadc65fd545a16313a6b58c">&#9670;&#160;</a></span>AddState()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void respond::History::AddState </td>
+          <td>(</td>
+          <td class="paramtype">const Eigen::VectorXd &amp;&#160;</td>
+          <td class="paramname"><em>state</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>timestep</em> = <code>-1</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">state</td><td>The state vector to record. </td></tr>
+    <tr><td class="paramname">timestep</td><td>The timestep index for this state (default: -1 for automatic next timestep). If timestep is negative, the next sequential timestep is used automatically. If timestep already exists, it is considered invalid but is currently overwritten. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a9c57e6669f5db486fa60f1a01dfe7a9b" name="a9c57e6669f5db486fa60f1a01dfe7a9b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9c57e6669f5db486fa60f1a01dfe7a9b">&#9670;&#160;</a></span>FlushPendingState()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void respond::History::FlushPendingState </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>timestep</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Eigen::Index&#160;</td>
+          <td class="paramname"><em>state_size</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">timestep</td><td>The simulation timestep to record. </td></tr>
+    <tr><td class="paramname">state_size</td><td>Size of a zero vector to record if nothing is pending. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="aa3837362bd5d6bd07b41599a24f86014" name="aa3837362bd5d6bd07b41599a24f86014"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa3837362bd5d6bd07b41599a24f86014">&#9670;&#160;</a></span>GetHistoryMode()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">HistoryMode respond::History::GetHistoryMode </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="section return"><dt>Returns</dt><dd>Snapshot or accumulated history mode. </dd></dl>
+
+</div>
+</div>
+<a id="a02bca6664a793290af860e1764aee660" name="a02bca6664a793290af860e1764aee660"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a02bca6664a793290af860e1764aee660">&#9670;&#160;</a></span>GetHistoryName()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string respond::History::GetHistoryName </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="section return"><dt>Returns</dt><dd>The history's name string. </dd></dl>
+
+</div>
+</div>
+<a id="a6948e3842315d84afc8a7c091169d70b" name="a6948e3842315d84afc8a7c091169d70b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6948e3842315d84afc8a7c091169d70b">&#9670;&#160;</a></span>GetLatestRecordedTimestep()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int respond::History::GetLatestRecordedTimestep </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="section return"><dt>Returns</dt><dd>Largest recorded timestep, or -1 if history is empty. </dd></dl>
+
+</div>
+</div>
+<a id="a27d48be577d256c60c9da085d9f339a4" name="a27d48be577d256c60c9da085d9f339a4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a27d48be577d256c60c9da085d9f339a4">&#9670;&#160;</a></span>GetLogName()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string respond::History::GetLogName </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="section return"><dt>Returns</dt><dd>The associated logger's name. </dd></dl>
+
+</div>
+</div>
+<a id="a335079248ab29b026bd4069419256a25" name="a335079248ab29b026bd4069419256a25"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a335079248ab29b026bd4069419256a25">&#9670;&#160;</a></span>GetPendingState()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">Eigen::VectorXd respond::History::GetPendingState </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="section return"><dt>Returns</dt><dd>The pending aggregate vector, or an empty vector if none. </dd></dl>
+
+</div>
+</div>
+<a id="a341a57e94ad484be25b7cec81af31ee8" name="a341a57e94ad484be25b7cec81af31ee8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a341a57e94ad484be25b7cec81af31ee8">&#9670;&#160;</a></span>GetRecordedStates()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const std::vector&lt; Eigen::VectorXd &gt; &amp; respond::History::GetRecordedStates </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="section return"><dt>Returns</dt><dd>Const reference to the stored state vectors. </dd></dl>
+
+</div>
+</div>
+<a id="af09dc4fd78931c856f420c85b702a638" name="af09dc4fd78931c856f420c85b702a638"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af09dc4fd78931c856f420c85b702a638">&#9670;&#160;</a></span>GetRecordedTimesteps()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const std::vector&lt; int &gt; &amp; respond::History::GetRecordedTimesteps </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="section return"><dt>Returns</dt><dd>Const reference to the stored timestep indices. </dd></dl>
+
+</div>
+</div>
+<a id="a965303b8bb23d2b03132ecc5d1c670d3" name="a965303b8bb23d2b03132ecc5d1c670d3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a965303b8bb23d2b03132ecc5d1c670d3">&#9670;&#160;</a></span>GetStateAsVector()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt; Eigen::VectorXd &gt; respond::History::GetStateAsVector </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="section return"><dt>Returns</dt><dd>Vector of Eigen vectors from timestep 0 to the maximum recorded timestep. Returns empty vector if no state has been recorded. </dd></dl>
+
+</div>
+</div>
+<a id="a77b38948e81243f26ff84f2fbf7c9b6d" name="a77b38948e81243f26ff84f2fbf7c9b6d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a77b38948e81243f26ff84f2fbf7c9b6d">&#9670;&#160;</a></span>GetStateMap()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::map&lt; int, Eigen::VectorXd &gt; respond::History::GetStateMap </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="section return"><dt>Returns</dt><dd>Map of integer timesteps to Eigen vectors representing states. </dd></dl>
+
+</div>
+</div>
+<a id="aa4a93040de74f5c6863bd76b8449f30c" name="aa4a93040de74f5c6863bd76b8449f30c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa4a93040de74f5c6863bd76b8449f30c">&#9670;&#160;</a></span>HasPendingState()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool respond::History::HasPendingState </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="section return"><dt>Returns</dt><dd>True when a pending aggregate exists. </dd></dl>
+
+</div>
+</div>
+<a id="a9a5fc6309f5f16026af9fa478907c9ea" name="a9a5fc6309f5f16026af9fa478907c9ea"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9a5fc6309f5f16026af9fa478907c9ea">&#9670;&#160;</a></span>operator!=()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool respond::History::operator!= </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="../../d8/dd8/classrespond_1_1History.html">History</a> &amp;&#160;</td>
+          <td class="paramname"><em>other</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">other</td><td>The history to compare with. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>True if histories differ in any aspect. </dd></dl>
+
+</div>
+</div>
+<a id="a331d9fcda76d63fead3be11d13951519" name="a331d9fcda76d63fead3be11d13951519"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a331d9fcda76d63fead3be11d13951519">&#9670;&#160;</a></span>operator=() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="../../d8/dd8/classrespond_1_1History.html">History</a> &amp; respond::History::operator= </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="../../d8/dd8/classrespond_1_1History.html">History</a> &amp;&#160;</td>
+          <td class="paramname"><em>other</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">other</td><td>The history to copy from. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Reference to this history after assignment. </dd></dl>
+
+</div>
+</div>
+<a id="a3cd48b0bf142df0f704b21c097a5e1fe" name="a3cd48b0bf142df0f704b21c097a5e1fe"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3cd48b0bf142df0f704b21c097a5e1fe">&#9670;&#160;</a></span>operator=() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="../../d8/dd8/classrespond_1_1History.html">History</a> &amp; respond::History::operator= </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="../../d8/dd8/classrespond_1_1History.html">History</a> &amp;&amp;&#160;</td>
+          <td class="paramname"><em>other</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">other</td><td>The history to move from. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Reference to this history after assignment. </dd></dl>
+
+</div>
+</div>
+<a id="aef7ac5e06938f0f3b152dec7fd1c49e1" name="aef7ac5e06938f0f3b152dec7fd1c49e1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aef7ac5e06938f0f3b152dec7fd1c49e1">&#9670;&#160;</a></span>operator==()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool respond::History::operator== </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="../../d8/dd8/classrespond_1_1History.html">History</a> &amp;&#160;</td>
+          <td class="paramname"><em>other</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">other</td><td>The history to compare with. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>True if all history properties and state are identical. </dd></dl>
+
+</div>
+</div>
+<a id="adb22eb2432f2b4137c20f9d72bb923d8" name="adb22eb2432f2b4137c20f9d72bb923d8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adb22eb2432f2b4137c20f9d72bb923d8">&#9670;&#160;</a></span>RecordSnapshot()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void respond::History::RecordSnapshot </td>
+          <td>(</td>
+          <td class="paramtype">const Eigen::VectorXd &amp;&#160;</td>
+          <td class="paramname"><em>state</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>timestep</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">state</td><td>The snapshot value to record. </td></tr>
+    <tr><td class="paramname">timestep</td><td>The simulation timestep for this snapshot. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
 <li><a class="el" href="../../d4/de1/history_8hpp_source.html">history.hpp</a></li>
 </ul>
@@ -184,7 +905,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>Clear</b> ()</td></tr
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><b>respond</b></li><li class="navelem"><a class="el" href="../../d8/dd8/classrespond_1_1History.html">History</a></li>
-    <li class="footer">Generated on Fri Jun 12 2026 16:36:31 for RESPOND by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
+    <li class="footer">Generated on Mon Jun 15 2026 19:58:29 for RESPOND by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
   </ul>
 </div>
 </body>

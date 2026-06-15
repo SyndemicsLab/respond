@@ -62,7 +62,7 @@ Copyright (c) 2025 Syndemics Lab at Boston Medical Center
                             <td id="projectlogo"><img alt="Logo" src="../../Syndemics_main_logo_50px.png" /></td>
                             <td id="projectalign">
                                 <div id="projectname">RESPOND<span
-                                        id="projectnumber">&#160;2.3.2</span>
+                                        id="projectnumber">&#160;2.4.0</span>
                                 </div>
                                 <div id="projectbrief">Researching Effective Strategies to Prevent Opioid Death</div>
                             </td>
@@ -128,43 +128,213 @@ $(document).ready(function(){initNavTree('de/d15/classrespond_1_1Transition.html
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pro-methods">Protected Member Functions</a> &#124;
 <a href="../../db/d4a/classrespond_1_1Transition-members.html">List of all members</a>  </div>
   <div class="headertitle"><div class="title">respond::Transition Class Reference<span class="mlabels"><span class="mlabel">abstract</span></span></div></div>
 </div><!--header-->
 <div class="contents">
 
-<p>A helper class to hold Transitions.  
+<p>Abstract base class representing a state transition operation. Transitions apply transformation matrices to state vectors and update history records. Subclasses define specific types of transitions (e.g., Markov, background death, behavior).  
 </p>
 
 <p><code>#include &lt;<a class="el" href="../../d0/d07/transition_8hpp_source.html">transition.hpp</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a0d08c595758d651c4799a649f7dc27a5"><td class="memItemLeft" align="right" valign="top"><a id="a0d08c595758d651c4799a649f7dc27a5" name="a0d08c595758d651c4799a649f7dc27a5"></a>
-virtual Eigen::VectorXd&#160;</td><td class="memItemRight" valign="bottom"><b>Execute</b> (const Eigen::VectorXd &amp;s, std::map&lt; std::string, <a class="el" href="../../d8/dd8/classrespond_1_1History.html">History</a> &gt; &amp;h) const =0</td></tr>
+<tr class="memitem:a4c1875c9d08509267413f408b5003d52"><td class="memItemLeft" align="right" valign="top"><a id="a4c1875c9d08509267413f408b5003d52" name="a4c1875c9d08509267413f408b5003d52"></a>
+virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~Transition</b> ()=default</td></tr>
+<tr class="memdesc:a4c1875c9d08509267413f408b5003d52"><td class="mdescLeft">&#160;</td><td class="mdescRight">Virtual destructor for proper polymorphic cleanup. <br /></td></tr>
+<tr class="separator:a4c1875c9d08509267413f408b5003d52"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0d08c595758d651c4799a649f7dc27a5"><td class="memItemLeft" align="right" valign="top">virtual Eigen::VectorXd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d15/classrespond_1_1Transition.html#a0d08c595758d651c4799a649f7dc27a5">Execute</a> (const Eigen::VectorXd &amp;s, std::map&lt; std::string, <a class="el" href="../../d8/dd8/classrespond_1_1History.html">History</a> &gt; &amp;h) const =0</td></tr>
+<tr class="memdesc:a0d08c595758d651c4799a649f7dc27a5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Executes this transition, applying it to a state vector. The input state is not modified; history records are updated with the transition effects.  <br /></td></tr>
 <tr class="separator:a0d08c595758d651c4799a649f7dc27a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a240a483c28ff0cd98fb89ce3daac6a2c"><td class="memItemLeft" align="right" valign="top"><a id="a240a483c28ff0cd98fb89ce3daac6a2c" name="a240a483c28ff0cd98fb89ce3daac6a2c"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>AddTransitionMatrix</b> (const Eigen::MatrixXd &amp;m)=0</td></tr>
+<tr class="memitem:a240a483c28ff0cd98fb89ce3daac6a2c"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d15/classrespond_1_1Transition.html#a240a483c28ff0cd98fb89ce3daac6a2c">AddTransitionMatrix</a> (const Eigen::MatrixXd &amp;m)=0</td></tr>
+<tr class="memdesc:a240a483c28ff0cd98fb89ce3daac6a2c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds a transformation matrix to this transition. The matrix is stored for use during <a class="el" href="../../de/d15/classrespond_1_1Transition.html#a0d08c595758d651c4799a649f7dc27a5" title="Executes this transition, applying it to a state vector. The input state is not modified; history rec...">Execute()</a> calls.  <br /></td></tr>
 <tr class="separator:a240a483c28ff0cd98fb89ce3daac6a2c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acab468aff8ded77d031b2294a083ba56"><td class="memItemLeft" align="right" valign="top"><a id="acab468aff8ded77d031b2294a083ba56" name="acab468aff8ded77d031b2294a083ba56"></a>
-virtual std::string&#160;</td><td class="memItemRight" valign="bottom"><b>GetTransitionName</b> () const =0</td></tr>
+<tr class="memitem:acab468aff8ded77d031b2294a083ba56"><td class="memItemLeft" align="right" valign="top">virtual std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d15/classrespond_1_1Transition.html#acab468aff8ded77d031b2294a083ba56">GetTransitionName</a> () const =0</td></tr>
+<tr class="memdesc:acab468aff8ded77d031b2294a083ba56"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieves the name/type of this transition.  <br /></td></tr>
 <tr class="separator:acab468aff8ded77d031b2294a083ba56"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a12d5261d933f7b2e7a70d4977985c2dc"><td class="memItemLeft" align="right" valign="top"><a id="a12d5261d933f7b2e7a70d4977985c2dc" name="a12d5261d933f7b2e7a70d4977985c2dc"></a>
 virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>ClearTransitionMatrices</b> ()=0</td></tr>
+<tr class="memdesc:a12d5261d933f7b2e7a70d4977985c2dc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clears all stored transition matrices. <br /></td></tr>
 <tr class="separator:a12d5261d933f7b2e7a70d4977985c2dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7310077d659da3a22adf2c9cf58717d9"><td class="memItemLeft" align="right" valign="top"><a id="a7310077d659da3a22adf2c9cf58717d9" name="a7310077d659da3a22adf2c9cf58717d9"></a>
-virtual std::string&#160;</td><td class="memItemRight" valign="bottom"><b>GetLogName</b> () const =0</td></tr>
+<tr class="memitem:a7310077d659da3a22adf2c9cf58717d9"><td class="memItemLeft" align="right" valign="top">virtual std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d15/classrespond_1_1Transition.html#a7310077d659da3a22adf2c9cf58717d9">GetLogName</a> () const =0</td></tr>
+<tr class="memdesc:a7310077d659da3a22adf2c9cf58717d9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieves the logger name used by this transition.  <br /></td></tr>
 <tr class="separator:a7310077d659da3a22adf2c9cf58717d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a970fdc4fe7ab4532dbd1f86a61f3d415"><td class="memItemLeft" align="right" valign="top"><a id="a970fdc4fe7ab4532dbd1f86a61f3d415" name="a970fdc4fe7ab4532dbd1f86a61f3d415"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>Transition</b> (const <a class="el" href="../../de/d15/classrespond_1_1Transition.html">Transition</a> &amp;)=delete</td></tr>
+<tr class="memdesc:a970fdc4fe7ab4532dbd1f86a61f3d415"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deleted copy constructor (transitions are non-copyable by public API). <br /></td></tr>
 <tr class="separator:a970fdc4fe7ab4532dbd1f86a61f3d415"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abc7b99aa4eabcfd9ad353eb7784aca26"><td class="memItemLeft" align="right" valign="top"><a id="abc7b99aa4eabcfd9ad353eb7784aca26" name="abc7b99aa4eabcfd9ad353eb7784aca26"></a>
 <a class="el" href="../../de/d15/classrespond_1_1Transition.html">Transition</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator=</b> (const <a class="el" href="../../de/d15/classrespond_1_1Transition.html">Transition</a> &amp;)=delete</td></tr>
+<tr class="memdesc:abc7b99aa4eabcfd9ad353eb7784aca26"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deleted copy assignment operator (transitions are non-copyable by public API). <br /></td></tr>
 <tr class="separator:abc7b99aa4eabcfd9ad353eb7784aca26"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab89c85cc633447fa0324e17af7a22334"><td class="memItemLeft" align="right" valign="top"><a id="ab89c85cc633447fa0324e17af7a22334" name="ab89c85cc633447fa0324e17af7a22334"></a>
-virtual std::unique_ptr&lt; <a class="el" href="../../de/d15/classrespond_1_1Transition.html">Transition</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>clone</b> () const =0</td></tr>
+<tr class="memitem:ab89c85cc633447fa0324e17af7a22334"><td class="memItemLeft" align="right" valign="top">virtual std::unique_ptr&lt; <a class="el" href="../../de/d15/classrespond_1_1Transition.html">Transition</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d15/classrespond_1_1Transition.html#ab89c85cc633447fa0324e17af7a22334">clone</a> () const =0</td></tr>
+<tr class="memdesc:ab89c85cc633447fa0324e17af7a22334"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a deep copy of this transition.  <br /></td></tr>
 <tr class="separator:ab89c85cc633447fa0324e17af7a22334"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-methods" name="pro-methods"></a>
+Protected Member Functions</h2></td></tr>
+<tr class="memitem:a7f81fe53d48a851e0946a9c2577caac4"><td class="memItemLeft" align="right" valign="top"><a id="a7f81fe53d48a851e0946a9c2577caac4" name="a7f81fe53d48a851e0946a9c2577caac4"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>Transition</b> ()=default</td></tr>
+<tr class="memdesc:a7f81fe53d48a851e0946a9c2577caac4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Protected default constructor for subclass initialization. Not intended for direct public use. <br /></td></tr>
+<tr class="separator:a7f81fe53d48a851e0946a9c2577caac4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a id="a240a483c28ff0cd98fb89ce3daac6a2c" name="a240a483c28ff0cd98fb89ce3daac6a2c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a240a483c28ff0cd98fb89ce3daac6a2c">&#9670;&#160;</a></span>AddTransitionMatrix()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void respond::Transition::AddTransitionMatrix </td>
+          <td>(</td>
+          <td class="paramtype">const Eigen::MatrixXd &amp;&#160;</td>
+          <td class="paramname"><em>m</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">m</td><td>The transition matrix to add (not modified by this transition). </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ab89c85cc633447fa0324e17af7a22334" name="ab89c85cc633447fa0324e17af7a22334"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab89c85cc633447fa0324e17af7a22334">&#9670;&#160;</a></span>clone()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual std::unique_ptr&lt; <a class="el" href="../../de/d15/classrespond_1_1Transition.html">Transition</a> &gt; respond::Transition::clone </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="section return"><dt>Returns</dt><dd>A unique_ptr to an independent copy of this transition. </dd></dl>
+
+</div>
+</div>
+<a id="a0d08c595758d651c4799a649f7dc27a5" name="a0d08c595758d651c4799a649f7dc27a5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0d08c595758d651c4799a649f7dc27a5">&#9670;&#160;</a></span>Execute()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual Eigen::VectorXd respond::Transition::Execute </td>
+          <td>(</td>
+          <td class="paramtype">const Eigen::VectorXd &amp;&#160;</td>
+          <td class="paramname"><em>s</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::map&lt; std::string, <a class="el" href="../../d8/dd8/classrespond_1_1History.html">History</a> &gt; &amp;&#160;</td>
+          <td class="paramname"><em>h</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">s</td><td>The current state vector (not modified). </td></tr>
+    <tr><td class="paramname">h</td><td>The history records to update (may be modified by this transition). </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The resulting state vector after applying this transition. </dd></dl>
+
+</div>
+</div>
+<a id="a7310077d659da3a22adf2c9cf58717d9" name="a7310077d659da3a22adf2c9cf58717d9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7310077d659da3a22adf2c9cf58717d9">&#9670;&#160;</a></span>GetLogName()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual std::string respond::Transition::GetLogName </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="section return"><dt>Returns</dt><dd>The associated logger's name. </dd></dl>
+
+</div>
+</div>
+<a id="acab468aff8ded77d031b2294a083ba56" name="acab468aff8ded77d031b2294a083ba56"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acab468aff8ded77d031b2294a083ba56">&#9670;&#160;</a></span>GetTransitionName()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual std::string respond::Transition::GetTransitionName </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="section return"><dt>Returns</dt><dd>The transition's identifier as a string. </dd></dl>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
 <li><a class="el" href="../../d0/d07/transition_8hpp_source.html">transition.hpp</a></li>
 </ul>
@@ -174,7 +344,7 @@ virtual std::unique_ptr&lt; <a class="el" href="../../de/d15/classrespond_1_1Tra
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><b>respond</b></li><li class="navelem"><a class="el" href="../../de/d15/classrespond_1_1Transition.html">Transition</a></li>
-    <li class="footer">Generated on Fri Jun 12 2026 16:36:31 for RESPOND by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
+    <li class="footer">Generated on Mon Jun 15 2026 19:58:29 for RESPOND by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
   </ul>
 </div>
 </body>

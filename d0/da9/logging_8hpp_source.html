@@ -62,7 +62,7 @@ Copyright (c) 2025 Syndemics Lab at Boston Medical Center
                             <td id="projectlogo"><img alt="Logo" src="../../Syndemics_main_logo_50px.png" /></td>
                             <td id="projectalign">
                                 <div id="projectname">RESPOND<span
-                                        id="projectnumber">&#160;2.3.2</span>
+                                        id="projectnumber">&#160;2.4.0</span>
                                 </div>
                                 <div id="projectbrief">Researching Effective Strategies to Prevent Opioid Death</div>
                             </td>
@@ -162,27 +162,69 @@ $(document).ready(function(){initNavTree('d0/da9/logging_8hpp_source.html','../.
 <div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span>    kCount = 4       <span class="comment">// Enum Counter</span></div>
 <div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span>};</div>
 <div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span> </div>
-<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span>CreationStatus CreateFileLogger(<span class="keyword">const</span> std::string &amp;logger_name,</div>
-<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span>                                <span class="keyword">const</span> std::string &amp;filepath);</div>
-<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span> </div>
-<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span><span class="keywordtype">void</span> LogInfo(<span class="keyword">const</span> std::string &amp;logger_name, <span class="keyword">const</span> std::string &amp;message);</div>
-<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span> </div>
-<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span><span class="keywordtype">void</span> LogWarning(<span class="keyword">const</span> std::string &amp;logger_name, <span class="keyword">const</span> std::string &amp;message);</div>
-<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span> </div>
-<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span><span class="keywordtype">void</span> LogError(<span class="keyword">const</span> std::string &amp;logger_name, <span class="keyword">const</span> std::string &amp;message);</div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span><span class="keyword">enum class</span> LogPattern : <span class="keywordtype">int</span> {</div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span>    kSimple = 0,   <span class="comment">// Minimal: [%n] %v</span></div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span>    kStandard = 1, <span class="comment">// Default: [%H:%M:%S %z] [%n] [%^---%L---%$] [thread %t] %v</span></div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span>    kDetailed = 2, <span class="comment">// Full: [%Y-%m-%d %H:%M:%S.%e] [%n] [%^%L%$] [thread %t] %v</span></div>
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span>    kThreadSafe =</div>
+<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span>        3 <span class="comment">// With sequence number: [%H:%M:%S] [seq %i] [%n] [%^---%L---%$] %v</span></div>
+<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span>};</div>
+<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span> </div>
+<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span><span class="comment">// ============================================================================</span></div>
+<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span><span class="comment">// Core Logger Creation and Management</span></div>
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span><span class="comment">// ============================================================================</span></div>
+<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span> </div>
+<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span>CreationStatus CreateFileLogger(<span class="keyword">const</span> std::string &amp;logger_name,</div>
+<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>                                <span class="keyword">const</span> std::string &amp;filepath);</div>
 <div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span> </div>
-<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span><span class="keywordtype">void</span> LogDebug(<span class="keyword">const</span> std::string &amp;logger_name, <span class="keyword">const</span> std::string &amp;message);</div>
-<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span> </div>
-<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span>} <span class="comment">// namespace respond</span></div>
-<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span> </div>
-<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span><span class="preprocessor">#endif </span><span class="comment">// RESPOND_LOGGING_HPP_</span></div>
+<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span><span class="comment">// ============================================================================</span></div>
+<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span><span class="comment">// Parallel Execution Support: Shared File Sink</span></div>
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span><span class="comment">// ============================================================================</span></div>
+<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span> </div>
+<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span>CreationStatus CreateSharedFileSink(<span class="keyword">const</span> std::string &amp;filepath);</div>
+<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span> </div>
+<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span>CreationStatus CreateSharedLogger(<span class="keyword">const</span> std::string &amp;logger_name);</div>
+<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span> </div>
+<div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span><span class="keywordtype">void</span> SetLogPattern(LogPattern pattern);</div>
+<div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span> </div>
+<div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span>LogPattern GetLogPattern();</div>
+<div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span> </div>
+<div class="line"><a id="l00098" name="l00098"></a><span class="lineno">   98</span><span class="keywordtype">void</span> SetFlushInterval(<span class="keywordtype">int</span> seconds);</div>
+<div class="line"><a id="l00099" name="l00099"></a><span class="lineno">   99</span> </div>
+<div class="line"><a id="l00103" name="l00103"></a><span class="lineno">  103</span><span class="keywordtype">void</span> FlushAllLoggers();</div>
+<div class="line"><a id="l00104" name="l00104"></a><span class="lineno">  104</span> </div>
+<div class="line"><a id="l00105" name="l00105"></a><span class="lineno">  105</span><span class="comment">// ============================================================================</span></div>
+<div class="line"><a id="l00106" name="l00106"></a><span class="lineno">  106</span><span class="comment">// Logging Functions</span></div>
+<div class="line"><a id="l00107" name="l00107"></a><span class="lineno">  107</span><span class="comment">// ============================================================================</span></div>
+<div class="line"><a id="l00108" name="l00108"></a><span class="lineno">  108</span> </div>
+<div class="line"><a id="l00114" name="l00114"></a><span class="lineno">  114</span><span class="keywordtype">void</span> LogInfo(<span class="keyword">const</span> std::string &amp;logger_name, <span class="keyword">const</span> std::string &amp;message);</div>
+<div class="line"><a id="l00115" name="l00115"></a><span class="lineno">  115</span> </div>
+<div class="line"><a id="l00120" name="l00120"></a><span class="lineno">  120</span><span class="keywordtype">void</span> LogWarning(<span class="keyword">const</span> std::string &amp;logger_name, <span class="keyword">const</span> std::string &amp;message);</div>
+<div class="line"><a id="l00121" name="l00121"></a><span class="lineno">  121</span> </div>
+<div class="line"><a id="l00126" name="l00126"></a><span class="lineno">  126</span><span class="keywordtype">void</span> LogError(<span class="keyword">const</span> std::string &amp;logger_name, <span class="keyword">const</span> std::string &amp;message);</div>
+<div class="line"><a id="l00127" name="l00127"></a><span class="lineno">  127</span> </div>
+<div class="line"><a id="l00132" name="l00132"></a><span class="lineno">  132</span><span class="keywordtype">void</span> LogDebug(<span class="keyword">const</span> std::string &amp;logger_name, <span class="keyword">const</span> std::string &amp;message);</div>
+<div class="line"><a id="l00133" name="l00133"></a><span class="lineno">  133</span> </div>
+<div class="line"><a id="l00134" name="l00134"></a><span class="lineno">  134</span><span class="comment">// ============================================================================</span></div>
+<div class="line"><a id="l00135" name="l00135"></a><span class="lineno">  135</span><span class="comment">// Utility Functions</span></div>
+<div class="line"><a id="l00136" name="l00136"></a><span class="lineno">  136</span><span class="comment">// ============================================================================</span></div>
+<div class="line"><a id="l00137" name="l00137"></a><span class="lineno">  137</span> </div>
+<div class="line"><a id="l00142" name="l00142"></a><span class="lineno">  142</span>CreationStatus CheckLoggerExists(<span class="keyword">const</span> std::string &amp;logger_name);</div>
+<div class="line"><a id="l00143" name="l00143"></a><span class="lineno">  143</span> </div>
+<div class="line"><a id="l00148" name="l00148"></a><span class="lineno">  148</span>std::string GetLoggerInfo(<span class="keyword">const</span> std::string &amp;logger_name);</div>
+<div class="line"><a id="l00149" name="l00149"></a><span class="lineno">  149</span> </div>
+<div class="line"><a id="l00156" name="l00156"></a><span class="lineno">  156</span><span class="keywordtype">void</span> SetLoggerLevel(<span class="keyword">const</span> std::string &amp;logger_name, <span class="keywordtype">int</span> level);</div>
+<div class="line"><a id="l00157" name="l00157"></a><span class="lineno">  157</span> </div>
+<div class="line"><a id="l00158" name="l00158"></a><span class="lineno">  158</span>} <span class="comment">// namespace respond</span></div>
+<div class="line"><a id="l00159" name="l00159"></a><span class="lineno">  159</span> </div>
+<div class="line"><a id="l00160" name="l00160"></a><span class="lineno">  160</span><span class="preprocessor">#endif </span><span class="comment">// RESPOND_LOGGING_HPP_</span></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="../../dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="../../dir_70501f13f5c9277fdfc6ec16bf603df6.html">respond</a></li><li class="navelem"><b>logging.hpp</b></li>
-    <li class="footer">Generated on Fri Jun 12 2026 16:36:31 for RESPOND by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
+    <li class="footer">Generated on Mon Jun 15 2026 19:58:29 for RESPOND by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
   </ul>
 </div>
 </body>

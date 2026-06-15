@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['installation_0',['Installation',['../d7/d63/md_docs_src_installation.html',1,'']]]
+  ['c_2b_2b_20api_20guide_0',['C++ API Guide',['../d2/deb/md_docs_src_api_guide.html',1,'']]]
 ];

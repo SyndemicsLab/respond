@@ -62,7 +62,7 @@ Copyright (c) 2025 Syndemics Lab at Boston Medical Center
                             <td id="projectlogo"><img alt="Logo" src="../../Syndemics_main_logo_50px.png" /></td>
                             <td id="projectalign">
                                 <div id="projectname">RESPOND<span
-                                        id="projectnumber">&#160;2.3.2</span>
+                                        id="projectnumber">&#160;2.4.0</span>
                                 </div>
                                 <div id="projectbrief">Researching Effective Strategies to Prevent Opioid Death</div>
                             </td>
@@ -130,7 +130,7 @@ $(document).ready(function(){initNavTree('d9/d6c/md_docs_src_motivation.html','.
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><p>The RESPOND model was first developed in 2018 as a response to the rapid rise in opioid use disorder (OUD) cases across the country. Funded by the National Institute on Drug Abuse (NIDA), RESPOND was developed to study care options for OUD and various cost effectiveness measurements to inform system-level change and provide evidence to policy makers to make informed options for the community.</p>
-<h1><a class="anchor" id="autotoc_md7"></a>
+<h1><a class="anchor" id="autotoc_md9"></a>
 Costing and Utility</h1>
 <p>A core outcome of interest for the RESPOND model is the cost effectiveness of policy alternatives. Because modeling lets us test alternatives to the current policy, the natural questions that always follow a proposed policy change are:</p>
 <ol type="1">
@@ -139,7 +139,7 @@ Costing and Utility</h1>
 </ol>
 <p>Answering these questions is the goal of cost effectiveness modeling. Noticably, cost effectiveness is not about spending the least amount of money, but rather spending the entire allocated amount of money in a way that effectively helps the most amount of people.</p>
 <p>This is a particularly difficult challenge for cohort based models as such models do not model individual people. Instead, cohort models replicate changes in the population. This means that cost effectiveness must be considered on a population level. Given the Markovian nature of the model, we can apply our cost metrics to the final state of the model. So, we are able to completely remove cost effectiveness from the model runtime and apply it as a post processing procedure when indicated by the person running the analysis.</p>
-<h1><a class="anchor" id="autotoc_md8"></a>
+<h1><a class="anchor" id="autotoc_md10"></a>
 Why Refactor?</h1>
 <p>This new edition of RESPOND (informally called v2) was written to help maintainability of the model and enable faster development and extension on the base product. Written initially in R, RESPOND was proving very difficult to extend to new studies. The graph was a rigidly developed structure that required code edits to incorporate new treatment and behavior options, which rapidly proved a major bottleneck with the rise of fentanyl, drug adulteration and stimulant mixing, and changes in confounding health conditions. Thus, we re-designed the model to be a state transition model with flexible dimensions to expand as needed.</p>
 <p>Part of the refactor was transitioning away from the R programming language. While we recognize various benefits of the R language, we felt we wanted more control over the model and wanted to natively operate in C++ so that we could build out packages for various languages rather than be confined to R for all future development. We also believe that the object oriented nature of the model was better represented in languages like C++.</p>
@@ -151,7 +151,7 @@ Why Refactor?</h1>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Fri Jun 12 2026 16:36:31 for RESPOND by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
+    <li class="footer">Generated on Mon Jun 15 2026 19:58:29 for RESPOND by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
   </ul>
 </div>
 </body>

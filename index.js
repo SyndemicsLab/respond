@@ -5,5 +5,7 @@ var index =
       [ "Fetch Content", "index.html#autotoc_md3", null ]
     ] ],
     [ "Dependencies", "index.html#autotoc_md4", null ],
-    [ "Install Packages", "index.html#autotoc_md5", null ]
+    [ "Install Packages", "index.html#autotoc_md5", null ],
+    [ "Documentation", "index.html#autotoc_md6", null ],
+    [ "Quick Start for Developers", "index.html#autotoc_md7", null ]
 ];
