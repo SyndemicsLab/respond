@@ -1,18 +1,22 @@
 
-message(CHECK_START "Fetching Eigen3...")
+message(CHECK_START "Fetching Eigen...")
 list(APPEND CMAKE_MESSAGE_INDENT "  ")
 
 FetchContent_Declare(
-    Eigen3
+    Eigen
     GIT_REPOSITORY https://gitlab.com/libeigen/eigen.git
     GIT_TAG "3.4.0"
-    FIND_PACKAGE_ARGS NAMES Eigen3
+    GIT_SHALLOW TRUE
+    EXCLUDE_FROM_ALL
+    # FIND_PACKAGE_ARGS NAMES Eigen3
 )
 
 # Turn off Eigen Testing and Docs
-set(EIGEN_BUILD_TESTING OFF)
-set(EIGEN_BUILD_DOC OFF)
-set(EIGEN_MPL2_ONLY ON)
+set(EIGEN_BUILD_DOC OFF CACHE BOOL "" FORCE)
+set(EIGEN_BUILD_TESTING OFF CACHE BOOL "" FORCE)
+set(EIGEN_BUILD_PKGCONFIG OFF CACHE BOOL "" FORCE)
+set(EIGEN_BUILD_BTL OFF CACHE BOOL "" FORCE)
+set(EIGEN_LEAVE_TEST_IN_ALL_TARGET OFF CACHE BOOL "" FORCE)
 
 list(POP_BACK CMAKE_MESSAGE_INDENT)
-message(CHECK_PASS "Eigen3 Fetched")
+message(CHECK_PASS "Eigen Fetched")

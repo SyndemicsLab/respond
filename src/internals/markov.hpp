@@ -4,7 +4,7 @@
 // Created Date: 2026-02-05                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-02-12                                                  //
+// Last Modified: 2026-05-06                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
@@ -28,7 +28,9 @@ class Markov : public virtual Model {
 public:
     Markov() : Markov("markov", "console") {}
     Markov(const std::string &name, const std::string &log_name)
-        : _name(name), _log_name(log_name) {
+        : _name(name), _log_name(log_name), _current_timestep(0),
+          _history_capture_interval(1), _final_timestep(-1),
+          _initial_history_recorded(false) {
         const auto processor_count = std::thread::hardware_concurrency();
         Eigen::setNbThreads(processor_count);
     }
@@ -41,6 +43,12 @@ public:
         auto np = Model::Create(GetModelName(), GetLogName());
         np->SetState(GetState());
         np->SetHistories(GetHistories());
+        np->SetHistoryCaptureInterval(GetHistoryCaptureInterval());
+        np->SetFinalTimestep(GetFinalTimestep());
+        if (auto *markov = dynamic_cast<Markov *>(np.get())) {
+            markov->_current_timestep = _current_timestep;
+            markov->_initial_history_recorded = _initial_history_recorded;
+        }
         for (const auto &t : GetTransitions()) {
             np->AddTransition(t->clone());
         }
@@ -86,26 +94,30 @@ public:
     ///     5. Background Mortality
     /// @return A vector of the default history objects.
     void CreateDefaultHistories() override {
-        std::vector<std::string> names = {
-            "state", "total_overdose", "fatal_overdose",
-            "intervention_admission", "background_death"};
-
         std::map<std::string, History> ret;
-        for (const auto &n : names) {
-            History h(n, GetLogName());
-            ret[n] = h;
-        }
+        ret["state"] = History("state", GetLogName(), HistoryMode::Snapshot);
+        ret["total_overdose"] =
+            History("total_overdose", GetLogName(), HistoryMode::Accumulated);
+        ret["fatal_overdose"] =
+            History("fatal_overdose", GetLogName(), HistoryMode::Accumulated);
+        ret["intervention_admission"] = History(
+            "intervention_admission", GetLogName(), HistoryMode::Accumulated);
+        ret["background_death"] =
+            History("background_death", GetLogName(), HistoryMode::Accumulated);
         SetHistories(ret);
     }
 
     // manipulate the state vector
     void RunTransitions() override {
         SetupHistory();
-        auto histories = GetHistories();
-        for (const auto &t : _transition_vector) {
-            SetState(t->Execute(GetState(), histories));
+        if (!_initial_history_recorded) {
+            RecordHistoryAtCurrentTimestep();
         }
-        SetHistories(histories);
+        for (const auto &t : _transition_vector) {
+            _state = t->Execute(_state, _histories);
+        }
+        _current_timestep++;
+        RecordHistoryAtCurrentTimestep();
     }
     // assume ownership of the Transition
     void AddTransition(const std::unique_ptr<Transition> &t) override {
@@ -125,7 +137,39 @@ public:
     virtual void
     SetHistories(const std::map<std::string, History> &h) override {
         _histories = h;
+        if (_histories.empty()) {
+            ResetHistoryTracking();
+            return;
+        }
+
+        const int latest_timestep = GetLatestRecordedTimestep();
+        if (latest_timestep < 0) {
+            ResetHistoryTracking();
+            return;
+        }
+
+        _initial_history_recorded = true;
+        _current_timestep = latest_timestep;
     }
+    void ClearHistories() override {
+        _histories.clear();
+        ResetHistoryTracking();
+    }
+
+    void SetHistoryCaptureInterval(int interval) override {
+        _history_capture_interval = (interval < 1) ? 1 : interval;
+    }
+
+    int GetHistoryCaptureInterval() const override {
+        return _history_capture_interval;
+    }
+
+    void SetFinalTimestep(int final_timestep) override {
+        _final_timestep = final_timestep;
+    }
+
+    int GetFinalTimestep() const override { return _final_timestep; }
+
     // return const & to limit to observation of the state. Need copy ability of
     // History, but let that be the History's responsibility
     std::map<std::string, History> GetHistories() const override {
@@ -141,22 +185,57 @@ private:
     std::string _name;
     std::string _log_name;
     std::map<std::string, History> _histories;
+    int _current_timestep;
+    int _history_capture_interval;
+    int _final_timestep;
+    bool _initial_history_recorded;
+
+    void ResetHistoryTracking() {
+        _current_timestep = 0;
+        _initial_history_recorded = false;
+    }
+
+    int GetLatestRecordedTimestep() const {
+        int latest = -1;
+        for (const auto &kv : _histories) {
+            latest = std::max(latest, kv.second.GetLatestRecordedTimestep());
+        }
+        return latest;
+    }
+
+    bool ShouldRecordHistoryAtTimestep(int timestep) const {
+        if (timestep == 0) {
+            return true;
+        }
+        if (_final_timestep >= 0 && timestep == _final_timestep) {
+            return true;
+        }
+        return timestep % _history_capture_interval == 0;
+    }
+
+    void RecordHistoryAtCurrentTimestep() {
+        if (_initial_history_recorded && _current_timestep == 0) {
+            return;
+        }
+        if (!ShouldRecordHistoryAtTimestep(_current_timestep)) {
+            return;
+        }
+
+        _histories["state"].RecordSnapshot(_state, _current_timestep);
+        const auto size = _state.size();
+        _histories["intervention_admission"].FlushPendingState(
+            _current_timestep, size);
+        _histories["total_overdose"].FlushPendingState(_current_timestep, size);
+        _histories["fatal_overdose"].FlushPendingState(_current_timestep, size);
+        _histories["background_death"].FlushPendingState(_current_timestep,
+                                                         size);
+        _initial_history_recorded = true;
+    }
 
     void SetupHistory() {
-        auto histories = GetHistories();
-        if (histories.empty()) {
+        if (_histories.empty()) {
             CreateDefaultHistories();
-            histories = GetHistories();
         }
-        histories["state"].AddState(GetState());
-        auto size = GetState().size();
-
-        histories["intervention_admission"].AddState(
-            Eigen::VectorXd::Zero(size));
-        histories["total_overdose"].AddState(Eigen::VectorXd::Zero(size));
-        histories["fatal_overdose"].AddState(Eigen::VectorXd::Zero(size));
-        histories["background_death"].AddState(Eigen::VectorXd::Zero(size));
-        SetHistories(histories);
     }
 };
 } // namespace respond

@@ -17,6 +17,8 @@
 #include <memory>
 #include <string>
 
+#include <respond/logging.hpp>
+
 #include "internals/background.hpp"
 #include "internals/behavior.hpp"
 #include "internals/intervention.hpp"
@@ -31,18 +33,23 @@ TransitionFactory::CreateTransition(const std::string &type,
     std::transform(type_copy.begin(), type_copy.end(), type_copy.begin(),
                    [](unsigned char c) { return std::tolower(c); });
 
-    if (type == "migration") {
+    if (type_copy == "migration") {
         return Migration::Create(type, log_name);
-    } else if (type == "behavior") {
+    } else if (type_copy == "behavior") {
         return Behavior::Create(type, log_name);
-    } else if (type == "intervention") {
+    } else if (type_copy == "intervention") {
         return Intervention::Create(type, log_name);
-    } else if (type == "overdose") {
+    } else if (type_copy == "overdose") {
         return Overdose::Create(type, log_name);
-    } else if (type == "background_death") {
+    } else if (type_copy == "background_death") {
         return BackgroundDeath::Create(type, log_name);
     }
-    // Warn invalid type
+
+    // Invalid transition type
+    std::string error_msg = "Invalid transition type: '" + type +
+                            "'. Supported types: migration, behavior, "
+                            "intervention, overdose, background_death";
+    LogError(log_name, error_msg);
     return nullptr;
 }
 } // namespace respond

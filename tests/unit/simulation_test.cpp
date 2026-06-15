@@ -133,5 +133,37 @@ TEST_F(SimulationTest, GetHistoryNames) {
     ASSERT_EQ(s.GetModelHistoryNames(), expected);
 }
 
+TEST_F(SimulationTest, GetModelSparseHistories) {
+    auto mock = std::make_unique<NiceMock<MockModel>>();
+    auto cloned = std::make_unique<NiceMock<MockModel>>();
+
+    std::map<std::string, History> hv;
+    History h("temp", "test_logger");
+    Eigen::VectorXd state0 = Eigen::VectorXd(2);
+    state0 << 1.0f, 2.0f;
+    Eigen::VectorXd state2 = Eigen::VectorXd(2);
+    state2 << 3.0f, 4.0f;
+    h.AddState(state0, 0);
+    h.AddState(state2, 2);
+    hv["temp"] = h;
+
+    EXPECT_CALL(*cloned, GetHistories()).WillOnce(Return(hv));
+    ON_CALL(*mock, clone())
+        .WillByDefault(Return(::testing::ByMove(std::move(cloned))));
+
+    std::unique_ptr<Model> upmm = std::move(mock);
+    Simulation s;
+    s.AddModel(upmm);
+
+    const auto histories = s.GetModelSparseHistories();
+    ASSERT_EQ(histories.size(), 1u);
+    const auto &history = histories[0].at("temp");
+    std::vector<int> expected_timesteps = {0, 2};
+    ASSERT_EQ(history.GetRecordedTimesteps(), expected_timesteps);
+    ASSERT_EQ(history.GetRecordedStates().size(), 2u);
+    EXPECT_TRUE(history.GetRecordedStates()[0].isApprox(state0));
+    EXPECT_TRUE(history.GetRecordedStates()[1].isApprox(state2));
+}
+
 } // namespace testing
 } // namespace respond

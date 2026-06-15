@@ -44,4 +44,6 @@ PUBLIC
     GTest::gmock_main
 )
 
-gtest_discover_tests(${PROJECT_NAME})
+gtest_discover_tests(respond_tests
+    TEST_PREFIX "respond_"
+)

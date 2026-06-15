@@ -15,6 +15,7 @@
 #include <memory>
 #include <string>
 
+#include <respond/logging.hpp>
 #include <respond/model.hpp>
 
 namespace respond {

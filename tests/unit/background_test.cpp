@@ -67,10 +67,11 @@ TEST_F(BackgroundDeathTest, GoodExecuteWriteHistory) {
     auto result = tran->Execute(state, histories);
     auto expected_deaths = state.cwiseProduct(tran_matrix);
     auto expected_return = state - expected_deaths;
-    auto hist_result = histories["background_death"].GetStateAsVector()[0];
 
     EXPECT_TRUE(result.isApprox(expected_return));
-    EXPECT_TRUE(hist_result.isApprox(expected_deaths));
+    EXPECT_TRUE(histories["background_death"].HasPendingState());
+    EXPECT_TRUE(histories["background_death"].GetPendingState().isApprox(
+        expected_deaths));
 }
 } // namespace testing
 } // namespace respond

@@ -73,7 +73,7 @@ endif()
 add_library(respond_model)
 add_library(respond::respond_model ALIAS respond_model)
 
-file(GLOB_RECURSE RESPOND_HEADERS include/respond/*.hpp)
+file(GLOB_RECURSE RESPOND_HEADERS include/respond/*.hpp include/respond/*.h)
 file(GLOB RESPOND_INTERNAL_HEADERS CONFIGURE_DEPENDS src/internals/*.hpp)
 file(GLOB RESPOND_SOURCE_FILES CONFIGURE_DEPENDS src/*.cpp)
 

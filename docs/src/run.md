@@ -1,18 +1,111 @@
 # Running the Model
 
-The RESPOND model, in addition to forming the basis for the Simdemics library, acts as a completely independent executable model. This model was designed to track state transitions to study opioid use disorder.
+The RESPOND model can be used in multiple ways:
 
-## Using the Executable
+1. **As a C++ library** - Integrate into your own C++ projects
+2. **Via Python package** - Use the higher-level [respondpy](https://github.com/SyndemicsLab/respondpy) interface
+3. **Standalone executable** - Legacy support for direct command-line execution
 
-Running RESPOND is incredibly simple provided you use our packaged executable. If built using the "gcc-release" workflow outlined in the [Installation Section](installation.md) the following command runs the executable from the root of the repository on input folder 1:
+## Using RESPOND as a C++ Library
 
-```bash
-./build/extras/executable/respond_exe /path/to/input/folders 1 1
+For C++ developers, RESPOND can be integrated directly into projects. See the [C++ API Guide](api-guide.md) for:
+
+- Complete API reference
+- Usage examples
+- Memory management details
+- Design patterns and best practices
+
+### Basic Example
+
+```cpp
+#include <respond/simulation.hpp>
+#include <respond/model.hpp>
+
+int main() {
+    // Create a simulation
+    respond::Simulation sim("my_logger");
+    
+    // Create and configure a model
+    auto model = respond::Model::Create("population_model", "my_logger");
+    
+    // Set initial state
+    Eigen::VectorXd initial_state(50);
+    initial_state.setZero();
+    initial_state(0) = 1000;  // 1000 individuals in state 0
+    model->SetState(initial_state);
+    
+    // Add transitions
+    auto transition = respond::TransitionFactory::CreateTransition(
+        "behavior", "my_logger");
+    model->AddTransition(transition);
+    
+    // Add model to simulation
+    sim.AddModel(model);
+    
+    // Run simulation for 52 timesteps
+    for (int t = 0; t < 52; ++t) {
+        sim.Run();
+    }
+    
+    // Extract results
+    auto histories = sim.GetModelHistories();
+    
+    return 0;
+}
 ```
 
-## Arguments
+For complete examples and API documentation, see the [C++ API Guide](api-guide.md).
 
-The executable takes 3 straightforward positional arguments that govern the input folder location, the starting input folder and the end input folder inclusively. Thus, if you only have a single input folder titled `input1` located at `/home/usr/` you would provide the arguments: `/home/usr/ 1 1`. If you have multiple input folders (i.e. `input1`, `input2`, and `input3`) you would provide: `/home/usr/ 1 3`.
+## Using the Standalone Executable
+
+Legacy support for standalone execution is available in release [v0.3.0](https://github.com/SyndemicsLab/respond/releases/tag/v0.3.0).
+
+### Command-Line Usage
+
+To run the executable (requires legacy release):
+
+```bash
+./respond_exe /path/to/input/folders 1 1
+```
+
+### Arguments
+
+The executable takes 3 positional arguments:
+
+1. **Input folder path**: Directory containing simulation configuration and data
+2. **Start folder index**: First input folder number (e.g., 1 for `input1`)
+3. **End folder index**: Last input folder number (inclusive)
+
+### Examples
+
+```bash
+# Run single input folder
+./respond_exe /home/user/data 1 1
+
+# Run folders input1, input2, input3
+./respond_exe /home/user/data 1 3
+
+# Run folders input5 through input10
+./respond_exe /home/user/data 5 10
+```
+
+### Output
+
+The executable produces output files in the same directory as the input data.
+
+## Python Integration
+
+For a higher-level interface, use the [respondpy](https://pypi.org/project/respondpy/) Python package:
+
+```python
+import respondpy as respond
+
+# Configure and run simulations
+sim = respond.Simulation(config_path)
+results = sim.run()
+```
+
+See the [respondpy documentation](https://github.com/SyndemicsLab/respondpy) for details.
 
 Previous: [Data](data.md)
 

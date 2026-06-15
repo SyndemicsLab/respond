@@ -42,6 +42,11 @@ public:
                 (const, override));
     MOCK_METHOD(void, SetHistories, ((const std::map<std::string, History> &)),
                 (override));
+    MOCK_METHOD(void, ClearHistories, (), (override));
+    MOCK_METHOD(void, SetHistoryCaptureInterval, (int), (override));
+    MOCK_METHOD(int, GetHistoryCaptureInterval, (), (const, override));
+    MOCK_METHOD(void, SetFinalTimestep, (int), (override));
+    MOCK_METHOD(int, GetFinalTimestep, (), (const, override));
     MOCK_METHOD(std::string, GetModelName, (), (const, override));
     MOCK_METHOD(std::string, GetLogName, (), (const, override));
     MOCK_METHOD((std::unique_ptr<Model>), clone, (), (const, override));
