@@ -14,14 +14,14 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - name: Checkout Respond Repository
-              uses: actions/checkout@v4
+              uses: actions/checkout@v6
 
             - name: Install gcovr
               run: pip install gcovr
 
             - name: Build and Test Project
               run: >
-                  cmake --workflow --preset test-debug-linux-static-workflow
+                  cmake --workflow --preset test-debug-static-workflow
 
             - name: Generate gcovr report
               run: |
