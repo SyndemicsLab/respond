@@ -25,11 +25,11 @@ jobs:
 
             - name: Generate gcovr report HTML
               run: |
-                  gcovr -r . -filter src/* --html coverage.html
+                  gcovr -r . --filter src --html coverage.html
 
             - name: Generate gcovr report XML
               run: |
-                  gcovr -r . -filter src/* --xml-pretty -o coverage.xml
+                  gcovr -r . --filter src --xml-pretty -o coverage.xml
 
             - name: Upload Code Coverage Report
               uses: actions/upload-artifact@v7
