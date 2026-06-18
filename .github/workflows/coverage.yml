@@ -27,6 +27,12 @@ jobs:
               run: |
                   gcovr -r . --xml-pretty -o coverage.xml
 
+            - name: Upload Code Coverage Report
+              uses: actions/upload-artifact@v7
+              with:
+                  name: code-coverage-report
+                  path: coverage.xml
+
             - name: Generate Coverage Badge
               uses: GaelGirodon/ci-badges-action@v1
               with:
