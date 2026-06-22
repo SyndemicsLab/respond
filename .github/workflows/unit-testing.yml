@@ -13,7 +13,7 @@ jobs:
         runs-on: ${{matrix.os}}
         strategy:
             matrix:
-                os: [ubuntu-latest, windows-latest, macos-latest]
+                os: [ubuntu-latest, windows-latest] # , macos-latest
                 build-variant: [shared, static]
         steps:
             - name: Checkout Respond Repository
@@ -27,13 +27,7 @@ jobs:
 
             - name: Run Testing Workflow
               run: |
-                  if [ "${{ matrix.os }}" == "ubuntu-latest" ]; then
-                      echo "Testing Linux"
-                      cmake --workflow --preset test-debug-linux-${{matrix.build-variant}}-workflow
-                  elif [ "${{ matrix.os }}" == "windows-latest" ]; then
-                      echo "Testing Microsoft"
-                      cmake --workflow --preset test-debug-microsoft-${{matrix.build-variant}}-workflow
-                  fi
+                  cmake --workflow --preset test-debug-${{matrix.build-variant}}-workflow
               #   elif [ "${{ matrix.os }}" == "macos-latest" ]; then
               #       echo "Testing MacOS"
               #       brew install gcc

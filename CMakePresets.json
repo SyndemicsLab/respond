@@ -9,7 +9,6 @@
     "configurePresets": [
         {
             "name": "shared-config",
-            "description": "General Configuration Settings for All Shared Configs",
             "hidden": true,
             "binaryDir": "${sourceDir}/build/shared",
             "cacheVariables": {
@@ -18,7 +17,6 @@
         },
         {
             "name": "static-config",
-            "description": "General Configuration Settings for All Static Configs",
             "hidden": true,
             "binaryDir": "${sourceDir}/build/static",
             "cacheVariables": {
@@ -26,20 +24,7 @@
             }
         },
         {
-            "name": "linux-config",
-            "description": "Linux Configuration Settings",
-            "hidden": true,
-            "generator": "Ninja"
-        },
-        {
-            "name": "microsoft-config",
-            "description": "Windows Configuration Settings",
-            "hidden": true,
-            "generator": "MinGW Makefiles"
-        },
-        {
             "name": "debug-config",
-            "description": "Debugger Configuration",
             "hidden": true,
             "cacheVariables": {
                 "CMAKE_BUILD_TYPE": "Debug",
@@ -50,7 +35,6 @@
         },
         {
             "name": "release-config",
-            "description": "Release Configuration",
             "hidden": true,
             "cacheVariables": {
                 "CMAKE_BUILD_TYPE": "Release",
@@ -61,9 +45,9 @@
             }
         },
         {
-            "name": "default-respond-config",
-            "description": "Default Respond Configuration Settings",
+            "name": "default-config",
             "hidden": true,
+            "generator": "Ninja",
             "architecture": {
                 "value": "x64",
                 "strategy": "external"
@@ -81,58 +65,53 @@
             }
         },
         {
-            "name": "debug-linux-shared-config",
-            "displayName": "Debug, Linux, Shared",
+            "name": "debug-shared-config",
+            "displayName": "Debug, Shared",
             "description": "Target a linux distro to create a debuggable shared library",
             "inherits": [
                 "debug-config",
-                "linux-config",
                 "shared-config",
-                "default-respond-config"
+                "default-config"
             ]
         },
         {
-            "name": "debug-linux-static-config",
-            "displayName": "Debug, Linux, Static",
+            "name": "debug-static-config",
+            "displayName": "Debug, Static",
             "description": "Target a linux distro to create a debuggable static library",
             "inherits": [
                 "debug-config",
-                "linux-config",
                 "static-config",
-                "default-respond-config"
+                "default-config"
             ]
         },
         {
-            "name": "release-linux-shared-config",
-            "displayName": "Release, Linux, Shared",
+            "name": "release-shared-config",
+            "displayName": "Release, Shared",
             "description": "Target a linux distro to create a release shared library",
             "inherits": [
                 "release-config",
-                "linux-config",
                 "shared-config",
-                "default-respond-config"
+                "default-config"
             ]
         },
         {
-            "name": "release-linux-static-config",
-            "displayName": "Release, Linux, Static",
+            "name": "release-static-config",
+            "displayName": "Release, Static",
             "description": "Target a linux distro to create a release static library",
             "inherits": [
                 "release-config",
-                "linux-config",
                 "static-config",
-                "default-respond-config"
+                "default-config"
             ]
         },
         {
-            "name": "benchmark-linux-static-config",
-            "displayName": "Benchmark, Linux, Static",
+            "name": "benchmark-static-config",
+            "displayName": "Benchmark, Static",
             "description": "Target a linux distro to build release benchmark artifacts",
             "inherits": [
                 "release-config",
-                "linux-config",
                 "static-config",
-                "default-respond-config"
+                "default-config"
             ],
             "cacheVariables": {
                 "RESPOND_BUILD_BENCH": "ON",
@@ -140,50 +119,6 @@
                 "RESPOND_BUILD_DOCS": "OFF",
                 "RESPOND_INSTALL": "OFF"
             }
-        },
-        {
-            "name": "debug-microsoft-shared-config",
-            "displayName": "Debug, Microsoft, Shared",
-            "description": "Target a Microsoft distro to create a debuggable shared library",
-            "inherits": [
-                "debug-config",
-                "microsoft-config",
-                "shared-config",
-                "default-respond-config"
-            ]
-        },
-        {
-            "name": "debug-microsoft-static-config",
-            "displayName": "Debug, Microsoft, Static",
-            "description": "Target a microsoft distro to create a debuggable static library",
-            "inherits": [
-                "debug-config",
-                "microsoft-config",
-                "static-config",
-                "default-respond-config"
-            ]
-        },
-        {
-            "name": "release-microsoft-shared-config",
-            "displayName": "Release, Microsoft, Shared",
-            "description": "Target a microsoft distro to create a release shared library",
-            "inherits": [
-                "release-config",
-                "microsoft-config",
-                "shared-config",
-                "default-respond-config"
-            ]
-        },
-        {
-            "name": "release-microsoft-static-config",
-            "displayName": "Release, Microsoft, Static",
-            "description": "Target a microsoft distro to create a release static library",
-            "inherits": [
-                "release-config",
-                "microsoft-config",
-                "static-config",
-                "default-respond-config"
-            ]
         }
     ],
     "buildPresets": [
@@ -193,58 +128,34 @@
             "jobs": 8
         },
         {
-            "name": "release-linux-shared-build",
-            "displayName": "Release Linux Shared Build",
+            "name": "release-shared-build",
+            "displayName": "Release Shared Build",
             "inherits": "default-build",
-            "configurePreset": "release-linux-shared-config"
+            "configurePreset": "release-shared-config"
         },
         {
-            "name": "release-linux-static-build",
-            "displayName": "Release Linux Static Build",
+            "name": "release-static-build",
+            "displayName": "Release Static Build",
             "inherits": "default-build",
-            "configurePreset": "release-linux-static-config"
+            "configurePreset": "release-static-config"
         },
         {
-            "name": "debug-linux-shared-build",
-            "displayName": "Debug Linux Shared Build",
+            "name": "debug-shared-build",
+            "displayName": "Debug Shared Build",
             "inherits": "default-build",
-            "configurePreset": "debug-linux-shared-config"
+            "configurePreset": "debug-shared-config"
         },
         {
-            "name": "debug-linux-static-build",
-            "displayName": "Debug Linux Static Build",
+            "name": "debug-static-build",
+            "displayName": "Debug Static Build",
             "inherits": "default-build",
-            "configurePreset": "debug-linux-static-config"
+            "configurePreset": "debug-static-config"
         },
         {
-            "name": "benchmark-linux-static-build",
-            "displayName": "Benchmark Linux Static Build",
+            "name": "benchmark-static-build",
+            "displayName": "Benchmark Static Build",
             "inherits": "default-build",
-            "configurePreset": "benchmark-linux-static-config"
-        },
-        {
-            "name": "release-microsoft-shared-build",
-            "displayName": "Release Microsoft Shared Build",
-            "inherits": "default-build",
-            "configurePreset": "release-microsoft-shared-config"
-        },
-        {
-            "name": "release-microsoft-static-build",
-            "displayName": "Release Microsoft Static Build",
-            "inherits": "default-build",
-            "configurePreset": "release-microsoft-static-config"
-        },
-        {
-            "name": "debug-microsoft-shared-build",
-            "displayName": "Debug Microsoft Shared Build",
-            "inherits": "default-build",
-            "configurePreset": "debug-microsoft-shared-config"
-        },
-        {
-            "name": "debug-microsoft-static-build",
-            "displayName": "Debug Microsoft Static Build",
-            "inherits": "default-build",
-            "configurePreset": "debug-microsoft-static-config"
+            "configurePreset": "benchmark-static-config"
         }
     ],
     "testPresets": [
@@ -267,38 +178,23 @@
             }
         },
         {
-            "name": "debug-linux-shared-test",
-            "displayName": "Test, Debug, Linux, Shared",
+            "name": "debug-shared-test",
+            "displayName": "Test, Debug, Shared",
             "description": "Enable output and stop on failure",
             "inherits": "default-test",
-            "configurePreset": "debug-linux-shared-config"
+            "configurePreset": "debug-shared-config"
         },
         {
-            "name": "debug-linux-static-test",
-            "displayName": "Test, Debug, Linux, Static",
+            "name": "debug-static-test",
+            "displayName": "Test, Debug, Static",
             "description": "Enable output and stop on failure",
             "inherits": "default-test",
-            "configurePreset": "debug-linux-static-config"
-        },
-        {
-            "name": "debug-microsoft-shared-test",
-            "displayName": "Test, Debug, Microsoft, Shared",
-            "description": "Enable output and stop on failure",
-            "inherits": "default-test",
-            "configurePreset": "debug-microsoft-shared-config"
-        },
-        {
-            "name": "debug-microsoft-static-test",
-            "displayName": "Test, Debug, Microsoft, Static",
-            "description": "Enable output and stop on failure",
-            "inherits": "default-test",
-            "configurePreset": "debug-microsoft-static-config"
+            "configurePreset": "debug-static-config"
         }
     ],
     "packagePresets": [
         {
             "name": "default-package",
-            "description": "Settings for all packages",
             "hidden": true,
             "generators": [
                 "TGZ"
@@ -307,7 +203,6 @@
         {
             "name": "debian-package",
             "inherits": "default-package",
-            "description": "Settings building a Debian Package",
             "hidden": true,
             "generators": [
                 "DEB"
@@ -316,7 +211,6 @@
         {
             "name": "rpm-package",
             "inherits": "default-package",
-            "description": "Settings building an RPM Package",
             "hidden": true,
             "generators": [
                 "RPM"
@@ -325,7 +219,6 @@
         {
             "name": "nsis-package",
             "inherits": "default-package",
-            "description": "Settings building an NSIS Package",
             "hidden": true,
             "generators": [
                 "NSIS"
@@ -334,123 +227,85 @@
         {
             "name": "release-debian-shared-package",
             "inherits": "debian-package",
-            "configurePreset": "release-linux-shared-config"
+            "configurePreset": "release-shared-config"
         },
         {
             "name": "release-debian-static-package",
             "inherits": "debian-package",
-            "configurePreset": "release-linux-static-config"
+            "configurePreset": "release-static-config"
         },
         {
             "name": "release-rpm-shared-package",
             "inherits": "rpm-package",
-            "configurePreset": "release-linux-shared-config"
+            "configurePreset": "release-shared-config"
         },
         {
             "name": "release-rpm-static-package",
             "inherits": "rpm-package",
-            "configurePreset": "release-linux-static-config"
+            "configurePreset": "release-static-config"
         },
         {
             "name": "release-nsis-shared-package",
             "inherits": "nsis-package",
-            "configurePreset": "release-microsoft-shared-config"
+            "configurePreset": "release-shared-config"
         },
         {
             "name": "release-nsis-static-package",
             "inherits": "nsis-package",
-            "configurePreset": "release-microsoft-static-config"
+            "configurePreset": "release-static-config"
         }
     ],
     "workflowPresets": [
         {
-            "name": "test-debug-linux-shared-workflow",
-            "displayName": "Test, Debug, Linux, Shared",
+            "name": "test-debug-shared-workflow",
+            "displayName": "Test, Debug, Shared",
             "description": "Testing the debug shared library workflow.",
             "steps": [
                 {
                     "type": "configure",
-                    "name": "debug-linux-shared-config"
+                    "name": "debug-shared-config"
                 },
                 {
                     "type": "build",
-                    "name": "debug-linux-shared-build"
+                    "name": "debug-shared-build"
                 },
                 {
                     "type": "test",
-                    "name": "debug-linux-shared-test"
+                    "name": "debug-shared-test"
                 }
             ]
         },
         {
-            "name": "test-debug-linux-static-workflow",
-            "displayName": "Test, Debug, Linux, Static",
+            "name": "test-debug-static-workflow",
+            "displayName": "Test, Debug, Static",
             "description": "Testing the debug static library workflow.",
             "steps": [
                 {
                     "type": "configure",
-                    "name": "debug-linux-static-config"
+                    "name": "debug-static-config"
                 },
                 {
                     "type": "build",
-                    "name": "debug-linux-static-build"
+                    "name": "debug-static-build"
                 },
                 {
                     "type": "test",
-                    "name": "debug-linux-static-test"
+                    "name": "debug-static-test"
                 }
             ]
         },
         {
-            "name": "test-debug-microsoft-shared-workflow",
-            "displayName": "Test, Debug, Microsoft, Shared",
-            "description": "Testing the debug shared library workflow.",
-            "steps": [
-                {
-                    "type": "configure",
-                    "name": "debug-microsoft-shared-config"
-                },
-                {
-                    "type": "build",
-                    "name": "debug-microsoft-shared-build"
-                },
-                {
-                    "type": "test",
-                    "name": "debug-microsoft-shared-test"
-                }
-            ]
-        },
-        {
-            "name": "test-debug-microsoft-static-workflow",
-            "displayName": "Test, Debug, Microsoft, Static",
-            "description": "Testing the debug static library workflow.",
-            "steps": [
-                {
-                    "type": "configure",
-                    "name": "debug-microsoft-static-config"
-                },
-                {
-                    "type": "build",
-                    "name": "debug-microsoft-static-build"
-                },
-                {
-                    "type": "test",
-                    "name": "debug-microsoft-static-test"
-                }
-            ]
-        },
-        {
-            "name": "benchmark-linux-static-workflow",
-            "displayName": "Benchmark, Linux, Static",
+            "name": "benchmark-static-workflow",
+            "displayName": "Benchmark, Static",
             "description": "Build benchmark artifacts for performance testing.",
             "steps": [
                 {
                     "type": "configure",
-                    "name": "benchmark-linux-static-config"
+                    "name": "benchmark-static-config"
                 },
                 {
                     "type": "build",
-                    "name": "benchmark-linux-static-build"
+                    "name": "benchmark-static-build"
                 }
             ]
         },
@@ -461,11 +316,11 @@
             "steps": [
                 {
                     "type": "configure",
-                    "name": "release-linux-shared-config"
+                    "name": "release-shared-config"
                 },
                 {
                     "type": "build",
-                    "name": "release-linux-shared-build"
+                    "name": "release-shared-build"
                 },
                 {
                     "type": "package",
@@ -480,11 +335,11 @@
             "steps": [
                 {
                     "type": "configure",
-                    "name": "release-linux-static-config"
+                    "name": "release-static-config"
                 },
                 {
                     "type": "build",
-                    "name": "release-linux-static-build"
+                    "name": "release-static-build"
                 },
                 {
                     "type": "package",
@@ -499,11 +354,11 @@
             "steps": [
                 {
                     "type": "configure",
-                    "name": "release-linux-shared-config"
+                    "name": "release-shared-config"
                 },
                 {
                     "type": "build",
-                    "name": "release-linux-shared-build"
+                    "name": "release-shared-build"
                 },
                 {
                     "type": "package",
@@ -518,11 +373,11 @@
             "steps": [
                 {
                     "type": "configure",
-                    "name": "release-linux-static-config"
+                    "name": "release-static-config"
                 },
                 {
                     "type": "build",
-                    "name": "release-linux-static-build"
+                    "name": "release-static-build"
                 },
                 {
                     "type": "package",
@@ -537,11 +392,11 @@
             "steps": [
                 {
                     "type": "configure",
-                    "name": "release-microsoft-shared-config"
+                    "name": "release-shared-config"
                 },
                 {
                     "type": "build",
-                    "name": "release-microsoft-shared-build"
+                    "name": "release-shared-build"
                 },
                 {
                     "type": "package",
@@ -556,11 +411,11 @@
             "steps": [
                 {
                     "type": "configure",
-                    "name": "release-microsoft-static-config"
+                    "name": "release-static-config"
                 },
                 {
                     "type": "build",
-                    "name": "release-microsoft-static-build"
+                    "name": "release-static-build"
                 },
                 {
                     "type": "package",
