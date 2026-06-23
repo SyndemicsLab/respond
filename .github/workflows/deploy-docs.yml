@@ -30,7 +30,7 @@ jobs:
 
             - name: Configure Project
               run: >
-                  cmake --preset release-linux-shared-config
+                  cmake --preset docs
 
             - name: Generate Doxygen Documentation
               run: doxygen Doxyfile
