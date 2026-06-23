@@ -130,7 +130,7 @@ $(document).ready(function(){initNavTree('d2/deb/md_docs_src_api_guide.html','..
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><p>This guide provides an overview of the RESPOND C++ API for developers wishing to use the library in their own projects.</p>
-<h1><a class="anchor" id="autotoc_md93"></a>
+<h1><a class="anchor" id="autotoc_md92"></a>
 Overview</h1>
 <p>The RESPOND library provides a flexible framework for building opioid use disorder models through composition of models, transitions, and history tracking. The core components are:</p>
 <ul>
@@ -140,12 +140,12 @@ Overview</h1>
 <li><b>History</b>: Tracks state vectors over time</li>
 <li><b>TransitionFactory</b>: Creates concrete transition instances</li>
 </ul>
-<h1><a class="anchor" id="autotoc_md94"></a>
+<h1><a class="anchor" id="autotoc_md93"></a>
 Core Concepts</h1>
-<h2><a class="anchor" id="autotoc_md95"></a>
+<h2><a class="anchor" id="autotoc_md94"></a>
 State Vectors</h2>
 <p>Models operate on state vectors (Eigen::VectorXd) representing the population distribution across model states. A state vector element at index i represents the count of individuals in state i.</p>
-<h2><a class="anchor" id="autotoc_md96"></a>
+<h2><a class="anchor" id="autotoc_md95"></a>
 Transitions</h2>
 <p>Transitions apply transformations to state vectors using transition matrices. The RESPOND model supports several transition types:</p>
 <ul>
@@ -155,10 +155,10 @@ Transitions</h2>
 <li><b>Overdose</b>: Overdose-related transitions</li>
 <li><b>BackgroundDeath</b>: Background mortality transitions</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md97"></a>
+<h2><a class="anchor" id="autotoc_md96"></a>
 History Tracking</h2>
 <p>History objects record state vectors at each timestep, enabling analysis of state trajectories over time. Histories support sparse timesteps—gaps are automatically filled with zero vectors.</p>
-<h1><a class="anchor" id="autotoc_md98"></a>
+<h1><a class="anchor" id="autotoc_md97"></a>
 Model Class</h1>
 <p>The Model class is the abstract base for all models in RESPOND.</p>
 <div class="fragment"><div class="line"><span class="preprocessor">#include &lt;respond/model.hpp&gt;</span></div>
@@ -186,7 +186,7 @@ Model Class</h1>
 <div class="line"><span class="keyword">auto</span> histories = model-&gt;GetHistories();</div>
 <div class="ttc" id="aclassrespond_1_1Model_html_ac837a382694b08e5941578a9a2bb5c66"><div class="ttname"><a href="../../d4/d00/classrespond_1_1Model.html#ac837a382694b08e5941578a9a2bb5c66">respond::Model::Create</a></div><div class="ttdeci">static std::unique_ptr&lt; Model &gt; Create(const std::string &amp;name, const std::string &amp;log_name=&quot;console&quot;)</div><div class="ttdoc">Factory method to create a Model instance.</div></div>
 <div class="ttc" id="aclassrespond_1_1TransitionFactory_html_a08aaea3d8973f6f2b01bba75083aee4d"><div class="ttname"><a href="../../d7/dad/classrespond_1_1TransitionFactory.html#a08aaea3d8973f6f2b01bba75083aee4d">respond::TransitionFactory::CreateTransition</a></div><div class="ttdeci">static std::unique_ptr&lt; Transition &gt; CreateTransition(const std::string &amp;type, const std::string &amp;log_name)</div><div class="ttdoc">Creates a transition of the specified type.</div></div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md99"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md98"></a>
 Key Methods</h2>
 <ul>
 <li><code>SetState(const Eigen::VectorXd &amp;state)</code>: Sets the model's state vector (copied internally)</li>
@@ -202,7 +202,7 @@ Key Methods</h2>
 <li><code>GetLogName() const</code>: Returns associated logger name</li>
 <li><code>clone() const</code>: Creates a deep copy of the model</li>
 </ul>
-<h1><a class="anchor" id="autotoc_md100"></a>
+<h1><a class="anchor" id="autotoc_md99"></a>
 Simulation Class</h1>
 <p>The Simulation class manages multiple models and coordinates their execution.</p>
 <div class="fragment"><div class="line"><span class="preprocessor">#include &lt;respond/simulation.hpp&gt;</span></div>
@@ -227,7 +227,7 @@ Simulation Class</h1>
 <div class="line"><span class="keyword">auto</span> history_names = sim.GetModelHistoryNames();</div>
 <div class="line"><span class="comment">// Returns vector of (model_name, history_name) pairs</span></div>
 <div class="ttc" id="aclassrespond_1_1Simulation_html"><div class="ttname"><a href="../../de/d27/classrespond_1_1Simulation.html">respond::Simulation</a></div><div class="ttdoc">Manages and executes multiple models in a coordinated simulation. A Simulation aggregates Model insta...</div><div class="ttdef"><b>Definition:</b> simulation.hpp:30</div></div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md101"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md100"></a>
 Key Methods</h2>
 <ul>
 <li><code>Run()</code>: Executes one simulation step for all models</li>
@@ -239,7 +239,7 @@ Key Methods</h2>
 <li><code>GetModelHistoryNames() const</code>: Returns (model_name, history_name) pairs</li>
 <li><code>GetLogName() const</code>: Returns logger name</li>
 </ul>
-<h1><a class="anchor" id="autotoc_md102"></a>
+<h1><a class="anchor" id="autotoc_md101"></a>
 History Class</h1>
 <p>The History class records and manages state vectors across timesteps.</p>
 <div class="fragment"><div class="line"><span class="preprocessor">#include &lt;respond/history.hpp&gt;</span></div>
@@ -266,7 +266,7 @@ History Class</h1>
 <div class="line"><span class="comment">// Clear history</span></div>
 <div class="line">hist.Clear();</div>
 <div class="ttc" id="aclassrespond_1_1History_html"><div class="ttname"><a href="../../d8/dd8/classrespond_1_1History.html">respond::History</a></div><div class="ttdoc">Tracks and manages state vector history over time. History records state snapshots at discrete timest...</div><div class="ttdef"><b>Definition:</b> history.hpp:37</div></div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md103"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md102"></a>
 Key Methods</h2>
 <ul>
 <li><code>AddState(const Eigen::VectorXd &amp;state, int timestep = -1)</code>: Records a state<ul>
@@ -281,7 +281,7 @@ Key Methods</h2>
 <li><code>Clear()</code>: Removes all recorded states</li>
 <li><code>operator==</code>, <code>operator!=</code>: Comparison operators</li>
 </ul>
-<h1><a class="anchor" id="autotoc_md104"></a>
+<h1><a class="anchor" id="autotoc_md103"></a>
 Transition Class</h1>
 <p>The Transition class is abstract; use TransitionFactory to create concrete instances.</p>
 <div class="fragment"><div class="line"><span class="preprocessor">#include &lt;respond/transition.hpp&gt;</span></div>
@@ -307,7 +307,7 @@ Transition Class</h1>
 <div class="line"> </div>
 <div class="line"><span class="comment">// Clear matrices</span></div>
 <div class="line">transition-&gt;ClearTransitionMatrices();</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md105"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md104"></a>
 Supported Transition Types</h2>
 <table class="markdownTable">
 <tr class="markdownTableHead">
@@ -323,7 +323,7 @@ Supported Transition Types</h2>
 <tr class="markdownTableRowOdd">
 <td class="markdownTableBodyNone">"background_death"   </td><td class="markdownTableBodyNone">Background mortality transitions   </td></tr>
 </table>
-<h1><a class="anchor" id="autotoc_md106"></a>
+<h1><a class="anchor" id="autotoc_md105"></a>
 Logging Integration</h1>
 <p>RESPOND uses the spdlog library for logging. Models and transitions accept a logger name:</p>
 <div class="fragment"><div class="line"><span class="comment">// All logging is handled by passing logger names</span></div>
@@ -332,7 +332,7 @@ Logging Integration</h1>
 <div class="line"><span class="comment">// The model will use this logger for any errors or warnings</span></div>
 <div class="line"><span class="comment">// Create loggers separately using respond::CreateFileLogger</span></div>
 <div class="line">respond::CreateFileLogger(<span class="stringliteral">&quot;my_logger&quot;</span>, <span class="stringliteral">&quot;path/to/logfile.log&quot;</span>);</div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md107"></a>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md106"></a>
 Complete Example</h1>
 <div class="fragment"><div class="line"><span class="preprocessor">#include &lt;respond/simulation.hpp&gt;</span></div>
 <div class="line"><span class="preprocessor">#include &lt;respond/model.hpp&gt;</span></div>
@@ -381,7 +381,7 @@ Complete Example</h1>
 <div class="line">    </div>
 <div class="line">    <span class="keywordflow">return</span> 0;</div>
 <div class="line">}</div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md108"></a>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md107"></a>
 Memory Management</h1>
 <p>RESPOND uses <code>std::unique_ptr</code> for ownership management:</p>
 <ul>
@@ -390,7 +390,7 @@ Memory Management</h1>
 <li>All models are cloned when added to a Simulation (ownership transfer)</li>
 <li>Clearing containers (ClearModels, ClearTransitions) deletes contained objects</li>
 </ul>
-<h1><a class="anchor" id="autotoc_md109"></a>
+<h1><a class="anchor" id="autotoc_md108"></a>
 Best Practices</h1>
 <ol type="1">
 <li><b>Use TransitionFactory</b> to create transitions—it handles type dispatch</li>
@@ -400,9 +400,9 @@ Best Practices</h1>
 <li><b>Initialize loggers early</b> before creating models to enable error tracking</li>
 <li><b>Validate matrix dimensions</b> before adding to transitions (not checked by API)</li>
 </ol>
-<h1><a class="anchor" id="autotoc_md110"></a>
+<h1><a class="anchor" id="autotoc_md109"></a>
 Common Patterns</h1>
-<h2><a class="anchor" id="autotoc_md111"></a>
+<h2><a class="anchor" id="autotoc_md110"></a>
 Running Multiple Independent Simulations</h2>
 <div class="fragment"><div class="line"><span class="keywordflow">for</span> (<span class="keywordtype">int</span> run = 0; run &lt; num_runs; ++run) {</div>
 <div class="line">    <a class="code hl_class" href="../../de/d27/classrespond_1_1Simulation.html">respond::Simulation</a> sim(<span class="stringliteral">&quot;logger_&quot;</span> + std::to_string(run));</div>
@@ -417,7 +417,7 @@ Running Multiple Independent Simulations</h2>
 <div class="line">    </div>
 <div class="line">    <span class="comment">// Store results...</span></div>
 <div class="line">}</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md112"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md111"></a>
 Resetting Model State</h2>
 <div class="fragment"><div class="line"><span class="comment">// To reset a model to initial state</span></div>
 <div class="line">Eigen::VectorXd initial_state = ...;</div>
@@ -426,7 +426,7 @@ Resetting Model State</h2>
 <div class="line"><span class="comment">// To also clear history</span></div>
 <div class="line">model-&gt;ClearTransitions();</div>
 <div class="line">model-&gt;CreateDefaultHistories();</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md113"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md112"></a>
 Copying Simulations</h2>
 <div class="fragment"><div class="line"><a class="code hl_class" href="../../de/d27/classrespond_1_1Simulation.html">respond::Simulation</a> sim1(<span class="stringliteral">&quot;logger&quot;</span>);</div>
 <div class="line"><span class="comment">// ... configure sim1 ...</span></div>
@@ -435,10 +435,10 @@ Copying Simulations</h2>
 <div class="line"><a class="code hl_class" href="../../de/d27/classrespond_1_1Simulation.html">respond::Simulation</a> sim2 = sim1;  <span class="comment">// All models are cloned</span></div>
 <div class="line"> </div>
 <div class="line"><span class="comment">// Modifications to sim2 don&#39;t affect sim1</span></div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md114"></a>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md113"></a>
 Parallel Execution with Shared Logging</h1>
 <p>When running multiple models in parallel, all loggers can safely write to the same file using RESPOND's shared sink functionality. This ensures thread-safe logging without file corruption.</p>
-<h2><a class="anchor" id="autotoc_md115"></a>
+<h2><a class="anchor" id="autotoc_md114"></a>
 Basic Parallel Logging Setup</h2>
 <div class="fragment"><div class="line"><span class="preprocessor">#include &lt;respond/logging.hpp&gt;</span></div>
 <div class="line"><span class="preprocessor">#include &lt;respond/model.hpp&gt;</span></div>
@@ -458,7 +458,7 @@ Basic Parallel Logging Setup</h2>
 <div class="line">    <span class="comment">// Now multiple threads can safely write to shared log</span></div>
 <div class="line">    <span class="keywordflow">return</span> 0;</div>
 <div class="line">}</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md116"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md115"></a>
 Running Models in Parallel with Unified Logging</h2>
 <div class="fragment"><div class="line"><span class="preprocessor">#include &lt;respond/logging.hpp&gt;</span></div>
 <div class="line"><span class="preprocessor">#include &lt;respond/simulation.hpp&gt;</span></div>
@@ -513,7 +513,7 @@ Running Models in Parallel with Unified Logging</h2>
 <div class="line">    <span class="comment">// All output safely written to unified.log</span></div>
 <div class="line">    <span class="keywordflow">return</span> 0;</div>
 <div class="line">}</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md117"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md116"></a>
 Shared Logger Pattern Options</h2>
 <p>The <code>LogPattern</code> enum controls log format for all shared loggers:</p>
 <ul>
@@ -530,7 +530,7 @@ Shared Logger Pattern Options</h2>
 <div class="line"> </div>
 <div class="line"><span class="comment">// Get pattern as string for programmatic use</span></div>
 <div class="line">std::string pattern_str = respond::LoggingConfig::GetPatternString(current);</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md118"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md117"></a>
 Monitoring Shared Loggers</h2>
 <div class="fragment"><div class="line"><span class="comment">// Check if logger exists</span></div>
 <div class="line"><span class="keywordtype">bool</span> exists = (respond::CheckLoggerExists(<span class="stringliteral">&quot;model_1&quot;</span>) == respond::CreationStatus::kExists);</div>
@@ -544,7 +544,7 @@ Monitoring Shared Loggers</h2>
 <div class="line"> </div>
 <div class="line"><span class="comment">// Flush all loggers immediately</span></div>
 <div class="line">respond::FlushAllLoggers();</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md119"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md118"></a>
 Thread-Safe File Sink Management</h2>
 <p>The <code>CreateSharedFileSink</code> function creates file sinks that are automatically cached and reused:</p>
 <div class="fragment"><div class="line"><span class="comment">// Create or get cached sink for filepath</span></div>
@@ -555,7 +555,7 @@ Thread-Safe File Sink Management</h2>
 <div class="line">respond::CreateSharedLogger(<span class="stringliteral">&quot;logger_1&quot;</span>);  <span class="comment">// Uses default sink</span></div>
 <div class="line">respond::CreateSharedLogger(<span class="stringliteral">&quot;logger_2&quot;</span>);  <span class="comment">// Uses same sink</span></div>
 <div class="line"><span class="comment">// Both logger_1 and logger_2 write to same file safely</span></div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md120"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md119"></a>
 Best Practices for Parallel Logging</h2>
 <ol type="1">
 <li><b>Call <code>SetLogPattern()</code> once</b> at program startup, before creating any loggers</li>
@@ -565,7 +565,7 @@ Best Practices for Parallel Logging</h2>
 <li><b>Call <code>FlushAllLoggers()</code></b> at end of main before exit to ensure all writes complete</li>
 <li><b>Monitor logger levels</b> with <code>GetLoggerInfo()</code> when debugging multi-model runs</li>
 </ol>
-<h2><a class="anchor" id="autotoc_md121"></a>
+<h2><a class="anchor" id="autotoc_md120"></a>
 Troubleshooting</h2>
 <ul>
 <li><b>Assertion failures</b>: Ensure matrix dimensions match state vector size before adding to transitions</li>
@@ -582,7 +582,7 @@ Troubleshooting</h2>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Mon Jun 15 2026 19:58:29 for RESPOND by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
+    <li class="footer">Generated on Tue Jun 23 2026 17:46:15 for RESPOND by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
   </ul>
 </div>
 </body>

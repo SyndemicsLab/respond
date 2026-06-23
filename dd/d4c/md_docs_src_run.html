@@ -135,7 +135,7 @@ $(document).ready(function(){initNavTree('dd/d4c/md_docs_src_run.html','../../')
 <li><b>Via Python package</b> - Use the higher-level <a href="https://github.com/SyndemicsLab/respondpy">respondpy</a> interface</li>
 <li><b>Standalone executable</b> - Legacy support for direct command-line execution</li>
 </ol>
-<h1><a class="anchor" id="autotoc_md36"></a>
+<h1><a class="anchor" id="autotoc_md35"></a>
 Using RESPOND as a C++ Library</h1>
 <p>For C++ developers, RESPOND can be integrated directly into projects. See the <a class="el" href="../../d2/deb/md_docs_src_api_guide.html">C++ API Guide</a> for:</p>
 <ul>
@@ -144,7 +144,7 @@ Using RESPOND as a C++ Library</h1>
 <li>Memory management details</li>
 <li>Design patterns and best practices</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md37"></a>
+<h2><a class="anchor" id="autotoc_md36"></a>
 Basic Example</h2>
 <div class="fragment"><div class="line"><span class="preprocessor">#include &lt;respond/simulation.hpp&gt;</span></div>
 <div class="line"><span class="preprocessor">#include &lt;respond/model.hpp&gt;</span></div>
@@ -184,14 +184,14 @@ Basic Example</h2>
 <div class="ttc" id="aclassrespond_1_1Simulation_html"><div class="ttname"><a href="../../de/d27/classrespond_1_1Simulation.html">respond::Simulation</a></div><div class="ttdoc">Manages and executes multiple models in a coordinated simulation. A Simulation aggregates Model insta...</div><div class="ttdef"><b>Definition:</b> simulation.hpp:30</div></div>
 <div class="ttc" id="aclassrespond_1_1TransitionFactory_html_a08aaea3d8973f6f2b01bba75083aee4d"><div class="ttname"><a href="../../d7/dad/classrespond_1_1TransitionFactory.html#a08aaea3d8973f6f2b01bba75083aee4d">respond::TransitionFactory::CreateTransition</a></div><div class="ttdeci">static std::unique_ptr&lt; Transition &gt; CreateTransition(const std::string &amp;type, const std::string &amp;log_name)</div><div class="ttdoc">Creates a transition of the specified type.</div></div>
 </div><!-- fragment --><p>For complete examples and API documentation, see the <a class="el" href="../../d2/deb/md_docs_src_api_guide.html">C++ API Guide</a>.</p>
-<h1><a class="anchor" id="autotoc_md38"></a>
+<h1><a class="anchor" id="autotoc_md37"></a>
 Using the Standalone Executable</h1>
 <p>Legacy support for standalone execution is available in release <a href="https://github.com/SyndemicsLab/respond/releases/tag/v0.3.0">v0.3.0</a>.</p>
-<h2><a class="anchor" id="autotoc_md39"></a>
+<h2><a class="anchor" id="autotoc_md38"></a>
 Command-Line Usage</h2>
 <p>To run the executable (requires legacy release):</p>
 <div class="fragment"><div class="line">./respond_exe /path/to/input/folders 1 1</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md40"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md39"></a>
 Arguments</h2>
 <p>The executable takes 3 positional arguments:</p>
 <ol type="1">
@@ -199,7 +199,7 @@ Arguments</h2>
 <li><b>Start folder index</b>: First input folder number (e.g., 1 for <code>input1</code>)</li>
 <li><b>End folder index</b>: Last input folder number (inclusive)</li>
 </ol>
-<h2><a class="anchor" id="autotoc_md41"></a>
+<h2><a class="anchor" id="autotoc_md40"></a>
 Examples</h2>
 <div class="fragment"><div class="line"># Run single input folder</div>
 <div class="line">./respond_exe /home/user/data 1 1</div>
@@ -209,10 +209,10 @@ Examples</h2>
 <div class="line"> </div>
 <div class="line"># Run folders input5 through input10</div>
 <div class="line">./respond_exe /home/user/data 5 10</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md42"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md41"></a>
 Output</h2>
 <p>The executable produces output files in the same directory as the input data.</p>
-<h1><a class="anchor" id="autotoc_md43"></a>
+<h1><a class="anchor" id="autotoc_md42"></a>
 Python Integration</h1>
 <p>For a higher-level interface, use the <a href="https://pypi.org/project/respondpy/">respondpy</a> Python package:</p>
 <div class="fragment"><div class="line"><span class="keyword">import</span> respondpy <span class="keyword">as</span> respond</div>
@@ -229,7 +229,7 @@ Python Integration</h1>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Mon Jun 15 2026 19:58:29 for RESPOND by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
+    <li class="footer">Generated on Tue Jun 23 2026 17:46:15 for RESPOND by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
   </ul>
 </div>
 </body>

@@ -130,7 +130,7 @@ $(document).ready(function(){initNavTree('d2/d4f/md_docs_src_architecture.html',
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><p>This document describes the architectural decisions and design patterns used in RESPOND.</p>
-<h1><a class="anchor" id="autotoc_md55"></a>
+<h1><a class="anchor" id="autotoc_md54"></a>
 Design Philosophy</h1>
 <p>RESPOND follows the <b>inversion of control</b> principle, abstracting the model to its core components and allowing users to customize it to their needs rather than maintaining a rigid, monolithic structure. This enables:</p>
 <ol type="1">
@@ -139,7 +139,7 @@ Design Philosophy</h1>
 <li><b>Maintainability</b> - Clear separation of concerns</li>
 <li><b>Portability</b> - Easy to integrate into different applications</li>
 </ol>
-<h1><a class="anchor" id="autotoc_md56"></a>
+<h1><a class="anchor" id="autotoc_md55"></a>
 Component Architecture</h1>
 <div class="fragment"><div class="line">┌─────────────────────────────────────────────────┐</div>
 <div class="line">│         Simulation                               │</div>
@@ -166,9 +166,9 @@ Component Architecture</h1>
 <div class="line">            - Outcomes   │    │             │</div>
 <div class="line">            - Costs      │    │             │</div>
 <div class="line">            └────────────┘    └─────────────┘</div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md57"></a>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md56"></a>
 Core Classes</h1>
-<h2><a class="anchor" id="autotoc_md58"></a>
+<h2><a class="anchor" id="autotoc_md57"></a>
 Model (Abstract Base Class)</h2>
 <ul>
 <li><b>Role</b>: Represents a state transition system</li>
@@ -186,7 +186,7 @@ Model (Abstract Base Class)</h2>
 </ul>
 </li>
 </ul>
-<h2><a class="anchor" id="autotoc_md59"></a>
+<h2><a class="anchor" id="autotoc_md58"></a>
 Simulation</h2>
 <ul>
 <li><b>Role</b>: Aggregates multiple independent models</li>
@@ -203,7 +203,7 @@ Simulation</h2>
 </ul>
 </li>
 </ul>
-<h2><a class="anchor" id="autotoc_md60"></a>
+<h2><a class="anchor" id="autotoc_md59"></a>
 Transition (Abstract Base Class)</h2>
 <ul>
 <li><b>Role</b>: Represents a specific type of model transition</li>
@@ -228,7 +228,7 @@ Transition (Abstract Base Class)</h2>
 </ul>
 </li>
 </ul>
-<h2><a class="anchor" id="autotoc_md61"></a>
+<h2><a class="anchor" id="autotoc_md60"></a>
 History</h2>
 <ul>
 <li><b>Role</b>: Records state vectors over time</li>
@@ -246,7 +246,7 @@ History</h2>
 </ul>
 </li>
 </ul>
-<h2><a class="anchor" id="autotoc_md62"></a>
+<h2><a class="anchor" id="autotoc_md61"></a>
 TransitionFactory</h2>
 <ul>
 <li><b>Role</b>: Creates concrete Transition instances</li>
@@ -262,9 +262,9 @@ TransitionFactory</h2>
 </ul>
 </li>
 </ul>
-<h1><a class="anchor" id="autotoc_md63"></a>
+<h1><a class="anchor" id="autotoc_md62"></a>
 Design Patterns</h1>
-<h2><a class="anchor" id="autotoc_md64"></a>
+<h2><a class="anchor" id="autotoc_md63"></a>
 Factory Pattern (TransitionFactory)</h2>
 <p>Encapsulates object creation for transitions:</p>
 <div class="fragment"><div class="line"><span class="keyword">auto</span> transition = TransitionFactory::CreateTransition(<span class="stringliteral">&quot;behavior&quot;</span>, <span class="stringliteral">&quot;logger&quot;</span>);</div>
@@ -273,7 +273,7 @@ Factory Pattern (TransitionFactory)</h2>
 <li>Centralizes type dispatch logic</li>
 <li>Easy to add new transition types</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md65"></a>
+<h2><a class="anchor" id="autotoc_md64"></a>
 Template Method Pattern (Model → Transitions)</h2>
 <p>Model delegates to transitions in RunTransitions():</p>
 <div class="fragment"><div class="line"><span class="keywordtype">void</span> Model::RunTransitions() {</div>
@@ -286,7 +286,7 @@ Template Method Pattern (Model → Transitions)</h2>
 <li>Order-dependent execution</li>
 <li>Custom transition behavior per model</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md66"></a>
+<h2><a class="anchor" id="autotoc_md65"></a>
 Strategy Pattern (Transitions)</h2>
 <p>Different transition types implement Execute() differently:</p>
 <div class="fragment"><div class="line"><span class="comment">// Migration::Execute() - handles population movement</span></div>
@@ -297,7 +297,7 @@ Strategy Pattern (Transitions)</h2>
 <li>No conditional logic in Model</li>
 <li>Easy to add new strategies</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md67"></a>
+<h2><a class="anchor" id="autotoc_md66"></a>
 Object Pool / Clone Pattern</h2>
 <p>Models and Transitions support cloning for independent copies:</p>
 <div class="fragment"><div class="line"><span class="keyword">auto</span> model_copy = model-&gt;clone();  <span class="comment">// Deep copy</span></div>
@@ -307,23 +307,23 @@ Object Pool / Clone Pattern</h2>
 <li>Clear ownership semantics</li>
 <li>Safe concurrent execution</li>
 </ul>
-<h1><a class="anchor" id="autotoc_md68"></a>
+<h1><a class="anchor" id="autotoc_md67"></a>
 Memory Management</h1>
 <p>RESPOND uses modern C++ memory management practices:</p>
-<h2><a class="anchor" id="autotoc_md69"></a>
+<h2><a class="anchor" id="autotoc_md68"></a>
 Unique Ownership (unique_ptr)</h2>
 <p>Used for objects with clear ownership:</p><ul>
 <li>Model owns its Transitions</li>
 <li>Simulation owns its Models (via cloning)</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md70"></a>
+<h2><a class="anchor" id="autotoc_md69"></a>
 Shared Ownership (None by default)</h2>
 <p>RESPOND minimizes shared state. History objects are the exception—they're:</p><ul>
 <li>Copyable (value semantics)</li>
 <li>Used as values in Model maps</li>
 <li>Accessed through const references where possible</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md71"></a>
+<h2><a class="anchor" id="autotoc_md70"></a>
 Safety Mechanisms</h2>
 <ul>
 <li><b>Deleted copy operators</b> on base classes prevent slicing: <div class="fragment"><div class="line">Model(<span class="keyword">const</span> Model&amp;) = <span class="keyword">delete</span>;</div>
@@ -333,9 +333,9 @@ Safety Mechanisms</h2>
 <li><b>const-correctness</b> throughout API</li>
 <li><b>Pass-by-value</b> for small objects (Eigen uses move semantics internally)</li>
 </ul>
-<h1><a class="anchor" id="autotoc_md72"></a>
+<h1><a class="anchor" id="autotoc_md71"></a>
 Extensibility Points</h1>
-<h2><a class="anchor" id="autotoc_md73"></a>
+<h2><a class="anchor" id="autotoc_md72"></a>
 Adding a New Transition Type</h2>
 <ol type="1">
 <li>Create a new header in <code>include/respond/internals/</code></li>
@@ -353,23 +353,23 @@ Adding a New Transition Type</h2>
 <div class="line"><span class="keywordflow">if</span> (type == <span class="stringliteral">&quot;custom&quot;</span>) {</div>
 <div class="line">    <span class="keywordflow">return</span> CustomTransition::Create(type, log_name);</div>
 <div class="line">}</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md74"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md73"></a>
 Adding New History Types</h2>
 <ol type="1">
 <li>Extend History class or create a new class</li>
 <li>Update Model::CreateDefaultHistories() to instantiate new types</li>
 <li>Update GetHistories() documentation</li>
 </ol>
-<h1><a class="anchor" id="autotoc_md75"></a>
+<h1><a class="anchor" id="autotoc_md74"></a>
 Dependencies</h1>
-<h2><a class="anchor" id="autotoc_md76"></a>
+<h2><a class="anchor" id="autotoc_md75"></a>
 External Libraries</h2>
 <ul>
 <li><b>Eigen</b> - Linear algebra (state vectors, transition matrices)</li>
 <li><b>spdlog</b> - Logging</li>
 <li><b>GoogleTest</b> - Unit testing (optional)</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md77"></a>
+<h2><a class="anchor" id="autotoc_md76"></a>
 Internal Organization</h2>
 <ul>
 <li>**<code>include/respond/</code>** - Public API headers</li>
@@ -377,7 +377,7 @@ Internal Organization</h2>
 <li>**<code>src/</code>** - Implementation files</li>
 <li>**<code>tests/</code>** - Unit and integration tests</li>
 </ul>
-<h1><a class="anchor" id="autotoc_md78"></a>
+<h1><a class="anchor" id="autotoc_md77"></a>
 Threading and Concurrency</h1>
 <p>Current implementation is <b>not thread-safe</b>:</p>
 <ul>
@@ -390,48 +390,48 @@ Threading and Concurrency</h1>
 <li>Each thread manages its own simulation</li>
 <li>Synchronize result collection externally</li>
 </ul>
-<h1><a class="anchor" id="autotoc_md79"></a>
+<h1><a class="anchor" id="autotoc_md78"></a>
 Performance Considerations</h1>
-<h2><a class="anchor" id="autotoc_md80"></a>
+<h2><a class="anchor" id="autotoc_md79"></a>
 State Vector Operations</h2>
 <ul>
 <li>Heavy use of Eigen for linear algebra</li>
 <li>Matrices stored by value (memory efficient)</li>
 <li>Copy elision via move semantics</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md81"></a>
+<h2><a class="anchor" id="autotoc_md80"></a>
 Sparse History</h2>
 <ul>
 <li>Map-based storage avoids allocating full history</li>
 <li>Gap-filling only occurs during GetStateAsVector()</li>
 <li>Minimal memory overhead for sparse timesteps</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md82"></a>
+<h2><a class="anchor" id="autotoc_md81"></a>
 Transition Execution Order</h2>
 <ul>
 <li>Transitions execute sequentially in order added</li>
 <li>Each transition reads from current state, writes results</li>
 <li>History updated after each transition</li>
 </ul>
-<h1><a class="anchor" id="autotoc_md83"></a>
+<h1><a class="anchor" id="autotoc_md82"></a>
 Validation and Error Handling</h1>
-<h2><a class="anchor" id="autotoc_md84"></a>
+<h2><a class="anchor" id="autotoc_md83"></a>
 Current Approach</h2>
 <ul>
 <li>Minimal runtime validation</li>
 <li>Relies on preconditions (documented in comments)</li>
 <li>Errors logged through spdlog</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md85"></a>
+<h2><a class="anchor" id="autotoc_md84"></a>
 Improvements for Future Versions</h2>
 <ul>
 <li>Add matrix dimension validation</li>
 <li>Validate state vector sizes</li>
 <li>Stricter type checking in factory</li>
 </ul>
-<h1><a class="anchor" id="autotoc_md86"></a>
+<h1><a class="anchor" id="autotoc_md85"></a>
 Testing Strategy</h1>
-<h2><a class="anchor" id="autotoc_md87"></a>
+<h2><a class="anchor" id="autotoc_md86"></a>
 Unit Tests</h2>
 <p>Located in <code>tests/unit/</code>, testing individual components:</p><ul>
 <li>State management</li>
@@ -439,20 +439,20 @@ Unit Tests</h2>
 <li>History recording</li>
 <li>Factory creation</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md88"></a>
+<h2><a class="anchor" id="autotoc_md87"></a>
 Integration Tests</h2>
 <p>Located in <code>tests/integration/</code>, testing end-to-end scenarios:</p><ul>
 <li>Full simulation execution</li>
 <li>Multi-model coordination</li>
 <li>Result aggregation</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md89"></a>
+<h2><a class="anchor" id="autotoc_md88"></a>
 Mock Objects</h2>
 <p><code>tests/mocks/</code> provides:</p><ul>
 <li>Model mock for testing Simulation</li>
 <li>Transition mock for testing Model</li>
 </ul>
-<h1><a class="anchor" id="autotoc_md90"></a>
+<h1><a class="anchor" id="autotoc_md89"></a>
 Future Architectural Considerations</h1>
 <ol type="1">
 <li><b>Async Execution</b> - Enable parallel model execution</li>
@@ -471,7 +471,7 @@ Future Architectural Considerations</h1>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Mon Jun 15 2026 19:58:29 for RESPOND by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
+    <li class="footer">Generated on Tue Jun 23 2026 17:46:15 for RESPOND by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
   </ul>
 </div>
 </body>

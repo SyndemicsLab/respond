@@ -137,12 +137,7 @@ Dependencies</h1>
 <p>The <a href="https://github.com/gabime/spdlog">spdlog</a> library is how we are able to write logs during runtime. We log various warnings and errors that could potentially arrive during runtime such as mathematical limitations of data and the assumptions we make if we are able to smooth over issues. By default, we attempt to resolve a few simple issues (i.e. if no data is found for transitions we assume everyone is retained in the same state) but this information is always logged to the output via the spdlog library.</p>
 <h1><a class="anchor" id="autotoc_md13"></a>
 Installing From Packages</h1>
-<p>We distribute the executable installers two ways:</p>
-<ol type="1">
-<li>On our tagged builds</li>
-<li>Through Docker images</li>
-</ol>
-<p>The tagged builds can be found <a href="https://github.com/SyndemicsLab/respond/tags">on our GitHub page</a>. The Docker containers can be built with Docker compose by simply running <code>docker compose up</code> and then downloading the built executable file.</p>
+<p>We distribute the executable installers through our tagged builds. They can be found <a href="https://github.com/SyndemicsLab/respond/tags">on our GitHub page</a>.</p>
 <h1><a class="anchor" id="autotoc_md14"></a>
 Installing From Source</h1>
 <p>In order to install the library from source, clone the repository and run CMake. We provide workflows in the <code>CMakePresets.json</code> and encourage the use of them for easy building.</p>
@@ -150,19 +145,14 @@ Installing From Source</h1>
 Building without Packaging or Testing</h2>
 <div class="fragment"><div class="line">git clone https://github.com/SyndemicsLab/respond.git</div>
 <div class="line">cd respond</div>
-<div class="line">cmake --preset debug-linux-static-config</div>
-<div class="line">cmake --build --preset debug-linux-static-build</div>
+<div class="line">cmake --preset test-debug</div>
+<div class="line">cmake --build --preset test-debug</div>
 </div><!-- fragment --><h2><a class="anchor" id="autotoc_md16"></a>
 Testing</h2>
 <div class="fragment"><div class="line">git clone https://github.com/SyndemicsLab/respond.git</div>
 <div class="line">cd respond</div>
-<div class="line">cmake --workflow --preset test-debug-linux-static-workflow</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md17"></a>
-Packaging</h2>
-<div class="fragment"><div class="line">git clone https://github.com/SyndemicsLab/respond.git</div>
-<div class="line">cd respond</div>
-<div class="line">cmake --workflow --preset package-release-debian-static-workflow</div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md18"></a>
+<div class="line">cmake --workflow --preset test-debug-shared</div>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md17"></a>
 Fetch Content</h1>
 <p>Since CMake 3.11, the <code>FetchContent</code> tool has been available to users. Early on in the design process, we made the decision to progress under the assumption that CMake will handle our dependencies and additional package managers can be installed as necessary and included in toolchain files. To install via <code>FetchContent</code> simply do:</p>
 <div class="fragment"><div class="line">include(FetchContent)</div>
@@ -183,7 +173,7 @@ Fetch Content</h1>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Mon Jun 15 2026 19:58:29 for RESPOND by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
+    <li class="footer">Generated on Tue Jun 23 2026 17:46:15 for RESPOND by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
   </ul>
 </div>
 </body>
