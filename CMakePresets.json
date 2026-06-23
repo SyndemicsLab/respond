@@ -8,44 +8,7 @@
     "include": [],
     "configurePresets": [
         {
-            "name": "shared-config",
-            "hidden": true,
-            "binaryDir": "${sourceDir}/build/shared",
-            "cacheVariables": {
-                "BUILD_SHARED_LIBS": "ON"
-            }
-        },
-        {
-            "name": "static-config",
-            "hidden": true,
-            "binaryDir": "${sourceDir}/build/static",
-            "cacheVariables": {
-                "BUILD_SHARED_LIBS": "OFF"
-            }
-        },
-        {
-            "name": "debug-config",
-            "hidden": true,
-            "cacheVariables": {
-                "CMAKE_BUILD_TYPE": "Debug",
-                "RESPOND_BUILD_TESTS": "ON",
-                "RESPOND_INSTALL": "OFF",
-                "RESPOND_CALCULATE_COVERAGE": "ON"
-            }
-        },
-        {
-            "name": "release-config",
-            "hidden": true,
-            "cacheVariables": {
-                "CMAKE_BUILD_TYPE": "Release",
-                "RESPOND_BUILD_TESTS": "OFF",
-                "RESPOND_INSTALL": "ON",
-                "RESPOND_BUILD_DOCS": "ON",
-                "RESPOND_CALCULATE_COVERAGE": "OFF"
-            }
-        },
-        {
-            "name": "default-config",
+            "name": "workflow-base",
             "hidden": true,
             "generator": "Ninja",
             "architecture": {
@@ -57,67 +20,138 @@
                 "strategy": "external"
             },
             "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release",
                 "RESPOND_BUILD_PIC": "ON",
+                "RESPOND_BUILD_TESTS": "ON",
                 "RESPOND_BUILD_BENCH": "OFF",
                 "RESPOND_BUILD_WARNINGS": "ON",
+                "RESPOND_CALCULATE_COVERAGE": "OFF",
+                "RESPOND_BUILD_DOCS": "OFF",
+                "RESPOND_INSTALL": "OFF",
                 "RESPOND_SYSTEM_INCLUDES": "OFF",
                 "RESPOND_NO_EXCEPTIONS": "OFF"
             }
         },
         {
-            "name": "debug-shared-config",
-            "displayName": "Debug, Shared",
-            "description": "Target a linux distro to create a debuggable shared library",
+            "name": "shared",
+            "hidden": true,
+            "binaryDir": "${sourceDir}/build/shared",
+            "cacheVariables": {
+                "BUILD_SHARED_LIBS": "ON"
+            }
+        },
+        {
+            "name": "static",
+            "hidden": true,
+            "binaryDir": "${sourceDir}/build/static",
+            "cacheVariables": {
+                "BUILD_SHARED_LIBS": "OFF"
+            }
+        },
+        {
+            "name": "test-debug",
+            "displayName": "Debug Tests Configuration",
+            "description": "Create a debuggable shared library for testing",
             "inherits": [
-                "debug-config",
-                "shared-config",
-                "default-config"
+                "shared",
+                "workflow-base"
+            ],
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug"
+            }
+        },
+        {
+            "name": "test-release",
+            "displayName": "Release Tests Configuration",
+            "description": "Create a release shared library for testing",
+            "inherits": [
+                "shared",
+                "workflow-base"
             ]
         },
         {
-            "name": "debug-static-config",
-            "displayName": "Debug, Static",
-            "description": "Target a linux distro to create a debuggable static library",
+            "name": "test-debug-static",
+            "displayName": "Static Debug Tests Configuration",
+            "description": "Create a debuggable static library for testing",
             "inherits": [
-                "debug-config",
-                "static-config",
-                "default-config"
+                "static",
+                "workflow-base"
+            ],
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug"
+            }
+        },
+        {
+            "name": "test-release-static",
+            "displayName": "Static Release Tests Configuration",
+            "description": "Create a release static library for testing",
+            "inherits": [
+                "static",
+                "workflow-base"
             ]
         },
         {
-            "name": "release-shared-config",
-            "displayName": "Release, Shared",
-            "description": "Target a linux distro to create a release shared library",
+            "name": "coverage",
+            "displayName": "Coverage Tests Configuration",
+            "description": "Target a linux distro to create a debuggable shared library for testing with coverage",
             "inherits": [
-                "release-config",
-                "shared-config",
-                "default-config"
-            ]
+                "shared",
+                "workflow-base"
+            ],
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug",
+                "RESPOND_CALCULATE_COVERAGE": "ON"
+            }
         },
         {
-            "name": "release-static-config",
-            "displayName": "Release, Static",
-            "description": "Target a linux distro to create a release static library",
-            "inherits": [
-                "release-config",
-                "static-config",
-                "default-config"
-            ]
-        },
-        {
-            "name": "benchmark-static-config",
-            "displayName": "Benchmark, Static",
+            "name": "benchmark",
+            "displayName": "Benchmark the Shared Library",
             "description": "Target a linux distro to build release benchmark artifacts",
             "inherits": [
-                "release-config",
-                "static-config",
-                "default-config"
+                "workflow-base",
+                "shared"
             ],
             "cacheVariables": {
                 "RESPOND_BUILD_BENCH": "ON",
+                "RESPOND_BUILD_TESTS": "OFF"
+            }
+        },
+        {
+            "name": "package-shared",
+            "displayName": "Package the Shared Library",
+            "description": "Build release package artifacts for the shared library.",
+            "inherits": [
+                "workflow-base",
+                "shared"
+            ],
+            "cacheVariables": {
                 "RESPOND_BUILD_TESTS": "OFF",
-                "RESPOND_BUILD_DOCS": "OFF",
-                "RESPOND_INSTALL": "OFF"
+                "RESPOND_INSTALL": "ON"
+            }
+        },
+        {
+            "name": "package-static",
+            "displayName": "Package the Static Library",
+            "description": "Build release package artifacts for the static library",
+            "inherits": [
+                "workflow-base",
+                "static"
+            ],
+            "cacheVariables": {
+                "RESPOND_BUILD_TESTS": "OFF",
+                "RESPOND_INSTALL": "ON"
+            }
+        },
+        {
+            "name": "docs",
+            "displayName": "Build Documentation",
+            "description": "Build the documentation for the shared library.",
+            "inherits": [
+                "workflow-base",
+                "shared"
+            ],
+            "cacheVariables": {
+                "RESPOND_BUILD_DOCS": "ON"
             }
         }
     ],
@@ -128,34 +162,58 @@
             "jobs": 8
         },
         {
-            "name": "release-shared-build",
-            "displayName": "Release Shared Build",
+            "name": "test-debug",
+            "displayName": "Test Debug Build",
+            "description": "Test the debuggable build of the shared library.",
             "inherits": "default-build",
-            "configurePreset": "release-shared-config"
+            "configurePreset": "test-debug"
         },
         {
-            "name": "release-static-build",
-            "displayName": "Release Static Build",
+            "name": "test-release",
+            "displayName": "Test Release Build",
+            "description": "Test the realease build of the shared library.",
             "inherits": "default-build",
-            "configurePreset": "release-static-config"
+            "configurePreset": "test-release"
         },
         {
-            "name": "debug-shared-build",
-            "displayName": "Debug Shared Build",
+            "name": "test-debug-static",
+            "displayName": "Test Debug Static Build",
+            "description": "Test the debuggable build of the static library.",
             "inherits": "default-build",
-            "configurePreset": "debug-shared-config"
+            "configurePreset": "test-debug-static"
         },
         {
-            "name": "debug-static-build",
-            "displayName": "Debug Static Build",
+            "name": "test-release-static",
+            "displayName": "Test Release Static Build",
+            "description": "Test the realease build of the static library.",
             "inherits": "default-build",
-            "configurePreset": "debug-static-config"
+            "configurePreset": "test-release-static"
         },
         {
-            "name": "benchmark-static-build",
-            "displayName": "Benchmark Static Build",
+            "name": "coverage",
+            "displayName": "Coverage Build",
+            "description": "Build the debuggable build of the shared library with coverage.",
             "inherits": "default-build",
-            "configurePreset": "benchmark-static-config"
+            "configurePreset": "coverage"
+        },
+        {
+            "name": "benchmark",
+            "displayName": "Benchmark Build",
+            "description": "Build the release build of the shared library with benchmark.",
+            "inherits": "default-build",
+            "configurePreset": "benchmark"
+        },
+        {
+            "name": "package-shared",
+            "displayName": "Release Shared Package Build",
+            "inherits": "default-build",
+            "configurePreset": "package-shared"
+        },
+        {
+            "name": "package-static",
+            "displayName": "Release Static Package Build",
+            "inherits": "default-build",
+            "configurePreset": "package-static"
         }
     ],
     "testPresets": [
@@ -178,18 +236,32 @@
             }
         },
         {
-            "name": "debug-shared-test",
-            "displayName": "Test, Debug, Shared",
-            "description": "Enable output and stop on failure",
+            "name": "test-debug",
+            "displayName": "Test Debuggable Build",
+            "description": "Test the debuggable build of the shared library.",
             "inherits": "default-test",
-            "configurePreset": "debug-shared-config"
+            "configurePreset": "test-debug"
         },
         {
-            "name": "debug-static-test",
-            "displayName": "Test, Debug, Static",
-            "description": "Enable output and stop on failure",
+            "name": "test-release",
+            "displayName": "Test Release Build",
+            "description": "Test the release build of the shared library.",
             "inherits": "default-test",
-            "configurePreset": "debug-static-config"
+            "configurePreset": "test-release"
+        },
+        {
+            "name": "test-debug-static",
+            "displayName": "Test Debuggable Static Build",
+            "description": "Test the debuggable build of the static library.",
+            "inherits": "default-test",
+            "configurePreset": "test-debug-static"
+        },
+        {
+            "name": "test-release-static",
+            "displayName": "Test Release Static Build",
+            "description": "Test the release build of the static library.",
+            "inherits": "default-test",
+            "configurePreset": "test-release-static"
         }
     ],
     "packagePresets": [
@@ -225,201 +297,110 @@
             ]
         },
         {
-            "name": "release-debian-shared-package",
+            "name": "debian-shared",
             "inherits": "debian-package",
-            "configurePreset": "release-shared-config"
+            "configurePreset": "package-shared"
         },
         {
-            "name": "release-debian-static-package",
+            "name": "debian-static",
             "inherits": "debian-package",
-            "configurePreset": "release-static-config"
+            "configurePreset": "package-static"
         },
         {
-            "name": "release-rpm-shared-package",
+            "name": "rpm-shared",
             "inherits": "rpm-package",
-            "configurePreset": "release-shared-config"
+            "configurePreset": "package-shared"
         },
         {
-            "name": "release-rpm-static-package",
+            "name": "rpm-static",
             "inherits": "rpm-package",
-            "configurePreset": "release-static-config"
+            "configurePreset": "package-static"
         },
         {
-            "name": "release-nsis-shared-package",
+            "name": "nsis-shared",
             "inherits": "nsis-package",
-            "configurePreset": "release-shared-config"
+            "configurePreset": "package-shared"
         },
         {
-            "name": "release-nsis-static-package",
+            "name": "nsis-static",
             "inherits": "nsis-package",
-            "configurePreset": "release-static-config"
+            "configurePreset": "package-static"
         }
     ],
     "workflowPresets": [
         {
-            "name": "test-debug-shared-workflow",
-            "displayName": "Test, Debug, Shared",
-            "description": "Testing the debug shared library workflow.",
+            "name": "test-debug-shared",
+            "displayName": "Debug Tests",
+            "description": "Run tests in debugging mode for the shared library.",
             "steps": [
                 {
                     "type": "configure",
-                    "name": "debug-shared-config"
+                    "name": "test-debug"
                 },
                 {
                     "type": "build",
-                    "name": "debug-shared-build"
+                    "name": "test-debug"
                 },
                 {
                     "type": "test",
-                    "name": "debug-shared-test"
+                    "name": "test-debug"
                 }
             ]
         },
         {
-            "name": "test-debug-static-workflow",
-            "displayName": "Test, Debug, Static",
-            "description": "Testing the debug static library workflow.",
+            "name": "test-release-shared",
+            "displayName": "Release Tests",
+            "description": "Run tests in release mode for the shared library.",
             "steps": [
                 {
                     "type": "configure",
-                    "name": "debug-static-config"
+                    "name": "test-release"
                 },
                 {
                     "type": "build",
-                    "name": "debug-static-build"
+                    "name": "test-release"
                 },
                 {
                     "type": "test",
-                    "name": "debug-static-test"
+                    "name": "test-release"
                 }
             ]
         },
         {
-            "name": "benchmark-static-workflow",
-            "displayName": "Benchmark, Static",
-            "description": "Build benchmark artifacts for performance testing.",
+            "name": "test-debug-static",
+            "displayName": "Debug Static Tests",
+            "description": "Run tests in debugging mode for the static library.",
             "steps": [
                 {
                     "type": "configure",
-                    "name": "benchmark-static-config"
+                    "name": "test-debug-static"
                 },
                 {
                     "type": "build",
-                    "name": "benchmark-static-build"
+                    "name": "test-debug-static"
+                },
+                {
+                    "type": "test",
+                    "name": "test-debug-static"
                 }
             ]
         },
         {
-            "name": "package-release-debian-shared-workflow",
-            "displayName": "Package, Release, Debian, Shared",
-            "description": "Packaging the release shared library with debian",
+            "name": "test-release-static",
+            "displayName": "Release Static Tests",
+            "description": "Run tests in release mode for the static library.",
             "steps": [
                 {
                     "type": "configure",
-                    "name": "release-shared-config"
+                    "name": "test-release-static"
                 },
                 {
                     "type": "build",
-                    "name": "release-shared-build"
+                    "name": "test-release-static"
                 },
                 {
-                    "type": "package",
-                    "name": "release-debian-shared-package"
-                }
-            ]
-        },
-        {
-            "name": "package-release-debian-static-workflow",
-            "displayName": "Package, Release, Debian, Static",
-            "description": "Packaging the release static library with debian",
-            "steps": [
-                {
-                    "type": "configure",
-                    "name": "release-static-config"
-                },
-                {
-                    "type": "build",
-                    "name": "release-static-build"
-                },
-                {
-                    "type": "package",
-                    "name": "release-debian-static-package"
-                }
-            ]
-        },
-        {
-            "name": "package-release-rpm-shared-workflow",
-            "displayName": "Package, Release, RPM, Shared",
-            "description": "Packaging the release shared library with RPM",
-            "steps": [
-                {
-                    "type": "configure",
-                    "name": "release-shared-config"
-                },
-                {
-                    "type": "build",
-                    "name": "release-shared-build"
-                },
-                {
-                    "type": "package",
-                    "name": "release-rpm-shared-package"
-                }
-            ]
-        },
-        {
-            "name": "package-release-rpm-static-workflow",
-            "displayName": "Package, Release, RPM, Static",
-            "description": "Packaging the release static library with RPM",
-            "steps": [
-                {
-                    "type": "configure",
-                    "name": "release-static-config"
-                },
-                {
-                    "type": "build",
-                    "name": "release-static-build"
-                },
-                {
-                    "type": "package",
-                    "name": "release-rpm-static-package"
-                }
-            ]
-        },
-        {
-            "name": "package-release-nsis-shared-workflow",
-            "displayName": "Package, Release, NSIS, Shared",
-            "description": "Packaging the release shared library with NSIS",
-            "steps": [
-                {
-                    "type": "configure",
-                    "name": "release-shared-config"
-                },
-                {
-                    "type": "build",
-                    "name": "release-shared-build"
-                },
-                {
-                    "type": "package",
-                    "name": "release-nsis-shared-package"
-                }
-            ]
-        },
-        {
-            "name": "package-release-nsis-static-workflow",
-            "displayName": "Package, Release, NSIS, Static",
-            "description": "Packaging the release static library with NSIS",
-            "steps": [
-                {
-                    "type": "configure",
-                    "name": "release-static-config"
-                },
-                {
-                    "type": "build",
-                    "name": "release-static-build"
-                },
-                {
-                    "type": "package",
-                    "name": "release-nsis-static-package"
+                    "type": "test",
+                    "name": "test-release-static"
                 }
             ]
         }

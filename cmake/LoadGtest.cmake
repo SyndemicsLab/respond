@@ -1,4 +1,4 @@
-message(CHECK_START "Fetching GTest...")
+message(CHECK_START "Fetching GoogleTest...")
 list(APPEND CMAKE_MESSAGE_INDENT "  ")
 
 FetchContent_Declare(
@@ -10,4 +10,4 @@ FetchContent_Declare(
 # For Windows: Prevent overriding the parent project's compiler/linker settings
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 list(POP_BACK CMAKE_MESSAGE_INDENT)
-message(CHECK_PASS "GTest Fetched")
+message(CHECK_PASS "GoogleTest Fetched")
