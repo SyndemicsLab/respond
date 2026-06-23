@@ -262,6 +262,13 @@
             "description": "Test the release build of the static library.",
             "inherits": "default-test",
             "configurePreset": "test-release-static"
+        },
+        {
+            "name": "coverage",
+            "displayName": "Coverage Build",
+            "description": "Test the debuggable build of the shared library with coverage.",
+            "inherits": "default-test",
+            "configurePreset": "coverage"
         }
     ],
     "packagePresets": [

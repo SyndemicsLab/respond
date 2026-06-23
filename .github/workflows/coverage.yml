@@ -21,7 +21,7 @@ jobs:
 
             - name: Build and Test Project
               run: >
-                  cmake --workflow --preset test-debug-static-workflow
+                  cmake --preset coverage && cmake --build --preset coverage && ctest --preset coverage
 
             - name: Generate gcovr report HTML
               run: |
