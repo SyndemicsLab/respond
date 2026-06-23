@@ -12,12 +12,7 @@ The [spdlog](https://github.com/gabime/spdlog) library is how we are able to wri
 
 ## Installing From Packages
 
-We distribute the executable installers two ways:
-
-1. On our tagged builds
-2. Through Docker images
-
-The tagged builds can be found [on our GitHub page](https://github.com/SyndemicsLab/respond/tags). The Docker containers can be built with Docker compose by simply running `docker compose up` and then downloading the built executable file.
+We distribute the executable installers through our tagged builds. They can be found [on our GitHub page](https://github.com/SyndemicsLab/respond/tags).
 
 ## Installing From Source
 
@@ -28,8 +23,8 @@ In order to install the library from source, clone the repository and run CMake.
 ```bash
 git clone https://github.com/SyndemicsLab/respond.git
 cd respond
-cmake --preset debug-linux-static-config
-cmake --build --preset debug-linux-static-build
+cmake --preset test-debug
+cmake --build --preset test-debug
 ```
 
 ### Testing
@@ -37,15 +32,7 @@ cmake --build --preset debug-linux-static-build
 ```bash
 git clone https://github.com/SyndemicsLab/respond.git
 cd respond
-cmake --workflow --preset test-debug-linux-static-workflow
-```
-
-### Packaging
-
-```bash
-git clone https://github.com/SyndemicsLab/respond.git
-cd respond
-cmake --workflow --preset package-release-debian-static-workflow
+cmake --workflow --preset test-debug-shared
 ```
 
 ## Fetch Content
