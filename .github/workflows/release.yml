@@ -1,15 +1,9 @@
 name: Add Installers to Release
 
 on:
-    workflow_dispatch:
-    pull_request:
     push:
-    release:
-        types:
-            - published
-    # push:
-    #     tags:
-    #         - "v*.*.*"
+        tags:
+            - "v*.*.*"
 env:
     BUILD_TYPE: Release
 
@@ -48,36 +42,38 @@ jobs:
                   file_glob: true
                   tag: ${{ github.ref }}
 
-    build_windows:
-        name: Building Windows Packages
-        runs-on: ${{matrix.os}}
-        defaults:
-            run:
-                shell: bash
-        strategy:
-            matrix:
-                os: [windows-latest]
-                build-variant: [shared, static]
-                package-type: [nsis]
-                include:
-                    - package-type: nsis
-                      extension: exe
-        steps:
-            - name: Checkout Respond Repository
-              uses: actions/checkout@v6
-            - name: Install NSIS
-              run: choco install -y nsis
-            - name: Run CMake
-              run: |
-                  cmake --preset package-${{matrix.build-variant}} && cmake --build --preset package-${{matrix.build-variant}}
-            - name: Run CPack
-              run: |
-                  cpack --preset ${{matrix.package-type}}-${{matrix.build-variant}}
+# Currently incurring errors on the workflow: 1) CPack Error: Problem running NSIS command 2) CPack Error: Problem compressing the directory 3) CPack Error: Error when generating package: respond
 
-            - name: Upload NSIS Package to Release
-              uses: svenstaro/upload-release-action@v2
-              with:
-                  repo_token: ${{ secrets.GITHUB_TOKEN }}
-                  file: ${{ github.workspace }}/build/${{ matrix.build-variant }}/*.${{ matrix.extension }}
-                  file_glob: true
-                  tag: ${{ github.ref }}
+# build_windows:
+#     name: Building Windows Packages
+#     runs-on: ${{matrix.os}}
+#     defaults:
+#         run:
+#             shell: bash
+#     strategy:
+#         matrix:
+#             os: [windows-latest]
+#             build-variant: [shared, static]
+#             package-type: [nsis]
+#             include:
+#                 - package-type: nsis
+#                   extension: exe
+#     steps:
+#         - name: Checkout Respond Repository
+#           uses: actions/checkout@v6
+#         - name: Install NSIS
+#           run: choco install -y nsis
+#         - name: Run CMake
+#           run: |
+#               cmake --preset package-${{matrix.build-variant}} && cmake --build --preset package-${{matrix.build-variant}}
+#         - name: Run CPack
+#           run: |
+#               cpack --preset ${{matrix.package-type}}-${{matrix.build-variant}}
+
+#         - name: Upload NSIS Package to Release
+#           uses: svenstaro/upload-release-action@v2
+#           with:
+#               repo_token: ${{ secrets.GITHUB_TOKEN }}
+#               file: ${{ github.workspace }}/build/${{ matrix.build-variant }}/*.${{ matrix.extension }}
+#               file_glob: true
+#               tag: ${{ github.ref }}
