@@ -9,7 +9,7 @@ set(CPACK_PROJECT_URL "https://github.com/SyndemicsLab/respond")
 set(CPACK_PACKAGE_NAME @PROJECT_NAME@)
 set(CPACK_PACKAGE_VENDOR "Syndemics Lab at Boston Medical Center")
 set(CPACK_PACKAGE_CONTACT "Benjamin Linas <Benjamin.Linas@bmc.org>")
-set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "The RESPOND (Researching Effective Strategies to Prevent Opioid Use Disorder) Model Library. This library acts as a tool for building decision science markov models to study the treatment dynamics of substance use disorder.")
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "The RESPOND (Researching Effective Strategies to Prevent Opioid Use Disorder) model library. This library acts as a tool for building decision science Markov models to study the treatment dynamics of substance use disorder.")
 set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/License.txt")
 
 
