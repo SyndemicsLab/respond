@@ -1,14 +1,20 @@
-name: Release Project
+name: Add Installers to Release
 
 on:
+    workflow_dispatch:
+    pull_request:
     push:
-        tags:
-            - "v*.*.*"
+    release:
+        types:
+            - published
+    # push:
+    #     tags:
+    #         - "v*.*.*"
 env:
     BUILD_TYPE: Release
 
 jobs:
-    build_deb:
+    build_linux:
         name: Building Linux Packages
         runs-on: ${{matrix.os}}
         defaults:
@@ -35,6 +41,38 @@ jobs:
                   cpack --preset ${{matrix.package-type}}-${{matrix.build-variant}}
 
             - name: Upload Linux Package to Release
+              uses: svenstaro/upload-release-action@v2
+              with:
+                  repo_token: ${{ secrets.GITHUB_TOKEN }}
+                  file: ${{ github.workspace }}/build/${{ matrix.build-variant }}/*.${{ matrix.extension }}
+                  file_glob: true
+                  tag: ${{ github.ref }}
+
+    build_windows:
+        name: Building Windows Packages
+        runs-on: ${{matrix.os}}
+        defaults:
+            run:
+                shell: bash
+        strategy:
+            matrix:
+                os: [windows-latest]
+                build-variant: [shared, static]
+                package-type: [nsis]
+                include:
+                    - package-type: nsis
+                      extension: exe
+        steps:
+            - name: Checkout Respond Repository
+              uses: actions/checkout@v6
+            - name: Run CMake
+              run: |
+                  cmake --preset package-${{matrix.build-variant}} && cmake --build --preset package-${{matrix.build-variant}}
+            - name: Run CPack
+              run: |
+                  cpack --preset ${{matrix.package-type}}-${{matrix.build-variant}}
+
+            - name: Upload NSIS Package to Release
               uses: svenstaro/upload-release-action@v2
               with:
                   repo_token: ${{ secrets.GITHUB_TOKEN }}
