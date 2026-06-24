@@ -65,6 +65,8 @@ jobs:
         steps:
             - name: Checkout Respond Repository
               uses: actions/checkout@v6
+            - name: Install NSIS
+              run: choco install -y nsis
             - name: Run CMake
               run: |
                   cmake --preset package-${{matrix.build-variant}} && cmake --build --preset package-${{matrix.build-variant}}
