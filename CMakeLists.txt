@@ -99,7 +99,7 @@ if (RESPOND_CALCULATE_COVERAGE)
 endif()
 
 target_link_libraries(respond_model
-INTERFACE
+PUBLIC
     Eigen3::Eigen
 PRIVATE
     ${private_deps}

@@ -44,7 +44,6 @@ PUBLIC
     respond_model
     spdlog::spdlog
     GTest::gmock_main
-INTERFACE
     Eigen3::Eigen
 )
 
