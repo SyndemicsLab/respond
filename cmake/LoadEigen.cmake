@@ -8,7 +8,7 @@ FetchContent_Declare(
     GIT_TAG "3.4.0"
     GIT_SHALLOW TRUE
     EXCLUDE_FROM_ALL
-    # FIND_PACKAGE_ARGS NAMES Eigen3
+    FIND_PACKAGE_ARGS NAMES Eigen3
 )
 
 # Turn off Eigen Testing and Docs
