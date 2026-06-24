@@ -1,44 +1,70 @@
-message(STATUS "Installing respond version ${RESPOND_VERSION}...")
-
 set(export_dest_dir "${CMAKE_INSTALL_LIBDIR}/respond")
 set(export_cmake_dir "${CMAKE_INSTALL_LIBDIR}/cmake/respond")
-set(version_config_file "${CMAKE_CURRENT_BINARY_DIR}/respondConfigVersion.cmake")
 
 #-------------------------------------------------------------------------------
 # Include files
 #-------------------------------------------------------------------------------
-message("Installing respond to ${CMAKE_INSTALL_FULL_LIBDIR} and ${CMAKE_INSTALL_FULL_INCLUDEDIR}...")
+message(STATUS "Installing respond version ${RESPOND_VERSION} to ${CMAKE_INSTALL_FULL_LIBDIR} and ${CMAKE_INSTALL_FULL_INCLUDEDIR}...")
 
-install(
-    TARGETS respond_model
+install(TARGETS respond_model
     EXPORT respondTargets
-    FILE_SET HEADERS
+    LIBRARY DESTINATION lib
+    ARCHIVE DESTINATION lib
+    RUNTIME DESTINATION bin
+    INCLUDES DESTINATION include
+    FILE_SET HEADERS DESTINATION include
 )
 
-install(
-    EXPORT respondTargets
-    DESTINATION ${export_cmake_dir}
-    NAMESPACE respond::
-)
+# respond_model is the full target and HEADERS is the list of header files
+# It associates the target with the EXPORT definition which is then installed.
+# install(
+#     TARGETS respond_model
+#     EXPORT respondTargets
+#     FILE_SET HEADERS
+# )
+
+# This actually installs the exports to the specified destination and adds the
+# namespace to the targets.
+# install(
+#     EXPORT respondTargets
+#     DESTINATION ${export_cmake_dir}
+#     NAMESPACE respond::
+# )
 
 include(CMakePackageConfigHelpers)
 
+# Setup the Version config file
+write_basic_package_version_file(
+  "${CMAKE_CURRENT_BINARY_DIR}/respond/respondConfigVersion.cmake"
+  VERSION ${RESPOND_VERSION} # Variable set in root CMakeLists.txt
+  COMPATIBILITY AnyNewerVersion
+)
+
+# export the targets to a file and add the prefix
+export(EXPORT respondTargets
+  FILE "${CMAKE_CURRENT_BINARY_DIR}/respond/respondTargets.cmake"
+  NAMESPACE respond::
+)
+
 configure_file(
     "${PROJECT_SOURCE_DIR}/cmake/respondConfig.cmake.in"
-    "${PROJECT_BINARY_DIR}/respondConfig.cmake"
+    "${CMAKE_CURRENT_BINARY_DIR}/respond/respondConfig.cmake"
     @ONLY
 )
-set(project_config "${PROJECT_BINARY_DIR}/respondConfig.cmake")
 
-write_basic_package_version_file(
-  ${version_config_file}
-  COMPATIBILITY ExactVersion
+set(ConfigPackageLocation lib/cmake/respond)
+install(
+    EXPORT respondTargets
+    FILE respondTargets.cmake
+    NAMESPACE respond::
+    DESTINATION ${ConfigPackageLocation}
 )
+
 
 install(
     FILES
-        ${project_config}
-        ${version_config_file}
+        "${CMAKE_CURRENT_BINARY_DIR}/respond/respondConfig.cmake"
+        "${CMAKE_CURRENT_BINARY_DIR}/respond/respondConfigVersion.cmake"
     DESTINATION ${export_cmake_dir}
 )
 

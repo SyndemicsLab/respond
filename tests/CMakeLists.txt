@@ -42,9 +42,10 @@ target_include_directories(respond_tests
 target_link_libraries(respond_tests 
 PUBLIC 
     respond_model
-    Eigen3::Eigen
     spdlog::spdlog
     GTest::gmock_main
+INTERFACE
+    Eigen3::Eigen
 )
 
 gtest_discover_tests(respond_tests
