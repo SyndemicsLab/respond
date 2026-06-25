@@ -4,7 +4,7 @@
 // Created Date: 2026-02-02                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-02-09                                                  //
+// Last Modified: 2026-06-25                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
@@ -40,13 +40,14 @@ public:
     /// transition).
     /// @return The resulting state vector after applying this transition.
     virtual Eigen::VectorXd
-    Execute(const Eigen::VectorXd &s,
+    Execute(const Eigen::Ref<const Eigen::VectorXd> &s,
             std::map<std::string, History> &h) const = 0;
 
     /// @brief Adds a transformation matrix to this transition.
     /// The matrix is stored for use during Execute() calls.
     /// @param m The transition matrix to add (not modified by this transition).
-    virtual void AddTransitionMatrix(const Eigen::MatrixXd &m) = 0;
+    virtual void
+    AddTransitionMatrix(const Eigen::Ref<const Eigen::MatrixXd> &m) = 0;
 
     /// @brief Retrieves the name/type of this transition.
     /// @return The transition's identifier as a string.

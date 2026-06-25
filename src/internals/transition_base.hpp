@@ -4,7 +4,7 @@
 // Created Date: 2026-02-05                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-02-06                                                  //
+// Last Modified: 2026-06-25                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
@@ -24,7 +24,8 @@ public:
     // Add a Transition Matrix to the set. We have no need to edit it once it's
     // been added, just use it. Thus, we don't need full ownership (reference)
     // and can accept the const type.
-    void AddTransitionMatrix(const Eigen::MatrixXd &m) override {
+    void
+    AddTransitionMatrix(const Eigen::Ref<const Eigen::MatrixXd> &m) override {
         _transition_matrices.push_back(m);
     }
     // Get the name of the Transition. No need to edit the object and do not

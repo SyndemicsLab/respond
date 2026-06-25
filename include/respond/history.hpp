@@ -4,7 +4,7 @@
 // Created Date: 2026-02-05                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-05-06                                                  //
+// Last Modified: 2026-06-25                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
@@ -206,7 +206,8 @@ public:
     /// automatic next timestep). If timestep is negative, the next sequential
     /// timestep is used automatically. If timestep already exists, it is
     /// considered invalid but is currently overwritten.
-    void AddState(const Eigen::VectorXd &state, int timestep = -1) {
+    void AddState(const Eigen::Ref<const Eigen::VectorXd> &state,
+                  int timestep = -1) {
         if (timestep < 0) {
             timestep = GetNextTimestep();
         }
@@ -227,13 +228,14 @@ public:
     /// @brief Records a snapshot value at a concrete timestep.
     /// @param state The snapshot value to record.
     /// @param timestep The simulation timestep for this snapshot.
-    void RecordSnapshot(const Eigen::VectorXd &state, int timestep) {
+    void RecordSnapshot(const Eigen::Ref<const Eigen::VectorXd> &state,
+                        int timestep) {
         AddState(state, timestep);
     }
 
     /// @brief Adds a contribution to an accumulated history.
     /// @param state The per-step contribution to accumulate.
-    void AccumulateState(const Eigen::VectorXd &state) {
+    void AccumulateState(const Eigen::Ref<const Eigen::VectorXd> &state) {
         if (_mode != HistoryMode::Accumulated) {
             AddState(state);
             return;

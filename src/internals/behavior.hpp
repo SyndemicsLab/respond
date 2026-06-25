@@ -4,7 +4,7 @@
 // Created Date: 2026-02-05                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-02-06                                                  //
+// Last Modified: 2026-06-25                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
@@ -25,7 +25,7 @@ public:
     // Run the execute function and return the final state. Do not edit the
     // parameter state, but do edit the history provided. Nothing in the
     // Transition object should change.
-    Eigen::VectorXd Execute(const Eigen::VectorXd &s,
+    Eigen::VectorXd Execute(const Eigen::Ref<const Eigen::VectorXd> &s,
                             std::map<std::string, History> &h) const override;
 
     // Clone
