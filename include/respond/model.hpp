@@ -4,7 +4,7 @@
 // Created Date: 2026-02-05                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-02-12                                                  //
+// Last Modified: 2026-06-25                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
@@ -33,7 +33,7 @@ public:
 
     /// @brief Sets the current state of the model.
     /// @param state The state vector to set. A copy is made internally.
-    virtual void SetState(const Eigen::VectorXd &state) = 0;
+    virtual void SetState(const Eigen::Ref<const Eigen::VectorXd> &state) = 0;
 
     /// @brief Retrieves the current state of the model.
     /// @return A copy of the current state vector (limited to observation).

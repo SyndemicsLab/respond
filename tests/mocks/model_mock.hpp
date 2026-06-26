@@ -4,7 +4,7 @@
 // Created Date: 2025-08-01                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-02-12                                                  //
+// Last Modified: 2026-06-25                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025-2026 Syndemics Lab at Boston Medical Center             //
@@ -30,7 +30,8 @@ namespace respond {
 namespace testing {
 class MockModel : public virtual Model {
 public:
-    MOCK_METHOD(void, SetState, (const Eigen::VectorXd &), (override));
+    MOCK_METHOD(void, SetState, (const Eigen::Ref<const Eigen::VectorXd> &),
+                (override));
     MOCK_METHOD(Eigen::VectorXd, GetState, (), (const, override));
     MOCK_METHOD(void, RunTransitions, (), (override));
     MOCK_METHOD(void, AddTransition, (const std::unique_ptr<Transition> &),

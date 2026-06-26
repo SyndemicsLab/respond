@@ -4,7 +4,7 @@
 // Created Date: 2026-02-05                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-05-06                                                  //
+// Last Modified: 2026-06-25                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
@@ -78,7 +78,9 @@ public:
     }
 
     // anticipate making a copy of the vector
-    void SetState(const Eigen::VectorXd &s) override { _state = s; }
+    void SetState(const Eigen::Ref<const Eigen::VectorXd> &s) override {
+        _state = s;
+    }
     // return const & to limit to observation of the state
     Eigen::VectorXd GetState() const override { return _state; }
     // return the transitions

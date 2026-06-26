@@ -4,7 +4,7 @@
 // Created Date: 2025-08-05                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-02-06                                                  //
+// Last Modified: 2026-06-25                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025-2026 Syndemics Lab at Boston Medical Center             //
@@ -27,7 +27,7 @@ namespace respond {
 /// @param N Number of weeks to discount over.
 /// @param isDiscrete Whether the discount is a discrete or continuous discount.
 /// @return A matrix with the discounted data.
-inline Eigen::VectorXd Discount(const Eigen::VectorXd &data,
+inline Eigen::VectorXd Discount(const Eigen::Ref<const Eigen::VectorXd> &data,
                                 double discount_rate, int week,
                                 bool is_discrete = true,
                                 double total_weeks = 52.0) {
@@ -41,8 +41,9 @@ inline Eigen::VectorXd Discount(const Eigen::VectorXd &data,
 /// @param state The state matrix.
 /// @param multiplier The multiplying matrix.
 /// @return state cwise multiplied by the multiplying matrix.
-inline Eigen::VectorXd CwiseProduct(const Eigen::VectorXd &state,
-                                    const Eigen::VectorXd &multiplier) {
+inline Eigen::VectorXd
+CwiseProduct(const Eigen::Ref<const Eigen::VectorXd> &state,
+             const Eigen::Ref<const Eigen::VectorXd> &multiplier) {
     return state.cwiseProduct(multiplier);
 }
 
@@ -50,8 +51,9 @@ inline Eigen::VectorXd CwiseProduct(const Eigen::VectorXd &state,
 /// @param state The state matrix.
 /// @param multiplier The multiplying matrix.
 /// @return state cwise multiplied by the multiplying matrix.
-inline Eigen::VectorXd CwiseMin(const Eigen::VectorXd &state,
-                                const Eigen::VectorXd &multiplier) {
+inline Eigen::VectorXd
+CwiseMin(const Eigen::Ref<const Eigen::VectorXd> &state,
+         const Eigen::Ref<const Eigen::VectorXd> &multiplier) {
     return state.cwiseMin(multiplier);
 }
 

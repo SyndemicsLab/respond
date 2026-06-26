@@ -4,7 +4,7 @@
 // Created Date: 2026-02-05                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-02-05                                                  //
+// Last Modified: 2026-06-25                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
@@ -19,8 +19,9 @@
 #include <spdlog/spdlog.h>
 
 namespace respond {
-Eigen::VectorXd Behavior::Execute(const Eigen::VectorXd &state,
-                                  std::map<std::string, History> &h) const {
+Eigen::VectorXd
+Behavior::Execute(const Eigen::Ref<const Eigen::VectorXd> &state,
+                  std::map<std::string, History> &h) const {
     if (GetTransitionMatrices().size() != 1) {
         std::string error_msg =
             "Behavior error: Expected 1 transition matrix, got " +
