@@ -5,8 +5,8 @@ var classrespond_1_1History =
     [ "~History", "d8/dd8/classrespond_1_1History.html#a455d1420dd82d8a95f3d8616c52fc761", null ],
     [ "History", "d8/dd8/classrespond_1_1History.html#a65d97091d6049b40eea5964c68df7e83", null ],
     [ "History", "d8/dd8/classrespond_1_1History.html#a9bcd9640574ea6bb0a6318d7ec4f03c3", null ],
-    [ "AccumulateState", "d8/dd8/classrespond_1_1History.html#ac131e8cbeb8d04265b19625342eebc5d", null ],
-    [ "AddState", "d8/dd8/classrespond_1_1History.html#a7b3fb643ecadc65fd545a16313a6b58c", null ],
+    [ "AccumulateState", "d8/dd8/classrespond_1_1History.html#aae54ef0e6fcab87ed293bb50a446681d", null ],
+    [ "AddState", "d8/dd8/classrespond_1_1History.html#add2c6b95147736c3b047edeabbfa70b2", null ],
     [ "Clear", "d8/dd8/classrespond_1_1History.html#a5d975ca9b2bfcd0bd2b48e352e1e3588", null ],
     [ "FlushPendingState", "d8/dd8/classrespond_1_1History.html#a9c57e6669f5db486fa60f1a01dfe7a9b", null ],
     [ "GetHistoryMode", "d8/dd8/classrespond_1_1History.html#aa3837362bd5d6bd07b41599a24f86014", null ],
@@ -23,5 +23,5 @@ var classrespond_1_1History =
     [ "operator=", "d8/dd8/classrespond_1_1History.html#a331d9fcda76d63fead3be11d13951519", null ],
     [ "operator=", "d8/dd8/classrespond_1_1History.html#a3cd48b0bf142df0f704b21c097a5e1fe", null ],
     [ "operator==", "d8/dd8/classrespond_1_1History.html#aef7ac5e06938f0f3b152dec7fd1c49e1", null ],
-    [ "RecordSnapshot", "d8/dd8/classrespond_1_1History.html#adb22eb2432f2b4137c20f9d72bb923d8", null ]
+    [ "RecordSnapshot", "d8/dd8/classrespond_1_1History.html#aab3fc1c7566987ffac1d63e5be1b7a79", null ]
 ];

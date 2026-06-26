@@ -135,7 +135,7 @@ $(document).ready(function(){initNavTree('d4/de1/history_8hpp_source.html','../.
 <div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="comment">// Created Date: 2026-02-05                                                   //</span></div>
 <div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="comment">// Author: Matthew Carroll                                                    //</span></div>
 <div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="comment">// -----                                                                      //</span></div>
-<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="comment">// Last Modified: 2026-05-06                                                  //</span></div>
+<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="comment">// Last Modified: 2026-06-25                                                  //</span></div>
 <div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="comment">// Modified By: Matthew Carroll                                               //</span></div>
 <div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span><span class="comment">// -----                                                                      //</span></div>
 <div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span><span class="comment">// Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //</span></div>
@@ -278,85 +278,87 @@ $(document).ready(function(){initNavTree('d4/de1/history_8hpp_source.html','../.
 <div class="line"><a id="l00200" name="l00200"></a><span class="lineno">  200</span>        <span class="keywordflow">return</span> ret;</div>
 <div class="line"><a id="l00201" name="l00201"></a><span class="lineno">  201</span>    }</div>
 <div class="line"><a id="l00202" name="l00202"></a><span class="lineno">  202</span> </div>
-<div class="line"><a id="l00209" name="l00209"></a><span class="lineno"><a class="line" href="../../d8/dd8/classrespond_1_1History.html#a7b3fb643ecadc65fd545a16313a6b58c">  209</a></span>    <span class="keywordtype">void</span> <a class="code hl_function" href="../../d8/dd8/classrespond_1_1History.html#a7b3fb643ecadc65fd545a16313a6b58c">AddState</a>(<span class="keyword">const</span> Eigen::VectorXd &amp;state, <span class="keywordtype">int</span> timestep = -1) {</div>
-<div class="line"><a id="l00210" name="l00210"></a><span class="lineno">  210</span>        <span class="keywordflow">if</span> (timestep &lt; 0) {</div>
-<div class="line"><a id="l00211" name="l00211"></a><span class="lineno">  211</span>            timestep = GetNextTimestep();</div>
-<div class="line"><a id="l00212" name="l00212"></a><span class="lineno">  212</span>        }</div>
-<div class="line"><a id="l00213" name="l00213"></a><span class="lineno">  213</span> </div>
-<div class="line"><a id="l00214" name="l00214"></a><span class="lineno">  214</span>        <span class="keyword">const</span> <span class="keyword">auto</span> existing =</div>
-<div class="line"><a id="l00215" name="l00215"></a><span class="lineno">  215</span>            std::find(_timesteps.begin(), _timesteps.end(), timestep);</div>
-<div class="line"><a id="l00216" name="l00216"></a><span class="lineno">  216</span>        <span class="keywordflow">if</span> (existing != _timesteps.end()) {</div>
-<div class="line"><a id="l00217" name="l00217"></a><span class="lineno">  217</span>            <span class="keyword">const</span> <span class="keyword">auto</span> index =</div>
-<div class="line"><a id="l00218" name="l00218"></a><span class="lineno">  218</span>                <span class="keyword">static_cast&lt;</span><span class="keywordtype">size_t</span><span class="keyword">&gt;</span>(existing - _timesteps.begin());</div>
-<div class="line"><a id="l00219" name="l00219"></a><span class="lineno">  219</span>            _states[index] = state;</div>
-<div class="line"><a id="l00220" name="l00220"></a><span class="lineno">  220</span>            <span class="keywordflow">return</span>;</div>
-<div class="line"><a id="l00221" name="l00221"></a><span class="lineno">  221</span>        }</div>
-<div class="line"><a id="l00222" name="l00222"></a><span class="lineno">  222</span> </div>
-<div class="line"><a id="l00223" name="l00223"></a><span class="lineno">  223</span>        _timesteps.push_back(timestep);</div>
-<div class="line"><a id="l00224" name="l00224"></a><span class="lineno">  224</span>        _states.push_back(state);</div>
-<div class="line"><a id="l00225" name="l00225"></a><span class="lineno">  225</span>    }</div>
-<div class="line"><a id="l00226" name="l00226"></a><span class="lineno">  226</span> </div>
-<div class="line"><a id="l00230" name="l00230"></a><span class="lineno"><a class="line" href="../../d8/dd8/classrespond_1_1History.html#adb22eb2432f2b4137c20f9d72bb923d8">  230</a></span>    <span class="keywordtype">void</span> <a class="code hl_function" href="../../d8/dd8/classrespond_1_1History.html#adb22eb2432f2b4137c20f9d72bb923d8">RecordSnapshot</a>(<span class="keyword">const</span> Eigen::VectorXd &amp;state, <span class="keywordtype">int</span> timestep) {</div>
-<div class="line"><a id="l00231" name="l00231"></a><span class="lineno">  231</span>        <a class="code hl_function" href="../../d8/dd8/classrespond_1_1History.html#a7b3fb643ecadc65fd545a16313a6b58c">AddState</a>(state, timestep);</div>
-<div class="line"><a id="l00232" name="l00232"></a><span class="lineno">  232</span>    }</div>
-<div class="line"><a id="l00233" name="l00233"></a><span class="lineno">  233</span> </div>
-<div class="line"><a id="l00236" name="l00236"></a><span class="lineno"><a class="line" href="../../d8/dd8/classrespond_1_1History.html#ac131e8cbeb8d04265b19625342eebc5d">  236</a></span>    <span class="keywordtype">void</span> <a class="code hl_function" href="../../d8/dd8/classrespond_1_1History.html#ac131e8cbeb8d04265b19625342eebc5d">AccumulateState</a>(<span class="keyword">const</span> Eigen::VectorXd &amp;state) {</div>
-<div class="line"><a id="l00237" name="l00237"></a><span class="lineno">  237</span>        <span class="keywordflow">if</span> (_mode != HistoryMode::Accumulated) {</div>
-<div class="line"><a id="l00238" name="l00238"></a><span class="lineno">  238</span>            <a class="code hl_function" href="../../d8/dd8/classrespond_1_1History.html#a7b3fb643ecadc65fd545a16313a6b58c">AddState</a>(state);</div>
-<div class="line"><a id="l00239" name="l00239"></a><span class="lineno">  239</span>            <span class="keywordflow">return</span>;</div>
-<div class="line"><a id="l00240" name="l00240"></a><span class="lineno">  240</span>        }</div>
-<div class="line"><a id="l00241" name="l00241"></a><span class="lineno">  241</span> </div>
-<div class="line"><a id="l00242" name="l00242"></a><span class="lineno">  242</span>        <span class="keywordflow">if</span> (_pending_state.size() == 0) {</div>
-<div class="line"><a id="l00243" name="l00243"></a><span class="lineno">  243</span>            _pending_state = state;</div>
-<div class="line"><a id="l00244" name="l00244"></a><span class="lineno">  244</span>            <span class="keywordflow">return</span>;</div>
-<div class="line"><a id="l00245" name="l00245"></a><span class="lineno">  245</span>        }</div>
-<div class="line"><a id="l00246" name="l00246"></a><span class="lineno">  246</span>        _pending_state += state;</div>
-<div class="line"><a id="l00247" name="l00247"></a><span class="lineno">  247</span>    }</div>
-<div class="line"><a id="l00248" name="l00248"></a><span class="lineno">  248</span> </div>
-<div class="line"><a id="l00252" name="l00252"></a><span class="lineno"><a class="line" href="../../d8/dd8/classrespond_1_1History.html#a9c57e6669f5db486fa60f1a01dfe7a9b">  252</a></span>    <span class="keywordtype">void</span> <a class="code hl_function" href="../../d8/dd8/classrespond_1_1History.html#a9c57e6669f5db486fa60f1a01dfe7a9b">FlushPendingState</a>(<span class="keywordtype">int</span> timestep, Eigen::Index state_size) {</div>
-<div class="line"><a id="l00253" name="l00253"></a><span class="lineno">  253</span>        <span class="keywordflow">if</span> (_mode != HistoryMode::Accumulated) {</div>
-<div class="line"><a id="l00254" name="l00254"></a><span class="lineno">  254</span>            <span class="keywordflow">return</span>;</div>
-<div class="line"><a id="l00255" name="l00255"></a><span class="lineno">  255</span>        }</div>
-<div class="line"><a id="l00256" name="l00256"></a><span class="lineno">  256</span> </div>
-<div class="line"><a id="l00257" name="l00257"></a><span class="lineno">  257</span>        Eigen::VectorXd value;</div>
-<div class="line"><a id="l00258" name="l00258"></a><span class="lineno">  258</span>        <span class="keywordflow">if</span> (_pending_state.size() &gt; 0) {</div>
-<div class="line"><a id="l00259" name="l00259"></a><span class="lineno">  259</span>            value = _pending_state;</div>
-<div class="line"><a id="l00260" name="l00260"></a><span class="lineno">  260</span>        } <span class="keywordflow">else</span> {</div>
-<div class="line"><a id="l00261" name="l00261"></a><span class="lineno">  261</span>            value = Eigen::VectorXd::Zero(state_size);</div>
-<div class="line"><a id="l00262" name="l00262"></a><span class="lineno">  262</span>        }</div>
-<div class="line"><a id="l00263" name="l00263"></a><span class="lineno">  263</span> </div>
-<div class="line"><a id="l00264" name="l00264"></a><span class="lineno">  264</span>        <a class="code hl_function" href="../../d8/dd8/classrespond_1_1History.html#a7b3fb643ecadc65fd545a16313a6b58c">AddState</a>(value, timestep);</div>
-<div class="line"><a id="l00265" name="l00265"></a><span class="lineno">  265</span>        _pending_state.resize(0);</div>
-<div class="line"><a id="l00266" name="l00266"></a><span class="lineno">  266</span>    }</div>
-<div class="line"><a id="l00267" name="l00267"></a><span class="lineno">  267</span> </div>
-<div class="line"><a id="l00269" name="l00269"></a><span class="lineno"><a class="line" href="../../d8/dd8/classrespond_1_1History.html#a5d975ca9b2bfcd0bd2b48e352e1e3588">  269</a></span>    <span class="keywordtype">void</span> <a class="code hl_function" href="../../d8/dd8/classrespond_1_1History.html#a5d975ca9b2bfcd0bd2b48e352e1e3588">Clear</a>() {</div>
-<div class="line"><a id="l00270" name="l00270"></a><span class="lineno">  270</span>        _timesteps.clear();</div>
-<div class="line"><a id="l00271" name="l00271"></a><span class="lineno">  271</span>        _states.clear();</div>
-<div class="line"><a id="l00272" name="l00272"></a><span class="lineno">  272</span>        _pending_state.resize(0);</div>
-<div class="line"><a id="l00273" name="l00273"></a><span class="lineno">  273</span>    }</div>
-<div class="line"><a id="l00274" name="l00274"></a><span class="lineno">  274</span> </div>
-<div class="line"><a id="l00275" name="l00275"></a><span class="lineno">  275</span><span class="keyword">private</span>:</div>
-<div class="line"><a id="l00277" name="l00277"></a><span class="lineno">  277</span>    std::string _log_name;</div>
-<div class="line"><a id="l00279" name="l00279"></a><span class="lineno">  279</span>    std::string _name;</div>
-<div class="line"><a id="l00281" name="l00281"></a><span class="lineno">  281</span>    HistoryMode _mode;</div>
-<div class="line"><a id="l00283" name="l00283"></a><span class="lineno">  283</span>    std::vector&lt;int&gt; _timesteps;</div>
-<div class="line"><a id="l00285" name="l00285"></a><span class="lineno">  285</span>    std::vector&lt;Eigen::VectorXd&gt; _states;</div>
-<div class="line"><a id="l00287" name="l00287"></a><span class="lineno">  287</span>    Eigen::VectorXd _pending_state;</div>
-<div class="line"><a id="l00288" name="l00288"></a><span class="lineno">  288</span> </div>
-<div class="line"><a id="l00292" name="l00292"></a><span class="lineno">  292</span>    <span class="keywordtype">int</span> GetNextTimestep() {</div>
-<div class="line"><a id="l00293" name="l00293"></a><span class="lineno">  293</span>        <span class="keywordflow">if</span> (_timesteps.empty()) {</div>
-<div class="line"><a id="l00294" name="l00294"></a><span class="lineno">  294</span>            <span class="keywordflow">return</span> 0;</div>
-<div class="line"><a id="l00295" name="l00295"></a><span class="lineno">  295</span>        }</div>
-<div class="line"><a id="l00296" name="l00296"></a><span class="lineno">  296</span>        <span class="keywordflow">return</span> _timesteps.back() + 1;</div>
-<div class="line"><a id="l00297" name="l00297"></a><span class="lineno">  297</span>    }</div>
-<div class="line"><a id="l00298" name="l00298"></a><span class="lineno">  298</span> </div>
-<div class="line"><a id="l00302" name="l00302"></a><span class="lineno">  302</span>    Eigen::VectorXd GetZeroVector(<span class="keyword">const</span> <span class="keywordtype">int</span> &amp;size)<span class="keyword"> const </span>{</div>
-<div class="line"><a id="l00303" name="l00303"></a><span class="lineno">  303</span>        <span class="keywordflow">return</span> Eigen::VectorXd::Zero(size);</div>
-<div class="line"><a id="l00304" name="l00304"></a><span class="lineno">  304</span>    }</div>
-<div class="line"><a id="l00305" name="l00305"></a><span class="lineno">  305</span>};</div>
-<div class="line"><a id="l00306" name="l00306"></a><span class="lineno">  306</span>} <span class="comment">// namespace respond</span></div>
-<div class="line"><a id="l00307" name="l00307"></a><span class="lineno">  307</span> </div>
-<div class="line"><a id="l00308" name="l00308"></a><span class="lineno">  308</span><span class="preprocessor">#endif </span><span class="comment">// RESPOND_HISTORY_HPP_</span></div>
+<div class="line"><a id="l00209" name="l00209"></a><span class="lineno"><a class="line" href="../../d8/dd8/classrespond_1_1History.html#add2c6b95147736c3b047edeabbfa70b2">  209</a></span>    <span class="keywordtype">void</span> <a class="code hl_function" href="../../d8/dd8/classrespond_1_1History.html#add2c6b95147736c3b047edeabbfa70b2">AddState</a>(<span class="keyword">const</span> Eigen::Ref&lt;const Eigen::VectorXd&gt; &amp;state,</div>
+<div class="line"><a id="l00210" name="l00210"></a><span class="lineno">  210</span>                  <span class="keywordtype">int</span> timestep = -1) {</div>
+<div class="line"><a id="l00211" name="l00211"></a><span class="lineno">  211</span>        <span class="keywordflow">if</span> (timestep &lt; 0) {</div>
+<div class="line"><a id="l00212" name="l00212"></a><span class="lineno">  212</span>            timestep = GetNextTimestep();</div>
+<div class="line"><a id="l00213" name="l00213"></a><span class="lineno">  213</span>        }</div>
+<div class="line"><a id="l00214" name="l00214"></a><span class="lineno">  214</span> </div>
+<div class="line"><a id="l00215" name="l00215"></a><span class="lineno">  215</span>        <span class="keyword">const</span> <span class="keyword">auto</span> existing =</div>
+<div class="line"><a id="l00216" name="l00216"></a><span class="lineno">  216</span>            std::find(_timesteps.begin(), _timesteps.end(), timestep);</div>
+<div class="line"><a id="l00217" name="l00217"></a><span class="lineno">  217</span>        <span class="keywordflow">if</span> (existing != _timesteps.end()) {</div>
+<div class="line"><a id="l00218" name="l00218"></a><span class="lineno">  218</span>            <span class="keyword">const</span> <span class="keyword">auto</span> index =</div>
+<div class="line"><a id="l00219" name="l00219"></a><span class="lineno">  219</span>                <span class="keyword">static_cast&lt;</span><span class="keywordtype">size_t</span><span class="keyword">&gt;</span>(existing - _timesteps.begin());</div>
+<div class="line"><a id="l00220" name="l00220"></a><span class="lineno">  220</span>            _states[index] = state;</div>
+<div class="line"><a id="l00221" name="l00221"></a><span class="lineno">  221</span>            <span class="keywordflow">return</span>;</div>
+<div class="line"><a id="l00222" name="l00222"></a><span class="lineno">  222</span>        }</div>
+<div class="line"><a id="l00223" name="l00223"></a><span class="lineno">  223</span> </div>
+<div class="line"><a id="l00224" name="l00224"></a><span class="lineno">  224</span>        _timesteps.push_back(timestep);</div>
+<div class="line"><a id="l00225" name="l00225"></a><span class="lineno">  225</span>        _states.push_back(state);</div>
+<div class="line"><a id="l00226" name="l00226"></a><span class="lineno">  226</span>    }</div>
+<div class="line"><a id="l00227" name="l00227"></a><span class="lineno">  227</span> </div>
+<div class="line"><a id="l00231" name="l00231"></a><span class="lineno"><a class="line" href="../../d8/dd8/classrespond_1_1History.html#aab3fc1c7566987ffac1d63e5be1b7a79">  231</a></span>    <span class="keywordtype">void</span> <a class="code hl_function" href="../../d8/dd8/classrespond_1_1History.html#aab3fc1c7566987ffac1d63e5be1b7a79">RecordSnapshot</a>(<span class="keyword">const</span> Eigen::Ref&lt;const Eigen::VectorXd&gt; &amp;state,</div>
+<div class="line"><a id="l00232" name="l00232"></a><span class="lineno">  232</span>                        <span class="keywordtype">int</span> timestep) {</div>
+<div class="line"><a id="l00233" name="l00233"></a><span class="lineno">  233</span>        <a class="code hl_function" href="../../d8/dd8/classrespond_1_1History.html#add2c6b95147736c3b047edeabbfa70b2">AddState</a>(state, timestep);</div>
+<div class="line"><a id="l00234" name="l00234"></a><span class="lineno">  234</span>    }</div>
+<div class="line"><a id="l00235" name="l00235"></a><span class="lineno">  235</span> </div>
+<div class="line"><a id="l00238" name="l00238"></a><span class="lineno"><a class="line" href="../../d8/dd8/classrespond_1_1History.html#aae54ef0e6fcab87ed293bb50a446681d">  238</a></span>    <span class="keywordtype">void</span> <a class="code hl_function" href="../../d8/dd8/classrespond_1_1History.html#aae54ef0e6fcab87ed293bb50a446681d">AccumulateState</a>(<span class="keyword">const</span> Eigen::Ref&lt;const Eigen::VectorXd&gt; &amp;state) {</div>
+<div class="line"><a id="l00239" name="l00239"></a><span class="lineno">  239</span>        <span class="keywordflow">if</span> (_mode != HistoryMode::Accumulated) {</div>
+<div class="line"><a id="l00240" name="l00240"></a><span class="lineno">  240</span>            <a class="code hl_function" href="../../d8/dd8/classrespond_1_1History.html#add2c6b95147736c3b047edeabbfa70b2">AddState</a>(state);</div>
+<div class="line"><a id="l00241" name="l00241"></a><span class="lineno">  241</span>            <span class="keywordflow">return</span>;</div>
+<div class="line"><a id="l00242" name="l00242"></a><span class="lineno">  242</span>        }</div>
+<div class="line"><a id="l00243" name="l00243"></a><span class="lineno">  243</span> </div>
+<div class="line"><a id="l00244" name="l00244"></a><span class="lineno">  244</span>        <span class="keywordflow">if</span> (_pending_state.size() == 0) {</div>
+<div class="line"><a id="l00245" name="l00245"></a><span class="lineno">  245</span>            _pending_state = state;</div>
+<div class="line"><a id="l00246" name="l00246"></a><span class="lineno">  246</span>            <span class="keywordflow">return</span>;</div>
+<div class="line"><a id="l00247" name="l00247"></a><span class="lineno">  247</span>        }</div>
+<div class="line"><a id="l00248" name="l00248"></a><span class="lineno">  248</span>        _pending_state += state;</div>
+<div class="line"><a id="l00249" name="l00249"></a><span class="lineno">  249</span>    }</div>
+<div class="line"><a id="l00250" name="l00250"></a><span class="lineno">  250</span> </div>
+<div class="line"><a id="l00254" name="l00254"></a><span class="lineno"><a class="line" href="../../d8/dd8/classrespond_1_1History.html#a9c57e6669f5db486fa60f1a01dfe7a9b">  254</a></span>    <span class="keywordtype">void</span> <a class="code hl_function" href="../../d8/dd8/classrespond_1_1History.html#a9c57e6669f5db486fa60f1a01dfe7a9b">FlushPendingState</a>(<span class="keywordtype">int</span> timestep, Eigen::Index state_size) {</div>
+<div class="line"><a id="l00255" name="l00255"></a><span class="lineno">  255</span>        <span class="keywordflow">if</span> (_mode != HistoryMode::Accumulated) {</div>
+<div class="line"><a id="l00256" name="l00256"></a><span class="lineno">  256</span>            <span class="keywordflow">return</span>;</div>
+<div class="line"><a id="l00257" name="l00257"></a><span class="lineno">  257</span>        }</div>
+<div class="line"><a id="l00258" name="l00258"></a><span class="lineno">  258</span> </div>
+<div class="line"><a id="l00259" name="l00259"></a><span class="lineno">  259</span>        Eigen::VectorXd value;</div>
+<div class="line"><a id="l00260" name="l00260"></a><span class="lineno">  260</span>        <span class="keywordflow">if</span> (_pending_state.size() &gt; 0) {</div>
+<div class="line"><a id="l00261" name="l00261"></a><span class="lineno">  261</span>            value = _pending_state;</div>
+<div class="line"><a id="l00262" name="l00262"></a><span class="lineno">  262</span>        } <span class="keywordflow">else</span> {</div>
+<div class="line"><a id="l00263" name="l00263"></a><span class="lineno">  263</span>            value = Eigen::VectorXd::Zero(state_size);</div>
+<div class="line"><a id="l00264" name="l00264"></a><span class="lineno">  264</span>        }</div>
+<div class="line"><a id="l00265" name="l00265"></a><span class="lineno">  265</span> </div>
+<div class="line"><a id="l00266" name="l00266"></a><span class="lineno">  266</span>        <a class="code hl_function" href="../../d8/dd8/classrespond_1_1History.html#add2c6b95147736c3b047edeabbfa70b2">AddState</a>(value, timestep);</div>
+<div class="line"><a id="l00267" name="l00267"></a><span class="lineno">  267</span>        _pending_state.resize(0);</div>
+<div class="line"><a id="l00268" name="l00268"></a><span class="lineno">  268</span>    }</div>
+<div class="line"><a id="l00269" name="l00269"></a><span class="lineno">  269</span> </div>
+<div class="line"><a id="l00271" name="l00271"></a><span class="lineno"><a class="line" href="../../d8/dd8/classrespond_1_1History.html#a5d975ca9b2bfcd0bd2b48e352e1e3588">  271</a></span>    <span class="keywordtype">void</span> <a class="code hl_function" href="../../d8/dd8/classrespond_1_1History.html#a5d975ca9b2bfcd0bd2b48e352e1e3588">Clear</a>() {</div>
+<div class="line"><a id="l00272" name="l00272"></a><span class="lineno">  272</span>        _timesteps.clear();</div>
+<div class="line"><a id="l00273" name="l00273"></a><span class="lineno">  273</span>        _states.clear();</div>
+<div class="line"><a id="l00274" name="l00274"></a><span class="lineno">  274</span>        _pending_state.resize(0);</div>
+<div class="line"><a id="l00275" name="l00275"></a><span class="lineno">  275</span>    }</div>
+<div class="line"><a id="l00276" name="l00276"></a><span class="lineno">  276</span> </div>
+<div class="line"><a id="l00277" name="l00277"></a><span class="lineno">  277</span><span class="keyword">private</span>:</div>
+<div class="line"><a id="l00279" name="l00279"></a><span class="lineno">  279</span>    std::string _log_name;</div>
+<div class="line"><a id="l00281" name="l00281"></a><span class="lineno">  281</span>    std::string _name;</div>
+<div class="line"><a id="l00283" name="l00283"></a><span class="lineno">  283</span>    HistoryMode _mode;</div>
+<div class="line"><a id="l00285" name="l00285"></a><span class="lineno">  285</span>    std::vector&lt;int&gt; _timesteps;</div>
+<div class="line"><a id="l00287" name="l00287"></a><span class="lineno">  287</span>    std::vector&lt;Eigen::VectorXd&gt; _states;</div>
+<div class="line"><a id="l00289" name="l00289"></a><span class="lineno">  289</span>    Eigen::VectorXd _pending_state;</div>
+<div class="line"><a id="l00290" name="l00290"></a><span class="lineno">  290</span> </div>
+<div class="line"><a id="l00294" name="l00294"></a><span class="lineno">  294</span>    <span class="keywordtype">int</span> GetNextTimestep() {</div>
+<div class="line"><a id="l00295" name="l00295"></a><span class="lineno">  295</span>        <span class="keywordflow">if</span> (_timesteps.empty()) {</div>
+<div class="line"><a id="l00296" name="l00296"></a><span class="lineno">  296</span>            <span class="keywordflow">return</span> 0;</div>
+<div class="line"><a id="l00297" name="l00297"></a><span class="lineno">  297</span>        }</div>
+<div class="line"><a id="l00298" name="l00298"></a><span class="lineno">  298</span>        <span class="keywordflow">return</span> _timesteps.back() + 1;</div>
+<div class="line"><a id="l00299" name="l00299"></a><span class="lineno">  299</span>    }</div>
+<div class="line"><a id="l00300" name="l00300"></a><span class="lineno">  300</span> </div>
+<div class="line"><a id="l00304" name="l00304"></a><span class="lineno">  304</span>    Eigen::VectorXd GetZeroVector(<span class="keyword">const</span> <span class="keywordtype">int</span> &amp;size)<span class="keyword"> const </span>{</div>
+<div class="line"><a id="l00305" name="l00305"></a><span class="lineno">  305</span>        <span class="keywordflow">return</span> Eigen::VectorXd::Zero(size);</div>
+<div class="line"><a id="l00306" name="l00306"></a><span class="lineno">  306</span>    }</div>
+<div class="line"><a id="l00307" name="l00307"></a><span class="lineno">  307</span>};</div>
+<div class="line"><a id="l00308" name="l00308"></a><span class="lineno">  308</span>} <span class="comment">// namespace respond</span></div>
+<div class="line"><a id="l00309" name="l00309"></a><span class="lineno">  309</span> </div>
+<div class="line"><a id="l00310" name="l00310"></a><span class="lineno">  310</span><span class="preprocessor">#endif </span><span class="comment">// RESPOND_HISTORY_HPP_</span></div>
 <div class="ttc" id="aclassrespond_1_1History_html"><div class="ttname"><a href="../../d8/dd8/classrespond_1_1History.html">respond::History</a></div><div class="ttdoc">Tracks and manages state vector history over time. History records state snapshots at discrete timest...</div><div class="ttdef"><b>Definition:</b> history.hpp:37</div></div>
 <div class="ttc" id="aclassrespond_1_1History_html_a02bca6664a793290af860e1764aee660"><div class="ttname"><a href="../../d8/dd8/classrespond_1_1History.html#a02bca6664a793290af860e1764aee660">respond::History::GetHistoryName</a></div><div class="ttdeci">std::string GetHistoryName() const</div><div class="ttdoc">Retrieves the identifier name of this history.</div><div class="ttdef"><b>Definition:</b> history.hpp:169</div></div>
 <div class="ttc" id="aclassrespond_1_1History_html_a27d48be577d256c60c9da085d9f339a4"><div class="ttname"><a href="../../d8/dd8/classrespond_1_1History.html#a27d48be577d256c60c9da085d9f339a4">respond::History::GetLogName</a></div><div class="ttdeci">std::string GetLogName() const</div><div class="ttdoc">Retrieves the logger name for this history.</div><div class="ttdef"><b>Definition:</b> history.hpp:173</div></div>
@@ -366,19 +368,19 @@ $(document).ready(function(){initNavTree('d4/de1/history_8hpp_source.html','../.
 <div class="ttc" id="aclassrespond_1_1History_html_a3cd48b0bf142df0f704b21c097a5e1fe"><div class="ttname"><a href="../../d8/dd8/classrespond_1_1History.html#a3cd48b0bf142df0f704b21c097a5e1fe">respond::History::operator=</a></div><div class="ttdeci">History &amp; operator=(History &amp;&amp;other) noexcept</div><div class="ttdoc">Move assignment operator implementing the Rule of Five.</div><div class="ttdef"><b>Definition:</b> history.hpp:98</div></div>
 <div class="ttc" id="aclassrespond_1_1History_html_a3e048dc2dc530ea0340b41ad1caf3f64"><div class="ttname"><a href="../../d8/dd8/classrespond_1_1History.html#a3e048dc2dc530ea0340b41ad1caf3f64">respond::History::History</a></div><div class="ttdeci">History(const std::string &amp;name=&quot;state&quot;, const std::string &amp;log_name=&quot;console&quot;)</div><div class="ttdoc">Constructs a History tracker.</div><div class="ttdef"><b>Definition:</b> history.hpp:43</div></div>
 <div class="ttc" id="aclassrespond_1_1History_html_a455d1420dd82d8a95f3d8616c52fc761"><div class="ttname"><a href="../../d8/dd8/classrespond_1_1History.html#a455d1420dd82d8a95f3d8616c52fc761">respond::History::~History</a></div><div class="ttdeci">~History()=default</div><div class="ttdoc">Destructor (default).</div></div>
-<div class="ttc" id="aclassrespond_1_1History_html_a5d975ca9b2bfcd0bd2b48e352e1e3588"><div class="ttname"><a href="../../d8/dd8/classrespond_1_1History.html#a5d975ca9b2bfcd0bd2b48e352e1e3588">respond::History::Clear</a></div><div class="ttdeci">void Clear()</div><div class="ttdoc">Clears all recorded state history.</div><div class="ttdef"><b>Definition:</b> history.hpp:269</div></div>
+<div class="ttc" id="aclassrespond_1_1History_html_a5d975ca9b2bfcd0bd2b48e352e1e3588"><div class="ttname"><a href="../../d8/dd8/classrespond_1_1History.html#a5d975ca9b2bfcd0bd2b48e352e1e3588">respond::History::Clear</a></div><div class="ttdeci">void Clear()</div><div class="ttdoc">Clears all recorded state history.</div><div class="ttdef"><b>Definition:</b> history.hpp:271</div></div>
 <div class="ttc" id="aclassrespond_1_1History_html_a65d97091d6049b40eea5964c68df7e83"><div class="ttname"><a href="../../d8/dd8/classrespond_1_1History.html#a65d97091d6049b40eea5964c68df7e83">respond::History::History</a></div><div class="ttdeci">History(const History &amp;other)</div><div class="ttdoc">Copy constructor implementing the Rule of Five. Creates an independent copy of the history state and ...</div><div class="ttdef"><b>Definition:</b> history.hpp:59</div></div>
 <div class="ttc" id="aclassrespond_1_1History_html_a6948e3842315d84afc8a7c091169d70b"><div class="ttname"><a href="../../d8/dd8/classrespond_1_1History.html#a6948e3842315d84afc8a7c091169d70b">respond::History::GetLatestRecordedTimestep</a></div><div class="ttdeci">int GetLatestRecordedTimestep() const</div><div class="ttdoc">Retrieves the latest recorded timestep.</div><div class="ttdef"><b>Definition:</b> history.hpp:160</div></div>
 <div class="ttc" id="aclassrespond_1_1History_html_a77b38948e81243f26ff84f2fbf7c9b6d"><div class="ttname"><a href="../../d8/dd8/classrespond_1_1History.html#a77b38948e81243f26ff84f2fbf7c9b6d">respond::History::GetStateMap</a></div><div class="ttdeci">std::map&lt; int, Eigen::VectorXd &gt; GetStateMap() const</div><div class="ttdoc">Retrieves the complete state map (timestep -&gt; state vector).</div><div class="ttdef"><b>Definition:</b> history.hpp:128</div></div>
-<div class="ttc" id="aclassrespond_1_1History_html_a7b3fb643ecadc65fd545a16313a6b58c"><div class="ttname"><a href="../../d8/dd8/classrespond_1_1History.html#a7b3fb643ecadc65fd545a16313a6b58c">respond::History::AddState</a></div><div class="ttdeci">void AddState(const Eigen::VectorXd &amp;state, int timestep=-1)</div><div class="ttdoc">Records a state vector at a specific or automatic timestep.</div><div class="ttdef"><b>Definition:</b> history.hpp:209</div></div>
 <div class="ttc" id="aclassrespond_1_1History_html_a965303b8bb23d2b03132ecc5d1c670d3"><div class="ttname"><a href="../../d8/dd8/classrespond_1_1History.html#a965303b8bb23d2b03132ecc5d1c670d3">respond::History::GetStateAsVector</a></div><div class="ttdeci">std::vector&lt; Eigen::VectorXd &gt; GetStateAsVector() const</div><div class="ttdoc">Converts the sparse history map to a contiguous vector of states. Gaps in timesteps are filled with z...</div><div class="ttdef"><b>Definition:</b> history.hpp:179</div></div>
 <div class="ttc" id="aclassrespond_1_1History_html_a9a5fc6309f5f16026af9fa478907c9ea"><div class="ttname"><a href="../../d8/dd8/classrespond_1_1History.html#a9a5fc6309f5f16026af9fa478907c9ea">respond::History::operator!=</a></div><div class="ttdeci">bool operator!=(const History &amp;other) const</div><div class="ttdoc">Inequality comparison operator.</div><div class="ttdef"><b>Definition:</b> history.hpp:124</div></div>
 <div class="ttc" id="aclassrespond_1_1History_html_a9bcd9640574ea6bb0a6318d7ec4f03c3"><div class="ttname"><a href="../../d8/dd8/classrespond_1_1History.html#a9bcd9640574ea6bb0a6318d7ec4f03c3">respond::History::History</a></div><div class="ttdeci">History(History &amp;&amp;other) noexcept</div><div class="ttdoc">Move constructor implementing the Rule of Five.</div><div class="ttdef"><b>Definition:</b> history.hpp:86</div></div>
-<div class="ttc" id="aclassrespond_1_1History_html_a9c57e6669f5db486fa60f1a01dfe7a9b"><div class="ttname"><a href="../../d8/dd8/classrespond_1_1History.html#a9c57e6669f5db486fa60f1a01dfe7a9b">respond::History::FlushPendingState</a></div><div class="ttdeci">void FlushPendingState(int timestep, Eigen::Index state_size)</div><div class="ttdoc">Flushes pending accumulated state into a recorded timestep.</div><div class="ttdef"><b>Definition:</b> history.hpp:252</div></div>
+<div class="ttc" id="aclassrespond_1_1History_html_a9c57e6669f5db486fa60f1a01dfe7a9b"><div class="ttname"><a href="../../d8/dd8/classrespond_1_1History.html#a9c57e6669f5db486fa60f1a01dfe7a9b">respond::History::FlushPendingState</a></div><div class="ttdeci">void FlushPendingState(int timestep, Eigen::Index state_size)</div><div class="ttdoc">Flushes pending accumulated state into a recorded timestep.</div><div class="ttdef"><b>Definition:</b> history.hpp:254</div></div>
 <div class="ttc" id="aclassrespond_1_1History_html_aa3837362bd5d6bd07b41599a24f86014"><div class="ttname"><a href="../../d8/dd8/classrespond_1_1History.html#aa3837362bd5d6bd07b41599a24f86014">respond::History::GetHistoryMode</a></div><div class="ttdeci">HistoryMode GetHistoryMode() const</div><div class="ttdoc">Retrieves the configured history recording mode.</div><div class="ttdef"><b>Definition:</b> history.hpp:148</div></div>
 <div class="ttc" id="aclassrespond_1_1History_html_aa4a93040de74f5c6863bd76b8449f30c"><div class="ttname"><a href="../../d8/dd8/classrespond_1_1History.html#aa4a93040de74f5c6863bd76b8449f30c">respond::History::HasPendingState</a></div><div class="ttdeci">bool HasPendingState() const</div><div class="ttdoc">Indicates whether an accumulated history has pending state.</div><div class="ttdef"><b>Definition:</b> history.hpp:152</div></div>
-<div class="ttc" id="aclassrespond_1_1History_html_ac131e8cbeb8d04265b19625342eebc5d"><div class="ttname"><a href="../../d8/dd8/classrespond_1_1History.html#ac131e8cbeb8d04265b19625342eebc5d">respond::History::AccumulateState</a></div><div class="ttdeci">void AccumulateState(const Eigen::VectorXd &amp;state)</div><div class="ttdoc">Adds a contribution to an accumulated history.</div><div class="ttdef"><b>Definition:</b> history.hpp:236</div></div>
-<div class="ttc" id="aclassrespond_1_1History_html_adb22eb2432f2b4137c20f9d72bb923d8"><div class="ttname"><a href="../../d8/dd8/classrespond_1_1History.html#adb22eb2432f2b4137c20f9d72bb923d8">respond::History::RecordSnapshot</a></div><div class="ttdeci">void RecordSnapshot(const Eigen::VectorXd &amp;state, int timestep)</div><div class="ttdoc">Records a snapshot value at a concrete timestep.</div><div class="ttdef"><b>Definition:</b> history.hpp:230</div></div>
+<div class="ttc" id="aclassrespond_1_1History_html_aab3fc1c7566987ffac1d63e5be1b7a79"><div class="ttname"><a href="../../d8/dd8/classrespond_1_1History.html#aab3fc1c7566987ffac1d63e5be1b7a79">respond::History::RecordSnapshot</a></div><div class="ttdeci">void RecordSnapshot(const Eigen::Ref&lt; const Eigen::VectorXd &gt; &amp;state, int timestep)</div><div class="ttdoc">Records a snapshot value at a concrete timestep.</div><div class="ttdef"><b>Definition:</b> history.hpp:231</div></div>
+<div class="ttc" id="aclassrespond_1_1History_html_aae54ef0e6fcab87ed293bb50a446681d"><div class="ttname"><a href="../../d8/dd8/classrespond_1_1History.html#aae54ef0e6fcab87ed293bb50a446681d">respond::History::AccumulateState</a></div><div class="ttdeci">void AccumulateState(const Eigen::Ref&lt; const Eigen::VectorXd &gt; &amp;state)</div><div class="ttdoc">Adds a contribution to an accumulated history.</div><div class="ttdef"><b>Definition:</b> history.hpp:238</div></div>
+<div class="ttc" id="aclassrespond_1_1History_html_add2c6b95147736c3b047edeabbfa70b2"><div class="ttname"><a href="../../d8/dd8/classrespond_1_1History.html#add2c6b95147736c3b047edeabbfa70b2">respond::History::AddState</a></div><div class="ttdeci">void AddState(const Eigen::Ref&lt; const Eigen::VectorXd &gt; &amp;state, int timestep=-1)</div><div class="ttdoc">Records a state vector at a specific or automatic timestep.</div><div class="ttdef"><b>Definition:</b> history.hpp:209</div></div>
 <div class="ttc" id="aclassrespond_1_1History_html_adf59033c30431898b4a14d4daebdeba5"><div class="ttname"><a href="../../d8/dd8/classrespond_1_1History.html#adf59033c30431898b4a14d4daebdeba5">respond::History::History</a></div><div class="ttdeci">History(const std::string &amp;name, const std::string &amp;log_name, HistoryMode mode)</div><div class="ttdoc">Constructs a History tracker with an explicit recording mode.</div><div class="ttdef"><b>Definition:</b> history.hpp:51</div></div>
 <div class="ttc" id="aclassrespond_1_1History_html_aef7ac5e06938f0f3b152dec7fd1c49e1"><div class="ttname"><a href="../../d8/dd8/classrespond_1_1History.html#aef7ac5e06938f0f3b152dec7fd1c49e1">respond::History::operator==</a></div><div class="ttdeci">bool operator==(const History &amp;other) const</div><div class="ttdoc">Equality comparison operator.</div><div class="ttdef"><b>Definition:</b> history.hpp:113</div></div>
 <div class="ttc" id="aclassrespond_1_1History_html_af09dc4fd78931c856f420c85b702a638"><div class="ttname"><a href="../../d8/dd8/classrespond_1_1History.html#af09dc4fd78931c856f420c85b702a638">respond::History::GetRecordedTimesteps</a></div><div class="ttdeci">const std::vector&lt; int &gt; &amp; GetRecordedTimesteps() const</div><div class="ttdoc">Retrieves the recorded timesteps without densifying gaps.</div><div class="ttdef"><b>Definition:</b> history.hpp:138</div></div>
@@ -388,7 +390,7 @@ $(document).ready(function(){initNavTree('d4/de1/history_8hpp_source.html','../.
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="../../dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="../../dir_70501f13f5c9277fdfc6ec16bf603df6.html">respond</a></li><li class="navelem"><b>history.hpp</b></li>
-    <li class="footer">Generated on Wed Jun 24 2026 20:54:13 for RESPOND by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
+    <li class="footer">Generated on Fri Jun 26 2026 20:28:58 for RESPOND by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
   </ul>
 </div>
 </body>

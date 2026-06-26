@@ -199,15 +199,15 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a965303b8bb23d2b03132ecc5d1c670d3"><td class="memItemLeft" align="right" valign="top">std::vector&lt; Eigen::VectorXd &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d8/dd8/classrespond_1_1History.html#a965303b8bb23d2b03132ecc5d1c670d3">GetStateAsVector</a> () const</td></tr>
 <tr class="memdesc:a965303b8bb23d2b03132ecc5d1c670d3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Converts the sparse history map to a contiguous vector of states. Gaps in timesteps are filled with zero vectors of appropriate dimension.  <br /></td></tr>
 <tr class="separator:a965303b8bb23d2b03132ecc5d1c670d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7b3fb643ecadc65fd545a16313a6b58c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d8/dd8/classrespond_1_1History.html#a7b3fb643ecadc65fd545a16313a6b58c">AddState</a> (const Eigen::VectorXd &amp;state, int timestep=-1)</td></tr>
-<tr class="memdesc:a7b3fb643ecadc65fd545a16313a6b58c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Records a state vector at a specific or automatic timestep.  <br /></td></tr>
-<tr class="separator:a7b3fb643ecadc65fd545a16313a6b58c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adb22eb2432f2b4137c20f9d72bb923d8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d8/dd8/classrespond_1_1History.html#adb22eb2432f2b4137c20f9d72bb923d8">RecordSnapshot</a> (const Eigen::VectorXd &amp;state, int timestep)</td></tr>
-<tr class="memdesc:adb22eb2432f2b4137c20f9d72bb923d8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Records a snapshot value at a concrete timestep.  <br /></td></tr>
-<tr class="separator:adb22eb2432f2b4137c20f9d72bb923d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac131e8cbeb8d04265b19625342eebc5d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d8/dd8/classrespond_1_1History.html#ac131e8cbeb8d04265b19625342eebc5d">AccumulateState</a> (const Eigen::VectorXd &amp;state)</td></tr>
-<tr class="memdesc:ac131e8cbeb8d04265b19625342eebc5d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds a contribution to an accumulated history.  <br /></td></tr>
-<tr class="separator:ac131e8cbeb8d04265b19625342eebc5d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:add2c6b95147736c3b047edeabbfa70b2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d8/dd8/classrespond_1_1History.html#add2c6b95147736c3b047edeabbfa70b2">AddState</a> (const Eigen::Ref&lt; const Eigen::VectorXd &gt; &amp;state, int timestep=-1)</td></tr>
+<tr class="memdesc:add2c6b95147736c3b047edeabbfa70b2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Records a state vector at a specific or automatic timestep.  <br /></td></tr>
+<tr class="separator:add2c6b95147736c3b047edeabbfa70b2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aab3fc1c7566987ffac1d63e5be1b7a79"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d8/dd8/classrespond_1_1History.html#aab3fc1c7566987ffac1d63e5be1b7a79">RecordSnapshot</a> (const Eigen::Ref&lt; const Eigen::VectorXd &gt; &amp;state, int timestep)</td></tr>
+<tr class="memdesc:aab3fc1c7566987ffac1d63e5be1b7a79"><td class="mdescLeft">&#160;</td><td class="mdescRight">Records a snapshot value at a concrete timestep.  <br /></td></tr>
+<tr class="separator:aab3fc1c7566987ffac1d63e5be1b7a79"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aae54ef0e6fcab87ed293bb50a446681d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d8/dd8/classrespond_1_1History.html#aae54ef0e6fcab87ed293bb50a446681d">AccumulateState</a> (const Eigen::Ref&lt; const Eigen::VectorXd &gt; &amp;state)</td></tr>
+<tr class="memdesc:aae54ef0e6fcab87ed293bb50a446681d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds a contribution to an accumulated history.  <br /></td></tr>
+<tr class="separator:aae54ef0e6fcab87ed293bb50a446681d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9c57e6669f5db486fa60f1a01dfe7a9b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d8/dd8/classrespond_1_1History.html#a9c57e6669f5db486fa60f1a01dfe7a9b">FlushPendingState</a> (int timestep, Eigen::Index state_size)</td></tr>
 <tr class="memdesc:a9c57e6669f5db486fa60f1a01dfe7a9b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Flushes pending accumulated state into a recorded timestep.  <br /></td></tr>
 <tr class="separator:a9c57e6669f5db486fa60f1a01dfe7a9b"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -343,8 +343,8 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>Clear</b> ()</td></tr
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="ac131e8cbeb8d04265b19625342eebc5d" name="ac131e8cbeb8d04265b19625342eebc5d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac131e8cbeb8d04265b19625342eebc5d">&#9670;&#160;</a></span>AccumulateState()</h2>
+<a id="aae54ef0e6fcab87ed293bb50a446681d" name="aae54ef0e6fcab87ed293bb50a446681d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aae54ef0e6fcab87ed293bb50a446681d">&#9670;&#160;</a></span>AccumulateState()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -355,7 +355,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>Clear</b> ()</td></tr
         <tr>
           <td class="memname">void respond::History::AccumulateState </td>
           <td>(</td>
-          <td class="paramtype">const Eigen::VectorXd &amp;&#160;</td>
+          <td class="paramtype">const Eigen::Ref&lt; const Eigen::VectorXd &gt; &amp;&#160;</td>
           <td class="paramname"><em>state</em></td><td>)</td>
           <td></td>
         </tr>
@@ -375,8 +375,8 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>Clear</b> ()</td></tr
 
 </div>
 </div>
-<a id="a7b3fb643ecadc65fd545a16313a6b58c" name="a7b3fb643ecadc65fd545a16313a6b58c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7b3fb643ecadc65fd545a16313a6b58c">&#9670;&#160;</a></span>AddState()</h2>
+<a id="add2c6b95147736c3b047edeabbfa70b2" name="add2c6b95147736c3b047edeabbfa70b2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#add2c6b95147736c3b047edeabbfa70b2">&#9670;&#160;</a></span>AddState()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -387,7 +387,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>Clear</b> ()</td></tr
         <tr>
           <td class="memname">void respond::History::AddState </td>
           <td>(</td>
-          <td class="paramtype">const Eigen::VectorXd &amp;&#160;</td>
+          <td class="paramtype">const Eigen::Ref&lt; const Eigen::VectorXd &gt; &amp;&#160;</td>
           <td class="paramname"><em>state</em>, </td>
         </tr>
         <tr>
@@ -853,8 +853,8 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>Clear</b> ()</td></tr
 
 </div>
 </div>
-<a id="adb22eb2432f2b4137c20f9d72bb923d8" name="adb22eb2432f2b4137c20f9d72bb923d8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#adb22eb2432f2b4137c20f9d72bb923d8">&#9670;&#160;</a></span>RecordSnapshot()</h2>
+<a id="aab3fc1c7566987ffac1d63e5be1b7a79" name="aab3fc1c7566987ffac1d63e5be1b7a79"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aab3fc1c7566987ffac1d63e5be1b7a79">&#9670;&#160;</a></span>RecordSnapshot()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -865,7 +865,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>Clear</b> ()</td></tr
         <tr>
           <td class="memname">void respond::History::RecordSnapshot </td>
           <td>(</td>
-          <td class="paramtype">const Eigen::VectorXd &amp;&#160;</td>
+          <td class="paramtype">const Eigen::Ref&lt; const Eigen::VectorXd &gt; &amp;&#160;</td>
           <td class="paramname"><em>state</em>, </td>
         </tr>
         <tr>
@@ -905,7 +905,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>Clear</b> ()</td></tr
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><b>respond</b></li><li class="navelem"><a class="el" href="../../d8/dd8/classrespond_1_1History.html">History</a></li>
-    <li class="footer">Generated on Wed Jun 24 2026 20:54:13 for RESPOND by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
+    <li class="footer">Generated on Fri Jun 26 2026 20:28:58 for RESPOND by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
   </ul>
 </div>
 </body>
