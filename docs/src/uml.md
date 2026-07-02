@@ -19,6 +19,7 @@ classDiagram
         +GetModel(size_t model_idx) const Model &
         +GetModelNames() vector~string~
         +GetModelHistory(size_t model_idx) map~string, History~
+        +operator<<(ostream &os, const Simulation &obj) ostream &
     }
 
     class Model {
@@ -26,14 +27,16 @@ classDiagram
         +SetState(state) *
         +GetState() VectorXd *
         +AddTimestep(shared_ptr~timestep~) *
-        +GetTimesteps() 
+        +GetTimesteps() *
         +RunTransitions() *
+        +ClearTimesteps() *
         +GetHistories() map~string, History~ *
-        +SetHistories(h) *
+        +ClearHistories() *
         +CreateDefaultHistories() *
         +SetFinalTimestep(final_timestep) *
         +clone() unique_ptr~Model~ *
         +Create(name, log_name) unique_ptr~Model~
+        +operator<<(ostream &os, const Model &obj) ostream &
     }
 
     class Timestep {
@@ -44,17 +47,19 @@ classDiagram
         +GetTransitions() const vector~const Transition &~
         +GetTransitionNames() vector~const string~
         +clone() unique_ptr~Timestep~
+        +operator<<(ostream &os, const Timestep &obj) ostream &
     }
 
     class Transition {
         <<abstract>>
         +Execute(state, histories) VectorXd *
-        +AddMatrix(matrix, size_t idx = -1) *
+        +AddMatrix(const Eigen::Ref~const MatrixXd~ &matrix, size_t idx) *
         +GetMatrix(size_t idx) Eigen::Ref~MatrixXd~ *
         +GetName() string *
         +ClearMatrices() *
         +clone() unique_ptr~Transition~ *
         +Create(type, log_name) unique_ptr~Transition~
+        +operator<<(ostream &os, const Transition &obj) ostream &
     }
 
     class History {
@@ -64,6 +69,7 @@ classDiagram
         +FlushPendingState(timestep, state_size)
         +GetStateMap() map~int, VectorXd~
         +GetStateAsVector() vector~VectorXd~
+        +operator<<(ostream &os, const History &obj) ostream &
     }
 
     class HistoryMode {
@@ -138,29 +144,39 @@ classDiagram
 
 ## Internals Diagram
 
-This diagram is implementation-focused and intentionally verbose.
+This diagram is implementation-focused and shows the relationship between
+abstract classes and how it impacts the stored components for ownership
+purposes.
 
 ```mermaid
 classDiagram
     direction LR
 
+    class Simulation {
+        -string _log_name
+        -vector~shared_ptr~Model~~ _models
+        -size_t _duration
+        -vector~size_t~ _parameter_change_times
+        -bool _stratify_entering_cohort
+        -bool _build_summary_stats
+        -bool _save_state_history
+        -vector~size_t~ _timesteps_to_report
+        -bool _pivot_long
+        +Simulation()
+        +Simulation(const string log_name)
+        +Simulation(const string log_name, const string log_filepath)
+        +Simulation(const Simulation &other)
+        +operator=(const Simulation &other) Simulation &
+        +Simulation(const Simulation &&other)
+        +operator=(const Simulation &&other) Simulation &
+    }
+
     class Model {
         <<abstract>>
-        +SetState(state) *
-        +GetState() VectorXd *
-        +RunTransitions() *
-        +AddTimestep(transitions) *
-        +GetTransitionNames() vector~string~ *
-        +GetHistories() map~string, History~ *
-        +CreateDefaultHistories() *
-        +SetHistories(h) *
-        +SetFinalTimestep(final_timestep) *
-        +clone() unique_ptr~Model~ *
-        +Create(name, log_name) unique_ptr~Model~
     }
 
     class Markov {
-        -vector~unique_ptr~Transition~~ _transition_vector
+        -vector~shared_ptr~Transition~~ _transition_vector
         -VectorXd _state
         -string _name
         -string _log_name
@@ -169,21 +185,32 @@ classDiagram
         -int _history_capture_interval
         -int _final_timestep
         -bool _initial_history_recorded
-        +RunTransitions()
-        +AddTimestep(transitions)
-        +GetTransitionNames() vector~string~
-        +GetHistories() map~string, History~
-        +clone() unique_ptr~Model~
+        -ResetHistoryTracking()
+        -GetLatestRecordedTimestep()
+        -ShouldRecordHistoryAtTimestep(int timestep)
+        -RecordHistoryAtCurrentTimestep()
+        -SetupHistory()
+        +Markov()
+        +Markov(const string &name, const string log_name)
+        +Markov(Markov &other)
+        +operator=(Markov &other) Markov &
+        +Markov(Markov &&other)
+        +operator=(Markov &&other) Markov &
+        +SetState(state) override
+        +GetState() VectorXd override
+        +AddTimestep(shared_ptr~timestep~) override
+        +GetTimesteps() override
+        +ClearTimesteps() override
+        +RunTransitions() override
+        +GetHistories() map~string, History~ override
+        +ClearHistories() override
+        +CreateDefaultHistories() override
+        +SetFinalTimestep(final_timestep) override
+        +clone() unique_ptr~Model~ override
     }
 
     class Transition {
         <<abstract>>
-        +Execute(state, histories) VectorXd *
-        +AddTransitionMatrix(matrix) *
-        +GetTransitionName() string *
-        +ClearTransitionMatrices() *
-        +GetLogName() string *
-        +clone() unique_ptr~Transition~ *
     }
 
     class TransitionBase {
@@ -191,10 +218,11 @@ classDiagram
         -string _name
         -string _log_name
         -vector~MatrixXd~ _transition_matrices
-        +AddTransitionMatrix(matrix)
-        +GetTransitionName() string
-        +ClearTransitionMatrices()
-        +GetLogName() string
+        -GetMatrices() const vector<MatrixXd> &
+        +AddMatrix(const Eigen::Ref~const MatrixXd~ &matrix, size_t idx) override
+        +GetTransitionName() string override
+        +ClearTransitionMatrices() override
+        +GetLogName() string override
     }
 
     class Migration {
@@ -222,10 +250,6 @@ classDiagram
         +Create(name, log_name) unique_ptr~Transition~
     }
 
-    class TransitionFactory {
-        +CreateTransition(type, log_name) unique_ptr~Transition~
-    }
-
     class History {
         -string _name
         -string _log_name
@@ -242,51 +266,26 @@ classDiagram
         +GetStateAsVector() vector~VectorXd~
     }
 
-    class HistoryMode {
-        <<enumeration>>
-        Snapshot
-        Accumulated
-    }
+    Simulation *-- "0..*" Model : owns
+    Model <|-- Markov : implements
 
-    class LoggingConfig {
-        <<singleton>>
-        +GetInstance() LoggingConfig
-        +GetSharedSink(filepath)
-        +GetPattern()
-        +SetPattern(pattern)
-        +GetFlushInterval()
-        +SetFlushInterval(seconds)
-    }
+    Transition <|-- TransitionBase : extends
+    TransitionBase <|-- Migration : implements
+    TransitionBase <|-- Behavior : implements
+    TransitionBase <|-- Intervention : implements
+    TransitionBase <|-- Overdose : implements
+    TransitionBase <|-- BackgroundDeath : implements
 
-    class LogPattern {
-        <<enumeration>>
-        kSimple
-        kStandard
-        kDetailed
-        kThreadSafe
-    }
+    Markov *-- "0..*" Transition : owns
+    Markov *-- "0..*" History : owns
+    Migration <.. History : uses
+    Behavior <.. History : uses
+    Intervention <..> History : uses and updates
+    Overdose <..> History : uses and updates
+    BackgroundDeath <..> History : uses and updates
 
-    Model <|-- Markov
 
-    Transition <|-- TransitionBase
-    TransitionBase <|-- Migration
-    TransitionBase <|-- Behavior
-    TransitionBase <|-- Intervention
-    TransitionBase <|-- Overdose
-    TransitionBase <|-- BackgroundDeath
 
-    Markov *-- "0..*" Transition : executes
-    Markov *-- "0..*" History : stores
-    Transition ..> History : mutates
-    History --> HistoryMode : mode
-
-    TransitionFactory ..> Migration : creates
-    TransitionFactory ..> Behavior : creates
-    TransitionFactory ..> Intervention : creates
-    TransitionFactory ..> Overdose : creates
-    TransitionFactory ..> BackgroundDeath : creates
-
-    LoggingConfig ..> LogPattern : stores
 ```
 
 ## Execution Flow Diagram
@@ -330,9 +329,3 @@ sequenceDiagram
 
     Sim-->>User: simulation complete
 ```
-
-## Notes
-
-- Public API diagram includes every component from headers in include/respond: simulation, model, timestep, transition, transition_factory, history, logging, cost_effectiveness, and version.
-- Current implementation detail: Model::Create currently returns a Markov instance.
-- Current implementation detail: TransitionFactory::CreateTransition resolves migration, behavior, intervention, overdose, and background_death.
