@@ -58,6 +58,7 @@ This documentation covers both user and developer perspectives:
 - **[Installation](installation.md)** - Build and installation instructions
 - **[Motivation](motivation.md)** - Model design and goals
 - **[Architecture and Design](architecture.md)** - Design patterns, component architecture, and extensibility
+- **[UML Diagrams](uml.md)** - Editable class diagrams for the core library structure
 - **[C++ API Guide](api-guide.md)** - Developer guide for using RESPOND as a library
 - **[Data Management](data.md)** - Configuration and data requirements
 - **[Running the Model](run.md)** - Executing simulations
