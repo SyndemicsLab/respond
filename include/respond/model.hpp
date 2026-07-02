@@ -4,7 +4,7 @@
 // Created Date: 2026-02-05                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-06-30                                                  //
+// Last Modified: 2026-07-02                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
@@ -37,7 +37,9 @@ public:
 
     /// @brief Retrieves the current state of the model.
     /// @return A copy of the current state vector (limited to observation).
-    virtual Eigen::VectorXd GetState() const = 0;
+    virtual const Eigen::Ref<const Eigen::VectorXd> &GetState() const = 0;
+
+    virtual void AddTimestep(const std::shared_ptr<Transition> &transition) = 0;
 
     /// @brief Executes all registered transitions on the current state.
     /// Transitions are applied in the order they were added and may modify

@@ -44,7 +44,7 @@ public:
             throw std::out_of_range(
                 "Index out of range in AddMatrixToTransition");
         }
-        _transitions[idx]->AddTransitionMatrix(m);
+        _transitions[idx]->AddMatrix(m);
     }
 
     const Transition &GetTransition(const size_t &idx) const {
@@ -56,7 +56,7 @@ public:
 
     const Transition &GetTransition(const std::string &transition_name) const {
         for (const auto &t : _transitions) {
-            if (t->GetTransitionName() == transition_name) {
+            if (t->GetName() == transition_name) {
                 return *t;
             }
         }
