@@ -31,15 +31,15 @@ std::unique_ptr<Transition> Transition::Create(const std::string &type,
                    [](unsigned char c) { return std::tolower(c); });
 
     if (type_copy == "migration") {
-        return Migration::Create(type, log_name);
+        return std::make_unique<Migration>(type, log_name);
     } else if (type_copy == "behavior") {
-        return Behavior::Create(type, log_name);
+        return std::make_unique<Behavior>(type, log_name);
     } else if (type_copy == "intervention") {
-        return Intervention::Create(type, log_name);
+        return std::make_unique<Intervention>(type, log_name);
     } else if (type_copy == "overdose") {
-        return Overdose::Create(type, log_name);
+        return std::make_unique<Overdose>(type, log_name);
     } else if (type_copy == "background_death") {
-        return BackgroundDeath::Create(type, log_name);
+        return std::make_unique<BackgroundDeath>(type, log_name);
     }
 
     // Invalid transition type

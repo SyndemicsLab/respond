@@ -4,7 +4,7 @@
 // Created Date: 2026-06-30                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-06-30                                                  //
+// Last Modified: 2026-07-02                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
@@ -13,18 +13,63 @@
 #define RESPOND_TIMESTEP_HPP_
 
 #include <memory>
+#include <ostream>
 #include <vector>
 
+#include <respond/logging.hpp>
 #include <respond/transition.hpp>
 
 namespace respond {
 class Timestep {
 public:
-    Timestep() { _transitions = {}; }
+    Timestep() : Timestep("respond") {}
+    Timestep(const std::string &log_name)
+        : Timestep(log_name, log_name + ".log") {}
+    Timestep(const std::string &log_name, const std::string &log_filepath)
+        : _log_name(log_name) {
+        CreateFileLogger(log_name, log_filepath);
+        _transitions = {};
+    }
     ~Timestep() = default;
 
-    std::vector<std::unique_ptr<Transition>> GetTransitions() const {
-        return _transitions;
+    const Transition &
+    CreateTransition(const std::string &transition_name) const {
+        auto transition = Transition::Create(transition_name, _log_name);
+        return *transition;
+    }
+
+    void AddMatrixToTransition(const size_t &idx,
+                               const Eigen::Ref<const Eigen::MatrixXd> &m) {
+        if (idx >= _transitions.size()) {
+            throw std::out_of_range(
+                "Index out of range in AddMatrixToTransition");
+        }
+        _transitions[idx]->AddTransitionMatrix(m);
+    }
+
+    const Transition &GetTransition(const size_t &idx) const {
+        if (idx >= _transitions.size()) {
+            throw std::out_of_range("Index out of range in GetTransition");
+        }
+        return *_transitions[idx];
+    }
+
+    const Transition &GetTransition(const std::string &transition_name) const {
+        for (const auto &t : _transitions) {
+            if (t->GetTransitionName() == transition_name) {
+                return *t;
+            }
+        }
+        throw std::invalid_argument("Transition not found in GetTransition: " +
+                                    transition_name);
+    }
+
+    const std::vector<const Transition &> &GetTransitions() const {
+        std::vector<const Transition &> _transitions_refs;
+        for (const auto &t : _transitions) {
+            _transitions_refs.push_back(*t);
+        }
+        return _transitions_refs;
     }
 
     const std::unique_ptr<Transition> &
@@ -36,16 +81,12 @@ public:
         return _transitions[index];
     }
 
-    std::vector<std::string> GetTransitionNames() const {
+    const std::vector<std::string> &GetTransitionNames() const {
         std::vector<std::string> names;
         for (const auto &t : _transitions) {
-            names.push_back(t->GetTransitionName());
+            names.push_back(t->GetName());
         }
         return names;
-    }
-
-    void AddTransition(const std::unique_ptr<Transition> &t) {
-        _transitions.push_back(t->clone());
     }
 
     // Copy Constructor and Assignment
@@ -82,7 +123,16 @@ public:
         return *this;
     }
 
+    friend std::ostream &operator<<(std::ostream &os, Timestep &other) {
+        os << "Timestep with the following transitions:\n";
+        for (const auto &t : other._transitions) {
+            os << " - " << t->GetName() << "\n";
+        }
+        return os;
+    }
+
 private:
+    std::string _log_name;
     std::vector<std::unique_ptr<Transition>> _transitions;
 };
 } // namespace respond
