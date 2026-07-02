@@ -4,7 +4,7 @@
 // Created Date: 2026-02-05                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-06-25                                                  //
+// Last Modified: 2026-06-30                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
@@ -44,10 +44,12 @@ public:
     /// history.
     virtual void RunTransitions() = 0;
 
-    /// @brief Adds a transition to the model.
-    /// @param t A unique_ptr to a Transition object. The model assumes
-    /// ownership.
-    virtual void AddTransition(const std::unique_ptr<Transition> &t) = 0;
+    /// @brief Adds a transition to the model. The model takes ownership of the
+    /// transition via cloning.
+    /// @param transitions A vector of unique_ptrs to a Transition instances to
+    /// add.
+    virtual void AddTimestep(
+        const std::vector<std::unique_ptr<Transition>> &transitions) = 0;
 
     /// @brief Retrieves the names of all registered transitions.
     /// @return Vector of transition names in the order they were added.

@@ -4,7 +4,7 @@
 // Created Date: 2026-02-05                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-06-25                                                  //
+// Last Modified: 2026-06-29                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
@@ -115,15 +115,22 @@ public:
         if (!_initial_history_recorded) {
             RecordHistoryAtCurrentTimestep();
         }
+        int transitions_per_timestep =
+            static_cast<int>(_transition_vector.size()) / _final_timestep;
         for (const auto &t : _transition_vector) {
             _state = t->Execute(_state, _histories);
         }
         _current_timestep++;
         RecordHistoryAtCurrentTimestep();
     }
+
     // assume ownership of the Transition
-    void AddTransition(const std::unique_ptr<Transition> &t) override {
-        _transition_vector.push_back(t->clone());
+    void AddTimestep(
+        const std::vector<std::unique_ptr<Transition>> &transitions) override {
+        for (const auto &t : transitions) {
+            _transition_vector.push_back(t->clone());
+        }
+        _final_timestep++;
     }
     // get the names of each transition we own
     std::vector<std::string> GetTransitionNames() const override {
