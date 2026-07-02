@@ -4,7 +4,7 @@
 // Created Date: 2026-02-05                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-02-12                                                  //
+// Last Modified: 2026-07-02                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
@@ -21,6 +21,7 @@
 #include <Eigen/Dense>
 
 #include <respond/history.hpp>
+#include <respond/logging.hpp>
 #include <respond/model.hpp>
 
 namespace respond {
@@ -30,20 +31,37 @@ namespace respond {
 class Simulation {
 public:
     /// @brief Default constructor initializing with "console" logger.
-    Simulation() : Simulation("console") {}
+    Simulation() : Simulation("respond") {}
 
     /// @brief Constructs a Simulation with a specified logger.
     /// @param log_name Name of the logger for this simulation (default:
     /// "console").
-    Simulation(const std::string &log_name) : _log_name(log_name) {}
+    Simulation(const std::string &log_name)
+        : Simulation(log_name, log_name + ".log") {}
+
+    /// @brief  Constructs a Simulation with a specified logger and log file
+    /// path.
+    /// @param log_name
+    /// @param log_filepath
+    Simulation(const std::string &log_name, const std::string &log_filepath)
+        : _log_name(log_name) {
+        CreateFileLogger(log_name, log_filepath);
+    }
 
     /// @brief Virtual destructor for polymorphic cleanup.
     ~Simulation() = default;
+
+    const std::string CreateNewModel(const std::string &model_name) {
+        _models.push_back(Model::Create(model_name, _log_name));
+        return std::to_string(_models.size()) + "_" +
+               _models.back()->GetModelName();
+    }
 
     /// @brief Executes one step of the simulation for all models.
     /// Calls RunTransitions() on each registered model in sequence.
     void Run() {
         for (const auto &model : _models) {
+            model->SetFinalTimestep(_duration);
             model->RunTransitions();
         }
     }
@@ -152,6 +170,15 @@ public:
 private:
     std::string _log_name;
     std::vector<std::unique_ptr<Model>> _models;
+
+    int _duration = 1; // Default simulation duration in timesteps
+    std::vector<int> _parameter_change_times;
+    bool _stratify_entering_cohort;
+
+    bool _build_summary_stats;
+    bool _save_state_history;
+    std::vector<int> _timesteps_to_report;
+    bool _pivot_long;
 };
 } // namespace respond
 

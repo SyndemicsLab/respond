@@ -4,7 +4,7 @@
 // Created Date: 2026-02-05                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-06-25                                                  //
+// Last Modified: 2026-06-30                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
@@ -36,12 +36,14 @@ inline HistoryMode GetDefaultHistoryMode(const std::string &name) {
 /// are filled with zero vectors).
 class History {
 public:
+    History() : History("state") {}
+
+    History(const std::string &name) : History(name, "console") {}
     /// @brief Constructs a History tracker.
     /// @param name The identifier for this history (default: "state").
     /// @param log_name The logger name for error reporting (default:
     /// "console").
-    History(const std::string &name = "state",
-            const std::string &log_name = "console")
+    History(const std::string &name, const std::string &log_name)
         : History(name, log_name, GetDefaultHistoryMode(name)) {}
 
     /// @brief Constructs a History tracker with an explicit recording mode.

@@ -4,10 +4,10 @@
 // Created Date: 2025-06-06                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-07-30                                                  //
+// Last Modified: 2026-06-30                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
-// Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
+// Copyright (c) 2025-2026 Syndemics Lab at Boston Medical Center             //
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <respond/logging.hpp>
@@ -36,6 +36,8 @@ CreationStatus CreateFileLogger(const std::string &logger_name,
         std::cerr << error_msg << std::endl;
         return CreationStatus::kError;
     }
+    std::cout << "Initialized logger (" << logger_name << ") to log file ("
+              << filepath << ")" << std::endl;
     return CreationStatus::kSuccess;
 }
 

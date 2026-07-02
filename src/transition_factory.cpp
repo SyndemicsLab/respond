@@ -4,13 +4,11 @@
 // Created Date: 2026-02-05                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-02-05                                                  //
+// Last Modified: 2026-07-02                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
 ////////////////////////////////////////////////////////////////////////////////
-
-#include <respond/transition_factory.hpp>
 
 #include <algorithm>
 #include <cctype>
@@ -26,9 +24,8 @@
 #include "internals/overdose.hpp"
 
 namespace respond {
-std::unique_ptr<Transition>
-TransitionFactory::CreateTransition(const std::string &type,
-                                    const std::string &log_name) {
+std::unique_ptr<Transition> Transition::Create(const std::string &type,
+                                               const std::string &log_name) {
     std::string type_copy = type;
     std::transform(type_copy.begin(), type_copy.end(), type_copy.begin(),
                    [](unsigned char c) { return std::tolower(c); });
