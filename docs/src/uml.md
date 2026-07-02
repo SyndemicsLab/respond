@@ -13,20 +13,19 @@ classDiagram
     direction LR
 
     class Simulation {
-        +CreateNewModel(model_name) string
-        +AddModel(model)
+        +CreateNewModel(type) shared_ptr~Model~
+        +AddNewModel(shared_ptr~Model~) bool
         +Run()
-        +GetModels() vector~unique_ptr~Model~~
+        +GetModel(size_t model_idx) const Model &
         +GetModelNames() vector~string~
-        +GetModelHistories()
-        +GetModelSparseHistories()
+        +GetModelHistory(size_t model_idx) map~string, History~
     }
 
     class Model {
         <<abstract>>
         +SetState(state) *
         +GetState() VectorXd *
-        +AddTimestep(timestep) *
+        +AddTimestep(shared_ptr~timestep~) *
         +GetTimesteps() 
         +RunTransitions() *
         +GetHistories() map~string, History~ *
@@ -38,22 +37,24 @@ classDiagram
     }
 
     class Timestep {
-        +AddTransition(t)
-        +GetTransitions() vector~unique_ptr~Transition~~~
-        +GetTransitionNames() vector~string~
+        +CreateTransition(type) const Transition &
+        +AddMatrixToTransition(size_t index, MatrixXd mat)
+        +GetTransition(size_t idx) const Transition &
+        +GetTransition(string name) const Transition &
+        +GetTransitions() const vector~const Transition &~
+        +GetTransitionNames() vector~const string~
+        +clone() unique_ptr~Timestep~
     }
 
     class Transition {
         <<abstract>>
         +Execute(state, histories) VectorXd *
-        +AddTransitionMatrix(matrix) *
-        +GetTransitionName() string *
-        +ClearTransitionMatrices() *
+        +AddMatrix(matrix, size_t idx = -1) *
+        +GetMatrix(size_t idx) Eigen::Ref~MatrixXd~ *
+        +GetName() string *
+        +ClearMatrices() *
         +clone() unique_ptr~Transition~ *
-    }
-
-    class TransitionFactory {
-        +CreateTransition(type, log_name) unique_ptr~Transition~
+        +Create(type, log_name) unique_ptr~Transition~
     }
 
     class History {
@@ -121,28 +122,17 @@ classDiagram
         +CalculateLifeYears(history, discount, discount_rate, total_weeks)
     }
 
-    class Version {
-        <<constants>>
-        RESPOND_VER_MAJOR
-        RESPOND_VER_MINOR
-        RESPOND_VER_PATCH
-        RESPOND_VERSION
-    }
+    Simulation *-- "0..*" Model : owns
+    Model *-- "0..*" Timestep : owns
+    Timestep *-- "0..*" Transition : owns
 
-    Simulation *-- "1..*" Model : owns
-    Model *-- "1..*" Timestep : owns (target API)
-    Timestep *-- "1..*" Transition : owns
+    Model *-- "0..*" History : owns
 
-    Model o-- "0..*" History : records
-    Transition ..> History : updates
-    History --> HistoryMode : mode
-
-    TransitionFactory ..> Transition : creates
-
+    Simulation ..> LoggingAPI: uses
     LoggingAPI ..> LogType : uses
     LoggingAPI ..> CreationStatus : returns
     LoggingAPI ..> LogPattern : configures
-
+    History ..> HistoryMode : uses
     CostEffectiveness ..> History : consumes
 ```
 
