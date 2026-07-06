@@ -4,7 +4,7 @@
 // Created Date: 2026-02-05                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-06-25                                                  //
+// Last Modified: 2026-07-02                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
@@ -24,27 +24,26 @@ public:
     // Add a Transition Matrix to the set. We have no need to edit it once it's
     // been added, just use it. Thus, we don't need full ownership (reference)
     // and can accept the const type.
-    void
-    AddTransitionMatrix(const Eigen::Ref<const Eigen::MatrixXd> &m) override {
+    void AddMatrix(const Eigen::Ref<const Eigen::MatrixXd> &m) override {
         _transition_matrices.push_back(m);
     }
     // Get the name of the Transition. No need to edit the object and do not
     // need user to edit the name.
-    std::string GetTransitionName() const override { return _name; }
+    std::string GetName() const override { return _name; }
     // Clear out all the stored Eigen::MatrixXd values
-    void ClearTransitionMatrices() override { _transition_matrices.clear(); }
+    void ClearMatrices() override { _transition_matrices.clear(); }
 
     std::string GetLogName() const override { return _log_name; }
 
 protected:
-    const std::vector<Eigen::MatrixXd> &GetTransitionMatrices() const {
+    const std::vector<Eigen::Ref<const Eigen::MatrixXd>> &GetMatrices() const {
         return _transition_matrices;
     }
 
 private:
     std::string _name;
     std::string _log_name;
-    std::vector<Eigen::MatrixXd> _transition_matrices;
+    std::vector<Eigen::Ref<const Eigen::MatrixXd>> _transition_matrices;
 };
 
 } // namespace respond

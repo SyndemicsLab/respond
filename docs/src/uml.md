@@ -40,13 +40,19 @@ classDiagram
     }
 
     class Timestep {
+        +Timestep()
+        +Timestep(const string &log_name)
+        +Timestep(const string &log_name, const string &log_filepath)
+        +Timestep(const Timestep &other)
+        +operator=(const Timestep &other) Timestep &
+        +Timestep(const Timestep &&other)
+        +operator=(const Timestep &&other) Timestep &
         +CreateTransition(type) const Transition &
         +AddMatrixToTransition(size_t index, MatrixXd mat)
         +GetTransition(size_t idx) const Transition &
         +GetTransition(string name) const Transition &
         +GetTransitions() const vector~const Transition &~
         +GetTransitionNames() vector~const string~
-        +clone() unique_ptr~Timestep~
         +operator<<(ostream &os, const Timestep &obj) ostream &
     }
 
@@ -220,8 +226,8 @@ classDiagram
         -vector~MatrixXd~ _transition_matrices
         -GetMatrices() const vector<MatrixXd> &
         +AddMatrix(const Eigen::Ref~const MatrixXd~ &matrix, size_t idx) override
-        +GetTransitionName() string override
-        +ClearTransitionMatrices() override
+        +GetName() string override
+        +ClearMatrices() override
         +GetLogName() string override
     }
 

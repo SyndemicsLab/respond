@@ -4,7 +4,7 @@
 // Created Date: 2026-02-05                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-06-25                                                  //
+// Last Modified: 2026-07-02                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
@@ -30,19 +30,12 @@ public:
 
     // Clone
     std::unique_ptr<Transition> clone() const override {
-        auto ret =
-            std::make_unique<Overdose>(GetTransitionName(), GetLogName());
-        for (const auto &t : GetTransitionMatrices()) {
-            ret->AddTransitionMatrix(t);
+        auto ret = std::make_unique<Overdose>(GetName(), GetLogName());
+        for (const auto &t : GetMatrices()) {
+            ret->AddMatrix(t);
         }
         return ret;
     }
-
-    /// @brief Factory method to create a Markov instance.
-    /// @param log_name Name of the logger to write errors to.
-    /// @return An instance of Markov.
-    static std::unique_ptr<Transition>
-    Create(const std::string &name, const std::string &log_name = "console");
 };
 } // namespace respond
 

@@ -4,7 +4,7 @@
 // Created Date: 2026-02-02                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-06-25                                                  //
+// Last Modified: 2026-07-06                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
@@ -46,15 +46,14 @@ public:
     /// @brief Adds a transformation matrix to this transition.
     /// The matrix is stored for use during Execute() calls.
     /// @param m The transition matrix to add (not modified by this transition).
-    virtual void
-    AddTransitionMatrix(const Eigen::Ref<const Eigen::MatrixXd> &m) = 0;
+    virtual void AddMatrix(const Eigen::Ref<const Eigen::MatrixXd> &m) = 0;
 
     /// @brief Retrieves the name/type of this transition.
     /// @return The transition's identifier as a string.
-    virtual std::string GetTransitionName() const = 0;
+    virtual std::string GetName() const = 0;
 
     /// @brief Clears all stored transition matrices.
-    virtual void ClearTransitionMatrices() = 0;
+    virtual void ClearMatrices() = 0;
 
     /// @brief Retrieves the logger name used by this transition.
     /// @return The associated logger's name.
@@ -70,6 +69,20 @@ public:
     /// @brief Creates a deep copy of this transition.
     /// @return A unique_ptr to an independent copy of this transition.
     virtual std::unique_ptr<Transition> clone() const = 0;
+
+    /// @brief Creates a transition of the specified type.
+    /// @param type The type of transition to create. Supported types
+    /// (case-insensitive):
+    ///        - "migration": Population migration transitions
+    ///        - "behavior": Behavioral state transitions
+    ///        - "intervention": Intervention-driven transitions
+    ///        - "overdose": Overdose-related transitions
+    ///        - "background_death": Background mortality transitions
+    /// @param log_name The logger name for error reporting (e.g., "console").
+    /// @return A unique_ptr to the created Transition, or nullptr if type is
+    /// unsupported.
+    static std::unique_ptr<Transition> Create(const std::string &type,
+                                              const std::string &log_name);
 
 protected:
     /// @brief Protected default constructor for subclass initialization.

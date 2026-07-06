@@ -4,7 +4,7 @@
 // Created Date: 2026-02-06                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-02-13                                                  //
+// Last Modified: 2026-06-29                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
@@ -121,6 +121,53 @@ TEST_F(RespondTest, RunSimulationOneStep) {
     auto state_history = mm_histories.at("state");
     // 2 because it carries the initial state and 1 step
     ASSERT_EQ(state_history.size(), 2);
+
+    Eigen::Vector3d final_state;
+    ASSERT_TRUE(state_history[0].isApprox(init_state));
+    final_state << 0.76715528791564891, 0.72320370216816077, 1.037712429738102;
+    ASSERT_TRUE(state_history[1].isApprox(final_state));
+}
+
+TEST_F(RespondTest, RunSimulationTwoStep) {
+    markov->CreateDefaultHistories();
+
+    markov->SetState(init_state);
+
+    auto migr = MakeTestTransition("migration", migration_pop);
+    auto beha = MakeTestTransition("behavior", behavior_trans);
+    auto inte = MakeTestTransition("intervention", intervention_trans);
+    auto over = MakeTestTransition("overdose", overdose_prob);
+    over->AddTransitionMatrix(fod_prob);
+
+    auto back = MakeTestTransition("background_death", background_death_prob);
+
+    markov->AddTransition(migr);
+    markov->AddTransition(beha);
+    markov->AddTransition(inte);
+    markov->AddTransition(over);
+    markov->AddTransition(back);
+
+    markov->AddTransition(migr);
+    markov->AddTransition(beha);
+    markov->AddTransition(inte);
+    markov->AddTransition(over);
+    markov->AddTransition(back);
+
+    Simulation sim("test_logger");
+    sim.AddModel(markov);
+    sim.Run();
+
+    auto histories = sim.GetModelHistories();
+    ASSERT_EQ(histories.size(), 1);
+
+    auto mm_histories = histories[0];
+    if (mm_histories.find("state") == mm_histories.end()) {
+        FAIL() << "Unable to find the 'state' history.";
+    }
+
+    auto state_history = mm_histories.at("state");
+    // 2 because it carries the initial state and 1 step
+    ASSERT_EQ(state_history.size(), 3);
 
     Eigen::Vector3d final_state;
     ASSERT_TRUE(state_history[0].isApprox(init_state));
