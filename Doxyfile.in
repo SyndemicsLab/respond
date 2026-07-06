@@ -927,6 +927,7 @@ INPUT                  =    docs/src/index.md \
                             docs/src/faq.md \
                             docs/src/architecture.md \
                             docs/src/api-guide.md \
+                            docs/src/uml.md \
                             include
 
 # This tag can be used to specify the character encoding of the source files
