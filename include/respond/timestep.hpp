@@ -4,7 +4,7 @@
 // Created Date: 2026-06-30                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-07-02                                                  //
+// Last Modified: 2026-07-06                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
@@ -16,13 +16,14 @@
 #include <ostream>
 #include <vector>
 
+#include <respond/constants.hpp>
 #include <respond/logging.hpp>
 #include <respond/transition.hpp>
 
 namespace respond {
 class Timestep {
 public:
-    Timestep() : Timestep("respond") {}
+    Timestep() : Timestep(RESPOND_DEFAULT_LOG) {}
     Timestep(const std::string &log_name)
         : Timestep(log_name, log_name + ".log") {}
     Timestep(const std::string &log_name, const std::string &log_filepath)
@@ -47,29 +48,44 @@ public:
         _transitions[idx]->AddMatrix(m);
     }
 
-    const Transition &GetTransition(const size_t &idx) const {
-        if (idx >= _transitions.size()) {
-            throw std::out_of_range("Index out of range in GetTransition");
+    void AddMatrixToTransition(const std::string &transition_name,
+                               const Eigen::Ref<const Eigen::MatrixXd> &m) {
+        for (size_t i = 0; i < _transitions.size(); ++i) {
+            if (_transitions[i]->GetName() == transition_name) {
+                _transitions[i]->AddMatrix(m);
+                return;
+            }
         }
-        return *_transitions[idx];
+        LogWarning(_log_name,
+                   "Transition not found in AddMatrixToTransition: " +
+                       transition_name);
     }
 
-    const Transition &GetTransition(const std::string &transition_name) const {
+    const std::unique_ptr<Transition> &GetTransition(const size_t &idx) const {
+        if (idx >= _transitions.size()) {
+            LogWarning(_log_name, "Index out of range in GetTransition: " +
+                                      std::to_string(idx));
+        }
+        return _transitions[idx];
+    }
+
+    const std::unique_ptr<Transition> &
+    GetTransition(const std::string &transition_name) const {
         for (const auto &t : _transitions) {
             if (t->GetName() == transition_name) {
-                return *t;
+                return t;
             }
         }
         throw std::invalid_argument("Transition not found in GetTransition: " +
                                     transition_name);
     }
 
-    const std::vector<const Transition &> &GetTransitions() const {
-        std::vector<const Transition &> _transitions_refs;
+    std::vector<std::unique_ptr<Transition>> GetTransitions() const {
+        std::vector<std::unique_ptr<Transition>> _ret;
         for (const auto &t : _transitions) {
-            _transitions_refs.push_back(*t);
+            _ret.push_back(t->clone());
         }
-        return _transitions_refs;
+        return _ret;
     }
 
     const std::unique_ptr<Transition> &
