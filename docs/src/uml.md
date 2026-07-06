@@ -28,7 +28,7 @@ classDiagram
         +GetState() VectorXd *
         +AddTimestep(shared_ptr~timestep~) *
         +GetTimesteps() *
-        +RunTransitions() *
+        +RunTimesteps() *
         +ClearTimesteps() *
         +GetHistories() map~string, History~ *
         +ClearHistories() *

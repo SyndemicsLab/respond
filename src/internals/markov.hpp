@@ -4,7 +4,7 @@
 // Created Date: 2026-02-05                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-06-29                                                  //
+// Last Modified: 2026-07-06                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
@@ -26,7 +26,19 @@
 namespace respond {
 class Markov : public virtual Model {
 public:
+    ////////////////////////////////////////////////////////////////////////////
+    //
+    // Rule of Five: Copy and Move Semantics
+    //
+    ////////////////////////////////////////////////////////////////////////////
+
+    /// @brief Default constructor for Markov model. Initializes with default
+    /// name "markov" and logger "console".
     Markov() : Markov("markov", "console") {}
+
+    /// @brief Constructs a Markov model with specified name and logger.
+    /// @param name The identifier for this model.
+    /// @param log_name The logger name for error reporting.
     Markov(const std::string &name, const std::string &log_name)
         : _name(name), _log_name(log_name), _current_timestep(0),
           _history_capture_interval(1), _final_timestep(-1),
@@ -35,57 +47,171 @@ public:
         Eigen::setNbThreads(processor_count);
     }
 
-    // Rule of Five
+    /// @brief Destructor for Markov model. Default implementation.
     ~Markov() = default;
 
-    // Copy
-    std::unique_ptr<Model> clone() const override {
-        auto np = Model::Create(GetModelName(), GetLogName());
-        np->SetState(GetState());
-        np->SetHistories(GetHistories());
-        np->SetHistoryCaptureInterval(GetHistoryCaptureInterval());
-        np->SetFinalTimestep(GetFinalTimestep());
-        if (auto *markov = dynamic_cast<Markov *>(np.get())) {
-            markov->_current_timestep = _current_timestep;
-            markov->_initial_history_recorded = _initial_history_recorded;
-        }
-        for (const auto &t : GetTransitions()) {
-            np->AddTransition(t->clone());
-        }
-        return np;
-    }
-    // Move
     Markov(Markov &&other) noexcept {
-        _state = other.GetState();
-        _name = other.GetModelName();
-        _log_name = other.GetLogName();
-        for (const auto &t : other.GetTransitions()) {
-            AddTransition(std::move(t));
+        _state = other._state;
+        _name = other._name;
+        _log_name = other._log_name;
+        _current_timestep = other._current_timestep;
+        _history_capture_interval = other._history_capture_interval;
+        _final_timestep = other._final_timestep;
+        _initial_history_recorded = other._initial_history_recorded;
+        for (const auto &h : other._histories) {
+            _histories[h.first] = h.second;
+        }
+        other._histories.clear();
+        for (const auto &t : other._timestep_vector) {
+            _timestep_vector.push_back(std::move(t));
         }
         other.ClearTransitions();
     }
     Markov &operator=(Markov &&other) noexcept {
         if (this != &other) {
-            _state = other.GetState();
-            _name = other.GetModelName();
-            _log_name = other.GetLogName();
-            for (const auto &t : other.GetTransitions()) {
-                AddTransition(std::move(t));
+            _state = other._state;
+            _name = other._name;
+            _log_name = other._log_name;
+            _current_timestep = other._current_timestep;
+            _history_capture_interval = other._history_capture_interval;
+            _final_timestep = other._final_timestep;
+            _initial_history_recorded = other._initial_history_recorded;
+            for (const auto &h : other._histories) {
+                _histories[h.first] = h.second;
+            }
+            other._histories.clear();
+            for (const auto &t : other._timestep_vector) {
+                _timestep_vector.push_back(std::move(t));
             }
             other.ClearTransitions();
         }
         return *this;
     }
 
-    // anticipate making a copy of the vector
+    /// @brief Function to provide a deep copy operation of the Model. Copy
+    /// constructor and assignment operator are deleted to prevent copying of
+    /// Markov instances. Instead we prefer to use `clone()` for deep copying.
+    /// @return A unique_ptr to a new Markov instance that is a deep copy of
+    /// this instance.
+    std::unique_ptr<Model> clone() const override {
+        auto np = Model::Create(GetModelName(), GetLogName());
+        np->SetState(GetState());
+        np->SetHistoryCaptureInterval(GetHistoryCaptureInterval());
+        np->SetFinalTimestep(GetFinalTimestep());
+        if (auto *markov = dynamic_cast<Markov *>(np.get())) {
+            markov->_histories = _histories;
+            markov->_current_timestep = _current_timestep;
+            markov->_initial_history_recorded = _initial_history_recorded;
+        }
+
+        int timesteps = static_cast<int>(_timestep_vector.size());
+        for (int i = 0; i < timesteps; ++i) {
+            np->AddTimestep(_timestep_vector[i]);
+        }
+        return np;
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
+    //
+    // Getters and Setters for Model State and Metadata
+    //
+    ////////////////////////////////////////////////////////////////////////////
+
+    const Timestep &GetTimestepAtIndex(size_t index) const override {
+        if (index >= _timestep_vector.size()) {
+            throw std::out_of_range("Index out of range in GetTimestepAtIndex");
+        }
+        return *_timestep_vector[index];
+    }
+
+    const Eigen::Ref<const Eigen::VectorXd> &GetState() const override {
+        return _state;
+    }
+
+    std::string GetName() const override { return _name; }
+
+    const std::map<std::string, History> &GetHistories() const override {
+        return _histories;
+    }
+
+    int GetTimestep() const override { return _current_timestep; }
+
+    int GetHistoryCaptureInterval() const override {
+        return _history_capture_interval;
+    }
+
+    int GetFinalTimestep() const override { return _final_timestep; }
+
+    bool GetInitialHistoryRecorded() const override {
+        return _initial_history_recorded;
+    }
+
     void SetState(const Eigen::Ref<const Eigen::VectorXd> &s) override {
         _state = s;
     }
-    // return const & to limit to observation of the state
-    Eigen::VectorXd GetState() const override { return _state; }
-    // return the transitions
-    const std::vector<std::unique_ptr<Transition>> &GetTransitions() const {
-        return _transition_vector;
+
+    void SetHistoryCaptureInterval(int interval) override {
+        _history_capture_interval = (interval < 1) ? 1 : interval;
+    }
+
+    void SetFinalTimestep(int final_timestep) override {
+        _final_timestep = final_timestep;
+    }
+
+    void SetInitialHistoryRecorded(bool recorded) override {
+        _initial_history_recorded = recorded;
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
+    //
+    // Model Behavior Methods: Timestep Execution and History Management
+    //
+    ////////////////////////////////////////////////////////////////////////////
+
+    void AddTimestep(const std::shared_ptr<Timestep> &timestep) override {
+        _timestep_vector.push_back(timestep);
+        if (static_cast<int>(_timestep_vector.size()) > _final_timestep) {
+            LogWarning(_log_name, "Final timestep exceeded by added timestep. "
+                                  "Adjusting final timestep to accommodate.");
+        }
+    }
+
+    void RunTimestep() override { RunTimestep(_current_timestep); }
+
+    /// @brief Executes the timestep in the model's sequence.
+    void RunTimestep(size_t idx) override {
+        if (_timestep_vector.empty()) {
+            LogWarning(_log_name,
+                       "No timesteps available to run for model: " + _name);
+            return;
+        }
+
+        if (idx >= static_cast<int>(_timestep_vector.size())) {
+            LogWarning(
+                _log_name,
+                "Current timestep exceeds available timesteps for model: " +
+                    _name);
+            return;
+        }
+
+        auto transitions = _timestep_vector[idx]->GetTransitions();
+        for (const auto &t : transitions) {
+            _state = t->Execute(_state, _histories);
+        }
+    }
+
+    void RunTransitions() override {
+        SetupHistory();
+        if (!_initial_history_recorded) {
+            RecordHistoryAtCurrentTimestep();
+        }
+        int transitions_per_timestep =
+            static_cast<int>(_transition_vector.size()) / _final_timestep;
+        for (const auto &t : _transition_vector) {
+            _state = t->Execute(_state, _histories);
+        }
+        _current_timestep++;
+        RecordHistoryAtCurrentTimestep();
     }
 
     /// @brief The default histories are:
@@ -109,37 +235,6 @@ public:
         SetHistories(ret);
     }
 
-    // manipulate the state vector
-    void RunTransitions() override {
-        SetupHistory();
-        if (!_initial_history_recorded) {
-            RecordHistoryAtCurrentTimestep();
-        }
-        int transitions_per_timestep =
-            static_cast<int>(_transition_vector.size()) / _final_timestep;
-        for (const auto &t : _transition_vector) {
-            _state = t->Execute(_state, _histories);
-        }
-        _current_timestep++;
-        RecordHistoryAtCurrentTimestep();
-    }
-
-    // assume ownership of the Transition
-    void AddTimestep(
-        const std::vector<std::unique_ptr<Transition>> &transitions) override {
-        for (const auto &t : transitions) {
-            _transition_vector.push_back(t->clone());
-        }
-        _final_timestep++;
-    }
-    // get the names of each transition we own
-    std::vector<std::string> GetTransitionNames() const override {
-        std::vector<std::string> t_names;
-        for (const auto &n : _transition_vector) {
-            t_names.push_back(n->GetTransitionName());
-        }
-        return t_names;
-    }
     // delete all the Transition unique_ptrs by clearing the vector
     void ClearTransitions() override { _transition_vector.clear(); }
 
@@ -165,31 +260,8 @@ public:
         ResetHistoryTracking();
     }
 
-    void SetHistoryCaptureInterval(int interval) override {
-        _history_capture_interval = (interval < 1) ? 1 : interval;
-    }
-
-    int GetHistoryCaptureInterval() const override {
-        return _history_capture_interval;
-    }
-
-    void SetFinalTimestep(int final_timestep) override {
-        _final_timestep = final_timestep;
-    }
-
-    int GetFinalTimestep() const override { return _final_timestep; }
-
-    // return const & to limit to observation of the state. Need copy ability of
-    // History, but let that be the History's responsibility
-    std::map<std::string, History> GetHistories() const override {
-        return _histories;
-    }
-    // getter for model name
-    std::string GetModelName() const override { return _name; }
-    std::string GetLogName() const override { return _log_name; }
-
 private:
-    std::vector<std::unique_ptr<Transition>> _transition_vector;
+    std::vector<std::shared_ptr<Timestep>> _timestep_vector;
     Eigen::VectorXd _state;
     std::string _name;
     std::string _log_name;
