@@ -23,8 +23,6 @@
 
 namespace respond {
 
-using TransitionsVec = std::vector<std::shared_ptr<const Transition &>>;
-
 /// @brief Abstract base class representing a state transition operation.
 /// Transitions apply transformation matrices to state vectors and update
 /// history records. Subclasses define specific types of transitions (e.g.,
@@ -49,6 +47,11 @@ public:
     /// The matrix is stored for use during Execute() calls.
     /// @param m The transition matrix to add (not modified by this transition).
     virtual void AddMatrix(const Eigen::Ref<const Eigen::MatrixXd> &m) = 0;
+
+    /// @brief Retrieves the stored transition matrices for this transition.
+    /// @return A vector of references to the stored transition matrices.
+    virtual std::vector<Eigen::Ref<const Eigen::MatrixXd>>
+    GetMatrices() const = 0;
 
     /// @brief Retrieves the name/type of this transition.
     /// @return The transition's identifier as a string.

@@ -4,7 +4,7 @@
 // Created Date: 2026-02-05                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-07-06                                                  //
+// Last Modified: 2026-07-07                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
@@ -65,7 +65,7 @@ public:
         for (const auto &t : other._timestep_vector) {
             _timestep_vector.push_back(std::move(t));
         }
-        other.ClearTransitions();
+        other.ClearTimesteps();
     }
     Markov &operator=(Markov &&other) noexcept {
         if (this != &other) {
@@ -83,7 +83,7 @@ public:
             for (const auto &t : other._timestep_vector) {
                 _timestep_vector.push_back(std::move(t));
             }
-            other.ClearTransitions();
+            other.ClearTimesteps();
         }
         return *this;
     }
@@ -94,7 +94,7 @@ public:
     /// @return A unique_ptr to a new Markov instance that is a deep copy of
     /// this instance.
     std::unique_ptr<Model> clone() const override {
-        auto np = Model::Create(GetModelName(), GetLogName());
+        auto np = Model::Create(_name, _log_name);
         np->SetState(GetState());
         np->SetHistoryCaptureInterval(GetHistoryCaptureInterval());
         np->SetFinalTimestep(GetFinalTimestep());
@@ -124,7 +124,7 @@ public:
         return *_timestep_vector[index];
     }
 
-    const Eigen::Ref<const Eigen::VectorXd> &GetState() const override {
+    const Eigen::Ref<const Eigen::VectorXd> GetState() const override {
         return _state;
     }
 
@@ -200,18 +200,23 @@ public:
         }
     }
 
-    void RunTransitions() override {
+    void RunTimesteps() override {
         SetupHistory();
         if (!_initial_history_recorded) {
             RecordHistoryAtCurrentTimestep();
         }
-        int transitions_per_timestep =
-            static_cast<int>(_transition_vector.size()) / _final_timestep;
-        for (const auto &t : _transition_vector) {
-            _state = t->Execute(_state, _histories);
+        for (size_t i = 0; i < _timestep_vector.size(); ++i) {
+            RunTimestep(i);
+            _current_timestep++;
+            RecordHistoryAtCurrentTimestep();
         }
-        _current_timestep++;
-        RecordHistoryAtCurrentTimestep();
+    }
+
+    void ClearTimesteps() override { _timestep_vector.clear(); }
+
+    void ClearHistories() override {
+        _histories.clear();
+        ResetHistoryTracking();
     }
 
     /// @brief The default histories are:
@@ -223,24 +228,16 @@ public:
     /// @return A vector of the default history objects.
     void CreateDefaultHistories() override {
         std::map<std::string, History> ret;
-        ret["state"] = History("state", GetLogName(), HistoryMode::Snapshot);
+        ret["state"] = History("state", _log_name, HistoryMode::Snapshot);
         ret["total_overdose"] =
-            History("total_overdose", GetLogName(), HistoryMode::Accumulated);
+            History("total_overdose", _log_name, HistoryMode::Accumulated);
         ret["fatal_overdose"] =
-            History("fatal_overdose", GetLogName(), HistoryMode::Accumulated);
+            History("fatal_overdose", _log_name, HistoryMode::Accumulated);
         ret["intervention_admission"] = History(
-            "intervention_admission", GetLogName(), HistoryMode::Accumulated);
+            "intervention_admission", _log_name, HistoryMode::Accumulated);
         ret["background_death"] =
-            History("background_death", GetLogName(), HistoryMode::Accumulated);
-        SetHistories(ret);
-    }
-
-    // delete all the Transition unique_ptrs by clearing the vector
-    void ClearTransitions() override { _transition_vector.clear(); }
-
-    virtual void
-    SetHistories(const std::map<std::string, History> &h) override {
-        _histories = h;
+            History("background_death", _log_name, HistoryMode::Accumulated);
+        _histories = ret;
         if (_histories.empty()) {
             ResetHistoryTracking();
             return;
@@ -254,10 +251,6 @@ public:
 
         _initial_history_recorded = true;
         _current_timestep = latest_timestep;
-    }
-    void ClearHistories() override {
-        _histories.clear();
-        ResetHistoryTracking();
     }
 
 private:

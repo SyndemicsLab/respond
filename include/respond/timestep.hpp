@@ -4,7 +4,7 @@
 // Created Date: 2026-06-30                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-07-06                                                  //
+// Last Modified: 2026-07-07                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
@@ -29,21 +29,21 @@ public:
     Timestep(const std::string &log_name, const std::string &log_filepath)
         : _log_name(log_name) {
         CreateFileLogger(log_name, log_filepath);
-        _transitions = {};
     }
     ~Timestep() = default;
 
-    const Transition &
-    CreateTransition(const std::string &transition_name) const {
-        auto transition = Transition::Create(transition_name, _log_name);
-        return *transition;
+    const std::unique_ptr<Transition> &
+    CreateTransition(const std::string &transition_name) {
+        _transitions.push_back(Transition::Create(transition_name, _log_name));
+        return _transitions.back();
     }
 
     void AddMatrixToTransition(const size_t &idx,
                                const Eigen::Ref<const Eigen::MatrixXd> &m) {
         if (idx >= _transitions.size()) {
-            throw std::out_of_range(
-                "Index out of range in AddMatrixToTransition");
+            LogWarning(_log_name,
+                       "Index out of range in AddMatrixToTransition: " +
+                           std::to_string(idx));
         }
         _transitions[idx]->AddMatrix(m);
     }
@@ -88,16 +88,7 @@ public:
         return _ret;
     }
 
-    const std::unique_ptr<Transition> &
-    GetTransitionAtIndex(size_t index) const {
-        if (index >= _transitions.size()) {
-            throw std::out_of_range(
-                "Index out of range in GetTransitionAtIndex");
-        }
-        return _transitions[index];
-    }
-
-    const std::vector<std::string> &GetTransitionNames() const {
+    std::vector<std::string> GetTransitionNames() const {
         std::vector<std::string> names;
         for (const auto &t : _transitions) {
             names.push_back(t->GetName());

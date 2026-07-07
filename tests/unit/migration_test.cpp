@@ -4,7 +4,7 @@
 // Created Date: 2026-02-06                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-02-06                                                  //
+// Last Modified: 2026-07-07                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
@@ -32,7 +32,7 @@ public:
 
 protected:
     void SetUp() override {
-        tran = TransitionFactory::CreateTransition("migration", "test_logger");
+        tran = Transition::Create("migration", "test_logger");
         state = Eigen::VectorXd(3);
         state << 1.0f, 2.0f, 3.0f;
 
@@ -47,8 +47,8 @@ TEST_F(MigrationTest, NoTransitionMatrices) {
 }
 
 TEST_F(MigrationTest, TooManyTransitionMatrices) {
-    tran->AddTransitionMatrix(state);
-    tran->AddTransitionMatrix(state);
+    tran->AddMatrix(state);
+    tran->AddMatrix(state);
     EXPECT_THROW(tran->Execute(state, histories), std::runtime_error);
 }
 
@@ -56,12 +56,12 @@ TEST_F(MigrationTest, WrongSizeTransitionMatrix) {
     Eigen::VectorXd bad_t_matrix;
     bad_t_matrix = Eigen::VectorXd(6);
     bad_t_matrix << 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f;
-    tran->AddTransitionMatrix(bad_t_matrix);
+    tran->AddMatrix(bad_t_matrix);
     EXPECT_THROW(tran->Execute(state, histories), std::runtime_error);
 }
 
 TEST_F(MigrationTest, GoodExecuteNoHistory) {
-    tran->AddTransitionMatrix(tran_matrix);
+    tran->AddMatrix(tran_matrix);
     auto result = tran->Execute(state, histories);
     auto expected = state + tran_matrix;
     EXPECT_TRUE(result.isApprox(expected));

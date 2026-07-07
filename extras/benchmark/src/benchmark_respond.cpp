@@ -4,7 +4,7 @@
 // Created Date: 2026-04-27                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-06-29                                                  //
+// Last Modified: 2026-07-07                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
@@ -277,24 +277,21 @@ std::unique_ptr<respond::Model> BuildModel(std::size_t state_size,
     model->SetHistoryCaptureInterval(history_capture_interval);
     model->SetFinalTimestep(final_timestep);
 
-    auto behavior =
-        respond::TransitionFactory::CreateTransition("behavior", "console");
-    auto intervention =
-        respond::TransitionFactory::CreateTransition("intervention", "console");
-    auto overdose =
-        respond::TransitionFactory::CreateTransition("overdose", "console");
-    auto background = respond::TransitionFactory::CreateTransition(
-        "background_death", "console");
+    auto behavior = respond::Transition::Create("behavior", "console");
+    auto intervention = respond::Transition::Create("intervention", "console");
+    auto overdose = respond::Transition::Create("overdose", "console");
+    auto background =
+        respond::Transition::Create("background_death", "console");
 
     if (!behavior || !intervention || !overdose || !background) {
         throw std::runtime_error("Failed to create one or more transitions");
     }
 
-    behavior->AddTransitionMatrix(MakeShiftMatrix(state_size, 0.985, 1));
-    intervention->AddTransitionMatrix(MakeShiftMatrix(state_size, 0.990, -1));
-    overdose->AddTransitionMatrix(MakeRateVector(state_size, 0.0020, 0.0005));
-    overdose->AddTransitionMatrix(MakeRateVector(state_size, 0.0800, 0.0200));
-    background->AddTransitionMatrix(MakeRateVector(state_size, 0.0008, 0.0004));
+    behavior->AddMatrix(MakeShiftMatrix(state_size, 0.985, 1));
+    intervention->AddMatrix(MakeShiftMatrix(state_size, 0.990, -1));
+    overdose->AddMatrix(MakeRateVector(state_size, 0.0020, 0.0005));
+    overdose->AddMatrix(MakeRateVector(state_size, 0.0800, 0.0200));
+    background->AddMatrix(MakeRateVector(state_size, 0.0008, 0.0004));
 
     model->AddTransition(behavior);
     model->AddTransition(intervention);

@@ -4,7 +4,7 @@
 // Created Date: 2026-02-05                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-07-06                                                  //
+// Last Modified: 2026-07-07                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
@@ -100,7 +100,7 @@ public:
     /// @brief Retrieves the current state of the model.
     /// @return A reference to the model's internal state. It is limited to
     /// observation and changes cannot be made to it directly.
-    virtual const Eigen::Ref<const Eigen::VectorXd> &GetState() const = 0;
+    virtual const Eigen::Ref<const Eigen::VectorXd> GetState() const = 0;
 
     /// @brief Retrieves the name identifier for this model.
     /// @return The model's name as a string.

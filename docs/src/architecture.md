@@ -117,7 +117,7 @@ RESPOND follows the **inversion of control** principle, abstracting the model to
 Encapsulates object creation for transitions:
 
 ```cpp
-auto transition = TransitionFactory::CreateTransition("behavior", "logger");
+auto transition = Transition::Create("behavior", "logger");
 ```
 
 **Benefits**:
@@ -205,7 +205,7 @@ RESPOND minimizes shared state. History objects are the exception—they're:
 
 1. Create a new header in `include/respond/internals/`
 2. Implement concrete Transition subclass
-3. Add factory entry in `TransitionFactory::CreateTransition()`
+3. Add factory entry in `Transition::Create()`
 
 Example:
 ```cpp

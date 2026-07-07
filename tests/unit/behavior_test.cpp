@@ -4,7 +4,7 @@
 // Created Date: 2026-02-06                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-02-06                                                  //
+// Last Modified: 2026-07-07                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
@@ -32,7 +32,7 @@ public:
 
 protected:
     void SetUp() override {
-        tran = TransitionFactory::CreateTransition("behavior", "test_logger");
+        tran = Transition::Create("behavior", "test_logger");
         state = Eigen::VectorXd(3);
         state << 1.0f, 2.0f, 3.0f;
 
@@ -47,18 +47,18 @@ TEST_F(BehaviorTest, NoTransitionMatrices) {
 }
 
 TEST_F(BehaviorTest, TooManyTransitionMatrices) {
-    tran->AddTransitionMatrix(tran_matrix);
-    tran->AddTransitionMatrix(tran_matrix);
+    tran->AddMatrix(tran_matrix);
+    tran->AddMatrix(tran_matrix);
     EXPECT_THROW(tran->Execute(state, histories), std::runtime_error);
 }
 
 TEST_F(BehaviorTest, NotSquareTransitionMatrix) {
-    tran->AddTransitionMatrix(state);
+    tran->AddMatrix(state);
     EXPECT_THROW(tran->Execute(state, histories), std::runtime_error);
 }
 
 TEST_F(BehaviorTest, GoodExecuteNoHistory) {
-    tran->AddTransitionMatrix(tran_matrix);
+    tran->AddMatrix(tran_matrix);
     auto result = tran->Execute(state, histories);
     auto expected = tran_matrix * state;
     EXPECT_TRUE(result.isApprox(expected));
