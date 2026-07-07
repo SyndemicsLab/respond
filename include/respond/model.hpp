@@ -18,6 +18,7 @@
 
 #include <Eigen/Dense>
 
+#include <respond/constants.hpp>
 #include <respond/history.hpp>
 #include <respond/timestep.hpp>
 
@@ -35,11 +36,18 @@ public:
     ////////////////////////////////////////////////////////////////////////////
 
     /// @brief Factory method to create a Model instance.
+    /// @details This method creates a new instance of a Model subclass based on
+    /// the provided name. It initializes logging for the model and returns a
+    /// unique_ptr to the created instance. Throws an exception if the model
+    /// name is unsupported.
     /// @param name The name identifier for the model to create.
     /// @param log_name Name of the logger for this model (default: "console").
+    /// @param log_filepath File path for the log file (default: "respond.log").
     /// @return A unique_ptr to the newly created Model instance.
     static std::unique_ptr<Model>
-    Create(const std::string &name, const std::string &log_name = "console");
+    Create(const std::string &name,
+           const std::string &log_name = RESPOND_DEFAULT_LOG,
+           const std::string &log_filepath = RESPOND_DEFAULT_LOG_FILE);
 
     /// @brief Virtual destructor for proper polymorphic cleanup.
     virtual ~Model() = default;
@@ -63,7 +71,7 @@ public:
     /// @brief Helper function to add a single timestep to the model.
     /// @param timestep A shared pointer to a Timestep instance. The model gains
     /// an ownership reference to this timestep and will manage its lifecycle.
-    virtual void AddTimestep(const std::shared_ptr<Timestep> &timestep) = 0;
+    virtual void AddTimestep(const Timestep &timestep) = 0;
 
     /// @brief Executes the next timestep in the model's sequence.
     virtual void RunTimestep() = 0;
@@ -95,7 +103,7 @@ public:
     /// @brief Retrieve an immutable reference to a specific timestep by index.
     /// @param index The zero-based index of the timestep to retrieve.
     /// @return A constant reference to the Timestep at the specified index.
-    virtual const Timestep &GetTimestepAtIndex(size_t index) const = 0;
+    virtual Timestep GetTimestepAtIndex(size_t index) const = 0;
 
     /// @brief Retrieves the current state of the model.
     /// @return A reference to the model's internal state. It is limited to

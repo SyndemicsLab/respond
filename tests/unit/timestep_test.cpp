@@ -27,8 +27,10 @@ protected:
         // Create temporary log files for testing
         test_log_file_ = "/tmp/respond_test.log";
         shared_log_file_ = "/tmp/respond_shared.log";
+        default_log_file_ = RESPOND_DEFAULT_LOG_FILE;
 
         // Remove test files if they exist
+        std::remove(default_log_file_.c_str());
         std::remove(test_log_file_.c_str());
         std::remove(shared_log_file_.c_str());
     }
@@ -37,12 +39,14 @@ protected:
         spdlog::drop_all();
 
         // Remove test files
+        std::remove(default_log_file_.c_str());
         std::remove(test_log_file_.c_str());
         std::remove(shared_log_file_.c_str());
     }
 
     std::string test_log_file_;
     std::string shared_log_file_;
+    std::string default_log_file_;
 };
 
 TEST_F(TimestepTest, DefaultConstructor) {

@@ -20,6 +20,7 @@
 
 #include <Eigen/Dense>
 
+#include <respond/constants.hpp>
 #include <respond/history.hpp>
 #include <respond/transition.hpp>
 
@@ -34,15 +35,26 @@ public:
 
     /// @brief Default constructor for Markov model. Initializes with default
     /// name "markov" and logger "console".
-    Markov() : Markov("markov", "console") {}
+    Markov() : Markov("markov", RESPOND_DEFAULT_LOG) {}
 
     /// @brief Constructs a Markov model with specified name and logger.
     /// @param name The identifier for this model.
     /// @param log_name The logger name for error reporting.
     Markov(const std::string &name, const std::string &log_name)
+        : Markov(name, log_name, RESPOND_DEFAULT_LOG_FILE) {}
+
+    /// @brief Constructs a Markov model with specified name, logger, and log
+    /// file path.
+    /// @param name The identifier for this model.
+    /// @param log_name The logger name for error reporting.
+    /// @param log_filepath The file path for the log file to be used by this
+    /// model.
+    Markov(const std::string &name, const std::string &log_name,
+           const std::string &log_filepath)
         : _name(name), _log_name(log_name), _current_timestep(0),
           _history_capture_interval(1), _final_timestep(-1),
           _initial_history_recorded(false) {
+        CreateFileLogger(log_name, log_filepath);
         const auto processor_count = std::thread::hardware_concurrency();
         Eigen::setNbThreads(processor_count);
     }
@@ -117,11 +129,11 @@ public:
     //
     ////////////////////////////////////////////////////////////////////////////
 
-    const Timestep &GetTimestepAtIndex(size_t index) const override {
+    Timestep GetTimestepAtIndex(size_t index) const override {
         if (index >= _timestep_vector.size()) {
             throw std::out_of_range("Index out of range in GetTimestepAtIndex");
         }
-        return *_timestep_vector[index];
+        return _timestep_vector[index];
     }
 
     const Eigen::Ref<const Eigen::VectorXd> GetState() const override {
@@ -168,15 +180,17 @@ public:
     //
     ////////////////////////////////////////////////////////////////////////////
 
-    void AddTimestep(const std::shared_ptr<Timestep> &timestep) override {
+    void AddTimestep(const Timestep &timestep) override {
         _timestep_vector.push_back(timestep);
         if (static_cast<int>(_timestep_vector.size()) > _final_timestep) {
-            LogWarning(_log_name, "Final timestep exceeded by added timestep. "
-                                  "Adjusting final timestep to accommodate.");
+            LogWarning(_log_name, "Final timestep exceeded by added timestep.");
         }
     }
 
-    void RunTimestep() override { RunTimestep(_current_timestep); }
+    void RunTimestep() override {
+        RunTimestep(_current_timestep);
+        _current_timestep++;
+    }
 
     /// @brief Executes the timestep in the model's sequence.
     void RunTimestep(size_t idx) override {
@@ -194,7 +208,7 @@ public:
             return;
         }
 
-        auto transitions = _timestep_vector[idx]->GetTransitions();
+        auto transitions = _timestep_vector[idx].GetTransitions();
         for (const auto &t : transitions) {
             _state = t->Execute(_state, _histories);
         }
@@ -206,8 +220,7 @@ public:
             RecordHistoryAtCurrentTimestep();
         }
         for (size_t i = 0; i < _timestep_vector.size(); ++i) {
-            RunTimestep(i);
-            _current_timestep++;
+            RunTimestep();
             RecordHistoryAtCurrentTimestep();
         }
     }
@@ -254,7 +267,7 @@ public:
     }
 
 private:
-    std::vector<std::shared_ptr<Timestep>> _timestep_vector;
+    std::vector<Timestep> _timestep_vector;
     Eigen::VectorXd _state;
     std::string _name;
     std::string _log_name;

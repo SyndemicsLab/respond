@@ -30,16 +30,14 @@ namespace testing {
 class MockModel : public virtual Model {
 public:
     MOCK_METHOD((std::unique_ptr<Model>), clone, (), (const, override));
-    MOCK_METHOD(void, AddTimestep, (const std::shared_ptr<Timestep> &),
-                (override));
+    MOCK_METHOD(void, AddTimestep, (const Timestep &), (override));
     MOCK_METHOD(void, RunTimestep, (), (override));
     MOCK_METHOD(void, RunTimestep, (size_t), (override));
     MOCK_METHOD(void, RunTimesteps, (), (override));
     MOCK_METHOD(void, ClearTimesteps, (), (override));
     MOCK_METHOD(void, ClearHistories, (), (override));
     MOCK_METHOD(void, CreateDefaultHistories, (), (override));
-    MOCK_METHOD(const Timestep &, GetTimestepAtIndex, (size_t),
-                (const, override));
+    MOCK_METHOD(Timestep, GetTimestepAtIndex, (size_t), (const, override));
     MOCK_METHOD((const Eigen::Ref<const Eigen::VectorXd>), GetState, (),
                 (const, override));
     MOCK_METHOD(std::string, GetName, (), (const, override));
