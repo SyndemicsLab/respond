@@ -23,8 +23,6 @@
 
 namespace respond {
 
-using TransitionsVec = std::vector<std::shared_ptr<const Transition &>>;
-
 /// @brief Abstract base class representing a state transition operation.
 /// Transitions apply transformation matrices to state vectors and update
 /// history records. Subclasses define specific types of transitions (e.g.,
