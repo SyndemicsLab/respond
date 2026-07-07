@@ -15,5 +15,6 @@
 
 #define RESPOND_DEFAULT_LOG "respond"
 #define RESPOND_DEFAULT_LOG_FILE "respond.log"
+#define RESPOND_DEFAULT_TRANSITION_NAME "transition"
 
 #endif

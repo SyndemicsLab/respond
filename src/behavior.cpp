@@ -26,7 +26,7 @@ Behavior::Execute(const Eigen::Ref<const Eigen::VectorXd> &state,
         std::string error_msg =
             "Behavior error: Expected 1 transition matrix, got " +
             std::to_string(GetMatrices().size());
-        LogError(GetLogName(), error_msg);
+        LogError(_log_name, error_msg);
         throw std::runtime_error(error_msg);
     }
     if (state.rows() != GetMatrices()[0].cols()) {
@@ -36,7 +36,7 @@ Behavior::Execute(const Eigen::Ref<const Eigen::VectorXd> &state,
            << ") but transition matrix expects (" << GetMatrices()[0].rows()
            << ", " << GetMatrices()[0].cols() << ")";
         std::string error_msg = ss.str();
-        LogError(GetLogName(), error_msg);
+        LogError(_log_name, error_msg);
         throw std::runtime_error(error_msg);
     }
     auto new_state = GetMatrices()[0] * state;

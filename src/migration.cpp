@@ -26,7 +26,7 @@ Migration::Execute(const Eigen::Ref<const Eigen::VectorXd> &state,
         std::string error_msg =
             "Migration error: Expected 1 transition matrix, got " +
             std::to_string(GetMatrices().size());
-        LogError(GetLogName(), error_msg);
+        LogError(_log_name, error_msg);
         throw std::runtime_error(error_msg);
     }
     if (state.size() != GetMatrices()[0].size()) {
@@ -34,7 +34,7 @@ Migration::Execute(const Eigen::Ref<const Eigen::VectorXd> &state,
                                 std::to_string(state.size()) +
                                 ") does not match transition matrix size (" +
                                 std::to_string(GetMatrices()[0].size()) + ")";
-        LogError(GetLogName(), error_msg);
+        LogError(_log_name, error_msg);
         throw std::runtime_error(error_msg);
     }
     auto subtracted = state + GetMatrices()[0];

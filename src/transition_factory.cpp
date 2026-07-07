@@ -4,7 +4,7 @@
 // Created Date: 2026-02-05                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-07-02                                                  //
+// Last Modified: 2026-07-07                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
@@ -25,21 +25,23 @@
 
 namespace respond {
 std::unique_ptr<Transition> Transition::Create(const std::string &type,
-                                               const std::string &log_name) {
+                                               const std::string &name,
+                                               const std::string &log_name,
+                                               const std::string &log_file) {
     std::string type_copy = type;
     std::transform(type_copy.begin(), type_copy.end(), type_copy.begin(),
                    [](unsigned char c) { return std::tolower(c); });
 
     if (type_copy == "migration") {
-        return std::make_unique<Migration>(type, log_name);
+        return std::make_unique<Migration>(name, log_name, log_file);
     } else if (type_copy == "behavior") {
-        return std::make_unique<Behavior>(type, log_name);
+        return std::make_unique<Behavior>(name, log_name, log_file);
     } else if (type_copy == "intervention") {
-        return std::make_unique<Intervention>(type, log_name);
+        return std::make_unique<Intervention>(name, log_name, log_file);
     } else if (type_copy == "overdose") {
-        return std::make_unique<Overdose>(type, log_name);
+        return std::make_unique<Overdose>(name, log_name, log_file);
     } else if (type_copy == "background_death") {
-        return std::make_unique<BackgroundDeath>(type, log_name);
+        return std::make_unique<BackgroundDeath>(name, log_name, log_file);
     }
 
     // Invalid transition type

@@ -26,7 +26,7 @@ Intervention::Execute(const Eigen::Ref<const Eigen::VectorXd> &state,
         std::string error_msg =
             "Intervention error: Expected 1 transition matrix, got " +
             std::to_string(GetMatrices().size());
-        LogError(GetLogName(), error_msg);
+        LogError(_log_name, error_msg);
         throw std::runtime_error(error_msg);
     }
 
@@ -38,7 +38,7 @@ Intervention::Execute(const Eigen::Ref<const Eigen::VectorXd> &state,
            << ") but transition matrix expects (" << GetMatrices()[0].rows()
            << ", " << GetMatrices()[0].cols() << ")";
         std::string error_msg = ss.str();
-        LogError(GetLogName(), error_msg);
+        LogError(_log_name, error_msg);
         throw std::runtime_error(error_msg);
     }
     auto moved = GetMatrices()[0] * state;

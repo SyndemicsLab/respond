@@ -4,7 +4,7 @@
 // Created Date: 2026-02-02                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-07-06                                                  //
+// Last Modified: 2026-07-07                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
@@ -19,6 +19,7 @@
 
 #include <Eigen/Dense>
 
+#include <respond/constants.hpp>
 #include <respond/history.hpp>
 
 namespace respond {
@@ -60,10 +61,6 @@ public:
     /// @brief Clears all stored transition matrices.
     virtual void ClearMatrices() = 0;
 
-    /// @brief Retrieves the logger name used by this transition.
-    /// @return The associated logger's name.
-    virtual std::string GetLogName() const = 0;
-
     /// @brief Deleted copy constructor (transitions are non-copyable by public
     /// API).
     Transition(const Transition &) = delete;
@@ -86,8 +83,11 @@ public:
     /// @param log_name The logger name for error reporting (e.g., "console").
     /// @return A unique_ptr to the created Transition, or nullptr if type is
     /// unsupported.
-    static std::unique_ptr<Transition> Create(const std::string &type,
-                                              const std::string &log_name);
+    static std::unique_ptr<Transition>
+    Create(const std::string &type,
+           const std::string &name = RESPOND_DEFAULT_TRANSITION_NAME,
+           const std::string &log_name = RESPOND_DEFAULT_LOG,
+           const std::string &log_file = RESPOND_DEFAULT_LOG_FILE);
 
 protected:
     /// @brief Protected default constructor for subclass initialization.

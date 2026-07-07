@@ -26,7 +26,7 @@ Overdose::Execute(const Eigen::Ref<const Eigen::VectorXd> &state,
         std::string error_msg =
             "Overdose error: Expected 2 transition matrices, got " +
             std::to_string(GetMatrices().size());
-        LogError(GetLogName(), error_msg);
+        LogError(_log_name, error_msg);
         throw std::runtime_error(error_msg);
     }
 
@@ -35,7 +35,7 @@ Overdose::Execute(const Eigen::Ref<const Eigen::VectorXd> &state,
                                 std::to_string(state.size()) +
                                 ") does not match transition matrix size (" +
                                 std::to_string(GetMatrices()[0].size()) + ")";
-        LogError(GetLogName(), error_msg);
+        LogError(_log_name, error_msg);
         throw std::runtime_error(error_msg);
     }
     Eigen::VectorXd overdoses =
@@ -50,7 +50,7 @@ Overdose::Execute(const Eigen::Ref<const Eigen::VectorXd> &state,
                                 std::to_string(overdoses.size()) +
                                 ") does not match transition matrix size (" +
                                 std::to_string(GetMatrices()[1].size()) + ")";
-        LogError(GetLogName(), error_msg);
+        LogError(_log_name, error_msg);
         throw std::runtime_error(error_msg);
     }
     auto fods = overdoses.cwiseProduct(GetMatrices()[1]); // negatives
@@ -63,7 +63,7 @@ Overdose::Execute(const Eigen::Ref<const Eigen::VectorXd> &state,
             "overdoses. " +
             std::to_string((state.array() < fods.array()).count()) +
             " elements affected";
-        LogError(GetLogName(), error_msg);
+        LogError(_log_name, error_msg);
         throw std::runtime_error(error_msg);
     }
     auto new_state = state - fods; // remove fods from state
