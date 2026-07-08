@@ -4,13 +4,18 @@
 // Created Date: 2026-02-05                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-07-07                                                  //
+// Last Modified: 2026-07-08                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
 ////////////////////////////////////////////////////////////////////////////////
 #ifndef RESPOND_SIMULATION_HPP_
 #define RESPOND_SIMULATION_HPP_
+
+#include <respond/constants.hpp>
+#include <respond/history.hpp>
+#include <respond/logging.hpp>
+#include <respond/model.hpp>
 
 #include <map>
 #include <memory>
@@ -20,29 +25,30 @@
 
 #include <Eigen/Dense>
 
-#include <respond/history.hpp>
-#include <respond/logging.hpp>
-#include <respond/model.hpp>
-
 namespace respond {
 /// @brief Manages and executes multiple models in a coordinated simulation.
 /// A Simulation aggregates Model instances and coordinates their execution,
 /// maintaining history records and providing access to simulation results.
 class Simulation {
 public:
-    /// @brief Default constructor initializing with "console" logger.
-    Simulation() : Simulation("respond") {}
+    ////////////////////////////////////////////////////////////////////////////
+    //
+    // Rule of Five: Copy and Move Semantics
+    //
+    ////////////////////////////////////////////////////////////////////////////
+
+    /// @brief Default constructor for a Simulation instance.
+    /// Initializes the simulation with the default logger.
+    Simulation() : Simulation(RESPOND_DEFAULT_LOG) {}
 
     /// @brief Constructs a Simulation with a specified logger.
-    /// @param log_name Name of the logger for this simulation (default:
-    /// "console").
+    /// @param log_name The name of the logger to use for simulation output.
     Simulation(const std::string &log_name)
-        : Simulation(log_name, log_name + ".log") {}
+        : Simulation(log_name, RESPOND_DEFAULT_LOG_FILE) {}
 
-    /// @brief  Constructs a Simulation with a specified logger and log file
-    /// path.
-    /// @param log_name
-    /// @param log_filepath
+    /// @brief Constructs a Simulation with a specified logger and log file.
+    /// @param log_name The name of the logger to use for simulation output.
+    /// @param log_filepath The file path for the logger output.
     Simulation(const std::string &log_name, const std::string &log_filepath)
         : _log_name(log_name) {
         CreateFileLogger(log_name, log_filepath);
@@ -51,19 +57,101 @@ public:
     /// @brief Virtual destructor for polymorphic cleanup.
     ~Simulation() = default;
 
+    /// @brief Copy constructor creating an independent deep copy of the
+    /// simulation. All models are cloned; modifications to the copy do not
+    /// affect the original.
+    /// @param other The Simulation instance to copy from.
+    Simulation(const Simulation &other) {
+        _log_name = other._log_name;
+        for (const auto &m : other._models) {
+            _models.push_back(m->clone());
+        }
+        _duration = other._duration;
+        _parameter_change_times = other._parameter_change_times;
+        _stratify_entering_cohort = other._stratify_entering_cohort;
+        _build_summary_stats = other._build_summary_stats;
+        _save_state_history = other._save_state_history;
+        _timesteps_to_report = other._timesteps_to_report;
+        _pivot_long = other._pivot_long;
+    }
+
+    /// @brief Copy assignment operator for deep copying simulation state.
+    /// @param other The simulation to copy from.
+    /// @return Reference to this simulation after assignment.
+    Simulation &operator=(const Simulation &other) {
+        if (this != &other) {
+            _log_name = other._log_name;
+            _models.clear();
+            for (const auto &m : other._models) {
+                _models.push_back(m->clone());
+            }
+            _duration = other._duration;
+            _parameter_change_times = other._parameter_change_times;
+            _stratify_entering_cohort = other._stratify_entering_cohort;
+            _build_summary_stats = other._build_summary_stats;
+            _save_state_history = other._save_state_history;
+            _timesteps_to_report = other._timesteps_to_report;
+            _pivot_long = other._pivot_long;
+        }
+        return *this;
+    }
+
+    /// @brief Move constructor for transferring simulation ownership.
+    /// @param other The simulation to move from.
+    Simulation(Simulation &&other) noexcept
+        : _log_name(std::move(other._log_name)), _duration(other._duration),
+          _parameter_change_times(std::move(other._parameter_change_times)),
+          _stratify_entering_cohort(other._stratify_entering_cohort),
+          _build_summary_stats(other._build_summary_stats),
+          _save_state_history(other._save_state_history),
+          _timesteps_to_report(std::move(other._timesteps_to_report)),
+          _pivot_long(other._pivot_long) {
+        for (const auto &m : other._models) {
+            _models.push_back(m->clone());
+        }
+        other._models.clear();
+    }
+
+    /// @brief Move assignment operator for transferring simulation ownership.
+    /// @param other The simulation to move from.
+    /// @return Reference to this simulation after assignment.
+    Simulation &operator=(Simulation &&other) noexcept {
+        if (this != &other) {
+            _log_name = std::move(other._log_name);
+            _duration = other._duration;
+            _parameter_change_times = std::move(other._parameter_change_times);
+            _stratify_entering_cohort = other._stratify_entering_cohort;
+            _build_summary_stats = other._build_summary_stats;
+            _save_state_history = other._save_state_history;
+            _timesteps_to_report = std::move(other._timesteps_to_report);
+            _pivot_long = other._pivot_long;
+
+            for (const auto &m : other._models) {
+                _models.push_back(m->clone());
+            }
+            other._models.clear();
+        }
+        return *this;
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
+    //
+    // Simulation Behavior Methods: Model Management
+    //
+    ////////////////////////////////////////////////////////////////////////////
+
+    /// @brief Creates a new model instance and adds it to the simulation.
+    /// @param model_name The name identifier for the model to create. This name
+    /// is used to identify the model type and initialize it accordingly.
+    /// @return The unique identifier for the newly created model, combining its
+    /// index and name.
     const std::string CreateNewModel(const std::string &model_name) {
         _models.push_back(Model::Create(model_name, _log_name));
         return std::to_string(_models.size()) + "_" + _models.back()->GetName();
     }
 
-    /// @brief Executes one step of the simulation for all models.
-    /// Calls RunTransitions() on each registered model in sequence.
-    void Run() {
-        for (const auto &model : _models) {
-            model->SetFinalTimestep(_duration);
-            // model->RunTransitions();
-        }
-    }
+    /// @brief Removes all models from the simulation.
+    void ClearModels() { _models.clear(); }
 
     /// @brief Adds a model to the simulation.
     /// The model is cloned and managed by the simulation.
@@ -73,6 +161,21 @@ public:
         // the unique pointer
         _models.push_back(model->clone());
     }
+
+    /// @brief Executes one step of the simulation for all models.
+    /// Calls RunTransitions() on each registered model in sequence.
+    void Run() {
+        for (const auto &model : _models) {
+            model->SetFinalTimestep(_duration);
+            model->RunTimesteps();
+        }
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
+    //
+    // Getters and Setters for Transitions and Metadata
+    //
+    ////////////////////////////////////////////////////////////////////////////
 
     /// @brief Retrieves all models in the simulation.
     /// @return Const reference to the vector of Model unique_ptrs.
@@ -89,9 +192,6 @@ public:
         }
         return ret;
     }
-
-    /// @brief Removes all models from the simulation.
-    void ClearModels() { _models.clear(); }
 
     /// @brief Retrieves the complete state histories for all models.
     /// @return Vector of maps (one per model) mapping history names to state
@@ -136,34 +236,6 @@ public:
             }
         }
         return ret;
-    }
-
-    /// @brief Retrieves the logger name used by this simulation.
-    /// @return The name of the associated logger.
-    std::string GetLogName() const { return _log_name; }
-
-    /// @brief Copy constructor creating an independent deep copy of the
-    /// simulation. All models are cloned; modifications to the copy do not
-    /// affect the original.
-    Simulation(const Simulation &other) : _log_name(other.GetLogName()) {
-        ClearModels();
-        for (const auto &m : other.GetModels()) {
-            _models.push_back(m->clone());
-        }
-    }
-
-    /// @brief Copy assignment operator for deep copying simulation state.
-    /// @param other The simulation to copy from.
-    /// @return Reference to this simulation after assignment.
-    Simulation &operator=(const Simulation &other) {
-        if (this != &other) {
-            ClearModels();
-            _log_name = other.GetLogName();
-            for (const auto &m : other.GetModels()) {
-                _models.push_back(m->clone());
-            }
-        }
-        return *this;
     }
 
 private:

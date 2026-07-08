@@ -219,7 +219,17 @@ public:
         if (!_initial_history_recorded) {
             RecordHistoryAtCurrentTimestep();
         }
-        for (size_t i = 0; i < _timestep_vector.size(); ++i) {
+        size_t duration = _timestep_vector.size();
+        if (_timestep_vector.size() > static_cast<size_t>(_final_timestep) &&
+            _final_timestep >= 0) {
+            LogWarning(_log_name,
+                       "Duration is less than available timesteps for model: " +
+                           _name +
+                           ".\nOnly running timesteps up to duration value.");
+            duration = static_cast<size_t>(_final_timestep);
+        }
+
+        for (size_t i = 0; i < duration; ++i) {
             RunTimestep();
             RecordHistoryAtCurrentTimestep();
         }

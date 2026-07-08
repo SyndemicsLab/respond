@@ -121,7 +121,8 @@ public:
     /// exception if the transition type is unsupported.
     const std::unique_ptr<Transition> &
     CreateTransition(const std::string &transition_name) {
-        _transitions.push_back(Transition::Create(transition_name, _log_name));
+        _transitions.push_back(
+            Transition::Create(transition_name, transition_name, _log_name));
         return _transitions.back();
     }
 
