@@ -164,7 +164,10 @@ public:
 
     /// @brief Executes one step of the simulation for all models.
     /// Calls RunTransitions() on each registered model in sequence.
-    void Run() {
+    void Run(int duration = -1) {
+        if (duration > 0) {
+            _duration = duration;
+        }
         for (const auto &model : _models) {
             model->SetFinalTimestep(_duration);
             model->RunTimesteps();
@@ -237,6 +240,8 @@ public:
         }
         return ret;
     }
+
+    void SetDuration(int duration) { _duration = duration; }
 
 private:
     std::string _log_name;
