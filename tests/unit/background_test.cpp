@@ -120,9 +120,9 @@ TEST_F(BackgroundDeathTest, ExecuteNoMatrices) {
     EXPECT_THROW((void)background_death.Execute(state, histories),
                  std::runtime_error);
     FlushAllLoggers();
-    EXPECT_TRUE(FileContains(
-        RESPOND_DEFAULT_LOG_FILE,
-        "Background death error: Expected 1 transition matrix, got 0"));
+    EXPECT_TRUE(FileContains(RESPOND_DEFAULT_LOG_FILE,
+                             "Transition error - Wrong number of matrices. "
+                             "Expected 1 transition matrix, got 0"));
 }
 
 TEST_F(BackgroundDeathTest, ExecuteTooManyMatrices) {
@@ -133,9 +133,9 @@ TEST_F(BackgroundDeathTest, ExecuteTooManyMatrices) {
     EXPECT_THROW((void)background_death.Execute(state, histories),
                  std::runtime_error);
     FlushAllLoggers();
-    EXPECT_TRUE(FileContains(
-        RESPOND_DEFAULT_LOG_FILE,
-        "Background death error: Expected 1 transition matrix, got 2"));
+    EXPECT_TRUE(FileContains(RESPOND_DEFAULT_LOG_FILE,
+                             "Transition error - Wrong number of matrices. "
+                             "Expected 1 transition matrix, got 2"));
 }
 
 TEST_F(BackgroundDeathTest, ExecuteNoBackgroundDeathHistory) {

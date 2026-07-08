@@ -90,9 +90,9 @@ TEST_F(BehaviorTest, ExecuteNoMatrices) {
     histories["state"] = History("state");
     EXPECT_THROW((void)behavior.Execute(state, histories), std::runtime_error);
     FlushAllLoggers();
-    EXPECT_TRUE(
-        FileContains(RESPOND_DEFAULT_LOG_FILE,
-                     "Behavior error: Expected 1 transition matrix, got 0"));
+    EXPECT_TRUE(FileContains(RESPOND_DEFAULT_LOG_FILE,
+                             "Transition error - Wrong number of matrices. "
+                             "Expected 1 transition matrix, got 0"));
 }
 
 TEST_F(BehaviorTest, ExecuteTooManyMatrices) {
@@ -102,9 +102,9 @@ TEST_F(BehaviorTest, ExecuteTooManyMatrices) {
     histories["state"] = History("state");
     EXPECT_THROW((void)behavior.Execute(state, histories), std::runtime_error);
     FlushAllLoggers();
-    EXPECT_TRUE(
-        FileContains(RESPOND_DEFAULT_LOG_FILE,
-                     "Behavior error: Expected 1 transition matrix, got 2"));
+    EXPECT_TRUE(FileContains(RESPOND_DEFAULT_LOG_FILE,
+                             "Transition error - Wrong number of matrices. "
+                             "Expected 1 transition matrix, got 2"));
 }
 
 TEST_F(BehaviorTest, ExecuteDimensionMismatch) {
@@ -115,10 +115,10 @@ TEST_F(BehaviorTest, ExecuteDimensionMismatch) {
     histories["state"] = History("state");
     EXPECT_THROW((void)behavior.Execute(state, histories), std::runtime_error);
     FlushAllLoggers();
-    EXPECT_TRUE(FileContains(
-        RESPOND_DEFAULT_LOG_FILE,
-        "Behavior error: State dimension mismatch. State size is (3, 1) but "
-        "transition matrix is (3, 2)"));
+    EXPECT_TRUE(
+        FileContains(RESPOND_DEFAULT_LOG_FILE,
+                     "Transition error - Dimension mismatch, m1 rows do not "
+                     "match m2 columns. m1 size is (3, 1) m2 size is (3, 2)"));
 }
 
 TEST_F(BehaviorTest, ExecuteValid) {

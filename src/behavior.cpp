@@ -23,23 +23,8 @@ namespace respond {
 Eigen::VectorXd
 Behavior::Execute(const Eigen::Ref<const Eigen::VectorXd> &state,
                   std::map<std::string, History> &h) const {
-    if (GetMatrices().size() != 1) {
-        std::string error_msg =
-            "Behavior error: Expected 1 transition matrix, got " +
-            std::to_string(GetMatrices().size());
-        LogError(_log_name, error_msg);
-        throw std::runtime_error(error_msg);
-    }
-    if (state.rows() != GetMatrices()[0].cols()) {
-        std::stringstream ss;
-        ss << "Behavior error: State dimension mismatch. State size is ("
-           << state.rows() << ", " << state.cols()
-           << ") but transition matrix is (" << GetMatrices()[0].rows() << ", "
-           << GetMatrices()[0].cols() << ")";
-        std::string error_msg = ss.str();
-        LogError(_log_name, error_msg);
-        throw std::runtime_error(error_msg);
-    }
+    TestCorrectNumberMatrices(1);
+    TestRowColDimensions(state, GetMatrices()[0]);
     Eigen::VectorXd new_state = GetMatrices()[0] * state;
     return new_state;
 }
