@@ -222,10 +222,10 @@ public:
         size_t duration = _timestep_vector.size();
         if (_timestep_vector.size() > static_cast<size_t>(_final_timestep) &&
             _final_timestep >= 0) {
-            LogWarning(_log_name,
-                       "Duration is less than available timesteps for model: " +
-                           _name +
-                           ".\nOnly running timesteps up to duration value.");
+            std::string warning_msg =
+                "Duration is less than available timesteps for model: " +
+                _name + ".\nOnly running timesteps up to duration value.";
+            LogWarning(_log_name, warning_msg);
             duration = static_cast<size_t>(_final_timestep);
         }
 

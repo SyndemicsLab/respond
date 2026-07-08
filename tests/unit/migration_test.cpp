@@ -130,5 +130,16 @@ TEST_F(MigrationTest, ExecuteValid) {
     EXPECT_TRUE(result.isApprox(expected));
 }
 
+TEST_F(MigrationTest, Clone) {
+    Migration migration;
+    migration.AddMatrix(tran_matrix);
+    std::unique_ptr<Transition> cloned_migration = migration.clone();
+    EXPECT_EQ(cloned_migration->GetName(), migration.GetName());
+    EXPECT_EQ(cloned_migration->GetMatrices().size(),
+              migration.GetMatrices().size());
+    EXPECT_TRUE(cloned_migration->GetMatrices()[0].isApprox(
+        migration.GetMatrices()[0]));
+}
+
 } // namespace testing
 } // namespace respond

@@ -170,5 +170,16 @@ TEST_F(InterventionTest, ExecuteValidWithHistory) {
         histories["intervention_admission"].GetStateAsVector()[0].isApprox(
             expected_admissions));
 }
+
+TEST_F(InterventionTest, Clone) {
+    Intervention intervention;
+    intervention.AddMatrix(tran_matrix);
+    std::unique_ptr<Transition> cloned_intervention = intervention.clone();
+    EXPECT_EQ(cloned_intervention->GetName(), intervention.GetName());
+    EXPECT_EQ(cloned_intervention->GetMatrices().size(),
+              intervention.GetMatrices().size());
+    EXPECT_TRUE(cloned_intervention->GetMatrices()[0].isApprox(
+        intervention.GetMatrices()[0]));
+}
 } // namespace testing
 } // namespace respond

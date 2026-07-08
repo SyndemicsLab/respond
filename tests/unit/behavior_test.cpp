@@ -130,5 +130,16 @@ TEST_F(BehaviorTest, ExecuteValid) {
     EXPECT_TRUE(new_state.isApprox(expected_state));
 }
 
+TEST_F(BehaviorTest, Clone) {
+    Behavior behavior;
+    behavior.AddMatrix(tran_matrix);
+    std::unique_ptr<Transition> cloned_behavior = behavior.clone();
+    EXPECT_EQ(cloned_behavior->GetName(), behavior.GetName());
+    EXPECT_EQ(cloned_behavior->GetMatrices().size(),
+              behavior.GetMatrices().size());
+    EXPECT_TRUE(
+        cloned_behavior->GetMatrices()[0].isApprox(behavior.GetMatrices()[0]));
+}
+
 } // namespace testing
 } // namespace respond

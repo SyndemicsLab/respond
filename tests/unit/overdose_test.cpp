@@ -193,5 +193,16 @@ TEST_F(OverdoseTest, ExecuteValidWithFatalOverdoseHistory) {
         expected_fods));
 }
 
+TEST_F(OverdoseTest, Clone) {
+    Overdose overdose;
+    overdose.AddMatrix(tran_matrix);
+    std::unique_ptr<Transition> cloned_overdose = overdose.clone();
+    EXPECT_EQ(cloned_overdose->GetName(), overdose.GetName());
+    EXPECT_EQ(cloned_overdose->GetMatrices().size(),
+              overdose.GetMatrices().size());
+    EXPECT_TRUE(
+        cloned_overdose->GetMatrices()[0].isApprox(overdose.GetMatrices()[0]));
+}
+
 } // namespace testing
 } // namespace respond

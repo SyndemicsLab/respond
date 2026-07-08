@@ -160,5 +160,16 @@ TEST_F(BackgroundDeathTest, ExecuteWithBackgroundDeathHistory) {
     Eigen::VectorXd result = background_death.Execute(state, histories);
     EXPECT_TRUE(result.isApprox(expected_state));
 }
+
+TEST_F(BackgroundDeathTest, Clone) {
+    BackgroundDeath background_death;
+    background_death.AddMatrix(tran_matrix);
+    std::unique_ptr<Transition> cloned_bgd = background_death.clone();
+    EXPECT_EQ(cloned_bgd->GetName(), background_death.GetName());
+    EXPECT_EQ(cloned_bgd->GetMatrices().size(),
+              background_death.GetMatrices().size());
+    EXPECT_TRUE(cloned_bgd->GetMatrices()[0].isApprox(
+        background_death.GetMatrices()[0]));
+}
 } // namespace testing
 } // namespace respond

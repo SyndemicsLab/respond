@@ -327,6 +327,22 @@ TEST_F(MarkovTest, RunTimesteps) {
     EXPECT_EQ(markov.GetTimestep(), 2);
 }
 
+TEST_F(MarkovTest, RunTimestepsWithFinalTimestep) {
+    Markov markov;
+    markov.SetInitialHistoryRecorded(true);
+    markov.SetFinalTimestep(1);
+    Timestep timestep1(RESPOND_DEFAULT_LOG);
+    Timestep timestep2(RESPOND_DEFAULT_LOG);
+    markov.AddTimestep(timestep1);
+    markov.AddTimestep(timestep2);
+    EXPECT_EQ(markov.GetTimestep(), 0);
+    markov.RunTimesteps();
+    EXPECT_EQ(markov.GetTimestep(), 1);
+    FlushAllLoggers();
+    EXPECT_TRUE(FileContains(RESPOND_DEFAULT_LOG_FILE,
+                             "Only running timesteps up to duration value."));
+}
+
 TEST_F(MarkovTest, RunTimestepsRecordInitialHistory) {
     Markov markov("markov", RESPOND_DEFAULT_LOG);
     markov.SetInitialHistoryRecorded(false);
