@@ -98,6 +98,17 @@ TEST_F(TimestepTest, AddMatrixToTransitionByName) {
     ASSERT_TRUE(transition->GetMatrices()[0].isApprox(m));
 }
 
+TEST_F(TimestepTest, RemoveTransition) {
+    Timestep ts("test_log", test_log_file_);
+    ts.CreateTransition("migration");
+    ts.CreateTransition("behavior");
+    const std::unique_ptr<Transition> &removed_transition =
+        ts.RemoveTransition(0);
+    ASSERT_EQ(removed_transition->GetName(), "migration");
+    ASSERT_EQ(ts.GetTransitions().size(), 1);
+    ASSERT_EQ(ts.GetTransitions()[0]->GetName(), "behavior");
+}
+
 TEST_F(TimestepTest, GetTransitionByIndex) {
     Timestep ts("test_log", test_log_file_);
     const std::unique_ptr<Transition> &transition =

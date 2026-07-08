@@ -126,6 +126,18 @@ public:
         return _transitions.back();
     }
 
+    std::unique_ptr<Transition> RemoveTransition(size_t idx) {
+        if (idx >= _transitions.size()) {
+            LogWarning(_log_name, "Index out of range in RemoveTransition: " +
+                                      std::to_string(idx));
+            throw std::out_of_range(
+                "Error attempting to RemoveTransition by index.");
+        }
+        auto removed_transition = std::move(_transitions[idx]);
+        _transitions.erase(_transitions.begin() + idx);
+        return removed_transition;
+    }
+
     /// @brief Adds a matrix to an existing transition in this timestep by
     /// index.
     /// @param idx The index of the transition to which the matrix will be
