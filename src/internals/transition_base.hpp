@@ -4,7 +4,7 @@
 // Created Date: 2026-02-05                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-07-07                                                  //
+// Last Modified: 2026-07-08                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
@@ -12,9 +12,13 @@
 #ifndef RESPOND_INTERNALS_TRANSITION_BASE_HPP_
 #define RESPOND_INTERNALS_TRANSITION_BASE_HPP_
 
-#include <respond/constants.hpp>
 #include <respond/logging.hpp>
 #include <respond/transition.hpp>
+
+#include <string>
+#include <vector>
+
+#include <Eigen/Dense>
 
 namespace respond {
 
