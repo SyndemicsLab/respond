@@ -4,13 +4,16 @@
 // Created Date: 2026-02-05                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-06-30                                                  //
+// Last Modified: 2026-07-09                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
 ////////////////////////////////////////////////////////////////////////////////
 #ifndef RESPOND_HISTORY_HPP_
 #define RESPOND_HISTORY_HPP_
+
+#include <respond/constants.hpp>
+#include <respond/logging.hpp>
 
 #include <algorithm>
 #include <map>
@@ -20,14 +23,25 @@
 #include <Eigen/Dense>
 
 namespace respond {
-enum class HistoryMode { Snapshot, Accumulated };
 
+/// @brief Defines the mode of history recording for state vectors in a
+/// simulation.
+enum class HistoryMode : int {
+    kSnapshot = 0,    // Snapshot of state at each timestep
+    kAccumulated = 1, // Accumulated contributions over timesteps
+    kCount = 2        // Enum Counter
+};
+
+/// @brief Determines the default history mode based on the history name.
+/// @param name The name of the history to evaluate.
+/// @return HistoryMode::kAccumulated for specific names, otherwise
+/// HistoryMode::kSnapshot.
 inline HistoryMode GetDefaultHistoryMode(const std::string &name) {
     if (name == "intervention_admission" || name == "total_overdose" ||
         name == "fatal_overdose" || name == "background_death") {
-        return HistoryMode::Accumulated;
+        return HistoryMode::kAccumulated;
     }
-    return HistoryMode::Snapshot;
+    return HistoryMode::kSnapshot;
 }
 
 /// @brief Tracks and manages state vector history over time.
@@ -38,21 +52,29 @@ class History {
 public:
     History() : History("state") {}
 
-    History(const std::string &name) : History(name, "console") {}
-    /// @brief Constructs a History tracker.
-    /// @param name The identifier for this history (default: "state").
-    /// @param log_name The logger name for error reporting (default:
-    /// "console").
-    History(const std::string &name, const std::string &log_name)
-        : History(name, log_name, GetDefaultHistoryMode(name)) {}
+    History(const std::string &name)
+        : History(name, GetDefaultHistoryMode(name)) {}
 
-    /// @brief Constructs a History tracker with an explicit recording mode.
-    /// @param name The identifier for this history.
-    /// @param log_name The logger name for error reporting.
-    /// @param mode Whether the history stores snapshots or accumulations.
+    History(const std::string &name, const HistoryMode &mode)
+        : History(name, mode, RESPOND_DEFAULT_LOG, RESPOND_DEFAULT_LOG_FILE) {}
+
+    History(const std::string &name, const HistoryMode &mode,
+            const std::string &log_name)
+        : History(name, mode, log_name, RESPOND_DEFAULT_LOG_FILE) {}
+
+    History(const std::string &name, const std::string &log_name)
+        : History(name, GetDefaultHistoryMode(name), log_name,
+                  RESPOND_DEFAULT_LOG_FILE) {}
+
     History(const std::string &name, const std::string &log_name,
-            HistoryMode mode)
-        : _log_name(log_name), _name(name), _mode(mode) {}
+            const std::string &log_filepath)
+        : History(name, GetDefaultHistoryMode(name), log_name, log_filepath) {}
+
+    History(const std::string &name, const HistoryMode &mode,
+            const std::string &log_name, const std::string &log_filepath)
+        : _name(name), _mode(mode), _log_name(log_name) {
+        CreateFileLogger(log_name, log_filepath);
+    }
 
     /// @brief Destructor (default).
     ~History() = default;
@@ -238,7 +260,7 @@ public:
     /// @brief Adds a contribution to an accumulated history.
     /// @param state The per-step contribution to accumulate.
     void AccumulateState(const Eigen::Ref<const Eigen::VectorXd> &state) {
-        if (_mode != HistoryMode::Accumulated) {
+        if (_mode != HistoryMode::kAccumulated) {
             AddState(state);
             return;
         }
@@ -254,7 +276,7 @@ public:
     /// @param timestep The simulation timestep to record.
     /// @param state_size Size of a zero vector to record if nothing is pending.
     void FlushPendingState(int timestep, Eigen::Index state_size) {
-        if (_mode != HistoryMode::Accumulated) {
+        if (_mode != HistoryMode::kAccumulated) {
             return;
         }
 

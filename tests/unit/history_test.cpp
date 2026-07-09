@@ -2,10 +2,10 @@
 // File: history_test.cpp                                                     //
 // Project: respond                                                           //
 // Created Date: 2026-05-05                                                   //
-// Author: GitHub Copilot                                                     //
+// Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-05-05                                                  //
-// Modified By: GitHub Copilot                                                //
+// Last Modified: 2026-07-09                                                  //
+// Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -84,7 +84,7 @@ TEST(HistoryTest, ClearRemovesRecordedStatesAndTimesteps) {
 }
 
 TEST(HistoryTest, AccumulatedHistoryFlushesPendingState) {
-    History history("total_overdose", "test_logger", HistoryMode::Accumulated);
+    History history("total_overdose", "test_logger", HistoryMode::kAccumulated);
     Eigen::VectorXd first(2);
     first << 1.0f, 2.0f;
     Eigen::VectorXd second(2);
@@ -106,7 +106,7 @@ TEST(HistoryTest, AccumulatedHistoryFlushesPendingState) {
 
 TEST(HistoryTest, AccumulatedHistoryFlushesZeroWhenNoPendingStateExists) {
     History history("background_death", "test_logger",
-                    HistoryMode::Accumulated);
+                    HistoryMode::kAccumulated);
 
     history.FlushPendingState(0, 3);
 
