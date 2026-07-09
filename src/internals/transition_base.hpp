@@ -33,11 +33,10 @@ public:
     // Add a Transition Matrix to the set. We have no need to edit it once it's
     // been added, just use it. Thus, we don't need full ownership (reference)
     // and can accept the const type.
-    void AddMatrix(const Eigen::Ref<const Eigen::MatrixXd> &m) override {
+    void AddMatrix(Eigen::Ref<const Eigen::MatrixXd> m) override {
         _transition_matrices.push_back(m);
     }
-    std::vector<Eigen::Ref<const Eigen::MatrixXd>>
-    GetMatrices() const override {
+    std::vector<Eigen::MatrixXd> GetMatrices() const override {
         return _transition_matrices;
     }
     // Get the name of the Transition. No need to edit the object and do not
@@ -118,13 +117,17 @@ protected:
     }
 
     void TestLessThanState(const Eigen::Ref<const Eigen::MatrixXd> &state,
-                           const Eigen::Ref<const Eigen::MatrixXd> &m1) const {
+                           const Eigen::Ref<const Eigen::MatrixXd> &m1,
+                           std::string extra_msg = "") const {
         if (!(state.array() >= m1.array()).all()) {
             std::string error_msg =
                 "Transition error - State contains values less than m1! " +
                 std::to_string((state.array() < m1.array()).count()) +
                 " elements affected. Verify that the transition matrix is "
                 "correct and that the state vector is valid.";
+            if (!extra_msg.empty()) {
+                error_msg += " " + extra_msg;
+            }
             LogError(_log_name, error_msg);
             throw std::runtime_error(error_msg);
         }
@@ -132,7 +135,7 @@ protected:
 
 private:
     std::string _name;
-    std::vector<Eigen::Ref<const Eigen::MatrixXd>> _transition_matrices;
+    std::vector<Eigen::MatrixXd> _transition_matrices;
 };
 
 } // namespace respond

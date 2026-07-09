@@ -64,7 +64,7 @@ public:
     Timestep(const Timestep &other) {
         _transitions.clear();
         for (const auto &t : other._transitions) {
-            _transitions.push_back(t->clone());
+            _transitions.push_back(std::move(t->clone()));
         }
     }
 
@@ -76,7 +76,7 @@ public:
         if (this != &other) {
             _transitions.clear();
             for (const auto &t : other._transitions) {
-                _transitions.push_back(t->clone());
+                _transitions.push_back(std::move(t->clone()));
             }
         }
         return *this;

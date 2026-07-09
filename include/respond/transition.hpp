@@ -48,12 +48,11 @@ public:
     /// @brief Adds a transformation matrix to this transition.
     /// The matrix is stored for use during Execute() calls.
     /// @param m The transition matrix to add (not modified by this transition).
-    virtual void AddMatrix(const Eigen::Ref<const Eigen::MatrixXd> &m) = 0;
+    virtual void AddMatrix(Eigen::Ref<const Eigen::MatrixXd> m) = 0;
 
     /// @brief Retrieves the stored transition matrices for this transition.
     /// @return A vector of references to the stored transition matrices.
-    virtual std::vector<Eigen::Ref<const Eigen::MatrixXd>>
-    GetMatrices() const = 0;
+    virtual std::vector<Eigen::MatrixXd> GetMatrices() const = 0;
 
     /// @brief Retrieves the name/type of this transition.
     /// @return The transition's identifier as a string.

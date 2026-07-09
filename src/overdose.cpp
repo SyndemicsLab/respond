@@ -26,17 +26,22 @@ Overdose::Execute(const Eigen::Ref<const Eigen::VectorXd> &state,
 
     TestMatrixSizes(state, GetMatrices()[0]);
     Eigen::VectorXd overdoses = state.cwiseProduct(GetMatrices()[0]);
+    TestLessThanState(state, overdoses,
+                      "Overdose transition produced more total overdoses than "
+                      "available in state.");
     if (h.find("total_overdose") != h.end()) {
         h["total_overdose"].AccumulateState(overdoses);
     }
 
     TestMatrixSizes(overdoses, GetMatrices()[1]);
     auto fods = overdoses.cwiseProduct(GetMatrices()[1]); // negatives
+    TestLessThanState(state, fods,
+                      "Overdose transition produced more fatal overdoses than "
+                      "available in state.");
+    auto new_state = state - fods;
     if (h.find("fatal_overdose") != h.end()) {
         h["fatal_overdose"].AccumulateState(fods);
     }
-    TestLessThanState(state, fods);
-    auto new_state = state - fods; // remove fods from state
     return new_state;
 }
 } // namespace respond

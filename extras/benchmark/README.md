@@ -25,14 +25,14 @@ Warm-up runs are excluded from reported timings.
 Enable benchmark builds in CMake:
 
 ```bash
-cmake -S . -B build/bench -DRESPOND_BUILD_BENCH=ON
-cmake --build build/bench --target respond_benchmark
+cmake --preset benchmark
+cmake --build --preset benchmark
 ```
 
 ## Run
 
 ```bash
-./build/bench/bin/respond_benchmark \
+./build/shared/bin/respond_benchmark \
   --state-size 64 \
   --steps 52 \
   --history-capture-interval 1 \

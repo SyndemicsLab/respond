@@ -26,11 +26,13 @@ BackgroundDeath::Execute(const Eigen::Ref<const Eigen::VectorXd> &state,
     TestCorrectNumberMatrices(1);
     TestMatrixSizes(state, GetMatrices()[0]);
     Eigen::VectorXd deaths = state.cwiseProduct(GetMatrices()[0]);
-    TestLessThanState(state, deaths);
+    TestLessThanState(state, deaths,
+                      "BackgroundDeath transition produced more deaths than "
+                      "available in state.");
+    auto new_state = state - deaths;
     if (h.find("background_death") != h.end()) {
         h["background_death"].AccumulateState(deaths);
     }
-    auto new_state = state - deaths; // remove deaths from state
     return new_state;
 }
 } // namespace respond

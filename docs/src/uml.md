@@ -13,10 +13,19 @@ classDiagram
     direction LR
 
     class Simulation {
-        +CreateNewModel(type) shared_ptr~Model~
-        +AddNewModel(shared_ptr~Model~) bool
-        +Run()
-        +GetModel(size_t model_idx) const Model &
+        +Simulation()
+        +Simulation(const string &)
+        +Simulation(const string &, const string &)
+        +Simulation(const Simulation &)
+        +operator=(const Simulation &) Simulation&
+        +Simulation(Simulation &&other)
+        +operator=(Simulation &&) Simulation&
+        +CreateNewModel(const string &) const string
+        +ClearModels()
+        +AddModel(const unique_ptr~Model~)
+        +Run(int=-1)
+        +GetModels() const vector~unique_ptr~Model~~ &
+        +GetModel(size_t model_idx) const unique_ptr~Model~ &
         +GetModelNames() vector~string~
         +GetModelHistory(size_t model_idx) map~string, History~
         +operator<<(ostream &os, const Simulation &obj) ostream &

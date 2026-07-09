@@ -188,6 +188,19 @@ public:
         return _models;
     }
 
+    /// @brief Retrieves a specific model by index in the simulation.
+    /// @param idx The index of the model to retrieve.
+    /// @return A const reference to the Model unique_ptr at the specified
+    /// index. Throws an exception if the index is out of range.
+    const std::unique_ptr<Model> &GetModel(size_t idx) const {
+        if (idx >= _models.size()) {
+            LogError(_log_name,
+                     "Index out of range in GetModel: " + std::to_string(idx));
+            throw std::out_of_range("Error attempting to GetModel by index.");
+        }
+        return _models[idx];
+    }
+
     /// @brief Retrieves the names of all models in the simulation.
     /// @return Vector of model names in the order they were added.
     std::vector<std::string> GetModelNames() const {
