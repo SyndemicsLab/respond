@@ -100,7 +100,7 @@ public:
     //
     ////////////////////////////////////////////////////////////////////////////
 
-    /// @brief Retrieve an immutable reference to a specific timestep by index.
+    /// @brief Retrieve a copy of a specific timestep by index.
     /// @param index The zero-based index of the timestep to retrieve.
     /// @return A constant reference to the Timestep at the specified index.
     virtual Timestep GetTimestepAtIndex(size_t index) const = 0;

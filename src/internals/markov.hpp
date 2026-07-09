@@ -33,8 +33,7 @@ public:
     //
     ////////////////////////////////////////////////////////////////////////////
 
-    /// @brief Default constructor for Markov model. Initializes with default
-    /// name "markov" and logger "console".
+    /// @brief Default constructor for Markov model. Initializes with default..
     Markov() : Markov("markov", RESPOND_DEFAULT_LOG) {}
 
     /// @brief Constructs a Markov model with specified name and logger.
