@@ -4,7 +4,7 @@
 // Created Date: 2026-02-05                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-06-25                                                  //
+// Last Modified: 2026-07-07                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
@@ -22,15 +22,14 @@ namespace respond {
 Eigen::VectorXd
 BackgroundDeath::Execute(const Eigen::Ref<const Eigen::VectorXd> &state,
                          std::map<std::string, History> &h) const {
-    if (GetTransitionMatrices().size() != 1) {
+    if (GetMatrices().size() != 1) {
         std::string error_msg =
             "Background death error: Expected 1 transition matrix, got " +
-            std::to_string(GetTransitionMatrices().size());
+            std::to_string(GetMatrices().size());
         LogError(GetLogName(), error_msg);
         throw std::runtime_error(error_msg);
     }
-    auto deaths =
-        state.cwiseProduct(GetTransitionMatrices()[0]); // calculate the deaths
+    auto deaths = state.cwiseProduct(GetMatrices()[0]); // calculate the deaths
     if (h.find("background_death") != h.end()) {
         h["background_death"].AccumulateState(deaths);
     }
@@ -45,10 +44,5 @@ BackgroundDeath::Execute(const Eigen::Ref<const Eigen::VectorXd> &state,
     }
     auto new_state = state - deaths; // remove deaths from state
     return new_state;
-}
-
-std::unique_ptr<Transition>
-BackgroundDeath::Create(const std::string &name, const std::string &log_name) {
-    return std::make_unique<BackgroundDeath>(name, log_name);
 }
 } // namespace respond

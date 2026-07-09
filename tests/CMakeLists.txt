@@ -22,16 +22,22 @@ if(PROJECT_IS_TOP_LEVEL OR NOT RESPOND_BUILD_TESTS)
     return()
 endif()
 
-file(GLOB RESPOND_TEST_MOCKS mocks/*.hpp)
-file(GLOB RESPOND_UNIT_TESTS CONFIGURE_DEPENDS unit/*.cpp)
-file(GLOB RESPOND_INTEGRATION_TESTS CONFIGURE_DEPENDS integration/*.cpp)
-
 add_executable(respond_tests)
 
 target_sources(respond_tests
     PRIVATE
-        ${RESPOND_UNIT_TESTS}
-        ${RESPOND_INTEGRATION_TESTS}
+        unit/background_test.cpp
+        unit/behavior_test.cpp
+        unit/cost_effectiveness_test.cpp
+        unit/history_test.cpp
+        unit/intervention_test.cpp
+        unit/logging_test.cpp
+        unit/markov_test.cpp
+        unit/migration_test.cpp
+        unit/overdose_test.cpp
+        unit/simulation_test.cpp
+        unit/timestep_test.cpp
+        integration/respond_test.cpp
     )
 
 target_include_directories(respond_tests

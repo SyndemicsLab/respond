@@ -4,7 +4,7 @@
 // Created Date: 2026-02-05                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-07-02                                                  //
+// Last Modified: 2026-07-07                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
@@ -53,8 +53,7 @@ public:
 
     const std::string CreateNewModel(const std::string &model_name) {
         _models.push_back(Model::Create(model_name, _log_name));
-        return std::to_string(_models.size()) + "_" +
-               _models.back()->GetModelName();
+        return std::to_string(_models.size()) + "_" + _models.back()->GetName();
     }
 
     /// @brief Executes one step of the simulation for all models.
@@ -62,7 +61,7 @@ public:
     void Run() {
         for (const auto &model : _models) {
             model->SetFinalTimestep(_duration);
-            model->RunTransitions();
+            // model->RunTransitions();
         }
     }
 
@@ -86,7 +85,7 @@ public:
     std::vector<std::string> GetModelNames() const {
         std::vector<std::string> ret;
         for (auto &m : _models) {
-            ret.push_back(m->GetModelName());
+            ret.push_back(m->GetName());
         }
         return ret;
     }
@@ -131,7 +130,7 @@ public:
         std::vector<std::pair<std::string, std::string>> ret;
         for (const auto &model : _models) {
             for (const auto &kv : model->GetHistories()) {
-                std::pair<std::string, std::string> p = {model->GetModelName(),
+                std::pair<std::string, std::string> p = {model->GetName(),
                                                          kv.first};
                 ret.push_back(p);
             }

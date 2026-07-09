@@ -4,7 +4,7 @@
 // Created Date: 2026-02-05                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-07-02                                                  //
+// Last Modified: 2026-07-06                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
@@ -27,6 +27,10 @@ public:
     void AddMatrix(const Eigen::Ref<const Eigen::MatrixXd> &m) override {
         _transition_matrices.push_back(m);
     }
+    std::vector<Eigen::Ref<const Eigen::MatrixXd>>
+    GetMatrices() const override {
+        return _transition_matrices;
+    }
     // Get the name of the Transition. No need to edit the object and do not
     // need user to edit the name.
     std::string GetName() const override { return _name; }
@@ -34,11 +38,6 @@ public:
     void ClearMatrices() override { _transition_matrices.clear(); }
 
     std::string GetLogName() const override { return _log_name; }
-
-protected:
-    const std::vector<Eigen::Ref<const Eigen::MatrixXd>> &GetMatrices() const {
-        return _transition_matrices;
-    }
 
 private:
     std::string _name;

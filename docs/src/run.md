@@ -35,7 +35,7 @@ int main() {
     model->SetState(initial_state);
     
     // Add transitions
-    auto transition = respond::TransitionFactory::CreateTransition(
+    auto transition = respond::Transition::Create(
         "behavior", "my_logger");
     model->AddTransition(transition);
     

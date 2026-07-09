@@ -4,7 +4,7 @@
 // Created Date: 2026-02-06                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-05-06                                                  //
+// Last Modified: 2026-07-07                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
@@ -32,7 +32,7 @@ public:
 
 protected:
     void SetUp() override {
-        tran = TransitionFactory::CreateTransition("overdose", "test_logger");
+        tran = Transition::Create("overdose", "test_logger");
         state = Eigen::VectorXd(3);
         state << 1.0f, 2.0f, 3.0f;
 
@@ -47,14 +47,14 @@ TEST_F(OverdoseTest, NoTransitionMatrices) {
 }
 
 TEST_F(OverdoseTest, TooFewTransitionMatrices) {
-    tran->AddTransitionMatrix(state);
+    tran->AddMatrix(state);
     EXPECT_THROW(tran->Execute(state, histories), std::runtime_error);
 }
 
 TEST_F(OverdoseTest, TooManyTransitionMatrices) {
-    tran->AddTransitionMatrix(state);
-    tran->AddTransitionMatrix(state);
-    tran->AddTransitionMatrix(state);
+    tran->AddMatrix(state);
+    tran->AddMatrix(state);
+    tran->AddMatrix(state);
     EXPECT_THROW(tran->Execute(state, histories), std::runtime_error);
 }
 
@@ -62,14 +62,14 @@ TEST_F(OverdoseTest, WrongSizeTransitionMatrix) {
     Eigen::VectorXd bad_t_matrix;
     bad_t_matrix = Eigen::VectorXd(6);
     bad_t_matrix << 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f;
-    tran->AddTransitionMatrix(bad_t_matrix);
-    tran->AddTransitionMatrix(bad_t_matrix);
+    tran->AddMatrix(bad_t_matrix);
+    tran->AddMatrix(bad_t_matrix);
     EXPECT_THROW(tran->Execute(state, histories), std::runtime_error);
 }
 
 TEST_F(OverdoseTest, GoodExecuteNoHistory) {
-    tran->AddTransitionMatrix(tran_matrix);
-    tran->AddTransitionMatrix(tran_matrix);
+    tran->AddMatrix(tran_matrix);
+    tran->AddMatrix(tran_matrix);
     auto result = tran->Execute(state, histories);
     auto overdoses = state.cwiseProduct(tran_matrix);
     auto fods = overdoses.cwiseProduct(tran_matrix);
@@ -80,8 +80,8 @@ TEST_F(OverdoseTest, GoodExecuteNoHistory) {
 TEST_F(OverdoseTest, GoodExecuteWriteTotalOverdoseHistory) {
     History h("total_overdose", "test_logger");
     histories["total_overdose"] = h;
-    tran->AddTransitionMatrix(tran_matrix);
-    tran->AddTransitionMatrix(tran_matrix);
+    tran->AddMatrix(tran_matrix);
+    tran->AddMatrix(tran_matrix);
     auto result = tran->Execute(state, histories);
 
     auto overdoses = state.cwiseProduct(tran_matrix);
@@ -97,8 +97,8 @@ TEST_F(OverdoseTest, GoodExecuteWriteTotalOverdoseHistory) {
 TEST_F(OverdoseTest, GoodExecuteWriteFatalOverdoseHistory) {
     History h("fatal_overdose", "test_logger");
     histories["fatal_overdose"] = h;
-    tran->AddTransitionMatrix(tran_matrix);
-    tran->AddTransitionMatrix(tran_matrix);
+    tran->AddMatrix(tran_matrix);
+    tran->AddMatrix(tran_matrix);
     auto result = tran->Execute(state, histories);
 
     auto overdoses = state.cwiseProduct(tran_matrix);
@@ -115,8 +115,8 @@ TEST_F(OverdoseTest, GoodExecuteWriteAllHistory) {
     histories["fatal_overdose"] = h1;
     History h2("total_overdose", "test_logger");
     histories["total_overdose"] = h2;
-    tran->AddTransitionMatrix(tran_matrix);
-    tran->AddTransitionMatrix(tran_matrix);
+    tran->AddMatrix(tran_matrix);
+    tran->AddMatrix(tran_matrix);
     auto result = tran->Execute(state, histories);
 
     auto overdoses = state.cwiseProduct(tran_matrix);

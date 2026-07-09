@@ -48,8 +48,8 @@ initial_state.setZero();
 model->SetState(initial_state);
 
 // Add transitions
-auto transition = respond::TransitionFactory::CreateTransition("behavior", "logger_name");
-transition->AddTransitionMatrix(some_matrix);
+auto transition = respond::Transition::Create("behavior", "logger_name");
+transition->AddMatrix(some_matrix);
 model->AddTransition(transition);
 
 // Execute one simulation step
@@ -73,7 +73,7 @@ auto histories = model->GetHistories();
 - `GetHistories() const`: Returns map of history name to History objects
 - `CreateDefaultHistories()`: Initializes default history tracking
 - `SetHistories(const std::map<std::string, History> &h)`: Sets history records
-- `GetModelName() const`: Returns model name
+- `GetName() const`: Returns model name
 - `GetLogName() const`: Returns associated logger name
 - `clone() const`: Creates a deep copy of the model
 
@@ -167,14 +167,14 @@ The Transition class is abstract; use TransitionFactory to create concrete insta
 #include <respond/transition_factory.hpp>
 
 // Create a transition using the factory
-auto transition = respond::TransitionFactory::CreateTransition(
+auto transition = respond::Transition::Create(
     "behavior",  // Type: migration, behavior, intervention, overdose, background_death
     "my_logger"  // Logger name
 );
 
 // Add transformation matrices
 Eigen::MatrixXd trans_matrix = ...;
-transition->AddTransitionMatrix(trans_matrix);
+transition->AddMatrix(trans_matrix);
 
 // Execute the transition (typically done via Model::RunTransitions)
 auto histories_map = ...; // From model
@@ -235,12 +235,12 @@ int main() {
     model->SetState(initial_state);
 
     // Add transitions
-    auto behavior_transition = respond::TransitionFactory::CreateTransition(
+    auto behavior_transition = respond::Transition::Create(
         "behavior", "app");
     // Add matrices...
     model->AddTransition(behavior_transition);
 
-    auto migration_transition = respond::TransitionFactory::CreateTransition(
+    auto migration_transition = respond::Transition::Create(
         "migration", "app");
     // Add matrices...
     model->AddTransition(migration_transition);
