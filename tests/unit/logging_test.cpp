@@ -4,7 +4,7 @@
 // Created Date: 2025-03-18                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-07-07                                                  //
+// Last Modified: 2026-07-09                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025-2026 Syndemics Lab at Boston Medical Center             //
@@ -22,7 +22,7 @@
 #include <gtest/gtest.h>
 #include <spdlog/spdlog.h>
 
-#include <respond/transition_factory.hpp>
+#include <respond/transition.hpp>
 
 namespace respond {
 namespace testing {
