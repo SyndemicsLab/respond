@@ -38,18 +38,27 @@ classDiagram
 
     class Model {
         <<abstract>>
-        +SetState(state) *
-        +GetState() VectorXd *
+        +Create(const string &, const string &, const string &) unique_ptr~Model~
+        +clone() unique_ptr~Model~ *
         +AddTimestep(shared_ptr~timestep~) *
-        +GetTimesteps() *
+        +RunTimestep() *
+        +RunTimestep(size_t) *
         +RunTimesteps() *
         +ClearTimesteps() *
-        +GetHistories() map~string, History~ *
         +ClearHistories() *
         +CreateDefaultHistories() *
-        +SetFinalTimestep(final_timestep) *
-        +clone() unique_ptr~Model~ *
-        +Create(name, log_name) unique_ptr~Model~
+        +GetTiemstepAtIndex(size_t) Timestep *
+        +GetState() Ref~const VectorXd~ *
+        +GetName() string *
+        +GetHistories() map~string, History~ *
+        +GetTimestep() int *
+        +GetHistoryCaptureInterval() int *
+        +GetFinalTimestep() int *
+        +GetInitialHistoryRecorded() bool *
+        +SetState(const Ref~const VectorXd~ &) *
+        +SetHistoryCaptureInterval(int) *
+        +SetFinalTimestep(int) *
+        +SetInitialHistoryRecorded(bool) *
         +operator<<(ostream &os, const Model &obj) ostream &
     }
 
