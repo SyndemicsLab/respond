@@ -4,7 +4,7 @@
 // Created Date: 2026-02-05                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-07-07                                                  //
+// Last Modified: 2026-07-13                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
@@ -30,10 +30,10 @@ public:
                 ((const Eigen::Ref<const Eigen::VectorXd> &),
                  (std::map<std::string, History> &)),
                 (const, override));
-    MOCK_METHOD(void, AddMatrix, (const Eigen::Ref<const Eigen::MatrixXd> &),
+    MOCK_METHOD(void, AddMatrix, (Eigen::Ref<const Eigen::MatrixXd>),
                 (override));
-    MOCK_METHOD((std::vector<Eigen::Ref<const Eigen::MatrixXd>>), GetMatrices,
-                (), (const, override));
+    MOCK_METHOD((std::vector<Eigen::MatrixXd>), GetMatrices, (),
+                (const, override));
     MOCK_METHOD(void, ClearMatrices, (), (override));
     MOCK_METHOD(std::string, GetName, (), (const, override));
     MOCK_METHOD(std::unique_ptr<Transition>, clone, (), (const, override));

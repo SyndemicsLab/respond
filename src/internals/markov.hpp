@@ -250,15 +250,15 @@ public:
     /// @return A vector of the default history objects.
     void CreateDefaultHistories() override {
         std::map<std::string, History> ret;
-        ret["state"] = History("state", _log_name, HistoryMode::kSnapshot);
+        ret["state"] = History("state", HistoryMode::kSnapshot, _log_name);
         ret["total_overdose"] =
-            History("total_overdose", _log_name, HistoryMode::kAccumulated);
+            History("total_overdose", HistoryMode::kAccumulated, _log_name);
         ret["fatal_overdose"] =
-            History("fatal_overdose", _log_name, HistoryMode::kAccumulated);
+            History("fatal_overdose", HistoryMode::kAccumulated, _log_name);
         ret["intervention_admission"] = History(
-            "intervention_admission", _log_name, HistoryMode::kAccumulated);
+            "intervention_admission", HistoryMode::kAccumulated, _log_name);
         ret["background_death"] =
-            History("background_death", _log_name, HistoryMode::kAccumulated);
+            History("background_death", HistoryMode::kAccumulated, _log_name);
         _histories = ret;
         if (_histories.empty()) {
             ResetHistoryTracking();
@@ -317,7 +317,7 @@ private:
             return;
         }
 
-        _histories["state"].RecordSnapshot(_state, _current_timestep);
+        _histories["state"].AddState(_state, _current_timestep);
         const auto size = _state.size();
         _histories["intervention_admission"].FlushPendingState(
             _current_timestep, size);

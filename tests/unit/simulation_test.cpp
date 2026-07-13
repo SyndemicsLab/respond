@@ -4,7 +4,7 @@
 // Created Date: 2026-02-09                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-07-08                                                  //
+// Last Modified: 2026-07-13                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
@@ -218,53 +218,15 @@ TEST_F(SimulationTest, GetModelHistories) {
         .WillOnce(Return(::testing::ByMove(std::move(cloned))));
     s.AddModel(std::move(mock_model));
 
-    const auto model_histories = s.GetModelHistories();
+    const auto model_histories = s.GetModelHistory(0);
     ASSERT_EQ(model_histories.size(), 1);
-    ASSERT_EQ(model_histories[0].size(), 1);
+    ASSERT_EQ(model_histories.size(), 1);
 
-    const auto history_it = model_histories[0].find("history1");
-    ASSERT_NE(history_it, model_histories[0].end());
-    ASSERT_EQ(history_it->second.size(), 3);
-    EXPECT_TRUE(history_it->second[0].isApprox(state0));
-    EXPECT_TRUE(history_it->second[1].isApprox(Eigen::VectorXd::Zero(2)));
-    EXPECT_TRUE(history_it->second[2].isApprox(state2));
-}
-
-TEST_F(SimulationTest, GetModelSparseHistories) {
-    Simulation s;
-
-    History history1("history1");
-    Eigen::VectorXd state1(2);
-    state1 << 5.0, 6.0;
-    history1.AddState(state1, 1);
-
-    History history2("history2");
-    Eigen::VectorXd state2(2);
-    state2 << 7.0, 8.0;
-    history2.AddState(state2, 3);
-
-    auto histories = std::map<std::string, History>{{"history1", history1},
-                                                    {"history2", history2}};
-
-    auto mock_model = std::make_unique<NiceMock<MockModel>>();
-    auto cloned = std::make_unique<NiceMock<MockModel>>();
-    auto *cloned_ptr = cloned.get();
-    EXPECT_CALL(*cloned_ptr, GetHistories()).WillOnce(ReturnRef(histories));
-    EXPECT_CALL(*mock_model, clone())
-        .WillOnce(Return(::testing::ByMove(std::move(cloned))));
-    s.AddModel(std::move(mock_model));
-
-    const auto sparse_histories = s.GetModelSparseHistories();
-    ASSERT_EQ(sparse_histories.size(), 1);
-    ASSERT_EQ(sparse_histories[0].size(), 2);
-
-    const auto history1_it = sparse_histories[0].find("history1");
-    ASSERT_NE(history1_it, sparse_histories[0].end());
-    EXPECT_EQ(history1_it->second, history1);
-
-    const auto history2_it = sparse_histories[0].find("history2");
-    ASSERT_NE(history2_it, sparse_histories[0].end());
-    EXPECT_EQ(history2_it->second, history2);
+    const auto history_it = model_histories.at("history1").GetStateAsVector();
+    ASSERT_EQ(history_it.size(), 3);
+    EXPECT_TRUE(history_it[0].isApprox(state0));
+    EXPECT_TRUE(history_it[1].isApprox(Eigen::VectorXd::Zero(2)));
+    EXPECT_TRUE(history_it[2].isApprox(state2));
 }
 
 TEST_F(SimulationTest, GetModelHistoryNames) {
@@ -287,17 +249,13 @@ TEST_F(SimulationTest, GetModelHistoryNames) {
     auto cloned2 = std::make_unique<NiceMock<MockModel>>();
     auto *cloned2_ptr = cloned2.get();
     EXPECT_CALL(*cloned2_ptr, GetName()).WillRepeatedly(Return("model2"));
-    EXPECT_CALL(*cloned2_ptr, GetHistories()).WillOnce(ReturnRef(histories2));
+    EXPECT_CALL(*cloned2_ptr, GetHistories()).Times(0);
     EXPECT_CALL(*mock_model2, clone())
         .WillOnce(Return(::testing::ByMove(std::move(cloned2))));
     s.AddModel(std::move(mock_model2));
 
-    const auto history_names = s.GetModelHistoryNames();
-    const std::vector<std::pair<std::string, std::string>> expected = {
-        {"model1", "history1"},
-        {"model1", "history2"},
-        {"model2", "history3"},
-    };
+    const auto history_names = s.GetModelHistoryNames(0);
+    const std::vector<std::string> expected = {"history1", "history2"};
 
     ASSERT_EQ(history_names, expected);
 }

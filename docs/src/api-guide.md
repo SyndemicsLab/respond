@@ -139,7 +139,7 @@ auto state_at_t0 = hist.GetStateMap()[0];
 auto all_states = hist.GetStateAsVector();  // Contiguous vector, fills gaps
 
 // Query history properties
-std::string name = hist.GetHistoryName();
+std::string name = hist.GetName();
 std::string log_name = hist.GetLogName();
 
 // Clear history
@@ -153,7 +153,7 @@ hist.Clear();
   - If timestep already exists, currently overwrites
 - `GetStateMap() const`: Returns map of timestep → state vector
 - `GetStateAsVector() const`: Returns contiguous vector of states (fills gaps with zeros)
-- `GetHistoryName() const`: Returns history identifier
+- `GetName() const`: Returns history identifier
 - `GetLogName() const`: Returns logger name
 - `Clear()`: Removes all recorded states
 - `operator==`, `operator!=`: Comparison operators

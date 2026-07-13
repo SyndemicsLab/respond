@@ -26,8 +26,13 @@ classDiagram
         +Run(int=-1)
         +GetModels() const vector~unique_ptr~Model~~ &
         +GetModel(size_t model_idx) const unique_ptr~Model~ &
+        +GetModel(const string &) const unique_ptr~Model~ &
         +GetModelNames() vector~string~
-        +GetModelHistory(size_t model_idx) map~string, History~
+        +GetModelHistory(size_t model_idx) const map~string, History~ &
+        +GetModelHistory(const string &) const map~string, History~ &
+        +GetModelHistoryNames(size_t idx) vector~string~
+        +GetModelHistoryNames(const string &) vector~string~
+        +SetDuration(int)
         +operator<<(ostream &os, const Simulation &obj) ostream &
     }
 

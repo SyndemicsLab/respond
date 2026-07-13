@@ -23,6 +23,7 @@ Eigen::VectorXd
 Overdose::Execute(const Eigen::Ref<const Eigen::VectorXd> &state,
                   std::map<std::string, History> &h) const {
     TestCorrectNumberMatrices(2);
+    auto matrices = GetMatrices();
 
     TestMatrixSizes(state, GetMatrices()[0]);
     Eigen::VectorXd overdoses = state.cwiseProduct(GetMatrices()[0]);
@@ -34,7 +35,7 @@ Overdose::Execute(const Eigen::Ref<const Eigen::VectorXd> &state,
     }
 
     TestMatrixSizes(overdoses, GetMatrices()[1]);
-    auto fods = overdoses.cwiseProduct(GetMatrices()[1]); // negatives
+    Eigen::VectorXd fods = overdoses.cwiseProduct(GetMatrices()[1]);
     TestLessThanState(state, fods,
                       "Overdose transition produced more fatal overdoses than "
                       "available in state.");

@@ -201,6 +201,17 @@ public:
         return _models[idx];
     }
 
+    const std::unique_ptr<Model> &
+    GetModel(const std::string &model_name) const {
+        for (const auto &model : _models) {
+            if (model->GetName() == model_name) {
+                return model;
+            }
+        }
+        LogError(_log_name, "Model name not found in GetModel: " + model_name);
+        throw std::invalid_argument("Error attempting to GetModel by name.");
+    }
+
     /// @brief Retrieves the names of all models in the simulation.
     /// @return Vector of model names in the order they were added.
     std::vector<std::string> GetModelNames() const {
@@ -211,49 +222,65 @@ public:
         return ret;
     }
 
-    /// @brief Retrieves the complete state histories for all models.
+    /// @brief Retrieves the complete state histories for the model at the
+    /// index.
+    /// @param idx The index of the model to retrieve histories for.
     /// @return Vector of maps (one per model) mapping history names to state
     /// vector trajectories.
-    const std::vector<std::map<std::string, std::vector<Eigen::VectorXd>>>
-    GetModelHistories() const {
-        std::vector<std::map<std::string, std::vector<Eigen::VectorXd>>> ret;
-        int model_idx = 0;
-        for (const auto &model : _models) {
-            std::map<std::string, std::vector<Eigen::VectorXd>> inner_ret;
-            for (const auto &kv : model->GetHistories()) {
-                inner_ret[kv.first] = kv.second.GetStateAsVector();
-            }
-            ret.push_back(inner_ret);
-            model_idx++;
+    const std::map<std::string, History> &GetModelHistory(size_t idx) const {
+        if (idx >= _models.size()) {
+            LogError(_log_name, "Index out of range in GetModelHistory: " +
+                                    std::to_string(idx));
+            throw std::out_of_range(
+                "Error attempting to GetModelHistory by index.");
         }
-        return ret;
+        return _models[idx]->GetHistories();
     }
 
-    /// @brief Retrieves sparse history objects for all models.
-    /// @return Vector of maps (one per model) mapping history names to sparse
-    /// History objects.
-    const std::vector<std::map<std::string, History>>
-    GetModelSparseHistories() const {
-        std::vector<std::map<std::string, History>> ret;
+    const std::map<std::string, History> &
+    GetModelHistory(const std::string &model_name) const {
         for (const auto &model : _models) {
-            ret.push_back(model->GetHistories());
+            if (model->GetName() == model_name) {
+                return model->GetHistories();
+            }
         }
-        return ret;
+        LogError(_log_name,
+                 "Model name not found in GetModelHistory: " + model_name);
+        throw std::invalid_argument(
+            "Error attempting to GetModelHistory by name.");
     }
 
     /// @brief Retrieves pairs of (model name, history name) for all histories.
     /// @return Vector of pairs associating each history with its parent model.
-    const std::vector<std::pair<std::string, std::string>>
-    GetModelHistoryNames() const {
-        std::vector<std::pair<std::string, std::string>> ret;
-        for (const auto &model : _models) {
-            for (const auto &kv : model->GetHistories()) {
-                std::pair<std::string, std::string> p = {model->GetName(),
-                                                         kv.first};
-                ret.push_back(p);
-            }
+    const std::vector<std::string> GetModelHistoryNames(size_t idx) const {
+        if (idx >= _models.size()) {
+            LogError(_log_name, "Index out of range in GetModelHistoryNames: " +
+                                    std::to_string(idx));
+            throw std::out_of_range(
+                "Error attempting to GetModelHistoryNames by index.");
+        }
+        std::vector<std::string> ret;
+        for (const auto &kv : _models[idx]->GetHistories()) {
+            ret.push_back(kv.first);
         }
         return ret;
+    }
+
+    const std::vector<std::string>
+    GetModelHistoryNames(const std::string &model_name) const {
+        for (const auto &model : _models) {
+            if (model->GetName() == model_name) {
+                std::vector<std::string> ret;
+                for (const auto &kv : model->GetHistories()) {
+                    ret.push_back(kv.first);
+                }
+                return ret;
+            }
+        }
+        LogError(_log_name,
+                 "Model name not found in GetModelHistoryNames: " + model_name);
+        throw std::invalid_argument(
+            "Error attempting to GetModelHistoryNames by name.");
     }
 
     void SetDuration(int duration) { _duration = duration; }

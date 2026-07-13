@@ -93,7 +93,8 @@ protected:
 TEST_F(RespondTest, RunSingleTimestep) {
     sim.GetModels()[0]->AddTimestep(CreateTestTimestep());
     sim.Run();
-    Eigen::VectorXd result = sim.GetModelHistories()[0].at("state").back();
+    Eigen::VectorXd result =
+        sim.GetModelHistory(0).at("state").GetStateAsVector().back();
 
     Eigen::Vector3d final_state;
     final_state << 0.76715528791564891, 0.72320370216816077, 1.037712429738102;
@@ -105,15 +106,7 @@ TEST_F(RespondTest, RunSimulationTwoStep) {
     sim.GetModels()[0]->AddTimestep(CreateTestTimestep());
     sim.Run(2);
 
-    auto histories = sim.GetModelHistories();
-    ASSERT_EQ(histories.size(), 1);
-
-    auto mm_histories = histories[0];
-    if (mm_histories.find("state") == mm_histories.end()) {
-        FAIL() << "Unable to find the 'state' history.";
-    }
-
-    auto state_history = mm_histories.at("state");
+    auto state_history = sim.GetModelHistory(0).at("state").GetStateAsVector();
     // 2 because it carries the initial state and 2 steps
     ASSERT_EQ(state_history.size(), 3);
 
@@ -134,15 +127,7 @@ TEST_F(RespondTest, RunSimulationFiveStep) {
     sim.SetDuration(5);
     sim.Run();
 
-    auto histories = sim.GetModelHistories();
-    ASSERT_EQ(histories.size(), 1);
-
-    auto mm_histories = histories[0];
-    if (mm_histories.find("state") == mm_histories.end()) {
-        FAIL() << "Unable to find the 'state' history.";
-    }
-
-    auto state_history = mm_histories.at("state");
+    auto state_history = sim.GetModelHistory(0).at("state").GetStateAsVector();
     // 6 because it carries the initial state and 5 timesteps
     ASSERT_EQ(state_history.size(), 6);
 
@@ -162,15 +147,7 @@ TEST_F(RespondTest, RunSimulationFiveStepWithDurationParameter) {
     sim.GetModels()[0]->AddTimestep(CreateTestTimestep());
     sim.Run(5);
 
-    auto histories = sim.GetModelHistories();
-    ASSERT_EQ(histories.size(), 1);
-
-    auto mm_histories = histories[0];
-    if (mm_histories.find("state") == mm_histories.end()) {
-        FAIL() << "Unable to find the 'state' history.";
-    }
-
-    auto state_history = mm_histories.at("state");
+    auto state_history = sim.GetModelHistory(0).at("state").GetStateAsVector();
     // 6 because it carries the initial state and 5 timesteps
     ASSERT_EQ(state_history.size(), 6);
 
