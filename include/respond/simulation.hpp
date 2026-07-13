@@ -4,7 +4,7 @@
 // Created Date: 2026-02-05                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-07-08                                                  //
+// Last Modified: 2026-07-13                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
@@ -168,6 +168,8 @@ public:
         if (duration > 0) {
             _duration = duration;
         }
+        LogInfo(_log_name, "Running simulation for duration of " +
+                               std::to_string(_duration) + " timesteps.");
         for (const auto &model : _models) {
             model->SetFinalTimestep(_duration);
             model->RunTimesteps();
