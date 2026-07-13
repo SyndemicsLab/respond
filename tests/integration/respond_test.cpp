@@ -4,7 +4,7 @@
 // Created Date: 2026-02-06                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-07-08                                                  //
+// Last Modified: 2026-07-13                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
@@ -30,6 +30,7 @@ public:
     Eigen::Vector3d overdose_prob;
     Eigen::Vector3d fod_prob;
     Eigen::Vector3d background_death_prob;
+    Eigen::Vector3d tolerance;
 
 protected:
     void SetUp() override {
@@ -44,12 +45,14 @@ protected:
 
         init_state << 1.3f, 1.1f, 1.8f;
         migration_pop << 0.0f, 0.0f, 0.0f;
+        behavior_trans << 0.3f, 0.2f, 0.1f, 0.4f, 0.2f, 0.1f, 0.3f, 0.4f, 0.1f;
         intervention_trans << 0.1f, 0.2f, 0.5f, 0.3f, 0.2f, 0.3f, 0.7f, 0.2f,
             0.3f;
-        behavior_trans << 0.3f, 0.2f, 0.1f, 0.4f, 0.2f, 0.1f, 0.3f, 0.4f, 0.1f;
         overdose_prob << 0.01f, 0.01f, 0.02f;
         fod_prob << 0.01f, 0.01f, 0.01f;
         background_death_prob << 0.001f, 0.001f, 0.002f;
+
+        tolerance << 1e-5, 1e-5, 1e-5;
 
         sim.CreateNewModel("markov");
         sim.GetModels()[0]->CreateDefaultHistories();
@@ -100,7 +103,7 @@ TEST_F(RespondTest, RunSingleTimestep) {
 TEST_F(RespondTest, RunSimulationTwoStep) {
     sim.GetModels()[0]->AddTimestep(CreateTestTimestep());
     sim.GetModels()[0]->AddTimestep(CreateTestTimestep());
-    sim.Run();
+    sim.Run(2);
 
     auto histories = sim.GetModelHistories();
     ASSERT_EQ(histories.size(), 1);
@@ -111,13 +114,15 @@ TEST_F(RespondTest, RunSimulationTwoStep) {
     }
 
     auto state_history = mm_histories.at("state");
-    // 2 because it carries the initial state and 1 step
-    ASSERT_EQ(state_history.size(), 2);
+    // 2 because it carries the initial state and 2 steps
+    ASSERT_EQ(state_history.size(), 3);
 
     Eigen::Vector3d final_state;
     ASSERT_TRUE(state_history[0].isApprox(init_state));
-    final_state << 0.76715528791564891, 0.72320370216816077, 1.037712429738102;
-    ASSERT_TRUE(state_history[1].isApprox(final_state));
+
+    final_state << 0.46999281, 0.44109648, 0.631613324;
+    Eigen::Vector3d diff = (state_history[2] - final_state).cwiseAbs();
+    ASSERT_TRUE((diff.array() <= tolerance.array()).all());
 }
 
 TEST_F(RespondTest, RunSimulationFiveStep) {
@@ -143,8 +148,10 @@ TEST_F(RespondTest, RunSimulationFiveStep) {
 
     Eigen::Vector3d final_state;
     ASSERT_TRUE(state_history[0].isApprox(init_state));
-    final_state << 0.76715528791564891, 0.72320370216816077, 1.037712429738102;
-    ASSERT_TRUE(state_history[1].isApprox(final_state));
+
+    final_state << 0.10714013, 0.10056269, 0.14400034;
+    Eigen::Vector3d diff = (state_history[5] - final_state).cwiseAbs();
+    ASSERT_TRUE((diff.array() <= tolerance.array()).all());
 }
 
 TEST_F(RespondTest, RunSimulationFiveStepWithDurationParameter) {
@@ -169,8 +176,9 @@ TEST_F(RespondTest, RunSimulationFiveStepWithDurationParameter) {
 
     Eigen::Vector3d final_state;
     ASSERT_TRUE(state_history[0].isApprox(init_state));
-    final_state << 0.76715528791564891, 0.72320370216816077, 1.037712429738102;
-    ASSERT_TRUE(state_history[1].isApprox(final_state));
+    final_state << 0.10714013, 0.10056269, 0.14400034;
+    Eigen::Vector3d diff = (state_history[5] - final_state).cwiseAbs();
+    ASSERT_TRUE((diff.array() <= tolerance.array()).all());
 }
 
 } // namespace testing
