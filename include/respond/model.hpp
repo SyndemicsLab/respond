@@ -4,7 +4,7 @@
 // Created Date: 2026-02-05                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-07-07                                                  //
+// Last Modified: 2026-07-09                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
@@ -100,7 +100,7 @@ public:
     //
     ////////////////////////////////////////////////////////////////////////////
 
-    /// @brief Retrieve an immutable reference to a specific timestep by index.
+    /// @brief Retrieve a copy of a specific timestep by index.
     /// @param index The zero-based index of the timestep to retrieve.
     /// @return A constant reference to the Timestep at the specified index.
     virtual Timestep GetTimestepAtIndex(size_t index) const = 0;

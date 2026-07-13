@@ -4,11 +4,14 @@
 // Created Date: 2026-04-27                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-07-07                                                  //
+// Last Modified: 2026-07-09                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
 ////////////////////////////////////////////////////////////////////////////////
+
+#include <respond/constants.hpp>
+#include <respond/respond.hpp>
 
 #include <algorithm>
 #include <atomic>
@@ -29,9 +32,6 @@
 #include <vector>
 
 #include <Eigen/Dense>
-
-#include <respond/model.hpp>
-#include <respond/transition_factory.hpp>
 
 namespace {
 using Clock = std::chrono::steady_clock;
@@ -270,55 +270,65 @@ Eigen::VectorXd MakeRateVector(std::size_t n, double base_rate,
     return v;
 }
 
-std::unique_ptr<respond::Model> BuildModel(std::size_t state_size,
-                                           int history_capture_interval,
-                                           int final_timestep) {
-    auto model = respond::Model::Create("benchmark_model", "console");
-    model->SetHistoryCaptureInterval(history_capture_interval);
-    model->SetFinalTimestep(final_timestep);
+respond::Timestep CreateTestTimestep(std::size_t state_size) {
 
-    auto behavior = respond::Transition::Create("behavior", "console");
-    auto intervention = respond::Transition::Create("intervention", "console");
-    auto overdose = respond::Transition::Create("overdose", "console");
-    auto background =
-        respond::Transition::Create("background_death", "console");
+    respond::Timestep ts;
+    ts.CreateTransition("migration");
+    ts.AddMatrixToTransition("migration",
+                             MakeRateVector(state_size, 10.0, 0.0));
 
-    if (!behavior || !intervention || !overdose || !background) {
-        throw std::runtime_error("Failed to create one or more transitions");
-    }
+    ts.CreateTransition("behavior");
+    ts.AddMatrixToTransition("behavior", MakeShiftMatrix(state_size, 0.985, 1));
 
-    behavior->AddMatrix(MakeShiftMatrix(state_size, 0.985, 1));
-    intervention->AddMatrix(MakeShiftMatrix(state_size, 0.990, -1));
-    overdose->AddMatrix(MakeRateVector(state_size, 0.0020, 0.0005));
-    overdose->AddMatrix(MakeRateVector(state_size, 0.0800, 0.0200));
-    background->AddMatrix(MakeRateVector(state_size, 0.0008, 0.0004));
+    auto temp = ts.GetTransition("behavior")->clone();
 
-    model->AddTransition(behavior);
-    model->AddTransition(intervention);
-    model->AddTransition(overdose);
-    model->AddTransition(background);
+    ts.CreateTransition("intervention");
+    ts.AddMatrixToTransition("intervention",
+                             MakeShiftMatrix(state_size, 0.990, -1));
 
-    return model;
+    ts.CreateTransition("overdose");
+    ts.AddMatrixToTransition("overdose",
+                             MakeRateVector(state_size, 0.0020, 0.0005));
+
+    ts.AddMatrixToTransition("overdose",
+                             MakeRateVector(state_size, 0.0800, 0.0200));
+
+    ts.CreateTransition("background_death");
+    ts.AddMatrixToTransition("background_death",
+                             MakeRateVector(state_size, 0.0008, 0.0004));
+    return ts;
 }
 
-TimedRunResult TimeOneSample(respond::Model &model,
+respond::Simulation BuildSimulation(std::size_t state_size,
+                                    int history_capture_interval,
+                                    size_t duration) {
+    respond::Simulation sim;
+    sim.CreateNewModel("markov");
+    sim.GetModels()[0]->SetHistoryCaptureInterval(history_capture_interval);
+    sim.GetModels()[0]->SetFinalTimestep(duration);
+    auto timestep = CreateTestTimestep(state_size);
+
+    for (size_t t = 0; t < duration; ++t) {
+        sim.GetModels()[0]->AddTimestep(timestep);
+    }
+    return sim;
+}
+
+TimedRunResult TimeOneSample(respond::Simulation sim,
                              const Eigen::VectorXd &initial_state, int steps) {
-    model.SetState(initial_state);
-    model.ClearHistories();
-    model.SetFinalTimestep(steps);
+    sim.GetModels()[0]->SetState(initial_state);
+    sim.GetModels()[0]->CreateDefaultHistories();
 
     const auto start = Clock::now();
-    for (int i = 0; i < steps; ++i) {
-        model.RunTransitions();
-    }
+    sim.Run(steps);
     const auto end = Clock::now();
 
-    const double checksum = model.GetState().sum();
+    const double checksum = sim.GetModels()[0]->GetState().sum();
     std::size_t recorded_points = 0;
-    const auto histories = model.GetHistories();
+    const auto histories = sim.GetModelHistories()[0];
     const auto state_history = histories.find("state");
     if (state_history != histories.end()) {
-        recorded_points = state_history->second.GetRecordedTimesteps().size();
+        recorded_points = state_history->second.size();
     }
     DoNotOptimize(checksum);
     ClobberMemory();
@@ -420,16 +430,16 @@ int main(int argc, char **argv) {
 
         for (int repetition = 0; repetition < config.repetitions;
              ++repetition) {
-            auto model =
-                BuildModel(config.state_size, config.history_capture_interval,
-                           config.steps);
+            auto sim =
+                BuildSimulation(config.state_size,
+                                config.history_capture_interval, config.steps);
 
             Eigen::VectorXd initial_state = Eigen::VectorXd::Constant(
-                static_cast<Eigen::Index>(config.state_size), 1'000.0);
+                static_cast<Eigen::Index>(config.state_size), 1000.0);
 
             for (int i = 0; i < config.warmup_iterations; ++i) {
                 const auto warmup =
-                    TimeOneSample(*model, initial_state, config.steps);
+                    TimeOneSample(sim, initial_state, config.steps);
                 DoNotOptimize(warmup.checksum);
             }
 
@@ -439,7 +449,7 @@ int main(int argc, char **argv) {
 
             for (int i = 0; i < config.sample_iterations; ++i) {
                 const auto sample =
-                    TimeOneSample(*model, initial_state, config.steps);
+                    TimeOneSample(sim, initial_state, config.steps);
                 sample_ns.push_back(sample.elapsed_ns);
                 all_samples_ns.push_back(sample.elapsed_ns);
                 final_checksum = sample.checksum;

@@ -4,7 +4,7 @@
 // Created Date: 2026-02-05                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-07-02                                                  //
+// Last Modified: 2026-07-09                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
@@ -12,15 +12,26 @@
 #ifndef RESPOND_INTERNALS_BEHAVIOR_HPP_
 #define RESPOND_INTERNALS_BEHAVIOR_HPP_
 
+#include <respond/constants.hpp>
+
+#include <map>
 #include <memory>
+#include <string>
+
+#include <Eigen/Dense>
 
 #include "transition_base.hpp"
 
 namespace respond {
 class Behavior : public virtual TransitionBase {
 public:
+    Behavior() : Behavior("behavior") {}
+    Behavior(const std::string &name) : Behavior(name, RESPOND_DEFAULT_LOG) {}
     Behavior(const std::string &name, const std::string &log_name)
-        : TransitionBase(name, log_name) {}
+        : Behavior(name, log_name, RESPOND_DEFAULT_LOG_FILE) {}
+    Behavior(const std::string &name, const std::string &log_name,
+             const std::string &log_file)
+        : TransitionBase(name, log_name, log_file) {}
 
     // Run the execute function and return the final state. Do not edit the
     // parameter state, but do edit the history provided. Nothing in the
@@ -30,7 +41,7 @@ public:
 
     // Clone
     std::unique_ptr<Transition> clone() const override {
-        auto ret = std::make_unique<Behavior>(GetName(), GetLogName());
+        auto ret = std::make_unique<Behavior>(GetName(), _log_name);
         for (const auto &t : GetMatrices()) {
             ret->AddMatrix(t);
         }

@@ -36,7 +36,6 @@ public:
                 (), (const, override));
     MOCK_METHOD(void, ClearMatrices, (), (override));
     MOCK_METHOD(std::string, GetName, (), (const, override));
-    MOCK_METHOD(std::string, GetLogName, (), (const, override));
     MOCK_METHOD(std::unique_ptr<Transition>, clone, (), (const, override));
 };
 } // namespace testing

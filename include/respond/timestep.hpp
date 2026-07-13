@@ -4,7 +4,7 @@
 // Created Date: 2026-06-30                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-07-07                                                  //
+// Last Modified: 2026-07-09                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
@@ -121,8 +121,21 @@ public:
     /// exception if the transition type is unsupported.
     const std::unique_ptr<Transition> &
     CreateTransition(const std::string &transition_name) {
-        _transitions.push_back(Transition::Create(transition_name, _log_name));
+        _transitions.push_back(
+            Transition::Create(transition_name, transition_name, _log_name));
         return _transitions.back();
+    }
+
+    std::unique_ptr<Transition> RemoveTransition(size_t idx) {
+        if (idx >= _transitions.size()) {
+            LogWarning(_log_name, "Index out of range in RemoveTransition: " +
+                                      std::to_string(idx));
+            throw std::out_of_range(
+                "Error attempting to RemoveTransition by index.");
+        }
+        auto removed_transition = std::move(_transitions[idx]);
+        _transitions.erase(_transitions.begin() + idx);
+        return removed_transition;
     }
 
     /// @brief Adds a matrix to an existing transition in this timestep by

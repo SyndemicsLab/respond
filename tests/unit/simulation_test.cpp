@@ -4,7 +4,7 @@
 // Created Date: 2026-02-09                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-07-07                                                  //
+// Last Modified: 2026-07-08                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
@@ -13,157 +13,294 @@
 #include <respond/simulation.hpp>
 
 #include <algorithm>
+#include <fstream>
 #include <memory>
+#include <string>
 
 #include <gtest/gtest.h>
+#include <spdlog/spdlog.h>
 
 #include "../mocks/model_mock.hpp"
 
 using ::testing::_;
 using ::testing::NiceMock;
 using ::testing::Return;
+using ::testing::ReturnRef;
 
 namespace respond {
 namespace testing {
 class SimulationTest : public ::testing::Test {
 public:
 protected:
-    void SetUp() override {}
-    void TearDown() override {}
+    void SetUp() override {
+        // Clear any existing loggers from previous tests
+        spdlog::drop_all();
+
+        // Create temporary log files for testing
+        test_log_file_ = "/tmp/respond_test.log";
+        shared_log_file_ = "/tmp/respond_shared.log";
+        default_log_file_ = RESPOND_DEFAULT_LOG_FILE;
+
+        // Remove test files if they exist
+        std::remove(default_log_file_.c_str());
+        std::remove(test_log_file_.c_str());
+        std::remove(shared_log_file_.c_str());
+    }
+    void TearDown() override {
+        // Clean up loggers
+        spdlog::drop_all();
+
+        // Remove test files
+        std::remove(default_log_file_.c_str());
+        std::remove(test_log_file_.c_str());
+        std::remove(shared_log_file_.c_str());
+    }
+
+    std::string test_log_file_;
+    std::string shared_log_file_;
+    std::string default_log_file_;
+
+    // Helper to check if file contains a string
+    bool FileContains(const std::string &filepath, const std::string &search) {
+        std::ifstream file(filepath);
+        if (!file.is_open())
+            return false;
+
+        std::string line;
+        while (std::getline(file, line)) {
+            if (line.find(search) != std::string::npos) {
+                return true;
+            }
+        }
+        return false;
+    }
 };
 
-// TEST_F(SimulationTest, ConstructGetLogger) {
-//     Simulation s;
-//     ASSERT_EQ(s.GetLogName(), "console");
-// }
+TEST_F(SimulationTest, DefaultConstructor) {
+    Simulation s;
+    ASSERT_EQ(CreateFileLogger(RESPOND_DEFAULT_LOG, default_log_file_),
+              CreationStatus::kExists);
+}
 
-// TEST_F(SimulationTest, GetSetModel) {
-//     auto mock = std::make_unique<NiceMock<MockModel>>();
-//     auto cloned = std::make_unique<NiceMock<MockModel>>();
-//     EXPECT_CALL(*mock, clone())
-//         .WillOnce(Return(::testing::ByMove(std::move(cloned))));
+TEST_F(SimulationTest, ConstructorWithLogName) {
+    Simulation s("custom_log");
+    ASSERT_EQ(CreateFileLogger("custom_log", default_log_file_),
+              CreationStatus::kExists);
+}
 
-//     std::unique_ptr<Model> upmm = std::move(mock);
-//     Simulation s;
-//     s.AddModel(upmm);
-//     ASSERT_EQ(s.GetModels().size(), 1);
-// }
+TEST_F(SimulationTest, ConstructorWithLogNameAndLogFile) {
+    Simulation s("custom_log", test_log_file_);
+    ASSERT_EQ(CreateFileLogger("custom_log", test_log_file_),
+              CreationStatus::kExists);
+}
 
-// TEST_F(SimulationTest, ClearModels) {
-//     auto mock = std::make_unique<NiceMock<MockModel>>();
-//     auto cloned = std::make_unique<NiceMock<MockModel>>();
-//     EXPECT_CALL(*mock, clone())
-//         .WillOnce(Return(::testing::ByMove(std::move(cloned))));
+TEST_F(SimulationTest, CreateNewModel) {
+    Simulation s;
+    std::string model_name = "test_model";
+    std::string new_model_id = s.CreateNewModel(model_name);
+    ASSERT_EQ(new_model_id, "1_" + model_name);
+    ASSERT_EQ(s.GetModels().size(), 1);
+}
 
-//     std::unique_ptr<Model> upmm = std::move(mock);
-//     Simulation s;
-//     s.AddModel(upmm);
-//     s.ClearModels();
-//     ASSERT_EQ(s.GetModels().size(), 0);
-// }
+TEST_F(SimulationTest, CreateMultipleModels) {
+    Simulation s;
+    std::string model_name1 = "test_model1";
+    std::string model_name2 = "test_model2";
+    std::string new_model_id1 = s.CreateNewModel(model_name1);
+    std::string new_model_id2 = s.CreateNewModel(model_name2);
+    ASSERT_EQ(new_model_id1, "1_" + model_name1);
+    ASSERT_EQ(new_model_id2, "2_" + model_name2);
+    ASSERT_EQ(s.GetModels().size(), 2);
+}
 
-// TEST_F(SimulationTest, GetModelNames) {
-//     auto mock = std::make_unique<NiceMock<MockModel>>();
-//     auto cloned = std::make_unique<NiceMock<MockModel>>();
-//     auto expected = "test_model_name";
-//     EXPECT_CALL(*cloned, GetName()).WillOnce(Return(expected));
-//     EXPECT_CALL(*mock, clone())
-//         .WillOnce(Return(::testing::ByMove(std::move(cloned))));
+TEST_F(SimulationTest, CreateModelWithExistingName) {
+    Simulation s;
+    std::string model_name = "test_model";
+    std::string new_model_id1 = s.CreateNewModel(model_name);
+    std::string new_model_id2 = s.CreateNewModel(model_name);
+    ASSERT_EQ(new_model_id1, "1_" + model_name);
+    ASSERT_EQ(new_model_id2, "2_" + model_name);
+    ASSERT_EQ(s.GetModels().size(), 2);
+}
 
-//     std::unique_ptr<Model> upmm = std::move(mock);
-//     Simulation s;
-//     s.AddModel(upmm);
-//     auto result = s.GetModelNames();
-//     ASSERT_EQ(result.size(), 1);
-//     ASSERT_EQ(result[0], expected);
-// }
+TEST_F(SimulationTest, ClearModels) {
+    Simulation s;
+    std::string model_name = "test_model";
+    s.CreateNewModel(model_name);
+    ASSERT_EQ(s.GetModels().size(), 1);
+    s.ClearModels();
+    ASSERT_EQ(s.GetModels().size(), 0);
+}
 
-// TEST_F(SimulationTest, GetModelHistories) {
-//     auto mock = std::make_unique<NiceMock<MockModel>>();
-//     auto cloned = std::make_unique<NiceMock<MockModel>>();
+TEST_F(SimulationTest, AddModel) {
+    Simulation s;
+    auto mock_model = std::make_unique<NiceMock<MockModel>>();
+    auto cloned_model = std::make_unique<NiceMock<MockModel>>();
+    EXPECT_CALL(*mock_model, clone())
+        .WillOnce(Return(::testing::ByMove(std::move(cloned_model))));
 
-//     std::map<std::string, History> hv;
-//     History h("temp", "test_logger");
-//     Eigen::VectorXd state = Eigen::VectorXd(3);
-//     state << 1.0f, 2.0f, 3.0f;
-//     h.AddState(state);
-//     hv["temp"] = h;
+    s.AddModel(std::move(mock_model));
+    ASSERT_EQ(s.GetModels().size(), 1);
+}
 
-//     std::map<std::string, std::vector<Eigen::VectorXd>> h_map;
-//     h_map["temp"] = h.GetStateAsVector();
+TEST_F(SimulationTest, Run) {
+    Simulation s;
+    auto mock_model = std::make_unique<NiceMock<MockModel>>();
+    auto cloned = std::make_unique<NiceMock<MockModel>>();
+    EXPECT_CALL(*cloned, RunTimesteps()).Times(1);
+    EXPECT_CALL(*mock_model, clone())
+        .WillOnce(Return(::testing::ByMove(std::move(cloned))));
+    s.AddModel(std::move(mock_model));
+    s.Run();
+}
 
-//     std::vector<std::map<std::string, std::vector<Eigen::VectorXd>>>
-//     expected; expected.push_back(h_map);
+TEST_F(SimulationTest, RunMultipleModels) {
+    Simulation s;
+    auto mock_model = std::make_unique<NiceMock<MockModel>>();
+    auto cloned = std::make_unique<NiceMock<MockModel>>();
+    EXPECT_CALL(*cloned, RunTimesteps()).Times(1);
+    EXPECT_CALL(*mock_model, clone())
+        .WillOnce(Return(::testing::ByMove(std::move(cloned))));
+    s.AddModel(std::move(mock_model));
 
-//     ON_CALL(*cloned, GetName()).WillByDefault(Return("temp_model"));
+    auto mock_model2 = std::make_unique<NiceMock<MockModel>>();
+    auto cloned2 = std::make_unique<NiceMock<MockModel>>();
+    EXPECT_CALL(*cloned2, RunTimesteps()).Times(1);
+    EXPECT_CALL(*mock_model2, clone())
+        .WillOnce(Return(::testing::ByMove(std::move(cloned2))));
+    s.AddModel(std::move(mock_model2));
 
-//     EXPECT_CALL(*cloned, GetHistories()).WillOnce(Return(hv));
-//     ON_CALL(*mock, clone())
-//         .WillByDefault(Return(::testing::ByMove(std::move(cloned))));
+    s.Run();
+}
 
-//     std::unique_ptr<Model> upmm = std::move(mock);
-//     Simulation s;
-//     s.AddModel(upmm);
-//     ASSERT_EQ(s.GetModelHistories(), expected);
-// }
+TEST_F(SimulationTest, GetModels) {
+    Simulation s;
+    auto mock_model = std::make_unique<NiceMock<MockModel>>();
+    auto cloned = std::make_unique<NiceMock<MockModel>>();
+    EXPECT_CALL(*mock_model, clone())
+        .WillOnce(Return(::testing::ByMove(std::move(cloned))));
+    s.AddModel(std::move(mock_model));
 
-// TEST_F(SimulationTest, GetHistoryNames) {
-//     auto mock = std::make_unique<NiceMock<MockModel>>();
-//     auto cloned = std::make_unique<NiceMock<MockModel>>();
+    const auto &models = s.GetModels();
+    ASSERT_EQ(models.size(), 1);
+}
 
-//     std::string model_name = "temp_model";
-//     std::string history_name = "temp_history";
+TEST_F(SimulationTest, GetModelNames) {
+    Simulation s;
+    std::string model_name1 = "test_model1";
+    std::string model_name2 = "test_model2";
+    s.CreateNewModel(model_name1);
+    s.CreateNewModel(model_name2);
 
-//     std::map<std::string, History> hv;
-//     History h("temp", "test_logger");
-//     hv[history_name] = h;
+    const auto &model_names = s.GetModelNames();
+    ASSERT_EQ(model_names.size(), 2);
+    ASSERT_EQ(model_names[0], model_name1);
+    ASSERT_EQ(model_names[1], model_name2);
+}
 
-//     std::vector<std::pair<std::string, std::string>> expected = {
-//         {model_name, history_name}};
+TEST_F(SimulationTest, GetModelHistories) {
+    Simulation s;
 
-//     ON_CALL(*cloned, GetName()).WillByDefault(Return(model_name));
+    History history("history1");
+    Eigen::VectorXd state0(2);
+    state0 << 1.0, 2.0;
+    Eigen::VectorXd state2(2);
+    state2 << 3.0, 4.0;
+    history.AddState(state0, 0);
+    history.AddState(state2, 2);
+    auto histories = std::map<std::string, History>{{"history1", history}};
 
-//     EXPECT_CALL(*cloned, GetHistories()).WillOnce(Return(hv));
-//     ON_CALL(*mock, clone())
-//         .WillByDefault(Return(::testing::ByMove(std::move(cloned))));
+    auto mock_model = std::make_unique<NiceMock<MockModel>>();
+    auto cloned = std::make_unique<NiceMock<MockModel>>();
+    auto *cloned_ptr = cloned.get();
+    EXPECT_CALL(*cloned_ptr, GetHistories()).WillOnce(ReturnRef(histories));
+    EXPECT_CALL(*mock_model, clone())
+        .WillOnce(Return(::testing::ByMove(std::move(cloned))));
+    s.AddModel(std::move(mock_model));
 
-//     std::unique_ptr<Model> upmm = std::move(mock);
-//     Simulation s;
-//     s.AddModel(upmm);
-//     ASSERT_EQ(s.GetModelHistoryNames(), expected);
-// }
+    const auto model_histories = s.GetModelHistories();
+    ASSERT_EQ(model_histories.size(), 1);
+    ASSERT_EQ(model_histories[0].size(), 1);
 
-// TEST_F(SimulationTest, GetModelSparseHistories) {
-//     auto mock = std::make_unique<NiceMock<MockModel>>();
-//     auto cloned = std::make_unique<NiceMock<MockModel>>();
+    const auto history_it = model_histories[0].find("history1");
+    ASSERT_NE(history_it, model_histories[0].end());
+    ASSERT_EQ(history_it->second.size(), 3);
+    EXPECT_TRUE(history_it->second[0].isApprox(state0));
+    EXPECT_TRUE(history_it->second[1].isApprox(Eigen::VectorXd::Zero(2)));
+    EXPECT_TRUE(history_it->second[2].isApprox(state2));
+}
 
-//     std::map<std::string, History> hv;
-//     History h("temp", "test_logger");
-//     Eigen::VectorXd state0 = Eigen::VectorXd(2);
-//     state0 << 1.0f, 2.0f;
-//     Eigen::VectorXd state2 = Eigen::VectorXd(2);
-//     state2 << 3.0f, 4.0f;
-//     h.AddState(state0, 0);
-//     h.AddState(state2, 2);
-//     hv["temp"] = h;
+TEST_F(SimulationTest, GetModelSparseHistories) {
+    Simulation s;
 
-//     EXPECT_CALL(*cloned, GetHistories()).WillOnce(Return(hv));
-//     ON_CALL(*mock, clone())
-//         .WillByDefault(Return(::testing::ByMove(std::move(cloned))));
+    History history1("history1");
+    Eigen::VectorXd state1(2);
+    state1 << 5.0, 6.0;
+    history1.AddState(state1, 1);
 
-//     std::unique_ptr<Model> upmm = std::move(mock);
-//     Simulation s;
-//     s.AddModel(upmm);
+    History history2("history2");
+    Eigen::VectorXd state2(2);
+    state2 << 7.0, 8.0;
+    history2.AddState(state2, 3);
 
-//     const auto histories = s.GetModelSparseHistories();
-//     ASSERT_EQ(histories.size(), 1u);
-//     const auto &history = histories[0].at("temp");
-//     std::vector<int> expected_timesteps = {0, 2};
-//     ASSERT_EQ(history.GetRecordedTimesteps(), expected_timesteps);
-//     ASSERT_EQ(history.GetRecordedStates().size(), 2u);
-//     EXPECT_TRUE(history.GetRecordedStates()[0].isApprox(state0));
-//     EXPECT_TRUE(history.GetRecordedStates()[1].isApprox(state2));
-// }
+    auto histories = std::map<std::string, History>{{"history1", history1},
+                                                    {"history2", history2}};
+
+    auto mock_model = std::make_unique<NiceMock<MockModel>>();
+    auto cloned = std::make_unique<NiceMock<MockModel>>();
+    auto *cloned_ptr = cloned.get();
+    EXPECT_CALL(*cloned_ptr, GetHistories()).WillOnce(ReturnRef(histories));
+    EXPECT_CALL(*mock_model, clone())
+        .WillOnce(Return(::testing::ByMove(std::move(cloned))));
+    s.AddModel(std::move(mock_model));
+
+    const auto sparse_histories = s.GetModelSparseHistories();
+    ASSERT_EQ(sparse_histories.size(), 1);
+    ASSERT_EQ(sparse_histories[0].size(), 2);
+
+    const auto history1_it = sparse_histories[0].find("history1");
+    ASSERT_NE(history1_it, sparse_histories[0].end());
+    EXPECT_EQ(history1_it->second, history1);
+
+    const auto history2_it = sparse_histories[0].find("history2");
+    ASSERT_NE(history2_it, sparse_histories[0].end());
+    EXPECT_EQ(history2_it->second, history2);
+}
+
+TEST_F(SimulationTest, GetModelHistoryNames) {
+    Simulation s;
+
+    auto histories1 = std::map<std::string, History>{
+        {"history1", History("history1")}, {"history2", History("history2")}};
+    auto mock_model1 = std::make_unique<NiceMock<MockModel>>();
+    auto cloned1 = std::make_unique<NiceMock<MockModel>>();
+    auto *cloned1_ptr = cloned1.get();
+    EXPECT_CALL(*cloned1_ptr, GetName()).WillRepeatedly(Return("model1"));
+    EXPECT_CALL(*cloned1_ptr, GetHistories()).WillOnce(ReturnRef(histories1));
+    EXPECT_CALL(*mock_model1, clone())
+        .WillOnce(Return(::testing::ByMove(std::move(cloned1))));
+    s.AddModel(std::move(mock_model1));
+
+    auto histories2 =
+        std::map<std::string, History>{{"history3", History("history3")}};
+    auto mock_model2 = std::make_unique<NiceMock<MockModel>>();
+    auto cloned2 = std::make_unique<NiceMock<MockModel>>();
+    auto *cloned2_ptr = cloned2.get();
+    EXPECT_CALL(*cloned2_ptr, GetName()).WillRepeatedly(Return("model2"));
+    EXPECT_CALL(*cloned2_ptr, GetHistories()).WillOnce(ReturnRef(histories2));
+    EXPECT_CALL(*mock_model2, clone())
+        .WillOnce(Return(::testing::ByMove(std::move(cloned2))));
+    s.AddModel(std::move(mock_model2));
+
+    const auto history_names = s.GetModelHistoryNames();
+    const std::vector<std::pair<std::string, std::string>> expected = {
+        {"model1", "history1"},
+        {"model1", "history2"},
+        {"model2", "history3"},
+    };
+
+    ASSERT_EQ(history_names, expected);
+}
 
 } // namespace testing
 } // namespace respond

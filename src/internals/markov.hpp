@@ -4,7 +4,7 @@
 // Created Date: 2026-02-05                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-07-07                                                  //
+// Last Modified: 2026-07-09                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
@@ -33,8 +33,7 @@ public:
     //
     ////////////////////////////////////////////////////////////////////////////
 
-    /// @brief Default constructor for Markov model. Initializes with default
-    /// name "markov" and logger "console".
+    /// @brief Default constructor for Markov model. Initializes with default..
     Markov() : Markov("markov", RESPOND_DEFAULT_LOG) {}
 
     /// @brief Constructs a Markov model with specified name and logger.
@@ -219,7 +218,17 @@ public:
         if (!_initial_history_recorded) {
             RecordHistoryAtCurrentTimestep();
         }
-        for (size_t i = 0; i < _timestep_vector.size(); ++i) {
+        size_t duration = _timestep_vector.size();
+        if (_timestep_vector.size() > static_cast<size_t>(_final_timestep) &&
+            _final_timestep >= 0) {
+            std::string warning_msg =
+                "Duration is less than available timesteps for model: " +
+                _name + ".\nOnly running timesteps up to duration value.";
+            LogWarning(_log_name, warning_msg);
+            duration = static_cast<size_t>(_final_timestep);
+        }
+
+        for (size_t i = 0; i < duration; ++i) {
             RunTimestep();
             RecordHistoryAtCurrentTimestep();
         }
