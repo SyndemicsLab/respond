@@ -4,7 +4,7 @@
 // Created Date: 2026-02-05                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-07-13                                                  //
+// Last Modified: 2026-07-14                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
@@ -44,6 +44,11 @@ public:
     std::string GetName() const override { return _name; }
     // Clear out all the stored Eigen::MatrixXd values
     void ClearMatrices() override { _transition_matrices.clear(); }
+
+    void Serialize(std::ostream &os) const override {
+        os << "Transition(name=" << _name
+           << ", num_matrices=" << _transition_matrices.size() << ")";
+    }
 
 protected:
     const std::string _log_name;

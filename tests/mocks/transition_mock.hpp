@@ -4,7 +4,7 @@
 // Created Date: 2026-02-05                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-07-13                                                  //
+// Last Modified: 2026-07-14                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
@@ -17,6 +17,7 @@
 
 #include <map>
 #include <memory>
+#include <ostream>
 #include <vector>
 
 #include <Eigen/Dense>
@@ -37,6 +38,7 @@ public:
     MOCK_METHOD(void, ClearMatrices, (), (override));
     MOCK_METHOD(std::string, GetName, (), (const, override));
     MOCK_METHOD(std::unique_ptr<Transition>, clone, (), (const, override));
+    MOCK_METHOD(void, Serialize, (std::ostream &), (const, override));
 };
 } // namespace testing
 } // namespace respond

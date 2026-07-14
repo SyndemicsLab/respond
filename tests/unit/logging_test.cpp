@@ -4,7 +4,7 @@
 // Created Date: 2025-03-18                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-07-09                                                  //
+// Last Modified: 2026-07-14                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025-2026 Syndemics Lab at Boston Medical Center             //
@@ -495,11 +495,11 @@ TEST_F(LoggingTest, MixedFileAndSharedLoggers) {
 TEST_F(LoggingTest, TransitionFactoryInvalidType) {
     CreateFileLogger("factory_test", test_log_file_);
 
-    // Create transition with invalid type should log error and return nullptr
-    auto transition =
-        respond::Transition::Create("invalid_type", "factory_test");
-
-    EXPECT_EQ(transition, nullptr);
+    // Create transition with invalid type should log error and throw error
+    EXPECT_THROW(
+        (void)respond::Transition::Create("invalid_type", "factory_test"),
+        std::invalid_argument);
+    FlushAllLoggers();
     EXPECT_EQ(CheckLoggerExists("factory_test"), CreationStatus::kExists);
 }
 

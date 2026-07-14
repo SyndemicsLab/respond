@@ -40,14 +40,14 @@ classDiagram
         <<abstract>>
         +Create(const string &, const string &, const string &) unique_ptr~Model~
         +clone() unique_ptr~Model~ *
-        +AddTimestep(shared_ptr~timestep~) *
+        +AddTimestep(const Timestep &) *
         +RunTimestep() *
         +RunTimestep(size_t) *
         +RunTimesteps() *
         +ClearTimesteps() *
         +ClearHistories() *
         +CreateDefaultHistories() *
-        +GetTiemstepAtIndex(size_t) Timestep *
+        +GetTimestepAtIndex(size_t) Timestep *
         +GetState() Ref~const VectorXd~ *
         +GetName() string *
         +GetHistories() map~string, History~ *
@@ -59,70 +59,98 @@ classDiagram
         +SetHistoryCaptureInterval(int) *
         +SetFinalTimestep(int) *
         +SetInitialHistoryRecorded(bool) *
+        +Serialize(ostream &) *
         +operator<<(ostream &os, const Model &obj) ostream &
     }
 
     class Timestep {
         +Timestep()
-        +Timestep(const string &log_name)
-        +Timestep(const string &log_name, const string &log_filepath)
-        +Timestep(const Timestep &other)
-        +operator=(const Timestep &other) Timestep &
-        +Timestep(const Timestep &&other)
-        +operator=(const Timestep &&other) Timestep &
-        +CreateTransition(type) const Transition &
-        +AddMatrixToTransition(size_t index, MatrixXd mat)
-        +GetTransition(size_t idx) const Transition &
-        +GetTransition(string name) const Transition &
-        +GetTransitions() const vector~const Transition &~
-        +GetTransitionNames() vector~const string~
+        +Timestep(const string &)
+        +Timestep(const string &, const string &)
+        +Timestep(const Timestep &)
+        +operator=(const Timestep &) Timestep &
+        +Timestep(const Timestep &&)
+        +operator=(const Timestep &&) Timestep &
+        +CreateTransition(const string &) const unique_ptr~Transition~ &
+        +RemoveTransition(size_t) unique_ptr~Transition~
+        +AddMatrixToTransition(const size_t &, const Ref~const MatrixXd~ &)
+        +AddMatrixToTransition(const string &, const Ref~const MatrixXd~ &)
+        +GetTransition(const size_t &) const unique_ptr~Transition~ &
+        +GetTransition(const string &) const unique_ptr~Transition~ &
+        +GetTransitions() vector~unique_ptr~Transition~~
+        +GetTransitionNames() vector~string~
         +operator<<(ostream &os, const Timestep &obj) ostream &
+        +operator==(const Timestep &, const Timestep &) bool
+        +operator!=(const Timestep &, const Timestep &) bool
     }
 
     class Transition {
         <<abstract>>
-        +Execute(state, histories) VectorXd *
-        +AddMatrix(const Eigen::Ref~const MatrixXd~ &matrix, size_t idx) *
-        +GetMatrix(size_t idx) Eigen::Ref~MatrixXd~ *
+        +Execute(const Ref Vector &, map~string, History~ &) VectorXd *
+        +AddMatrix(Eigen::Ref~const MatrixXd~) *
+        +GetMatrices() vector~MatrixXd~ *
         +GetName() string *
         +ClearMatrices() *
         +clone() unique_ptr~Transition~ *
-        +Create(type, log_name) unique_ptr~Transition~
-        +operator<<(ostream &os, const Transition &obj) ostream &
+        +Create(const string &, const string &, const string &, const string &) unique_ptr~Transition~
+        +Serialize(ostream &) *
+        +operator<<(ostream &, const Transition &) ostream &
     }
 
     class History {
-        +AddState(state, timestep)
-        +RecordSnapshot(state, timestep)
-        +AccumulateState(state)
-        +FlushPendingState(timestep, state_size)
+        +History()
+        +History(const string &)
+        +History(const string &, const HistoryMode &)
+        +History(const string &, const HistoryMode &, const string &)
+        +History(const string &, const string &)
+        +History(const string &, const string &, const string &)
+        +History(const string &, const HistoryMode &, const string &, const string &)
+        +History(const History &)
+        +operator=(const History &) History &
+        +History(History &&)
+        +operator=(History &&) History &
+        +AddState(const Ref~const VectorXd~ &, int)
+        +AccumulateState(const Ref~const VectorXd~ &)
+        +FlushPendingState(int, Index)
+        +Clear()
+        +HasPendingState() bool
         +GetStateMap() map~int, VectorXd~
+        +GetRecordedTimesteps() const vector~int~ &
+        +GetRecordedStates() const vector~VectorXd~ &
+        +GetHistoryMode() HistoryMode
+        +GetPendingState() VectorXd
+        +GetLatestRecordedTimestep() int
+        +GetName() string
         +GetStateAsVector() vector~VectorXd~
+        +operator==(const History &) bool
+        +operator!=(const History &) bool
         +operator<<(ostream &os, const History &obj) ostream &
+        -GetNextTimestep() int
+        -GetZeroVector(const int &) VectorXd
     }
 
     class HistoryMode {
         <<enumeration>>
-        Snapshot
-        Accumulated
+        kSnapshot
+        kAccumulated
     }
 
     class LoggingAPI {
         <<utility>>
-        +CreateFileLogger(name, filepath)
-        +CreateSharedFileSink(filepath)
-        +CreateSharedLogger(name)
-        +SetLogPattern(pattern)
-        +GetLogPattern()
-        +SetFlushInterval(seconds)
+        +CreateFileLogger(const string &, const string &)
+        +CreateSharedFileSink(const string &)
+        +CreateSharedLogger(const string &)
+        +SetLogPattern(LogPattern)
+        +GetLogPattern() LogPattern
+        +SetFlushInterval(int)
         +FlushAllLoggers()
-        +LogInfo(name, message)
-        +LogWarning(name, message)
-        +LogError(name, message)
-        +LogDebug(name, message)
-        +CheckLoggerExists(name)
-        +GetLoggerInfo(name)
-        +SetLoggerLevel(name, level)
+        +LogInfo(const string &, const string &)
+        +LogWarning(const string &, const string &)
+        +LogError(const string &, const string &)
+        +LogDebug(const string &, const string &)
+        +CheckLoggerExists(const string &)
+        +GetLoggerInfo(const string &)
+        +SetLoggerLevel(const string &, int)
     }
 
     class LogType {
@@ -183,13 +211,13 @@ classDiagram
 
     class Simulation {
         -string _log_name
-        -vector~shared_ptr~Model~~ _models
-        -size_t _duration
-        -vector~size_t~ _parameter_change_times
+        -vector~unique_ptr~Model~~ _models
+        -int _duration
+        -vector~int~ _parameter_change_times
         -bool _stratify_entering_cohort
         -bool _build_summary_stats
         -bool _save_state_history
-        -vector~size_t~ _timesteps_to_report
+        -vector~int~ _timesteps_to_report
         -bool _pivot_long
         +Simulation()
         +Simulation(const string log_name)
@@ -205,7 +233,7 @@ classDiagram
     }
 
     class Markov {
-        -vector~shared_ptr~Transition~~ _transition_vector
+        -vector~Timestep~ _timestep_vector
         -VectorXd _state
         -string _name
         -string _log_name
@@ -227,10 +255,12 @@ classDiagram
         +operator=(Markov &&other) Markov &
         +SetState(state) override
         +GetState() VectorXd override
-        +AddTimestep(shared_ptr~timestep~) override
-        +GetTimesteps() override
+        +AddTimestep(const Timestep &) override
+        +GetTimestepAtIndex(size_t) Timestep override
         +ClearTimesteps() override
-        +RunTransitions() override
+        +RunTimestep() override
+        +RunTimestep(size_t) override
+        +RunTimesteps() override
         +GetHistories() map~string, History~ override
         +ClearHistories() override
         +CreateDefaultHistories() override
@@ -247,11 +277,11 @@ classDiagram
         -string _name
         -string _log_name
         -vector~MatrixXd~ _transition_matrices
-        -GetMatrices() const vector<MatrixXd> &
-        +AddMatrix(const Eigen::Ref~const MatrixXd~ &matrix, size_t idx) override
+        +GetMatrices() const vector~MatrixXd~
+        +AddMatrix(const Eigen::Ref~const MatrixXd~ &) override
         +GetName() string override
         +ClearMatrices() override
-        +GetLogName() string override
+        +Serialize(ostream &) override
     }
 
     class Migration {
@@ -305,7 +335,8 @@ classDiagram
     TransitionBase <|-- Overdose : implements
     TransitionBase <|-- BackgroundDeath : implements
 
-    Markov *-- "0..*" Transition : owns
+    Markov *-- "0..*" Timestep : owns
+    Timestep *-- "0..*" Transition : owns
     Markov *-- "0..*" History : owns
     Migration <.. History : uses
     Behavior <.. History : uses

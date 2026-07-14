@@ -14,7 +14,7 @@ This benchmark target is designed for reproducible performance measurement of co
 
 The benchmark constructs one RESPOND model and measures repeated execution of:
 
-- `Model::RunTransitions()` for a fixed number of timesteps
+- `Simulation::Run(steps)` / `Model::RunTimesteps()` for a fixed number of timesteps
 - Transition mix: behavior, intervention, overdose, background death
 - Deterministic transition matrices/vectors and deterministic initial state
 

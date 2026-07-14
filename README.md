@@ -22,21 +22,14 @@ The [original RESPOND model](https://github.com/SyndemicsLab/RESPONDv1/tree/main
 
 RESPOND makes full use of the CMake build system. It is a common tool used throughout the C++ user-base and we utilize it for dependency management, linking, and testing. As C++ has poor package management, we intentionally decided to move our focus away from tools such as conan and vcpkg and stay with pure CMake. Not to say we would never publish with such package managers, but it is not a core focus of the refactor/engineering team.
 
-We natively support 5 different build workflows with the `CMakePresets.json` file. They are:
-
-1. `test-debug-gcc-linux-shared-workflow`
-2. `test-debug-gcc-linux-static-workflow`
-3. `package-release-gcc-linux-shared-workflow`
-4. `package-release-gcc-linux-static-workflow`
-5. `benchmark-linux-static-workflow`
-
-These workflows follow the pattern `{function}-{build}-gcc-linux-{library}-workflow` and have corresponding presets for build, test, and package. As we adopt more operating systems and compilers we will expand beyond gcc and linux.
+The project provides configure/build/test/package presets in `CMakePresets.json`.
+Common configure presets include `test-debug`, `test-release`, `test-debug-static`, `test-release-static`, `coverage`, `benchmark`, `package-shared`, `package-static`, and `docs`.
 
 Overall, we make use of 10 CMake variables. They are found in the [options.cmake file](cmake/options.cmake) and all are set accordingly in the `CMakePresets.json`.
 
 ## Dependencies
 
-We make abundant use of the CMake `FetchContent` feature released in CMake 3.11. We utilize features added in CMake 3.24 to check if the package is previously installed, so the minimum required version of CMake is **3.24**.
+We make abundant use of the CMake `FetchContent` feature released in CMake 3.11, plus newer preset and dependency features. The minimum required version of CMake is **3.27**.
 
 The required dependencies are:
 
@@ -54,7 +47,9 @@ If you would like to clone and build this locally, it is a relatively straightfo
 ```shell
 git clone https://github.com/SyndemicsLab/respond.git
 cd respond
-cmake --workflow --preset test-debug-gcc-linux-shared-workflow
+cmake --preset test-debug
+cmake --build --preset test-debug
+ctest --preset test-debug
 ```
 
 And then the model is build and installed. Our default location is a build directory in the repository, but the CMake Install Directory can be pointed to wherever the user desires.
@@ -167,7 +162,9 @@ Open `build/static/docs/doxygen/html/index.html` in a browser.
 After building with tests enabled:
 
 ```shell
-cmake --workflow --preset test-debug-gcc-linux-static-workflow
+cmake --preset test-debug-static
+cmake --build --preset test-debug-static
+ctest --preset test-debug-static
 ```
 
 Tests verify all core components (models, transitions, history tracking).
