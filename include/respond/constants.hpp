@@ -1,23 +1,20 @@
 ////////////////////////////////////////////////////////////////////////////////
-// File: respond.hpp                                                          //
+// File: constants.hpp                                                        //
 // Project: respond                                                           //
-// Created Date: 2026-02-06                                                   //
+// Created Date: 2026-07-06                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-07-09                                                  //
+// Last Modified: 2026-07-07                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
 ////////////////////////////////////////////////////////////////////////////////
-#ifndef RESPOND_RESPOND_HPP_
-#define RESPOND_RESPOND_HPP_
 
-#include <respond/cost_effectiveness.hpp>
-#include <respond/history.hpp>
-#include <respond/logging.hpp>
-#include <respond/model.hpp>
-#include <respond/simulation.hpp>
-#include <respond/transition.hpp>
-#include <respond/version.hpp>
+#ifndef RESPOND_CONSTANTS_HPP_
+#define RESPOND_CONSTANTS_HPP_
 
-#endif // RESPOND_RESPOND_HPP_
+#define RESPOND_DEFAULT_LOG "respond"
+#define RESPOND_DEFAULT_LOG_FILE "respond.log"
+#define RESPOND_DEFAULT_TRANSITION_NAME "transition"
+
+#endif

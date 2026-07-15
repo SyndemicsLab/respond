@@ -13,32 +13,25 @@ RESPOND follows the **inversion of control** principle, abstracting the model to
 
 ## Component Architecture
 
-```
-┌─────────────────────────────────────────────────┐
-│         Simulation                               │
-│  (aggregates and coordinates Models)             │
-└──────────────────┬──────────────────────────────┘
-                   │
-        ┌──────────┴──────────┬──────────────┐
-        │                     │              │
-    ┌───▼────┐           ┌───▼────┐     ┌──▼────┐
-    │ Model  │           │ Model  │     │ Model │
-    │ (PopA) │           │ (PopB) │     │(PopC) │
-    └───┬────┘           └───┬────┘     └──┬────┘
-        │                     │             │
-        ├─ Transitions ────┐  │             │
-        │   - Migration    │  │             │
-        │   - Behavior     │  │             │
-        │   - Intervention │  │             │
-        │   - Overdose     │  │             │
-        │   - Background   │  │             │
-        └──────────────────┘  │             │
-        │                     │             │
-        └─ Histories ────┐    │             │
-            - State      │    │             │
-            - Outcomes   │    │             │
-            - Costs      │    │             │
-            └────────────┘    └─────────────┘
+```mermaid
+flowchart TB
+  S[Simulation\naggregates and coordinates models]
+
+  M1[Model PopA]
+  M2[Model PopB]
+  M3[Model PopC]
+
+  S --> M1
+  S --> M2
+  S --> M3
+
+  TS1[Timesteps\n- Step 0\n- Step 1\n- ...]
+  TR1[Transitions per step\n- Migration\n- Behavior\n- Intervention\n- Overdose\n- BackgroundDeath]
+  H1[Histories\n- State\n- Outcomes\n- Costs]
+
+  M1 --> TS1
+  TS1 --> TR1
+  M1 --> H1
 ```
 
 ## Core Classes
@@ -48,13 +41,13 @@ RESPOND follows the **inversion of control** principle, abstracting the model to
 - **Role**: Represents a state transition system
 - **Responsibilities**:
   - Manages state vector
-  - Owns and executes transitions
+  - Owns and executes timesteps
   - Tracks history
   - Provides cloning capability
 - **Key Design Decisions**:
   - Non-copyable by assignment (enforces `clone()` usage for clarity)
-  - Owns transitions (unique_ptr for memory safety)
-  - Read-only GetState() (returns copy to prevent external state modification)
+  - Owns timesteps by value (timestep owns transition instances)
+  - Read-only GetState() (returns a const Eigen ref for observation)
 
 ### Simulation
 
@@ -106,7 +99,7 @@ RESPOND follows the **inversion of control** principle, abstracting the model to
   - Encapsulates type dispatch logic
   - Provides single point of extensibility for new transitions
 - **Key Design Decisions**:
-  - Static factory method (no factory state needed)
+  - Static creation on `Transition::Create(...)` (no factory state needed)
   - String-based type identification (simple, extensible)
   - Case-insensitive type matching (user-friendly)
 
@@ -117,7 +110,7 @@ RESPOND follows the **inversion of control** principle, abstracting the model to
 Encapsulates object creation for transitions:
 
 ```cpp
-auto transition = TransitionFactory::CreateTransition("behavior", "logger");
+auto transition = Transition::Create("behavior", "logger");
 ```
 
 **Benefits**:
@@ -125,14 +118,15 @@ auto transition = TransitionFactory::CreateTransition("behavior", "logger");
 - Centralizes type dispatch logic
 - Easy to add new transition types
 
-### Template Method Pattern (Model → Transitions)
+### Template Method Pattern (Model → Timesteps → Transitions)
 
-Model delegates to transitions in RunTransitions():
+Model delegates execution through timesteps, and each timestep applies its transitions in sequence:
 
 ```cpp
-void Model::RunTransitions() {
-    for (const auto& transition : _transitions) {
-        _state = transition->Execute(_state, _histories);
+void Model::RunTimestep(size_t idx) {
+  auto transitions = _timestep_vector[idx].GetTransitions();
+  for (const auto& transition : transitions) {
+    _state = transition->Execute(_state, _histories);
     }
 }
 ```
@@ -178,7 +172,7 @@ RESPOND uses modern C++ memory management practices:
 ### Unique Ownership (unique_ptr)
 
 Used for objects with clear ownership:
-- Model owns its Transitions
+- Timestep owns its Transitions
 - Simulation owns its Models (via cloning)
 
 ### Shared Ownership (None by default)
@@ -203,9 +197,9 @@ RESPOND minimizes shared state. History objects are the exception—they're:
 
 ### Adding a New Transition Type
 
-1. Create a new header in `include/respond/internals/`
+1. Create a new header in `src/internals/`
 2. Implement concrete Transition subclass
-3. Add factory entry in `TransitionFactory::CreateTransition()`
+3. Add factory entry in `Transition::Create()`
 
 Example:
 ```cpp

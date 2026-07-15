@@ -73,20 +73,39 @@ endif()
 add_library(respond_model)
 add_library(respond::respond_model ALIAS respond_model)
 
-file(GLOB_RECURSE RESPOND_HEADERS include/respond/*.hpp include/respond/*.h)
-file(GLOB RESPOND_INTERNAL_HEADERS CONFIGURE_DEPENDS src/internals/*.hpp)
-file(GLOB RESPOND_SOURCE_FILES CONFIGURE_DEPENDS src/*.cpp)
-
 target_sources(respond_model
     PRIVATE
-        ${RESPOND_INTERNAL_HEADERS}
-        ${RESPOND_SOURCE_FILES}
+        src/internals/background.hpp
+        src/internals/behavior.hpp
+        src/internals/intervention.hpp
+        src/internals/logging_internals.hpp
+        src/internals/markov.hpp
+        src/internals/migration.hpp
+        src/internals/overdose.hpp
+        src/internals/transition_base.hpp
+        src/background.cpp
+        src/behavior.cpp
+        src/intervention.cpp
+        src/logging.cpp
+        src/migration.cpp
+        src/model_factory.cpp
+        src/overdose.cpp
+        src/transition_factory.cpp
     PUBLIC
         FILE_SET HEADERS
         BASE_DIRS
             include
         FILES
-            ${RESPOND_HEADERS}
+            include/respond/constants.hpp
+            include/respond/cost_effectiveness.hpp
+            include/respond/history.hpp
+            include/respond/logging.hpp
+            include/respond/model.hpp
+            include/respond/respond.hpp
+            include/respond/simulation.hpp
+            include/respond/timestep.hpp
+            include/respond/transition.hpp
+            include/respond/version.hpp
     )
 
 #-------------------------------------------------------------------------------

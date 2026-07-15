@@ -4,7 +4,7 @@
 // Created Date: 2026-02-05                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-06-25                                                  //
+// Last Modified: 2026-07-14                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
@@ -20,72 +20,230 @@
 
 #include <Eigen/Dense>
 
+#include <respond/constants.hpp>
 #include <respond/history.hpp>
 #include <respond/transition.hpp>
 
 namespace respond {
 class Markov : public virtual Model {
 public:
-    Markov() : Markov("markov", "console") {}
+    ////////////////////////////////////////////////////////////////////////////
+    //
+    // Rule of Five: Copy and Move Semantics
+    //
+    ////////////////////////////////////////////////////////////////////////////
+
+    /// @brief Default constructor for Markov model. Initializes with default..
+    Markov() : Markov("markov", RESPOND_DEFAULT_LOG) {}
+
+    /// @brief Constructs a Markov model with specified name and logger.
+    /// @param name The identifier for this model.
+    /// @param log_name The logger name for error reporting.
     Markov(const std::string &name, const std::string &log_name)
+        : Markov(name, log_name, RESPOND_DEFAULT_LOG_FILE) {}
+
+    /// @brief Constructs a Markov model with specified name, logger, and log
+    /// file path.
+    /// @param name The identifier for this model.
+    /// @param log_name The logger name for error reporting.
+    /// @param log_filepath The file path for the log file to be used by this
+    /// model.
+    Markov(const std::string &name, const std::string &log_name,
+           const std::string &log_filepath)
         : _name(name), _log_name(log_name), _current_timestep(0),
           _history_capture_interval(1), _final_timestep(-1),
           _initial_history_recorded(false) {
+        CreateFileLogger(log_name, log_filepath);
         const auto processor_count = std::thread::hardware_concurrency();
         Eigen::setNbThreads(processor_count);
     }
 
-    // Rule of Five
+    /// @brief Destructor for Markov model. Default implementation.
     ~Markov() = default;
 
-    // Copy
-    std::unique_ptr<Model> clone() const override {
-        auto np = Model::Create(GetModelName(), GetLogName());
-        np->SetState(GetState());
-        np->SetHistories(GetHistories());
-        np->SetHistoryCaptureInterval(GetHistoryCaptureInterval());
-        np->SetFinalTimestep(GetFinalTimestep());
-        if (auto *markov = dynamic_cast<Markov *>(np.get())) {
-            markov->_current_timestep = _current_timestep;
-            markov->_initial_history_recorded = _initial_history_recorded;
-        }
-        for (const auto &t : GetTransitions()) {
-            np->AddTransition(t->clone());
-        }
-        return np;
-    }
-    // Move
     Markov(Markov &&other) noexcept {
-        _state = other.GetState();
-        _name = other.GetModelName();
-        _log_name = other.GetLogName();
-        for (const auto &t : other.GetTransitions()) {
-            AddTransition(std::move(t));
+        _state = other._state;
+        _name = other._name;
+        _log_name = other._log_name;
+        _current_timestep = other._current_timestep;
+        _history_capture_interval = other._history_capture_interval;
+        _final_timestep = other._final_timestep;
+        _initial_history_recorded = other._initial_history_recorded;
+        for (const auto &h : other._histories) {
+            _histories[h.first] = h.second;
         }
-        other.ClearTransitions();
+        other._histories.clear();
+        for (const auto &t : other._timestep_vector) {
+            _timestep_vector.push_back(std::move(t));
+        }
+        other.ClearTimesteps();
     }
     Markov &operator=(Markov &&other) noexcept {
         if (this != &other) {
-            _state = other.GetState();
-            _name = other.GetModelName();
-            _log_name = other.GetLogName();
-            for (const auto &t : other.GetTransitions()) {
-                AddTransition(std::move(t));
+            _state = other._state;
+            _name = other._name;
+            _log_name = other._log_name;
+            _current_timestep = other._current_timestep;
+            _history_capture_interval = other._history_capture_interval;
+            _final_timestep = other._final_timestep;
+            _initial_history_recorded = other._initial_history_recorded;
+            for (const auto &h : other._histories) {
+                _histories[h.first] = h.second;
             }
-            other.ClearTransitions();
+            other._histories.clear();
+            for (const auto &t : other._timestep_vector) {
+                _timestep_vector.push_back(std::move(t));
+            }
+            other.ClearTimesteps();
         }
         return *this;
     }
 
-    // anticipate making a copy of the vector
+    /// @brief Function to provide a deep copy operation of the Model. Copy
+    /// constructor and assignment operator are deleted to prevent copying of
+    /// Markov instances. Instead we prefer to use `clone()` for deep copying.
+    /// @return A unique_ptr to a new Markov instance that is a deep copy of
+    /// this instance.
+    std::unique_ptr<Model> clone() const override {
+        auto np = Model::Create(_name, _log_name);
+        np->SetState(GetState());
+        np->SetHistoryCaptureInterval(GetHistoryCaptureInterval());
+        np->SetFinalTimestep(GetFinalTimestep());
+        if (auto *markov = dynamic_cast<Markov *>(np.get())) {
+            markov->_histories = _histories;
+            markov->_current_timestep = _current_timestep;
+            markov->_initial_history_recorded = _initial_history_recorded;
+        }
+
+        int timesteps = static_cast<int>(_timestep_vector.size());
+        for (int i = 0; i < timesteps; ++i) {
+            np->AddTimestep(_timestep_vector[i]);
+        }
+        return np;
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
+    //
+    // Getters and Setters for Model State and Metadata
+    //
+    ////////////////////////////////////////////////////////////////////////////
+
+    Timestep GetTimestepAtIndex(size_t index) const override {
+        if (index >= _timestep_vector.size()) {
+            throw std::out_of_range("Index out of range in GetTimestepAtIndex");
+        }
+        return _timestep_vector[index];
+    }
+
+    const Eigen::Ref<const Eigen::VectorXd> GetState() const override {
+        return _state;
+    }
+
+    std::string GetName() const override { return _name; }
+
+    const std::map<std::string, History> &GetHistories() const override {
+        return _histories;
+    }
+
+    int GetTimestep() const override { return _current_timestep; }
+
+    int GetHistoryCaptureInterval() const override {
+        return _history_capture_interval;
+    }
+
+    int GetFinalTimestep() const override { return _final_timestep; }
+
+    bool GetInitialHistoryRecorded() const override {
+        return _initial_history_recorded;
+    }
+
     void SetState(const Eigen::Ref<const Eigen::VectorXd> &s) override {
         _state = s;
     }
-    // return const & to limit to observation of the state
-    Eigen::VectorXd GetState() const override { return _state; }
-    // return the transitions
-    const std::vector<std::unique_ptr<Transition>> &GetTransitions() const {
-        return _transition_vector;
+
+    void SetHistoryCaptureInterval(int interval) override {
+        _history_capture_interval = (interval < 1) ? 1 : interval;
+    }
+
+    void SetFinalTimestep(int final_timestep) override {
+        _final_timestep = final_timestep;
+    }
+
+    void SetInitialHistoryRecorded(bool recorded) override {
+        _initial_history_recorded = recorded;
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
+    //
+    // Model Behavior Methods: Timestep Execution and History Management
+    //
+    ////////////////////////////////////////////////////////////////////////////
+
+    void AddTimestep(const Timestep &timestep) override {
+        _timestep_vector.push_back(timestep);
+        if (static_cast<int>(_timestep_vector.size()) > _final_timestep) {
+            LogWarning(_log_name, "Final timestep exceeded by added timestep.");
+        }
+    }
+
+    void RunTimestep() override { RunTimestep(_current_timestep); }
+
+    /// @brief Executes the timestep in the model's sequence.
+    void RunTimestep(size_t idx) override {
+        if (_timestep_vector.empty()) {
+            LogWarning(_log_name,
+                       "No timesteps available to run for model: " + _name);
+            return;
+        }
+
+        if (idx >= static_cast<int>(_timestep_vector.size())) {
+            LogWarning(
+                _log_name,
+                "Current timestep exceeds available timesteps for model: " +
+                    _name);
+            return;
+        }
+
+        auto transitions = _timestep_vector[idx].GetTransitions();
+        for (const auto &t : transitions) {
+            _state = t->Execute(_state, _histories);
+        }
+        if (idx != _current_timestep) {
+            LogWarning(_log_name,
+                       "Ran timestep out of order. Current timestep: " +
+                           std::to_string(_current_timestep) +
+                           ", run timestep: " + std::to_string(idx));
+            return;
+        }
+        _current_timestep++;
+    }
+
+    void RunTimesteps() override {
+        SetupHistory();
+        if (!_initial_history_recorded) {
+            RecordHistoryAtCurrentTimestep();
+        }
+        size_t duration = _timestep_vector.size();
+        if (_timestep_vector.size() > static_cast<size_t>(_final_timestep) &&
+            _final_timestep >= 0) {
+            std::string warning_msg =
+                "Duration is less than available timesteps for model: " +
+                _name + ".\nOnly running timesteps up to duration value.";
+            LogWarning(_log_name, warning_msg);
+            duration = static_cast<size_t>(_final_timestep);
+        }
+
+        for (size_t i = 0; i < duration; ++i) {
+            RunTimestep();
+            RecordHistoryAtCurrentTimestep();
+        }
+    }
+
+    void ClearTimesteps() override { _timestep_vector.clear(); }
+
+    void ClearHistories() override {
+        _histories.clear();
+        ResetHistoryTracking();
     }
 
     /// @brief The default histories are:
@@ -97,48 +255,16 @@ public:
     /// @return A vector of the default history objects.
     void CreateDefaultHistories() override {
         std::map<std::string, History> ret;
-        ret["state"] = History("state", GetLogName(), HistoryMode::Snapshot);
+        ret["state"] = History("state", HistoryMode::kSnapshot, _log_name);
         ret["total_overdose"] =
-            History("total_overdose", GetLogName(), HistoryMode::Accumulated);
+            History("total_overdose", HistoryMode::kAccumulated, _log_name);
         ret["fatal_overdose"] =
-            History("fatal_overdose", GetLogName(), HistoryMode::Accumulated);
+            History("fatal_overdose", HistoryMode::kAccumulated, _log_name);
         ret["intervention_admission"] = History(
-            "intervention_admission", GetLogName(), HistoryMode::Accumulated);
+            "intervention_admission", HistoryMode::kAccumulated, _log_name);
         ret["background_death"] =
-            History("background_death", GetLogName(), HistoryMode::Accumulated);
-        SetHistories(ret);
-    }
-
-    // manipulate the state vector
-    void RunTransitions() override {
-        SetupHistory();
-        if (!_initial_history_recorded) {
-            RecordHistoryAtCurrentTimestep();
-        }
-        for (const auto &t : _transition_vector) {
-            _state = t->Execute(_state, _histories);
-        }
-        _current_timestep++;
-        RecordHistoryAtCurrentTimestep();
-    }
-    // assume ownership of the Transition
-    void AddTransition(const std::unique_ptr<Transition> &t) override {
-        _transition_vector.push_back(t->clone());
-    }
-    // get the names of each transition we own
-    std::vector<std::string> GetTransitionNames() const override {
-        std::vector<std::string> t_names;
-        for (const auto &n : _transition_vector) {
-            t_names.push_back(n->GetTransitionName());
-        }
-        return t_names;
-    }
-    // delete all the Transition unique_ptrs by clearing the vector
-    void ClearTransitions() override { _transition_vector.clear(); }
-
-    virtual void
-    SetHistories(const std::map<std::string, History> &h) override {
-        _histories = h;
+            History("background_death", HistoryMode::kAccumulated, _log_name);
+        _histories = ret;
         if (_histories.empty()) {
             ResetHistoryTracking();
             return;
@@ -153,36 +279,29 @@ public:
         _initial_history_recorded = true;
         _current_timestep = latest_timestep;
     }
-    void ClearHistories() override {
-        _histories.clear();
-        ResetHistoryTracking();
-    }
 
-    void SetHistoryCaptureInterval(int interval) override {
-        _history_capture_interval = (interval < 1) ? 1 : interval;
+    void Serialize(std::ostream &os) const override {
+        os << "Model Name: " << _name << "\n";
+        os << "Current Timestep: " << _current_timestep << "\n";
+        os << "History Capture Interval: " << _history_capture_interval << "\n";
+        os << "Final Timestep: " << _final_timestep << "\n";
+        os << "Initial History Recorded: "
+           << (_initial_history_recorded ? "true" : "false") << "\n";
+        os << "State Vector: " << _state.transpose() << "\n";
+        os << "Histories:\n";
+        for (const auto &kv : _histories) {
+            os << "  - " << kv.first << "\n";
+        }
+        os << "Timesteps:\n";
+        for (size_t i = 0; i < _timestep_vector.size(); ++i) {
+            os << "  Timestep Index: " << i << "\n";
+            os << "  Number of Transitions: "
+               << _timestep_vector[i].GetTransitions().size() << "\n";
+        }
     }
-
-    int GetHistoryCaptureInterval() const override {
-        return _history_capture_interval;
-    }
-
-    void SetFinalTimestep(int final_timestep) override {
-        _final_timestep = final_timestep;
-    }
-
-    int GetFinalTimestep() const override { return _final_timestep; }
-
-    // return const & to limit to observation of the state. Need copy ability of
-    // History, but let that be the History's responsibility
-    std::map<std::string, History> GetHistories() const override {
-        return _histories;
-    }
-    // getter for model name
-    std::string GetModelName() const override { return _name; }
-    std::string GetLogName() const override { return _log_name; }
 
 private:
-    std::vector<std::unique_ptr<Transition>> _transition_vector;
+    std::vector<Timestep> _timestep_vector;
     Eigen::VectorXd _state;
     std::string _name;
     std::string _log_name;
@@ -223,7 +342,7 @@ private:
             return;
         }
 
-        _histories["state"].RecordSnapshot(_state, _current_timestep);
+        _histories["state"].AddState(_state, _current_timestep);
         const auto size = _state.size();
         _histories["intervention_admission"].FlushPendingState(
             _current_timestep, size);

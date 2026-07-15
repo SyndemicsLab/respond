@@ -14,7 +14,7 @@ This benchmark target is designed for reproducible performance measurement of co
 
 The benchmark constructs one RESPOND model and measures repeated execution of:
 
-- `Model::RunTransitions()` for a fixed number of timesteps
+- `Simulation::Run(steps)` / `Model::RunTimesteps()` for a fixed number of timesteps
 - Transition mix: behavior, intervention, overdose, background death
 - Deterministic transition matrices/vectors and deterministic initial state
 
@@ -25,14 +25,14 @@ Warm-up runs are excluded from reported timings.
 Enable benchmark builds in CMake:
 
 ```bash
-cmake -S . -B build/bench -DRESPOND_BUILD_BENCH=ON
-cmake --build build/bench --target respond_benchmark
+cmake --preset benchmark
+cmake --build --preset benchmark
 ```
 
 ## Run
 
 ```bash
-./build/bench/bin/respond_benchmark \
+./build/shared/bin/respond_benchmark \
   --state-size 64 \
   --steps 52 \
   --history-capture-interval 1 \

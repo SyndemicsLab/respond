@@ -4,7 +4,7 @@
 // Created Date: 2025-08-05                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-06-25                                                  //
+// Last Modified: 2026-07-09                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025-2026 Syndemics Lab at Boston Medical Center             //
@@ -12,8 +12,6 @@
 
 #ifndef RESPOND_COSTEFFECTIVENESS_HPP_
 #define RESPOND_COSTEFFECTIVENESS_HPP_
-
-#include <iostream>
 
 #include <Eigen/Dense>
 

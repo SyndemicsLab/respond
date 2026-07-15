@@ -1,10 +1,10 @@
 ////////////////////////////////////////////////////////////////////////////////
-// File: markov.cpp                                                           //
+// File: model_factory.cpp                                                    //
 // Project: respond                                                           //
 // Created Date: 2025-07-07                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-02-05                                                  //
+// Last Modified: 2026-07-07                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025-2026 Syndemics Lab at Boston Medical Center             //
@@ -21,7 +21,8 @@
 namespace respond {
 
 std::unique_ptr<Model> Model::Create(const std::string &name,
-                                     const std::string &log_name) {
-    return std::make_unique<Markov>(name, log_name);
+                                     const std::string &log_name,
+                                     const std::string &log_filepath) {
+    return std::make_unique<Markov>(name, log_name, log_filepath);
 }
 } // namespace respond

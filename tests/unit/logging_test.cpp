@@ -4,10 +4,10 @@
 // Created Date: 2025-03-18                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-04-16                                                  //
+// Last Modified: 2026-07-14                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
-// Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
+// Copyright (c) 2025-2026 Syndemics Lab at Boston Medical Center             //
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <respond/logging.hpp>
@@ -22,7 +22,7 @@
 #include <gtest/gtest.h>
 #include <spdlog/spdlog.h>
 
-#include <respond/transition_factory.hpp>
+#include <respond/transition.hpp>
 
 namespace respond {
 namespace testing {
@@ -495,11 +495,11 @@ TEST_F(LoggingTest, MixedFileAndSharedLoggers) {
 TEST_F(LoggingTest, TransitionFactoryInvalidType) {
     CreateFileLogger("factory_test", test_log_file_);
 
-    // Create transition with invalid type should log error and return nullptr
-    auto transition = respond::TransitionFactory::CreateTransition(
-        "invalid_type", "factory_test");
-
-    EXPECT_EQ(transition, nullptr);
+    // Create transition with invalid type should log error and throw error
+    EXPECT_THROW(
+        (void)respond::Transition::Create("invalid_type", "factory_test"),
+        std::invalid_argument);
+    FlushAllLoggers();
     EXPECT_EQ(CheckLoggerExists("factory_test"), CreationStatus::kExists);
 }
 
@@ -507,24 +507,21 @@ TEST_F(LoggingTest, TransitionFactoryValidTypes) {
     CreateFileLogger("factory_test", test_log_file_);
 
     // Test all valid transition types
-    auto migration = respond::TransitionFactory::CreateTransition(
-        "migration", "factory_test");
+    auto migration = respond::Transition::Create("migration", "factory_test");
     EXPECT_NE(migration, nullptr);
 
-    auto behavior = respond::TransitionFactory::CreateTransition(
-        "behavior", "factory_test");
+    auto behavior = respond::Transition::Create("behavior", "factory_test");
     EXPECT_NE(behavior, nullptr);
 
-    auto intervention = respond::TransitionFactory::CreateTransition(
-        "intervention", "factory_test");
+    auto intervention =
+        respond::Transition::Create("intervention", "factory_test");
     EXPECT_NE(intervention, nullptr);
 
-    auto overdose = respond::TransitionFactory::CreateTransition(
-        "overdose", "factory_test");
+    auto overdose = respond::Transition::Create("overdose", "factory_test");
     EXPECT_NE(overdose, nullptr);
 
-    auto background = respond::TransitionFactory::CreateTransition(
-        "background_death", "factory_test");
+    auto background =
+        respond::Transition::Create("background_death", "factory_test");
     EXPECT_NE(background, nullptr);
 }
 
@@ -532,20 +529,16 @@ TEST_F(LoggingTest, TransitionFactoryCaseInsensitivity) {
     CreateFileLogger("factory_test", test_log_file_);
 
     // Test case-insensitive matching
-    auto trans1 = respond::TransitionFactory::CreateTransition("MIGRATION",
-                                                               "factory_test");
+    auto trans1 = respond::Transition::Create("MIGRATION", "factory_test");
     EXPECT_NE(trans1, nullptr);
 
-    auto trans2 = respond::TransitionFactory::CreateTransition("Behavior",
-                                                               "factory_test");
+    auto trans2 = respond::Transition::Create("Behavior", "factory_test");
     EXPECT_NE(trans2, nullptr);
 
-    auto trans3 = respond::TransitionFactory::CreateTransition("INTERVENTION",
-                                                               "factory_test");
+    auto trans3 = respond::Transition::Create("INTERVENTION", "factory_test");
     EXPECT_NE(trans3, nullptr);
 
-    auto trans4 = respond::TransitionFactory::CreateTransition("OverDose",
-                                                               "factory_test");
+    auto trans4 = respond::Transition::Create("OverDose", "factory_test");
     EXPECT_NE(trans4, nullptr);
 }
 

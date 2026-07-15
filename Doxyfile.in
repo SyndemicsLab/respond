@@ -48,7 +48,7 @@ PROJECT_NAME           = RESPOND
 # could be handy for archiving the generated documentation or if some version
 # control system is used.
 
-PROJECT_NUMBER         = 2.4.0
+PROJECT_NUMBER         = 2.5.0
 
 # Using the PROJECT_BRIEF tag one can provide an optional one line description
 # for a project that appears at the top of each page and should give viewer a
@@ -927,6 +927,7 @@ INPUT                  =    docs/src/index.md \
                             docs/src/faq.md \
                             docs/src/architecture.md \
                             docs/src/api-guide.md \
+                            docs/src/uml.md \
                             include
 
 # This tag can be used to specify the character encoding of the source files
