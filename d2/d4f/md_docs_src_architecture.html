@@ -62,7 +62,7 @@ Copyright (c) 2025 Syndemics Lab at Boston Medical Center
                             <td id="projectlogo"><img alt="Logo" src="../../Syndemics_main_logo_50px.png" /></td>
                             <td id="projectalign">
                                 <div id="projectname">RESPOND<span
-                                        id="projectnumber">&#160;2.4.0</span>
+                                        id="projectnumber">&#160;2.5.0</span>
                                 </div>
                                 <div id="projectbrief">Researching Effective Strategies to Prevent Opioid Death</div>
                             </td>
@@ -141,31 +141,24 @@ Design Philosophy</h1>
 </ol>
 <h1><a class="anchor" id="autotoc_md55"></a>
 Component Architecture</h1>
-<div class="fragment"><div class="line">┌─────────────────────────────────────────────────┐</div>
-<div class="line">│         Simulation                               │</div>
-<div class="line">│  (aggregates and coordinates Models)             │</div>
-<div class="line">└──────────────────┬──────────────────────────────┘</div>
-<div class="line">                   │</div>
-<div class="line">        ┌──────────┴──────────┬──────────────┐</div>
-<div class="line">        │                     │              │</div>
-<div class="line">    ┌───▼────┐           ┌───▼────┐     ┌──▼────┐</div>
-<div class="line">    │ Model  │           │ Model  │     │ Model │</div>
-<div class="line">    │ (PopA) │           │ (PopB) │     │(PopC) │</div>
-<div class="line">    └───┬────┘           └───┬────┘     └──┬────┘</div>
-<div class="line">        │                     │             │</div>
-<div class="line">        ├─ Transitions ────┐  │             │</div>
-<div class="line">        │   - Migration    │  │             │</div>
-<div class="line">        │   - Behavior     │  │             │</div>
-<div class="line">        │   - Intervention │  │             │</div>
-<div class="line">        │   - Overdose     │  │             │</div>
-<div class="line">        │   - Background   │  │             │</div>
-<div class="line">        └──────────────────┘  │             │</div>
-<div class="line">        │                     │             │</div>
-<div class="line">        └─ Histories ────┐    │             │</div>
-<div class="line">            - State      │    │             │</div>
-<div class="line">            - Outcomes   │    │             │</div>
-<div class="line">            - Costs      │    │             │</div>
-<div class="line">            └────────────┘    └─────────────┘</div>
+<div class="fragment"><div class="line">flowchart TB</div>
+<div class="line">  S[Simulation\naggregates and coordinates models]</div>
+<div class="line"> </div>
+<div class="line">  M1[Model PopA]</div>
+<div class="line">  M2[Model PopB]</div>
+<div class="line">  M3[Model PopC]</div>
+<div class="line"> </div>
+<div class="line">  S --&gt; M1</div>
+<div class="line">  S --&gt; M2</div>
+<div class="line">  S --&gt; M3</div>
+<div class="line"> </div>
+<div class="line">  TS1[Timesteps\n- Step 0\n- Step 1\n- ...]</div>
+<div class="line">  TR1[Transitions per step\n- Migration\n- Behavior\n- Intervention\n- Overdose\n- BackgroundDeath]</div>
+<div class="line">  H1[Histories\n- State\n- Outcomes\n- Costs]</div>
+<div class="line"> </div>
+<div class="line">  M1 --&gt; TS1</div>
+<div class="line">  TS1 --&gt; TR1</div>
+<div class="line">  M1 --&gt; H1</div>
 </div><!-- fragment --><h1><a class="anchor" id="autotoc_md56"></a>
 Core Classes</h1>
 <h2><a class="anchor" id="autotoc_md57"></a>
@@ -174,15 +167,15 @@ Model (Abstract Base Class)</h2>
 <li><b>Role</b>: Represents a state transition system</li>
 <li><b>Responsibilities</b>:<ul>
 <li>Manages state vector</li>
-<li>Owns and executes transitions</li>
+<li>Owns and executes timesteps</li>
 <li>Tracks history</li>
 <li>Provides cloning capability</li>
 </ul>
 </li>
 <li><b>Key Design Decisions</b>:<ul>
 <li>Non-copyable by assignment (enforces <code>clone()</code> usage for clarity)</li>
-<li>Owns transitions (unique_ptr for memory safety)</li>
-<li>Read-only GetState() (returns copy to prevent external state modification)</li>
+<li>Owns timesteps by value (timestep owns transition instances)</li>
+<li>Read-only GetState() (returns a const Eigen ref for observation)</li>
 </ul>
 </li>
 </ul>
@@ -256,7 +249,7 @@ TransitionFactory</h2>
 </ul>
 </li>
 <li><b>Key Design Decisions</b>:<ul>
-<li>Static factory method (no factory state needed)</li>
+<li>Static creation on <code>Transition::Create(...)</code> (no factory state needed)</li>
 <li>String-based type identification (simple, extensible)</li>
 <li>Case-insensitive type matching (user-friendly)</li>
 </ul>
@@ -267,18 +260,19 @@ Design Patterns</h1>
 <h2><a class="anchor" id="autotoc_md63"></a>
 Factory Pattern (TransitionFactory)</h2>
 <p>Encapsulates object creation for transitions:</p>
-<div class="fragment"><div class="line"><span class="keyword">auto</span> transition = TransitionFactory::CreateTransition(<span class="stringliteral">&quot;behavior&quot;</span>, <span class="stringliteral">&quot;logger&quot;</span>);</div>
+<div class="fragment"><div class="line"><span class="keyword">auto</span> transition = Transition::Create(<span class="stringliteral">&quot;behavior&quot;</span>, <span class="stringliteral">&quot;logger&quot;</span>);</div>
 </div><!-- fragment --><p><b>Benefits</b>:</p><ul>
 <li>Decouples transition creation from usage</li>
 <li>Centralizes type dispatch logic</li>
 <li>Easy to add new transition types</li>
 </ul>
 <h2><a class="anchor" id="autotoc_md64"></a>
-Template Method Pattern (Model → Transitions)</h2>
-<p>Model delegates to transitions in RunTransitions():</p>
-<div class="fragment"><div class="line"><span class="keywordtype">void</span> Model::RunTransitions() {</div>
-<div class="line">    <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span>&amp; transition : _transitions) {</div>
-<div class="line">        _state = transition-&gt;Execute(_state, _histories);</div>
+Template Method Pattern (Model → Timesteps → Transitions)</h2>
+<p>Model delegates execution through timesteps, and each timestep applies its transitions in sequence:</p>
+<div class="fragment"><div class="line"><span class="keywordtype">void</span> Model::RunTimestep(<span class="keywordtype">size_t</span> idx) {</div>
+<div class="line">  <span class="keyword">auto</span> transitions = _timestep_vector[idx].GetTransitions();</div>
+<div class="line">  <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span>&amp; transition : transitions) {</div>
+<div class="line">    _state = transition-&gt;Execute(_state, _histories);</div>
 <div class="line">    }</div>
 <div class="line">}</div>
 </div><!-- fragment --><p><b>Benefits</b>:</p><ul>
@@ -313,7 +307,7 @@ Memory Management</h1>
 <h2><a class="anchor" id="autotoc_md68"></a>
 Unique Ownership (unique_ptr)</h2>
 <p>Used for objects with clear ownership:</p><ul>
-<li>Model owns its Transitions</li>
+<li>Timestep owns its Transitions</li>
 <li>Simulation owns its Models (via cloning)</li>
 </ul>
 <h2><a class="anchor" id="autotoc_md69"></a>
@@ -338,9 +332,9 @@ Extensibility Points</h1>
 <h2><a class="anchor" id="autotoc_md72"></a>
 Adding a New Transition Type</h2>
 <ol type="1">
-<li>Create a new header in <code>include/respond/internals/</code></li>
+<li>Create a new header in <code>src/internals/</code></li>
 <li>Implement concrete Transition subclass</li>
-<li>Add factory entry in <code>TransitionFactory::CreateTransition()</code></li>
+<li>Add factory entry in <code>Transition::Create()</code></li>
 </ol>
 <p>Example: </p><div class="fragment"><div class="line"><span class="comment">// respond/internals/custom_transition.hpp</span></div>
 <div class="line"><span class="keyword">class </span>CustomTransition : <span class="keyword">public</span> Transition {</div>
@@ -471,7 +465,7 @@ Future Architectural Considerations</h1>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Thu Jul 2 2026 19:26:34 for RESPOND by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
+    <li class="footer">Generated on Wed Jul 15 2026 19:41:11 for RESPOND by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
   </ul>
 </div>
 </body>

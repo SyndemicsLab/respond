@@ -62,7 +62,7 @@ Copyright (c) 2025 Syndemics Lab at Boston Medical Center
                             <td id="projectlogo"><img alt="Logo" src="../../Syndemics_main_logo_50px.png" /></td>
                             <td id="projectalign">
                                 <div id="projectname">RESPOND<span
-                                        id="projectnumber">&#160;2.4.0</span>
+                                        id="projectnumber">&#160;2.5.0</span>
                                 </div>
                                 <div id="projectbrief">Researching Effective Strategies to Prevent Opioid Death</div>
                             </td>
@@ -146,58 +146,6 @@ Public Member Functions</h2></td></tr>
 virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~Model</b> ()=default</td></tr>
 <tr class="memdesc:a99d184a7664f6abf7f4007e2ccb66817"><td class="mdescLeft">&#160;</td><td class="mdescRight">Virtual destructor for proper polymorphic cleanup. <br /></td></tr>
 <tr class="separator:a99d184a7664f6abf7f4007e2ccb66817"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa69596d4fd92c744b9794869ae7f6ffa"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d4/d00/classrespond_1_1Model.html#aa69596d4fd92c744b9794869ae7f6ffa">SetState</a> (const Eigen::Ref&lt; const Eigen::VectorXd &gt; &amp;state)=0</td></tr>
-<tr class="memdesc:aa69596d4fd92c744b9794869ae7f6ffa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the current state of the model.  <br /></td></tr>
-<tr class="separator:aa69596d4fd92c744b9794869ae7f6ffa"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a218d6dbe7f879bc6bd2e9572f6abba43"><td class="memItemLeft" align="right" valign="top">virtual Eigen::VectorXd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d4/d00/classrespond_1_1Model.html#a218d6dbe7f879bc6bd2e9572f6abba43">GetState</a> () const =0</td></tr>
-<tr class="memdesc:a218d6dbe7f879bc6bd2e9572f6abba43"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieves the current state of the model.  <br /></td></tr>
-<tr class="separator:a218d6dbe7f879bc6bd2e9572f6abba43"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a343a386db860237c390f198e096214fb"><td class="memItemLeft" align="right" valign="top"><a id="a343a386db860237c390f198e096214fb" name="a343a386db860237c390f198e096214fb"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>RunTransitions</b> ()=0</td></tr>
-<tr class="memdesc:a343a386db860237c390f198e096214fb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Executes all registered transitions on the current state. Transitions are applied in the order they were added and may modify history. <br /></td></tr>
-<tr class="separator:a343a386db860237c390f198e096214fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7375981768eb9fb1e0f84d12c991b483"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d4/d00/classrespond_1_1Model.html#a7375981768eb9fb1e0f84d12c991b483">AddTransition</a> (const std::unique_ptr&lt; <a class="el" href="../../de/d15/classrespond_1_1Transition.html">Transition</a> &gt; &amp;t)=0</td></tr>
-<tr class="memdesc:a7375981768eb9fb1e0f84d12c991b483"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds a transition to the model.  <br /></td></tr>
-<tr class="separator:a7375981768eb9fb1e0f84d12c991b483"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4427cf243f889a7751df4741ada69d31"><td class="memItemLeft" align="right" valign="top">virtual std::vector&lt; std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d4/d00/classrespond_1_1Model.html#a4427cf243f889a7751df4741ada69d31">GetTransitionNames</a> () const =0</td></tr>
-<tr class="memdesc:a4427cf243f889a7751df4741ada69d31"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieves the names of all registered transitions.  <br /></td></tr>
-<tr class="separator:a4427cf243f889a7751df4741ada69d31"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3c8997fc02c31c226e6f051d29f6590d"><td class="memItemLeft" align="right" valign="top"><a id="a3c8997fc02c31c226e6f051d29f6590d" name="a3c8997fc02c31c226e6f051d29f6590d"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>ClearTransitions</b> ()=0</td></tr>
-<tr class="memdesc:a3c8997fc02c31c226e6f051d29f6590d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clears all registered transitions. Deletes all stored <a class="el" href="../../de/d15/classrespond_1_1Transition.html" title="Abstract base class representing a state transition operation. Transitions apply transformation matri...">Transition</a> unique_ptrs. <br /></td></tr>
-<tr class="separator:a3c8997fc02c31c226e6f051d29f6590d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a45458f22f93028a0eec1d028d4fb0a31"><td class="memItemLeft" align="right" valign="top">virtual std::map&lt; std::string, <a class="el" href="../../d8/dd8/classrespond_1_1History.html">History</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d4/d00/classrespond_1_1Model.html#a45458f22f93028a0eec1d028d4fb0a31">GetHistories</a> () const =0</td></tr>
-<tr class="memdesc:a45458f22f93028a0eec1d028d4fb0a31"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieves the history records for all state variables.  <br /></td></tr>
-<tr class="separator:a45458f22f93028a0eec1d028d4fb0a31"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ada74231919972654b97fd9da39cfa29d"><td class="memItemLeft" align="right" valign="top"><a id="ada74231919972654b97fd9da39cfa29d" name="ada74231919972654b97fd9da39cfa29d"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>CreateDefaultHistories</b> ()=0</td></tr>
-<tr class="memdesc:ada74231919972654b97fd9da39cfa29d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates default history tracking for the model. This method initializes standard history records based on the model's state. <br /></td></tr>
-<tr class="separator:ada74231919972654b97fd9da39cfa29d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a78a600a786c98f83b86961f4b985e3bd"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d4/d00/classrespond_1_1Model.html#a78a600a786c98f83b86961f4b985e3bd">SetHistories</a> (const std::map&lt; std::string, <a class="el" href="../../d8/dd8/classrespond_1_1History.html">History</a> &gt; &amp;h)=0</td></tr>
-<tr class="memdesc:a78a600a786c98f83b86961f4b985e3bd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the history records for the model.  <br /></td></tr>
-<tr class="separator:a78a600a786c98f83b86961f4b985e3bd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad917b8b7f375aafa4415b421270cef77"><td class="memItemLeft" align="right" valign="top"><a id="ad917b8b7f375aafa4415b421270cef77" name="ad917b8b7f375aafa4415b421270cef77"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>ClearHistories</b> ()=0</td></tr>
-<tr class="memdesc:ad917b8b7f375aafa4415b421270cef77"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clears all history records and resets history tracking state. <br /></td></tr>
-<tr class="separator:ad917b8b7f375aafa4415b421270cef77"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af61e47e16b1862006e86ae6aac0bd899"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d4/d00/classrespond_1_1Model.html#af61e47e16b1862006e86ae6aac0bd899">SetHistoryCaptureInterval</a> (int interval)=0</td></tr>
-<tr class="memdesc:af61e47e16b1862006e86ae6aac0bd899"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the global history capture interval for this model.  <br /></td></tr>
-<tr class="separator:af61e47e16b1862006e86ae6aac0bd899"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6492eebcc8f64b8a2c8b0f77fea7b146"><td class="memItemLeft" align="right" valign="top">virtual int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d4/d00/classrespond_1_1Model.html#a6492eebcc8f64b8a2c8b0f77fea7b146">GetHistoryCaptureInterval</a> () const =0</td></tr>
-<tr class="memdesc:a6492eebcc8f64b8a2c8b0f77fea7b146"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieves the global history capture interval.  <br /></td></tr>
-<tr class="separator:a6492eebcc8f64b8a2c8b0f77fea7b146"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a675ccc69675f0e70b46d698030b2b76e"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d4/d00/classrespond_1_1Model.html#a675ccc69675f0e70b46d698030b2b76e">SetFinalTimestep</a> (int final_timestep)=0</td></tr>
-<tr class="memdesc:a675ccc69675f0e70b46d698030b2b76e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the final timestep that must always be recorded.  <br /></td></tr>
-<tr class="separator:a675ccc69675f0e70b46d698030b2b76e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a98f260c265238fdbb446064fa72080a3"><td class="memItemLeft" align="right" valign="top">virtual int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d4/d00/classrespond_1_1Model.html#a98f260c265238fdbb446064fa72080a3">GetFinalTimestep</a> () const =0</td></tr>
-<tr class="memdesc:a98f260c265238fdbb446064fa72080a3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieves the final timestep forced into history output.  <br /></td></tr>
-<tr class="separator:a98f260c265238fdbb446064fa72080a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a74944047162dfc04fe067a7e9ef5051d"><td class="memItemLeft" align="right" valign="top">virtual std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d4/d00/classrespond_1_1Model.html#a74944047162dfc04fe067a7e9ef5051d">GetModelName</a> () const =0</td></tr>
-<tr class="memdesc:a74944047162dfc04fe067a7e9ef5051d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieves the name identifier for this model.  <br /></td></tr>
-<tr class="separator:a74944047162dfc04fe067a7e9ef5051d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a621d9de8d990ad00f5c3ada16ed91ec3"><td class="memItemLeft" align="right" valign="top">virtual std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d4/d00/classrespond_1_1Model.html#a621d9de8d990ad00f5c3ada16ed91ec3">GetLogName</a> () const =0</td></tr>
-<tr class="memdesc:a621d9de8d990ad00f5c3ada16ed91ec3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieves the logger name used by this model.  <br /></td></tr>
-<tr class="separator:a621d9de8d990ad00f5c3ada16ed91ec3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8f484bc5faa075e8e484609946288607"><td class="memItemLeft" align="right" valign="top"><a id="a8f484bc5faa075e8e484609946288607" name="a8f484bc5faa075e8e484609946288607"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>Model</b> (const <a class="el" href="../../d4/d00/classrespond_1_1Model.html">Model</a> &amp;)=delete</td></tr>
 <tr class="memdesc:a8f484bc5faa075e8e484609946288607"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deleted copy constructor (models are non-copyable by public API). <br /></td></tr>
@@ -209,12 +157,78 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>ClearHistorie
 <tr class="memitem:a32412cb3739bc1cd738a93607022c46b"><td class="memItemLeft" align="right" valign="top">virtual std::unique_ptr&lt; <a class="el" href="../../d4/d00/classrespond_1_1Model.html">Model</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d4/d00/classrespond_1_1Model.html#a32412cb3739bc1cd738a93607022c46b">clone</a> () const =0</td></tr>
 <tr class="memdesc:a32412cb3739bc1cd738a93607022c46b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a deep copy of this model.  <br /></td></tr>
 <tr class="separator:a32412cb3739bc1cd738a93607022c46b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a44f18c19f1acfdcc3ce652246eda6421"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d4/d00/classrespond_1_1Model.html#a44f18c19f1acfdcc3ce652246eda6421">AddTimestep</a> (const <a class="el" href="../../db/df3/classrespond_1_1Timestep.html">Timestep</a> &amp;timestep)=0</td></tr>
+<tr class="memdesc:a44f18c19f1acfdcc3ce652246eda6421"><td class="mdescLeft">&#160;</td><td class="mdescRight">Helper function to add a single timestep to the model.  <br /></td></tr>
+<tr class="separator:a44f18c19f1acfdcc3ce652246eda6421"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4767934dbd8361c550e9b5daa67e6062"><td class="memItemLeft" align="right" valign="top"><a id="a4767934dbd8361c550e9b5daa67e6062" name="a4767934dbd8361c550e9b5daa67e6062"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>RunTimestep</b> ()=0</td></tr>
+<tr class="memdesc:a4767934dbd8361c550e9b5daa67e6062"><td class="mdescLeft">&#160;</td><td class="mdescRight">Executes the next timestep in the model's sequence. <br /></td></tr>
+<tr class="separator:a4767934dbd8361c550e9b5daa67e6062"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a242b5a2cf17244fcaf0b7aa73e81d9cf"><td class="memItemLeft" align="right" valign="top"><a id="a242b5a2cf17244fcaf0b7aa73e81d9cf" name="a242b5a2cf17244fcaf0b7aa73e81d9cf"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>RunTimestep</b> (size_t idx)=0</td></tr>
+<tr class="memdesc:a242b5a2cf17244fcaf0b7aa73e81d9cf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Executes the timestep in the model's sequence. <br /></td></tr>
+<tr class="separator:a242b5a2cf17244fcaf0b7aa73e81d9cf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad0dd020896d2084898cd662596f84aa5"><td class="memItemLeft" align="right" valign="top"><a id="ad0dd020896d2084898cd662596f84aa5" name="ad0dd020896d2084898cd662596f84aa5"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>RunTimesteps</b> ()=0</td></tr>
+<tr class="memdesc:ad0dd020896d2084898cd662596f84aa5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Executes all registered timesteps in sequence, applying their transitions to the model's state. <br /></td></tr>
+<tr class="separator:ad0dd020896d2084898cd662596f84aa5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae1380c19ba6ee82ef91eeb4bbb8be448"><td class="memItemLeft" align="right" valign="top"><a id="ae1380c19ba6ee82ef91eeb4bbb8be448" name="ae1380c19ba6ee82ef91eeb4bbb8be448"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>ClearTimesteps</b> ()=0</td></tr>
+<tr class="memdesc:ae1380c19ba6ee82ef91eeb4bbb8be448"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clears all timesteps from the model. <br /></td></tr>
+<tr class="separator:ae1380c19ba6ee82ef91eeb4bbb8be448"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad917b8b7f375aafa4415b421270cef77"><td class="memItemLeft" align="right" valign="top"><a id="ad917b8b7f375aafa4415b421270cef77" name="ad917b8b7f375aafa4415b421270cef77"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>ClearHistories</b> ()=0</td></tr>
+<tr class="memdesc:ad917b8b7f375aafa4415b421270cef77"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clear all history records and reset the history tracking state. <br /></td></tr>
+<tr class="separator:ad917b8b7f375aafa4415b421270cef77"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ada74231919972654b97fd9da39cfa29d"><td class="memItemLeft" align="right" valign="top"><a id="ada74231919972654b97fd9da39cfa29d" name="ada74231919972654b97fd9da39cfa29d"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>CreateDefaultHistories</b> ()=0</td></tr>
+<tr class="memdesc:ada74231919972654b97fd9da39cfa29d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates default history tracking for the model. This method initializes standard history records based on the model's state. <br /></td></tr>
+<tr class="separator:ada74231919972654b97fd9da39cfa29d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a33d47464ca061183c2cf11b060eb09f5"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="../../db/df3/classrespond_1_1Timestep.html">Timestep</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d4/d00/classrespond_1_1Model.html#a33d47464ca061183c2cf11b060eb09f5">GetTimestepAtIndex</a> (size_t index) const =0</td></tr>
+<tr class="memdesc:a33d47464ca061183c2cf11b060eb09f5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieve a copy of a specific timestep by index.  <br /></td></tr>
+<tr class="separator:a33d47464ca061183c2cf11b060eb09f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a01524938bdee4d58061407256ae173ed"><td class="memItemLeft" align="right" valign="top">virtual const Eigen::Ref&lt; const Eigen::VectorXd &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d4/d00/classrespond_1_1Model.html#a01524938bdee4d58061407256ae173ed">GetState</a> () const =0</td></tr>
+<tr class="memdesc:a01524938bdee4d58061407256ae173ed"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieves the current state of the model.  <br /></td></tr>
+<tr class="separator:a01524938bdee4d58061407256ae173ed"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a369145662a6fd484f3c78caaaf2bb779"><td class="memItemLeft" align="right" valign="top">virtual std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d4/d00/classrespond_1_1Model.html#a369145662a6fd484f3c78caaaf2bb779">GetName</a> () const =0</td></tr>
+<tr class="memdesc:a369145662a6fd484f3c78caaaf2bb779"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieves the name identifier for this model.  <br /></td></tr>
+<tr class="separator:a369145662a6fd484f3c78caaaf2bb779"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a782e802b0625c6c6a1b6e8c40604d1aa"><td class="memItemLeft" align="right" valign="top">virtual const std::map&lt; std::string, <a class="el" href="../../d8/dd8/classrespond_1_1History.html">History</a> &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d4/d00/classrespond_1_1Model.html#a782e802b0625c6c6a1b6e8c40604d1aa">GetHistories</a> () const =0</td></tr>
+<tr class="memdesc:a782e802b0625c6c6a1b6e8c40604d1aa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieves a reference to the map of all registered histories. The histories cannot be edited directly and must be saved to their own space by users before being consumed.  <br /></td></tr>
+<tr class="separator:a782e802b0625c6c6a1b6e8c40604d1aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a64e1cd0288f62cb45990f2f1a1f8a28d"><td class="memItemLeft" align="right" valign="top">virtual int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d4/d00/classrespond_1_1Model.html#a64e1cd0288f62cb45990f2f1a1f8a28d">GetTimestep</a> () const =0</td></tr>
+<tr class="memdesc:a64e1cd0288f62cb45990f2f1a1f8a28d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieves the current simulation timestep.  <br /></td></tr>
+<tr class="separator:a64e1cd0288f62cb45990f2f1a1f8a28d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6492eebcc8f64b8a2c8b0f77fea7b146"><td class="memItemLeft" align="right" valign="top">virtual int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d4/d00/classrespond_1_1Model.html#a6492eebcc8f64b8a2c8b0f77fea7b146">GetHistoryCaptureInterval</a> () const =0</td></tr>
+<tr class="memdesc:a6492eebcc8f64b8a2c8b0f77fea7b146"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieves the global history capture interval.  <br /></td></tr>
+<tr class="separator:a6492eebcc8f64b8a2c8b0f77fea7b146"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a98f260c265238fdbb446064fa72080a3"><td class="memItemLeft" align="right" valign="top">virtual int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d4/d00/classrespond_1_1Model.html#a98f260c265238fdbb446064fa72080a3">GetFinalTimestep</a> () const =0</td></tr>
+<tr class="memdesc:a98f260c265238fdbb446064fa72080a3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieves the final timestep forced into history output.  <br /></td></tr>
+<tr class="separator:a98f260c265238fdbb446064fa72080a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1bbb216a07e0ef7683eaf1ba3324bfc4"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d4/d00/classrespond_1_1Model.html#a1bbb216a07e0ef7683eaf1ba3324bfc4">GetInitialHistoryRecorded</a> () const =0</td></tr>
+<tr class="memdesc:a1bbb216a07e0ef7683eaf1ba3324bfc4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks if the initial history has been recorded for this model.  <br /></td></tr>
+<tr class="separator:a1bbb216a07e0ef7683eaf1ba3324bfc4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa69596d4fd92c744b9794869ae7f6ffa"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d4/d00/classrespond_1_1Model.html#aa69596d4fd92c744b9794869ae7f6ffa">SetState</a> (const Eigen::Ref&lt; const Eigen::VectorXd &gt; &amp;state)=0</td></tr>
+<tr class="memdesc:aa69596d4fd92c744b9794869ae7f6ffa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the current state of the model.  <br /></td></tr>
+<tr class="separator:aa69596d4fd92c744b9794869ae7f6ffa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af61e47e16b1862006e86ae6aac0bd899"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d4/d00/classrespond_1_1Model.html#af61e47e16b1862006e86ae6aac0bd899">SetHistoryCaptureInterval</a> (int interval)=0</td></tr>
+<tr class="memdesc:af61e47e16b1862006e86ae6aac0bd899"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the global history capture interval for this model.  <br /></td></tr>
+<tr class="separator:af61e47e16b1862006e86ae6aac0bd899"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a675ccc69675f0e70b46d698030b2b76e"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d4/d00/classrespond_1_1Model.html#a675ccc69675f0e70b46d698030b2b76e">SetFinalTimestep</a> (int final_timestep)=0</td></tr>
+<tr class="memdesc:a675ccc69675f0e70b46d698030b2b76e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the final timestep that must always be recorded.  <br /></td></tr>
+<tr class="separator:a675ccc69675f0e70b46d698030b2b76e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a841f835e0a6dc2e9da36c7d3d94aa5cf"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d4/d00/classrespond_1_1Model.html#a841f835e0a6dc2e9da36c7d3d94aa5cf">SetInitialHistoryRecorded</a> (bool recorded)=0</td></tr>
+<tr class="memdesc:a841f835e0a6dc2e9da36c7d3d94aa5cf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets whether the initial state has been recorded in history.  <br /></td></tr>
+<tr class="separator:a841f835e0a6dc2e9da36c7d3d94aa5cf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a722d63d81a9a9c702d94c297827cea82"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d4/d00/classrespond_1_1Model.html#a722d63d81a9a9c702d94c297827cea82">Serialize</a> (std::ostream &amp;os) const =0</td></tr>
+<tr class="memdesc:a722d63d81a9a9c702d94c297827cea82"><td class="mdescLeft">&#160;</td><td class="mdescRight">Function to serialize the model's state and metadata to an output stream.  <br /></td></tr>
+<tr class="separator:a722d63d81a9a9c702d94c297827cea82"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:ac837a382694b08e5941578a9a2bb5c66"><td class="memItemLeft" align="right" valign="top">static std::unique_ptr&lt; <a class="el" href="../../d4/d00/classrespond_1_1Model.html">Model</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d4/d00/classrespond_1_1Model.html#ac837a382694b08e5941578a9a2bb5c66">Create</a> (const std::string &amp;name, const std::string &amp;log_name=&quot;console&quot;)</td></tr>
-<tr class="memdesc:ac837a382694b08e5941578a9a2bb5c66"><td class="mdescLeft">&#160;</td><td class="mdescRight">Factory method to create a <a class="el" href="../../d4/d00/classrespond_1_1Model.html" title="Abstract base class representing a state transition model. Models manage a state vector,...">Model</a> instance.  <br /></td></tr>
-<tr class="separator:ac837a382694b08e5941578a9a2bb5c66"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a619b8655ab389cc4cc3c84fd4116e28e"><td class="memItemLeft" align="right" valign="top">static std::unique_ptr&lt; <a class="el" href="../../d4/d00/classrespond_1_1Model.html">Model</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d4/d00/classrespond_1_1Model.html#a619b8655ab389cc4cc3c84fd4116e28e">Create</a> (const std::string &amp;name, const std::string &amp;log_name=RESPOND_DEFAULT_LOG, const std::string &amp;log_filepath=RESPOND_DEFAULT_LOG_FILE)</td></tr>
+<tr class="memdesc:a619b8655ab389cc4cc3c84fd4116e28e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Factory method to create a <a class="el" href="../../d4/d00/classrespond_1_1Model.html" title="Abstract base class representing a state transition model. Models manage a state vector,...">Model</a> instance.  <br /></td></tr>
+<tr class="separator:a619b8655ab389cc4cc3c84fd4116e28e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-methods" name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
@@ -224,8 +238,8 @@ Protected Member Functions</h2></td></tr>
 <tr class="separator:acde260cb4aafb84ed5efc4f26b894ca3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a7375981768eb9fb1e0f84d12c991b483" name="a7375981768eb9fb1e0f84d12c991b483"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7375981768eb9fb1e0f84d12c991b483">&#9670;&#160;</a></span>AddTransition()</h2>
+<a id="a44f18c19f1acfdcc3ce652246eda6421" name="a44f18c19f1acfdcc3ce652246eda6421"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a44f18c19f1acfdcc3ce652246eda6421">&#9670;&#160;</a></span>AddTimestep()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -234,10 +248,10 @@ Protected Member Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual void respond::Model::AddTransition </td>
+          <td class="memname">virtual void respond::Model::AddTimestep </td>
           <td>(</td>
-          <td class="paramtype">const std::unique_ptr&lt; <a class="el" href="../../de/d15/classrespond_1_1Transition.html">Transition</a> &gt; &amp;&#160;</td>
-          <td class="paramname"><em>t</em></td><td>)</td>
+          <td class="paramtype">const <a class="el" href="../../db/df3/classrespond_1_1Timestep.html">Timestep</a> &amp;&#160;</td>
+          <td class="paramname"><em>timestep</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -249,7 +263,7 @@ Protected Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">t</td><td>A unique_ptr to a <a class="el" href="../../de/d15/classrespond_1_1Transition.html" title="Abstract base class representing a state transition operation. Transitions apply transformation matri...">Transition</a> object. The model assumes ownership. </td></tr>
+    <tr><td class="paramname">timestep</td><td>A shared pointer to a <a class="el" href="../../db/df3/classrespond_1_1Timestep.html" title="Represents a single timestep in a simulation, managing a collection of transitions....">Timestep</a> instance. The model gains an ownership reference to this timestep and will manage its lifecycle. </td></tr>
   </table>
   </dd>
 </dl>
@@ -282,8 +296,8 @@ Protected Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="ac837a382694b08e5941578a9a2bb5c66" name="ac837a382694b08e5941578a9a2bb5c66"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac837a382694b08e5941578a9a2bb5c66">&#9670;&#160;</a></span>Create()</h2>
+<a id="a619b8655ab389cc4cc3c84fd4116e28e" name="a619b8655ab389cc4cc3c84fd4116e28e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a619b8655ab389cc4cc3c84fd4116e28e">&#9670;&#160;</a></span>Create()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -301,7 +315,13 @@ Protected Member Functions</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>log_name</em> = <code>&quot;console&quot;</code>&#160;</td>
+          <td class="paramname"><em>log_name</em> = <code>RESPOND_DEFAULT_LOG</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>log_filepath</em> = <code>RESPOND_DEFAULT_LOG_FILE</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -315,10 +335,11 @@ Protected Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<dl class="params"><dt>Parameters</dt><dd>
+<p>This method creates a new instance of a <a class="el" href="../../d4/d00/classrespond_1_1Model.html" title="Abstract base class representing a state transition model. Models manage a state vector,...">Model</a> subclass based on the provided name. It initializes logging for the model and returns a unique_ptr to the created instance. Throws an exception if the model name is unsupported. </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">name</td><td>The name identifier for the model to create. </td></tr>
     <tr><td class="paramname">log_name</td><td>Name of the logger for this model (default: "console"). </td></tr>
+    <tr><td class="paramname">log_filepath</td><td>File path for the log file (default: "respond.log"). </td></tr>
   </table>
   </dd>
 </dl>
@@ -352,8 +373,8 @@ Protected Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a45458f22f93028a0eec1d028d4fb0a31" name="a45458f22f93028a0eec1d028d4fb0a31"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a45458f22f93028a0eec1d028d4fb0a31">&#9670;&#160;</a></span>GetHistories()</h2>
+<a id="a782e802b0625c6c6a1b6e8c40604d1aa" name="a782e802b0625c6c6a1b6e8c40604d1aa"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a782e802b0625c6c6a1b6e8c40604d1aa">&#9670;&#160;</a></span>GetHistories()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -362,7 +383,7 @@ Protected Member Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual std::map&lt; std::string, <a class="el" href="../../d8/dd8/classrespond_1_1History.html">History</a> &gt; respond::Model::GetHistories </td>
+          <td class="memname">virtual const std::map&lt; std::string, <a class="el" href="../../d8/dd8/classrespond_1_1History.html">History</a> &gt; &amp; respond::Model::GetHistories </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -374,7 +395,7 @@ Protected Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<dl class="section return"><dt>Returns</dt><dd>A map of history names to <a class="el" href="../../d8/dd8/classrespond_1_1History.html" title="Tracks and manages state vector history over time. History records state snapshots at discrete timest...">History</a> objects containing state trajectories. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>A constant reference to a map of history names to <a class="el" href="../../d8/dd8/classrespond_1_1History.html" title="Tracks and manages state vector history over time. History records state snapshots at discrete timest...">History</a> objects. </dd></dl>
 
 </div>
 </div>
@@ -404,8 +425,8 @@ Protected Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a621d9de8d990ad00f5c3ada16ed91ec3" name="a621d9de8d990ad00f5c3ada16ed91ec3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a621d9de8d990ad00f5c3ada16ed91ec3">&#9670;&#160;</a></span>GetLogName()</h2>
+<a id="a1bbb216a07e0ef7683eaf1ba3324bfc4" name="a1bbb216a07e0ef7683eaf1ba3324bfc4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1bbb216a07e0ef7683eaf1ba3324bfc4">&#9670;&#160;</a></span>GetInitialHistoryRecorded()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -414,7 +435,7 @@ Protected Member Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual std::string respond::Model::GetLogName </td>
+          <td class="memname">virtual bool respond::Model::GetInitialHistoryRecorded </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -426,12 +447,12 @@ Protected Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<dl class="section return"><dt>Returns</dt><dd>The name of the associated logger. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>True if the initial state has been recorded in history, false otherwise. </dd></dl>
 
 </div>
 </div>
-<a id="a74944047162dfc04fe067a7e9ef5051d" name="a74944047162dfc04fe067a7e9ef5051d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a74944047162dfc04fe067a7e9ef5051d">&#9670;&#160;</a></span>GetModelName()</h2>
+<a id="a369145662a6fd484f3c78caaaf2bb779" name="a369145662a6fd484f3c78caaaf2bb779"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a369145662a6fd484f3c78caaaf2bb779">&#9670;&#160;</a></span>GetName()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -440,7 +461,7 @@ Protected Member Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual std::string respond::Model::GetModelName </td>
+          <td class="memname">virtual std::string respond::Model::GetName </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -456,8 +477,8 @@ Protected Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a218d6dbe7f879bc6bd2e9572f6abba43" name="a218d6dbe7f879bc6bd2e9572f6abba43"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a218d6dbe7f879bc6bd2e9572f6abba43">&#9670;&#160;</a></span>GetState()</h2>
+<a id="a01524938bdee4d58061407256ae173ed" name="a01524938bdee4d58061407256ae173ed"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a01524938bdee4d58061407256ae173ed">&#9670;&#160;</a></span>GetState()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -466,7 +487,7 @@ Protected Member Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual Eigen::VectorXd respond::Model::GetState </td>
+          <td class="memname">virtual const Eigen::Ref&lt; const Eigen::VectorXd &gt; respond::Model::GetState </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -478,12 +499,12 @@ Protected Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<dl class="section return"><dt>Returns</dt><dd>A copy of the current state vector (limited to observation). </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>A reference to the model's internal state. It is limited to observation and changes cannot be made to it directly. </dd></dl>
 
 </div>
 </div>
-<a id="a4427cf243f889a7751df4741ada69d31" name="a4427cf243f889a7751df4741ada69d31"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4427cf243f889a7751df4741ada69d31">&#9670;&#160;</a></span>GetTransitionNames()</h2>
+<a id="a64e1cd0288f62cb45990f2f1a1f8a28d" name="a64e1cd0288f62cb45990f2f1a1f8a28d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a64e1cd0288f62cb45990f2f1a1f8a28d">&#9670;&#160;</a></span>GetTimestep()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -492,7 +513,7 @@ Protected Member Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual std::vector&lt; std::string &gt; respond::Model::GetTransitionNames </td>
+          <td class="memname">virtual int respond::Model::GetTimestep </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -504,7 +525,73 @@ Protected Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<dl class="section return"><dt>Returns</dt><dd>Vector of transition names in the order they were added. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>The current timestep index. Returns -1 if no timesteps have been executed yet. </dd></dl>
+
+</div>
+</div>
+<a id="a33d47464ca061183c2cf11b060eb09f5" name="a33d47464ca061183c2cf11b060eb09f5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a33d47464ca061183c2cf11b060eb09f5">&#9670;&#160;</a></span>GetTimestepAtIndex()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual <a class="el" href="../../db/df3/classrespond_1_1Timestep.html">Timestep</a> respond::Model::GetTimestepAtIndex </td>
+          <td>(</td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>index</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">index</td><td>The zero-based index of the timestep to retrieve. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>A constant reference to the <a class="el" href="../../db/df3/classrespond_1_1Timestep.html" title="Represents a single timestep in a simulation, managing a collection of transitions....">Timestep</a> at the specified index. </dd></dl>
+
+</div>
+</div>
+<a id="a722d63d81a9a9c702d94c297827cea82" name="a722d63d81a9a9c702d94c297827cea82"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a722d63d81a9a9c702d94c297827cea82">&#9670;&#160;</a></span>Serialize()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void respond::Model::Serialize </td>
+          <td>(</td>
+          <td class="paramtype">std::ostream &amp;&#160;</td>
+          <td class="paramname"><em>os</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>This function is intended to be overridden by subclasses to provide custom serialization logic. It should write the model's state, metadata, and any relevant information to the provided output stream. </p><dl class="section note"><dt>Note</dt><dd>The output format is implementation-defined and may vary between subclasses. Users should refer to the specific subclass documentation for details on the serialization format. </dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">os</td><td>The output stream to which the model's serialized data will be written. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -534,38 +621,6 @@ Protected Member Functions</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">final_timestep</td><td>The final simulation timestep. </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
-<a id="a78a600a786c98f83b86961f4b985e3bd" name="a78a600a786c98f83b86961f4b985e3bd"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a78a600a786c98f83b86961f4b985e3bd">&#9670;&#160;</a></span>SetHistories()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">virtual void respond::Model::SetHistories </td>
-          <td>(</td>
-          <td class="paramtype">const std::map&lt; std::string, <a class="el" href="../../d8/dd8/classrespond_1_1History.html">History</a> &gt; &amp;&#160;</td>
-          <td class="paramname"><em>h</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">h</td><td>A map of history names to <a class="el" href="../../d8/dd8/classrespond_1_1History.html" title="Tracks and manages state vector history over time. History records state snapshots at discrete timest...">History</a> objects. </td></tr>
   </table>
   </dd>
 </dl>
@@ -604,6 +659,38 @@ Protected Member Functions</h2></td></tr>
 
 </div>
 </div>
+<a id="a841f835e0a6dc2e9da36c7d3d94aa5cf" name="a841f835e0a6dc2e9da36c7d3d94aa5cf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a841f835e0a6dc2e9da36c7d3d94aa5cf">&#9670;&#160;</a></span>SetInitialHistoryRecorded()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void respond::Model::SetInitialHistoryRecorded </td>
+          <td>(</td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>recorded</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">recorded</td><td>True if the initial state has been recorded, false otherwise. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="aa69596d4fd92c744b9794869ae7f6ffa" name="aa69596d4fd92c744b9794869ae7f6ffa"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aa69596d4fd92c744b9794869ae7f6ffa">&#9670;&#160;</a></span>SetState()</h2>
 
@@ -629,7 +716,7 @@ Protected Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">state</td><td>The state vector to set. A copy is made internally. </td></tr>
+    <tr><td class="paramname">state</td><td>A constant reference to a vector. This vector is then applied to the model's internal state. The model may copy or reference this vector as needed. </td></tr>
   </table>
   </dd>
 </dl>
@@ -645,7 +732,7 @@ Protected Member Functions</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><b>respond</b></li><li class="navelem"><a class="el" href="../../d4/d00/classrespond_1_1Model.html">Model</a></li>
-    <li class="footer">Generated on Thu Jul 2 2026 19:26:34 for RESPOND by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
+    <li class="footer">Generated on Wed Jul 15 2026 19:41:11 for RESPOND by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
   </ul>
 </div>
 </body>

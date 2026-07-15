@@ -62,7 +62,7 @@ Copyright (c) 2025 Syndemics Lab at Boston Medical Center
                             <td id="projectlogo"><img alt="Logo" src="../../Syndemics_main_logo_50px.png" /></td>
                             <td id="projectalign">
                                 <div id="projectname">RESPOND<span
-                                        id="projectnumber">&#160;2.4.0</span>
+                                        id="projectnumber">&#160;2.5.0</span>
                                 </div>
                                 <div id="projectbrief">Researching Effective Strategies to Prevent Opioid Death</div>
                             </td>
@@ -142,55 +142,75 @@ $(document).ready(function(){initNavTree('de/d27/classrespond_1_1Simulation.html
 Public Member Functions</h2></td></tr>
 <tr class="memitem:ad06898e0180473246c89481a3c4744d0"><td class="memItemLeft" align="right" valign="top"><a id="ad06898e0180473246c89481a3c4744d0" name="ad06898e0180473246c89481a3c4744d0"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>Simulation</b> ()</td></tr>
-<tr class="memdesc:ad06898e0180473246c89481a3c4744d0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default constructor initializing with "console" logger. <br /></td></tr>
+<tr class="memdesc:ad06898e0180473246c89481a3c4744d0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default constructor for a <a class="el" href="../../de/d27/classrespond_1_1Simulation.html" title="Manages and executes multiple models in a coordinated simulation. A Simulation aggregates Model insta...">Simulation</a> instance. Initializes the simulation with the default logger. <br /></td></tr>
 <tr class="separator:ad06898e0180473246c89481a3c4744d0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5438cd165b1c9e53107b21ca093a28ba"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d27/classrespond_1_1Simulation.html#a5438cd165b1c9e53107b21ca093a28ba">Simulation</a> (const std::string &amp;log_name)</td></tr>
 <tr class="memdesc:a5438cd165b1c9e53107b21ca093a28ba"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructs a <a class="el" href="../../de/d27/classrespond_1_1Simulation.html" title="Manages and executes multiple models in a coordinated simulation. A Simulation aggregates Model insta...">Simulation</a> with a specified logger.  <br /></td></tr>
 <tr class="separator:a5438cd165b1c9e53107b21ca093a28ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae34192e89f9d611a16f24349e4597f5e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d27/classrespond_1_1Simulation.html#ae34192e89f9d611a16f24349e4597f5e">Simulation</a> (const std::string &amp;log_name, const std::string &amp;log_filepath)</td></tr>
+<tr class="memdesc:ae34192e89f9d611a16f24349e4597f5e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructs a <a class="el" href="../../de/d27/classrespond_1_1Simulation.html" title="Manages and executes multiple models in a coordinated simulation. A Simulation aggregates Model insta...">Simulation</a> with a specified logger and log file.  <br /></td></tr>
+<tr class="separator:ae34192e89f9d611a16f24349e4597f5e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a35b97491c85f7516247509fde2c37521"><td class="memItemLeft" align="right" valign="top"><a id="a35b97491c85f7516247509fde2c37521" name="a35b97491c85f7516247509fde2c37521"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>~Simulation</b> ()=default</td></tr>
 <tr class="memdesc:a35b97491c85f7516247509fde2c37521"><td class="mdescLeft">&#160;</td><td class="mdescRight">Virtual destructor for polymorphic cleanup. <br /></td></tr>
 <tr class="separator:a35b97491c85f7516247509fde2c37521"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2bfeaf65d7386e0bf36a4549253dfe0b"><td class="memItemLeft" align="right" valign="top"><a id="a2bfeaf65d7386e0bf36a4549253dfe0b" name="a2bfeaf65d7386e0bf36a4549253dfe0b"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>Run</b> ()</td></tr>
-<tr class="memdesc:a2bfeaf65d7386e0bf36a4549253dfe0b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Executes one step of the simulation for all models. Calls RunTransitions() on each registered model in sequence. <br /></td></tr>
-<tr class="separator:a2bfeaf65d7386e0bf36a4549253dfe0b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aebf1197f15e2b7eae43dfffed80c1254"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d27/classrespond_1_1Simulation.html#aebf1197f15e2b7eae43dfffed80c1254">AddModel</a> (const std::unique_ptr&lt; <a class="el" href="../../d4/d00/classrespond_1_1Model.html">Model</a> &gt; &amp;model)</td></tr>
-<tr class="memdesc:aebf1197f15e2b7eae43dfffed80c1254"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds a model to the simulation. The model is cloned and managed by the simulation.  <br /></td></tr>
-<tr class="separator:aebf1197f15e2b7eae43dfffed80c1254"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a48fa745f85fd83f781ac0884afc90409"><td class="memItemLeft" align="right" valign="top">const std::vector&lt; std::unique_ptr&lt; <a class="el" href="../../d4/d00/classrespond_1_1Model.html">Model</a> &gt; &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d27/classrespond_1_1Simulation.html#a48fa745f85fd83f781ac0884afc90409">GetModels</a> () const</td></tr>
-<tr class="memdesc:a48fa745f85fd83f781ac0884afc90409"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieves all models in the simulation.  <br /></td></tr>
-<tr class="separator:a48fa745f85fd83f781ac0884afc90409"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a05cc042835656c0cab41d82ce1084f19"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d27/classrespond_1_1Simulation.html#a05cc042835656c0cab41d82ce1084f19">GetModelNames</a> () const</td></tr>
-<tr class="memdesc:a05cc042835656c0cab41d82ce1084f19"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieves the names of all models in the simulation.  <br /></td></tr>
-<tr class="separator:a05cc042835656c0cab41d82ce1084f19"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6caf959955cd6401d65d9cc86bb0a9f6"><td class="memItemLeft" align="right" valign="top"><a id="a6caf959955cd6401d65d9cc86bb0a9f6" name="a6caf959955cd6401d65d9cc86bb0a9f6"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>ClearModels</b> ()</td></tr>
-<tr class="memdesc:a6caf959955cd6401d65d9cc86bb0a9f6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Removes all models from the simulation. <br /></td></tr>
-<tr class="separator:a6caf959955cd6401d65d9cc86bb0a9f6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a21b74f8b6ca7ccd535ce7b9ab071d0fc"><td class="memItemLeft" align="right" valign="top">const std::vector&lt; std::map&lt; std::string, std::vector&lt; Eigen::VectorXd &gt; &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d27/classrespond_1_1Simulation.html#a21b74f8b6ca7ccd535ce7b9ab071d0fc">GetModelHistories</a> () const</td></tr>
-<tr class="memdesc:a21b74f8b6ca7ccd535ce7b9ab071d0fc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieves the complete state histories for all models.  <br /></td></tr>
-<tr class="separator:a21b74f8b6ca7ccd535ce7b9ab071d0fc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aaa48cc2067ae727927f5fcfc9fe3592e"><td class="memItemLeft" align="right" valign="top">const std::vector&lt; std::map&lt; std::string, <a class="el" href="../../d8/dd8/classrespond_1_1History.html">History</a> &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d27/classrespond_1_1Simulation.html#aaa48cc2067ae727927f5fcfc9fe3592e">GetModelSparseHistories</a> () const</td></tr>
-<tr class="memdesc:aaa48cc2067ae727927f5fcfc9fe3592e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieves sparse history objects for all models.  <br /></td></tr>
-<tr class="separator:aaa48cc2067ae727927f5fcfc9fe3592e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afd10727a69cf48796ee010427b8933b0"><td class="memItemLeft" align="right" valign="top">const std::vector&lt; std::pair&lt; std::string, std::string &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d27/classrespond_1_1Simulation.html#afd10727a69cf48796ee010427b8933b0">GetModelHistoryNames</a> () const</td></tr>
-<tr class="memdesc:afd10727a69cf48796ee010427b8933b0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieves pairs of (model name, history name) for all histories.  <br /></td></tr>
-<tr class="separator:afd10727a69cf48796ee010427b8933b0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a882a8d04e27192bed7827d3b6f70147c"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d27/classrespond_1_1Simulation.html#a882a8d04e27192bed7827d3b6f70147c">GetLogName</a> () const</td></tr>
-<tr class="memdesc:a882a8d04e27192bed7827d3b6f70147c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieves the logger name used by this simulation.  <br /></td></tr>
-<tr class="separator:a882a8d04e27192bed7827d3b6f70147c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9fef496915b13d16b51b9ba796b0270e"><td class="memItemLeft" align="right" valign="top"><a id="a9fef496915b13d16b51b9ba796b0270e" name="a9fef496915b13d16b51b9ba796b0270e"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>Simulation</b> (const <a class="el" href="../../de/d27/classrespond_1_1Simulation.html">Simulation</a> &amp;other)</td></tr>
-<tr class="memdesc:a9fef496915b13d16b51b9ba796b0270e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy constructor creating an independent deep copy of the simulation. All models are cloned; modifications to the copy do not affect the original. <br /></td></tr>
+<tr class="memitem:a9fef496915b13d16b51b9ba796b0270e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d27/classrespond_1_1Simulation.html#a9fef496915b13d16b51b9ba796b0270e">Simulation</a> (const <a class="el" href="../../de/d27/classrespond_1_1Simulation.html">Simulation</a> &amp;other)</td></tr>
+<tr class="memdesc:a9fef496915b13d16b51b9ba796b0270e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy constructor creating an independent deep copy of the simulation. All models are cloned; modifications to the copy do not affect the original.  <br /></td></tr>
 <tr class="separator:a9fef496915b13d16b51b9ba796b0270e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad738dfbf25d8f298791594ea3a2f4f46"><td class="memItemLeft" align="right" valign="top"><a class="el" href="../../de/d27/classrespond_1_1Simulation.html">Simulation</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d27/classrespond_1_1Simulation.html#ad738dfbf25d8f298791594ea3a2f4f46">operator=</a> (const <a class="el" href="../../de/d27/classrespond_1_1Simulation.html">Simulation</a> &amp;other)</td></tr>
 <tr class="memdesc:ad738dfbf25d8f298791594ea3a2f4f46"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy assignment operator for deep copying simulation state.  <br /></td></tr>
 <tr class="separator:ad738dfbf25d8f298791594ea3a2f4f46"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1d2d22448e12c8f15c7586c964ed978d"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d27/classrespond_1_1Simulation.html#a1d2d22448e12c8f15c7586c964ed978d">Simulation</a> (<a class="el" href="../../de/d27/classrespond_1_1Simulation.html">Simulation</a> &amp;&amp;other) noexcept</td></tr>
+<tr class="memdesc:a1d2d22448e12c8f15c7586c964ed978d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Move constructor for transferring simulation ownership.  <br /></td></tr>
+<tr class="separator:a1d2d22448e12c8f15c7586c964ed978d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae3f681ac7211f695ecc726e49a94292f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="../../de/d27/classrespond_1_1Simulation.html">Simulation</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d27/classrespond_1_1Simulation.html#ae3f681ac7211f695ecc726e49a94292f">operator=</a> (<a class="el" href="../../de/d27/classrespond_1_1Simulation.html">Simulation</a> &amp;&amp;other) noexcept</td></tr>
+<tr class="memdesc:ae3f681ac7211f695ecc726e49a94292f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Move assignment operator for transferring simulation ownership.  <br /></td></tr>
+<tr class="separator:ae3f681ac7211f695ecc726e49a94292f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4a746956a96f67485d42d855b4cba9c6"><td class="memItemLeft" align="right" valign="top">const std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d27/classrespond_1_1Simulation.html#a4a746956a96f67485d42d855b4cba9c6">CreateNewModel</a> (const std::string &amp;model_name)</td></tr>
+<tr class="memdesc:a4a746956a96f67485d42d855b4cba9c6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a new model instance and adds it to the simulation.  <br /></td></tr>
+<tr class="separator:a4a746956a96f67485d42d855b4cba9c6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6caf959955cd6401d65d9cc86bb0a9f6"><td class="memItemLeft" align="right" valign="top"><a id="a6caf959955cd6401d65d9cc86bb0a9f6" name="a6caf959955cd6401d65d9cc86bb0a9f6"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>ClearModels</b> ()</td></tr>
+<tr class="memdesc:a6caf959955cd6401d65d9cc86bb0a9f6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Removes all models from the simulation. <br /></td></tr>
+<tr class="separator:a6caf959955cd6401d65d9cc86bb0a9f6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aebf1197f15e2b7eae43dfffed80c1254"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d27/classrespond_1_1Simulation.html#aebf1197f15e2b7eae43dfffed80c1254">AddModel</a> (const std::unique_ptr&lt; <a class="el" href="../../d4/d00/classrespond_1_1Model.html">Model</a> &gt; &amp;model)</td></tr>
+<tr class="memdesc:aebf1197f15e2b7eae43dfffed80c1254"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds a model to the simulation. The model is cloned and managed by the simulation.  <br /></td></tr>
+<tr class="separator:aebf1197f15e2b7eae43dfffed80c1254"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a40714b0c174621705a89ab1b966f36a2"><td class="memItemLeft" align="right" valign="top"><a id="a40714b0c174621705a89ab1b966f36a2" name="a40714b0c174621705a89ab1b966f36a2"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>Run</b> (int duration=-1)</td></tr>
+<tr class="memdesc:a40714b0c174621705a89ab1b966f36a2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Executes one step of the simulation for all models. Calls RunTransitions() on each registered model in sequence. <br /></td></tr>
+<tr class="separator:a40714b0c174621705a89ab1b966f36a2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a48fa745f85fd83f781ac0884afc90409"><td class="memItemLeft" align="right" valign="top">const std::vector&lt; std::unique_ptr&lt; <a class="el" href="../../d4/d00/classrespond_1_1Model.html">Model</a> &gt; &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d27/classrespond_1_1Simulation.html#a48fa745f85fd83f781ac0884afc90409">GetModels</a> () const</td></tr>
+<tr class="memdesc:a48fa745f85fd83f781ac0884afc90409"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieves all models in the simulation.  <br /></td></tr>
+<tr class="separator:a48fa745f85fd83f781ac0884afc90409"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa05d69d0f2eed565644440d0066b1c21"><td class="memItemLeft" align="right" valign="top">const std::unique_ptr&lt; <a class="el" href="../../d4/d00/classrespond_1_1Model.html">Model</a> &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d27/classrespond_1_1Simulation.html#aa05d69d0f2eed565644440d0066b1c21">GetModel</a> (size_t idx) const</td></tr>
+<tr class="memdesc:aa05d69d0f2eed565644440d0066b1c21"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieves a specific model by index in the simulation.  <br /></td></tr>
+<tr class="separator:aa05d69d0f2eed565644440d0066b1c21"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a68937c893adb8cdf0fd5a1a969fa4d4f"><td class="memItemLeft" align="right" valign="top"><a id="a68937c893adb8cdf0fd5a1a969fa4d4f" name="a68937c893adb8cdf0fd5a1a969fa4d4f"></a>
+const std::unique_ptr&lt; <a class="el" href="../../d4/d00/classrespond_1_1Model.html">Model</a> &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>GetModel</b> (const std::string &amp;model_name) const</td></tr>
+<tr class="separator:a68937c893adb8cdf0fd5a1a969fa4d4f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a05cc042835656c0cab41d82ce1084f19"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d27/classrespond_1_1Simulation.html#a05cc042835656c0cab41d82ce1084f19">GetModelNames</a> () const</td></tr>
+<tr class="memdesc:a05cc042835656c0cab41d82ce1084f19"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieves the names of all models in the simulation.  <br /></td></tr>
+<tr class="separator:a05cc042835656c0cab41d82ce1084f19"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a83a58b26a5e9aa7770e15a7cdf8cc9c3"><td class="memItemLeft" align="right" valign="top">const std::map&lt; std::string, <a class="el" href="../../d8/dd8/classrespond_1_1History.html">History</a> &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d27/classrespond_1_1Simulation.html#a83a58b26a5e9aa7770e15a7cdf8cc9c3">GetModelHistory</a> (size_t idx) const</td></tr>
+<tr class="memdesc:a83a58b26a5e9aa7770e15a7cdf8cc9c3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieves the complete state histories for the model at the index.  <br /></td></tr>
+<tr class="separator:a83a58b26a5e9aa7770e15a7cdf8cc9c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a497a7ff5fcf3d8c7c26b41ca2a08b2b4"><td class="memItemLeft" align="right" valign="top"><a id="a497a7ff5fcf3d8c7c26b41ca2a08b2b4" name="a497a7ff5fcf3d8c7c26b41ca2a08b2b4"></a>
+const std::map&lt; std::string, <a class="el" href="../../d8/dd8/classrespond_1_1History.html">History</a> &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>GetModelHistory</b> (const std::string &amp;model_name) const</td></tr>
+<tr class="separator:a497a7ff5fcf3d8c7c26b41ca2a08b2b4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afcd21e110ff388d8bade3a0f3f995115"><td class="memItemLeft" align="right" valign="top">const std::vector&lt; std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d27/classrespond_1_1Simulation.html#afcd21e110ff388d8bade3a0f3f995115">GetModelHistoryNames</a> (size_t idx) const</td></tr>
+<tr class="memdesc:afcd21e110ff388d8bade3a0f3f995115"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieves pairs of (model name, history name) for all histories.  <br /></td></tr>
+<tr class="separator:afcd21e110ff388d8bade3a0f3f995115"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acadd046e56ab2cccf99cee2e53ff05ef"><td class="memItemLeft" align="right" valign="top"><a id="acadd046e56ab2cccf99cee2e53ff05ef" name="acadd046e56ab2cccf99cee2e53ff05ef"></a>
+const std::vector&lt; std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>GetModelHistoryNames</b> (const std::string &amp;model_name) const</td></tr>
+<tr class="separator:acadd046e56ab2cccf99cee2e53ff05ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa3c79b9b5a9893227047f4f42ef61e64"><td class="memItemLeft" align="right" valign="top"><a id="aa3c79b9b5a9893227047f4f42ef61e64" name="aa3c79b9b5a9893227047f4f42ef61e64"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>SetDuration</b> (int duration)</td></tr>
+<tr class="separator:aa3c79b9b5a9893227047f4f42ef61e64"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a5438cd165b1c9e53107b21ca093a28ba" name="a5438cd165b1c9e53107b21ca093a28ba"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5438cd165b1c9e53107b21ca093a28ba">&#9670;&#160;</a></span>Simulation()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a5438cd165b1c9e53107b21ca093a28ba">&#9670;&#160;</a></span>Simulation() <span class="overload">[1/4]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -214,7 +234,114 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>ClearModels</b> ()</t
 </div><div class="memdoc">
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">log_name</td><td>Name of the logger for this simulation (default: "console"). </td></tr>
+    <tr><td class="paramname">log_name</td><td>The name of the logger to use for simulation output. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ae34192e89f9d611a16f24349e4597f5e" name="ae34192e89f9d611a16f24349e4597f5e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae34192e89f9d611a16f24349e4597f5e">&#9670;&#160;</a></span>Simulation() <span class="overload">[2/4]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">respond::Simulation::Simulation </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>log_name</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>log_filepath</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">log_name</td><td>The name of the logger to use for simulation output. </td></tr>
+    <tr><td class="paramname">log_filepath</td><td>The file path for the logger output. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a9fef496915b13d16b51b9ba796b0270e" name="a9fef496915b13d16b51b9ba796b0270e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9fef496915b13d16b51b9ba796b0270e">&#9670;&#160;</a></span>Simulation() <span class="overload">[3/4]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">respond::Simulation::Simulation </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="../../de/d27/classrespond_1_1Simulation.html">Simulation</a> &amp;&#160;</td>
+          <td class="paramname"><em>other</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">other</td><td>The <a class="el" href="../../de/d27/classrespond_1_1Simulation.html" title="Manages and executes multiple models in a coordinated simulation. A Simulation aggregates Model insta...">Simulation</a> instance to copy from. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a1d2d22448e12c8f15c7586c964ed978d" name="a1d2d22448e12c8f15c7586c964ed978d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1d2d22448e12c8f15c7586c964ed978d">&#9670;&#160;</a></span>Simulation() <span class="overload">[4/4]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">respond::Simulation::Simulation </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="../../de/d27/classrespond_1_1Simulation.html">Simulation</a> &amp;&amp;&#160;</td>
+          <td class="paramname"><em>other</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">other</td><td>The simulation to move from. </td></tr>
   </table>
   </dd>
 </dl>
@@ -254,8 +381,8 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>ClearModels</b> ()</t
 
 </div>
 </div>
-<a id="a882a8d04e27192bed7827d3b6f70147c" name="a882a8d04e27192bed7827d3b6f70147c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a882a8d04e27192bed7827d3b6f70147c">&#9670;&#160;</a></span>GetLogName()</h2>
+<a id="a4a746956a96f67485d42d855b4cba9c6" name="a4a746956a96f67485d42d855b4cba9c6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4a746956a96f67485d42d855b4cba9c6">&#9670;&#160;</a></span>CreateNewModel()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -264,9 +391,43 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>ClearModels</b> ()</t
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::string respond::Simulation::GetLogName </td>
+          <td class="memname">const std::string respond::Simulation::CreateNewModel </td>
           <td>(</td>
-          <td class="paramname"></td><td>)</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>model_name</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">model_name</td><td>The name identifier for the model to create. This name is used to identify the model type and initialize it accordingly. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The unique identifier for the newly created model, combining its index and name. </dd></dl>
+
+</div>
+</div>
+<a id="aa05d69d0f2eed565644440d0066b1c21" name="aa05d69d0f2eed565644440d0066b1c21"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa05d69d0f2eed565644440d0066b1c21">&#9670;&#160;</a></span>GetModel()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const std::unique_ptr&lt; <a class="el" href="../../d4/d00/classrespond_1_1Model.html">Model</a> &gt; &amp; respond::Simulation::GetModel </td>
+          <td>(</td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>idx</em></td><td>)</td>
           <td> const</td>
         </tr>
       </table>
@@ -276,12 +437,18 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>ClearModels</b> ()</t
   </tr>
 </table>
 </div><div class="memdoc">
-<dl class="section return"><dt>Returns</dt><dd>The name of the associated logger. </dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">idx</td><td>The index of the model to retrieve. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>A const reference to the <a class="el" href="../../d4/d00/classrespond_1_1Model.html" title="Abstract base class representing a state transition model. Models manage a state vector,...">Model</a> unique_ptr at the specified index. Throws an exception if the index is out of range. </dd></dl>
 
 </div>
 </div>
-<a id="a21b74f8b6ca7ccd535ce7b9ab071d0fc" name="a21b74f8b6ca7ccd535ce7b9ab071d0fc"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a21b74f8b6ca7ccd535ce7b9ab071d0fc">&#9670;&#160;</a></span>GetModelHistories()</h2>
+<a id="a83a58b26a5e9aa7770e15a7cdf8cc9c3" name="a83a58b26a5e9aa7770e15a7cdf8cc9c3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a83a58b26a5e9aa7770e15a7cdf8cc9c3">&#9670;&#160;</a></span>GetModelHistory()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -290,9 +457,10 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>ClearModels</b> ()</t
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">const std::vector&lt; std::map&lt; std::string, std::vector&lt; Eigen::VectorXd &gt; &gt; &gt; respond::Simulation::GetModelHistories </td>
+          <td class="memname">const std::map&lt; std::string, <a class="el" href="../../d8/dd8/classrespond_1_1History.html">History</a> &gt; &amp; respond::Simulation::GetModelHistory </td>
           <td>(</td>
-          <td class="paramname"></td><td>)</td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>idx</em></td><td>)</td>
           <td> const</td>
         </tr>
       </table>
@@ -302,12 +470,18 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>ClearModels</b> ()</t
   </tr>
 </table>
 </div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">idx</td><td>The index of the model to retrieve histories for. </td></tr>
+  </table>
+  </dd>
+</dl>
 <dl class="section return"><dt>Returns</dt><dd>Vector of maps (one per model) mapping history names to state vector trajectories. </dd></dl>
 
 </div>
 </div>
-<a id="afd10727a69cf48796ee010427b8933b0" name="afd10727a69cf48796ee010427b8933b0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#afd10727a69cf48796ee010427b8933b0">&#9670;&#160;</a></span>GetModelHistoryNames()</h2>
+<a id="afcd21e110ff388d8bade3a0f3f995115" name="afcd21e110ff388d8bade3a0f3f995115"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afcd21e110ff388d8bade3a0f3f995115">&#9670;&#160;</a></span>GetModelHistoryNames()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -316,9 +490,10 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>ClearModels</b> ()</t
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">const std::vector&lt; std::pair&lt; std::string, std::string &gt; &gt; respond::Simulation::GetModelHistoryNames </td>
+          <td class="memname">const std::vector&lt; std::string &gt; respond::Simulation::GetModelHistoryNames </td>
           <td>(</td>
-          <td class="paramname"></td><td>)</td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>idx</em></td><td>)</td>
           <td> const</td>
         </tr>
       </table>
@@ -384,34 +559,8 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>ClearModels</b> ()</t
 
 </div>
 </div>
-<a id="aaa48cc2067ae727927f5fcfc9fe3592e" name="aaa48cc2067ae727927f5fcfc9fe3592e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aaa48cc2067ae727927f5fcfc9fe3592e">&#9670;&#160;</a></span>GetModelSparseHistories()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">const std::vector&lt; std::map&lt; std::string, <a class="el" href="../../d8/dd8/classrespond_1_1History.html">History</a> &gt; &gt; respond::Simulation::GetModelSparseHistories </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<dl class="section return"><dt>Returns</dt><dd>Vector of maps (one per model) mapping history names to sparse <a class="el" href="../../d8/dd8/classrespond_1_1History.html" title="Tracks and manages state vector history over time. History records state snapshots at discrete timest...">History</a> objects. </dd></dl>
-
-</div>
-</div>
 <a id="ad738dfbf25d8f298791594ea3a2f4f46" name="ad738dfbf25d8f298791594ea3a2f4f46"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad738dfbf25d8f298791594ea3a2f4f46">&#9670;&#160;</a></span>operator=()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ad738dfbf25d8f298791594ea3a2f4f46">&#9670;&#160;</a></span>operator=() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -443,6 +592,39 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>ClearModels</b> ()</t
 
 </div>
 </div>
+<a id="ae3f681ac7211f695ecc726e49a94292f" name="ae3f681ac7211f695ecc726e49a94292f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae3f681ac7211f695ecc726e49a94292f">&#9670;&#160;</a></span>operator=() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="../../de/d27/classrespond_1_1Simulation.html">Simulation</a> &amp; respond::Simulation::operator= </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="../../de/d27/classrespond_1_1Simulation.html">Simulation</a> &amp;&amp;&#160;</td>
+          <td class="paramname"><em>other</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">other</td><td>The simulation to move from. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Reference to this simulation after assignment. </dd></dl>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
 <li><a class="el" href="../../d3/d27/simulation_8hpp_source.html">simulation.hpp</a></li>
 </ul>
@@ -452,7 +634,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>ClearModels</b> ()</t
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><b>respond</b></li><li class="navelem"><a class="el" href="../../de/d27/classrespond_1_1Simulation.html">Simulation</a></li>
-    <li class="footer">Generated on Thu Jul 2 2026 19:26:34 for RESPOND by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
+    <li class="footer">Generated on Wed Jul 15 2026 19:41:11 for RESPOND by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
   </ul>
 </div>
 </body>

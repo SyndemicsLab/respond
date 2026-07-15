@@ -62,7 +62,7 @@ Copyright (c) 2025 Syndemics Lab at Boston Medical Center
                             <td id="projectlogo"><img alt="Logo" src="Syndemics_main_logo_50px.png" /></td>
                             <td id="projectalign">
                                 <div id="projectname">RESPOND<span
-                                        id="projectnumber">&#160;2.4.0</span>
+                                        id="projectnumber">&#160;2.5.0</span>
                                 </div>
                                 <div id="projectbrief">Researching Effective Strategies to Prevent Opioid Death</div>
                             </td>
@@ -142,7 +142,7 @@ RESPONDv1</h1>
 <h1><a class="anchor" id="autotoc_md2"></a>
 CMake</h1>
 <p>RESPOND makes full use of the CMake build system. It is a common tool used throughout the C++ user-base and we utilize it for dependency management, linking, and testing. As C++ has poor package management, we intentionally decided to move our focus away from tools such as conan and vcpkg and stay with pure CMake. Not to say we would never publish with such package managers, but it is not a core focus of the refactor/engineering team.</p>
-<p>Currently our CMake supports 10 different workflows. They are named using the following convention: <code>&lt;exetype&gt;-&lt;versiontype&gt;-&lt;os&gt;-&lt;shared/static&gt;-workflow</code>. Please consult the CMakePresets.json or run <code>cmake --workflow --list-presets</code> to see the entire list.</p>
+<p>Current CMake support is provided through configure/build/test/package presets in <code>CMakePresets.json</code> (for example <code>test-debug</code>, <code>test-release</code>, <code>test-debug-static</code>, <code>benchmark</code>, <code>package-shared</code>, <code>package-static</code>, and <code>docs</code>). Please consult <code>CMakePresets.json</code> or run <code>cmake --list-presets</code> to see the available options.</p>
 <h2><a class="anchor" id="autotoc_md3"></a>
 Fetch Content</h2>
 <p>If you would like to make use of Fetch Content to extract the library:</p>
@@ -157,7 +157,7 @@ Fetch Content</h2>
 <div class="line">FetchContent_MakeAvailable(respond)</div>
 </div><!-- fragment --><h1><a class="anchor" id="autotoc_md4"></a>
 Dependencies</h1>
-<p>As mentioned above, we utilize the CMake <code>FetchContent</code> feature released in CMake 3.11. Additionally, we utilize features added in CMake 3.24 to check if the package is previously installed, so the minimum required version of CMake is <b>3.24</b>.</p>
+<p>As mentioned above, we utilize the CMake <code>FetchContent</code> feature released in CMake 3.11. We also rely on newer preset and dependency features, so the minimum required version of CMake is <b>3.27</b>.</p>
 <p>The required dependencies are:</p>
 <ul>
 <li><a href="https://gitlab.com/libeigen/eigen">Eigen</a></li>
@@ -177,7 +177,7 @@ Documentation</h1>
 <li><b><a class="el" href="d7/d63/md_docs_src_installation.html">Installation</a></b> - Build and installation instructions</li>
 <li><b><a class="el" href="d9/d6c/md_docs_src_motivation.html">Motivation</a></b> - Model design and goals</li>
 <li><b><a class="el" href="d2/d4f/md_docs_src_architecture.html">Architecture and Design</a></b> - Design patterns, component architecture, and extensibility</li>
-<li><b>UML Diagrams</b> - Editable class diagrams for the core library structure</li>
+<li><b><a class="el" href="dd/d02/md_docs_src_uml.html">UML Diagrams</a></b> - Editable class diagrams for the core library structure</li>
 <li><b><a class="el" href="d2/deb/md_docs_src_api_guide.html">C++ API Guide</a></b> - Developer guide for using RESPOND as a library</li>
 <li><b><a class="el" href="d0/d1d/md_docs_src_data.html">Data Management</a></b> - Configuration and data requirements</li>
 <li><b><a class="el" href="dd/d4c/md_docs_src_run.html">Running the Model</a></b> - Executing simulations</li>
@@ -210,7 +210,7 @@ Quick Start for Developers</h1>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Thu Jul 2 2026 19:26:34 for RESPOND by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
+    <li class="footer">Generated on Wed Jul 15 2026 19:41:11 for RESPOND by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
   </ul>
 </div>
 </body>

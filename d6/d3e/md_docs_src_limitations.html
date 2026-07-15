@@ -62,7 +62,7 @@ Copyright (c) 2025 Syndemics Lab at Boston Medical Center
                             <td id="projectlogo"><img alt="Logo" src="../../Syndemics_main_logo_50px.png" /></td>
                             <td id="projectalign">
                                 <div id="projectname">RESPOND<span
-                                        id="projectnumber">&#160;2.4.0</span>
+                                        id="projectnumber">&#160;2.5.0</span>
                                 </div>
                                 <div id="projectbrief">Researching Effective Strategies to Prevent Opioid Death</div>
                             </td>
@@ -129,29 +129,24 @@ $(document).ready(function(){initNavTree('d6/d3e/md_docs_src_limitations.html','
   <div class="headertitle"><div class="title">Limitations </div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p>Currently the RESPOND model and overall Simdemics Modeling Library are in heavy development. This means they have A LOT of current limitations. Any requests should be directed to the issues page on the github repository and the maintainers will work on them as permits. That being said, some readily identified limitations that have been identified are:</p>
+<div class="textblock"><p>RESPOND is under active development. The following limitations reflect the current C++ library behavior.</p>
 <h1><a class="anchor" id="autotoc_md50"></a>
 Library</h1>
-<p>The code base started as a specific model and many of the library limitations are due to old code and notations being maintained. That being said, this is an area of continuous improvement so watch for updates:</p>
+<p>The core API is stable enough for integration, but there are important constraints:</p>
 <ul>
-<li><code>DataLoader</code> currently only supports RESPOND</li>
-<li>The RESPOND model currently requires <code>DataLoader</code></li>
-<li><code>DataLoader</code> makes use of the csv file structure</li>
-<li>Specific file names are required for <code>DataLoader</code></li>
-<li>Column names must be exact</li>
-<li>Behavior and intervention names must be underscored instead of spaces or dashes</li>
-<li>The model cannot be run on a GPU</li>
-<li>Windows hangs during unit tests</li>
-<li>There is no generalized linux build</li>
-<li>Installation requires adding the respond cmake folder path to the <code>CMAKE_PREFIX_PATH</code></li>
+<li><code>Model::Create(...)</code> currently returns the Markov implementation; additional model families are not yet exposed through the public factory.</li>
+<li>Execution is timestep-driven; users must construct timesteps and transitions explicitly.</li>
+<li>Transition creation is string-based (<code>Transition::Create(...)</code>), so invalid type names fail at runtime.</li>
+<li>The library is not internally synchronized for shared mutable use across threads.</li>
+<li>GPU execution is not supported.</li>
+<li>Legacy standalone executable workflows are maintained separately from the modern library API.</li>
 </ul>
 <h1><a class="anchor" id="autotoc_md51"></a>
 Data</h1>
-<p>Currently, there are a lot of limitations in the required data structure.</p>
+<p>RESPOND C++ focuses on simulation primitives (state vectors, transitions, histories) rather than built-in dataset ingestion.</p>
 <ul>
-<li><code>sim.conf</code> timestep lists must contain the duration as the final value in the list</li>
-<li>All oud columns should be renamed to behaviors</li>
-<li>The Demographic structure still exists in the data without any impact to the model</li>
+<li>Users are responsible for preparing and validating transition inputs (matrices/vectors) before simulation.</li>
+<li>Schema conventions from legacy tooling (for example <code>sim.conf</code> and CSV pipelines) are not part of the required core C++ API.</li>
 </ul>
 <p>Previous: <a class="el" href="../../d6/df1/md_docs_src_math.html">Under the Hood</a></p>
 <p>Next: <a class="el" href="../../d8/d51/md_docs_src_faq.html">FAQs</a> </p>
@@ -161,7 +156,7 @@ Data</h1>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Thu Jul 2 2026 19:26:34 for RESPOND by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
+    <li class="footer">Generated on Wed Jul 15 2026 19:41:11 for RESPOND by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
   </ul>
 </div>
 </body>

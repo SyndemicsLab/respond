@@ -96,7 +96,7 @@ var NAVTREE =
       ] ],
       [ "Design Patterns", "d2/d4f/md_docs_src_architecture.html#autotoc_md62", [
         [ "Factory Pattern (TransitionFactory)", "d2/d4f/md_docs_src_architecture.html#autotoc_md63", null ],
-        [ "Template Method Pattern (Model → Transitions)", "d2/d4f/md_docs_src_architecture.html#autotoc_md64", null ],
+        [ "Template Method Pattern (Model → Timesteps → Transitions)", "d2/d4f/md_docs_src_architecture.html#autotoc_md64", null ],
         [ "Strategy Pattern (Transitions)", "d2/d4f/md_docs_src_architecture.html#autotoc_md65", null ],
         [ "Object Pool / Clone Pattern", "d2/d4f/md_docs_src_architecture.html#autotoc_md66", null ]
       ] ],
@@ -168,11 +168,17 @@ var NAVTREE =
         [ "Troubleshooting", "d2/deb/md_docs_src_api_guide.html#autotoc_md120", null ]
       ] ]
     ] ],
+    [ "UML Diagrams", "dd/d02/md_docs_src_uml.html", [
+      [ "Public API Diagram", "dd/d02/md_docs_src_uml.html#autotoc_md122", null ],
+      [ "Internals Diagram", "dd/d02/md_docs_src_uml.html#autotoc_md123", null ],
+      [ "Execution Flow Diagram", "dd/d02/md_docs_src_uml.html#autotoc_md124", null ]
+    ] ],
     [ "Classes", "annotated.html", [
       [ "Class List", "annotated.html", "annotated_dup" ],
       [ "Class Members", "functions.html", [
         [ "All", "functions.html", null ],
-        [ "Functions", "functions_func.html", null ]
+        [ "Functions", "functions_func.html", null ],
+        [ "Related Functions", "functions_rela.html", null ]
       ] ]
     ] ],
     [ "Files", "files.html", [

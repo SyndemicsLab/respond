@@ -1,7 +1,12 @@
 var classrespond_1_1History =
 [
-    [ "History", "d8/dd8/classrespond_1_1History.html#a3e048dc2dc530ea0340b41ad1caf3f64", null ],
-    [ "History", "d8/dd8/classrespond_1_1History.html#adf59033c30431898b4a14d4daebdeba5", null ],
+    [ "History", "d8/dd8/classrespond_1_1History.html#a4e076809e0fb334cfdcc332cc1a94921", null ],
+    [ "History", "d8/dd8/classrespond_1_1History.html#a657e2f3c8ffc9f93b9f08c9a7ad0488c", null ],
+    [ "History", "d8/dd8/classrespond_1_1History.html#a38328d25ed967d28248f2989722b90ee", null ],
+    [ "History", "d8/dd8/classrespond_1_1History.html#a4cd2cbef935359711d0feebcd0c14d5f", null ],
+    [ "History", "d8/dd8/classrespond_1_1History.html#a035575f362a07b7e3bd398d2e2aad6ef", null ],
+    [ "History", "d8/dd8/classrespond_1_1History.html#a3a21519bfd0b8dbc6219fbfefa77e8aa", null ],
+    [ "History", "d8/dd8/classrespond_1_1History.html#a817f93b19d3f8e6ee858a6eac1d74ec7", null ],
     [ "~History", "d8/dd8/classrespond_1_1History.html#a455d1420dd82d8a95f3d8616c52fc761", null ],
     [ "History", "d8/dd8/classrespond_1_1History.html#a65d97091d6049b40eea5964c68df7e83", null ],
     [ "History", "d8/dd8/classrespond_1_1History.html#a9bcd9640574ea6bb0a6318d7ec4f03c3", null ],
@@ -10,9 +15,8 @@ var classrespond_1_1History =
     [ "Clear", "d8/dd8/classrespond_1_1History.html#a5d975ca9b2bfcd0bd2b48e352e1e3588", null ],
     [ "FlushPendingState", "d8/dd8/classrespond_1_1History.html#a9c57e6669f5db486fa60f1a01dfe7a9b", null ],
     [ "GetHistoryMode", "d8/dd8/classrespond_1_1History.html#aa3837362bd5d6bd07b41599a24f86014", null ],
-    [ "GetHistoryName", "d8/dd8/classrespond_1_1History.html#a02bca6664a793290af860e1764aee660", null ],
     [ "GetLatestRecordedTimestep", "d8/dd8/classrespond_1_1History.html#a6948e3842315d84afc8a7c091169d70b", null ],
-    [ "GetLogName", "d8/dd8/classrespond_1_1History.html#a27d48be577d256c60c9da085d9f339a4", null ],
+    [ "GetName", "d8/dd8/classrespond_1_1History.html#a2e4eb3eb87e62f5778c71c1cc8f579b5", null ],
     [ "GetPendingState", "d8/dd8/classrespond_1_1History.html#a335079248ab29b026bd4069419256a25", null ],
     [ "GetRecordedStates", "d8/dd8/classrespond_1_1History.html#a341a57e94ad484be25b7cec81af31ee8", null ],
     [ "GetRecordedTimesteps", "d8/dd8/classrespond_1_1History.html#af09dc4fd78931c856f420c85b702a638", null ],
@@ -22,6 +26,5 @@ var classrespond_1_1History =
     [ "operator!=", "d8/dd8/classrespond_1_1History.html#a9a5fc6309f5f16026af9fa478907c9ea", null ],
     [ "operator=", "d8/dd8/classrespond_1_1History.html#a331d9fcda76d63fead3be11d13951519", null ],
     [ "operator=", "d8/dd8/classrespond_1_1History.html#a3cd48b0bf142df0f704b21c097a5e1fe", null ],
-    [ "operator==", "d8/dd8/classrespond_1_1History.html#aef7ac5e06938f0f3b152dec7fd1c49e1", null ],
-    [ "RecordSnapshot", "d8/dd8/classrespond_1_1History.html#aab3fc1c7566987ffac1d63e5be1b7a79", null ]
+    [ "operator==", "d8/dd8/classrespond_1_1History.html#aef7ac5e06938f0f3b152dec7fd1c49e1", null ]
 ];

@@ -62,7 +62,7 @@ Copyright (c) 2025 Syndemics Lab at Boston Medical Center
                             <td id="projectlogo"><img alt="Logo" src="../../Syndemics_main_logo_50px.png" /></td>
                             <td id="projectalign">
                                 <div id="projectname">RESPOND<span
-                                        id="projectnumber">&#160;2.4.0</span>
+                                        id="projectnumber">&#160;2.5.0</span>
                                 </div>
                                 <div id="projectbrief">Researching Effective Strategies to Prevent Opioid Death</div>
                             </td>
@@ -136,9 +136,9 @@ Overview</h1>
 <ul>
 <li><b>Model</b>: Abstract base class representing a state transition system</li>
 <li><b>Simulation</b>: Aggregates and coordinates multiple models</li>
+<li><b>Timestep</b>: Owns and sequences transitions for one simulation step</li>
 <li><b>Transition</b>: Abstract base for specific transition types</li>
 <li><b>History</b>: Tracks state vectors over time</li>
-<li><b>TransitionFactory</b>: Creates concrete transition instances</li>
 </ul>
 <h1><a class="anchor" id="autotoc_md93"></a>
 Core Concepts</h1>
@@ -147,7 +147,7 @@ State Vectors</h2>
 <p>Models operate on state vectors (Eigen::VectorXd) representing the population distribution across model states. A state vector element at index i represents the count of individuals in state i.</p>
 <h2><a class="anchor" id="autotoc_md95"></a>
 Transitions</h2>
-<p>Transitions apply transformations to state vectors using transition matrices. The RESPOND model supports several transition types:</p>
+<p>Transitions apply transformations to state vectors using transition matrices or vectors. The RESPOND model supports several transition types:</p>
 <ul>
 <li><b>Migration</b>: Population movement between states</li>
 <li><b>Behavior</b>: Behavioral state changes</li>
@@ -157,49 +157,52 @@ Transitions</h2>
 </ul>
 <h2><a class="anchor" id="autotoc_md96"></a>
 History Tracking</h2>
-<p>History objects record state vectors at each timestep, enabling analysis of state trajectories over time. Histories support sparse timesteps—gaps are automatically filled with zero vectors.</p>
+<p>History objects record state vectors at timesteps, enabling analysis of state trajectories over time. Histories support sparse timesteps and can return contiguous vectors with zero-filled gaps.</p>
 <h1><a class="anchor" id="autotoc_md97"></a>
 Model Class</h1>
 <p>The Model class is the abstract base for all models in RESPOND.</p>
 <div class="fragment"><div class="line"><span class="preprocessor">#include &lt;respond/model.hpp&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;respond/timestep.hpp&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;respond/transition.hpp&gt;</span></div>
 <div class="line"> </div>
 <div class="line"><span class="comment">// Create a model</span></div>
-<div class="line"><span class="keyword">auto</span> model = <a class="code hl_function" href="../../d4/d00/classrespond_1_1Model.html#ac837a382694b08e5941578a9a2bb5c66">respond::Model::Create</a>(<span class="stringliteral">&quot;model_name&quot;</span>, <span class="stringliteral">&quot;logger_name&quot;</span>);</div>
+<div class="line"><span class="keyword">auto</span> model = <a class="code hl_function" href="../../d4/d00/classrespond_1_1Model.html#a619b8655ab389cc4cc3c84fd4116e28e">respond::Model::Create</a>(<span class="stringliteral">&quot;markov&quot;</span>, <span class="stringliteral">&quot;logger_name&quot;</span>);</div>
 <div class="line"> </div>
 <div class="line"><span class="comment">// Set the initial state</span></div>
 <div class="line">Eigen::VectorXd initial_state(50);</div>
 <div class="line">initial_state.setZero();</div>
 <div class="line">model-&gt;SetState(initial_state);</div>
 <div class="line"> </div>
-<div class="line"><span class="comment">// Add transitions</span></div>
-<div class="line"><span class="keyword">auto</span> transition = <a class="code hl_function" href="../../d7/dad/classrespond_1_1TransitionFactory.html#a08aaea3d8973f6f2b01bba75083aee4d">respond::TransitionFactory::CreateTransition</a>(<span class="stringliteral">&quot;behavior&quot;</span>, <span class="stringliteral">&quot;logger_name&quot;</span>);</div>
-<div class="line">transition-&gt;AddTransitionMatrix(some_matrix);</div>
-<div class="line">model-&gt;AddTransition(transition);</div>
+<div class="line"><span class="comment">// Build one timestep with transitions</span></div>
+<div class="line"><a class="code hl_class" href="../../db/df3/classrespond_1_1Timestep.html">respond::Timestep</a> step(<span class="stringliteral">&quot;logger_name&quot;</span>);</div>
+<div class="line"><span class="keyword">auto</span> &amp;transition = step.CreateTransition(<span class="stringliteral">&quot;behavior&quot;</span>);</div>
+<div class="line">transition-&gt;AddMatrix(some_matrix);</div>
+<div class="line">model-&gt;AddTimestep(step);</div>
 <div class="line"> </div>
 <div class="line"><span class="comment">// Execute one simulation step</span></div>
-<div class="line">model-&gt;RunTransitions();</div>
+<div class="line">model-&gt;RunTimestep();</div>
 <div class="line"> </div>
 <div class="line"><span class="comment">// Retrieve current state</span></div>
 <div class="line">Eigen::VectorXd current_state = model-&gt;GetState();</div>
 <div class="line"> </div>
 <div class="line"><span class="comment">// Access history records</span></div>
 <div class="line"><span class="keyword">auto</span> histories = model-&gt;GetHistories();</div>
-<div class="ttc" id="aclassrespond_1_1Model_html_ac837a382694b08e5941578a9a2bb5c66"><div class="ttname"><a href="../../d4/d00/classrespond_1_1Model.html#ac837a382694b08e5941578a9a2bb5c66">respond::Model::Create</a></div><div class="ttdeci">static std::unique_ptr&lt; Model &gt; Create(const std::string &amp;name, const std::string &amp;log_name=&quot;console&quot;)</div><div class="ttdoc">Factory method to create a Model instance.</div></div>
-<div class="ttc" id="aclassrespond_1_1TransitionFactory_html_a08aaea3d8973f6f2b01bba75083aee4d"><div class="ttname"><a href="../../d7/dad/classrespond_1_1TransitionFactory.html#a08aaea3d8973f6f2b01bba75083aee4d">respond::TransitionFactory::CreateTransition</a></div><div class="ttdeci">static std::unique_ptr&lt; Transition &gt; CreateTransition(const std::string &amp;type, const std::string &amp;log_name)</div><div class="ttdoc">Creates a transition of the specified type.</div></div>
+<div class="ttc" id="aclassrespond_1_1Model_html_a619b8655ab389cc4cc3c84fd4116e28e"><div class="ttname"><a href="../../d4/d00/classrespond_1_1Model.html#a619b8655ab389cc4cc3c84fd4116e28e">respond::Model::Create</a></div><div class="ttdeci">static std::unique_ptr&lt; Model &gt; Create(const std::string &amp;name, const std::string &amp;log_name=RESPOND_DEFAULT_LOG, const std::string &amp;log_filepath=RESPOND_DEFAULT_LOG_FILE)</div><div class="ttdoc">Factory method to create a Model instance.</div></div>
+<div class="ttc" id="aclassrespond_1_1Timestep_html"><div class="ttname"><a href="../../db/df3/classrespond_1_1Timestep.html">respond::Timestep</a></div><div class="ttdoc">Represents a single timestep in a simulation, managing a collection of transitions....</div><div class="ttdef"><b>Definition:</b> timestep.hpp:30</div></div>
 </div><!-- fragment --><h2><a class="anchor" id="autotoc_md98"></a>
 Key Methods</h2>
 <ul>
-<li><code>SetState(const Eigen::VectorXd &amp;state)</code>: Sets the model's state vector (copied internally)</li>
-<li><code>GetState() const</code>: Returns a copy of the current state</li>
-<li><code>RunTransitions()</code>: Executes all registered transitions</li>
-<li><code>AddTransition(const std::unique_ptr&lt;Transition&gt; &amp;t)</code>: Adds a transition (assumes ownership)</li>
-<li><code>GetTransitionNames() const</code>: Returns names of all transitions</li>
-<li><code>ClearTransitions()</code>: Removes all transitions</li>
+<li><code>SetState(const Eigen::Ref&lt;const Eigen::VectorXd&gt; &amp;state)</code>: Sets the model's state vector</li>
+<li><code>GetState() const</code>: Returns a const Eigen ref to the current state</li>
+<li><code>AddTimestep(const Timestep &amp;timestep)</code>: Adds a timestep (deep-copied)</li>
+<li><code>RunTimestep()</code>: Runs the current timestep and advances time</li>
+<li><code>RunTimestep(size_t idx)</code>: Runs a specific timestep index</li>
+<li><code>RunTimesteps()</code>: Runs all registered timesteps (bounded by final timestep when set)</li>
+<li><code>ClearTimesteps()</code>: Removes all timesteps</li>
 <li><code>GetHistories() const</code>: Returns map of history name to History objects</li>
 <li><code>CreateDefaultHistories()</code>: Initializes default history tracking</li>
-<li><code>SetHistories(const std::map&lt;std::string, History&gt; &amp;h)</code>: Sets history records</li>
-<li><code>GetModelName() const</code>: Returns model name</li>
-<li><code>GetLogName() const</code>: Returns associated logger name</li>
+<li><code>ClearHistories()</code>: Clears history records and resets history tracking</li>
+<li><code>GetName() const</code>: Returns model name</li>
 <li><code>clone() const</code>: Creates a deep copy of the model</li>
 </ul>
 <h1><a class="anchor" id="autotoc_md99"></a>
@@ -211,33 +214,36 @@ Simulation Class</h1>
 <div class="line"><a class="code hl_class" href="../../de/d27/classrespond_1_1Simulation.html">respond::Simulation</a> sim(<span class="stringliteral">&quot;my_logger&quot;</span>);</div>
 <div class="line"> </div>
 <div class="line"><span class="comment">// Add models</span></div>
-<div class="line"><span class="keyword">auto</span> model1 = <a class="code hl_function" href="../../d4/d00/classrespond_1_1Model.html#ac837a382694b08e5941578a9a2bb5c66">respond::Model::Create</a>(<span class="stringliteral">&quot;model1&quot;</span>, <span class="stringliteral">&quot;my_logger&quot;</span>);</div>
-<div class="line"><span class="keyword">auto</span> model2 = <a class="code hl_function" href="../../d4/d00/classrespond_1_1Model.html#ac837a382694b08e5941578a9a2bb5c66">respond::Model::Create</a>(<span class="stringliteral">&quot;model2&quot;</span>, <span class="stringliteral">&quot;my_logger&quot;</span>);</div>
+<div class="line"><span class="keyword">auto</span> model1 = <a class="code hl_function" href="../../d4/d00/classrespond_1_1Model.html#a619b8655ab389cc4cc3c84fd4116e28e">respond::Model::Create</a>(<span class="stringliteral">&quot;model1&quot;</span>, <span class="stringliteral">&quot;my_logger&quot;</span>);</div>
+<div class="line"><span class="keyword">auto</span> model2 = <a class="code hl_function" href="../../d4/d00/classrespond_1_1Model.html#a619b8655ab389cc4cc3c84fd4116e28e">respond::Model::Create</a>(<span class="stringliteral">&quot;model2&quot;</span>, <span class="stringliteral">&quot;my_logger&quot;</span>);</div>
 <div class="line">sim.AddModel(model1);</div>
 <div class="line">sim.AddModel(model2);</div>
 <div class="line"> </div>
-<div class="line"><span class="comment">// Run one step (executes all model transitions)</span></div>
-<div class="line">sim.Run();</div>
+<div class="line"><span class="comment">// Run 52 timesteps for all models</span></div>
+<div class="line">sim.Run(52);</div>
 <div class="line"> </div>
 <div class="line"><span class="comment">// Retrieve results</span></div>
-<div class="line"><span class="keyword">auto</span> all_histories = sim.GetModelHistories();</div>
+<div class="line"><span class="keyword">auto</span> model_0_histories = sim.GetModelHistory(0);</div>
 <div class="line"><span class="keyword">auto</span> model_names = sim.GetModelNames();</div>
 <div class="line"> </div>
-<div class="line"><span class="comment">// Get detailed history mapping</span></div>
-<div class="line"><span class="keyword">auto</span> history_names = sim.GetModelHistoryNames();</div>
-<div class="line"><span class="comment">// Returns vector of (model_name, history_name) pairs</span></div>
-<div class="ttc" id="aclassrespond_1_1Simulation_html"><div class="ttname"><a href="../../de/d27/classrespond_1_1Simulation.html">respond::Simulation</a></div><div class="ttdoc">Manages and executes multiple models in a coordinated simulation. A Simulation aggregates Model insta...</div><div class="ttdef"><b>Definition:</b> simulation.hpp:30</div></div>
+<div class="line"><span class="comment">// Get history names for one model</span></div>
+<div class="line"><span class="keyword">auto</span> history_names = sim.GetModelHistoryNames(0);</div>
+<div class="ttc" id="aclassrespond_1_1Simulation_html"><div class="ttname"><a href="../../de/d27/classrespond_1_1Simulation.html">respond::Simulation</a></div><div class="ttdoc">Manages and executes multiple models in a coordinated simulation. A Simulation aggregates Model insta...</div><div class="ttdef"><b>Definition:</b> simulation.hpp:32</div></div>
 </div><!-- fragment --><h2><a class="anchor" id="autotoc_md100"></a>
 Key Methods</h2>
 <ul>
-<li><code>Run()</code>: Executes one simulation step for all models</li>
+<li><code>Run(int duration = -1)</code>: Runs all models for the configured duration</li>
+<li><code>SetDuration(int duration)</code>: Sets default duration used by <code>Run()</code> when no argument is provided</li>
 <li><code>AddModel(const std::unique_ptr&lt;Model&gt; &amp;model)</code>: Adds a model (cloned internally)</li>
 <li><code>GetModels() const</code>: Returns const reference to model vector</li>
+<li><code>GetModel(size_t idx) const</code>: Returns one model by index</li>
+<li><code>GetModel(const std::string &amp;name) const</code>: Returns one model by name</li>
 <li><code>GetModelNames() const</code>: Returns all model names</li>
 <li><code>ClearModels()</code>: Removes all models</li>
-<li><code>GetModelHistories() const</code>: Returns state histories for all models</li>
-<li><code>GetModelHistoryNames() const</code>: Returns (model_name, history_name) pairs</li>
-<li><code>GetLogName() const</code>: Returns logger name</li>
+<li><code>GetModelHistory(size_t idx) const</code>: Returns one model's history map</li>
+<li><code>GetModelHistory(const std::string &amp;name) const</code>: Returns one model's history map</li>
+<li><code>GetModelHistoryNames(size_t idx) const</code>: Returns history names for one model</li>
+<li><code>GetModelHistoryNames(const std::string &amp;name) const</code>: Returns history names for one model</li>
 </ul>
 <h1><a class="anchor" id="autotoc_md101"></a>
 History Class</h1>
@@ -260,12 +266,12 @@ History Class</h1>
 <div class="line"><span class="keyword">auto</span> all_states = hist.GetStateAsVector();  <span class="comment">// Contiguous vector, fills gaps</span></div>
 <div class="line"> </div>
 <div class="line"><span class="comment">// Query history properties</span></div>
-<div class="line">std::string name = hist.GetHistoryName();</div>
-<div class="line">std::string log_name = hist.GetLogName();</div>
+<div class="line">std::string name = hist.GetName();</div>
+<div class="line">respond::HistoryMode mode = hist.GetHistoryMode();</div>
 <div class="line"> </div>
 <div class="line"><span class="comment">// Clear history</span></div>
 <div class="line">hist.Clear();</div>
-<div class="ttc" id="aclassrespond_1_1History_html"><div class="ttname"><a href="../../d8/dd8/classrespond_1_1History.html">respond::History</a></div><div class="ttdoc">Tracks and manages state vector history over time. History records state snapshots at discrete timest...</div><div class="ttdef"><b>Definition:</b> history.hpp:37</div></div>
+<div class="ttc" id="aclassrespond_1_1History_html"><div class="ttname"><a href="../../d8/dd8/classrespond_1_1History.html">respond::History</a></div><div class="ttdoc">Tracks and manages state vector history over time. History records state snapshots at discrete timest...</div><div class="ttdef"><b>Definition:</b> history.hpp:51</div></div>
 </div><!-- fragment --><h2><a class="anchor" id="autotoc_md102"></a>
 Key Methods</h2>
 <ul>
@@ -275,38 +281,42 @@ Key Methods</h2>
 </ul>
 </li>
 <li><code>GetStateMap() const</code>: Returns map of timestep → state vector</li>
+<li><code>GetRecordedTimesteps() const</code>: Returns stored timesteps without densifying</li>
+<li><code>GetRecordedStates() const</code>: Returns stored states without densifying</li>
 <li><code>GetStateAsVector() const</code>: Returns contiguous vector of states (fills gaps with zeros)</li>
-<li><code>GetHistoryName() const</code>: Returns history identifier</li>
-<li><code>GetLogName() const</code>: Returns logger name</li>
+<li><code>GetName() const</code>: Returns history identifier</li>
+<li><code>GetLatestRecordedTimestep() const</code>: Returns latest recorded timestep</li>
+<li><code>GetPendingState() const</code>: Returns pending aggregate for accumulated histories</li>
+<li><code>HasPendingState() const</code>: Indicates pending aggregate state</li>
 <li><code>Clear()</code>: Removes all recorded states</li>
 <li><code>operator==</code>, <code>operator!=</code>: Comparison operators</li>
 </ul>
 <h1><a class="anchor" id="autotoc_md103"></a>
 Transition Class</h1>
-<p>The Transition class is abstract; use TransitionFactory to create concrete instances.</p>
+<p>The Transition class is abstract; use <code>Transition::Create(...)</code> to create concrete instances.</p>
 <div class="fragment"><div class="line"><span class="preprocessor">#include &lt;respond/transition.hpp&gt;</span></div>
-<div class="line"><span class="preprocessor">#include &lt;respond/transition_factory.hpp&gt;</span></div>
 <div class="line"> </div>
-<div class="line"><span class="comment">// Create a transition using the factory</span></div>
-<div class="line"><span class="keyword">auto</span> transition = <a class="code hl_function" href="../../d7/dad/classrespond_1_1TransitionFactory.html#a08aaea3d8973f6f2b01bba75083aee4d">respond::TransitionFactory::CreateTransition</a>(</div>
-<div class="line">    <span class="stringliteral">&quot;behavior&quot;</span>,  <span class="comment">// Type: migration, behavior, intervention, overdose, background_death</span></div>
-<div class="line">    <span class="stringliteral">&quot;my_logger&quot;</span>  <span class="comment">// Logger name</span></div>
+<div class="line"><span class="comment">// Create a transition</span></div>
+<div class="line"><span class="keyword">auto</span> transition = <a class="code hl_function" href="../../de/d15/classrespond_1_1Transition.html#af8a73129f5f1ae83f16b89d68fc84f8d">respond::Transition::Create</a>(</div>
+<div class="line">    <span class="stringliteral">&quot;behavior&quot;</span>,      <span class="comment">// Type</span></div>
+<div class="line">    <span class="stringliteral">&quot;behavior_name&quot;</span>, <span class="comment">// Instance name</span></div>
+<div class="line">    <span class="stringliteral">&quot;my_logger&quot;</span>      <span class="comment">// Logger name</span></div>
 <div class="line">);</div>
 <div class="line"> </div>
 <div class="line"><span class="comment">// Add transformation matrices</span></div>
 <div class="line">Eigen::MatrixXd trans_matrix = ...;</div>
-<div class="line">transition-&gt;AddTransitionMatrix(trans_matrix);</div>
+<div class="line">transition-&gt;AddMatrix(trans_matrix);</div>
 <div class="line"> </div>
-<div class="line"><span class="comment">// Execute the transition (typically done via Model::RunTransitions)</span></div>
+<div class="line"><span class="comment">// Execute the transition (typically done by model timesteps)</span></div>
 <div class="line"><span class="keyword">auto</span> histories_map = ...; <span class="comment">// From model</span></div>
 <div class="line">Eigen::VectorXd result = transition-&gt;Execute(current_state, histories_map);</div>
 <div class="line"> </div>
 <div class="line"><span class="comment">// Get transition properties</span></div>
-<div class="line">std::string name = transition-&gt;GetTransitionName();</div>
-<div class="line">std::string log = transition-&gt;GetLogName();</div>
+<div class="line">std::string name = transition-&gt;GetName();</div>
 <div class="line"> </div>
 <div class="line"><span class="comment">// Clear matrices</span></div>
-<div class="line">transition-&gt;ClearTransitionMatrices();</div>
+<div class="line">transition-&gt;ClearMatrices();</div>
+<div class="ttc" id="aclassrespond_1_1Transition_html_af8a73129f5f1ae83f16b89d68fc84f8d"><div class="ttname"><a href="../../de/d15/classrespond_1_1Transition.html#af8a73129f5f1ae83f16b89d68fc84f8d">respond::Transition::Create</a></div><div class="ttdeci">static std::unique_ptr&lt; Transition &gt; Create(const std::string &amp;type, const std::string &amp;name=RESPOND_DEFAULT_TRANSITION_NAME, const std::string &amp;log_name=RESPOND_DEFAULT_LOG, const std::string &amp;log_file=RESPOND_DEFAULT_LOG_FILE)</div><div class="ttdoc">Creates a transition of the specified type.</div></div>
 </div><!-- fragment --><h2><a class="anchor" id="autotoc_md104"></a>
 Supported Transition Types</h2>
 <table class="markdownTable">
@@ -327,7 +337,7 @@ Supported Transition Types</h2>
 Logging Integration</h1>
 <p>RESPOND uses the spdlog library for logging. Models and transitions accept a logger name:</p>
 <div class="fragment"><div class="line"><span class="comment">// All logging is handled by passing logger names</span></div>
-<div class="line"><span class="keyword">auto</span> model = <a class="code hl_function" href="../../d4/d00/classrespond_1_1Model.html#ac837a382694b08e5941578a9a2bb5c66">respond::Model::Create</a>(<span class="stringliteral">&quot;my_model&quot;</span>, <span class="stringliteral">&quot;my_logger&quot;</span>);</div>
+<div class="line"><span class="keyword">auto</span> model = <a class="code hl_function" href="../../d4/d00/classrespond_1_1Model.html#a619b8655ab389cc4cc3c84fd4116e28e">respond::Model::Create</a>(<span class="stringliteral">&quot;my_model&quot;</span>, <span class="stringliteral">&quot;my_logger&quot;</span>);</div>
 <div class="line"> </div>
 <div class="line"><span class="comment">// The model will use this logger for any errors or warnings</span></div>
 <div class="line"><span class="comment">// Create loggers separately using respond::CreateFileLogger</span></div>
@@ -336,7 +346,7 @@ Logging Integration</h1>
 Complete Example</h1>
 <div class="fragment"><div class="line"><span class="preprocessor">#include &lt;respond/simulation.hpp&gt;</span></div>
 <div class="line"><span class="preprocessor">#include &lt;respond/model.hpp&gt;</span></div>
-<div class="line"><span class="preprocessor">#include &lt;respond/transition_factory.hpp&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;respond/timestep.hpp&gt;</span></div>
 <div class="line"><span class="preprocessor">#include &lt;respond/logging.hpp&gt;</span></div>
 <div class="line"> </div>
 <div class="line"><span class="keywordtype">int</span> main() {</div>
@@ -347,35 +357,36 @@ Complete Example</h1>
 <div class="line">    <a class="code hl_class" href="../../de/d27/classrespond_1_1Simulation.html">respond::Simulation</a> sim(<span class="stringliteral">&quot;app&quot;</span>);</div>
 <div class="line"> </div>
 <div class="line">    <span class="comment">// Create and configure a model</span></div>
-<div class="line">    <span class="keyword">auto</span> model = <a class="code hl_function" href="../../d4/d00/classrespond_1_1Model.html#ac837a382694b08e5941578a9a2bb5c66">respond::Model::Create</a>(<span class="stringliteral">&quot;population_model&quot;</span>, <span class="stringliteral">&quot;app&quot;</span>);</div>
+<div class="line">    <span class="keyword">auto</span> model = <a class="code hl_function" href="../../d4/d00/classrespond_1_1Model.html#a619b8655ab389cc4cc3c84fd4116e28e">respond::Model::Create</a>(<span class="stringliteral">&quot;markov&quot;</span>, <span class="stringliteral">&quot;app&quot;</span>);</div>
 <div class="line">    </div>
 <div class="line">    <span class="comment">// Set initial state (e.g., 1000 individuals across 50 states)</span></div>
 <div class="line">    Eigen::VectorXd initial_state = Eigen::VectorXd::Zero(50);</div>
 <div class="line">    initial_state(0) = 1000;  <span class="comment">// All in first state</span></div>
 <div class="line">    model-&gt;SetState(initial_state);</div>
 <div class="line"> </div>
-<div class="line">    <span class="comment">// Add transitions</span></div>
-<div class="line">    <span class="keyword">auto</span> behavior_transition = <a class="code hl_function" href="../../d7/dad/classrespond_1_1TransitionFactory.html#a08aaea3d8973f6f2b01bba75083aee4d">respond::TransitionFactory::CreateTransition</a>(</div>
-<div class="line">        <span class="stringliteral">&quot;behavior&quot;</span>, <span class="stringliteral">&quot;app&quot;</span>);</div>
-<div class="line">    <span class="comment">// Add matrices...</span></div>
-<div class="line">    model-&gt;AddTransition(behavior_transition);</div>
+<div class="line">    <span class="comment">// Create a reusable timestep with transitions</span></div>
+<div class="line">    <a class="code hl_class" href="../../db/df3/classrespond_1_1Timestep.html">respond::Timestep</a> step(<span class="stringliteral">&quot;app&quot;</span>);</div>
 <div class="line"> </div>
-<div class="line">    <span class="keyword">auto</span> migration_transition = <a class="code hl_function" href="../../d7/dad/classrespond_1_1TransitionFactory.html#a08aaea3d8973f6f2b01bba75083aee4d">respond::TransitionFactory::CreateTransition</a>(</div>
-<div class="line">        <span class="stringliteral">&quot;migration&quot;</span>, <span class="stringliteral">&quot;app&quot;</span>);</div>
-<div class="line">    <span class="comment">// Add matrices...</span></div>
-<div class="line">    model-&gt;AddTransition(migration_transition);</div>
+<div class="line">    <span class="keyword">auto</span> &amp;behavior_transition = step.CreateTransition(<span class="stringliteral">&quot;behavior&quot;</span>);</div>
+<div class="line">    <span class="comment">// behavior_transition-&gt;AddMatrix(...);</span></div>
+<div class="line"> </div>
+<div class="line">    <span class="keyword">auto</span> &amp;migration_transition = step.CreateTransition(<span class="stringliteral">&quot;migration&quot;</span>);</div>
+<div class="line">    <span class="comment">// migration_transition-&gt;AddMatrix(...);</span></div>
+<div class="line"> </div>
+<div class="line">    <span class="comment">// Register timesteps on the model</span></div>
+<div class="line">    <span class="keywordflow">for</span> (<span class="keywordtype">int</span> t = 0; t &lt; 52; ++t) {</div>
+<div class="line">        model-&gt;AddTimestep(step);</div>
+<div class="line">    }</div>
 <div class="line"> </div>
 <div class="line">    <span class="comment">// Add model to simulation</span></div>
 <div class="line">    sim.AddModel(model);</div>
 <div class="line"> </div>
 <div class="line">    <span class="comment">// Run simulation for 52 timesteps</span></div>
-<div class="line">    <span class="keywordflow">for</span> (<span class="keywordtype">int</span> t = 0; t &lt; 52; ++t) {</div>
-<div class="line">        sim.Run();</div>
-<div class="line">    }</div>
+<div class="line">    sim.Run(52);</div>
 <div class="line"> </div>
 <div class="line">    <span class="comment">// Extract results</span></div>
-<div class="line">    <span class="keyword">auto</span> histories = sim.GetModelHistories();</div>
-<div class="line">    <span class="keyword">auto</span> history_names = sim.GetModelHistoryNames();</div>
+<div class="line">    <span class="keyword">auto</span> histories = sim.GetModelHistory(0);</div>
+<div class="line">    <span class="keyword">auto</span> history_names = sim.GetModelHistoryNames(0);</div>
 <div class="line">    </div>
 <div class="line">    <span class="comment">// Process results...</span></div>
 <div class="line">    </div>
@@ -387,18 +398,17 @@ Memory Management</h1>
 <ul>
 <li>Models and Transitions are typically managed by Simulation or parent objects</li>
 <li>History objects are copyable and can be freely copied</li>
-<li>All models are cloned when added to a Simulation (ownership transfer)</li>
-<li>Clearing containers (ClearModels, ClearTransitions) deletes contained objects</li>
+<li>All models are cloned when added to a Simulation</li>
+<li>Clearing containers (for example <code>ClearModels</code>, <code>ClearTimesteps</code>) deletes contained objects</li>
 </ul>
 <h1><a class="anchor" id="autotoc_md108"></a>
 Best Practices</h1>
 <ol type="1">
-<li><b>Use TransitionFactory</b> to create transitions—it handles type dispatch</li>
-<li><b>Let Simulation manage models</b> for automatic cloning and lifecycle management</li>
-<li><b>Reuse History objects</b> for multiple runs to accumulate results</li>
-<li><b>Use const references</b> where available (GetState returns a copy for safety)</li>
-<li><b>Initialize loggers early</b> before creating models to enable error tracking</li>
-<li><b>Validate matrix dimensions</b> before adding to transitions (not checked by API)</li>
+<li><b>Use <code>Transition::Create</code></b> to create transitions by type.</li>
+<li><b>Build timesteps explicitly</b> and add them to models in execution order.</li>
+<li><b>Set simulation duration intentionally</b> (<code>SetDuration</code> or <code>Run(duration)</code>) to match timestep plans.</li>
+<li><b>Initialize loggers early</b> before creating models and transitions.</li>
+<li><b>Validate matrix dimensions and ranges</b> before adding matrices.</li>
 </ol>
 <h1><a class="anchor" id="autotoc_md109"></a>
 Common Patterns</h1>
@@ -407,13 +417,11 @@ Running Multiple Independent Simulations</h2>
 <div class="fragment"><div class="line"><span class="keywordflow">for</span> (<span class="keywordtype">int</span> run = 0; run &lt; num_runs; ++run) {</div>
 <div class="line">    <a class="code hl_class" href="../../de/d27/classrespond_1_1Simulation.html">respond::Simulation</a> sim(<span class="stringliteral">&quot;logger_&quot;</span> + std::to_string(run));</div>
 <div class="line">    </div>
-<div class="line">    <span class="keyword">auto</span> model = <a class="code hl_function" href="../../d4/d00/classrespond_1_1Model.html#ac837a382694b08e5941578a9a2bb5c66">respond::Model::Create</a>(<span class="stringliteral">&quot;model&quot;</span>, <span class="stringliteral">&quot;logger_&quot;</span> + std::to_string(run));</div>
+<div class="line">    <span class="keyword">auto</span> model = <a class="code hl_function" href="../../d4/d00/classrespond_1_1Model.html#a619b8655ab389cc4cc3c84fd4116e28e">respond::Model::Create</a>(<span class="stringliteral">&quot;markov&quot;</span>, <span class="stringliteral">&quot;logger_&quot;</span> + std::to_string(run));</div>
 <div class="line">    <span class="comment">// Configure model...</span></div>
 <div class="line">    </div>
 <div class="line">    sim.AddModel(model);</div>
-<div class="line">    <span class="keywordflow">for</span> (<span class="keywordtype">int</span> t = 0; t &lt; duration; ++t) {</div>
-<div class="line">        sim.Run();</div>
-<div class="line">    }</div>
+<div class="line">    sim.Run(duration);</div>
 <div class="line">    </div>
 <div class="line">    <span class="comment">// Store results...</span></div>
 <div class="line">}</div>
@@ -423,8 +431,8 @@ Resetting Model State</h2>
 <div class="line">Eigen::VectorXd initial_state = ...;</div>
 <div class="line">model-&gt;SetState(initial_state);</div>
 <div class="line"> </div>
-<div class="line"><span class="comment">// To also clear history</span></div>
-<div class="line">model-&gt;ClearTransitions();</div>
+<div class="line"><span class="comment">// To also clear history and timesteps</span></div>
+<div class="line">model-&gt;ClearTimesteps();</div>
 <div class="line">model-&gt;CreateDefaultHistories();</div>
 </div><!-- fragment --><h2><a class="anchor" id="autotoc_md112"></a>
 Copying Simulations</h2>
@@ -473,20 +481,18 @@ Running Models in Parallel with Unified Logging</h2>
 <div class="line">    </div>
 <div class="line">    <span class="comment">// Create and run simulation</span></div>
 <div class="line">    <a class="code hl_class" href="../../de/d27/classrespond_1_1Simulation.html">respond::Simulation</a> sim(logger_name);</div>
-<div class="line">    <span class="keyword">auto</span> model = <a class="code hl_function" href="../../d4/d00/classrespond_1_1Model.html#ac837a382694b08e5941578a9a2bb5c66">respond::Model::Create</a>(<span class="stringliteral">&quot;model&quot;</span>, logger_name);</div>
+<div class="line">    <span class="keyword">auto</span> model = <a class="code hl_function" href="../../d4/d00/classrespond_1_1Model.html#a619b8655ab389cc4cc3c84fd4116e28e">respond::Model::Create</a>(<span class="stringliteral">&quot;markov&quot;</span>, logger_name);</div>
 <div class="line">    </div>
 <div class="line">    <span class="comment">// Configure model...</span></div>
 <div class="line">    Eigen::VectorXd initial_state = Eigen::VectorXd::Zero(50);</div>
 <div class="line">    initial_state(0) = 1000;</div>
 <div class="line">    model-&gt;SetState(initial_state);</div>
 <div class="line">    </div>
-<div class="line">    <span class="comment">// Add transitions...</span></div>
+<div class="line">    <span class="comment">// Add timesteps...</span></div>
 <div class="line">    sim.AddModel(model);</div>
 <div class="line">    </div>
 <div class="line">    <span class="comment">// Run simulation</span></div>
-<div class="line">    <span class="keywordflow">for</span> (<span class="keywordtype">int</span> t = 0; t &lt; 52; ++t) {</div>
-<div class="line">        sim.Run();</div>
-<div class="line">    }</div>
+<div class="line">    sim.Run(52);</div>
 <div class="line">    </div>
 <div class="line">    <span class="comment">// Flush logs for this model</span></div>
 <div class="line">    respond::FlushAllLoggers();</div>
@@ -582,7 +588,7 @@ Troubleshooting</h2>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Thu Jul 2 2026 19:26:34 for RESPOND by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
+    <li class="footer">Generated on Wed Jul 15 2026 19:41:11 for RESPOND by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
   </ul>
 </div>
 </body>
