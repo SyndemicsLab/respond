@@ -20,13 +20,15 @@ For C++ developers, RESPOND can be integrated directly into projects. See the [C
 ```cpp
 #include <respond/simulation.hpp>
 #include <respond/model.hpp>
+#include <respond/timestep.hpp>
+#include <respond/transition.hpp>
 
 int main() {
     // Create a simulation
     respond::Simulation sim("my_logger");
     
     // Create and configure a model
-    auto model = respond::Model::Create("population_model", "my_logger");
+    auto model = respond::Model::Create("markov", "my_logger");
     
     // Set initial state
     Eigen::VectorXd initial_state(50);
@@ -34,21 +36,24 @@ int main() {
     initial_state(0) = 1000;  // 1000 individuals in state 0
     model->SetState(initial_state);
     
-    // Add transitions
-    auto transition = respond::Transition::Create(
-        "behavior", "my_logger");
-    model->AddTransition(transition);
+    // Build one timestep and attach transitions
+    respond::Timestep step("my_logger");
+    auto &transition = step.CreateTransition("behavior");
+    // transition->AddMatrix(...);
+
+    // Add timesteps to the model
+    for (int t = 0; t < 52; ++t) {
+        model->AddTimestep(step);
+    }
     
     // Add model to simulation
     sim.AddModel(model);
     
     // Run simulation for 52 timesteps
-    for (int t = 0; t < 52; ++t) {
-        sim.Run();
-    }
+    sim.Run(52);
     
     // Extract results
-    auto histories = sim.GetModelHistories();
+    auto histories = sim.GetModelHistory(0);
     
     return 0;
 }

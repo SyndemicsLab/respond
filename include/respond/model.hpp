@@ -4,7 +4,7 @@
 // Created Date: 2026-02-05                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-07-09                                                  //
+// Last Modified: 2026-07-14                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
@@ -159,11 +159,33 @@ public:
     /// otherwise.
     virtual void SetInitialHistoryRecorded(bool recorded) = 0;
 
+    /// @brief Function to serialize the model's state and metadata to an output
+    /// stream.
+    /// @details This function is intended to be overridden by subclasses to
+    /// provide custom serialization logic. It should write the model's state,
+    /// metadata, and any relevant information to the provided output stream.
+    /// @note The output format is implementation-defined and may vary between
+    /// subclasses. Users should refer to the specific subclass documentation
+    /// for details on the serialization format.
+    /// @param os The output stream to which the model's serialized data will be
+    /// written.
+    virtual void Serialize(std::ostream &os) const = 0;
+
 protected:
     /// @brief Protected default constructor for subclass initialization.
     /// Not intended for direct public use.
     Model() = default;
 };
+
+/// @brief Overloaded stream insertion operator for Model serialization.
+/// @param os The output stream to write to.
+/// @param model The Model instance to serialize.
+/// @return The output stream after writing the model's serialized data.
+inline std::ostream &operator<<(std::ostream &os, const Model &model) {
+    model.Serialize(os);
+    return os;
+}
+
 } // namespace respond
 
 #endif // RESPOND_MODEL_HPP_

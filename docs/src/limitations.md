@@ -1,29 +1,24 @@
 # Limitations
 
-Currently the RESPOND model and overall Simdemics Modeling Library are in heavy development. This means they have A LOT of current limitations. Any requests should be directed to the issues page on the github repository and the maintainers will work on them as permits. That being said, some readily identified limitations that have been identified are:
+RESPOND is under active development. The following limitations reflect the current C++ library behavior.
 
 ## Library
 
-The code base started as a specific model and many of the library limitations are due to old code and notations being maintained. That being said, this is an area of continuous improvement so watch for updates:
+The core API is stable enough for integration, but there are important constraints:
 
-- `DataLoader` currently only supports RESPOND
-- The RESPOND model currently requires `DataLoader`
-- `DataLoader` makes use of the csv file structure
-- Specific file names are required for `DataLoader`
-- Column names must be exact
-- Behavior and intervention names must be underscored instead of spaces or dashes
-- The model cannot be run on a GPU
-- Windows hangs during unit tests
-- There is no generalized linux build
-- Installation requires adding the respond cmake folder path to the `CMAKE_PREFIX_PATH`
+- `Model::Create(...)` currently returns the Markov implementation; additional model families are not yet exposed through the public factory.
+- Execution is timestep-driven; users must construct timesteps and transitions explicitly.
+- Transition creation is string-based (`Transition::Create(...)`), so invalid type names fail at runtime.
+- The library is not internally synchronized for shared mutable use across threads.
+- GPU execution is not supported.
+- Legacy standalone executable workflows are maintained separately from the modern library API.
 
 ## Data
 
-Currently, there are a lot of limitations in the required data structure.
+RESPOND C++ focuses on simulation primitives (state vectors, transitions, histories) rather than built-in dataset ingestion.
 
-- `sim.conf` timestep lists must contain the duration as the final value in the list
-- All oud columns should be renamed to behaviors
-- The Demographic structure still exists in the data without any impact to the model
+- Users are responsible for preparing and validating transition inputs (matrices/vectors) before simulation.
+- Schema conventions from legacy tooling (for example `sim.conf` and CSV pipelines) are not part of the required core C++ API.
 
 Previous: [Under the Hood](math.md)
 

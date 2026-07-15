@@ -4,13 +4,16 @@
 // Created Date: 2026-02-05                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-06-30                                                  //
+// Last Modified: 2026-07-13                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
 ////////////////////////////////////////////////////////////////////////////////
 #ifndef RESPOND_HISTORY_HPP_
 #define RESPOND_HISTORY_HPP_
+
+#include <respond/constants.hpp>
+#include <respond/logging.hpp>
 
 #include <algorithm>
 #include <map>
@@ -20,14 +23,25 @@
 #include <Eigen/Dense>
 
 namespace respond {
-enum class HistoryMode { Snapshot, Accumulated };
 
+/// @brief Defines the mode of history recording for state vectors in a
+/// simulation.
+enum class HistoryMode : int {
+    kSnapshot = 0,    // Snapshot of state at each timestep
+    kAccumulated = 1, // Accumulated contributions over timesteps
+    kCount = 2        // Enum Counter
+};
+
+/// @brief Determines the default history mode based on the history name.
+/// @param name The name of the history to evaluate.
+/// @return HistoryMode::kAccumulated for specific names, otherwise
+/// HistoryMode::kSnapshot.
 inline HistoryMode GetDefaultHistoryMode(const std::string &name) {
     if (name == "intervention_admission" || name == "total_overdose" ||
         name == "fatal_overdose" || name == "background_death") {
-        return HistoryMode::Accumulated;
+        return HistoryMode::kAccumulated;
     }
-    return HistoryMode::Snapshot;
+    return HistoryMode::kSnapshot;
 }
 
 /// @brief Tracks and manages state vector history over time.
@@ -36,34 +50,75 @@ inline HistoryMode GetDefaultHistoryMode(const std::string &name) {
 /// are filled with zero vectors).
 class History {
 public:
+    ////////////////////////////////////////////////////////////////////////////
+    //
+    // Rule of Five: Copy and Move Semantics
+    //
+    ////////////////////////////////////////////////////////////////////////////
+
+    /// @brief Default constructor initializing a history with the default name
+    /// "state" and default mode based on that name.
     History() : History("state") {}
 
-    History(const std::string &name) : History(name, "console") {}
-    /// @brief Constructs a History tracker.
-    /// @param name The identifier for this history (default: "state").
-    /// @param log_name The logger name for error reporting (default:
-    /// "console").
-    History(const std::string &name, const std::string &log_name)
-        : History(name, log_name, GetDefaultHistoryMode(name)) {}
+    /// @brief  Constructs a history with a specified name, using the default
+    /// mode based on that name.
+    /// @param name The identifier name for this history instance.
+    History(const std::string &name)
+        : History(name, GetDefaultHistoryMode(name)) {}
 
-    /// @brief Constructs a History tracker with an explicit recording mode.
-    /// @param name The identifier for this history.
-    /// @param log_name The logger name for error reporting.
-    /// @param mode Whether the history stores snapshots or accumulations.
+    /// @brief Constructs a history with a specified name and mode.
+    /// @param name The identifier name for this history instance.
+    /// @param mode The history recording mode (snapshot or accumulated).
+    History(const std::string &name, const HistoryMode &mode)
+        : History(name, mode, RESPOND_DEFAULT_LOG, RESPOND_DEFAULT_LOG_FILE) {}
+
+    /// @brief Constructs a history with a specified name, mode, and logger.
+    /// @param name The identifier name for this history instance.
+    /// @param mode The history recording mode (snapshot or accumulated).
+    /// @param log_name The name of the logger to use for history output.
+    History(const std::string &name, const HistoryMode &mode,
+            const std::string &log_name)
+        : History(name, mode, log_name, RESPOND_DEFAULT_LOG_FILE) {}
+
+    /// @brief Constructs a history with a specified name and logger.
+    /// @param name The identifier name for this history instance.
+    /// @param log_name The name of the logger to use for history output.
+    History(const std::string &name, const std::string &log_name)
+        : History(name, GetDefaultHistoryMode(name), log_name,
+                  RESPOND_DEFAULT_LOG_FILE) {}
+
+    /// @brief Constructs a history with a specified name, logger, and log
+    /// file path.
+    /// @param name The identifier name for this history instance.
+    /// @param log_name The name of the logger to use for history output.
+    /// @param log_filepath The file path for the logger output.
     History(const std::string &name, const std::string &log_name,
-            HistoryMode mode)
-        : _log_name(log_name), _name(name), _mode(mode) {}
+            const std::string &log_filepath)
+        : History(name, GetDefaultHistoryMode(name), log_name, log_filepath) {}
+
+    /// @brief Constructs a history with a specified name, mode, logger, and
+    /// log file path.
+    /// @param name The identifier name for this history instance.
+    /// @param mode The history recording mode (snapshot or accumulated).
+    /// @param log_name The name of the logger to use for history output.
+    /// @param log_filepath The file path for the logger output.
+    History(const std::string &name, const HistoryMode &mode,
+            const std::string &log_name, const std::string &log_filepath)
+        : _name(name), _mode(mode), _log_name(log_name) {
+        CreateFileLogger(log_name, log_filepath);
+    }
 
     /// @brief Destructor (default).
     ~History() = default;
+
     /// @brief Copy constructor implementing the Rule of Five.
     /// Creates an independent copy of the history state and metadata.
     History(const History &other) {
         _timesteps = other.GetRecordedTimesteps();
         _states = other.GetRecordedStates();
-        _name = other.GetHistoryName();
-        _log_name = other.GetLogName();
-        _mode = other.GetHistoryMode();
+        _name = other._name;
+        _log_name = other._log_name;
+        _mode = other._mode;
         _pending_state = other.GetPendingState();
     }
 
@@ -74,9 +129,9 @@ public:
         if (this != &other) {
             _timesteps = other.GetRecordedTimesteps();
             _states = other.GetRecordedStates();
-            _name = other.GetHistoryName();
-            _log_name = other.GetLogName();
-            _mode = other.GetHistoryMode();
+            _name = other._name;
+            _log_name = other._log_name;
+            _mode = other._mode;
             _pending_state = other.GetPendingState();
         }
         return *this;
@@ -88,9 +143,9 @@ public:
     History(History &&other) noexcept {
         _timesteps = std::move(other._timesteps);
         _states = std::move(other._states);
-        _name = other.GetHistoryName();
-        _log_name = other.GetLogName();
-        _mode = other.GetHistoryMode();
+        _name = other._name;
+        _log_name = other._log_name;
+        _mode = other._mode;
         _pending_state = std::move(other._pending_state);
     }
 
@@ -101,106 +156,19 @@ public:
         if (this != &other) {
             _timesteps = std::move(other._timesteps);
             _states = std::move(other._states);
-            _name = other.GetHistoryName();
-            _log_name = other.GetLogName();
-            _mode = other.GetHistoryMode();
+            _name = other._name;
+            _log_name = other._log_name;
+            _mode = other._mode;
             _pending_state = std::move(other._pending_state);
         }
         return *this;
     }
 
-    /// @brief Equality comparison operator.
-    /// @param other The history to compare with.
-    /// @return True if all history properties and state are identical.
-    bool operator==(const History &other) const {
-        return GetHistoryName() == other.GetHistoryName() &&
-               GetLogName() == other.GetLogName() &&
-               GetHistoryMode() == other.GetHistoryMode() &&
-               GetStateMap() == other.GetStateMap() &&
-               GetPendingState().isApprox(other.GetPendingState());
-    }
-
-    /// @brief Inequality comparison operator.
-    /// @param other The history to compare with.
-    /// @return True if histories differ in any aspect.
-    bool operator!=(const History &other) const { return !(*this == other); }
-
-    /// @brief Retrieves the complete state map (timestep -> state vector).
-    /// @return Map of integer timesteps to Eigen vectors representing states.
-    std::map<int, Eigen::VectorXd> GetStateMap() const {
-        std::map<int, Eigen::VectorXd> state_map;
-        for (size_t index = 0; index < _timesteps.size(); ++index) {
-            state_map[_timesteps[index]] = _states[index];
-        }
-        return state_map;
-    }
-
-    /// @brief Retrieves the recorded timesteps without densifying gaps.
-    /// @return Const reference to the stored timestep indices.
-    const std::vector<int> &GetRecordedTimesteps() const { return _timesteps; }
-
-    /// @brief Retrieves the recorded state vectors without densifying gaps.
-    /// @return Const reference to the stored state vectors.
-    const std::vector<Eigen::VectorXd> &GetRecordedStates() const {
-        return _states;
-    }
-
-    /// @brief Retrieves the configured history recording mode.
-    /// @return Snapshot or accumulated history mode.
-    HistoryMode GetHistoryMode() const { return _mode; }
-
-    /// @brief Indicates whether an accumulated history has pending state.
-    /// @return True when a pending aggregate exists.
-    bool HasPendingState() const { return _pending_state.size() > 0; }
-
-    /// @brief Retrieves the pending accumulated state.
-    /// @return The pending aggregate vector, or an empty vector if none.
-    Eigen::VectorXd GetPendingState() const { return _pending_state; }
-
-    /// @brief Retrieves the latest recorded timestep.
-    /// @return Largest recorded timestep, or -1 if history is empty.
-    int GetLatestRecordedTimestep() const {
-        if (_timesteps.empty()) {
-            return -1;
-        }
-        return _timesteps.back();
-    }
-
-    /// @brief Retrieves the identifier name of this history.
-    /// @return The history's name string.
-    std::string GetHistoryName() const { return _name; }
-
-    /// @brief Retrieves the logger name for this history.
-    /// @return The associated logger's name.
-    std::string GetLogName() const { return _log_name; }
-
-    /// @brief Converts the sparse history map to a contiguous vector of states.
-    /// Gaps in timesteps are filled with zero vectors of appropriate dimension.
-    /// @return Vector of Eigen vectors from timestep 0 to the maximum recorded
-    /// timestep. Returns empty vector if no state has been recorded.
-    std::vector<Eigen::VectorXd> GetStateAsVector() const {
-        std::vector<Eigen::VectorXd> ret;
-        if (_states.empty()) {
-            // warn empty state vector - no states recorded
-            return {};
-        }
-        int default_size = _states.front().size();
-        int tstep = 0;
-        for (size_t index = 0; index < _timesteps.size(); ++index) {
-            const int recorded_timestep = _timesteps[index];
-            const auto &recorded_state = _states[index];
-            if (recorded_timestep > tstep) {
-                // Fill gap: raise error if timestep mapping is invalid
-            }
-            while (recorded_timestep > tstep) {
-                ret.push_back(GetZeroVector(default_size));
-                tstep++;
-            }
-            ret.push_back(recorded_state);
-            tstep++;
-        }
-        return ret;
-    }
+    ////////////////////////////////////////////////////////////////////////////
+    //
+    // History Methods: State Vector Management
+    //
+    ////////////////////////////////////////////////////////////////////////////
 
     /// @brief Records a state vector at a specific or automatic timestep.
     /// @param state The state vector to record.
@@ -227,18 +195,13 @@ public:
         _states.push_back(state);
     }
 
-    /// @brief Records a snapshot value at a concrete timestep.
-    /// @param state The snapshot value to record.
-    /// @param timestep The simulation timestep for this snapshot.
-    void RecordSnapshot(const Eigen::Ref<const Eigen::VectorXd> &state,
-                        int timestep) {
-        AddState(state, timestep);
-    }
-
     /// @brief Adds a contribution to an accumulated history.
     /// @param state The per-step contribution to accumulate.
     void AccumulateState(const Eigen::Ref<const Eigen::VectorXd> &state) {
-        if (_mode != HistoryMode::Accumulated) {
+        if (_mode != HistoryMode::kAccumulated) {
+            LogWarning(_log_name, "AccumulateState called on non-accumulated "
+                                  "history, adding state instead: " +
+                                      _name);
             AddState(state);
             return;
         }
@@ -254,7 +217,11 @@ public:
     /// @param timestep The simulation timestep to record.
     /// @param state_size Size of a zero vector to record if nothing is pending.
     void FlushPendingState(int timestep, Eigen::Index state_size) {
-        if (_mode != HistoryMode::Accumulated) {
+        if (_mode != HistoryMode::kAccumulated) {
+            LogInfo(_log_name,
+                    "FlushPendingState called on non-accumulated history, "
+                    "no pending state to flush: " +
+                        _name);
             return;
         }
 
@@ -262,6 +229,10 @@ public:
         if (_pending_state.size() > 0) {
             value = _pending_state;
         } else {
+            LogInfo(_log_name,
+                    "FlushPendingState called with no pending state, "
+                    "recording zero vector: " +
+                        _name);
             value = Eigen::VectorXd::Zero(state_size);
         }
 
@@ -274,6 +245,115 @@ public:
         _timesteps.clear();
         _states.clear();
         _pending_state.resize(0);
+    }
+
+    /// @brief Indicates whether an accumulated history has pending state.
+    /// @return True when a pending aggregate exists.
+    bool HasPendingState() const { return _pending_state.size() > 0; }
+
+    ////////////////////////////////////////////////////////////////////////////
+    //
+    // Getters and Setters for History Vectors
+    //
+    ////////////////////////////////////////////////////////////////////////////
+
+    /// @brief Retrieves the complete state map (timestep -> state vector).
+    /// @return Map of integer timesteps to Eigen vectors representing states.
+    std::map<int, Eigen::VectorXd> GetStateMap() const {
+        std::map<int, Eigen::VectorXd> state_map;
+        for (size_t index = 0; index < _timesteps.size(); ++index) {
+            state_map[_timesteps[index]] = _states[index];
+        }
+        return state_map;
+    }
+
+    /// @brief Retrieves the recorded timesteps without densifying gaps.
+    /// @return Const reference to the stored timestep indices.
+    const std::vector<int> &GetRecordedTimesteps() const { return _timesteps; }
+
+    /// @brief Retrieves the recorded state vectors without densifying gaps.
+    /// @return Const reference to the stored state vectors.
+    const std::vector<Eigen::VectorXd> &GetRecordedStates() const {
+        return _states;
+    }
+
+    /// @brief Retrieves the configured history recording mode.
+    /// @return Snapshot or accumulated history mode.
+    HistoryMode GetHistoryMode() const { return _mode; }
+
+    /// @brief Retrieves the pending accumulated state.
+    /// @return The pending aggregate vector, or an empty vector if none.
+    Eigen::VectorXd GetPendingState() const { return _pending_state; }
+
+    /// @brief Retrieves the latest recorded timestep.
+    /// @return Largest recorded timestep, or -1 if history is empty.
+    int GetLatestRecordedTimestep() const {
+        if (_timesteps.empty()) {
+            LogWarning(_log_name,
+                       "GetLatestRecordedTimestep called on empty history: " +
+                           _name);
+            return -1;
+        }
+        return _timesteps.back();
+    }
+
+    /// @brief Retrieves the identifier name of this history.
+    /// @return The history's name string.
+    std::string GetName() const { return _name; }
+
+    /// @brief Converts the sparse history map to a contiguous vector of states.
+    /// Gaps in timesteps are filled with zero vectors of appropriate dimension.
+    /// @return Vector of Eigen vectors from timestep 0 to the maximum recorded
+    /// timestep. Returns empty vector if no state has been recorded.
+    std::vector<Eigen::VectorXd> GetStateAsVector() const {
+        std::vector<Eigen::VectorXd> ret;
+        if (_states.empty()) {
+            LogWarning(_log_name,
+                       "GetStateAsVector called on empty history: " + _name);
+            return {};
+        }
+        int default_size = _states.front().size();
+        int tstep = 0;
+        for (size_t index = 0; index < _timesteps.size(); ++index) {
+            const int recorded_timestep = _timesteps[index];
+            const auto &recorded_state = _states[index];
+            while (recorded_timestep > tstep) {
+                ret.push_back(GetZeroVector(default_size));
+                tstep++;
+            }
+            ret.push_back(recorded_state);
+            tstep++;
+        }
+        return ret;
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
+    //
+    // Operator Comparisons and Stream Output
+    //
+    ////////////////////////////////////////////////////////////////////////////
+
+    /// @brief Equality comparison operator.
+    /// @param other The history to compare with.
+    /// @return True if all history properties and state are identical.
+    bool operator==(const History &other) const {
+        return _name == other._name && _log_name == other._log_name &&
+               _mode == other._mode && GetStateMap() == other.GetStateMap() &&
+               GetPendingState().isApprox(other.GetPendingState());
+    }
+
+    /// @brief Inequality comparison operator.
+    /// @param other The history to compare with.
+    /// @return True if histories differ in any aspect.
+    bool operator!=(const History &other) const { return !(*this == other); }
+
+    friend std::ostream &operator<<(std::ostream &os, const History &history) {
+        os << "History(name=" << history._name << ", timesteps=[";
+        for (const auto &t : history._timesteps) {
+            os << t << ",";
+        }
+        os << "], pending_state=" << history._pending_state.transpose() << ")";
+        return os;
     }
 
 private:

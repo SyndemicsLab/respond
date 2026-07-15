@@ -4,7 +4,7 @@
 // Created Date: 2026-02-06                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-07-08                                                  //
+// Last Modified: 2026-07-13                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
@@ -14,6 +14,7 @@
 #include <respond/transition.hpp>
 
 #include <fstream>
+#include <iostream>
 #include <map>
 #include <memory>
 #include <string>
@@ -141,13 +142,15 @@ TEST_F(OverdoseTest, ExecuteValid) {
     Overdose overdose;
     overdose.AddMatrix(tran_matrix);
     overdose.AddMatrix(tran_matrix);
+
     histories["state"] = History("state");
     Eigen::VectorXd result = overdose.Execute(state, histories);
-
     Eigen::VectorXd expected_overdoses = state.cwiseProduct(tran_matrix);
+
     Eigen::VectorXd expected_fods =
         expected_overdoses.cwiseProduct(tran_matrix);
     Eigen::VectorXd expected_new_state = state - expected_fods;
+
     EXPECT_TRUE(result.isApprox(expected_new_state));
 }
 

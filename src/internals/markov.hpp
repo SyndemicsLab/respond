@@ -4,7 +4,7 @@
 // Created Date: 2026-02-05                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-07-09                                                  //
+// Last Modified: 2026-07-14                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
@@ -186,10 +186,7 @@ public:
         }
     }
 
-    void RunTimestep() override {
-        RunTimestep(_current_timestep);
-        _current_timestep++;
-    }
+    void RunTimestep() override { RunTimestep(_current_timestep); }
 
     /// @brief Executes the timestep in the model's sequence.
     void RunTimestep(size_t idx) override {
@@ -211,6 +208,14 @@ public:
         for (const auto &t : transitions) {
             _state = t->Execute(_state, _histories);
         }
+        if (idx != _current_timestep) {
+            LogWarning(_log_name,
+                       "Ran timestep out of order. Current timestep: " +
+                           std::to_string(_current_timestep) +
+                           ", run timestep: " + std::to_string(idx));
+            return;
+        }
+        _current_timestep++;
     }
 
     void RunTimesteps() override {
@@ -250,15 +255,15 @@ public:
     /// @return A vector of the default history objects.
     void CreateDefaultHistories() override {
         std::map<std::string, History> ret;
-        ret["state"] = History("state", _log_name, HistoryMode::Snapshot);
+        ret["state"] = History("state", HistoryMode::kSnapshot, _log_name);
         ret["total_overdose"] =
-            History("total_overdose", _log_name, HistoryMode::Accumulated);
+            History("total_overdose", HistoryMode::kAccumulated, _log_name);
         ret["fatal_overdose"] =
-            History("fatal_overdose", _log_name, HistoryMode::Accumulated);
+            History("fatal_overdose", HistoryMode::kAccumulated, _log_name);
         ret["intervention_admission"] = History(
-            "intervention_admission", _log_name, HistoryMode::Accumulated);
+            "intervention_admission", HistoryMode::kAccumulated, _log_name);
         ret["background_death"] =
-            History("background_death", _log_name, HistoryMode::Accumulated);
+            History("background_death", HistoryMode::kAccumulated, _log_name);
         _histories = ret;
         if (_histories.empty()) {
             ResetHistoryTracking();
@@ -273,6 +278,26 @@ public:
 
         _initial_history_recorded = true;
         _current_timestep = latest_timestep;
+    }
+
+    void Serialize(std::ostream &os) const override {
+        os << "Model Name: " << _name << "\n";
+        os << "Current Timestep: " << _current_timestep << "\n";
+        os << "History Capture Interval: " << _history_capture_interval << "\n";
+        os << "Final Timestep: " << _final_timestep << "\n";
+        os << "Initial History Recorded: "
+           << (_initial_history_recorded ? "true" : "false") << "\n";
+        os << "State Vector: " << _state.transpose() << "\n";
+        os << "Histories:\n";
+        for (const auto &kv : _histories) {
+            os << "  - " << kv.first << "\n";
+        }
+        os << "Timesteps:\n";
+        for (size_t i = 0; i < _timestep_vector.size(); ++i) {
+            os << "  Timestep Index: " << i << "\n";
+            os << "  Number of Transitions: "
+               << _timestep_vector[i].GetTransitions().size() << "\n";
+        }
     }
 
 private:
@@ -317,7 +342,7 @@ private:
             return;
         }
 
-        _histories["state"].RecordSnapshot(_state, _current_timestep);
+        _histories["state"].AddState(_state, _current_timestep);
         const auto size = _state.size();
         _histories["intervention_admission"].FlushPendingState(
             _current_timestep, size);

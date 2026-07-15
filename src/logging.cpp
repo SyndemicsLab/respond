@@ -4,7 +4,7 @@
 // Created Date: 2025-06-06                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-06-30                                                  //
+// Last Modified: 2026-07-09                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025-2026 Syndemics Lab at Boston Medical Center             //
@@ -21,7 +21,6 @@ namespace respond {
 CreationStatus CreateFileLogger(const std::string &logger_name,
                                 const std::string &filepath) {
     if (CheckIfExists(logger_name) == CreationStatus::kExists) {
-        std::cout << "Logger " << logger_name << " already exists" << std::endl;
         return CreationStatus::kExists;
     }
     try {

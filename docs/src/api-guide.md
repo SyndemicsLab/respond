@@ -8,9 +8,9 @@ The RESPOND library provides a flexible framework for building opioid use disord
 
 - **Model**: Abstract base class representing a state transition system
 - **Simulation**: Aggregates and coordinates multiple models
+- **Timestep**: Owns and sequences transitions for one simulation step
 - **Transition**: Abstract base for specific transition types
 - **History**: Tracks state vectors over time
-- **TransitionFactory**: Creates concrete transition instances
 
 ## Core Concepts
 
@@ -20,7 +20,7 @@ Models operate on state vectors (Eigen::VectorXd) representing the population di
 
 ### Transitions
 
-Transitions apply transformations to state vectors using transition matrices. The RESPOND model supports several transition types:
+Transitions apply transformations to state vectors using transition matrices or vectors. The RESPOND model supports several transition types:
 
 - **Migration**: Population movement between states
 - **Behavior**: Behavioral state changes
@@ -30,7 +30,7 @@ Transitions apply transformations to state vectors using transition matrices. Th
 
 ### History Tracking
 
-History objects record state vectors at each timestep, enabling analysis of state trajectories over time. Histories support sparse timesteps—gaps are automatically filled with zero vectors.
+History objects record state vectors at timesteps, enabling analysis of state trajectories over time. Histories support sparse timesteps and can return contiguous vectors with zero-filled gaps.
 
 ## Model Class
 
@@ -38,22 +38,25 @@ The Model class is the abstract base for all models in RESPOND.
 
 ```cpp
 #include <respond/model.hpp>
+#include <respond/timestep.hpp>
+#include <respond/transition.hpp>
 
 // Create a model
-auto model = respond::Model::Create("model_name", "logger_name");
+auto model = respond::Model::Create("markov", "logger_name");
 
 // Set the initial state
 Eigen::VectorXd initial_state(50);
 initial_state.setZero();
 model->SetState(initial_state);
 
-// Add transitions
-auto transition = respond::Transition::Create("behavior", "logger_name");
+// Build one timestep with transitions
+respond::Timestep step("logger_name");
+auto &transition = step.CreateTransition("behavior");
 transition->AddMatrix(some_matrix);
-model->AddTransition(transition);
+model->AddTimestep(step);
 
 // Execute one simulation step
-model->RunTransitions();
+model->RunTimestep();
 
 // Retrieve current state
 Eigen::VectorXd current_state = model->GetState();
@@ -64,17 +67,17 @@ auto histories = model->GetHistories();
 
 ### Key Methods
 
-- `SetState(const Eigen::VectorXd &state)`: Sets the model's state vector (copied internally)
-- `GetState() const`: Returns a copy of the current state
-- `RunTransitions()`: Executes all registered transitions
-- `AddTransition(const std::unique_ptr<Transition> &t)`: Adds a transition (assumes ownership)
-- `GetTransitionNames() const`: Returns names of all transitions
-- `ClearTransitions()`: Removes all transitions
+- `SetState(const Eigen::Ref<const Eigen::VectorXd> &state)`: Sets the model's state vector
+- `GetState() const`: Returns a const Eigen ref to the current state
+- `AddTimestep(const Timestep &timestep)`: Adds a timestep (deep-copied)
+- `RunTimestep()`: Runs the current timestep and advances time
+- `RunTimestep(size_t idx)`: Runs a specific timestep index
+- `RunTimesteps()`: Runs all registered timesteps (bounded by final timestep when set)
+- `ClearTimesteps()`: Removes all timesteps
 - `GetHistories() const`: Returns map of history name to History objects
 - `CreateDefaultHistories()`: Initializes default history tracking
-- `SetHistories(const std::map<std::string, History> &h)`: Sets history records
+- `ClearHistories()`: Clears history records and resets history tracking
 - `GetName() const`: Returns model name
-- `GetLogName() const`: Returns associated logger name
 - `clone() const`: Creates a deep copy of the model
 
 ## Simulation Class
@@ -93,28 +96,31 @@ auto model2 = respond::Model::Create("model2", "my_logger");
 sim.AddModel(model1);
 sim.AddModel(model2);
 
-// Run one step (executes all model transitions)
-sim.Run();
+// Run 52 timesteps for all models
+sim.Run(52);
 
 // Retrieve results
-auto all_histories = sim.GetModelHistories();
+auto model_0_histories = sim.GetModelHistory(0);
 auto model_names = sim.GetModelNames();
 
-// Get detailed history mapping
-auto history_names = sim.GetModelHistoryNames();
-// Returns vector of (model_name, history_name) pairs
+// Get history names for one model
+auto history_names = sim.GetModelHistoryNames(0);
 ```
 
 ### Key Methods
 
-- `Run()`: Executes one simulation step for all models
+- `Run(int duration = -1)`: Runs all models for the configured duration
+- `SetDuration(int duration)`: Sets default duration used by `Run()` when no argument is provided
 - `AddModel(const std::unique_ptr<Model> &model)`: Adds a model (cloned internally)
 - `GetModels() const`: Returns const reference to model vector
+- `GetModel(size_t idx) const`: Returns one model by index
+- `GetModel(const std::string &name) const`: Returns one model by name
 - `GetModelNames() const`: Returns all model names
 - `ClearModels()`: Removes all models
-- `GetModelHistories() const`: Returns state histories for all models
-- `GetModelHistoryNames() const`: Returns (model_name, history_name) pairs
-- `GetLogName() const`: Returns logger name
+- `GetModelHistory(size_t idx) const`: Returns one model's history map
+- `GetModelHistory(const std::string &name) const`: Returns one model's history map
+- `GetModelHistoryNames(size_t idx) const`: Returns history names for one model
+- `GetModelHistoryNames(const std::string &name) const`: Returns history names for one model
 
 ## History Class
 
@@ -139,8 +145,8 @@ auto state_at_t0 = hist.GetStateMap()[0];
 auto all_states = hist.GetStateAsVector();  // Contiguous vector, fills gaps
 
 // Query history properties
-std::string name = hist.GetHistoryName();
-std::string log_name = hist.GetLogName();
+std::string name = hist.GetName();
+respond::HistoryMode mode = hist.GetHistoryMode();
 
 // Clear history
 hist.Clear();
@@ -152,40 +158,43 @@ hist.Clear();
   - If timestep < 0, automatically assigns next available timestep
   - If timestep already exists, currently overwrites
 - `GetStateMap() const`: Returns map of timestep → state vector
+- `GetRecordedTimesteps() const`: Returns stored timesteps without densifying
+- `GetRecordedStates() const`: Returns stored states without densifying
 - `GetStateAsVector() const`: Returns contiguous vector of states (fills gaps with zeros)
-- `GetHistoryName() const`: Returns history identifier
-- `GetLogName() const`: Returns logger name
+- `GetName() const`: Returns history identifier
+- `GetLatestRecordedTimestep() const`: Returns latest recorded timestep
+- `GetPendingState() const`: Returns pending aggregate for accumulated histories
+- `HasPendingState() const`: Indicates pending aggregate state
 - `Clear()`: Removes all recorded states
 - `operator==`, `operator!=`: Comparison operators
 
 ## Transition Class
 
-The Transition class is abstract; use TransitionFactory to create concrete instances.
+The Transition class is abstract; use `Transition::Create(...)` to create concrete instances.
 
 ```cpp
 #include <respond/transition.hpp>
-#include <respond/transition_factory.hpp>
 
-// Create a transition using the factory
+// Create a transition
 auto transition = respond::Transition::Create(
-    "behavior",  // Type: migration, behavior, intervention, overdose, background_death
-    "my_logger"  // Logger name
+    "behavior",      // Type
+    "behavior_name", // Instance name
+    "my_logger"      // Logger name
 );
 
 // Add transformation matrices
 Eigen::MatrixXd trans_matrix = ...;
 transition->AddMatrix(trans_matrix);
 
-// Execute the transition (typically done via Model::RunTransitions)
+// Execute the transition (typically done by model timesteps)
 auto histories_map = ...; // From model
 Eigen::VectorXd result = transition->Execute(current_state, histories_map);
 
 // Get transition properties
-std::string name = transition->GetTransitionName();
-std::string log = transition->GetLogName();
+std::string name = transition->GetName();
 
 // Clear matrices
-transition->ClearTransitionMatrices();
+transition->ClearMatrices();
 ```
 
 ### Supported Transition Types
@@ -216,7 +225,7 @@ respond::CreateFileLogger("my_logger", "path/to/logfile.log");
 ```cpp
 #include <respond/simulation.hpp>
 #include <respond/model.hpp>
-#include <respond/transition_factory.hpp>
+#include <respond/timestep.hpp>
 #include <respond/logging.hpp>
 
 int main() {
@@ -227,35 +236,36 @@ int main() {
     respond::Simulation sim("app");
 
     // Create and configure a model
-    auto model = respond::Model::Create("population_model", "app");
+    auto model = respond::Model::Create("markov", "app");
     
     // Set initial state (e.g., 1000 individuals across 50 states)
     Eigen::VectorXd initial_state = Eigen::VectorXd::Zero(50);
     initial_state(0) = 1000;  // All in first state
     model->SetState(initial_state);
 
-    // Add transitions
-    auto behavior_transition = respond::Transition::Create(
-        "behavior", "app");
-    // Add matrices...
-    model->AddTransition(behavior_transition);
+    // Create a reusable timestep with transitions
+    respond::Timestep step("app");
 
-    auto migration_transition = respond::Transition::Create(
-        "migration", "app");
-    // Add matrices...
-    model->AddTransition(migration_transition);
+    auto &behavior_transition = step.CreateTransition("behavior");
+    // behavior_transition->AddMatrix(...);
+
+    auto &migration_transition = step.CreateTransition("migration");
+    // migration_transition->AddMatrix(...);
+
+    // Register timesteps on the model
+    for (int t = 0; t < 52; ++t) {
+        model->AddTimestep(step);
+    }
 
     // Add model to simulation
     sim.AddModel(model);
 
     // Run simulation for 52 timesteps
-    for (int t = 0; t < 52; ++t) {
-        sim.Run();
-    }
+    sim.Run(52);
 
     // Extract results
-    auto histories = sim.GetModelHistories();
-    auto history_names = sim.GetModelHistoryNames();
+    auto histories = sim.GetModelHistory(0);
+    auto history_names = sim.GetModelHistoryNames(0);
     
     // Process results...
     
@@ -269,17 +279,16 @@ RESPOND uses `std::unique_ptr` for ownership management:
 
 - Models and Transitions are typically managed by Simulation or parent objects
 - History objects are copyable and can be freely copied
-- All models are cloned when added to a Simulation (ownership transfer)
-- Clearing containers (ClearModels, ClearTransitions) deletes contained objects
+- All models are cloned when added to a Simulation
+- Clearing containers (for example `ClearModels`, `ClearTimesteps`) deletes contained objects
 
 ## Best Practices
 
-1. **Use TransitionFactory** to create transitions—it handles type dispatch
-2. **Let Simulation manage models** for automatic cloning and lifecycle management
-3. **Reuse History objects** for multiple runs to accumulate results
-4. **Use const references** where available (GetState returns a copy for safety)
-5. **Initialize loggers early** before creating models to enable error tracking
-6. **Validate matrix dimensions** before adding to transitions (not checked by API)
+1. **Use `Transition::Create`** to create transitions by type.
+2. **Build timesteps explicitly** and add them to models in execution order.
+3. **Set simulation duration intentionally** (`SetDuration` or `Run(duration)`) to match timestep plans.
+4. **Initialize loggers early** before creating models and transitions.
+5. **Validate matrix dimensions and ranges** before adding matrices.
 
 ## Common Patterns
 
@@ -289,13 +298,11 @@ RESPOND uses `std::unique_ptr` for ownership management:
 for (int run = 0; run < num_runs; ++run) {
     respond::Simulation sim("logger_" + std::to_string(run));
     
-    auto model = respond::Model::Create("model", "logger_" + std::to_string(run));
+    auto model = respond::Model::Create("markov", "logger_" + std::to_string(run));
     // Configure model...
     
     sim.AddModel(model);
-    for (int t = 0; t < duration; ++t) {
-        sim.Run();
-    }
+    sim.Run(duration);
     
     // Store results...
 }
@@ -308,8 +315,8 @@ for (int run = 0; run < num_runs; ++run) {
 Eigen::VectorXd initial_state = ...;
 model->SetState(initial_state);
 
-// To also clear history
-model->ClearTransitions();
+// To also clear history and timesteps
+model->ClearTimesteps();
 model->CreateDefaultHistories();
 ```
 
@@ -368,20 +375,18 @@ void RunSimulation(int id, const std::string& log_file) {
     
     // Create and run simulation
     respond::Simulation sim(logger_name);
-    auto model = respond::Model::Create("model", logger_name);
+    auto model = respond::Model::Create("markov", logger_name);
     
     // Configure model...
     Eigen::VectorXd initial_state = Eigen::VectorXd::Zero(50);
     initial_state(0) = 1000;
     model->SetState(initial_state);
     
-    // Add transitions...
+    // Add timesteps...
     sim.AddModel(model);
     
     // Run simulation
-    for (int t = 0; t < 52; ++t) {
-        sim.Run();
-    }
+    sim.Run(52);
     
     // Flush logs for this model
     respond::FlushAllLoggers();

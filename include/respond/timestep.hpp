@@ -4,7 +4,7 @@
 // Created Date: 2026-06-30                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-07-09                                                  //
+// Last Modified: 2026-07-14                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
@@ -64,7 +64,7 @@ public:
     Timestep(const Timestep &other) {
         _transitions.clear();
         for (const auto &t : other._transitions) {
-            _transitions.push_back(t->clone());
+            _transitions.push_back(std::move(t->clone()));
         }
     }
 
@@ -76,7 +76,7 @@ public:
         if (this != &other) {
             _transitions.clear();
             for (const auto &t : other._transitions) {
-                _transitions.push_back(t->clone());
+                _transitions.push_back(std::move(t->clone()));
             }
         }
         return *this;
@@ -126,6 +126,11 @@ public:
         return _transitions.back();
     }
 
+    /// @brief Removes a transition from this timestep by index and returns it.
+    /// @param idx The index of the transition to remove. Must be within the
+    /// range of existing transitions.
+    /// @return A unique_ptr to the removed Transition. Throws an exception if
+    /// the index is out of range.
     std::unique_ptr<Transition> RemoveTransition(size_t idx) {
         if (idx >= _transitions.size()) {
             LogWarning(_log_name, "Index out of range in RemoveTransition: " +
@@ -146,9 +151,11 @@ public:
     void AddMatrixToTransition(const size_t &idx,
                                const Eigen::Ref<const Eigen::MatrixXd> &m) {
         if (idx >= _transitions.size()) {
-            LogWarning(_log_name,
-                       "Index out of range in AddMatrixToTransition: " +
-                           std::to_string(idx));
+            LogError(_log_name,
+                     "Index out of range in AddMatrixToTransition: " +
+                         std::to_string(idx));
+            throw std::out_of_range(
+                "Error attempting to AddMatrixToTransition by index.");
         }
         _transitions[idx]->AddMatrix(m);
     }

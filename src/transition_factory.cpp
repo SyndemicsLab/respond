@@ -4,7 +4,7 @@
 // Created Date: 2026-02-05                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-07-07                                                  //
+// Last Modified: 2026-07-14                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
@@ -49,6 +49,6 @@ std::unique_ptr<Transition> Transition::Create(const std::string &type,
                             "'. Supported types: migration, behavior, "
                             "intervention, overdose, background_death";
     LogError(log_name, error_msg);
-    return nullptr;
+    throw std::invalid_argument(error_msg);
 }
 } // namespace respond
