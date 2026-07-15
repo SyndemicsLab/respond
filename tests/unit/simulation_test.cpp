@@ -4,7 +4,7 @@
 // Created Date: 2026-02-09                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-07-13                                                  //
+// Last Modified: 2026-07-15                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
@@ -249,15 +249,18 @@ TEST_F(SimulationTest, GetModelHistoryNames) {
     auto cloned2 = std::make_unique<NiceMock<MockModel>>();
     auto *cloned2_ptr = cloned2.get();
     EXPECT_CALL(*cloned2_ptr, GetName()).WillRepeatedly(Return("model2"));
-    EXPECT_CALL(*cloned2_ptr, GetHistories()).Times(0);
+    EXPECT_CALL(*cloned2_ptr, GetHistories()).WillOnce(ReturnRef(histories2));
     EXPECT_CALL(*mock_model2, clone())
         .WillOnce(Return(::testing::ByMove(std::move(cloned2))));
     s.AddModel(std::move(mock_model2));
 
     const auto history_names = s.GetModelHistoryNames(0);
     const std::vector<std::string> expected = {"history1", "history2"};
-
     ASSERT_EQ(history_names, expected);
+
+    const auto history_names_two = s.GetModelHistoryNames(1);
+    const std::vector<std::string> expected_two = {"history3"};
+    ASSERT_EQ(history_names_two, expected_two);
 }
 
 } // namespace testing
