@@ -4,7 +4,7 @@
 // Created Date: 2026-06-30                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-07-14                                                  //
+// Last Modified: 2026-07-16                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
@@ -257,7 +257,7 @@ public:
     /// @param other The Timestep instance whose transitions are to be output.
     /// @return A reference to the output stream after writing the transition
     /// names.
-    friend std::ostream &operator<<(std::ostream &os, Timestep &other) {
+    friend std::ostream &operator<<(std::ostream &os, const Timestep &other) {
         os << "Timestep with the following transitions:\n";
         for (const auto &t : other._transitions) {
             os << " - " << t->GetName() << "\n";
@@ -272,23 +272,22 @@ public:
     /// @param rhs The right-hand side Timestep instance to compare.
     /// @return True if the two Timestep instances are equal (same transitions
     /// and transition matrices), false otherwise.
-    friend bool operator==(const Timestep &lhs, const Timestep &rhs) {
-        if (lhs._transitions.size() != rhs._transitions.size()) {
+    bool operator==(const Timestep &other) const {
+        if (_transitions.size() != other._transitions.size()) {
             return false;
         }
-        for (size_t i = 0; i < lhs._transitions.size(); ++i) {
-            if (lhs._transitions[i]->GetName() !=
-                rhs._transitions[i]->GetName()) {
+        for (size_t i = 0; i < _transitions.size(); ++i) {
+            if (_transitions[i]->GetName() !=
+                other._transitions[i]->GetName()) {
                 return false;
             }
-            if (lhs._transitions[i]->GetMatrices().size() !=
-                rhs._transitions[i]->GetMatrices().size()) {
+            if (_transitions[i]->GetMatrices().size() !=
+                other._transitions[i]->GetMatrices().size()) {
                 return false;
             }
-            for (size_t j = 0; j < lhs._transitions[i]->GetMatrices().size();
-                 ++j) {
-                if (!lhs._transitions[i]->GetMatrices()[j].isApprox(
-                        rhs._transitions[i]->GetMatrices()[j])) {
+            for (size_t j = 0; j < _transitions[i]->GetMatrices().size(); ++j) {
+                if (!_transitions[i]->GetMatrices()[j].isApprox(
+                        other._transitions[i]->GetMatrices()[j])) {
                     return false;
                 }
             }
@@ -303,9 +302,7 @@ public:
     /// @param rhs The right-hand side Timestep instance to compare.
     /// @return True if the two Timestep instances are not equal (different
     /// transitions or transition matrices), false otherwise.
-    friend bool operator!=(const Timestep &lhs, const Timestep &rhs) {
-        return !(lhs == rhs);
-    }
+    bool operator!=(const Timestep &other) const { return !(*this == other); }
 
 private:
     std::string _log_name;
