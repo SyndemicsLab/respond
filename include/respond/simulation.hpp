@@ -191,8 +191,8 @@ public:
     /// @brief Creates a new model instance and adds it to the simulation.
     /// @param model_name The name identifier for the model to create. This name
     /// is used to identify the model type and initialize it accordingly.
-    /// @return The unique identifier for the newly created model, combining its
-    /// index and name.
+    /// @return A deep-copied model instance representing the newly created
+    /// model.
     std::unique_ptr<Model> CreateNewModel(const std::string &model_name) {
         _models.push_back(Model::Create(model_name, _log_name));
         return _models.back()->clone();
@@ -205,8 +205,6 @@ public:
     /// The model is cloned and managed by the simulation.
     /// @param model A unique_ptr to a Model instance to add.
     void AddModel(const std::unique_ptr<Model> &model) {
-        // because push_back is a move operation we're taking over ownership of
-        // the unique pointer
         _models.push_back(model->clone());
     }
 
@@ -231,7 +229,7 @@ public:
     ////////////////////////////////////////////////////////////////////////////
 
     /// @brief Retrieves all models in the simulation.
-    /// @return Const reference to the vector of Model unique_ptrs.
+    /// @return A deep-copied vector of Model unique_ptrs.
     std::vector<std::unique_ptr<Model>> GetModels() const {
         std::vector<std::unique_ptr<Model>> _models_copy;
         for (const auto &model : _models) {
@@ -276,8 +274,9 @@ public:
 
     /// @brief Retrieves a specific model by index in the simulation.
     /// @param idx The index of the model to retrieve.
-    /// @return A const reference to the Model unique_ptr at the specified
-    /// index. Throws an exception if the index is out of range.
+    /// @return A deep-copied Model at the specified index.
+    /// @details If idx is -1, the last model is returned.
+    /// @throws std::out_of_range if no models exist or idx is out of range.
     std::unique_ptr<Model> GetModel(int idx) const {
         if (_models.empty()) {
             LogError(_log_name, "No models available in GetModel.");
@@ -308,8 +307,7 @@ public:
     /// @brief Retrieves the complete state histories for the model at the
     /// index.
     /// @param idx The index of the model to retrieve histories for.
-    /// @return Vector of maps (one per model) mapping history names to state
-    /// vector trajectories.
+    /// @return Map of history names to history records for the selected model.
     const std::map<std::string, History> &GetModelHistory(size_t idx) const {
         if (idx >= _models.size()) {
             LogError(_log_name, "Index out of range in GetModelHistory: " +
@@ -320,8 +318,9 @@ public:
         return _models[idx]->GetHistories();
     }
 
-    /// @brief Retrieves pairs of (model name, history name) for all histories.
-    /// @return Vector of pairs associating each history with its parent model.
+    /// @brief Retrieves history names for the model at the specified index.
+    /// @param idx The index of the model to retrieve history names for.
+    /// @return Vector of history names for the selected model.
     const std::vector<std::string> GetModelHistoryNames(size_t idx) const {
         if (idx >= _models.size()) {
             LogError(_log_name, "Index out of range in GetModelHistoryNames: " +
