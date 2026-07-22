@@ -4,7 +4,7 @@
 // Created Date: 2026-02-05                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-07-13                                                  //
+// Last Modified: 2026-07-22                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
@@ -31,6 +31,54 @@ namespace respond {
 /// maintaining history records and providing access to simulation results.
 class Simulation {
 public:
+    /// @brief Proxy for mutable model slot access with clone-based assignment.
+    class ModelSlotProxy {
+    public:
+        ModelSlotProxy(Simulation &owner, size_t idx)
+            : _owner(&owner), _idx(idx) {}
+
+        /// @brief Access the underlying model pointer for member access.
+        Model *operator->() { return &_owner->GetModelRefOrThrow(_idx); }
+
+        /// @brief Dereference to the underlying model.
+        Model &operator*() { return _owner->GetModelRefOrThrow(_idx); }
+
+        /// @brief Implicit conversion to underlying mutable model reference.
+        operator Model &() { return _owner->GetModelRefOrThrow(_idx); }
+
+        /// @brief Replace this slot by cloning from another proxy's model.
+        ModelSlotProxy &operator=(const ModelSlotProxy &other) {
+            return *this = static_cast<const Model &>(
+                       other._owner->GetModelRefOrThrow(other._idx));
+        }
+
+        /// @brief Replace this slot by cloning from a model reference.
+        ModelSlotProxy &operator=(const Model &model) {
+            _owner->GetModelRefOrThrow(_idx);
+            _owner->_models[_idx] = model.clone();
+            return *this;
+        }
+
+        /// @brief Replace this slot by cloning from a model unique_ptr.
+        /// @throws std::invalid_argument if model is nullptr.
+        ModelSlotProxy &operator=(const std::unique_ptr<Model> &model) {
+            if (!model) {
+                LogError(_owner->_log_name,
+                         "Cannot assign null model pointer to simulation "
+                         "slot.");
+                throw std::invalid_argument(
+                    "Error attempting to assign null model pointer.");
+            }
+            _owner->GetModelRefOrThrow(_idx);
+            _owner->_models[_idx] = model->clone();
+            return *this;
+        }
+
+    private:
+        Simulation *_owner;
+        size_t _idx;
+    };
+
     ////////////////////////////////////////////////////////////////////////////
     //
     // Rule of Five: Copy and Move Semantics
@@ -143,11 +191,11 @@ public:
     /// @brief Creates a new model instance and adds it to the simulation.
     /// @param model_name The name identifier for the model to create. This name
     /// is used to identify the model type and initialize it accordingly.
-    /// @return The unique identifier for the newly created model, combining its
-    /// index and name.
-    const std::string CreateNewModel(const std::string &model_name) {
+    /// @return A deep-copied model instance representing the newly created
+    /// model.
+    std::unique_ptr<Model> CreateNewModel(const std::string &model_name) {
         _models.push_back(Model::Create(model_name, _log_name));
-        return std::to_string(_models.size()) + "_" + _models.back()->GetName();
+        return _models.back()->clone();
     }
 
     /// @brief Removes all models from the simulation.
@@ -157,8 +205,6 @@ public:
     /// The model is cloned and managed by the simulation.
     /// @param model A unique_ptr to a Model instance to add.
     void AddModel(const std::unique_ptr<Model> &model) {
-        // because push_back is a move operation we're taking over ownership of
-        // the unique pointer
         _models.push_back(model->clone());
     }
 
@@ -183,33 +229,69 @@ public:
     ////////////////////////////////////////////////////////////////////////////
 
     /// @brief Retrieves all models in the simulation.
-    /// @return Const reference to the vector of Model unique_ptrs.
-    const std::vector<std::unique_ptr<Model>> &GetModels() const {
-        return _models;
+    /// @return A deep-copied vector of Model unique_ptrs.
+    std::vector<std::unique_ptr<Model>> GetModels() const {
+        std::vector<std::unique_ptr<Model>> _models_copy;
+        for (const auto &model : _models) {
+            _models_copy.push_back(model->clone());
+        }
+        return _models_copy;
+    }
+
+    /// @brief Mutable index-based model access.
+    /// @details Returns a proxy that supports both model member access and
+    /// clone-based replacement assignment.
+    /// @param idx The index of the model to access.
+    /// @return A mutable proxy for the model slot.
+    /// @throws std::out_of_range if idx is out of range.
+    ModelSlotProxy operator[](size_t idx) {
+        GetModelRefOrThrow(idx);
+        return ModelSlotProxy(*this, idx);
+    }
+
+    /// @brief Const index-based model access.
+    /// @param idx The index of the model to access.
+    /// @return Const reference to the model at the index.
+    /// @throws std::out_of_range if idx is out of range.
+    const Model &operator[](size_t idx) const {
+        return GetModelRefOrThrow(idx);
+    }
+
+    /// @brief Provide a mapping of model indices to their names for all models
+    /// in the simulation.
+    /// @details This method returns a map where the keys are the indices of the
+    /// models in the simulation, and the values are the corresponding model
+    /// names. This allows for easy identification of models by their index in
+    /// the simulation.
+    /// @return The map of model indices to model names.
+    std::map<size_t, std::string> GetModelIndexNameMap() const {
+        std::map<size_t, std::string> ret;
+        for (size_t i = 0; i < _models.size(); ++i) {
+            ret[i] = _models[i]->GetName();
+        }
+        return ret;
     }
 
     /// @brief Retrieves a specific model by index in the simulation.
     /// @param idx The index of the model to retrieve.
-    /// @return A const reference to the Model unique_ptr at the specified
-    /// index. Throws an exception if the index is out of range.
-    const std::unique_ptr<Model> &GetModel(size_t idx) const {
-        if (idx >= _models.size()) {
+    /// @return A deep-copied Model at the specified index.
+    /// @details If idx is -1, the last model is returned.
+    /// @throws std::out_of_range if no models exist or idx is out of range.
+    std::unique_ptr<Model> GetModel(int idx) const {
+        if (_models.empty()) {
+            LogError(_log_name, "No models available in GetModel.");
+            throw std::out_of_range("Error attempting to GetModel: no models.");
+        }
+        if (idx < -1 || idx >= static_cast<int>(_models.size())) {
             LogError(_log_name,
                      "Index out of range in GetModel: " + std::to_string(idx));
             throw std::out_of_range("Error attempting to GetModel by index.");
         }
-        return _models[idx];
-    }
-
-    const std::unique_ptr<Model> &
-    GetModel(const std::string &model_name) const {
-        for (const auto &model : _models) {
-            if (model->GetName() == model_name) {
-                return model;
-            }
+        // Return the last model if idx is -1
+        if (idx == -1) {
+            return _models.back()->clone();
         }
-        LogError(_log_name, "Model name not found in GetModel: " + model_name);
-        throw std::invalid_argument("Error attempting to GetModel by name.");
+        return _models[idx]->clone();
     }
 
     /// @brief Retrieves the names of all models in the simulation.
@@ -225,8 +307,7 @@ public:
     /// @brief Retrieves the complete state histories for the model at the
     /// index.
     /// @param idx The index of the model to retrieve histories for.
-    /// @return Vector of maps (one per model) mapping history names to state
-    /// vector trajectories.
+    /// @return Map of history names to history records for the selected model.
     const std::map<std::string, History> &GetModelHistory(size_t idx) const {
         if (idx >= _models.size()) {
             LogError(_log_name, "Index out of range in GetModelHistory: " +
@@ -237,21 +318,9 @@ public:
         return _models[idx]->GetHistories();
     }
 
-    const std::map<std::string, History> &
-    GetModelHistory(const std::string &model_name) const {
-        for (const auto &model : _models) {
-            if (model->GetName() == model_name) {
-                return model->GetHistories();
-            }
-        }
-        LogError(_log_name,
-                 "Model name not found in GetModelHistory: " + model_name);
-        throw std::invalid_argument(
-            "Error attempting to GetModelHistory by name.");
-    }
-
-    /// @brief Retrieves pairs of (model name, history name) for all histories.
-    /// @return Vector of pairs associating each history with its parent model.
+    /// @brief Retrieves history names for the model at the specified index.
+    /// @param idx The index of the model to retrieve history names for.
+    /// @return Vector of history names for the selected model.
     const std::vector<std::string> GetModelHistoryNames(size_t idx) const {
         if (idx >= _models.size()) {
             LogError(_log_name, "Index out of range in GetModelHistoryNames: " +
@@ -266,26 +335,29 @@ public:
         return ret;
     }
 
-    const std::vector<std::string>
-    GetModelHistoryNames(const std::string &model_name) const {
-        for (const auto &model : _models) {
-            if (model->GetName() == model_name) {
-                std::vector<std::string> ret;
-                for (const auto &kv : model->GetHistories()) {
-                    ret.push_back(kv.first);
-                }
-                return ret;
-            }
-        }
-        LogError(_log_name,
-                 "Model name not found in GetModelHistoryNames: " + model_name);
-        throw std::invalid_argument(
-            "Error attempting to GetModelHistoryNames by name.");
-    }
-
     void SetDuration(int duration) { _duration = duration; }
 
 private:
+    Model &GetModelRefOrThrow(size_t idx) {
+        if (idx >= _models.size()) {
+            LogError(_log_name, "Index out of range in model access: " +
+                                    std::to_string(idx));
+            throw std::out_of_range("Error attempting to access model by "
+                                    "index.");
+        }
+        return *_models[idx];
+    }
+
+    const Model &GetModelRefOrThrow(size_t idx) const {
+        if (idx >= _models.size()) {
+            LogError(_log_name, "Index out of range in model access: " +
+                                    std::to_string(idx));
+            throw std::out_of_range("Error attempting to access model by "
+                                    "index.");
+        }
+        return *_models[idx];
+    }
+
     std::string _log_name;
     std::vector<std::unique_ptr<Model>> _models;
 

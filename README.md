@@ -147,6 +147,12 @@ target_link_libraries(${PROJECT_NAME}
 
 Then see the [C++ API Guide][api-guide] for usage examples.
 
+### C++ Model Access Notes
+
+- `Simulation` owns models and supports index-based access via `operator[]` for mutating owned models (for example `sim[0]->RunTimesteps()`).
+- `GetModels()` and `GetModel(...)` return cloned models for detached inspection/copy workflows.
+- Use `GetModelIndexNameMap()` when you need to resolve model names to stable indices.
+
 ### Building Documentation
 
 To build the Doxygen documentation:

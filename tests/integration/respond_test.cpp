@@ -55,8 +55,8 @@ protected:
         tolerance << 1e-5, 1e-5, 1e-5;
 
         sim.CreateNewModel("markov");
-        sim.GetModels()[0]->CreateDefaultHistories();
-        sim.GetModels()[0]->SetState(init_state);
+        sim[0]->CreateDefaultHistories();
+        sim[0]->SetState(init_state);
     }
     void TearDown() override {
         // Clean up loggers
@@ -91,7 +91,7 @@ protected:
 };
 
 TEST_F(RespondTest, RunSingleTimestep) {
-    sim.GetModels()[0]->AddTimestep(CreateTestTimestep());
+    sim[0]->AddTimestep(CreateTestTimestep());
     sim.Run();
     Eigen::VectorXd result =
         sim.GetModelHistory(0).at("state").GetStateAsVector().back();
@@ -102,8 +102,8 @@ TEST_F(RespondTest, RunSingleTimestep) {
 }
 
 TEST_F(RespondTest, RunSimulationTwoStep) {
-    sim.GetModels()[0]->AddTimestep(CreateTestTimestep());
-    sim.GetModels()[0]->AddTimestep(CreateTestTimestep());
+    sim[0]->AddTimestep(CreateTestTimestep());
+    sim[0]->AddTimestep(CreateTestTimestep());
     sim.Run(2);
 
     auto state_history = sim.GetModelHistory(0).at("state").GetStateAsVector();
@@ -119,11 +119,11 @@ TEST_F(RespondTest, RunSimulationTwoStep) {
 }
 
 TEST_F(RespondTest, RunSimulationFiveStep) {
-    sim.GetModels()[0]->AddTimestep(CreateTestTimestep());
-    sim.GetModels()[0]->AddTimestep(CreateTestTimestep());
-    sim.GetModels()[0]->AddTimestep(CreateTestTimestep());
-    sim.GetModels()[0]->AddTimestep(CreateTestTimestep());
-    sim.GetModels()[0]->AddTimestep(CreateTestTimestep());
+    sim[0]->AddTimestep(CreateTestTimestep());
+    sim[0]->AddTimestep(CreateTestTimestep());
+    sim[0]->AddTimestep(CreateTestTimestep());
+    sim[0]->AddTimestep(CreateTestTimestep());
+    sim[0]->AddTimestep(CreateTestTimestep());
     sim.SetDuration(5);
     sim.Run();
 
@@ -140,11 +140,11 @@ TEST_F(RespondTest, RunSimulationFiveStep) {
 }
 
 TEST_F(RespondTest, RunSimulationFiveStepWithDurationParameter) {
-    sim.GetModels()[0]->AddTimestep(CreateTestTimestep());
-    sim.GetModels()[0]->AddTimestep(CreateTestTimestep());
-    sim.GetModels()[0]->AddTimestep(CreateTestTimestep());
-    sim.GetModels()[0]->AddTimestep(CreateTestTimestep());
-    sim.GetModels()[0]->AddTimestep(CreateTestTimestep());
+    sim[0]->AddTimestep(CreateTestTimestep());
+    sim[0]->AddTimestep(CreateTestTimestep());
+    sim[0]->AddTimestep(CreateTestTimestep());
+    sim[0]->AddTimestep(CreateTestTimestep());
+    sim[0]->AddTimestep(CreateTestTimestep());
     sim.Run(5);
 
     auto state_history = sim.GetModelHistory(0).at("state").GetStateAsVector();

@@ -20,18 +20,18 @@ classDiagram
         +operator=(const Simulation &) Simulation&
         +Simulation(Simulation &&other)
         +operator=(Simulation &&) Simulation&
-        +CreateNewModel(const string &) const string
+        +CreateNewModel(const string &) unique_ptr~Model~
         +ClearModels()
         +AddModel(const unique_ptr~Model~)
         +Run(int=-1)
-        +GetModels() const vector~unique_ptr~Model~~ &
-        +GetModel(size_t model_idx) const unique_ptr~Model~ &
-        +GetModel(const string &) const unique_ptr~Model~ &
+        +operator[](size_t idx)
+        +operator[](size_t idx) const
+        +GetModels() const vector~unique_ptr~Model~~
+        +GetModel(int model_idx) const unique_ptr~Model~
+        +GetModelIndexNameMap() const map~size_t, string~
         +GetModelNames() vector~string~
         +GetModelHistory(size_t model_idx) const map~string, History~ &
-        +GetModelHistory(const string &) const map~string, History~ &
         +GetModelHistoryNames(size_t idx) vector~string~
-        +GetModelHistoryNames(const string &) vector~string~
         +SetDuration(int)
         +operator<<(ostream &os, const Simulation &obj) ostream &
     }
