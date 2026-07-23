@@ -4,7 +4,7 @@
 // Created Date: 2026-06-30                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-07-16                                                  //
+// Last Modified: 2026-07-23                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
@@ -29,6 +29,61 @@ namespace respond {
 /// timestep also handles logging for its operations.
 class Timestep {
 public:
+    /// @brief Proxy for mutable model slot access with clone-based assignment.
+    class TransitionSlotProxy {
+    public:
+        TransitionSlotProxy(Timestep &owner, size_t idx)
+            : _owner(&owner), _idx(idx) {}
+
+        /// @brief Access the underlying model pointer for member access.
+        Transition *operator->() {
+            return &_owner->GetTransitionRefOrThrow(_idx);
+        }
+
+        /// @brief Dereference to the underlying model.
+        Transition &operator*() {
+            return _owner->GetTransitionRefOrThrow(_idx);
+        }
+
+        /// @brief Implicit conversion to underlying mutable model reference.
+        operator Transition &() {
+            return _owner->GetTransitionRefOrThrow(_idx);
+        }
+
+        /// @brief Replace this slot by cloning from another proxy's model.
+        TransitionSlotProxy &operator=(const TransitionSlotProxy &other) {
+            return *this = static_cast<const Transition &>(
+                       other._owner->GetTransitionRefOrThrow(other._idx));
+        }
+
+        /// @brief Replace this slot by cloning from a model reference.
+        TransitionSlotProxy &operator=(const Transition &transition) {
+            _owner->GetTransitionRefOrThrow(_idx);
+            _owner->_transitions[_idx] = transition.clone();
+            return *this;
+        }
+
+        /// @brief Replace this slot by cloning from a model unique_ptr.
+        /// @throws std::invalid_argument if model is nullptr.
+        TransitionSlotProxy &
+        operator=(const std::unique_ptr<Transition> &transition) {
+            if (!transition) {
+                LogError(_owner->_log_name,
+                         "Cannot assign null model pointer to simulation "
+                         "slot.");
+                throw std::invalid_argument(
+                    "Error attempting to assign null model pointer.");
+            }
+            _owner->GetTransitionRefOrThrow(_idx);
+            _owner->_transitions[_idx] = transition->clone();
+            return *this;
+        }
+
+    private:
+        Timestep *_owner;
+        size_t _idx;
+    };
+
     ////////////////////////////////////////////////////////////////////////////
     //
     // Rule of Five: Copy and Move Semantics
@@ -247,6 +302,25 @@ public:
     //
     ////////////////////////////////////////////////////////////////////////////
 
+    /// @brief Mutable index-based transition access.
+    /// @details Returns a proxy that supports both transition member access and
+    /// clone-based replacement assignment.
+    /// @param idx The index of the transition to access.
+    /// @return A mutable proxy for the transition slot.
+    /// @throws std::out_of_range if idx is out of range.
+    TransitionSlotProxy operator[](size_t idx) {
+        GetTransitionRefOrThrow(idx);
+        return TransitionSlotProxy(*this, idx);
+    }
+
+    /// @brief Const index-based transition access.
+    /// @param idx The index of the transition to access.
+    /// @return Const reference to the transition at the index.
+    /// @throws std::out_of_range if idx is out of range.
+    const Transition &operator[](size_t idx) const {
+        return GetTransitionRefOrThrow(idx);
+    }
+
     /// @brief Overloaded stream insertion operator for Timestep. Outputs the
     /// names of all transitions in the timestep to the provided output stream.
     /// @details This operator allows for easy logging and debugging of the
@@ -305,6 +379,26 @@ public:
     bool operator!=(const Timestep &other) const { return !(*this == other); }
 
 private:
+    Transition &GetTransitionRefOrThrow(size_t idx) {
+        if (idx >= _transitions.size()) {
+            LogError(_log_name, "Index out of range in transition access: " +
+                                    std::to_string(idx));
+            throw std::out_of_range("Error attempting to access transition by "
+                                    "index.");
+        }
+        return *_transitions[idx];
+    }
+
+    const Transition &GetTransitionRefOrThrow(size_t idx) const {
+        if (idx >= _transitions.size()) {
+            LogError(_log_name, "Index out of range in transition access: " +
+                                    std::to_string(idx));
+            throw std::out_of_range("Error attempting to access transition by "
+                                    "index.");
+        }
+        return *_transitions[idx];
+    }
+
     std::string _log_name;
     std::vector<std::unique_ptr<Transition>> _transitions;
 };
