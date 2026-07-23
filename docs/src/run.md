@@ -38,8 +38,14 @@ int main() {
     
     // Build one timestep and attach transitions
     respond::Timestep step("my_logger");
-    auto &transition = step.CreateTransition("behavior");
-    // transition->AddMatrix(...);
+    auto &behavior = step.CreateTransition("behavior");
+    // behavior->AddMatrix(...);
+
+    auto migration = respond::Transition::Create("migration");
+    step.AddTransition(migration);
+
+    // Mutable slot access to transitions owned by this timestep
+    // step[0]->AddMatrix(...);
 
     // Add timesteps to the model
     for (int t = 0; t < 52; ++t) {

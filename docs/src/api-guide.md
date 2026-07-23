@@ -51,8 +51,14 @@ model->SetState(initial_state);
 
 // Build one timestep with transitions
 respond::Timestep step("logger_name");
-auto &transition = step.CreateTransition("behavior");
-transition->AddMatrix(some_matrix);
+auto &behavior_transition = step.CreateTransition("behavior");
+behavior_transition->AddMatrix(some_matrix);
+
+auto migration_transition = respond::Transition::Create("migration");
+step.AddTransition(migration_transition);
+
+// Mutable index access to owned transition slots
+step[0]->AddMatrix(some_other_matrix);
 model->AddTimestep(step);
 
 // Execute one simulation step
@@ -125,6 +131,48 @@ auto history_names = sim.GetModelHistoryNames(0);
 - `ClearModels()`: Removes all models
 - `GetModelHistory(size_t idx) const`: Returns one model's history map
 - `GetModelHistoryNames(size_t idx) const`: Returns history names for one model
+
+## Timestep Class
+
+The Timestep class owns transitions for one model step and supports both
+transition creation and clone-based insertion.
+
+```cpp
+#include <respond/timestep.hpp>
+#include <respond/transition.hpp>
+
+respond::Timestep step("my_logger");
+
+// Build transition in-place
+auto &behavior = step.CreateTransition("behavior");
+behavior->AddMatrix(behavior_matrix);
+
+// Add an existing transition by clone
+auto migration = respond::Transition::Create("migration");
+step.AddTransition(migration);
+
+// Mutable slot access (in-place edits)
+step[0]->AddMatrix(another_behavior_matrix);
+
+// Replace a slot by cloning from another slot or transition pointer
+step[1] = step[0];
+step[1] = migration;
+
+// Const slot access
+const respond::Timestep &const_step = step;
+const respond::Transition &t = const_step[0];
+```
+
+### Key Methods
+
+- `CreateTransition(const std::string &transition_name)`: Creates and stores a transition by type
+- `AddTransition(const std::unique_ptr<Transition> &transition)`: Clones and stores caller-provided transition
+- `operator[](size_t idx)`: Mutable slot access for transition mutation/replacement
+- `operator[](size_t idx) const`: Const transition reference by index
+- `GetTransition(const size_t &idx) const`: Gets transition pointer by index
+- `GetTransition(const std::string &transition_name) const`: Gets transition pointer by name
+- `GetTransitionNames() const`: Returns transition names in execution order
+- `RemoveTransition(size_t idx)`: Removes and returns transition at index
 
 ### Model Access Semantics
 

@@ -72,6 +72,7 @@ classDiagram
         +Timestep(const Timestep &&)
         +operator=(const Timestep &&) Timestep &
         +CreateTransition(const string &) const unique_ptr~Transition~ &
+        +AddTransition(const unique_ptr~Transition~ &)
         +RemoveTransition(size_t) unique_ptr~Transition~
         +AddMatrixToTransition(const size_t &, const Ref~const MatrixXd~ &)
         +AddMatrixToTransition(const string &, const Ref~const MatrixXd~ &)
@@ -79,6 +80,8 @@ classDiagram
         +GetTransition(const string &) const unique_ptr~Transition~ &
         +GetTransitions() vector~unique_ptr~Transition~~
         +GetTransitionNames() vector~string~
+        +operator[](size_t) TransitionSlotProxy
+        +operator[](size_t) const Transition &
         +operator<<(ostream &os, const Timestep &obj) ostream &
         +operator==(const Timestep &, const Timestep &) bool
         +operator!=(const Timestep &, const Timestep &) bool
