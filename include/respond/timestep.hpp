@@ -181,6 +181,13 @@ public:
         return _transitions.back();
     }
 
+    /// @brief Adds a transition to the timestep.
+    /// The transition is cloned and managed by the timestep.
+    /// @param transition A unique_ptr to a Transition instance to add.
+    void AddTransition(const std::unique_ptr<Transition> &transition) {
+        _transitions.push_back(transition->clone());
+    }
+
     /// @brief Removes a transition from this timestep by index and returns it.
     /// @param idx The index of the transition to remove. Must be within the
     /// range of existing transitions.
