@@ -143,35 +143,39 @@ var NAVTREE =
       [ "Simulation Class", "d2/deb/md_docs_src_api_guide.html#autotoc_md99", [
         [ "Key Methods", "d2/deb/md_docs_src_api_guide.html#autotoc_md100", null ]
       ] ],
-      [ "History Class", "d2/deb/md_docs_src_api_guide.html#autotoc_md101", [
-        [ "Key Methods", "d2/deb/md_docs_src_api_guide.html#autotoc_md102", null ]
+      [ "Timestep Class", "d2/deb/md_docs_src_api_guide.html#autotoc_md101", [
+        [ "Key Methods", "d2/deb/md_docs_src_api_guide.html#autotoc_md102", null ],
+        [ "Model Access Semantics", "d2/deb/md_docs_src_api_guide.html#autotoc_md103", null ]
       ] ],
-      [ "Transition Class", "d2/deb/md_docs_src_api_guide.html#autotoc_md103", [
-        [ "Supported Transition Types", "d2/deb/md_docs_src_api_guide.html#autotoc_md104", null ]
+      [ "History Class", "d2/deb/md_docs_src_api_guide.html#autotoc_md104", [
+        [ "Key Methods", "d2/deb/md_docs_src_api_guide.html#autotoc_md105", null ]
       ] ],
-      [ "Logging Integration", "d2/deb/md_docs_src_api_guide.html#autotoc_md105", null ],
-      [ "Complete Example", "d2/deb/md_docs_src_api_guide.html#autotoc_md106", null ],
-      [ "Memory Management", "d2/deb/md_docs_src_api_guide.html#autotoc_md107", null ],
-      [ "Best Practices", "d2/deb/md_docs_src_api_guide.html#autotoc_md108", null ],
-      [ "Common Patterns", "d2/deb/md_docs_src_api_guide.html#autotoc_md109", [
-        [ "Running Multiple Independent Simulations", "d2/deb/md_docs_src_api_guide.html#autotoc_md110", null ],
-        [ "Resetting Model State", "d2/deb/md_docs_src_api_guide.html#autotoc_md111", null ],
-        [ "Copying Simulations", "d2/deb/md_docs_src_api_guide.html#autotoc_md112", null ]
+      [ "Transition Class", "d2/deb/md_docs_src_api_guide.html#autotoc_md106", [
+        [ "Supported Transition Types", "d2/deb/md_docs_src_api_guide.html#autotoc_md107", null ]
       ] ],
-      [ "Parallel Execution with Shared Logging", "d2/deb/md_docs_src_api_guide.html#autotoc_md113", [
-        [ "Basic Parallel Logging Setup", "d2/deb/md_docs_src_api_guide.html#autotoc_md114", null ],
-        [ "Running Models in Parallel with Unified Logging", "d2/deb/md_docs_src_api_guide.html#autotoc_md115", null ],
-        [ "Shared Logger Pattern Options", "d2/deb/md_docs_src_api_guide.html#autotoc_md116", null ],
-        [ "Monitoring Shared Loggers", "d2/deb/md_docs_src_api_guide.html#autotoc_md117", null ],
-        [ "Thread-Safe File Sink Management", "d2/deb/md_docs_src_api_guide.html#autotoc_md118", null ],
-        [ "Best Practices for Parallel Logging", "d2/deb/md_docs_src_api_guide.html#autotoc_md119", null ],
-        [ "Troubleshooting", "d2/deb/md_docs_src_api_guide.html#autotoc_md120", null ]
+      [ "Logging Integration", "d2/deb/md_docs_src_api_guide.html#autotoc_md108", null ],
+      [ "Complete Example", "d2/deb/md_docs_src_api_guide.html#autotoc_md109", null ],
+      [ "Memory Management", "d2/deb/md_docs_src_api_guide.html#autotoc_md110", null ],
+      [ "Best Practices", "d2/deb/md_docs_src_api_guide.html#autotoc_md111", null ],
+      [ "Common Patterns", "d2/deb/md_docs_src_api_guide.html#autotoc_md112", [
+        [ "Running Multiple Independent Simulations", "d2/deb/md_docs_src_api_guide.html#autotoc_md113", null ],
+        [ "Resetting Model State", "d2/deb/md_docs_src_api_guide.html#autotoc_md114", null ],
+        [ "Copying Simulations", "d2/deb/md_docs_src_api_guide.html#autotoc_md115", null ]
+      ] ],
+      [ "Parallel Execution with Shared Logging", "d2/deb/md_docs_src_api_guide.html#autotoc_md116", [
+        [ "Basic Parallel Logging Setup", "d2/deb/md_docs_src_api_guide.html#autotoc_md117", null ],
+        [ "Running Models in Parallel with Unified Logging", "d2/deb/md_docs_src_api_guide.html#autotoc_md118", null ],
+        [ "Shared Logger Pattern Options", "d2/deb/md_docs_src_api_guide.html#autotoc_md119", null ],
+        [ "Monitoring Shared Loggers", "d2/deb/md_docs_src_api_guide.html#autotoc_md120", null ],
+        [ "Thread-Safe File Sink Management", "d2/deb/md_docs_src_api_guide.html#autotoc_md121", null ],
+        [ "Best Practices for Parallel Logging", "d2/deb/md_docs_src_api_guide.html#autotoc_md122", null ],
+        [ "Troubleshooting", "d2/deb/md_docs_src_api_guide.html#autotoc_md123", null ]
       ] ]
     ] ],
     [ "UML Diagrams", "dd/d02/md_docs_src_uml.html", [
-      [ "Public API Diagram", "dd/d02/md_docs_src_uml.html#autotoc_md122", null ],
-      [ "Internals Diagram", "dd/d02/md_docs_src_uml.html#autotoc_md123", null ],
-      [ "Execution Flow Diagram", "dd/d02/md_docs_src_uml.html#autotoc_md124", null ]
+      [ "Public API Diagram", "dd/d02/md_docs_src_uml.html#autotoc_md125", null ],
+      [ "Internals Diagram", "dd/d02/md_docs_src_uml.html#autotoc_md126", null ],
+      [ "Execution Flow Diagram", "dd/d02/md_docs_src_uml.html#autotoc_md127", null ]
     ] ],
     [ "Classes", "annotated.html", [
       [ "Class List", "annotated.html", "annotated_dup" ],
@@ -189,7 +193,8 @@ var NAVTREE =
 
 var NAVTREEINDEX =
 [
-"annotated.html"
+"annotated.html",
+"de/d27/classrespond_1_1Simulation.html#aebf1197f15e2b7eae43dfffed80c1254"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

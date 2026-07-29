@@ -62,7 +62,7 @@ Copyright (c) 2025 Syndemics Lab at Boston Medical Center
                             <td id="projectlogo"><img alt="Logo" src="../../Syndemics_main_logo_50px.png" /></td>
                             <td id="projectalign">
                                 <div id="projectname">RESPOND<span
-                                        id="projectnumber">&#160;2.5.0</span>
+                                        id="projectnumber">&#160;2.5.1</span>
                                 </div>
                                 <div id="projectbrief">Researching Effective Strategies to Prevent Opioid Death</div>
                             </td>
@@ -130,7 +130,7 @@ $(document).ready(function(){initNavTree('dd/d02/md_docs_src_uml.html','../../')
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><p>This page uses Mermaid so diagrams remain human-editable in plain text.</p>
-<h1><a class="anchor" id="autotoc_md122"></a>
+<h1><a class="anchor" id="autotoc_md125"></a>
 Public API Diagram</h1>
 <p>This diagram is the external library view and reflects the target workflow: one Simulation owns many Models, each Model owns many Timesteps, each Timestep owns many Transitions.</p>
 <div class="fragment"><div class="line">classDiagram</div>
@@ -144,18 +144,18 @@ Public API Diagram</h1>
 <div class="line">        +operator=(const Simulation &amp;) Simulation&amp;</div>
 <div class="line">        +Simulation(Simulation &amp;&amp;other)</div>
 <div class="line">        +operator=(Simulation &amp;&amp;) Simulation&amp;</div>
-<div class="line">        +CreateNewModel(const string &amp;) const string</div>
+<div class="line">        +CreateNewModel(const string &amp;) unique_ptr~Model~</div>
 <div class="line">        +ClearModels()</div>
 <div class="line">        +AddModel(const unique_ptr~Model~)</div>
 <div class="line">        +Run(int=-1)</div>
-<div class="line">        +GetModels() const vector~unique_ptr~Model~~ &amp;</div>
-<div class="line">        +GetModel(size_t model_idx) const unique_ptr~Model~ &amp;</div>
-<div class="line">        +GetModel(const string &amp;) const unique_ptr~Model~ &amp;</div>
+<div class="line">        +operator[](size_t idx)</div>
+<div class="line">        +operator[](size_t idx) const</div>
+<div class="line">        +GetModels() const vector~unique_ptr~Model~~</div>
+<div class="line">        +GetModel(int model_idx) const unique_ptr~Model~</div>
+<div class="line">        +GetModelIndexNameMap() const map~size_t, string~</div>
 <div class="line">        +GetModelNames() vector~string~</div>
 <div class="line">        +GetModelHistory(size_t model_idx) const map~string, History~ &amp;</div>
-<div class="line">        +GetModelHistory(const string &amp;) const map~string, History~ &amp;</div>
 <div class="line">        +GetModelHistoryNames(size_t idx) vector~string~</div>
-<div class="line">        +GetModelHistoryNames(const string &amp;) vector~string~</div>
 <div class="line">        +SetDuration(int)</div>
 <div class="line">        +operator&lt;&lt;(ostream &amp;os, const Simulation &amp;obj) ostream &amp;</div>
 <div class="line">    }</div>
@@ -196,6 +196,7 @@ Public API Diagram</h1>
 <div class="line">        +Timestep(const Timestep &amp;&amp;)</div>
 <div class="line">        +operator=(const Timestep &amp;&amp;) Timestep &amp;</div>
 <div class="line">        +CreateTransition(const string &amp;) const unique_ptr~Transition~ &amp;</div>
+<div class="line">        +AddTransition(const unique_ptr~Transition~ &amp;)</div>
 <div class="line">        +RemoveTransition(size_t) unique_ptr~Transition~</div>
 <div class="line">        +AddMatrixToTransition(const size_t &amp;, const Ref~const MatrixXd~ &amp;)</div>
 <div class="line">        +AddMatrixToTransition(const string &amp;, const Ref~const MatrixXd~ &amp;)</div>
@@ -203,6 +204,8 @@ Public API Diagram</h1>
 <div class="line">        +GetTransition(const string &amp;) const unique_ptr~Transition~ &amp;</div>
 <div class="line">        +GetTransitions() vector~unique_ptr~Transition~~</div>
 <div class="line">        +GetTransitionNames() vector~string~</div>
+<div class="line">        +operator[](size_t) TransitionSlotProxy</div>
+<div class="line">        +operator[](size_t) const Transition &amp;</div>
 <div class="line">        +operator&lt;&lt;(ostream &amp;os, const Timestep &amp;obj) ostream &amp;</div>
 <div class="line">        +operator==(const Timestep &amp;, const Timestep &amp;) bool</div>
 <div class="line">        +operator!=(const Timestep &amp;, const Timestep &amp;) bool</div>
@@ -321,7 +324,7 @@ Public API Diagram</h1>
 <div class="line">    LoggingAPI ..&gt; LogPattern : configures</div>
 <div class="line">    History ..&gt; HistoryMode : uses</div>
 <div class="line">    CostEffectiveness ..&gt; History : consumes</div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md123"></a>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md126"></a>
 Internals Diagram</h1>
 <p>This diagram is implementation-focused and shows the relationship between abstract classes and how it impacts the stored components for ownership purposes.</p>
 <div class="fragment"><div class="line">classDiagram</div>
@@ -461,7 +464,7 @@ Internals Diagram</h1>
 <div class="line">    Intervention &lt;..&gt; History : uses and updates</div>
 <div class="line">    Overdose &lt;..&gt; History : uses and updates</div>
 <div class="line">    BackgroundDeath &lt;..&gt; History : uses and updates</div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md124"></a>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md127"></a>
 Execution Flow Diagram</h1>
 <p>This sequence follows the requested external flow and execution semantics.</p>
 <div class="fragment"><div class="line">sequenceDiagram</div>
@@ -505,7 +508,7 @@ Execution Flow Diagram</h1>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Thu Jul 16 2026 19:42:51 for RESPOND by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
+    <li class="footer">Generated on Wed Jul 29 2026 18:49:17 for RESPOND by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
   </ul>
 </div>
 </body>

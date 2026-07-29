@@ -62,7 +62,7 @@ Copyright (c) 2025 Syndemics Lab at Boston Medical Center
                             <td id="projectlogo"><img alt="Logo" src="../../Syndemics_main_logo_50px.png" /></td>
                             <td id="projectalign">
                                 <div id="projectname">RESPOND<span
-                                        id="projectnumber">&#160;2.5.0</span>
+                                        id="projectnumber">&#160;2.5.1</span>
                                 </div>
                                 <div id="projectbrief">Researching Effective Strategies to Prevent Opioid Death</div>
                             </td>
@@ -127,6 +127,7 @@ $(document).ready(function(){initNavTree('db/df3/classrespond_1_1Timestep.html',
 
 <div class="header">
   <div class="summary">
+<a href="#nested-classes">Classes</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#friends">Friends</a> &#124;
 <a href="../../d2/d9b/classrespond_1_1Timestep-members.html">List of all members</a>  </div>
@@ -139,6 +140,12 @@ $(document).ready(function(){initNavTree('db/df3/classrespond_1_1Timestep.html',
 
 <p><code>#include &lt;<a class="el" href="../../d7/dec/timestep_8hpp_source.html">timestep.hpp</a>&gt;</code></p>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
+Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d4/d17/classrespond_1_1Timestep_1_1TransitionSlotProxy.html">TransitionSlotProxy</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Proxy for mutable model slot access with clone-based assignment.  <a href="../../d4/d17/classrespond_1_1Timestep_1_1TransitionSlotProxy.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a847b5c95d2b0bc448136921fac4faaf3"><td class="memItemLeft" align="right" valign="top"><a id="a847b5c95d2b0bc448136921fac4faaf3" name="a847b5c95d2b0bc448136921fac4faaf3"></a>
@@ -170,6 +177,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a5da892a2593880616b919aae5987e80c"><td class="memItemLeft" align="right" valign="top">const std::unique_ptr&lt; <a class="el" href="../../de/d15/classrespond_1_1Transition.html">Transition</a> &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/df3/classrespond_1_1Timestep.html#a5da892a2593880616b919aae5987e80c">CreateTransition</a> (const std::string &amp;transition_name)</td></tr>
 <tr class="memdesc:a5da892a2593880616b919aae5987e80c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a transition of the specified type and adds it to this timestep.  <br /></td></tr>
 <tr class="separator:a5da892a2593880616b919aae5987e80c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a352f453797b58547d65789ca58d73aae"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/df3/classrespond_1_1Timestep.html#a352f453797b58547d65789ca58d73aae">AddTransition</a> (const std::unique_ptr&lt; <a class="el" href="../../de/d15/classrespond_1_1Transition.html">Transition</a> &gt; &amp;transition)</td></tr>
+<tr class="memdesc:a352f453797b58547d65789ca58d73aae"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds a transition to the timestep. The transition is cloned and managed by the timestep.  <br /></td></tr>
+<tr class="separator:a352f453797b58547d65789ca58d73aae"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9454f706445f5e524ec6e15c479d3670"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="../../de/d15/classrespond_1_1Transition.html">Transition</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/df3/classrespond_1_1Timestep.html#a9454f706445f5e524ec6e15c479d3670">RemoveTransition</a> (size_t idx)</td></tr>
 <tr class="memdesc:a9454f706445f5e524ec6e15c479d3670"><td class="mdescLeft">&#160;</td><td class="mdescRight">Removes a transition from this timestep by index and returns it.  <br /></td></tr>
 <tr class="separator:a9454f706445f5e524ec6e15c479d3670"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -191,6 +201,12 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a4c33a9b9fc73011ce231b13d505bf969"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/df3/classrespond_1_1Timestep.html#a4c33a9b9fc73011ce231b13d505bf969">GetTransitionNames</a> () const</td></tr>
 <tr class="memdesc:a4c33a9b9fc73011ce231b13d505bf969"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets a vector of the names of all transitions in this timestep.  <br /></td></tr>
 <tr class="separator:a4c33a9b9fc73011ce231b13d505bf969"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acbd17a759cd63c5a2dab1d5ee64c52f2"><td class="memItemLeft" align="right" valign="top"><a class="el" href="../../d4/d17/classrespond_1_1Timestep_1_1TransitionSlotProxy.html">TransitionSlotProxy</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/df3/classrespond_1_1Timestep.html#acbd17a759cd63c5a2dab1d5ee64c52f2">operator[]</a> (size_t idx)</td></tr>
+<tr class="memdesc:acbd17a759cd63c5a2dab1d5ee64c52f2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Mutable index-based transition access.  <br /></td></tr>
+<tr class="separator:acbd17a759cd63c5a2dab1d5ee64c52f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa3c8f15c1a16e6749cee235ce7c0686b"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="../../de/d15/classrespond_1_1Transition.html">Transition</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/df3/classrespond_1_1Timestep.html#aa3c8f15c1a16e6749cee235ce7c0686b">operator[]</a> (size_t idx) const</td></tr>
+<tr class="memdesc:aa3c8f15c1a16e6749cee235ce7c0686b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Const index-based transition access.  <br /></td></tr>
+<tr class="separator:aa3c8f15c1a16e6749cee235ce7c0686b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a50349bf60b83c7efe4e4ab401f23c810"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/df3/classrespond_1_1Timestep.html#a50349bf60b83c7efe4e4ab401f23c810">operator==</a> (const <a class="el" href="../../db/df3/classrespond_1_1Timestep.html">Timestep</a> &amp;other) const</td></tr>
 <tr class="memdesc:a50349bf60b83c7efe4e4ab401f23c810"><td class="mdescLeft">&#160;</td><td class="mdescRight">Overloaded equality operator for <a class="el" href="../../db/df3/classrespond_1_1Timestep.html" title="Represents a single timestep in a simulation, managing a collection of transitions....">Timestep</a>. Compares two <a class="el" href="../../db/df3/classrespond_1_1Timestep.html" title="Represents a single timestep in a simulation, managing a collection of transitions....">Timestep</a> instances for equality based on their transitions and transition matrices.  <br /></td></tr>
 <tr class="separator:a50349bf60b83c7efe4e4ab401f23c810"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -425,6 +441,38 @@ Friends</h2></td></tr>
   <table class="params">
     <tr><td class="paramname">transition_name</td><td>The name of the transition to which the matrix will be added. </td></tr>
     <tr><td class="paramname">m</td><td>The transition matrix to add (not modified by this transition). </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a352f453797b58547d65789ca58d73aae" name="a352f453797b58547d65789ca58d73aae"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a352f453797b58547d65789ca58d73aae">&#9670;&#160;</a></span>AddTransition()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void respond::Timestep::AddTransition </td>
+          <td>(</td>
+          <td class="paramtype">const std::unique_ptr&lt; <a class="el" href="../../de/d15/classrespond_1_1Transition.html">Transition</a> &gt; &amp;&#160;</td>
+          <td class="paramname"><em>transition</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">transition</td><td>A unique_ptr to a <a class="el" href="../../de/d15/classrespond_1_1Transition.html" title="Abstract base class representing a state transition operation. Transitions apply transformation matri...">Transition</a> instance to add. </td></tr>
   </table>
   </dd>
 </dl>
@@ -723,6 +771,84 @@ Friends</h2></td></tr>
 
 </div>
 </div>
+<a id="acbd17a759cd63c5a2dab1d5ee64c52f2" name="acbd17a759cd63c5a2dab1d5ee64c52f2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acbd17a759cd63c5a2dab1d5ee64c52f2">&#9670;&#160;</a></span>operator[]() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="../../d4/d17/classrespond_1_1Timestep_1_1TransitionSlotProxy.html">TransitionSlotProxy</a> respond::Timestep::operator[] </td>
+          <td>(</td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>idx</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Returns a proxy that supports both transition member access and clone-based replacement assignment. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">idx</td><td>The index of the transition to access. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>A mutable proxy for the transition slot. </dd></dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">std::out_of_range</td><td>if idx is out of range. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="aa3c8f15c1a16e6749cee235ce7c0686b" name="aa3c8f15c1a16e6749cee235ce7c0686b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa3c8f15c1a16e6749cee235ce7c0686b">&#9670;&#160;</a></span>operator[]() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const <a class="el" href="../../de/d15/classrespond_1_1Transition.html">Transition</a> &amp; respond::Timestep::operator[] </td>
+          <td>(</td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>idx</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">idx</td><td>The index of the transition to access. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Const reference to the transition at the index. </dd></dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">std::out_of_range</td><td>if idx is out of range. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="a9454f706445f5e524ec6e15c479d3670" name="a9454f706445f5e524ec6e15c479d3670"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a9454f706445f5e524ec6e15c479d3670">&#9670;&#160;</a></span>RemoveTransition()</h2>
 
@@ -810,7 +936,7 @@ Friends</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><b>respond</b></li><li class="navelem"><a class="el" href="../../db/df3/classrespond_1_1Timestep.html">Timestep</a></li>
-    <li class="footer">Generated on Thu Jul 16 2026 19:42:51 for RESPOND by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
+    <li class="footer">Generated on Wed Jul 29 2026 18:49:17 for RESPOND by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
   </ul>
 </div>
 </body>

@@ -62,7 +62,7 @@ Copyright (c) 2025 Syndemics Lab at Boston Medical Center
                             <td id="projectlogo"><img alt="Logo" src="../../Syndemics_main_logo_50px.png" /></td>
                             <td id="projectalign">
                                 <div id="projectname">RESPOND<span
-                                        id="projectnumber">&#160;2.5.0</span>
+                                        id="projectnumber">&#160;2.5.1</span>
                                 </div>
                                 <div id="projectbrief">Researching Effective Strategies to Prevent Opioid Death</div>
                             </td>
@@ -135,7 +135,7 @@ $(document).ready(function(){initNavTree('d3/d27/simulation_8hpp_source.html','.
 <div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="comment">// Created Date: 2026-02-05                                                   //</span></div>
 <div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="comment">// Author: Matthew Carroll                                                    //</span></div>
 <div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="comment">// -----                                                                      //</span></div>
-<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="comment">// Last Modified: 2026-07-13                                                  //</span></div>
+<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="comment">// Last Modified: 2026-07-22                                                  //</span></div>
 <div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="comment">// Modified By: Matthew Carroll                                               //</span></div>
 <div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span><span class="comment">// -----                                                                      //</span></div>
 <div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span><span class="comment">// Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //</span></div>
@@ -158,250 +158,307 @@ $(document).ready(function(){initNavTree('d3/d27/simulation_8hpp_source.html','.
 <div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span><span class="keyword">namespace </span>respond {</div>
 <div class="line"><a id="l00032" name="l00032"></a><span class="lineno"><a class="line" href="../../de/d27/classrespond_1_1Simulation.html">   32</a></span><span class="keyword">class </span><a class="code hl_class" href="../../de/d27/classrespond_1_1Simulation.html">Simulation</a> {</div>
 <div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span><span class="keyword">public</span>:</div>
-<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span>    <span class="comment">//</span></div>
-<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span>    <span class="comment">// Rule of Five: Copy and Move Semantics</span></div>
-<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span>    <span class="comment">//</span></div>
-<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span><span class="comment"></span> </div>
-<div class="line"><a id="l00042" name="l00042"></a><span class="lineno"><a class="line" href="../../de/d27/classrespond_1_1Simulation.html#ad06898e0180473246c89481a3c4744d0">   42</a></span>    <a class="code hl_function" href="../../de/d27/classrespond_1_1Simulation.html#ad06898e0180473246c89481a3c4744d0">Simulation</a>() : <a class="code hl_class" href="../../de/d27/classrespond_1_1Simulation.html">Simulation</a>(RESPOND_DEFAULT_LOG) {}</div>
-<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span> </div>
-<div class="line"><a id="l00046" name="l00046"></a><span class="lineno"><a class="line" href="../../de/d27/classrespond_1_1Simulation.html#a5438cd165b1c9e53107b21ca093a28ba">   46</a></span>    <a class="code hl_function" href="../../de/d27/classrespond_1_1Simulation.html#a5438cd165b1c9e53107b21ca093a28ba">Simulation</a>(<span class="keyword">const</span> std::string &amp;log_name)</div>
-<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>        : <a class="code hl_class" href="../../de/d27/classrespond_1_1Simulation.html">Simulation</a>(log_name, RESPOND_DEFAULT_LOG_FILE) {}</div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno"><a class="line" href="../../d3/d0d/classrespond_1_1Simulation_1_1ModelSlotProxy.html">   35</a></span>    <span class="keyword">class </span><a class="code hl_class" href="../../d3/d0d/classrespond_1_1Simulation_1_1ModelSlotProxy.html">ModelSlotProxy</a> {</div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span>    <span class="keyword">public</span>:</div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span>        <a class="code hl_class" href="../../d3/d0d/classrespond_1_1Simulation_1_1ModelSlotProxy.html">ModelSlotProxy</a>(<a class="code hl_class" href="../../de/d27/classrespond_1_1Simulation.html">Simulation</a> &amp;owner, <span class="keywordtype">size_t</span> idx)</div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span>            : _owner(&amp;owner), _idx(idx) {}</div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span> </div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno"><a class="line" href="../../d3/d0d/classrespond_1_1Simulation_1_1ModelSlotProxy.html#a8abe026c16dee2f96c291e4a9e63d69a">   41</a></span>        <a class="code hl_class" href="../../d4/d00/classrespond_1_1Model.html">Model</a> *<a class="code hl_function" href="../../d3/d0d/classrespond_1_1Simulation_1_1ModelSlotProxy.html#a8abe026c16dee2f96c291e4a9e63d69a">operator-&gt;</a>() { <span class="keywordflow">return</span> &amp;_owner-&gt;GetModelRefOrThrow(_idx); }</div>
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span> </div>
+<div class="line"><a id="l00044" name="l00044"></a><span class="lineno"><a class="line" href="../../d3/d0d/classrespond_1_1Simulation_1_1ModelSlotProxy.html#abe05326f4c9b57fe3263edafb67fde53">   44</a></span>        <a class="code hl_class" href="../../d4/d00/classrespond_1_1Model.html">Model</a> &amp;<a class="code hl_function" href="../../d3/d0d/classrespond_1_1Simulation_1_1ModelSlotProxy.html#abe05326f4c9b57fe3263edafb67fde53">operator*</a>() { <span class="keywordflow">return</span> _owner-&gt;GetModelRefOrThrow(_idx); }</div>
+<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span> </div>
+<div class="line"><a id="l00047" name="l00047"></a><span class="lineno"><a class="line" href="../../d3/d0d/classrespond_1_1Simulation_1_1ModelSlotProxy.html#a757cae21850f368bfbab8b972dee0cb2">   47</a></span>        <span class="keyword">operator</span> <a class="code hl_class" href="../../d4/d00/classrespond_1_1Model.html">Model</a> &amp;() { <span class="keywordflow">return</span> _owner-&gt;GetModelRefOrThrow(_idx); }</div>
 <div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span> </div>
-<div class="line"><a id="l00052" name="l00052"></a><span class="lineno"><a class="line" href="../../de/d27/classrespond_1_1Simulation.html#ae34192e89f9d611a16f24349e4597f5e">   52</a></span>    <a class="code hl_function" href="../../de/d27/classrespond_1_1Simulation.html#ae34192e89f9d611a16f24349e4597f5e">Simulation</a>(<span class="keyword">const</span> std::string &amp;log_name, <span class="keyword">const</span> std::string &amp;log_filepath)</div>
-<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span>        : _log_name(log_name) {</div>
-<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span>        CreateFileLogger(log_name, log_filepath);</div>
-<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>    }</div>
-<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span> </div>
-<div class="line"><a id="l00058" name="l00058"></a><span class="lineno"><a class="line" href="../../de/d27/classrespond_1_1Simulation.html#a35b97491c85f7516247509fde2c37521">   58</a></span>    <a class="code hl_function" href="../../de/d27/classrespond_1_1Simulation.html#a35b97491c85f7516247509fde2c37521">~Simulation</a>() = <span class="keywordflow">default</span>;</div>
-<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span> </div>
-<div class="line"><a id="l00064" name="l00064"></a><span class="lineno"><a class="line" href="../../de/d27/classrespond_1_1Simulation.html#a9fef496915b13d16b51b9ba796b0270e">   64</a></span>    <a class="code hl_function" href="../../de/d27/classrespond_1_1Simulation.html#a9fef496915b13d16b51b9ba796b0270e">Simulation</a>(<span class="keyword">const</span> <a class="code hl_class" href="../../de/d27/classrespond_1_1Simulation.html">Simulation</a> &amp;other) {</div>
-<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span>        _log_name = other._log_name;</div>
-<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>        <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span> &amp;m : other._models) {</div>
-<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span>            _models.push_back(m-&gt;clone());</div>
-<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span>        }</div>
-<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span>        _duration = other._duration;</div>
-<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span>        _parameter_change_times = other._parameter_change_times;</div>
-<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span>        _stratify_entering_cohort = other._stratify_entering_cohort;</div>
-<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span>        _build_summary_stats = other._build_summary_stats;</div>
-<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span>        _save_state_history = other._save_state_history;</div>
-<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span>        _timesteps_to_report = other._timesteps_to_report;</div>
-<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span>        _pivot_long = other._pivot_long;</div>
-<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span>    }</div>
-<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span> </div>
-<div class="line"><a id="l00081" name="l00081"></a><span class="lineno"><a class="line" href="../../de/d27/classrespond_1_1Simulation.html#ad738dfbf25d8f298791594ea3a2f4f46">   81</a></span>    <a class="code hl_class" href="../../de/d27/classrespond_1_1Simulation.html">Simulation</a> &amp;<a class="code hl_function" href="../../de/d27/classrespond_1_1Simulation.html#ad738dfbf25d8f298791594ea3a2f4f46">operator=</a>(<span class="keyword">const</span> <a class="code hl_class" href="../../de/d27/classrespond_1_1Simulation.html">Simulation</a> &amp;other) {</div>
-<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span>        <span class="keywordflow">if</span> (<span class="keyword">this</span> != &amp;other) {</div>
-<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span>            _log_name = other._log_name;</div>
-<div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span>            _models.clear();</div>
-<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span>            <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span> &amp;m : other._models) {</div>
-<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span>                _models.push_back(m-&gt;clone());</div>
-<div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span>            }</div>
-<div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span>            _duration = other._duration;</div>
-<div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span>            _parameter_change_times = other._parameter_change_times;</div>
-<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span>            _stratify_entering_cohort = other._stratify_entering_cohort;</div>
-<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span>            _build_summary_stats = other._build_summary_stats;</div>
-<div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span>            _save_state_history = other._save_state_history;</div>
-<div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span>            _timesteps_to_report = other._timesteps_to_report;</div>
-<div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span>            _pivot_long = other._pivot_long;</div>
-<div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span>        }</div>
-<div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span>        <span class="keywordflow">return</span> *<span class="keyword">this</span>;</div>
-<div class="line"><a id="l00097" name="l00097"></a><span class="lineno">   97</span>    }</div>
-<div class="line"><a id="l00098" name="l00098"></a><span class="lineno">   98</span> </div>
-<div class="line"><a id="l00101" name="l00101"></a><span class="lineno"><a class="line" href="../../de/d27/classrespond_1_1Simulation.html#a1d2d22448e12c8f15c7586c964ed978d">  101</a></span>    <a class="code hl_function" href="../../de/d27/classrespond_1_1Simulation.html#a1d2d22448e12c8f15c7586c964ed978d">Simulation</a>(<a class="code hl_class" href="../../de/d27/classrespond_1_1Simulation.html">Simulation</a> &amp;&amp;other) noexcept</div>
-<div class="line"><a id="l00102" name="l00102"></a><span class="lineno">  102</span>        : _log_name(std::move(other._log_name)), _duration(other._duration),</div>
-<div class="line"><a id="l00103" name="l00103"></a><span class="lineno">  103</span>          _parameter_change_times(std::move(other._parameter_change_times)),</div>
-<div class="line"><a id="l00104" name="l00104"></a><span class="lineno">  104</span>          _stratify_entering_cohort(other._stratify_entering_cohort),</div>
-<div class="line"><a id="l00105" name="l00105"></a><span class="lineno">  105</span>          _build_summary_stats(other._build_summary_stats),</div>
-<div class="line"><a id="l00106" name="l00106"></a><span class="lineno">  106</span>          _save_state_history(other._save_state_history),</div>
-<div class="line"><a id="l00107" name="l00107"></a><span class="lineno">  107</span>          _timesteps_to_report(std::move(other._timesteps_to_report)),</div>
-<div class="line"><a id="l00108" name="l00108"></a><span class="lineno">  108</span>          _pivot_long(other._pivot_long) {</div>
-<div class="line"><a id="l00109" name="l00109"></a><span class="lineno">  109</span>        <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span> &amp;m : other._models) {</div>
-<div class="line"><a id="l00110" name="l00110"></a><span class="lineno">  110</span>            _models.push_back(m-&gt;clone());</div>
-<div class="line"><a id="l00111" name="l00111"></a><span class="lineno">  111</span>        }</div>
-<div class="line"><a id="l00112" name="l00112"></a><span class="lineno">  112</span>        other._models.clear();</div>
-<div class="line"><a id="l00113" name="l00113"></a><span class="lineno">  113</span>    }</div>
-<div class="line"><a id="l00114" name="l00114"></a><span class="lineno">  114</span> </div>
-<div class="line"><a id="l00118" name="l00118"></a><span class="lineno"><a class="line" href="../../de/d27/classrespond_1_1Simulation.html#ae3f681ac7211f695ecc726e49a94292f">  118</a></span>    <a class="code hl_class" href="../../de/d27/classrespond_1_1Simulation.html">Simulation</a> &amp;<a class="code hl_function" href="../../de/d27/classrespond_1_1Simulation.html#ae3f681ac7211f695ecc726e49a94292f">operator=</a>(<a class="code hl_class" href="../../de/d27/classrespond_1_1Simulation.html">Simulation</a> &amp;&amp;other) <span class="keyword">noexcept</span> {</div>
-<div class="line"><a id="l00119" name="l00119"></a><span class="lineno">  119</span>        <span class="keywordflow">if</span> (<span class="keyword">this</span> != &amp;other) {</div>
-<div class="line"><a id="l00120" name="l00120"></a><span class="lineno">  120</span>            _log_name = std::move(other._log_name);</div>
-<div class="line"><a id="l00121" name="l00121"></a><span class="lineno">  121</span>            _duration = other._duration;</div>
-<div class="line"><a id="l00122" name="l00122"></a><span class="lineno">  122</span>            _parameter_change_times = std::move(other._parameter_change_times);</div>
-<div class="line"><a id="l00123" name="l00123"></a><span class="lineno">  123</span>            _stratify_entering_cohort = other._stratify_entering_cohort;</div>
-<div class="line"><a id="l00124" name="l00124"></a><span class="lineno">  124</span>            _build_summary_stats = other._build_summary_stats;</div>
-<div class="line"><a id="l00125" name="l00125"></a><span class="lineno">  125</span>            _save_state_history = other._save_state_history;</div>
-<div class="line"><a id="l00126" name="l00126"></a><span class="lineno">  126</span>            _timesteps_to_report = std::move(other._timesteps_to_report);</div>
-<div class="line"><a id="l00127" name="l00127"></a><span class="lineno">  127</span>            _pivot_long = other._pivot_long;</div>
-<div class="line"><a id="l00128" name="l00128"></a><span class="lineno">  128</span> </div>
-<div class="line"><a id="l00129" name="l00129"></a><span class="lineno">  129</span>            <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span> &amp;m : other._models) {</div>
-<div class="line"><a id="l00130" name="l00130"></a><span class="lineno">  130</span>                _models.push_back(m-&gt;clone());</div>
-<div class="line"><a id="l00131" name="l00131"></a><span class="lineno">  131</span>            }</div>
-<div class="line"><a id="l00132" name="l00132"></a><span class="lineno">  132</span>            other._models.clear();</div>
-<div class="line"><a id="l00133" name="l00133"></a><span class="lineno">  133</span>        }</div>
-<div class="line"><a id="l00134" name="l00134"></a><span class="lineno">  134</span>        <span class="keywordflow">return</span> *<span class="keyword">this</span>;</div>
-<div class="line"><a id="l00135" name="l00135"></a><span class="lineno">  135</span>    }</div>
-<div class="line"><a id="l00136" name="l00136"></a><span class="lineno">  136</span> </div>
-<div class="line"><a id="l00138" name="l00138"></a><span class="lineno">  138</span>    <span class="comment">//</span></div>
-<div class="line"><a id="l00139" name="l00139"></a><span class="lineno">  139</span>    <span class="comment">// Simulation Behavior Methods: Model Management</span></div>
-<div class="line"><a id="l00140" name="l00140"></a><span class="lineno">  140</span>    <span class="comment">//</span></div>
-<div class="line"><a id="l00142" name="l00142"></a><span class="lineno">  142</span><span class="comment"></span> </div>
-<div class="line"><a id="l00148" name="l00148"></a><span class="lineno"><a class="line" href="../../de/d27/classrespond_1_1Simulation.html#a4a746956a96f67485d42d855b4cba9c6">  148</a></span>    <span class="keyword">const</span> std::string <a class="code hl_function" href="../../de/d27/classrespond_1_1Simulation.html#a4a746956a96f67485d42d855b4cba9c6">CreateNewModel</a>(<span class="keyword">const</span> std::string &amp;model_name) {</div>
-<div class="line"><a id="l00149" name="l00149"></a><span class="lineno">  149</span>        _models.push_back(<a class="code hl_function" href="../../d4/d00/classrespond_1_1Model.html#a619b8655ab389cc4cc3c84fd4116e28e">Model::Create</a>(model_name, _log_name));</div>
-<div class="line"><a id="l00150" name="l00150"></a><span class="lineno">  150</span>        <span class="keywordflow">return</span> std::to_string(_models.size()) + <span class="stringliteral">&quot;_&quot;</span> + _models.back()-&gt;GetName();</div>
-<div class="line"><a id="l00151" name="l00151"></a><span class="lineno">  151</span>    }</div>
-<div class="line"><a id="l00152" name="l00152"></a><span class="lineno">  152</span> </div>
-<div class="line"><a id="l00154" name="l00154"></a><span class="lineno"><a class="line" href="../../de/d27/classrespond_1_1Simulation.html#a6caf959955cd6401d65d9cc86bb0a9f6">  154</a></span>    <span class="keywordtype">void</span> <a class="code hl_function" href="../../de/d27/classrespond_1_1Simulation.html#a6caf959955cd6401d65d9cc86bb0a9f6">ClearModels</a>() { _models.clear(); }</div>
-<div class="line"><a id="l00155" name="l00155"></a><span class="lineno">  155</span> </div>
-<div class="line"><a id="l00159" name="l00159"></a><span class="lineno"><a class="line" href="../../de/d27/classrespond_1_1Simulation.html#aebf1197f15e2b7eae43dfffed80c1254">  159</a></span>    <span class="keywordtype">void</span> <a class="code hl_function" href="../../de/d27/classrespond_1_1Simulation.html#aebf1197f15e2b7eae43dfffed80c1254">AddModel</a>(<span class="keyword">const</span> std::unique_ptr&lt;Model&gt; &amp;model) {</div>
-<div class="line"><a id="l00160" name="l00160"></a><span class="lineno">  160</span>        <span class="comment">// because push_back is a move operation we&#39;re taking over ownership of</span></div>
-<div class="line"><a id="l00161" name="l00161"></a><span class="lineno">  161</span>        <span class="comment">// the unique pointer</span></div>
-<div class="line"><a id="l00162" name="l00162"></a><span class="lineno">  162</span>        _models.push_back(model-&gt;clone());</div>
-<div class="line"><a id="l00163" name="l00163"></a><span class="lineno">  163</span>    }</div>
-<div class="line"><a id="l00164" name="l00164"></a><span class="lineno">  164</span> </div>
-<div class="line"><a id="l00167" name="l00167"></a><span class="lineno"><a class="line" href="../../de/d27/classrespond_1_1Simulation.html#a40714b0c174621705a89ab1b966f36a2">  167</a></span>    <span class="keywordtype">void</span> <a class="code hl_function" href="../../de/d27/classrespond_1_1Simulation.html#a40714b0c174621705a89ab1b966f36a2">Run</a>(<span class="keywordtype">int</span> duration = -1) {</div>
-<div class="line"><a id="l00168" name="l00168"></a><span class="lineno">  168</span>        <span class="keywordflow">if</span> (duration &gt; 0) {</div>
-<div class="line"><a id="l00169" name="l00169"></a><span class="lineno">  169</span>            _duration = duration;</div>
-<div class="line"><a id="l00170" name="l00170"></a><span class="lineno">  170</span>        }</div>
-<div class="line"><a id="l00171" name="l00171"></a><span class="lineno">  171</span>        LogInfo(_log_name, <span class="stringliteral">&quot;Running simulation for duration of &quot;</span> +</div>
-<div class="line"><a id="l00172" name="l00172"></a><span class="lineno">  172</span>                               std::to_string(_duration) + <span class="stringliteral">&quot; timesteps.&quot;</span>);</div>
-<div class="line"><a id="l00173" name="l00173"></a><span class="lineno">  173</span>        <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span> &amp;model : _models) {</div>
-<div class="line"><a id="l00174" name="l00174"></a><span class="lineno">  174</span>            model-&gt;SetFinalTimestep(_duration);</div>
-<div class="line"><a id="l00175" name="l00175"></a><span class="lineno">  175</span>            model-&gt;RunTimesteps();</div>
-<div class="line"><a id="l00176" name="l00176"></a><span class="lineno">  176</span>        }</div>
-<div class="line"><a id="l00177" name="l00177"></a><span class="lineno">  177</span>    }</div>
-<div class="line"><a id="l00178" name="l00178"></a><span class="lineno">  178</span> </div>
-<div class="line"><a id="l00180" name="l00180"></a><span class="lineno">  180</span>    <span class="comment">//</span></div>
-<div class="line"><a id="l00181" name="l00181"></a><span class="lineno">  181</span>    <span class="comment">// Getters and Setters for Transitions and Metadata</span></div>
-<div class="line"><a id="l00182" name="l00182"></a><span class="lineno">  182</span>    <span class="comment">//</span></div>
-<div class="line"><a id="l00184" name="l00184"></a><span class="lineno">  184</span><span class="comment"></span> </div>
-<div class="line"><a id="l00187" name="l00187"></a><span class="lineno"><a class="line" href="../../de/d27/classrespond_1_1Simulation.html#a48fa745f85fd83f781ac0884afc90409">  187</a></span>    <span class="keyword">const</span> std::vector&lt;std::unique_ptr&lt;Model&gt;&gt; &amp;<a class="code hl_function" href="../../de/d27/classrespond_1_1Simulation.html#a48fa745f85fd83f781ac0884afc90409">GetModels</a>()<span class="keyword"> const </span>{</div>
-<div class="line"><a id="l00188" name="l00188"></a><span class="lineno">  188</span>        <span class="keywordflow">return</span> _models;</div>
-<div class="line"><a id="l00189" name="l00189"></a><span class="lineno">  189</span>    }</div>
-<div class="line"><a id="l00190" name="l00190"></a><span class="lineno">  190</span> </div>
-<div class="line"><a id="l00195" name="l00195"></a><span class="lineno"><a class="line" href="../../de/d27/classrespond_1_1Simulation.html#aa05d69d0f2eed565644440d0066b1c21">  195</a></span>    <span class="keyword">const</span> std::unique_ptr&lt;Model&gt; &amp;<a class="code hl_function" href="../../de/d27/classrespond_1_1Simulation.html#aa05d69d0f2eed565644440d0066b1c21">GetModel</a>(<span class="keywordtype">size_t</span> idx)<span class="keyword"> const </span>{</div>
-<div class="line"><a id="l00196" name="l00196"></a><span class="lineno">  196</span>        <span class="keywordflow">if</span> (idx &gt;= _models.size()) {</div>
-<div class="line"><a id="l00197" name="l00197"></a><span class="lineno">  197</span>            LogError(_log_name,</div>
-<div class="line"><a id="l00198" name="l00198"></a><span class="lineno">  198</span>                     <span class="stringliteral">&quot;Index out of range in GetModel: &quot;</span> + std::to_string(idx));</div>
-<div class="line"><a id="l00199" name="l00199"></a><span class="lineno">  199</span>            <span class="keywordflow">throw</span> std::out_of_range(<span class="stringliteral">&quot;Error attempting to GetModel by index.&quot;</span>);</div>
-<div class="line"><a id="l00200" name="l00200"></a><span class="lineno">  200</span>        }</div>
-<div class="line"><a id="l00201" name="l00201"></a><span class="lineno">  201</span>        <span class="keywordflow">return</span> _models[idx];</div>
-<div class="line"><a id="l00202" name="l00202"></a><span class="lineno">  202</span>    }</div>
+<div class="line"><a id="l00050" name="l00050"></a><span class="lineno"><a class="line" href="../../d3/d0d/classrespond_1_1Simulation_1_1ModelSlotProxy.html#ad57d0125b67a4a84bb6471962bea6c0c">   50</a></span>        <a class="code hl_class" href="../../d3/d0d/classrespond_1_1Simulation_1_1ModelSlotProxy.html">ModelSlotProxy</a> &amp;<a class="code hl_function" href="../../d3/d0d/classrespond_1_1Simulation_1_1ModelSlotProxy.html#ad57d0125b67a4a84bb6471962bea6c0c">operator=</a>(<span class="keyword">const</span> <a class="code hl_class" href="../../d3/d0d/classrespond_1_1Simulation_1_1ModelSlotProxy.html">ModelSlotProxy</a> &amp;other) {</div>
+<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>            <span class="keywordflow">return</span> *<span class="keyword">this</span> = <span class="keyword">static_cast&lt;</span><span class="keyword">const </span><a class="code hl_class" href="../../d4/d00/classrespond_1_1Model.html">Model</a> &amp;<span class="keyword">&gt;</span>(</div>
+<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span>                       other._owner-&gt;GetModelRefOrThrow(other._idx));</div>
+<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span>        }</div>
+<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span> </div>
+<div class="line"><a id="l00056" name="l00056"></a><span class="lineno"><a class="line" href="../../d3/d0d/classrespond_1_1Simulation_1_1ModelSlotProxy.html#ad82b501336d3783aa764bceea12f092d">   56</a></span>        <a class="code hl_class" href="../../d3/d0d/classrespond_1_1Simulation_1_1ModelSlotProxy.html">ModelSlotProxy</a> &amp;<a class="code hl_function" href="../../d3/d0d/classrespond_1_1Simulation_1_1ModelSlotProxy.html#ad82b501336d3783aa764bceea12f092d">operator=</a>(<span class="keyword">const</span> <a class="code hl_class" href="../../d4/d00/classrespond_1_1Model.html">Model</a> &amp;model) {</div>
+<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>            _owner-&gt;GetModelRefOrThrow(_idx);</div>
+<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span>            _owner-&gt;_models[_idx] = model.<a class="code hl_function" href="../../d4/d00/classrespond_1_1Model.html#a32412cb3739bc1cd738a93607022c46b">clone</a>();</div>
+<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span>            <span class="keywordflow">return</span> *<span class="keyword">this</span>;</div>
+<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span>        }</div>
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span> </div>
+<div class="line"><a id="l00064" name="l00064"></a><span class="lineno"><a class="line" href="../../d3/d0d/classrespond_1_1Simulation_1_1ModelSlotProxy.html#ad8dbc42a728b3f68f1a0baeeca1811cd">   64</a></span>        <a class="code hl_class" href="../../d3/d0d/classrespond_1_1Simulation_1_1ModelSlotProxy.html">ModelSlotProxy</a> &amp;<a class="code hl_function" href="../../d3/d0d/classrespond_1_1Simulation_1_1ModelSlotProxy.html#ad8dbc42a728b3f68f1a0baeeca1811cd">operator=</a>(<span class="keyword">const</span> std::unique_ptr&lt;Model&gt; &amp;model) {</div>
+<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span>            <span class="keywordflow">if</span> (!model) {</div>
+<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>                LogError(_owner-&gt;_log_name,</div>
+<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span>                         <span class="stringliteral">&quot;Cannot assign null model pointer to simulation &quot;</span></div>
+<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span>                         <span class="stringliteral">&quot;slot.&quot;</span>);</div>
+<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span>                <span class="keywordflow">throw</span> std::invalid_argument(</div>
+<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span>                    <span class="stringliteral">&quot;Error attempting to assign null model pointer.&quot;</span>);</div>
+<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span>            }</div>
+<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span>            _owner-&gt;GetModelRefOrThrow(_idx);</div>
+<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span>            _owner-&gt;_models[_idx] = model-&gt;clone();</div>
+<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span>            <span class="keywordflow">return</span> *<span class="keyword">this</span>;</div>
+<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span>        }</div>
+<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span> </div>
+<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span>    <span class="keyword">private</span>:</div>
+<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span>        <a class="code hl_class" href="../../de/d27/classrespond_1_1Simulation.html">Simulation</a> *_owner;</div>
+<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span>        <span class="keywordtype">size_t</span> _idx;</div>
+<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span>    };</div>
+<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span> </div>
+<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span>    <span class="comment">//</span></div>
+<div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span>    <span class="comment">// Rule of Five: Copy and Move Semantics</span></div>
+<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span>    <span class="comment">//</span></div>
+<div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span><span class="comment"></span> </div>
+<div class="line"><a id="l00090" name="l00090"></a><span class="lineno"><a class="line" href="../../de/d27/classrespond_1_1Simulation.html#ad06898e0180473246c89481a3c4744d0">   90</a></span>    <a class="code hl_function" href="../../de/d27/classrespond_1_1Simulation.html#ad06898e0180473246c89481a3c4744d0">Simulation</a>() : <a class="code hl_class" href="../../de/d27/classrespond_1_1Simulation.html">Simulation</a>(RESPOND_DEFAULT_LOG) {}</div>
+<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span> </div>
+<div class="line"><a id="l00094" name="l00094"></a><span class="lineno"><a class="line" href="../../de/d27/classrespond_1_1Simulation.html#a5438cd165b1c9e53107b21ca093a28ba">   94</a></span>    <a class="code hl_function" href="../../de/d27/classrespond_1_1Simulation.html#a5438cd165b1c9e53107b21ca093a28ba">Simulation</a>(<span class="keyword">const</span> std::string &amp;log_name)</div>
+<div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span>        : <a class="code hl_class" href="../../de/d27/classrespond_1_1Simulation.html">Simulation</a>(log_name, RESPOND_DEFAULT_LOG_FILE) {}</div>
+<div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span> </div>
+<div class="line"><a id="l00100" name="l00100"></a><span class="lineno"><a class="line" href="../../de/d27/classrespond_1_1Simulation.html#ae34192e89f9d611a16f24349e4597f5e">  100</a></span>    <a class="code hl_function" href="../../de/d27/classrespond_1_1Simulation.html#ae34192e89f9d611a16f24349e4597f5e">Simulation</a>(<span class="keyword">const</span> std::string &amp;log_name, <span class="keyword">const</span> std::string &amp;log_filepath)</div>
+<div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span>        : _log_name(log_name) {</div>
+<div class="line"><a id="l00102" name="l00102"></a><span class="lineno">  102</span>        CreateFileLogger(log_name, log_filepath);</div>
+<div class="line"><a id="l00103" name="l00103"></a><span class="lineno">  103</span>    }</div>
+<div class="line"><a id="l00104" name="l00104"></a><span class="lineno">  104</span> </div>
+<div class="line"><a id="l00106" name="l00106"></a><span class="lineno"><a class="line" href="../../de/d27/classrespond_1_1Simulation.html#a35b97491c85f7516247509fde2c37521">  106</a></span>    <a class="code hl_function" href="../../de/d27/classrespond_1_1Simulation.html#a35b97491c85f7516247509fde2c37521">~Simulation</a>() = <span class="keywordflow">default</span>;</div>
+<div class="line"><a id="l00107" name="l00107"></a><span class="lineno">  107</span> </div>
+<div class="line"><a id="l00112" name="l00112"></a><span class="lineno"><a class="line" href="../../de/d27/classrespond_1_1Simulation.html#a9fef496915b13d16b51b9ba796b0270e">  112</a></span>    <a class="code hl_function" href="../../de/d27/classrespond_1_1Simulation.html#a9fef496915b13d16b51b9ba796b0270e">Simulation</a>(<span class="keyword">const</span> <a class="code hl_class" href="../../de/d27/classrespond_1_1Simulation.html">Simulation</a> &amp;other) {</div>
+<div class="line"><a id="l00113" name="l00113"></a><span class="lineno">  113</span>        _log_name = other._log_name;</div>
+<div class="line"><a id="l00114" name="l00114"></a><span class="lineno">  114</span>        <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span> &amp;m : other._models) {</div>
+<div class="line"><a id="l00115" name="l00115"></a><span class="lineno">  115</span>            _models.push_back(m-&gt;clone());</div>
+<div class="line"><a id="l00116" name="l00116"></a><span class="lineno">  116</span>        }</div>
+<div class="line"><a id="l00117" name="l00117"></a><span class="lineno">  117</span>        _duration = other._duration;</div>
+<div class="line"><a id="l00118" name="l00118"></a><span class="lineno">  118</span>        _parameter_change_times = other._parameter_change_times;</div>
+<div class="line"><a id="l00119" name="l00119"></a><span class="lineno">  119</span>        _stratify_entering_cohort = other._stratify_entering_cohort;</div>
+<div class="line"><a id="l00120" name="l00120"></a><span class="lineno">  120</span>        _build_summary_stats = other._build_summary_stats;</div>
+<div class="line"><a id="l00121" name="l00121"></a><span class="lineno">  121</span>        _save_state_history = other._save_state_history;</div>
+<div class="line"><a id="l00122" name="l00122"></a><span class="lineno">  122</span>        _timesteps_to_report = other._timesteps_to_report;</div>
+<div class="line"><a id="l00123" name="l00123"></a><span class="lineno">  123</span>        _pivot_long = other._pivot_long;</div>
+<div class="line"><a id="l00124" name="l00124"></a><span class="lineno">  124</span>    }</div>
+<div class="line"><a id="l00125" name="l00125"></a><span class="lineno">  125</span> </div>
+<div class="line"><a id="l00129" name="l00129"></a><span class="lineno"><a class="line" href="../../de/d27/classrespond_1_1Simulation.html#ad738dfbf25d8f298791594ea3a2f4f46">  129</a></span>    <a class="code hl_class" href="../../de/d27/classrespond_1_1Simulation.html">Simulation</a> &amp;<a class="code hl_function" href="../../de/d27/classrespond_1_1Simulation.html#ad738dfbf25d8f298791594ea3a2f4f46">operator=</a>(<span class="keyword">const</span> <a class="code hl_class" href="../../de/d27/classrespond_1_1Simulation.html">Simulation</a> &amp;other) {</div>
+<div class="line"><a id="l00130" name="l00130"></a><span class="lineno">  130</span>        <span class="keywordflow">if</span> (<span class="keyword">this</span> != &amp;other) {</div>
+<div class="line"><a id="l00131" name="l00131"></a><span class="lineno">  131</span>            _log_name = other._log_name;</div>
+<div class="line"><a id="l00132" name="l00132"></a><span class="lineno">  132</span>            _models.clear();</div>
+<div class="line"><a id="l00133" name="l00133"></a><span class="lineno">  133</span>            <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span> &amp;m : other._models) {</div>
+<div class="line"><a id="l00134" name="l00134"></a><span class="lineno">  134</span>                _models.push_back(m-&gt;clone());</div>
+<div class="line"><a id="l00135" name="l00135"></a><span class="lineno">  135</span>            }</div>
+<div class="line"><a id="l00136" name="l00136"></a><span class="lineno">  136</span>            _duration = other._duration;</div>
+<div class="line"><a id="l00137" name="l00137"></a><span class="lineno">  137</span>            _parameter_change_times = other._parameter_change_times;</div>
+<div class="line"><a id="l00138" name="l00138"></a><span class="lineno">  138</span>            _stratify_entering_cohort = other._stratify_entering_cohort;</div>
+<div class="line"><a id="l00139" name="l00139"></a><span class="lineno">  139</span>            _build_summary_stats = other._build_summary_stats;</div>
+<div class="line"><a id="l00140" name="l00140"></a><span class="lineno">  140</span>            _save_state_history = other._save_state_history;</div>
+<div class="line"><a id="l00141" name="l00141"></a><span class="lineno">  141</span>            _timesteps_to_report = other._timesteps_to_report;</div>
+<div class="line"><a id="l00142" name="l00142"></a><span class="lineno">  142</span>            _pivot_long = other._pivot_long;</div>
+<div class="line"><a id="l00143" name="l00143"></a><span class="lineno">  143</span>        }</div>
+<div class="line"><a id="l00144" name="l00144"></a><span class="lineno">  144</span>        <span class="keywordflow">return</span> *<span class="keyword">this</span>;</div>
+<div class="line"><a id="l00145" name="l00145"></a><span class="lineno">  145</span>    }</div>
+<div class="line"><a id="l00146" name="l00146"></a><span class="lineno">  146</span> </div>
+<div class="line"><a id="l00149" name="l00149"></a><span class="lineno"><a class="line" href="../../de/d27/classrespond_1_1Simulation.html#a1d2d22448e12c8f15c7586c964ed978d">  149</a></span>    <a class="code hl_function" href="../../de/d27/classrespond_1_1Simulation.html#a1d2d22448e12c8f15c7586c964ed978d">Simulation</a>(<a class="code hl_class" href="../../de/d27/classrespond_1_1Simulation.html">Simulation</a> &amp;&amp;other) noexcept</div>
+<div class="line"><a id="l00150" name="l00150"></a><span class="lineno">  150</span>        : _log_name(std::move(other._log_name)), _duration(other._duration),</div>
+<div class="line"><a id="l00151" name="l00151"></a><span class="lineno">  151</span>          _parameter_change_times(std::move(other._parameter_change_times)),</div>
+<div class="line"><a id="l00152" name="l00152"></a><span class="lineno">  152</span>          _stratify_entering_cohort(other._stratify_entering_cohort),</div>
+<div class="line"><a id="l00153" name="l00153"></a><span class="lineno">  153</span>          _build_summary_stats(other._build_summary_stats),</div>
+<div class="line"><a id="l00154" name="l00154"></a><span class="lineno">  154</span>          _save_state_history(other._save_state_history),</div>
+<div class="line"><a id="l00155" name="l00155"></a><span class="lineno">  155</span>          _timesteps_to_report(std::move(other._timesteps_to_report)),</div>
+<div class="line"><a id="l00156" name="l00156"></a><span class="lineno">  156</span>          _pivot_long(other._pivot_long) {</div>
+<div class="line"><a id="l00157" name="l00157"></a><span class="lineno">  157</span>        <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span> &amp;m : other._models) {</div>
+<div class="line"><a id="l00158" name="l00158"></a><span class="lineno">  158</span>            _models.push_back(m-&gt;clone());</div>
+<div class="line"><a id="l00159" name="l00159"></a><span class="lineno">  159</span>        }</div>
+<div class="line"><a id="l00160" name="l00160"></a><span class="lineno">  160</span>        other._models.clear();</div>
+<div class="line"><a id="l00161" name="l00161"></a><span class="lineno">  161</span>    }</div>
+<div class="line"><a id="l00162" name="l00162"></a><span class="lineno">  162</span> </div>
+<div class="line"><a id="l00166" name="l00166"></a><span class="lineno"><a class="line" href="../../de/d27/classrespond_1_1Simulation.html#ae3f681ac7211f695ecc726e49a94292f">  166</a></span>    <a class="code hl_class" href="../../de/d27/classrespond_1_1Simulation.html">Simulation</a> &amp;<a class="code hl_function" href="../../de/d27/classrespond_1_1Simulation.html#ae3f681ac7211f695ecc726e49a94292f">operator=</a>(<a class="code hl_class" href="../../de/d27/classrespond_1_1Simulation.html">Simulation</a> &amp;&amp;other) <span class="keyword">noexcept</span> {</div>
+<div class="line"><a id="l00167" name="l00167"></a><span class="lineno">  167</span>        <span class="keywordflow">if</span> (<span class="keyword">this</span> != &amp;other) {</div>
+<div class="line"><a id="l00168" name="l00168"></a><span class="lineno">  168</span>            _log_name = std::move(other._log_name);</div>
+<div class="line"><a id="l00169" name="l00169"></a><span class="lineno">  169</span>            _duration = other._duration;</div>
+<div class="line"><a id="l00170" name="l00170"></a><span class="lineno">  170</span>            _parameter_change_times = std::move(other._parameter_change_times);</div>
+<div class="line"><a id="l00171" name="l00171"></a><span class="lineno">  171</span>            _stratify_entering_cohort = other._stratify_entering_cohort;</div>
+<div class="line"><a id="l00172" name="l00172"></a><span class="lineno">  172</span>            _build_summary_stats = other._build_summary_stats;</div>
+<div class="line"><a id="l00173" name="l00173"></a><span class="lineno">  173</span>            _save_state_history = other._save_state_history;</div>
+<div class="line"><a id="l00174" name="l00174"></a><span class="lineno">  174</span>            _timesteps_to_report = std::move(other._timesteps_to_report);</div>
+<div class="line"><a id="l00175" name="l00175"></a><span class="lineno">  175</span>            _pivot_long = other._pivot_long;</div>
+<div class="line"><a id="l00176" name="l00176"></a><span class="lineno">  176</span> </div>
+<div class="line"><a id="l00177" name="l00177"></a><span class="lineno">  177</span>            <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span> &amp;m : other._models) {</div>
+<div class="line"><a id="l00178" name="l00178"></a><span class="lineno">  178</span>                _models.push_back(m-&gt;clone());</div>
+<div class="line"><a id="l00179" name="l00179"></a><span class="lineno">  179</span>            }</div>
+<div class="line"><a id="l00180" name="l00180"></a><span class="lineno">  180</span>            other._models.clear();</div>
+<div class="line"><a id="l00181" name="l00181"></a><span class="lineno">  181</span>        }</div>
+<div class="line"><a id="l00182" name="l00182"></a><span class="lineno">  182</span>        <span class="keywordflow">return</span> *<span class="keyword">this</span>;</div>
+<div class="line"><a id="l00183" name="l00183"></a><span class="lineno">  183</span>    }</div>
+<div class="line"><a id="l00184" name="l00184"></a><span class="lineno">  184</span> </div>
+<div class="line"><a id="l00186" name="l00186"></a><span class="lineno">  186</span>    <span class="comment">//</span></div>
+<div class="line"><a id="l00187" name="l00187"></a><span class="lineno">  187</span>    <span class="comment">// Simulation Behavior Methods: Model Management</span></div>
+<div class="line"><a id="l00188" name="l00188"></a><span class="lineno">  188</span>    <span class="comment">//</span></div>
+<div class="line"><a id="l00190" name="l00190"></a><span class="lineno">  190</span><span class="comment"></span> </div>
+<div class="line"><a id="l00196" name="l00196"></a><span class="lineno"><a class="line" href="../../de/d27/classrespond_1_1Simulation.html#ac8dc680a030bc8dcb8eb32f0dff87e9d">  196</a></span>    std::unique_ptr&lt;Model&gt; <a class="code hl_function" href="../../de/d27/classrespond_1_1Simulation.html#ac8dc680a030bc8dcb8eb32f0dff87e9d">CreateNewModel</a>(<span class="keyword">const</span> std::string &amp;model_name) {</div>
+<div class="line"><a id="l00197" name="l00197"></a><span class="lineno">  197</span>        _models.push_back(<a class="code hl_function" href="../../d4/d00/classrespond_1_1Model.html#a619b8655ab389cc4cc3c84fd4116e28e">Model::Create</a>(model_name, _log_name));</div>
+<div class="line"><a id="l00198" name="l00198"></a><span class="lineno">  198</span>        <span class="keywordflow">return</span> _models.back()-&gt;clone();</div>
+<div class="line"><a id="l00199" name="l00199"></a><span class="lineno">  199</span>    }</div>
+<div class="line"><a id="l00200" name="l00200"></a><span class="lineno">  200</span> </div>
+<div class="line"><a id="l00202" name="l00202"></a><span class="lineno"><a class="line" href="../../de/d27/classrespond_1_1Simulation.html#a6caf959955cd6401d65d9cc86bb0a9f6">  202</a></span>    <span class="keywordtype">void</span> <a class="code hl_function" href="../../de/d27/classrespond_1_1Simulation.html#a6caf959955cd6401d65d9cc86bb0a9f6">ClearModels</a>() { _models.clear(); }</div>
 <div class="line"><a id="l00203" name="l00203"></a><span class="lineno">  203</span> </div>
-<div class="line"><a id="l00204" name="l00204"></a><span class="lineno">  204</span>    <span class="keyword">const</span> std::unique_ptr&lt;Model&gt; &amp;</div>
-<div class="line"><a id="l00205" name="l00205"></a><span class="lineno">  205</span>    <a class="code hl_function" href="../../de/d27/classrespond_1_1Simulation.html#aa05d69d0f2eed565644440d0066b1c21">GetModel</a>(<span class="keyword">const</span> std::string &amp;model_name)<span class="keyword"> const </span>{</div>
-<div class="line"><a id="l00206" name="l00206"></a><span class="lineno">  206</span>        <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span> &amp;model : _models) {</div>
-<div class="line"><a id="l00207" name="l00207"></a><span class="lineno">  207</span>            <span class="keywordflow">if</span> (model-&gt;GetName() == model_name) {</div>
-<div class="line"><a id="l00208" name="l00208"></a><span class="lineno">  208</span>                <span class="keywordflow">return</span> model;</div>
-<div class="line"><a id="l00209" name="l00209"></a><span class="lineno">  209</span>            }</div>
-<div class="line"><a id="l00210" name="l00210"></a><span class="lineno">  210</span>        }</div>
-<div class="line"><a id="l00211" name="l00211"></a><span class="lineno">  211</span>        LogError(_log_name, <span class="stringliteral">&quot;Model name not found in GetModel: &quot;</span> + model_name);</div>
-<div class="line"><a id="l00212" name="l00212"></a><span class="lineno">  212</span>        <span class="keywordflow">throw</span> std::invalid_argument(<span class="stringliteral">&quot;Error attempting to GetModel by name.&quot;</span>);</div>
-<div class="line"><a id="l00213" name="l00213"></a><span class="lineno">  213</span>    }</div>
-<div class="line"><a id="l00214" name="l00214"></a><span class="lineno">  214</span> </div>
-<div class="line"><a id="l00217" name="l00217"></a><span class="lineno"><a class="line" href="../../de/d27/classrespond_1_1Simulation.html#a05cc042835656c0cab41d82ce1084f19">  217</a></span>    std::vector&lt;std::string&gt; <a class="code hl_function" href="../../de/d27/classrespond_1_1Simulation.html#a05cc042835656c0cab41d82ce1084f19">GetModelNames</a>()<span class="keyword"> const </span>{</div>
-<div class="line"><a id="l00218" name="l00218"></a><span class="lineno">  218</span>        std::vector&lt;std::string&gt; ret;</div>
-<div class="line"><a id="l00219" name="l00219"></a><span class="lineno">  219</span>        <span class="keywordflow">for</span> (<span class="keyword">auto</span> &amp;m : _models) {</div>
-<div class="line"><a id="l00220" name="l00220"></a><span class="lineno">  220</span>            ret.push_back(m-&gt;GetName());</div>
-<div class="line"><a id="l00221" name="l00221"></a><span class="lineno">  221</span>        }</div>
-<div class="line"><a id="l00222" name="l00222"></a><span class="lineno">  222</span>        <span class="keywordflow">return</span> ret;</div>
+<div class="line"><a id="l00207" name="l00207"></a><span class="lineno"><a class="line" href="../../de/d27/classrespond_1_1Simulation.html#aebf1197f15e2b7eae43dfffed80c1254">  207</a></span>    <span class="keywordtype">void</span> <a class="code hl_function" href="../../de/d27/classrespond_1_1Simulation.html#aebf1197f15e2b7eae43dfffed80c1254">AddModel</a>(<span class="keyword">const</span> std::unique_ptr&lt;Model&gt; &amp;model) {</div>
+<div class="line"><a id="l00208" name="l00208"></a><span class="lineno">  208</span>        _models.push_back(model-&gt;clone());</div>
+<div class="line"><a id="l00209" name="l00209"></a><span class="lineno">  209</span>    }</div>
+<div class="line"><a id="l00210" name="l00210"></a><span class="lineno">  210</span> </div>
+<div class="line"><a id="l00213" name="l00213"></a><span class="lineno"><a class="line" href="../../de/d27/classrespond_1_1Simulation.html#a40714b0c174621705a89ab1b966f36a2">  213</a></span>    <span class="keywordtype">void</span> <a class="code hl_function" href="../../de/d27/classrespond_1_1Simulation.html#a40714b0c174621705a89ab1b966f36a2">Run</a>(<span class="keywordtype">int</span> duration = -1) {</div>
+<div class="line"><a id="l00214" name="l00214"></a><span class="lineno">  214</span>        <span class="keywordflow">if</span> (duration &gt; 0) {</div>
+<div class="line"><a id="l00215" name="l00215"></a><span class="lineno">  215</span>            _duration = duration;</div>
+<div class="line"><a id="l00216" name="l00216"></a><span class="lineno">  216</span>        }</div>
+<div class="line"><a id="l00217" name="l00217"></a><span class="lineno">  217</span>        LogInfo(_log_name, <span class="stringliteral">&quot;Running simulation for duration of &quot;</span> +</div>
+<div class="line"><a id="l00218" name="l00218"></a><span class="lineno">  218</span>                               std::to_string(_duration) + <span class="stringliteral">&quot; timesteps.&quot;</span>);</div>
+<div class="line"><a id="l00219" name="l00219"></a><span class="lineno">  219</span>        <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span> &amp;model : _models) {</div>
+<div class="line"><a id="l00220" name="l00220"></a><span class="lineno">  220</span>            model-&gt;SetFinalTimestep(_duration);</div>
+<div class="line"><a id="l00221" name="l00221"></a><span class="lineno">  221</span>            model-&gt;RunTimesteps();</div>
+<div class="line"><a id="l00222" name="l00222"></a><span class="lineno">  222</span>        }</div>
 <div class="line"><a id="l00223" name="l00223"></a><span class="lineno">  223</span>    }</div>
 <div class="line"><a id="l00224" name="l00224"></a><span class="lineno">  224</span> </div>
-<div class="line"><a id="l00230" name="l00230"></a><span class="lineno"><a class="line" href="../../de/d27/classrespond_1_1Simulation.html#a83a58b26a5e9aa7770e15a7cdf8cc9c3">  230</a></span>    <span class="keyword">const</span> std::map&lt;std::string, History&gt; &amp;<a class="code hl_function" href="../../de/d27/classrespond_1_1Simulation.html#a83a58b26a5e9aa7770e15a7cdf8cc9c3">GetModelHistory</a>(<span class="keywordtype">size_t</span> idx)<span class="keyword"> const </span>{</div>
-<div class="line"><a id="l00231" name="l00231"></a><span class="lineno">  231</span>        <span class="keywordflow">if</span> (idx &gt;= _models.size()) {</div>
-<div class="line"><a id="l00232" name="l00232"></a><span class="lineno">  232</span>            LogError(_log_name, <span class="stringliteral">&quot;Index out of range in GetModelHistory: &quot;</span> +</div>
-<div class="line"><a id="l00233" name="l00233"></a><span class="lineno">  233</span>                                    std::to_string(idx));</div>
-<div class="line"><a id="l00234" name="l00234"></a><span class="lineno">  234</span>            <span class="keywordflow">throw</span> std::out_of_range(</div>
-<div class="line"><a id="l00235" name="l00235"></a><span class="lineno">  235</span>                <span class="stringliteral">&quot;Error attempting to GetModelHistory by index.&quot;</span>);</div>
-<div class="line"><a id="l00236" name="l00236"></a><span class="lineno">  236</span>        }</div>
-<div class="line"><a id="l00237" name="l00237"></a><span class="lineno">  237</span>        <span class="keywordflow">return</span> _models[idx]-&gt;GetHistories();</div>
-<div class="line"><a id="l00238" name="l00238"></a><span class="lineno">  238</span>    }</div>
-<div class="line"><a id="l00239" name="l00239"></a><span class="lineno">  239</span> </div>
-<div class="line"><a id="l00240" name="l00240"></a><span class="lineno">  240</span>    <span class="keyword">const</span> std::map&lt;std::string, History&gt; &amp;</div>
-<div class="line"><a id="l00241" name="l00241"></a><span class="lineno">  241</span>    <a class="code hl_function" href="../../de/d27/classrespond_1_1Simulation.html#a83a58b26a5e9aa7770e15a7cdf8cc9c3">GetModelHistory</a>(<span class="keyword">const</span> std::string &amp;model_name)<span class="keyword"> const </span>{</div>
-<div class="line"><a id="l00242" name="l00242"></a><span class="lineno">  242</span>        <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span> &amp;model : _models) {</div>
-<div class="line"><a id="l00243" name="l00243"></a><span class="lineno">  243</span>            <span class="keywordflow">if</span> (model-&gt;GetName() == model_name) {</div>
-<div class="line"><a id="l00244" name="l00244"></a><span class="lineno">  244</span>                <span class="keywordflow">return</span> model-&gt;GetHistories();</div>
-<div class="line"><a id="l00245" name="l00245"></a><span class="lineno">  245</span>            }</div>
-<div class="line"><a id="l00246" name="l00246"></a><span class="lineno">  246</span>        }</div>
-<div class="line"><a id="l00247" name="l00247"></a><span class="lineno">  247</span>        LogError(_log_name,</div>
-<div class="line"><a id="l00248" name="l00248"></a><span class="lineno">  248</span>                 <span class="stringliteral">&quot;Model name not found in GetModelHistory: &quot;</span> + model_name);</div>
-<div class="line"><a id="l00249" name="l00249"></a><span class="lineno">  249</span>        <span class="keywordflow">throw</span> std::invalid_argument(</div>
-<div class="line"><a id="l00250" name="l00250"></a><span class="lineno">  250</span>            <span class="stringliteral">&quot;Error attempting to GetModelHistory by name.&quot;</span>);</div>
-<div class="line"><a id="l00251" name="l00251"></a><span class="lineno">  251</span>    }</div>
-<div class="line"><a id="l00252" name="l00252"></a><span class="lineno">  252</span> </div>
-<div class="line"><a id="l00255" name="l00255"></a><span class="lineno"><a class="line" href="../../de/d27/classrespond_1_1Simulation.html#afcd21e110ff388d8bade3a0f3f995115">  255</a></span>    <span class="keyword">const</span> std::vector&lt;std::string&gt; <a class="code hl_function" href="../../de/d27/classrespond_1_1Simulation.html#afcd21e110ff388d8bade3a0f3f995115">GetModelHistoryNames</a>(<span class="keywordtype">size_t</span> idx)<span class="keyword"> const </span>{</div>
-<div class="line"><a id="l00256" name="l00256"></a><span class="lineno">  256</span>        <span class="keywordflow">if</span> (idx &gt;= _models.size()) {</div>
-<div class="line"><a id="l00257" name="l00257"></a><span class="lineno">  257</span>            LogError(_log_name, <span class="stringliteral">&quot;Index out of range in GetModelHistoryNames: &quot;</span> +</div>
-<div class="line"><a id="l00258" name="l00258"></a><span class="lineno">  258</span>                                    std::to_string(idx));</div>
-<div class="line"><a id="l00259" name="l00259"></a><span class="lineno">  259</span>            <span class="keywordflow">throw</span> std::out_of_range(</div>
-<div class="line"><a id="l00260" name="l00260"></a><span class="lineno">  260</span>                <span class="stringliteral">&quot;Error attempting to GetModelHistoryNames by index.&quot;</span>);</div>
-<div class="line"><a id="l00261" name="l00261"></a><span class="lineno">  261</span>        }</div>
-<div class="line"><a id="l00262" name="l00262"></a><span class="lineno">  262</span>        std::vector&lt;std::string&gt; ret;</div>
-<div class="line"><a id="l00263" name="l00263"></a><span class="lineno">  263</span>        <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span> &amp;kv : _models[idx]-&gt;GetHistories()) {</div>
-<div class="line"><a id="l00264" name="l00264"></a><span class="lineno">  264</span>            ret.push_back(kv.first);</div>
-<div class="line"><a id="l00265" name="l00265"></a><span class="lineno">  265</span>        }</div>
-<div class="line"><a id="l00266" name="l00266"></a><span class="lineno">  266</span>        <span class="keywordflow">return</span> ret;</div>
-<div class="line"><a id="l00267" name="l00267"></a><span class="lineno">  267</span>    }</div>
-<div class="line"><a id="l00268" name="l00268"></a><span class="lineno">  268</span> </div>
-<div class="line"><a id="l00269" name="l00269"></a><span class="lineno">  269</span>    <span class="keyword">const</span> std::vector&lt;std::string&gt;</div>
-<div class="line"><a id="l00270" name="l00270"></a><span class="lineno">  270</span>    <a class="code hl_function" href="../../de/d27/classrespond_1_1Simulation.html#afcd21e110ff388d8bade3a0f3f995115">GetModelHistoryNames</a>(<span class="keyword">const</span> std::string &amp;model_name)<span class="keyword"> const </span>{</div>
-<div class="line"><a id="l00271" name="l00271"></a><span class="lineno">  271</span>        <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span> &amp;model : _models) {</div>
-<div class="line"><a id="l00272" name="l00272"></a><span class="lineno">  272</span>            <span class="keywordflow">if</span> (model-&gt;GetName() == model_name) {</div>
-<div class="line"><a id="l00273" name="l00273"></a><span class="lineno">  273</span>                std::vector&lt;std::string&gt; ret;</div>
-<div class="line"><a id="l00274" name="l00274"></a><span class="lineno">  274</span>                <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span> &amp;kv : model-&gt;GetHistories()) {</div>
-<div class="line"><a id="l00275" name="l00275"></a><span class="lineno">  275</span>                    ret.push_back(kv.first);</div>
-<div class="line"><a id="l00276" name="l00276"></a><span class="lineno">  276</span>                }</div>
-<div class="line"><a id="l00277" name="l00277"></a><span class="lineno">  277</span>                <span class="keywordflow">return</span> ret;</div>
-<div class="line"><a id="l00278" name="l00278"></a><span class="lineno">  278</span>            }</div>
-<div class="line"><a id="l00279" name="l00279"></a><span class="lineno">  279</span>        }</div>
-<div class="line"><a id="l00280" name="l00280"></a><span class="lineno">  280</span>        LogError(_log_name,</div>
-<div class="line"><a id="l00281" name="l00281"></a><span class="lineno">  281</span>                 <span class="stringliteral">&quot;Model name not found in GetModelHistoryNames: &quot;</span> + model_name);</div>
-<div class="line"><a id="l00282" name="l00282"></a><span class="lineno">  282</span>        <span class="keywordflow">throw</span> std::invalid_argument(</div>
-<div class="line"><a id="l00283" name="l00283"></a><span class="lineno">  283</span>            <span class="stringliteral">&quot;Error attempting to GetModelHistoryNames by name.&quot;</span>);</div>
-<div class="line"><a id="l00284" name="l00284"></a><span class="lineno">  284</span>    }</div>
-<div class="line"><a id="l00285" name="l00285"></a><span class="lineno">  285</span> </div>
-<div class="line"><a id="l00286" name="l00286"></a><span class="lineno">  286</span>    <span class="keywordtype">void</span> SetDuration(<span class="keywordtype">int</span> duration) { _duration = duration; }</div>
-<div class="line"><a id="l00287" name="l00287"></a><span class="lineno">  287</span> </div>
-<div class="line"><a id="l00288" name="l00288"></a><span class="lineno">  288</span><span class="keyword">private</span>:</div>
-<div class="line"><a id="l00289" name="l00289"></a><span class="lineno">  289</span>    std::string _log_name;</div>
-<div class="line"><a id="l00290" name="l00290"></a><span class="lineno">  290</span>    std::vector&lt;std::unique_ptr&lt;Model&gt;&gt; _models;</div>
-<div class="line"><a id="l00291" name="l00291"></a><span class="lineno">  291</span> </div>
-<div class="line"><a id="l00292" name="l00292"></a><span class="lineno">  292</span>    <span class="keywordtype">int</span> _duration = 1; <span class="comment">// Default simulation duration in timesteps</span></div>
-<div class="line"><a id="l00293" name="l00293"></a><span class="lineno">  293</span>    std::vector&lt;int&gt; _parameter_change_times;</div>
-<div class="line"><a id="l00294" name="l00294"></a><span class="lineno">  294</span>    <span class="keywordtype">bool</span> _stratify_entering_cohort;</div>
-<div class="line"><a id="l00295" name="l00295"></a><span class="lineno">  295</span> </div>
-<div class="line"><a id="l00296" name="l00296"></a><span class="lineno">  296</span>    <span class="keywordtype">bool</span> _build_summary_stats;</div>
-<div class="line"><a id="l00297" name="l00297"></a><span class="lineno">  297</span>    <span class="keywordtype">bool</span> _save_state_history;</div>
-<div class="line"><a id="l00298" name="l00298"></a><span class="lineno">  298</span>    std::vector&lt;int&gt; _timesteps_to_report;</div>
-<div class="line"><a id="l00299" name="l00299"></a><span class="lineno">  299</span>    <span class="keywordtype">bool</span> _pivot_long;</div>
-<div class="line"><a id="l00300" name="l00300"></a><span class="lineno">  300</span>};</div>
-<div class="line"><a id="l00301" name="l00301"></a><span class="lineno">  301</span>} <span class="comment">// namespace respond</span></div>
-<div class="line"><a id="l00302" name="l00302"></a><span class="lineno">  302</span> </div>
-<div class="line"><a id="l00303" name="l00303"></a><span class="lineno">  303</span><span class="preprocessor">#endif </span><span class="comment">// RESPOND_SIMULATION_HPP_</span></div>
+<div class="line"><a id="l00226" name="l00226"></a><span class="lineno">  226</span>    <span class="comment">//</span></div>
+<div class="line"><a id="l00227" name="l00227"></a><span class="lineno">  227</span>    <span class="comment">// Getters and Setters for Transitions and Metadata</span></div>
+<div class="line"><a id="l00228" name="l00228"></a><span class="lineno">  228</span>    <span class="comment">//</span></div>
+<div class="line"><a id="l00230" name="l00230"></a><span class="lineno">  230</span><span class="comment"></span> </div>
+<div class="line"><a id="l00233" name="l00233"></a><span class="lineno"><a class="line" href="../../de/d27/classrespond_1_1Simulation.html#a33194e90638f4dec468c737e10ee13d3">  233</a></span>    std::vector&lt;std::unique_ptr&lt;Model&gt;&gt; <a class="code hl_function" href="../../de/d27/classrespond_1_1Simulation.html#a33194e90638f4dec468c737e10ee13d3">GetModels</a>()<span class="keyword"> const </span>{</div>
+<div class="line"><a id="l00234" name="l00234"></a><span class="lineno">  234</span>        std::vector&lt;std::unique_ptr&lt;Model&gt;&gt; _models_copy;</div>
+<div class="line"><a id="l00235" name="l00235"></a><span class="lineno">  235</span>        <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span> &amp;model : _models) {</div>
+<div class="line"><a id="l00236" name="l00236"></a><span class="lineno">  236</span>            _models_copy.push_back(model-&gt;clone());</div>
+<div class="line"><a id="l00237" name="l00237"></a><span class="lineno">  237</span>        }</div>
+<div class="line"><a id="l00238" name="l00238"></a><span class="lineno">  238</span>        <span class="keywordflow">return</span> _models_copy;</div>
+<div class="line"><a id="l00239" name="l00239"></a><span class="lineno">  239</span>    }</div>
+<div class="line"><a id="l00240" name="l00240"></a><span class="lineno">  240</span> </div>
+<div class="line"><a id="l00247" name="l00247"></a><span class="lineno"><a class="line" href="../../de/d27/classrespond_1_1Simulation.html#afd0be81341bca966d069b67f46e285e2">  247</a></span>    <a class="code hl_class" href="../../d3/d0d/classrespond_1_1Simulation_1_1ModelSlotProxy.html">ModelSlotProxy</a> <a class="code hl_function" href="../../de/d27/classrespond_1_1Simulation.html#afd0be81341bca966d069b67f46e285e2">operator[]</a>(<span class="keywordtype">size_t</span> idx) {</div>
+<div class="line"><a id="l00248" name="l00248"></a><span class="lineno">  248</span>        GetModelRefOrThrow(idx);</div>
+<div class="line"><a id="l00249" name="l00249"></a><span class="lineno">  249</span>        <span class="keywordflow">return</span> <a class="code hl_class" href="../../d3/d0d/classrespond_1_1Simulation_1_1ModelSlotProxy.html">ModelSlotProxy</a>(*<span class="keyword">this</span>, idx);</div>
+<div class="line"><a id="l00250" name="l00250"></a><span class="lineno">  250</span>    }</div>
+<div class="line"><a id="l00251" name="l00251"></a><span class="lineno">  251</span> </div>
+<div class="line"><a id="l00256" name="l00256"></a><span class="lineno"><a class="line" href="../../de/d27/classrespond_1_1Simulation.html#ada489f3c19e7db6bc48a08551b7c0b29">  256</a></span>    <span class="keyword">const</span> <a class="code hl_class" href="../../d4/d00/classrespond_1_1Model.html">Model</a> &amp;<a class="code hl_function" href="../../de/d27/classrespond_1_1Simulation.html#ada489f3c19e7db6bc48a08551b7c0b29">operator[]</a>(<span class="keywordtype">size_t</span> idx)<span class="keyword"> const </span>{</div>
+<div class="line"><a id="l00257" name="l00257"></a><span class="lineno">  257</span>        <span class="keywordflow">return</span> GetModelRefOrThrow(idx);</div>
+<div class="line"><a id="l00258" name="l00258"></a><span class="lineno">  258</span>    }</div>
+<div class="line"><a id="l00259" name="l00259"></a><span class="lineno">  259</span> </div>
+<div class="line"><a id="l00267" name="l00267"></a><span class="lineno"><a class="line" href="../../de/d27/classrespond_1_1Simulation.html#a3881ab1182d9a556d44ad63ba4707083">  267</a></span>    std::map&lt;size_t, std::string&gt; <a class="code hl_function" href="../../de/d27/classrespond_1_1Simulation.html#a3881ab1182d9a556d44ad63ba4707083">GetModelIndexNameMap</a>()<span class="keyword"> const </span>{</div>
+<div class="line"><a id="l00268" name="l00268"></a><span class="lineno">  268</span>        std::map&lt;size_t, std::string&gt; ret;</div>
+<div class="line"><a id="l00269" name="l00269"></a><span class="lineno">  269</span>        <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> i = 0; i &lt; _models.size(); ++i) {</div>
+<div class="line"><a id="l00270" name="l00270"></a><span class="lineno">  270</span>            ret[i] = _models[i]-&gt;GetName();</div>
+<div class="line"><a id="l00271" name="l00271"></a><span class="lineno">  271</span>        }</div>
+<div class="line"><a id="l00272" name="l00272"></a><span class="lineno">  272</span>        <span class="keywordflow">return</span> ret;</div>
+<div class="line"><a id="l00273" name="l00273"></a><span class="lineno">  273</span>    }</div>
+<div class="line"><a id="l00274" name="l00274"></a><span class="lineno">  274</span> </div>
+<div class="line"><a id="l00280" name="l00280"></a><span class="lineno"><a class="line" href="../../de/d27/classrespond_1_1Simulation.html#ab5e1c35dd10eaff9d20a24fb58bba6b0">  280</a></span>    std::unique_ptr&lt;Model&gt; <a class="code hl_function" href="../../de/d27/classrespond_1_1Simulation.html#ab5e1c35dd10eaff9d20a24fb58bba6b0">GetModel</a>(<span class="keywordtype">int</span> idx)<span class="keyword"> const </span>{</div>
+<div class="line"><a id="l00281" name="l00281"></a><span class="lineno">  281</span>        <span class="keywordflow">if</span> (_models.empty()) {</div>
+<div class="line"><a id="l00282" name="l00282"></a><span class="lineno">  282</span>            LogError(_log_name, <span class="stringliteral">&quot;No models available in GetModel.&quot;</span>);</div>
+<div class="line"><a id="l00283" name="l00283"></a><span class="lineno">  283</span>            <span class="keywordflow">throw</span> std::out_of_range(<span class="stringliteral">&quot;Error attempting to GetModel: no models.&quot;</span>);</div>
+<div class="line"><a id="l00284" name="l00284"></a><span class="lineno">  284</span>        }</div>
+<div class="line"><a id="l00285" name="l00285"></a><span class="lineno">  285</span>        <span class="keywordflow">if</span> (idx &lt; -1 || idx &gt;= <span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>(_models.size())) {</div>
+<div class="line"><a id="l00286" name="l00286"></a><span class="lineno">  286</span>            LogError(_log_name,</div>
+<div class="line"><a id="l00287" name="l00287"></a><span class="lineno">  287</span>                     <span class="stringliteral">&quot;Index out of range in GetModel: &quot;</span> + std::to_string(idx));</div>
+<div class="line"><a id="l00288" name="l00288"></a><span class="lineno">  288</span>            <span class="keywordflow">throw</span> std::out_of_range(<span class="stringliteral">&quot;Error attempting to GetModel by index.&quot;</span>);</div>
+<div class="line"><a id="l00289" name="l00289"></a><span class="lineno">  289</span>        }</div>
+<div class="line"><a id="l00290" name="l00290"></a><span class="lineno">  290</span>        <span class="comment">// Return the last model if idx is -1</span></div>
+<div class="line"><a id="l00291" name="l00291"></a><span class="lineno">  291</span>        <span class="keywordflow">if</span> (idx == -1) {</div>
+<div class="line"><a id="l00292" name="l00292"></a><span class="lineno">  292</span>            <span class="keywordflow">return</span> _models.back()-&gt;clone();</div>
+<div class="line"><a id="l00293" name="l00293"></a><span class="lineno">  293</span>        }</div>
+<div class="line"><a id="l00294" name="l00294"></a><span class="lineno">  294</span>        <span class="keywordflow">return</span> _models[idx]-&gt;clone();</div>
+<div class="line"><a id="l00295" name="l00295"></a><span class="lineno">  295</span>    }</div>
+<div class="line"><a id="l00296" name="l00296"></a><span class="lineno">  296</span> </div>
+<div class="line"><a id="l00299" name="l00299"></a><span class="lineno"><a class="line" href="../../de/d27/classrespond_1_1Simulation.html#a05cc042835656c0cab41d82ce1084f19">  299</a></span>    std::vector&lt;std::string&gt; <a class="code hl_function" href="../../de/d27/classrespond_1_1Simulation.html#a05cc042835656c0cab41d82ce1084f19">GetModelNames</a>()<span class="keyword"> const </span>{</div>
+<div class="line"><a id="l00300" name="l00300"></a><span class="lineno">  300</span>        std::vector&lt;std::string&gt; ret;</div>
+<div class="line"><a id="l00301" name="l00301"></a><span class="lineno">  301</span>        <span class="keywordflow">for</span> (<span class="keyword">auto</span> &amp;m : _models) {</div>
+<div class="line"><a id="l00302" name="l00302"></a><span class="lineno">  302</span>            ret.push_back(m-&gt;GetName());</div>
+<div class="line"><a id="l00303" name="l00303"></a><span class="lineno">  303</span>        }</div>
+<div class="line"><a id="l00304" name="l00304"></a><span class="lineno">  304</span>        <span class="keywordflow">return</span> ret;</div>
+<div class="line"><a id="l00305" name="l00305"></a><span class="lineno">  305</span>    }</div>
+<div class="line"><a id="l00306" name="l00306"></a><span class="lineno">  306</span> </div>
+<div class="line"><a id="l00311" name="l00311"></a><span class="lineno"><a class="line" href="../../de/d27/classrespond_1_1Simulation.html#a83a58b26a5e9aa7770e15a7cdf8cc9c3">  311</a></span>    <span class="keyword">const</span> std::map&lt;std::string, History&gt; &amp;<a class="code hl_function" href="../../de/d27/classrespond_1_1Simulation.html#a83a58b26a5e9aa7770e15a7cdf8cc9c3">GetModelHistory</a>(<span class="keywordtype">size_t</span> idx)<span class="keyword"> const </span>{</div>
+<div class="line"><a id="l00312" name="l00312"></a><span class="lineno">  312</span>        <span class="keywordflow">if</span> (idx &gt;= _models.size()) {</div>
+<div class="line"><a id="l00313" name="l00313"></a><span class="lineno">  313</span>            LogError(_log_name, <span class="stringliteral">&quot;Index out of range in GetModelHistory: &quot;</span> +</div>
+<div class="line"><a id="l00314" name="l00314"></a><span class="lineno">  314</span>                                    std::to_string(idx));</div>
+<div class="line"><a id="l00315" name="l00315"></a><span class="lineno">  315</span>            <span class="keywordflow">throw</span> std::out_of_range(</div>
+<div class="line"><a id="l00316" name="l00316"></a><span class="lineno">  316</span>                <span class="stringliteral">&quot;Error attempting to GetModelHistory by index.&quot;</span>);</div>
+<div class="line"><a id="l00317" name="l00317"></a><span class="lineno">  317</span>        }</div>
+<div class="line"><a id="l00318" name="l00318"></a><span class="lineno">  318</span>        <span class="keywordflow">return</span> _models[idx]-&gt;GetHistories();</div>
+<div class="line"><a id="l00319" name="l00319"></a><span class="lineno">  319</span>    }</div>
+<div class="line"><a id="l00320" name="l00320"></a><span class="lineno">  320</span> </div>
+<div class="line"><a id="l00324" name="l00324"></a><span class="lineno"><a class="line" href="../../de/d27/classrespond_1_1Simulation.html#afcd21e110ff388d8bade3a0f3f995115">  324</a></span>    <span class="keyword">const</span> std::vector&lt;std::string&gt; <a class="code hl_function" href="../../de/d27/classrespond_1_1Simulation.html#afcd21e110ff388d8bade3a0f3f995115">GetModelHistoryNames</a>(<span class="keywordtype">size_t</span> idx)<span class="keyword"> const </span>{</div>
+<div class="line"><a id="l00325" name="l00325"></a><span class="lineno">  325</span>        <span class="keywordflow">if</span> (idx &gt;= _models.size()) {</div>
+<div class="line"><a id="l00326" name="l00326"></a><span class="lineno">  326</span>            LogError(_log_name, <span class="stringliteral">&quot;Index out of range in GetModelHistoryNames: &quot;</span> +</div>
+<div class="line"><a id="l00327" name="l00327"></a><span class="lineno">  327</span>                                    std::to_string(idx));</div>
+<div class="line"><a id="l00328" name="l00328"></a><span class="lineno">  328</span>            <span class="keywordflow">throw</span> std::out_of_range(</div>
+<div class="line"><a id="l00329" name="l00329"></a><span class="lineno">  329</span>                <span class="stringliteral">&quot;Error attempting to GetModelHistoryNames by index.&quot;</span>);</div>
+<div class="line"><a id="l00330" name="l00330"></a><span class="lineno">  330</span>        }</div>
+<div class="line"><a id="l00331" name="l00331"></a><span class="lineno">  331</span>        std::vector&lt;std::string&gt; ret;</div>
+<div class="line"><a id="l00332" name="l00332"></a><span class="lineno">  332</span>        <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span> &amp;kv : _models[idx]-&gt;GetHistories()) {</div>
+<div class="line"><a id="l00333" name="l00333"></a><span class="lineno">  333</span>            ret.push_back(kv.first);</div>
+<div class="line"><a id="l00334" name="l00334"></a><span class="lineno">  334</span>        }</div>
+<div class="line"><a id="l00335" name="l00335"></a><span class="lineno">  335</span>        <span class="keywordflow">return</span> ret;</div>
+<div class="line"><a id="l00336" name="l00336"></a><span class="lineno">  336</span>    }</div>
+<div class="line"><a id="l00337" name="l00337"></a><span class="lineno">  337</span> </div>
+<div class="line"><a id="l00338" name="l00338"></a><span class="lineno">  338</span>    <span class="keywordtype">void</span> SetDuration(<span class="keywordtype">int</span> duration) { _duration = duration; }</div>
+<div class="line"><a id="l00339" name="l00339"></a><span class="lineno">  339</span> </div>
+<div class="line"><a id="l00340" name="l00340"></a><span class="lineno">  340</span><span class="keyword">private</span>:</div>
+<div class="line"><a id="l00341" name="l00341"></a><span class="lineno">  341</span>    Model &amp;GetModelRefOrThrow(<span class="keywordtype">size_t</span> idx) {</div>
+<div class="line"><a id="l00342" name="l00342"></a><span class="lineno">  342</span>        <span class="keywordflow">if</span> (idx &gt;= _models.size()) {</div>
+<div class="line"><a id="l00343" name="l00343"></a><span class="lineno">  343</span>            LogError(_log_name, <span class="stringliteral">&quot;Index out of range in model access: &quot;</span> +</div>
+<div class="line"><a id="l00344" name="l00344"></a><span class="lineno">  344</span>                                    std::to_string(idx));</div>
+<div class="line"><a id="l00345" name="l00345"></a><span class="lineno">  345</span>            <span class="keywordflow">throw</span> std::out_of_range(<span class="stringliteral">&quot;Error attempting to access model by &quot;</span></div>
+<div class="line"><a id="l00346" name="l00346"></a><span class="lineno">  346</span>                                    <span class="stringliteral">&quot;index.&quot;</span>);</div>
+<div class="line"><a id="l00347" name="l00347"></a><span class="lineno">  347</span>        }</div>
+<div class="line"><a id="l00348" name="l00348"></a><span class="lineno">  348</span>        <span class="keywordflow">return</span> *_models[idx];</div>
+<div class="line"><a id="l00349" name="l00349"></a><span class="lineno">  349</span>    }</div>
+<div class="line"><a id="l00350" name="l00350"></a><span class="lineno">  350</span> </div>
+<div class="line"><a id="l00351" name="l00351"></a><span class="lineno">  351</span>    <span class="keyword">const</span> Model &amp;GetModelRefOrThrow(<span class="keywordtype">size_t</span> idx)<span class="keyword"> const </span>{</div>
+<div class="line"><a id="l00352" name="l00352"></a><span class="lineno">  352</span>        <span class="keywordflow">if</span> (idx &gt;= _models.size()) {</div>
+<div class="line"><a id="l00353" name="l00353"></a><span class="lineno">  353</span>            LogError(_log_name, <span class="stringliteral">&quot;Index out of range in model access: &quot;</span> +</div>
+<div class="line"><a id="l00354" name="l00354"></a><span class="lineno">  354</span>                                    std::to_string(idx));</div>
+<div class="line"><a id="l00355" name="l00355"></a><span class="lineno">  355</span>            <span class="keywordflow">throw</span> std::out_of_range(<span class="stringliteral">&quot;Error attempting to access model by &quot;</span></div>
+<div class="line"><a id="l00356" name="l00356"></a><span class="lineno">  356</span>                                    <span class="stringliteral">&quot;index.&quot;</span>);</div>
+<div class="line"><a id="l00357" name="l00357"></a><span class="lineno">  357</span>        }</div>
+<div class="line"><a id="l00358" name="l00358"></a><span class="lineno">  358</span>        <span class="keywordflow">return</span> *_models[idx];</div>
+<div class="line"><a id="l00359" name="l00359"></a><span class="lineno">  359</span>    }</div>
+<div class="line"><a id="l00360" name="l00360"></a><span class="lineno">  360</span> </div>
+<div class="line"><a id="l00361" name="l00361"></a><span class="lineno">  361</span>    std::string _log_name;</div>
+<div class="line"><a id="l00362" name="l00362"></a><span class="lineno">  362</span>    std::vector&lt;std::unique_ptr&lt;Model&gt;&gt; _models;</div>
+<div class="line"><a id="l00363" name="l00363"></a><span class="lineno">  363</span> </div>
+<div class="line"><a id="l00364" name="l00364"></a><span class="lineno">  364</span>    <span class="keywordtype">int</span> _duration = 1; <span class="comment">// Default simulation duration in timesteps</span></div>
+<div class="line"><a id="l00365" name="l00365"></a><span class="lineno">  365</span>    std::vector&lt;int&gt; _parameter_change_times;</div>
+<div class="line"><a id="l00366" name="l00366"></a><span class="lineno">  366</span>    <span class="keywordtype">bool</span> _stratify_entering_cohort;</div>
+<div class="line"><a id="l00367" name="l00367"></a><span class="lineno">  367</span> </div>
+<div class="line"><a id="l00368" name="l00368"></a><span class="lineno">  368</span>    <span class="keywordtype">bool</span> _build_summary_stats;</div>
+<div class="line"><a id="l00369" name="l00369"></a><span class="lineno">  369</span>    <span class="keywordtype">bool</span> _save_state_history;</div>
+<div class="line"><a id="l00370" name="l00370"></a><span class="lineno">  370</span>    std::vector&lt;int&gt; _timesteps_to_report;</div>
+<div class="line"><a id="l00371" name="l00371"></a><span class="lineno">  371</span>    <span class="keywordtype">bool</span> _pivot_long;</div>
+<div class="line"><a id="l00372" name="l00372"></a><span class="lineno">  372</span>};</div>
+<div class="line"><a id="l00373" name="l00373"></a><span class="lineno">  373</span>} <span class="comment">// namespace respond</span></div>
+<div class="line"><a id="l00374" name="l00374"></a><span class="lineno">  374</span> </div>
+<div class="line"><a id="l00375" name="l00375"></a><span class="lineno">  375</span><span class="preprocessor">#endif </span><span class="comment">// RESPOND_SIMULATION_HPP_</span></div>
+<div class="ttc" id="aclassrespond_1_1Model_html"><div class="ttname"><a href="../../d4/d00/classrespond_1_1Model.html">respond::Model</a></div><div class="ttdoc">Abstract base class representing a state transition model. Models manage a state vector,...</div><div class="ttdef"><b>Definition:</b> model.hpp:30</div></div>
+<div class="ttc" id="aclassrespond_1_1Model_html_a32412cb3739bc1cd738a93607022c46b"><div class="ttname"><a href="../../d4/d00/classrespond_1_1Model.html#a32412cb3739bc1cd738a93607022c46b">respond::Model::clone</a></div><div class="ttdeci">virtual std::unique_ptr&lt; Model &gt; clone() const =0</div><div class="ttdoc">Creates a deep copy of this model.</div></div>
 <div class="ttc" id="aclassrespond_1_1Model_html_a619b8655ab389cc4cc3c84fd4116e28e"><div class="ttname"><a href="../../d4/d00/classrespond_1_1Model.html#a619b8655ab389cc4cc3c84fd4116e28e">respond::Model::Create</a></div><div class="ttdeci">static std::unique_ptr&lt; Model &gt; Create(const std::string &amp;name, const std::string &amp;log_name=RESPOND_DEFAULT_LOG, const std::string &amp;log_filepath=RESPOND_DEFAULT_LOG_FILE)</div><div class="ttdoc">Factory method to create a Model instance.</div></div>
+<div class="ttc" id="aclassrespond_1_1Simulation_1_1ModelSlotProxy_html"><div class="ttname"><a href="../../d3/d0d/classrespond_1_1Simulation_1_1ModelSlotProxy.html">respond::Simulation::ModelSlotProxy</a></div><div class="ttdoc">Proxy for mutable model slot access with clone-based assignment.</div><div class="ttdef"><b>Definition:</b> simulation.hpp:35</div></div>
+<div class="ttc" id="aclassrespond_1_1Simulation_1_1ModelSlotProxy_html_a8abe026c16dee2f96c291e4a9e63d69a"><div class="ttname"><a href="../../d3/d0d/classrespond_1_1Simulation_1_1ModelSlotProxy.html#a8abe026c16dee2f96c291e4a9e63d69a">respond::Simulation::ModelSlotProxy::operator-&gt;</a></div><div class="ttdeci">Model * operator-&gt;()</div><div class="ttdoc">Access the underlying model pointer for member access.</div><div class="ttdef"><b>Definition:</b> simulation.hpp:41</div></div>
+<div class="ttc" id="aclassrespond_1_1Simulation_1_1ModelSlotProxy_html_abe05326f4c9b57fe3263edafb67fde53"><div class="ttname"><a href="../../d3/d0d/classrespond_1_1Simulation_1_1ModelSlotProxy.html#abe05326f4c9b57fe3263edafb67fde53">respond::Simulation::ModelSlotProxy::operator*</a></div><div class="ttdeci">Model &amp; operator*()</div><div class="ttdoc">Dereference to the underlying model.</div><div class="ttdef"><b>Definition:</b> simulation.hpp:44</div></div>
+<div class="ttc" id="aclassrespond_1_1Simulation_1_1ModelSlotProxy_html_ad57d0125b67a4a84bb6471962bea6c0c"><div class="ttname"><a href="../../d3/d0d/classrespond_1_1Simulation_1_1ModelSlotProxy.html#ad57d0125b67a4a84bb6471962bea6c0c">respond::Simulation::ModelSlotProxy::operator=</a></div><div class="ttdeci">ModelSlotProxy &amp; operator=(const ModelSlotProxy &amp;other)</div><div class="ttdoc">Replace this slot by cloning from another proxy's model.</div><div class="ttdef"><b>Definition:</b> simulation.hpp:50</div></div>
+<div class="ttc" id="aclassrespond_1_1Simulation_1_1ModelSlotProxy_html_ad82b501336d3783aa764bceea12f092d"><div class="ttname"><a href="../../d3/d0d/classrespond_1_1Simulation_1_1ModelSlotProxy.html#ad82b501336d3783aa764bceea12f092d">respond::Simulation::ModelSlotProxy::operator=</a></div><div class="ttdeci">ModelSlotProxy &amp; operator=(const Model &amp;model)</div><div class="ttdoc">Replace this slot by cloning from a model reference.</div><div class="ttdef"><b>Definition:</b> simulation.hpp:56</div></div>
+<div class="ttc" id="aclassrespond_1_1Simulation_1_1ModelSlotProxy_html_ad8dbc42a728b3f68f1a0baeeca1811cd"><div class="ttname"><a href="../../d3/d0d/classrespond_1_1Simulation_1_1ModelSlotProxy.html#ad8dbc42a728b3f68f1a0baeeca1811cd">respond::Simulation::ModelSlotProxy::operator=</a></div><div class="ttdeci">ModelSlotProxy &amp; operator=(const std::unique_ptr&lt; Model &gt; &amp;model)</div><div class="ttdoc">Replace this slot by cloning from a model unique_ptr.</div><div class="ttdef"><b>Definition:</b> simulation.hpp:64</div></div>
 <div class="ttc" id="aclassrespond_1_1Simulation_html"><div class="ttname"><a href="../../de/d27/classrespond_1_1Simulation.html">respond::Simulation</a></div><div class="ttdoc">Manages and executes multiple models in a coordinated simulation. A Simulation aggregates Model insta...</div><div class="ttdef"><b>Definition:</b> simulation.hpp:32</div></div>
-<div class="ttc" id="aclassrespond_1_1Simulation_html_a05cc042835656c0cab41d82ce1084f19"><div class="ttname"><a href="../../de/d27/classrespond_1_1Simulation.html#a05cc042835656c0cab41d82ce1084f19">respond::Simulation::GetModelNames</a></div><div class="ttdeci">std::vector&lt; std::string &gt; GetModelNames() const</div><div class="ttdoc">Retrieves the names of all models in the simulation.</div><div class="ttdef"><b>Definition:</b> simulation.hpp:217</div></div>
-<div class="ttc" id="aclassrespond_1_1Simulation_html_a1d2d22448e12c8f15c7586c964ed978d"><div class="ttname"><a href="../../de/d27/classrespond_1_1Simulation.html#a1d2d22448e12c8f15c7586c964ed978d">respond::Simulation::Simulation</a></div><div class="ttdeci">Simulation(Simulation &amp;&amp;other) noexcept</div><div class="ttdoc">Move constructor for transferring simulation ownership.</div><div class="ttdef"><b>Definition:</b> simulation.hpp:101</div></div>
+<div class="ttc" id="aclassrespond_1_1Simulation_html_a05cc042835656c0cab41d82ce1084f19"><div class="ttname"><a href="../../de/d27/classrespond_1_1Simulation.html#a05cc042835656c0cab41d82ce1084f19">respond::Simulation::GetModelNames</a></div><div class="ttdeci">std::vector&lt; std::string &gt; GetModelNames() const</div><div class="ttdoc">Retrieves the names of all models in the simulation.</div><div class="ttdef"><b>Definition:</b> simulation.hpp:299</div></div>
+<div class="ttc" id="aclassrespond_1_1Simulation_html_a1d2d22448e12c8f15c7586c964ed978d"><div class="ttname"><a href="../../de/d27/classrespond_1_1Simulation.html#a1d2d22448e12c8f15c7586c964ed978d">respond::Simulation::Simulation</a></div><div class="ttdeci">Simulation(Simulation &amp;&amp;other) noexcept</div><div class="ttdoc">Move constructor for transferring simulation ownership.</div><div class="ttdef"><b>Definition:</b> simulation.hpp:149</div></div>
+<div class="ttc" id="aclassrespond_1_1Simulation_html_a33194e90638f4dec468c737e10ee13d3"><div class="ttname"><a href="../../de/d27/classrespond_1_1Simulation.html#a33194e90638f4dec468c737e10ee13d3">respond::Simulation::GetModels</a></div><div class="ttdeci">std::vector&lt; std::unique_ptr&lt; Model &gt; &gt; GetModels() const</div><div class="ttdoc">Retrieves all models in the simulation.</div><div class="ttdef"><b>Definition:</b> simulation.hpp:233</div></div>
 <div class="ttc" id="aclassrespond_1_1Simulation_html_a35b97491c85f7516247509fde2c37521"><div class="ttname"><a href="../../de/d27/classrespond_1_1Simulation.html#a35b97491c85f7516247509fde2c37521">respond::Simulation::~Simulation</a></div><div class="ttdeci">~Simulation()=default</div><div class="ttdoc">Virtual destructor for polymorphic cleanup.</div></div>
-<div class="ttc" id="aclassrespond_1_1Simulation_html_a40714b0c174621705a89ab1b966f36a2"><div class="ttname"><a href="../../de/d27/classrespond_1_1Simulation.html#a40714b0c174621705a89ab1b966f36a2">respond::Simulation::Run</a></div><div class="ttdeci">void Run(int duration=-1)</div><div class="ttdoc">Executes one step of the simulation for all models. Calls RunTransitions() on each registered model i...</div><div class="ttdef"><b>Definition:</b> simulation.hpp:167</div></div>
-<div class="ttc" id="aclassrespond_1_1Simulation_html_a48fa745f85fd83f781ac0884afc90409"><div class="ttname"><a href="../../de/d27/classrespond_1_1Simulation.html#a48fa745f85fd83f781ac0884afc90409">respond::Simulation::GetModels</a></div><div class="ttdeci">const std::vector&lt; std::unique_ptr&lt; Model &gt; &gt; &amp; GetModels() const</div><div class="ttdoc">Retrieves all models in the simulation.</div><div class="ttdef"><b>Definition:</b> simulation.hpp:187</div></div>
-<div class="ttc" id="aclassrespond_1_1Simulation_html_a4a746956a96f67485d42d855b4cba9c6"><div class="ttname"><a href="../../de/d27/classrespond_1_1Simulation.html#a4a746956a96f67485d42d855b4cba9c6">respond::Simulation::CreateNewModel</a></div><div class="ttdeci">const std::string CreateNewModel(const std::string &amp;model_name)</div><div class="ttdoc">Creates a new model instance and adds it to the simulation.</div><div class="ttdef"><b>Definition:</b> simulation.hpp:148</div></div>
-<div class="ttc" id="aclassrespond_1_1Simulation_html_a5438cd165b1c9e53107b21ca093a28ba"><div class="ttname"><a href="../../de/d27/classrespond_1_1Simulation.html#a5438cd165b1c9e53107b21ca093a28ba">respond::Simulation::Simulation</a></div><div class="ttdeci">Simulation(const std::string &amp;log_name)</div><div class="ttdoc">Constructs a Simulation with a specified logger.</div><div class="ttdef"><b>Definition:</b> simulation.hpp:46</div></div>
-<div class="ttc" id="aclassrespond_1_1Simulation_html_a6caf959955cd6401d65d9cc86bb0a9f6"><div class="ttname"><a href="../../de/d27/classrespond_1_1Simulation.html#a6caf959955cd6401d65d9cc86bb0a9f6">respond::Simulation::ClearModels</a></div><div class="ttdeci">void ClearModels()</div><div class="ttdoc">Removes all models from the simulation.</div><div class="ttdef"><b>Definition:</b> simulation.hpp:154</div></div>
-<div class="ttc" id="aclassrespond_1_1Simulation_html_a83a58b26a5e9aa7770e15a7cdf8cc9c3"><div class="ttname"><a href="../../de/d27/classrespond_1_1Simulation.html#a83a58b26a5e9aa7770e15a7cdf8cc9c3">respond::Simulation::GetModelHistory</a></div><div class="ttdeci">const std::map&lt; std::string, History &gt; &amp; GetModelHistory(size_t idx) const</div><div class="ttdoc">Retrieves the complete state histories for the model at the index.</div><div class="ttdef"><b>Definition:</b> simulation.hpp:230</div></div>
-<div class="ttc" id="aclassrespond_1_1Simulation_html_a9fef496915b13d16b51b9ba796b0270e"><div class="ttname"><a href="../../de/d27/classrespond_1_1Simulation.html#a9fef496915b13d16b51b9ba796b0270e">respond::Simulation::Simulation</a></div><div class="ttdeci">Simulation(const Simulation &amp;other)</div><div class="ttdoc">Copy constructor creating an independent deep copy of the simulation. All models are cloned; modifica...</div><div class="ttdef"><b>Definition:</b> simulation.hpp:64</div></div>
-<div class="ttc" id="aclassrespond_1_1Simulation_html_aa05d69d0f2eed565644440d0066b1c21"><div class="ttname"><a href="../../de/d27/classrespond_1_1Simulation.html#aa05d69d0f2eed565644440d0066b1c21">respond::Simulation::GetModel</a></div><div class="ttdeci">const std::unique_ptr&lt; Model &gt; &amp; GetModel(size_t idx) const</div><div class="ttdoc">Retrieves a specific model by index in the simulation.</div><div class="ttdef"><b>Definition:</b> simulation.hpp:195</div></div>
-<div class="ttc" id="aclassrespond_1_1Simulation_html_ad06898e0180473246c89481a3c4744d0"><div class="ttname"><a href="../../de/d27/classrespond_1_1Simulation.html#ad06898e0180473246c89481a3c4744d0">respond::Simulation::Simulation</a></div><div class="ttdeci">Simulation()</div><div class="ttdoc">Default constructor for a Simulation instance. Initializes the simulation with the default logger.</div><div class="ttdef"><b>Definition:</b> simulation.hpp:42</div></div>
-<div class="ttc" id="aclassrespond_1_1Simulation_html_ad738dfbf25d8f298791594ea3a2f4f46"><div class="ttname"><a href="../../de/d27/classrespond_1_1Simulation.html#ad738dfbf25d8f298791594ea3a2f4f46">respond::Simulation::operator=</a></div><div class="ttdeci">Simulation &amp; operator=(const Simulation &amp;other)</div><div class="ttdoc">Copy assignment operator for deep copying simulation state.</div><div class="ttdef"><b>Definition:</b> simulation.hpp:81</div></div>
-<div class="ttc" id="aclassrespond_1_1Simulation_html_ae34192e89f9d611a16f24349e4597f5e"><div class="ttname"><a href="../../de/d27/classrespond_1_1Simulation.html#ae34192e89f9d611a16f24349e4597f5e">respond::Simulation::Simulation</a></div><div class="ttdeci">Simulation(const std::string &amp;log_name, const std::string &amp;log_filepath)</div><div class="ttdoc">Constructs a Simulation with a specified logger and log file.</div><div class="ttdef"><b>Definition:</b> simulation.hpp:52</div></div>
-<div class="ttc" id="aclassrespond_1_1Simulation_html_ae3f681ac7211f695ecc726e49a94292f"><div class="ttname"><a href="../../de/d27/classrespond_1_1Simulation.html#ae3f681ac7211f695ecc726e49a94292f">respond::Simulation::operator=</a></div><div class="ttdeci">Simulation &amp; operator=(Simulation &amp;&amp;other) noexcept</div><div class="ttdoc">Move assignment operator for transferring simulation ownership.</div><div class="ttdef"><b>Definition:</b> simulation.hpp:118</div></div>
-<div class="ttc" id="aclassrespond_1_1Simulation_html_aebf1197f15e2b7eae43dfffed80c1254"><div class="ttname"><a href="../../de/d27/classrespond_1_1Simulation.html#aebf1197f15e2b7eae43dfffed80c1254">respond::Simulation::AddModel</a></div><div class="ttdeci">void AddModel(const std::unique_ptr&lt; Model &gt; &amp;model)</div><div class="ttdoc">Adds a model to the simulation. The model is cloned and managed by the simulation.</div><div class="ttdef"><b>Definition:</b> simulation.hpp:159</div></div>
-<div class="ttc" id="aclassrespond_1_1Simulation_html_afcd21e110ff388d8bade3a0f3f995115"><div class="ttname"><a href="../../de/d27/classrespond_1_1Simulation.html#afcd21e110ff388d8bade3a0f3f995115">respond::Simulation::GetModelHistoryNames</a></div><div class="ttdeci">const std::vector&lt; std::string &gt; GetModelHistoryNames(size_t idx) const</div><div class="ttdoc">Retrieves pairs of (model name, history name) for all histories.</div><div class="ttdef"><b>Definition:</b> simulation.hpp:255</div></div>
+<div class="ttc" id="aclassrespond_1_1Simulation_html_a3881ab1182d9a556d44ad63ba4707083"><div class="ttname"><a href="../../de/d27/classrespond_1_1Simulation.html#a3881ab1182d9a556d44ad63ba4707083">respond::Simulation::GetModelIndexNameMap</a></div><div class="ttdeci">std::map&lt; size_t, std::string &gt; GetModelIndexNameMap() const</div><div class="ttdoc">Provide a mapping of model indices to their names for all models in the simulation.</div><div class="ttdef"><b>Definition:</b> simulation.hpp:267</div></div>
+<div class="ttc" id="aclassrespond_1_1Simulation_html_a40714b0c174621705a89ab1b966f36a2"><div class="ttname"><a href="../../de/d27/classrespond_1_1Simulation.html#a40714b0c174621705a89ab1b966f36a2">respond::Simulation::Run</a></div><div class="ttdeci">void Run(int duration=-1)</div><div class="ttdoc">Executes one step of the simulation for all models. Calls RunTransitions() on each registered model i...</div><div class="ttdef"><b>Definition:</b> simulation.hpp:213</div></div>
+<div class="ttc" id="aclassrespond_1_1Simulation_html_a5438cd165b1c9e53107b21ca093a28ba"><div class="ttname"><a href="../../de/d27/classrespond_1_1Simulation.html#a5438cd165b1c9e53107b21ca093a28ba">respond::Simulation::Simulation</a></div><div class="ttdeci">Simulation(const std::string &amp;log_name)</div><div class="ttdoc">Constructs a Simulation with a specified logger.</div><div class="ttdef"><b>Definition:</b> simulation.hpp:94</div></div>
+<div class="ttc" id="aclassrespond_1_1Simulation_html_a6caf959955cd6401d65d9cc86bb0a9f6"><div class="ttname"><a href="../../de/d27/classrespond_1_1Simulation.html#a6caf959955cd6401d65d9cc86bb0a9f6">respond::Simulation::ClearModels</a></div><div class="ttdeci">void ClearModels()</div><div class="ttdoc">Removes all models from the simulation.</div><div class="ttdef"><b>Definition:</b> simulation.hpp:202</div></div>
+<div class="ttc" id="aclassrespond_1_1Simulation_html_a83a58b26a5e9aa7770e15a7cdf8cc9c3"><div class="ttname"><a href="../../de/d27/classrespond_1_1Simulation.html#a83a58b26a5e9aa7770e15a7cdf8cc9c3">respond::Simulation::GetModelHistory</a></div><div class="ttdeci">const std::map&lt; std::string, History &gt; &amp; GetModelHistory(size_t idx) const</div><div class="ttdoc">Retrieves the complete state histories for the model at the index.</div><div class="ttdef"><b>Definition:</b> simulation.hpp:311</div></div>
+<div class="ttc" id="aclassrespond_1_1Simulation_html_a9fef496915b13d16b51b9ba796b0270e"><div class="ttname"><a href="../../de/d27/classrespond_1_1Simulation.html#a9fef496915b13d16b51b9ba796b0270e">respond::Simulation::Simulation</a></div><div class="ttdeci">Simulation(const Simulation &amp;other)</div><div class="ttdoc">Copy constructor creating an independent deep copy of the simulation. All models are cloned; modifica...</div><div class="ttdef"><b>Definition:</b> simulation.hpp:112</div></div>
+<div class="ttc" id="aclassrespond_1_1Simulation_html_ab5e1c35dd10eaff9d20a24fb58bba6b0"><div class="ttname"><a href="../../de/d27/classrespond_1_1Simulation.html#ab5e1c35dd10eaff9d20a24fb58bba6b0">respond::Simulation::GetModel</a></div><div class="ttdeci">std::unique_ptr&lt; Model &gt; GetModel(int idx) const</div><div class="ttdoc">Retrieves a specific model by index in the simulation.</div><div class="ttdef"><b>Definition:</b> simulation.hpp:280</div></div>
+<div class="ttc" id="aclassrespond_1_1Simulation_html_ac8dc680a030bc8dcb8eb32f0dff87e9d"><div class="ttname"><a href="../../de/d27/classrespond_1_1Simulation.html#ac8dc680a030bc8dcb8eb32f0dff87e9d">respond::Simulation::CreateNewModel</a></div><div class="ttdeci">std::unique_ptr&lt; Model &gt; CreateNewModel(const std::string &amp;model_name)</div><div class="ttdoc">Creates a new model instance and adds it to the simulation.</div><div class="ttdef"><b>Definition:</b> simulation.hpp:196</div></div>
+<div class="ttc" id="aclassrespond_1_1Simulation_html_ad06898e0180473246c89481a3c4744d0"><div class="ttname"><a href="../../de/d27/classrespond_1_1Simulation.html#ad06898e0180473246c89481a3c4744d0">respond::Simulation::Simulation</a></div><div class="ttdeci">Simulation()</div><div class="ttdoc">Default constructor for a Simulation instance. Initializes the simulation with the default logger.</div><div class="ttdef"><b>Definition:</b> simulation.hpp:90</div></div>
+<div class="ttc" id="aclassrespond_1_1Simulation_html_ad738dfbf25d8f298791594ea3a2f4f46"><div class="ttname"><a href="../../de/d27/classrespond_1_1Simulation.html#ad738dfbf25d8f298791594ea3a2f4f46">respond::Simulation::operator=</a></div><div class="ttdeci">Simulation &amp; operator=(const Simulation &amp;other)</div><div class="ttdoc">Copy assignment operator for deep copying simulation state.</div><div class="ttdef"><b>Definition:</b> simulation.hpp:129</div></div>
+<div class="ttc" id="aclassrespond_1_1Simulation_html_ada489f3c19e7db6bc48a08551b7c0b29"><div class="ttname"><a href="../../de/d27/classrespond_1_1Simulation.html#ada489f3c19e7db6bc48a08551b7c0b29">respond::Simulation::operator[]</a></div><div class="ttdeci">const Model &amp; operator[](size_t idx) const</div><div class="ttdoc">Const index-based model access.</div><div class="ttdef"><b>Definition:</b> simulation.hpp:256</div></div>
+<div class="ttc" id="aclassrespond_1_1Simulation_html_ae34192e89f9d611a16f24349e4597f5e"><div class="ttname"><a href="../../de/d27/classrespond_1_1Simulation.html#ae34192e89f9d611a16f24349e4597f5e">respond::Simulation::Simulation</a></div><div class="ttdeci">Simulation(const std::string &amp;log_name, const std::string &amp;log_filepath)</div><div class="ttdoc">Constructs a Simulation with a specified logger and log file.</div><div class="ttdef"><b>Definition:</b> simulation.hpp:100</div></div>
+<div class="ttc" id="aclassrespond_1_1Simulation_html_ae3f681ac7211f695ecc726e49a94292f"><div class="ttname"><a href="../../de/d27/classrespond_1_1Simulation.html#ae3f681ac7211f695ecc726e49a94292f">respond::Simulation::operator=</a></div><div class="ttdeci">Simulation &amp; operator=(Simulation &amp;&amp;other) noexcept</div><div class="ttdoc">Move assignment operator for transferring simulation ownership.</div><div class="ttdef"><b>Definition:</b> simulation.hpp:166</div></div>
+<div class="ttc" id="aclassrespond_1_1Simulation_html_aebf1197f15e2b7eae43dfffed80c1254"><div class="ttname"><a href="../../de/d27/classrespond_1_1Simulation.html#aebf1197f15e2b7eae43dfffed80c1254">respond::Simulation::AddModel</a></div><div class="ttdeci">void AddModel(const std::unique_ptr&lt; Model &gt; &amp;model)</div><div class="ttdoc">Adds a model to the simulation. The model is cloned and managed by the simulation.</div><div class="ttdef"><b>Definition:</b> simulation.hpp:207</div></div>
+<div class="ttc" id="aclassrespond_1_1Simulation_html_afcd21e110ff388d8bade3a0f3f995115"><div class="ttname"><a href="../../de/d27/classrespond_1_1Simulation.html#afcd21e110ff388d8bade3a0f3f995115">respond::Simulation::GetModelHistoryNames</a></div><div class="ttdeci">const std::vector&lt; std::string &gt; GetModelHistoryNames(size_t idx) const</div><div class="ttdoc">Retrieves history names for the model at the specified index.</div><div class="ttdef"><b>Definition:</b> simulation.hpp:324</div></div>
+<div class="ttc" id="aclassrespond_1_1Simulation_html_afd0be81341bca966d069b67f46e285e2"><div class="ttname"><a href="../../de/d27/classrespond_1_1Simulation.html#afd0be81341bca966d069b67f46e285e2">respond::Simulation::operator[]</a></div><div class="ttdeci">ModelSlotProxy operator[](size_t idx)</div><div class="ttdoc">Mutable index-based model access.</div><div class="ttdef"><b>Definition:</b> simulation.hpp:247</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="../../dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="../../dir_70501f13f5c9277fdfc6ec16bf603df6.html">respond</a></li><li class="navelem"><b>simulation.hpp</b></li>
-    <li class="footer">Generated on Thu Jul 16 2026 19:42:51 for RESPOND by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
+    <li class="footer">Generated on Wed Jul 29 2026 18:49:17 for RESPOND by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
   </ul>
 </div>
 </body>

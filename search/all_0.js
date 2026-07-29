@@ -6,5 +6,6 @@ var searchData=
   ['addmodel_3',['AddModel',['../de/d27/classrespond_1_1Simulation.html#aebf1197f15e2b7eae43dfffed80c1254',1,'respond::Simulation']]],
   ['addstate_4',['AddState',['../d8/dd8/classrespond_1_1History.html#add2c6b95147736c3b047edeabbfa70b2',1,'respond::History']]],
   ['addtimestep_5',['AddTimestep',['../d4/d00/classrespond_1_1Model.html#a44f18c19f1acfdcc3ce652246eda6421',1,'respond::Model']]],
-  ['architecture_20and_20design_6',['Architecture and Design',['../d2/d4f/md_docs_src_architecture.html',1,'']]]
+  ['addtransition_6',['AddTransition',['../db/df3/classrespond_1_1Timestep.html#a352f453797b58547d65789ca58d73aae',1,'respond::Timestep']]],
+  ['architecture_20and_20design_7',['Architecture and Design',['../d2/d4f/md_docs_src_architecture.html',1,'']]]
 ];
