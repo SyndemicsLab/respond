@@ -79,8 +79,8 @@ TEST_F(TimestepTest, CreateTransition) {
 TEST_F(TimestepTest, AddTransitionClonesInputTransition) {
     Timestep ts("test_log", test_log_file_);
 
-    auto transition =
-        Transition::Create("migration", "migration", "test_log", test_log_file_);
+    auto transition = Transition::Create("migration", "migration", "test_log",
+                                         test_log_file_);
 
     Eigen::MatrixXd m1(2, 2);
     m1 << 0.5, 0.5, 0.5, 0.5;

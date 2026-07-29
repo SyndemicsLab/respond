@@ -268,7 +268,8 @@ TEST_F(SimulationTest,
 
     auto replacement_source_mock = std::make_unique<NiceMock<MockModel>>();
     auto *replacement_source_ptr = replacement_source_mock.get();
-    std::unique_ptr<Model> replacement_source = std::move(replacement_source_mock);
+    std::unique_ptr<Model> replacement_source =
+        std::move(replacement_source_mock);
     auto replacement_clone = std::make_unique<NiceMock<MockModel>>();
     auto *replacement_clone_ptr = replacement_clone.get();
     EXPECT_CALL(*replacement_clone_ptr, SetFinalTimestep(17)).Times(1);
