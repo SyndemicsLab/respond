@@ -76,6 +76,30 @@ TEST_F(TimestepTest, CreateTransition) {
     ASSERT_EQ(transition->GetName(), "migration");
 }
 
+TEST_F(TimestepTest, AddTransitionClonesInputTransition) {
+    Timestep ts("test_log", test_log_file_);
+
+    auto transition = Transition::Create("migration", "migration", "test_log",
+                                         test_log_file_);
+
+    Eigen::MatrixXd m1(2, 2);
+    m1 << 0.5, 0.5, 0.5, 0.5;
+    transition->AddMatrix(m1);
+
+    ts.AddTransition(transition);
+
+    // Mutating the caller-owned transition should not affect timestep-owned
+    // clone.
+    Eigen::MatrixXd m2(2, 2);
+    m2 << 0.1, 0.9, 0.2, 0.8;
+    transition->AddMatrix(m2);
+
+    const std::unique_ptr<Transition> &stored = ts.GetTransition(0);
+    ASSERT_EQ(stored->GetName(), "migration");
+    ASSERT_EQ(stored->GetMatrices().size(), 1);
+    ASSERT_TRUE(stored->GetMatrices()[0].isApprox(m1));
+}
+
 TEST_F(TimestepTest, AddMatrixToTransitionByIndex) {
     Timestep ts("test_log", test_log_file_);
     const std::unique_ptr<Transition> &transition =
@@ -164,6 +188,42 @@ TEST_F(TimestepTest, CopyAssignment) {
     std::vector<std::string> names = ts2.GetTransitionNames();
     ASSERT_EQ(names.size(), 1);
     ASSERT_EQ(names[0], "migration");
+}
+
+TEST_F(TimestepTest, MutableOperatorIndexProvidesTransitionAccess) {
+    Timestep ts("test_log", test_log_file_);
+    ts.CreateTransition("migration");
+
+    Eigen::MatrixXd m(2, 2);
+    m << 0.4, 0.6, 0.1, 0.9;
+
+    ts[0]->AddMatrix(m);
+
+    ASSERT_EQ(ts.GetTransition(0)->GetMatrices().size(), 1);
+    ASSERT_TRUE(ts.GetTransition(0)->GetMatrices()[0].isApprox(m));
+}
+
+TEST_F(TimestepTest, MutableOperatorIndexSupportsSlotReplacementAssignment) {
+    Timestep ts("test_log", test_log_file_);
+    ts.CreateTransition("migration");
+    ts.CreateTransition("behavior");
+
+    ts[0] = ts[1];
+    ASSERT_EQ(ts.GetTransition(0)->GetName(), "behavior");
+
+    auto overdose =
+        Transition::Create("overdose", "overdose", "test_log", test_log_file_);
+    ts[1] = overdose;
+    ASSERT_EQ(ts.GetTransition(1)->GetName(), "overdose");
+}
+
+TEST_F(TimestepTest, ConstOperatorIndexReturnsConstTransitionReference) {
+    Timestep ts("test_log", test_log_file_);
+    ts.CreateTransition("migration");
+
+    const Timestep &const_ts = ts;
+    const Transition &transition = const_ts[0];
+    ASSERT_EQ(transition.GetName(), "migration");
 }
 
 TEST_F(TimestepTest, StreamOperatorOverload) {

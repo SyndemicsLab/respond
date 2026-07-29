@@ -51,8 +51,14 @@ model->SetState(initial_state);
 
 // Build one timestep with transitions
 respond::Timestep step("logger_name");
-auto &transition = step.CreateTransition("behavior");
-transition->AddMatrix(some_matrix);
+auto &behavior_transition = step.CreateTransition("behavior");
+behavior_transition->AddMatrix(some_matrix);
+
+auto migration_transition = respond::Transition::Create("migration");
+step.AddTransition(migration_transition);
+
+// Mutable index access to owned transition slots
+step[0]->AddMatrix(some_other_matrix);
 model->AddTimestep(step);
 
 // Execute one simulation step
@@ -96,6 +102,10 @@ auto model2 = respond::Model::Create("model2", "my_logger");
 sim.AddModel(model1);
 sim.AddModel(model2);
 
+// Mutate owned models directly via index
+sim[0]->CreateDefaultHistories();
+sim[1]->CreateDefaultHistories();
+
 // Run 52 timesteps for all models
 sim.Run(52);
 
@@ -112,15 +122,65 @@ auto history_names = sim.GetModelHistoryNames(0);
 - `Run(int duration = -1)`: Runs all models for the configured duration
 - `SetDuration(int duration)`: Sets default duration used by `Run()` when no argument is provided
 - `AddModel(const std::unique_ptr<Model> &model)`: Adds a model (cloned internally)
-- `GetModels() const`: Returns const reference to model vector
-- `GetModel(size_t idx) const`: Returns one model by index
-- `GetModel(const std::string &name) const`: Returns one model by name
+- `operator[](size_t idx)`: Mutable index access to owned model slot (`sim[idx]->Method()`)
+- `operator[](size_t idx) const`: Const index access to owned model
+- `GetModels() const`: Returns a deep-copied vector of models
+- `GetModel(int idx) const`: Returns one deep-copied model by index (`-1` returns last)
+- `GetModelIndexNameMap() const`: Returns map of model index to model name
 - `GetModelNames() const`: Returns all model names
 - `ClearModels()`: Removes all models
 - `GetModelHistory(size_t idx) const`: Returns one model's history map
-- `GetModelHistory(const std::string &name) const`: Returns one model's history map
 - `GetModelHistoryNames(size_t idx) const`: Returns history names for one model
-- `GetModelHistoryNames(const std::string &name) const`: Returns history names for one model
+
+## Timestep Class
+
+The Timestep class owns transitions for one model step and supports both
+transition creation and clone-based insertion.
+
+```cpp
+#include <respond/timestep.hpp>
+#include <respond/transition.hpp>
+
+respond::Timestep step("my_logger");
+
+// Build transition in-place
+auto &behavior = step.CreateTransition("behavior");
+behavior->AddMatrix(behavior_matrix);
+
+// Add an existing transition by clone
+auto migration = respond::Transition::Create("migration");
+step.AddTransition(migration);
+
+// Mutable slot access (in-place edits)
+step[0]->AddMatrix(another_behavior_matrix);
+
+// Replace a slot by cloning from another slot or transition pointer
+step[1] = step[0];
+step[1] = migration;
+
+// Const slot access
+const respond::Timestep &const_step = step;
+const respond::Transition &t = const_step[0];
+```
+
+### Key Methods
+
+- `CreateTransition(const std::string &transition_name)`: Creates and stores a transition by type
+- `AddTransition(const std::unique_ptr<Transition> &transition)`: Clones and stores caller-provided transition
+- `operator[](size_t idx)`: Mutable slot access for transition mutation/replacement
+- `operator[](size_t idx) const`: Const transition reference by index
+- `GetTransition(const size_t &idx) const`: Gets transition pointer by index
+- `GetTransition(const std::string &transition_name) const`: Gets transition pointer by name
+- `GetTransitionNames() const`: Returns transition names in execution order
+- `RemoveTransition(size_t idx)`: Removes and returns transition at index
+
+### Model Access Semantics
+
+- `sim[idx]` accesses the model owned by `Simulation` and can be used for in-place mutation.
+- `sim[idx] = *other_model` replaces the model at `idx` by cloning `other_model`.
+- `sim[idx] = other_model_ptr` replaces the model at `idx` by cloning the pointee (caller retains ownership).
+- `GetModels()` and `GetModel(...)` return clones for safe detached access.
+- Name-based retrieval is not provided; use `GetModelIndexNameMap()` to resolve names to indices.
 
 ## History Class
 
@@ -259,6 +319,9 @@ int main() {
 
     // Add model to simulation
     sim.AddModel(model);
+
+    // Configure the owned model through Simulation indexing
+    sim[0]->CreateDefaultHistories();
 
     // Run simulation for 52 timesteps
     sim.Run(52);

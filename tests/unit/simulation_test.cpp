@@ -97,8 +97,9 @@ TEST_F(SimulationTest, ConstructorWithLogNameAndLogFile) {
 TEST_F(SimulationTest, CreateNewModel) {
     Simulation s;
     std::string model_name = "test_model";
-    std::string new_model_id = s.CreateNewModel(model_name);
-    ASSERT_EQ(new_model_id, "1_" + model_name);
+    auto new_model = s.CreateNewModel(model_name);
+    ASSERT_NE(new_model, nullptr);
+    ASSERT_EQ(new_model->GetName(), model_name);
     ASSERT_EQ(s.GetModels().size(), 1);
 }
 
@@ -106,20 +107,24 @@ TEST_F(SimulationTest, CreateMultipleModels) {
     Simulation s;
     std::string model_name1 = "test_model1";
     std::string model_name2 = "test_model2";
-    std::string new_model_id1 = s.CreateNewModel(model_name1);
-    std::string new_model_id2 = s.CreateNewModel(model_name2);
-    ASSERT_EQ(new_model_id1, "1_" + model_name1);
-    ASSERT_EQ(new_model_id2, "2_" + model_name2);
+    auto new_model1 = s.CreateNewModel(model_name1);
+    auto new_model2 = s.CreateNewModel(model_name2);
+    ASSERT_NE(new_model1, nullptr);
+    ASSERT_NE(new_model2, nullptr);
+    ASSERT_EQ(new_model1->GetName(), model_name1);
+    ASSERT_EQ(new_model2->GetName(), model_name2);
     ASSERT_EQ(s.GetModels().size(), 2);
 }
 
 TEST_F(SimulationTest, CreateModelWithExistingName) {
     Simulation s;
     std::string model_name = "test_model";
-    std::string new_model_id1 = s.CreateNewModel(model_name);
-    std::string new_model_id2 = s.CreateNewModel(model_name);
-    ASSERT_EQ(new_model_id1, "1_" + model_name);
-    ASSERT_EQ(new_model_id2, "2_" + model_name);
+    auto new_model1 = s.CreateNewModel(model_name);
+    auto new_model2 = s.CreateNewModel(model_name);
+    ASSERT_NE(new_model1, nullptr);
+    ASSERT_NE(new_model2, nullptr);
+    ASSERT_EQ(new_model1->GetName(), model_name);
+    ASSERT_EQ(new_model2->GetName(), model_name);
     ASSERT_EQ(s.GetModels().size(), 2);
 }
 
@@ -183,6 +188,146 @@ TEST_F(SimulationTest, GetModels) {
 
     const auto &models = s.GetModels();
     ASSERT_EQ(models.size(), 1);
+}
+
+TEST_F(SimulationTest, IndexOperatorMutableAccessCallsModelMethods) {
+    Simulation s;
+
+    auto source_model_mock = std::make_unique<NiceMock<MockModel>>();
+    auto *source_model_ptr = source_model_mock.get();
+    std::unique_ptr<Model> source_model = std::move(source_model_mock);
+    auto stored_model = std::make_unique<NiceMock<MockModel>>();
+    auto *stored_model_ptr = stored_model.get();
+    EXPECT_CALL(*stored_model_ptr, SetFinalTimestep(52)).Times(1);
+    EXPECT_CALL(*source_model_ptr, clone())
+        .WillOnce(Return(::testing::ByMove(
+            std::unique_ptr<Model>(std::move(stored_model)))));
+
+    s.AddModel(source_model);
+    s[0]->SetFinalTimestep(52);
+}
+
+TEST_F(SimulationTest, IndexOperatorConstAccessCallsModelMethods) {
+    Simulation s;
+
+    auto source_model_mock = std::make_unique<NiceMock<MockModel>>();
+    auto *source_model_ptr = source_model_mock.get();
+    std::unique_ptr<Model> source_model = std::move(source_model_mock);
+    auto stored_model = std::make_unique<NiceMock<MockModel>>();
+    auto *stored_model_ptr = stored_model.get();
+    EXPECT_CALL(*stored_model_ptr, GetName()).WillOnce(Return("model_name"));
+    EXPECT_CALL(*source_model_ptr, clone())
+        .WillOnce(Return(::testing::ByMove(
+            std::unique_ptr<Model>(std::move(stored_model)))));
+
+    s.AddModel(source_model);
+    const Simulation &const_sim = s;
+    ASSERT_EQ(const_sim[0].GetName(), "model_name");
+}
+
+TEST_F(SimulationTest, IndexOperatorThrowsOutOfRangeForInvalidIndex) {
+    Simulation s;
+    EXPECT_THROW((void)s[0], std::out_of_range);
+}
+
+TEST_F(SimulationTest, IndexOperatorAssignmentFromModelClonesSourceModel) {
+    Simulation s;
+
+    auto initial_source_mock = std::make_unique<NiceMock<MockModel>>();
+    auto *initial_source_ptr = initial_source_mock.get();
+    std::unique_ptr<Model> initial_source = std::move(initial_source_mock);
+    auto initial_stored = std::make_unique<NiceMock<MockModel>>();
+    EXPECT_CALL(*initial_source_ptr, clone())
+        .WillOnce(Return(::testing::ByMove(
+            std::unique_ptr<Model>(std::move(initial_stored)))));
+    s.AddModel(initial_source);
+
+    auto replacement_source = std::make_unique<NiceMock<MockModel>>();
+    auto replacement_clone = std::make_unique<NiceMock<MockModel>>();
+    auto *replacement_clone_ptr = replacement_clone.get();
+    EXPECT_CALL(*replacement_clone_ptr, SetFinalTimestep(11)).Times(1);
+    EXPECT_CALL(*replacement_source, clone())
+        .WillOnce(Return(::testing::ByMove(std::move(replacement_clone))));
+
+    s[0] = *replacement_source;
+    s[0]->SetFinalTimestep(11);
+}
+
+TEST_F(SimulationTest,
+       IndexOperatorAssignmentFromUniquePtrClonesAndKeepsCallerOwnership) {
+    Simulation s;
+
+    auto initial_source_mock = std::make_unique<NiceMock<MockModel>>();
+    auto *initial_source_ptr = initial_source_mock.get();
+    std::unique_ptr<Model> initial_source = std::move(initial_source_mock);
+    auto initial_stored = std::make_unique<NiceMock<MockModel>>();
+    EXPECT_CALL(*initial_source_ptr, clone())
+        .WillOnce(Return(::testing::ByMove(
+            std::unique_ptr<Model>(std::move(initial_stored)))));
+    s.AddModel(initial_source);
+
+    auto replacement_source_mock = std::make_unique<NiceMock<MockModel>>();
+    auto *replacement_source_ptr = replacement_source_mock.get();
+    std::unique_ptr<Model> replacement_source =
+        std::move(replacement_source_mock);
+    auto replacement_clone = std::make_unique<NiceMock<MockModel>>();
+    auto *replacement_clone_ptr = replacement_clone.get();
+    EXPECT_CALL(*replacement_clone_ptr, SetFinalTimestep(17)).Times(1);
+    EXPECT_CALL(*replacement_source_ptr, clone())
+        .WillOnce(Return(::testing::ByMove(
+            std::unique_ptr<Model>(std::move(replacement_clone)))));
+
+    const std::unique_ptr<Model> &replacement_ref = replacement_source;
+    s[0] = replacement_ref;
+    ASSERT_NE(replacement_source, nullptr);
+    s[0]->SetFinalTimestep(17);
+}
+
+TEST_F(SimulationTest, IndexOperatorAssignmentFromNullUniquePtrThrows) {
+    Simulation s;
+
+    auto initial_source_mock = std::make_unique<NiceMock<MockModel>>();
+    auto *initial_source_ptr = initial_source_mock.get();
+    std::unique_ptr<Model> initial_source = std::move(initial_source_mock);
+    auto initial_stored = std::make_unique<NiceMock<MockModel>>();
+    EXPECT_CALL(*initial_source_ptr, clone())
+        .WillOnce(Return(::testing::ByMove(
+            std::unique_ptr<Model>(std::move(initial_stored)))));
+    s.AddModel(initial_source);
+
+    std::unique_ptr<Model> null_model;
+    EXPECT_THROW(s[0] = null_model, std::invalid_argument);
+}
+
+TEST_F(SimulationTest, IndexOperatorAssignmentFromProxyClonesSourceSlot) {
+    Simulation s;
+
+    auto target_source_mock = std::make_unique<NiceMock<MockModel>>();
+    auto *target_source_ptr = target_source_mock.get();
+    std::unique_ptr<Model> target_source = std::move(target_source_mock);
+    auto target_stored = std::make_unique<NiceMock<MockModel>>();
+    EXPECT_CALL(*target_source_ptr, clone())
+        .WillOnce(Return(::testing::ByMove(
+            std::unique_ptr<Model>(std::move(target_stored)))));
+    s.AddModel(target_source);
+
+    auto source_source_mock = std::make_unique<NiceMock<MockModel>>();
+    auto *source_source_ptr = source_source_mock.get();
+    std::unique_ptr<Model> source_source = std::move(source_source_mock);
+    auto source_stored = std::make_unique<NiceMock<MockModel>>();
+    auto replacement_clone = std::make_unique<NiceMock<MockModel>>();
+    auto *replacement_clone_ptr = replacement_clone.get();
+    EXPECT_CALL(*replacement_clone_ptr, SetFinalTimestep(23)).Times(1);
+    EXPECT_CALL(*source_stored, clone())
+        .WillOnce(Return(::testing::ByMove(
+            std::unique_ptr<Model>(std::move(replacement_clone)))));
+    EXPECT_CALL(*source_source_ptr, clone())
+        .WillOnce(Return(::testing::ByMove(
+            std::unique_ptr<Model>(std::move(source_stored)))));
+    s.AddModel(source_source);
+
+    s[0] = s[1];
+    s[0]->SetFinalTimestep(23);
 }
 
 TEST_F(SimulationTest, GetModelNames) {
