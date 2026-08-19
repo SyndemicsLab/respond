@@ -32,7 +32,10 @@ jobs:
                   cmake --preset package-${{matrix.build-variant}} && cmake --build --preset package-${{matrix.build-variant}}
             - name: Run CPack
               run: |
-                  cpack --preset ${{matrix.package-type}}-${{matrix.build-variant}}
+                  cpack --preset ${{matrix.package-type}}-${{matrix.build-variant}} \
+                      -D CPACK_PACKAGE_NAME=respond-${{matrix.build-variant}} \
+                      -D CPACK_RPM_PACKAGE_NAME=respond-${{matrix.build-variant}} \
+                      -D CPACK_DEBIAN_PACKAGE_NAME=respond-${{matrix.build-variant}}
 
             - name: Upload Linux Package to Release
               uses: svenstaro/upload-release-action@v2
