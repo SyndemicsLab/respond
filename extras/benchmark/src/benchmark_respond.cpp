@@ -4,7 +4,7 @@
 // Created Date: 2026-04-27                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-07-09                                                  //
+// Last Modified: 2026-08-18                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
@@ -325,10 +325,10 @@ TimedRunResult TimeOneSample(respond::Simulation sim,
 
     const double checksum = sim.GetModels()[0]->GetState().sum();
     std::size_t recorded_points = 0;
-    const auto histories = sim.GetModelHistories()[0];
+    const auto histories = sim.GetModelHistory(0);
     const auto state_history = histories.find("state");
     if (state_history != histories.end()) {
-        recorded_points = state_history->second.size();
+        recorded_points = state_history->second.GetStateAsVector().size();
     }
     DoNotOptimize(checksum);
     ClobberMemory();
