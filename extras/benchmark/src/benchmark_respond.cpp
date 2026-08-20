@@ -4,7 +4,7 @@
 // Created Date: 2026-04-27                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-07-09                                                  //
+// Last Modified: 2026-08-18                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
@@ -55,7 +55,7 @@ inline void ClobberMemory() {
 #endif
 
 struct BenchmarkConfig {
-    std::size_t state_size = 200;
+    std::size_t state_size = 64;
     int steps = 365;
     int warmup_iterations = 5;
     int sample_iterations = 25;
@@ -158,7 +158,7 @@ void PrintUsage(const char *program_name) {
     std::cout
         << "Usage: " << program_name << " [options]\n\n"
         << "Options:\n"
-        << "  --state-size <n>   Number of state dimensions (default: 200)\n"
+        << "  --state-size <n>   Number of state dimensions (default: 64)\n"
         << "  --steps <n>        Number of simulation timesteps per sample "
            "(default: 365)\n"
         << "  --warmup <n>       Warm-up iterations per repetition (default: "
@@ -280,8 +280,6 @@ respond::Timestep CreateTestTimestep(std::size_t state_size) {
     ts.CreateTransition("behavior");
     ts.AddMatrixToTransition("behavior", MakeShiftMatrix(state_size, 0.985, 1));
 
-    auto temp = ts.GetTransition("behavior")->clone();
-
     ts.CreateTransition("intervention");
     ts.AddMatrixToTransition("intervention",
                              MakeShiftMatrix(state_size, 0.990, -1));
@@ -304,31 +302,36 @@ respond::Simulation BuildSimulation(std::size_t state_size,
                                     size_t duration) {
     respond::Simulation sim;
     sim.CreateNewModel("markov");
-    sim.GetModels()[0]->SetHistoryCaptureInterval(history_capture_interval);
-    sim.GetModels()[0]->SetFinalTimestep(duration);
+    sim[0]->SetHistoryCaptureInterval(history_capture_interval);
+    sim[0]->SetFinalTimestep(static_cast<int>(duration));
     auto timestep = CreateTestTimestep(state_size);
 
     for (size_t t = 0; t < duration; ++t) {
-        sim.GetModels()[0]->AddTimestep(timestep);
+        sim[0]->AddTimestep(timestep);
     }
     return sim;
 }
 
 TimedRunResult TimeOneSample(respond::Simulation sim,
                              const Eigen::VectorXd &initial_state, int steps) {
-    sim.GetModels()[0]->SetState(initial_state);
-    sim.GetModels()[0]->CreateDefaultHistories();
+    sim[0]->SetState(initial_state);
+    sim[0]->CreateDefaultHistories();
 
     const auto start = Clock::now();
     sim.Run(steps);
     const auto end = Clock::now();
 
-    const double checksum = sim.GetModels()[0]->GetState().sum();
+    if (sim[0]->GetTimestep() != steps) {
+        throw std::runtime_error("Benchmark ran an unexpected number of "
+                                 "timesteps.");
+    }
+
+    const double checksum = sim[0]->GetState().sum();
     std::size_t recorded_points = 0;
-    const auto histories = sim.GetModelHistories()[0];
+    const auto &histories = sim.GetModelHistory(0);
     const auto state_history = histories.find("state");
     if (state_history != histories.end()) {
-        recorded_points = state_history->second.size();
+        recorded_points = state_history->second.GetRecordedStates().size();
     }
     DoNotOptimize(checksum);
     ClobberMemory();
