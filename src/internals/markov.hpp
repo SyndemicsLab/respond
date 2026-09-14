@@ -4,8 +4,8 @@
 // Created Date: 2026-02-05                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-07-14                                                  //
-// Modified By: Matthew Carroll                                               //
+// Last Modified: 2026-09-14                                                  //
+// Modified By: Dimitri Baptiste                                              //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
 ////////////////////////////////////////////////////////////////////////////////
@@ -48,13 +48,16 @@ public:
     /// @param log_name The logger name for error reporting.
     /// @param log_filepath The file path for the log file to be used by this
     /// model.
+    /// @param processor_count The number of threads to use when running this
+    /// model.
     Markov(const std::string &name, const std::string &log_name,
-           const std::string &log_filepath)
+           const std::string &log_filepath,
+           const unsigned int processor_count =
+               std::thread::hardware_concurrency())
         : _name(name), _log_name(log_name), _current_timestep(0),
           _history_capture_interval(1), _final_timestep(-1),
           _initial_history_recorded(false) {
         CreateFileLogger(log_name, log_filepath);
-        const auto processor_count = std::thread::hardware_concurrency();
         Eigen::setNbThreads(processor_count);
     }
 
