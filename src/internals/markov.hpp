@@ -15,6 +15,7 @@
 #include <respond/model.hpp>
 
 #include <memory>
+#include <string>
 #include <thread>
 #include <vector>
 
@@ -239,6 +240,12 @@ public:
             LogWarning(_log_name, warning_msg);
             duration = static_cast<size_t>(_final_timestep);
         }
+
+        // specify the number of processors/threads being used before execution
+        std::string warning =
+            "Running the model with " + std::to_string(Eigen::nbThreads())
+            << " computing threads";
+        LogWarning(_log_name, warning);
 
         for (size_t i = 0; i < duration; ++i) {
             RunTimestep();
