@@ -4,7 +4,7 @@
 // Created Date: 2026-02-05                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-09-14                                                  //
+// Last Modified: 2026-09-16                                                  //
 // Modified By: Dimitri Baptiste                                              //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
@@ -58,7 +58,11 @@ public:
           _history_capture_interval(1), _final_timestep(-1),
           _initial_history_recorded(false) {
         CreateFileLogger(log_name, log_filepath);
-        Eigen::setNbThreads(processor_count);
+        // ensure that the number of threads cannot exceed the hardware capacity
+        const unsigned int thread_limit = std::thread::hardware_concurrency();
+        const unsigned int threads =
+            processor_count > thread_limit ? thread_limit : processor_count;
+        Eigen::setNbThreads(threads);
     }
 
     /// @brief Destructor for Markov model. Default implementation.

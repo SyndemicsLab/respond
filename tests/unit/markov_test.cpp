@@ -4,8 +4,8 @@
 // Created Date: 2025-06-06                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-07-09                                                  //
-// Modified By: Matthew Carroll                                               //
+// Last Modified: 2026-09-14                                                  //
+// Modified By: Dimitri Baptiste                                              //
 // -----                                                                      //
 // Copyright (c) 2025-2026 Syndemics Lab at Boston Medical Center             //
 ////////////////////////////////////////////////////////////////////////////////
@@ -14,6 +14,7 @@
 
 #include <fstream>
 #include <memory>
+#include <thread>
 
 #include <Eigen/Dense>
 #include <gtest/gtest.h>
@@ -83,6 +84,17 @@ protected:
 
 TEST_F(MarkovTest, CreateMarkovModel) {
     auto markov = Model::Create("markov");
+    ASSERT_NE(markov, nullptr);
+    ASSERT_EQ(CreateFileLogger(RESPOND_DEFAULT_LOG, ""),
+              CreationStatus::kExists);
+}
+
+TEST_F(MarkovTest, CreateMarkovModelProcessorCount) {
+    unsigned int processor_count =
+        std::thread::hardware_concurrency() > 1
+            ? (std::thread::hardware_concurrency() / 2)
+            : 1;
+    auto markov = Model::Create("markov", processor_count);
     ASSERT_NE(markov, nullptr);
     ASSERT_EQ(CreateFileLogger(RESPOND_DEFAULT_LOG, ""),
               CreationStatus::kExists);
