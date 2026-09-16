@@ -242,9 +242,9 @@ public:
         }
 
         // specify the number of processors/threads being used before execution
-        std::string warning =
-            "Running the model with " + std::to_string(Eigen::nbThreads())
-            << " computing threads";
+        std::string warning = "Running the model with " +
+                              std::to_string(Eigen::nbThreads()) +
+                              " computing threads";
         LogWarning(_log_name, warning);
 
         for (size_t i = 0; i < duration; ++i) {
