@@ -4,8 +4,8 @@
 // Created Date: 2026-02-05                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-07-14                                                  //
-// Modified By: Matthew Carroll                                               //
+// Last Modified: 2026-09-18                                                  //
+// Modified By: Dimitri Baptiste                                              //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
 ////////////////////////////////////////////////////////////////////////////////
@@ -15,6 +15,7 @@
 #include <respond/model.hpp>
 
 #include <memory>
+#include <string>
 #include <thread>
 #include <vector>
 
@@ -48,14 +49,21 @@ public:
     /// @param log_name The logger name for error reporting.
     /// @param log_filepath The file path for the log file to be used by this
     /// model.
+    /// @param processor_count The number of threads to use when running this
+    /// model.
     Markov(const std::string &name, const std::string &log_name,
-           const std::string &log_filepath)
+           const std::string &log_filepath,
+           const unsigned int processor_count =
+               std::thread::hardware_concurrency())
         : _name(name), _log_name(log_name), _current_timestep(0),
           _history_capture_interval(1), _final_timestep(-1),
           _initial_history_recorded(false) {
         CreateFileLogger(log_name, log_filepath);
-        const auto processor_count = std::thread::hardware_concurrency();
-        Eigen::setNbThreads(processor_count);
+        // ensure that the number of threads cannot exceed the hardware capacity
+        const unsigned int thread_limit = std::thread::hardware_concurrency();
+        const unsigned int threads =
+            processor_count > thread_limit ? thread_limit : processor_count;
+        Eigen::setNbThreads(threads);
     }
 
     /// @brief Destructor for Markov model. Default implementation.
