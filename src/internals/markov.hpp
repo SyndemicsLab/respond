@@ -4,7 +4,7 @@
 // Created Date: 2026-02-05                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-09-16                                                  //
+// Last Modified: 2026-09-18                                                  //
 // Modified By: Dimitri Baptiste                                              //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
@@ -240,12 +240,6 @@ public:
             LogWarning(_log_name, warning_msg);
             duration = static_cast<size_t>(_final_timestep);
         }
-
-        // specify the number of processors/threads being used before execution
-        std::string warning = "Running the model with " +
-                              std::to_string(Eigen::nbThreads()) +
-                              " computing threads";
-        LogWarning(_log_name, warning);
 
         for (size_t i = 0; i < duration; ++i) {
             RunTimestep();
