@@ -4,8 +4,8 @@
 // Created Date: 2026-02-05                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-07-14                                                  //
-// Modified By: Matthew Carroll                                               //
+// Last Modified: 2026-09-14                                                  //
+// Modified By: Dimitri Baptiste                                              //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
 ////////////////////////////////////////////////////////////////////////////////
@@ -46,6 +46,22 @@ public:
     /// @return A unique_ptr to the newly created Model instance.
     static std::unique_ptr<Model>
     Create(const std::string &name,
+           const std::string &log_name = RESPOND_DEFAULT_LOG,
+           const std::string &log_filepath = RESPOND_DEFAULT_LOG_FILE);
+
+    /// @brief Alternate factory method to create a Model instance.
+    /// @details This method creates a new instance of a Model subclass based on
+    /// the provided name. It sets the number of threads to be used by the
+    /// model, initializes logging for the model, and returns a unique_ptr to
+    /// the created instance. Throws an exception if the model name is
+    /// unsupported.
+    /// @param name The name identifier for the model to create.
+    /// @param processor_count The number of threads to be used by the model.
+    /// @param log_name Name of the logger for this model (default: "console").
+    /// @param log_filepath File path for the log file (default: "respond.log").
+    /// @return A unique_ptr to the newly created Model instance.
+    static std::unique_ptr<Model>
+    Create(const std::string &name, const unsigned int processor_count,
            const std::string &log_name = RESPOND_DEFAULT_LOG,
            const std::string &log_filepath = RESPOND_DEFAULT_LOG_FILE);
 
