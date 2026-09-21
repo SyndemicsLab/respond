@@ -229,6 +229,9 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a619b8655ab389cc4cc3c84fd4116e28e"><td class="memItemLeft" align="right" valign="top">static std::unique_ptr&lt; <a class="el" href="../../d4/d00/classrespond_1_1Model.html">Model</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d4/d00/classrespond_1_1Model.html#a619b8655ab389cc4cc3c84fd4116e28e">Create</a> (const std::string &amp;name, const std::string &amp;log_name=RESPOND_DEFAULT_LOG, const std::string &amp;log_filepath=RESPOND_DEFAULT_LOG_FILE)</td></tr>
 <tr class="memdesc:a619b8655ab389cc4cc3c84fd4116e28e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Factory method to create a <a class="el" href="../../d4/d00/classrespond_1_1Model.html" title="Abstract base class representing a state transition model. Models manage a state vector,...">Model</a> instance.  <br /></td></tr>
 <tr class="separator:a619b8655ab389cc4cc3c84fd4116e28e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac8fdcfc516effd72579c8308aeb5130e"><td class="memItemLeft" align="right" valign="top">static std::unique_ptr&lt; <a class="el" href="../../d4/d00/classrespond_1_1Model.html">Model</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d4/d00/classrespond_1_1Model.html#ac8fdcfc516effd72579c8308aeb5130e">Create</a> (const std::string &amp;name, const unsigned int processor_count, const std::string &amp;log_name=RESPOND_DEFAULT_LOG, const std::string &amp;log_filepath=RESPOND_DEFAULT_LOG_FILE)</td></tr>
+<tr class="memdesc:ac8fdcfc516effd72579c8308aeb5130e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Alternate factory method to create a <a class="el" href="../../d4/d00/classrespond_1_1Model.html" title="Abstract base class representing a state transition model. Models manage a state vector,...">Model</a> instance.  <br /></td></tr>
+<tr class="separator:ac8fdcfc516effd72579c8308aeb5130e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-methods" name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
@@ -297,7 +300,7 @@ Protected Member Functions</h2></td></tr>
 </div>
 </div>
 <a id="a619b8655ab389cc4cc3c84fd4116e28e" name="a619b8655ab389cc4cc3c84fd4116e28e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a619b8655ab389cc4cc3c84fd4116e28e">&#9670;&#160;</a></span>Create()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a619b8655ab389cc4cc3c84fd4116e28e">&#9670;&#160;</a></span>Create() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -338,6 +341,64 @@ Protected Member Functions</h2></td></tr>
 <p>This method creates a new instance of a <a class="el" href="../../d4/d00/classrespond_1_1Model.html" title="Abstract base class representing a state transition model. Models manage a state vector,...">Model</a> subclass based on the provided name. It initializes logging for the model and returns a unique_ptr to the created instance. Throws an exception if the model name is unsupported. </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">name</td><td>The name identifier for the model to create. </td></tr>
+    <tr><td class="paramname">log_name</td><td>Name of the logger for this model (default: "console"). </td></tr>
+    <tr><td class="paramname">log_filepath</td><td>File path for the log file (default: "respond.log"). </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>A unique_ptr to the newly created <a class="el" href="../../d4/d00/classrespond_1_1Model.html" title="Abstract base class representing a state transition model. Models manage a state vector,...">Model</a> instance. </dd></dl>
+
+</div>
+</div>
+<a id="ac8fdcfc516effd72579c8308aeb5130e" name="ac8fdcfc516effd72579c8308aeb5130e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac8fdcfc516effd72579c8308aeb5130e">&#9670;&#160;</a></span>Create() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static std::unique_ptr&lt; <a class="el" href="../../d4/d00/classrespond_1_1Model.html">Model</a> &gt; respond::Model::Create </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>name</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const unsigned int&#160;</td>
+          <td class="paramname"><em>processor_count</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>log_name</em> = <code>RESPOND_DEFAULT_LOG</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>log_filepath</em> = <code>RESPOND_DEFAULT_LOG_FILE</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>This method creates a new instance of a <a class="el" href="../../d4/d00/classrespond_1_1Model.html" title="Abstract base class representing a state transition model. Models manage a state vector,...">Model</a> subclass based on the provided name. It sets the number of threads to be used by the model, initializes logging for the model, and returns a unique_ptr to the created instance. Throws an exception if the model name is unsupported. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">name</td><td>The name identifier for the model to create. </td></tr>
+    <tr><td class="paramname">processor_count</td><td>The number of threads to be used by the model. </td></tr>
     <tr><td class="paramname">log_name</td><td>Name of the logger for this model (default: "console"). </td></tr>
     <tr><td class="paramname">log_filepath</td><td>File path for the log file (default: "respond.log"). </td></tr>
   </table>
@@ -732,7 +793,7 @@ Protected Member Functions</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><b>respond</b></li><li class="navelem"><a class="el" href="../../d4/d00/classrespond_1_1Model.html">Model</a></li>
-    <li class="footer">Generated on Thu Aug 20 2026 16:39:37 for RESPOND by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
+    <li class="footer">Generated on Mon Sep 21 2026 13:43:39 for RESPOND by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
   </ul>
 </div>
 </body>
