@@ -290,9 +290,11 @@ TEST_F(MarkovTest, AddTimestepBeyondFinalTimestep) {
     Timestep timestep2(RESPOND_DEFAULT_LOG);
     markov.AddTimestep(timestep1);
     markov.AddTimestep(timestep2);
+    markov.SetInitialHistoryRecorded(true);
+    markov.RunTimesteps();
     FlushAllLoggers();
     EXPECT_TRUE(FileContains(RESPOND_DEFAULT_LOG_FILE,
-                             "Final timestep exceeded by added timestep."));
+                             "Only running timesteps up to duration value."));
 }
 
 TEST_F(MarkovTest, RunTimestep) {

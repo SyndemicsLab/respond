@@ -59,8 +59,8 @@ public:
            const std::string &log_filepath,
            const unsigned int processor_count =
                std::thread::hardware_concurrency())
-                : Markov(name, log_name, log_filepath,
-                                 ExecutionConfig{0, processor_count, false}) {}
+        : Markov(name, log_name, log_filepath,
+                 ExecutionConfig{0, processor_count, false}) {}
 
     Markov(const std::string &name, const RuntimeConfig &runtime_config)
         : _name(name), _log_name(runtime_config.logging.logger_name),
@@ -77,18 +77,18 @@ public:
         Eigen::setNbThreads(threads);
     }
 
-        /// @brief Constructs a Markov model with explicit execution settings.
-        /// @param name The identifier for this model.
-        /// @param log_name The logger name for error reporting.
-        /// @param log_filepath The file path for the log file used by this model.
-        /// @param execution_config Resource settings for model execution.
-        [[deprecated("Use Markov(name, RuntimeConfig) instead")]]
-        Markov(const std::string &name, const std::string &log_name,
-                     const std::string &log_filepath,
-                     const ExecutionConfig &execution_config)
-            : Markov(name, RuntimeConfig{execution_config,
-                             LoggingConfig{log_name, log_filepath,
-                                   false}}) {}
+    /// @brief Constructs a Markov model with explicit execution settings.
+    /// @param name The identifier for this model.
+    /// @param log_name The logger name for error reporting.
+    /// @param log_filepath The file path for the log file used by this model.
+    /// @param execution_config Resource settings for model execution.
+    [[deprecated("Use Markov(name, RuntimeConfig) instead")]]
+    Markov(const std::string &name, const std::string &log_name,
+           const std::string &log_filepath,
+           const ExecutionConfig &execution_config)
+        : Markov(name,
+                 RuntimeConfig{execution_config,
+                               LoggingConfig{log_name, log_filepath, false}}) {}
 
     /// @brief Destructor for Markov model. Default implementation.
     ~Markov() = default;
@@ -215,9 +215,6 @@ public:
 
     void AddTimestep(const Timestep &timestep) override {
         _timestep_vector.push_back(timestep);
-        if (static_cast<int>(_timestep_vector.size()) > _final_timestep) {
-            LogWarning(_log_name, "Final timestep exceeded by added timestep.");
-        }
     }
 
     void RunTimestep() override { RunTimestep(_current_timestep); }
