@@ -94,6 +94,55 @@ TEST_F(SimulationTest, ConstructorWithLogNameAndLogFile) {
               CreationStatus::kExists);
 }
 
+TEST_F(SimulationTest, StoresExecutionConfig) {
+    ExecutionConfig config;
+    config.total_threads = 4;
+    config.eigen_threads = 1;
+    config.run_models_concurrently = true;
+
+    Simulation s("custom_log", test_log_file_, config);
+    EXPECT_EQ(s.GetExecutionConfig().total_threads, 4);
+    EXPECT_EQ(s.GetExecutionConfig().eigen_threads, 1);
+    EXPECT_TRUE(s.GetExecutionConfig().run_models_concurrently);
+
+    ExecutionConfig updated;
+    updated.total_threads = 2;
+    updated.eigen_threads = 2;
+    s.SetExecutionConfig(updated);
+
+    EXPECT_EQ(s.GetExecutionConfig().total_threads, 2);
+    EXPECT_EQ(s.GetExecutionConfig().eigen_threads, 2);
+    EXPECT_FALSE(s.GetExecutionConfig().run_models_concurrently);
+}
+
+TEST_F(SimulationTest, PreservesExecutionConfigWhenCopied) {
+    ExecutionConfig config;
+    config.total_threads = 4;
+    config.eigen_threads = 1;
+    config.run_models_concurrently = true;
+
+    Simulation original("custom_log", test_log_file_, config);
+    Simulation copy(original);
+
+    EXPECT_EQ(copy.GetExecutionConfig().total_threads, 4);
+    EXPECT_EQ(copy.GetExecutionConfig().eigen_threads, 1);
+    EXPECT_TRUE(copy.GetExecutionConfig().run_models_concurrently);
+}
+
+TEST_F(SimulationTest, StoresRuntimeConfig) {
+    RuntimeConfig config;
+    config.execution.total_threads = 4;
+    config.logging.logger_name = "runtime_simulation";
+    config.logging.file_path = test_log_file_;
+
+    Simulation s(config);
+
+    EXPECT_EQ(s.GetRuntimeConfig().execution.total_threads, 4);
+    EXPECT_EQ(s.GetRuntimeConfig().logging.logger_name,
+              "runtime_simulation");
+    EXPECT_EQ(s.GetRuntimeConfig().logging.file_path, test_log_file_);
+}
+
 TEST_F(SimulationTest, CreateNewModel) {
     Simulation s;
     std::string model_name = "test_model";

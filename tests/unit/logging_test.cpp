@@ -120,6 +120,13 @@ TEST_F(LoggingTest, CreateMultipleFileLoggers) {
     EXPECT_NE(spdlog::get("logger2"), nullptr);
 }
 
+TEST_F(LoggingTest, ConfigureLoggerCreatesFileLogger) {
+    LoggingConfig config{"configured_logger", test_log_file_, false};
+
+    EXPECT_EQ(ConfigureLogger(config), CreationStatus::kSuccess);
+    EXPECT_NE(spdlog::get(config.logger_name), nullptr);
+}
+
 // ============================================================================
 // Test: Shared File Sink Functionality
 // ============================================================================
@@ -127,6 +134,13 @@ TEST_F(LoggingTest, CreateMultipleFileLoggers) {
 TEST_F(LoggingTest, CreateSharedFileSink) {
     CreationStatus status = CreateSharedFileSink(shared_log_file_);
     EXPECT_EQ(status, CreationStatus::kSuccess);
+}
+
+TEST_F(LoggingTest, ConfigureLoggerCreatesSharedLogger) {
+    LoggingConfig config{"configured_shared_logger", shared_log_file_, true};
+
+    EXPECT_EQ(ConfigureLogger(config), CreationStatus::kSuccess);
+    EXPECT_NE(spdlog::get(config.logger_name), nullptr);
 }
 
 TEST_F(LoggingTest, CreateSharedFileSinkCaching) {

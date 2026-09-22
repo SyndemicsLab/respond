@@ -20,6 +20,7 @@
 
 #include <respond/constants.hpp>
 #include <respond/history.hpp>
+#include <respond/runtime_config.hpp>
 #include <respond/timestep.hpp>
 
 namespace respond {
@@ -44,6 +45,7 @@ public:
     /// @param log_name Name of the logger for this model (default: "console").
     /// @param log_filepath File path for the log file (default: "respond.log").
     /// @return A unique_ptr to the newly created Model instance.
+    [[deprecated("Use Model::Create(name, RuntimeConfig) instead")]]
     static std::unique_ptr<Model>
     Create(const std::string &name,
            const std::string &log_name = RESPOND_DEFAULT_LOG,
@@ -60,10 +62,27 @@ public:
     /// @param log_name Name of the logger for this model (default: "console").
     /// @param log_filepath File path for the log file (default: "respond.log").
     /// @return A unique_ptr to the newly created Model instance.
+    [[deprecated("Use Model::Create(name, RuntimeConfig) instead")]]
     static std::unique_ptr<Model>
     Create(const std::string &name, const unsigned int processor_count,
            const std::string &log_name = RESPOND_DEFAULT_LOG,
            const std::string &log_filepath = RESPOND_DEFAULT_LOG_FILE);
+
+        /// @brief Creates a Model with explicit execution settings.
+        /// @param name The name identifier for the model to create.
+        /// @param execution_config Resource settings for model execution.
+        /// @param log_name Name of the logger for this model (default: "console").
+        /// @param log_filepath File path for the log file (default: "respond.log").
+        /// @return A unique_ptr to the newly created Model instance.
+        [[deprecated("Use Model::Create(name, RuntimeConfig) instead")]]
+        static std::unique_ptr<Model>
+        Create(const std::string &name, const ExecutionConfig &execution_config,
+            const std::string &log_name = RESPOND_DEFAULT_LOG,
+            const std::string &log_filepath = RESPOND_DEFAULT_LOG_FILE);
+
+        /// @brief Creates a Model with shared runtime settings.
+        static std::unique_ptr<Model>
+        Create(const std::string &name, const RuntimeConfig &runtime_config);
 
     /// @brief Virtual destructor for proper polymorphic cleanup.
     virtual ~Model() = default;

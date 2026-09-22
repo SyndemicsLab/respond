@@ -14,6 +14,8 @@
 
 #include <string>
 
+#include <respond/logging_config.hpp>
+
 namespace respond {
 
 /// @brief Logging levels for the logger.
@@ -55,6 +57,11 @@ enum class LogPattern : int {
 /// @note If a logger with the same name already exists, kExists is returned.
 CreationStatus CreateFileLogger(const std::string &logger_name,
                                 const std::string &filepath);
+
+/// @brief Initializes a logger from a logging configuration.
+/// @param config Logging name, destination, and shared-sink policy.
+/// @return CreationStatus indicating the result of logger creation.
+CreationStatus ConfigureLogger(const LoggingConfig &config);
 
 // ============================================================================
 // Parallel Execution Support: Shared File Sink

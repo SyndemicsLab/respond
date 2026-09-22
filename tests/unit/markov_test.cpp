@@ -100,6 +100,14 @@ TEST_F(MarkovTest, CreateMarkovModelProcessorCount) {
               CreationStatus::kExists);
 }
 
+TEST_F(MarkovTest, CreateMarkovModelExecutionConfig) {
+    ExecutionConfig config;
+    config.eigen_threads = 2;
+
+    auto markov = Model::Create("markov", config);
+    ASSERT_NE(markov, nullptr);
+}
+
 TEST_F(MarkovTest, MoveConstructor) {
     Markov markov("markov_source", RESPOND_DEFAULT_LOG);
     markov.SetState(state);

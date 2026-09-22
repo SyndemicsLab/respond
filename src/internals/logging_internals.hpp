@@ -28,10 +28,10 @@
 
 namespace respond {
 
-class LoggingConfig {
+class LoggingRegistry {
 public:
-    static LoggingConfig &GetInstance() {
-        static LoggingConfig instance;
+    static LoggingRegistry &GetInstance() {
+        static LoggingRegistry instance;
         return instance;
     }
 
@@ -92,7 +92,7 @@ public:
     }
 
 private:
-    LoggingConfig()
+    LoggingRegistry()
         : current_pattern_(LogPattern::kStandard), flush_interval_(3),
           default_sink_path_("respond.log") {
         spdlog::cfg::load_env_levels();
@@ -142,7 +142,7 @@ void log(const std::string &logger_name, const std::string &message,
             logger->info(message);
             break;
         }
-        if (LoggingConfig::GetFlushInterval() == 0) {
+        if (LoggingRegistry::GetFlushInterval() == 0) {
             logger->flush();
         }
     } else {

@@ -4,8 +4,8 @@
 // Created Date: 2026-02-05                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-09-18                                                  //
-// Modified By: Dimitri Baptiste                                              //
+// Last Modified: 2026-09-22                                                  //
+// Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
 ////////////////////////////////////////////////////////////////////////////////
@@ -14,6 +14,7 @@
 
 #include <respond/model.hpp>
 
+#include <algorithm>
 #include <memory>
 #include <string>
 #include <thread>
@@ -23,6 +24,7 @@
 
 #include <respond/constants.hpp>
 #include <respond/history.hpp>
+#include <respond/logging.hpp>
 #include <respond/transition.hpp>
 
 namespace respond {
@@ -35,11 +37,12 @@ public:
     ////////////////////////////////////////////////////////////////////////////
 
     /// @brief Default constructor for Markov model. Initializes with default..
-    Markov() : Markov("markov", RESPOND_DEFAULT_LOG) {}
+    Markov() : Markov("markov", RuntimeConfig{}) {}
 
     /// @brief Constructs a Markov model with specified name and logger.
     /// @param name The identifier for this model.
     /// @param log_name The logger name for error reporting.
+    [[deprecated("Use Markov(name, RuntimeConfig) instead")]]
     Markov(const std::string &name, const std::string &log_name)
         : Markov(name, log_name, RESPOND_DEFAULT_LOG_FILE) {}
 
@@ -51,20 +54,41 @@ public:
     /// model.
     /// @param processor_count The number of threads to use when running this
     /// model.
+    [[deprecated("Use Markov(name, RuntimeConfig) instead")]]
     Markov(const std::string &name, const std::string &log_name,
            const std::string &log_filepath,
            const unsigned int processor_count =
                std::thread::hardware_concurrency())
-        : _name(name), _log_name(log_name), _current_timestep(0),
+                : Markov(name, log_name, log_filepath,
+                                 ExecutionConfig{0, processor_count, false}) {}
+
+    Markov(const std::string &name, const RuntimeConfig &runtime_config)
+        : _name(name), _log_name(runtime_config.logging.logger_name),
+          _runtime_config(runtime_config), _current_timestep(0),
           _history_capture_interval(1), _final_timestep(-1),
           _initial_history_recorded(false) {
-        CreateFileLogger(log_name, log_filepath);
-        // ensure that the number of threads cannot exceed the hardware capacity
+        ConfigureLogger(_runtime_config.logging);
         const unsigned int thread_limit = std::thread::hardware_concurrency();
         const unsigned int threads =
-            processor_count > thread_limit ? thread_limit : processor_count;
+            thread_limit == 0
+                ? _runtime_config.execution.eigen_threads
+                : std::min(_runtime_config.execution.eigen_threads,
+                           thread_limit);
         Eigen::setNbThreads(threads);
     }
+
+        /// @brief Constructs a Markov model with explicit execution settings.
+        /// @param name The identifier for this model.
+        /// @param log_name The logger name for error reporting.
+        /// @param log_filepath The file path for the log file used by this model.
+        /// @param execution_config Resource settings for model execution.
+        [[deprecated("Use Markov(name, RuntimeConfig) instead")]]
+        Markov(const std::string &name, const std::string &log_name,
+                     const std::string &log_filepath,
+                     const ExecutionConfig &execution_config)
+            : Markov(name, RuntimeConfig{execution_config,
+                             LoggingConfig{log_name, log_filepath,
+                                   false}}) {}
 
     /// @brief Destructor for Markov model. Default implementation.
     ~Markov() = default;
@@ -73,6 +97,7 @@ public:
         _state = other._state;
         _name = other._name;
         _log_name = other._log_name;
+        _runtime_config = other._runtime_config;
         _current_timestep = other._current_timestep;
         _history_capture_interval = other._history_capture_interval;
         _final_timestep = other._final_timestep;
@@ -91,6 +116,7 @@ public:
             _state = other._state;
             _name = other._name;
             _log_name = other._log_name;
+            _runtime_config = other._runtime_config;
             _current_timestep = other._current_timestep;
             _history_capture_interval = other._history_capture_interval;
             _final_timestep = other._final_timestep;
@@ -113,7 +139,7 @@ public:
     /// @return A unique_ptr to a new Markov instance that is a deep copy of
     /// this instance.
     std::unique_ptr<Model> clone() const override {
-        auto np = Model::Create(_name, _log_name);
+        auto np = Model::Create(_name, _runtime_config);
         np->SetState(GetState());
         np->SetHistoryCaptureInterval(GetHistoryCaptureInterval());
         np->SetFinalTimestep(GetFinalTimestep());
@@ -232,7 +258,7 @@ public:
             RecordHistoryAtCurrentTimestep();
         }
         size_t duration = _timestep_vector.size();
-        if (_timestep_vector.size() > static_cast<size_t>(_final_timestep) &&
+        if (duration > static_cast<size_t>(_final_timestep) &&
             _final_timestep >= 0) {
             std::string warning_msg =
                 "Duration is less than available timesteps for model: " +
@@ -313,6 +339,7 @@ private:
     Eigen::VectorXd _state;
     std::string _name;
     std::string _log_name;
+    RuntimeConfig _runtime_config;
     std::map<std::string, History> _histories;
     int _current_timestep;
     int _history_capture_interval;

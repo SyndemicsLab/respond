@@ -33,4 +33,16 @@ std::unique_ptr<Model> Model::Create(const std::string &name,
     return std::make_unique<Markov>(name, log_name, log_filepath,
                                     processor_count);
 }
+
+std::unique_ptr<Model> Model::Create(
+    const std::string &name, const ExecutionConfig &execution_config,
+    const std::string &log_name, const std::string &log_filepath) {
+    return std::make_unique<Markov>(name, log_name, log_filepath,
+                                    execution_config);
+}
+
+std::unique_ptr<Model> Model::Create(const std::string &name,
+                                     const RuntimeConfig &runtime_config) {
+    return std::make_unique<Markov>(name, runtime_config);
+}
 } // namespace respond

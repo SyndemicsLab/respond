@@ -26,7 +26,7 @@ CreationStatus CreateFileLogger(const std::string &logger_name,
     try {
         spdlog::cfg::load_env_levels();
         std::string pattern =
-            LoggingConfig::GetPatternString(LoggingConfig::GetPattern());
+            LoggingRegistry::GetPatternString(LoggingRegistry::GetPattern());
         spdlog::set_pattern(pattern);
         spdlog::basic_logger_mt(logger_name, filepath);
     } catch (const spdlog::spdlog_ex &ex) {
@@ -42,9 +42,9 @@ CreationStatus CreateFileLogger(const std::string &logger_name,
 
 CreationStatus CreateSharedFileSink(const std::string &filepath) {
     try {
-        auto sink = LoggingConfig::GetSharedSink(filepath);
+        auto sink = LoggingRegistry::GetSharedSink(filepath);
         if (sink) {
-            LoggingConfig::SetDefaultSinkPath(filepath);
+            LoggingRegistry::SetDefaultSinkPath(filepath);
             return CreationStatus::kSuccess;
         }
         std::string error_msg =
@@ -67,8 +67,8 @@ CreationStatus CreateSharedLogger(const std::string &logger_name) {
     }
 
     try {
-        std::string filepath = LoggingConfig::GetDefaultSinkPath();
-        auto sink = LoggingConfig::GetSharedSink(filepath);
+        std::string filepath = LoggingRegistry::GetDefaultSinkPath();
+        auto sink = LoggingRegistry::GetSharedSink(filepath);
         if (!sink) {
             std::string error_msg =
                 "Failed to create shared logger '" + logger_name +
@@ -79,7 +79,7 @@ CreationStatus CreateSharedLogger(const std::string &logger_name) {
 
         spdlog::cfg::load_env_levels();
         std::string pattern =
-            LoggingConfig::GetPatternString(LoggingConfig::GetPattern());
+            LoggingRegistry::GetPatternString(LoggingRegistry::GetPattern());
 
         auto logger = std::make_shared<spdlog::logger>(logger_name, sink);
         logger->set_pattern(pattern);
@@ -96,11 +96,24 @@ CreationStatus CreateSharedLogger(const std::string &logger_name) {
     }
 }
 
-void SetLogPattern(LogPattern pattern) { LoggingConfig::SetPattern(pattern); }
+CreationStatus ConfigureLogger(const LoggingConfig &config) {
+    if (config.use_shared_sink) {
+        const auto sink_status = CreateSharedFileSink(config.file_path);
+        if (sink_status == CreationStatus::kError) {
+            return sink_status;
+        }
+        return CreateSharedLogger(config.logger_name);
+    }
+    return CreateFileLogger(config.logger_name, config.file_path);
+}
 
-LogPattern GetLogPattern() { return LoggingConfig::GetPattern(); }
+void SetLogPattern(LogPattern pattern) { LoggingRegistry::SetPattern(pattern); }
 
-void SetFlushInterval(int seconds) { LoggingConfig::SetFlushInterval(seconds); }
+LogPattern GetLogPattern() { return LoggingRegistry::GetPattern(); }
+
+void SetFlushInterval(int seconds) {
+    LoggingRegistry::SetFlushInterval(seconds);
+}
 
 void FlushAllLoggers() {
     spdlog::apply_all(
