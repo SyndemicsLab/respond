@@ -47,6 +47,7 @@ protected:
     std::string test_log_file_;
     std::string shared_log_file_;
     std::string default_log_file_;
+
 };
 
 TEST_F(TimestepTest, DefaultConstructor) {
@@ -98,6 +99,13 @@ TEST_F(TimestepTest, AddTransitionClonesInputTransition) {
     ASSERT_EQ(stored->GetName(), "migration");
     ASSERT_EQ(stored->GetMatrices().size(), 1);
     ASSERT_TRUE(stored->GetMatrices()[0].isApprox(m1));
+}
+
+TEST_F(TimestepTest, AddNullTransitionThrows) {
+    Timestep ts("test_log", test_log_file_);
+    std::unique_ptr<Transition> null_transition;
+
+    EXPECT_THROW(ts.AddTransition(null_transition), std::invalid_argument);
 }
 
 TEST_F(TimestepTest, AddMatrixToTransitionByIndex) {
@@ -178,6 +186,28 @@ TEST_F(TimestepTest, CopyConstructor) {
     std::vector<std::string> names = ts2.GetTransitionNames();
     ASSERT_EQ(names.size(), 1);
     ASSERT_EQ(names[0], "migration");
+}
+
+TEST_F(TimestepTest, CopyPreservesLoggerName) {
+    Timestep original("test_log", test_log_file_);
+    Timestep copy(original);
+    spdlog::drop("test_log");
+
+    EXPECT_THROW(copy.AddMatrixToTransition(0, Eigen::MatrixXd::Identity(1, 1)),
+                 std::out_of_range);
+
+    EXPECT_EQ(CheckLoggerExists("test_log"), CreationStatus::kExists);
+}
+
+TEST_F(TimestepTest, MovePreservesLoggerName) {
+    Timestep original("test_log", test_log_file_);
+    Timestep moved(std::move(original));
+    spdlog::drop("test_log");
+
+    EXPECT_THROW(moved.AddMatrixToTransition(0, Eigen::MatrixXd::Identity(1, 1)),
+                 std::out_of_range);
+
+    EXPECT_EQ(CheckLoggerExists("test_log"), CreationStatus::kExists);
 }
 
 TEST_F(TimestepTest, CopyAssignment) {

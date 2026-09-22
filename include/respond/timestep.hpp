@@ -116,8 +116,7 @@ public:
     /// @brief Copy constructor for Timestep. Creates a deep copy of the
     /// transitions.
     /// @param other The Timestep instance to copy from.
-    Timestep(const Timestep &other) {
-        _transitions.clear();
+    Timestep(const Timestep &other) : _log_name(other._log_name) {
         for (const auto &t : other._transitions) {
             _transitions.push_back(std::move(t->clone()));
         }
@@ -129,10 +128,12 @@ public:
     /// @return Reference to this Timestep instance after assignment.
     Timestep &operator=(const Timestep &other) {
         if (this != &other) {
-            _transitions.clear();
+            std::vector<std::unique_ptr<Transition>> transitions;
             for (const auto &t : other._transitions) {
-                _transitions.push_back(std::move(t->clone()));
+                transitions.push_back(t->clone());
             }
+            _log_name = other._log_name;
+            _transitions = std::move(transitions);
         }
         return *this;
     }
@@ -141,7 +142,8 @@ public:
     /// transitions.
     /// @param other The Timestep instance to move from.
     Timestep(Timestep &&other) noexcept
-        : _transitions(std::move(other._transitions)) {
+                : _log_name(std::move(other._log_name)),
+                    _transitions(std::move(other._transitions)) {
         other._transitions.clear();
     }
 
@@ -151,6 +153,7 @@ public:
     /// @return Reference to this Timestep instance after assignment.
     Timestep &operator=(Timestep &&other) noexcept {
         if (this != &other) {
+            _log_name = std::move(other._log_name);
             _transitions = std::move(other._transitions);
             other._transitions.clear();
         }
@@ -185,6 +188,12 @@ public:
     /// The transition is cloned and managed by the timestep.
     /// @param transition A unique_ptr to a Transition instance to add.
     void AddTransition(const std::unique_ptr<Transition> &transition) {
+        if (!transition) {
+            LogError(_log_name,
+                     "Cannot add a null transition to the timestep.");
+            throw std::invalid_argument(
+                "Error attempting to add a null transition to timestep.");
+        }
         _transitions.push_back(transition->clone());
     }
 

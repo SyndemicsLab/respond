@@ -393,5 +393,23 @@ TEST_F(MarkovTest, ClearHistories) {
     markov.ClearHistories();
     EXPECT_TRUE(markov.GetHistories().empty());
 }
+
+TEST_F(MarkovTest, MoveAssignmentReplacesDestinationState) {
+    Markov source("source", RESPOND_DEFAULT_LOG);
+    source.AddTimestep(Timestep(RESPOND_DEFAULT_LOG));
+    source.AddTimestep(Timestep(RESPOND_DEFAULT_LOG));
+    source.CreateDefaultHistories();
+
+    Markov destination("destination", RESPOND_DEFAULT_LOG);
+    destination.AddTimestep(Timestep(RESPOND_DEFAULT_LOG));
+    destination.ClearHistories();
+    destination = std::move(source);
+
+    EXPECT_EQ(destination.GetName(), "source");
+    EXPECT_NO_THROW((void)destination.GetTimestepAtIndex(1));
+    EXPECT_THROW((void)destination.GetTimestepAtIndex(2), std::out_of_range);
+    EXPECT_FALSE(destination.GetHistories().empty());
+    EXPECT_TRUE(source.GetHistories().empty());
+}
 } // namespace testing
 } // namespace respond

@@ -93,42 +93,28 @@ public:
     /// @brief Destructor for Markov model. Default implementation.
     ~Markov() = default;
 
-    Markov(Markov &&other) noexcept {
-        _state = other._state;
-        _name = other._name;
-        _log_name = other._log_name;
-        _runtime_config = other._runtime_config;
-        _current_timestep = other._current_timestep;
-        _history_capture_interval = other._history_capture_interval;
-        _final_timestep = other._final_timestep;
-        _initial_history_recorded = other._initial_history_recorded;
-        for (const auto &h : other._histories) {
-            _histories[h.first] = h.second;
-        }
-        other._histories.clear();
-        for (const auto &t : other._timestep_vector) {
-            _timestep_vector.push_back(std::move(t));
-        }
-        other.ClearTimesteps();
-    }
+    Markov(Markov &&other) noexcept
+        : _timestep_vector(std::move(other._timestep_vector)),
+          _state(std::move(other._state)), _name(std::move(other._name)),
+          _log_name(std::move(other._log_name)),
+          _runtime_config(std::move(other._runtime_config)),
+          _histories(std::move(other._histories)),
+          _current_timestep(other._current_timestep),
+          _history_capture_interval(other._history_capture_interval),
+          _final_timestep(other._final_timestep),
+          _initial_history_recorded(other._initial_history_recorded) {}
     Markov &operator=(Markov &&other) noexcept {
         if (this != &other) {
-            _state = other._state;
-            _name = other._name;
-            _log_name = other._log_name;
-            _runtime_config = other._runtime_config;
+            _state = std::move(other._state);
+            _name = std::move(other._name);
+            _log_name = std::move(other._log_name);
+            _runtime_config = std::move(other._runtime_config);
+            _timestep_vector = std::move(other._timestep_vector);
+            _histories = std::move(other._histories);
             _current_timestep = other._current_timestep;
             _history_capture_interval = other._history_capture_interval;
             _final_timestep = other._final_timestep;
             _initial_history_recorded = other._initial_history_recorded;
-            for (const auto &h : other._histories) {
-                _histories[h.first] = h.second;
-            }
-            other._histories.clear();
-            for (const auto &t : other._timestep_vector) {
-                _timestep_vector.push_back(std::move(t));
-            }
-            other.ClearTimesteps();
         }
         return *this;
     }

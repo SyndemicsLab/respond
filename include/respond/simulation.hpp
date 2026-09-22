@@ -150,11 +150,12 @@ public:
     /// @return Reference to this simulation after assignment.
     Simulation &operator=(const Simulation &other) {
         if (this != &other) {
-            _runtime_config = other._runtime_config;
-            _models.clear();
+            std::vector<std::unique_ptr<Model>> models;
             for (const auto &m : other._models) {
-                _models.push_back(m->clone());
+                models.push_back(m->clone());
             }
+            _runtime_config = other._runtime_config;
+            _models = std::move(models);
             _duration = other._duration;
             _parameter_change_times = other._parameter_change_times;
             _stratify_entering_cohort = other._stratify_entering_cohort;
@@ -170,18 +171,14 @@ public:
     /// @param other The simulation to move from.
     Simulation(Simulation &&other) noexcept
         : _runtime_config(std::move(other._runtime_config)),
+                    _models(std::move(other._models)),
           _duration(other._duration),
           _parameter_change_times(std::move(other._parameter_change_times)),
           _stratify_entering_cohort(other._stratify_entering_cohort),
           _build_summary_stats(other._build_summary_stats),
           _save_state_history(other._save_state_history),
-          _timesteps_to_report(std::move(other._timesteps_to_report)),
-          _pivot_long(other._pivot_long) {
-        for (const auto &m : other._models) {
-            _models.push_back(m->clone());
-        }
-        other._models.clear();
-    }
+                    _timesteps_to_report(std::move(other._timesteps_to_report)),
+                    _pivot_long(other._pivot_long) {}
 
     /// @brief Move assignment operator for transferring simulation ownership.
     /// @param other The simulation to move from.
@@ -189,6 +186,7 @@ public:
     Simulation &operator=(Simulation &&other) noexcept {
         if (this != &other) {
             _runtime_config = std::move(other._runtime_config);
+            _models = std::move(other._models);
             _duration = other._duration;
             _parameter_change_times = std::move(other._parameter_change_times);
             _stratify_entering_cohort = other._stratify_entering_cohort;
@@ -196,11 +194,6 @@ public:
             _save_state_history = other._save_state_history;
             _timesteps_to_report = std::move(other._timesteps_to_report);
             _pivot_long = other._pivot_long;
-
-            for (const auto &m : other._models) {
-                _models.push_back(m->clone());
-            }
-            other._models.clear();
         }
         return *this;
     }
@@ -228,6 +221,12 @@ public:
     /// The model is cloned and managed by the simulation.
     /// @param model A unique_ptr to a Model instance to add.
     void AddModel(const std::unique_ptr<Model> &model) {
+        if (!model) {
+            LogError(_runtime_config.logging.logger_name,
+                     "Cannot add a null model to the simulation.");
+            throw std::invalid_argument(
+                "Error attempting to add a null model to simulation.");
+        }
         _models.push_back(model->clone());
     }
 
@@ -411,12 +410,12 @@ private:
 
     int _duration = 1; // Default simulation duration in timesteps
     std::vector<int> _parameter_change_times;
-    bool _stratify_entering_cohort;
+    bool _stratify_entering_cohort = false;
 
-    bool _build_summary_stats;
-    bool _save_state_history;
+    bool _build_summary_stats = false;
+    bool _save_state_history = false;
     std::vector<int> _timesteps_to_report;
-    bool _pivot_long;
+    bool _pivot_long = false;
 };
 } // namespace respond
 

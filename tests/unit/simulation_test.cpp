@@ -186,6 +186,19 @@ TEST_F(SimulationTest, ClearModels) {
     ASSERT_EQ(s.GetModels().size(), 0);
 }
 
+TEST_F(SimulationTest, MoveAssignmentReplacesDestinationModels) {
+    Simulation source;
+    source.CreateNewModel("source_model");
+
+    Simulation destination;
+    destination.CreateNewModel("destination_model");
+    destination = std::move(source);
+
+    ASSERT_EQ(destination.GetModelNames(),
+              std::vector<std::string>{"source_model"});
+    ASSERT_TRUE(source.GetModels().empty());
+}
+
 TEST_F(SimulationTest, AddModel) {
     Simulation s;
     auto mock_model = std::make_unique<NiceMock<MockModel>>();
@@ -195,6 +208,13 @@ TEST_F(SimulationTest, AddModel) {
 
     s.AddModel(std::move(mock_model));
     ASSERT_EQ(s.GetModels().size(), 1);
+}
+
+TEST_F(SimulationTest, AddNullModelThrows) {
+    Simulation s;
+    std::unique_ptr<Model> null_model;
+
+    EXPECT_THROW(s.AddModel(null_model), std::invalid_argument);
 }
 
 TEST_F(SimulationTest, Run) {

@@ -138,16 +138,13 @@ public:
     }
 
     /// @brief Move constructor implementing the Rule of Five.
-    /// @param other The history to move from (leaves original state unchanged
-    /// per current implementation).
-    History(History &&other) noexcept {
-        _timesteps = std::move(other._timesteps);
-        _states = std::move(other._states);
-        _name = other._name;
-        _log_name = other._log_name;
-        _mode = other._mode;
-        _pending_state = std::move(other._pending_state);
-    }
+    /// @param other The history to move from. The moved-from history remains
+    /// valid but its contents are unspecified.
+    History(History &&other) noexcept
+        : _timesteps(std::move(other._timesteps)),
+          _states(std::move(other._states)), _name(std::move(other._name)),
+          _log_name(std::move(other._log_name)), _mode(other._mode),
+          _pending_state(std::move(other._pending_state)) {}
 
     /// @brief Move assignment operator implementing the Rule of Five.
     /// @param other The history to move from.
@@ -156,8 +153,8 @@ public:
         if (this != &other) {
             _timesteps = std::move(other._timesteps);
             _states = std::move(other._states);
-            _name = other._name;
-            _log_name = other._log_name;
+            _name = std::move(other._name);
+            _log_name = std::move(other._log_name);
             _mode = other._mode;
             _pending_state = std::move(other._pending_state);
         }
