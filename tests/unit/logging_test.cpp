@@ -143,6 +143,44 @@ TEST_F(LoggingTest, ConfigureLoggerCreatesSharedLogger) {
     EXPECT_NE(spdlog::get(config.logger_name), nullptr);
 }
 
+TEST_F(LoggingTest, ConcurrentSharedLoggerConfigurationUsesRequestedSinks) {
+    constexpr size_t logger_count = 8;
+    std::vector<std::string> log_files;
+    std::vector<std::string> logger_names;
+    std::vector<CreationStatus> statuses(logger_count,
+                                         CreationStatus::kError);
+    std::vector<std::thread> workers;
+
+    for (size_t i = 0; i < logger_count; ++i) {
+        log_files.push_back("/tmp/respond_concurrent_shared_" +
+                            std::to_string(i) + ".log");
+        logger_names.push_back("concurrent_shared_logger_" +
+                              std::to_string(i));
+        std::remove(log_files.back().c_str());
+    }
+
+    for (size_t i = 0; i < logger_count; ++i) {
+        workers.emplace_back([&, i] {
+            const LoggingConfig config{logger_names[i], log_files[i], true};
+            statuses[i] = ConfigureLogger(config);
+            if (statuses[i] == CreationStatus::kSuccess) {
+                LogInfo(logger_names[i], "message-" + std::to_string(i));
+            }
+        });
+    }
+
+    for (auto &worker : workers) {
+        worker.join();
+    }
+    FlushAllLoggers();
+
+    for (size_t i = 0; i < logger_count; ++i) {
+        EXPECT_EQ(statuses[i], CreationStatus::kSuccess);
+        EXPECT_TRUE(FileContains(log_files[i], "message-" + std::to_string(i)));
+        std::remove(log_files[i].c_str());
+    }
+}
+
 TEST_F(LoggingTest, CreateSharedFileSinkCaching) {
     // Create sink first time
     CreationStatus status1 = CreateSharedFileSink(shared_log_file_);

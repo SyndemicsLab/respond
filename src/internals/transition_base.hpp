@@ -13,6 +13,7 @@
 #define RESPOND_INTERNALS_TRANSITION_BASE_HPP_
 
 #include <respond/logging.hpp>
+#include <respond/logging_config.hpp>
 #include <respond/transition.hpp>
 
 #include <string>
@@ -24,11 +25,16 @@ namespace respond {
 
 class TransitionBase : public virtual Transition {
 public:
+    [[deprecated("Use TransitionBase(name, LoggingConfig) instead")]]
     TransitionBase(const std::string &name, const std::string &log_name,
                    const std::string &log_file)
-        : _name(name), _log_name(log_name) {
-        CreateFileLogger(log_name, log_file);
-    }
+                : TransitionBase(name, LoggingConfig{log_name, log_file, false}) {}
+        TransitionBase(const std::string &name,
+                                     const LoggingConfig &logging_config)
+                : _name(name), _log_name(logging_config.logger_name),
+                    _logging_config(logging_config) {
+                ConfigureLogger(_logging_config);
+        }
     virtual ~TransitionBase() = default;
     // Add a Transition Matrix to the set. We have no need to edit it once it's
     // been added, just use it. Thus, we don't need full ownership (reference)
@@ -52,6 +58,7 @@ public:
 
 protected:
     const std::string _log_name;
+    const LoggingConfig _logging_config;
 
     void TestMatrixSizes(const Eigen::Ref<const Eigen::MatrixXd> &m1,
                          const Eigen::Ref<const Eigen::MatrixXd> &m2) const {

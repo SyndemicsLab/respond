@@ -25,13 +25,18 @@
 namespace respond {
 class Behavior : public virtual TransitionBase {
 public:
-    Behavior() : Behavior("behavior") {}
-    Behavior(const std::string &name) : Behavior(name, RESPOND_DEFAULT_LOG) {}
+    Behavior() : Behavior("behavior", LoggingConfig{}) {}
+    Behavior(const std::string &name) : Behavior(name, LoggingConfig{}) {}
+    [[deprecated("Use Behavior(name, LoggingConfig) instead")]]
     Behavior(const std::string &name, const std::string &log_name)
-        : Behavior(name, log_name, RESPOND_DEFAULT_LOG_FILE) {}
+        : Behavior(name, LoggingConfig{log_name, RESPOND_DEFAULT_LOG_FILE,
+                                       false}) {}
+    [[deprecated("Use Behavior(name, LoggingConfig) instead")]]
     Behavior(const std::string &name, const std::string &log_name,
              const std::string &log_file)
-        : TransitionBase(name, log_name, log_file) {}
+        : TransitionBase(name, LoggingConfig{log_name, log_file, false}) {}
+    Behavior(const std::string &name, const LoggingConfig &logging_config)
+        : TransitionBase(name, logging_config) {}
 
     // Run the execute function and return the final state. Do not edit the
     // parameter state, but do edit the history provided. Nothing in the
@@ -41,7 +46,7 @@ public:
 
     // Clone
     std::unique_ptr<Transition> clone() const override {
-        auto ret = std::make_unique<Behavior>(GetName(), _log_name);
+        auto ret = std::make_unique<Behavior>(GetName(), _logging_config);
         for (const auto &t : GetMatrices()) {
             ret->AddMatrix(t);
         }

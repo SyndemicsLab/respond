@@ -25,13 +25,18 @@
 namespace respond {
 class Migration : public virtual TransitionBase {
 public:
-    Migration() : Migration("migration") {}
-    Migration(const std::string &name) : Migration(name, RESPOND_DEFAULT_LOG) {}
+    Migration() : Migration("migration", LoggingConfig{}) {}
+    Migration(const std::string &name) : Migration(name, LoggingConfig{}) {}
+    [[deprecated("Use Migration(name, LoggingConfig) instead")]]
     Migration(const std::string &name, const std::string &log_name)
-        : Migration(name, log_name, RESPOND_DEFAULT_LOG_FILE) {}
+        : Migration(name, LoggingConfig{log_name, RESPOND_DEFAULT_LOG_FILE,
+                                        false}) {}
+    [[deprecated("Use Migration(name, LoggingConfig) instead")]]
     Migration(const std::string &name, const std::string &log_name,
               const std::string &log_file)
-        : TransitionBase(name, log_name, log_file) {}
+        : TransitionBase(name, LoggingConfig{log_name, log_file, false}) {}
+    Migration(const std::string &name, const LoggingConfig &logging_config)
+        : TransitionBase(name, logging_config) {}
 
     // Run the execute function and return the final state. Do not edit the
     // parameter state, but do edit the history provided. Nothing in the
@@ -41,7 +46,7 @@ public:
 
     // Clone
     std::unique_ptr<Transition> clone() const override {
-        auto ret = std::make_unique<Migration>(GetName(), _log_name);
+        auto ret = std::make_unique<Migration>(GetName(), _logging_config);
         for (const auto &t : GetMatrices()) {
             ret->AddMatrix(t);
         }

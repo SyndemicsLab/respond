@@ -77,6 +77,36 @@ TEST_F(TimestepTest, CreateTransition) {
     ASSERT_EQ(transition->GetName(), "migration");
 }
 
+TEST_F(TimestepTest, CreateTransitionUsesLoggingConfig) {
+    const LoggingConfig logging_config{"configured_transition", test_log_file_,
+                                       false};
+    Timestep ts(logging_config);
+
+    const auto &transition = ts.CreateTransition("migration");
+
+    ASSERT_NE(transition, nullptr);
+    EXPECT_EQ(CheckLoggerExists("configured_transition"),
+              CreationStatus::kExists);
+}
+
+TEST_F(TimestepTest, ClonedTransitionPreservesLoggingConfig) {
+    const LoggingConfig logging_config{"clone_transition", test_log_file_,
+                                       false};
+    auto transition = Transition::Create("migration", "migration",
+                                         logging_config);
+    auto clone = transition->clone();
+
+    ASSERT_NE(clone, nullptr);
+    EXPECT_EQ(CheckLoggerExists("clone_transition"), CreationStatus::kExists);
+}
+
+TEST_F(TimestepTest, CreateTransitionRejectsUnsupportedType) {
+    EXPECT_THROW(
+        Transition::Create("unsupported", "unsupported", "test_log",
+                           test_log_file_),
+        std::invalid_argument);
+}
+
 TEST_F(TimestepTest, AddTransitionClonesInputTransition) {
     Timestep ts("test_log", test_log_file_);
 

@@ -18,6 +18,7 @@
 
 #include <respond/constants.hpp>
 #include <respond/logging.hpp>
+#include <respond/logging_config.hpp>
 #include <respond/transition.hpp>
 
 namespace respond {
@@ -92,11 +93,12 @@ public:
 
     /// @brief Default constructor for Timestep. Initializes with default
     /// logger.
-    Timestep() : Timestep(RESPOND_DEFAULT_LOG) {}
+    Timestep() : Timestep(LoggingConfig{}) {}
 
     /// @brief Default constructor for Timestep with specified logger name.
     /// Initializes with default log file path.
     /// @param log_name String name for the logger to be used by this timestep.
+    [[deprecated("Use Timestep(LoggingConfig) instead")]]
     Timestep(const std::string &log_name)
         : Timestep(log_name, RESPOND_DEFAULT_LOG_FILE) {}
 
@@ -105,9 +107,14 @@ public:
     /// @param log_name String name for the logger to be used by this timestep.
     /// @param log_filepath String path for the log file to be used by this
     /// timestep.
+    [[deprecated("Use Timestep(LoggingConfig) instead")]]
     Timestep(const std::string &log_name, const std::string &log_filepath)
-        : _log_name(log_name) {
-        CreateFileLogger(log_name, log_filepath);
+        : Timestep(LoggingConfig{log_name, log_filepath, false}) {}
+
+    explicit Timestep(const LoggingConfig &logging_config)
+        : _log_name(logging_config.logger_name),
+          _logging_config(logging_config) {
+        ConfigureLogger(_logging_config);
     }
 
     /// @brief Destructor for Timestep. Default implementation.
@@ -116,7 +123,8 @@ public:
     /// @brief Copy constructor for Timestep. Creates a deep copy of the
     /// transitions.
     /// @param other The Timestep instance to copy from.
-    Timestep(const Timestep &other) : _log_name(other._log_name) {
+    Timestep(const Timestep &other)
+        : _log_name(other._log_name), _logging_config(other._logging_config) {
         for (const auto &t : other._transitions) {
             _transitions.push_back(std::move(t->clone()));
         }
@@ -133,6 +141,7 @@ public:
                 transitions.push_back(t->clone());
             }
             _log_name = other._log_name;
+            _logging_config = other._logging_config;
             _transitions = std::move(transitions);
         }
         return *this;
@@ -142,7 +151,8 @@ public:
     /// transitions.
     /// @param other The Timestep instance to move from.
     Timestep(Timestep &&other) noexcept
-                : _log_name(std::move(other._log_name)),
+                                : _log_name(std::move(other._log_name)),
+                                    _logging_config(std::move(other._logging_config)),
                     _transitions(std::move(other._transitions)) {
         other._transitions.clear();
     }
@@ -154,6 +164,7 @@ public:
     Timestep &operator=(Timestep &&other) noexcept {
         if (this != &other) {
             _log_name = std::move(other._log_name);
+            _logging_config = std::move(other._logging_config);
             _transitions = std::move(other._transitions);
             other._transitions.clear();
         }
@@ -180,7 +191,8 @@ public:
     const std::unique_ptr<Transition> &
     CreateTransition(const std::string &transition_name) {
         _transitions.push_back(
-            Transition::Create(transition_name, transition_name, _log_name));
+            Transition::Create(transition_name, transition_name,
+                               _logging_config));
         return _transitions.back();
     }
 
@@ -416,6 +428,7 @@ private:
     }
 
     std::string _log_name;
+    LoggingConfig _logging_config;
     std::vector<std::unique_ptr<Transition>> _transitions;
 };
 } // namespace respond

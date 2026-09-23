@@ -18,9 +18,14 @@
 #include <respond/model.hpp>
 #include <respond/runtime_config.hpp>
 
+#include <atomic>
+#include <exception>
 #include <map>
 #include <memory>
+#include <mutex>
+#include <stdexcept>
 #include <string>
+#include <thread>
 #include <utility>
 #include <vector>
 
@@ -230,8 +235,13 @@ public:
         _models.push_back(model->clone());
     }
 
-    /// @brief Executes one step of the simulation for all models.
-    /// Calls RunTransitions() on each registered model in sequence.
+    /// @brief Executes the simulation for all registered models.
+    /// Models run sequentially by default. When model concurrency is enabled,
+    /// independent models may run in parallel using the configured worker
+    /// limit.
+    /// @throws std::invalid_argument if multiple models would execute in
+    /// parallel while more than one Eigen worker thread is configured.
+    /// @throws Any exception raised by a model after all workers have joined.
     void Run(int duration = -1) {
         if (duration > 0) {
             _duration = duration;
@@ -239,9 +249,70 @@ public:
         LogInfo(_runtime_config.logging.logger_name,
                 "Running simulation for duration of " +
                     std::to_string(_duration) + " timesteps.");
-        for (const auto &model : _models) {
+        const auto run_model = [this](const std::unique_ptr<Model> &model) {
             model->SetFinalTimestep(_duration);
             model->RunTimesteps();
+        };
+
+        const auto &execution = _runtime_config.execution;
+        if (!execution.run_models_concurrently || _models.size() < 2) {
+            for (const auto &model : _models) {
+                run_model(model);
+            }
+            return;
+        }
+
+        if (execution.eigen_threads > 1) {
+            throw std::invalid_argument(
+                "Concurrent model execution requires eigen_threads <= 1.");
+        }
+
+        unsigned int worker_limit = execution.total_threads;
+        if (worker_limit == 0) {
+            worker_limit = std::thread::hardware_concurrency();
+            if (worker_limit == 0) {
+                worker_limit = 1;
+            }
+        }
+        const auto worker_count = std::min<size_t>(worker_limit, _models.size());
+        if (worker_count <= 1) {
+            for (const auto &model : _models) {
+                run_model(model);
+            }
+            return;
+        }
+
+        std::atomic<size_t> next_model{0};
+        std::exception_ptr first_exception;
+        std::mutex exception_mutex;
+        std::vector<std::thread> workers;
+        workers.reserve(worker_count);
+
+        for (size_t worker = 0; worker < worker_count; ++worker) {
+            workers.emplace_back([&]() {
+                while (true) {
+                    const size_t index = next_model.fetch_add(1);
+                    if (index >= _models.size()) {
+                        return;
+                    }
+                    try {
+                        run_model(_models[index]);
+                    } catch (...) {
+                        std::lock_guard<std::mutex> lock(exception_mutex);
+                        if (!first_exception) {
+                            first_exception = std::current_exception();
+                        }
+                        return;
+                    }
+                }
+            });
+        }
+
+        for (auto &worker : workers) {
+            worker.join();
+        }
+        if (first_exception) {
+            std::rethrow_exception(first_exception);
         }
     }
 

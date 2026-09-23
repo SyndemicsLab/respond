@@ -22,6 +22,7 @@
 
 #include <respond/constants.hpp>
 #include <respond/history.hpp>
+#include <respond/logging_config.hpp>
 
 namespace respond {
 
@@ -81,13 +82,20 @@ public:
     ///        - "overdose": Overdose-related transitions
     ///        - "background_death": Background mortality transitions
     /// @param log_name The logger name for error reporting (e.g., "console").
-    /// @return A unique_ptr to the created Transition, or nullptr if type is
-    /// unsupported.
+    /// @return A unique_ptr to the created Transition.
+    /// @throws std::invalid_argument if type is unsupported. The error is also
+    /// written through the logger identified by log_name.
+    [[deprecated(
+        "Use Transition::Create(type, name, LoggingConfig) instead")]]
     static std::unique_ptr<Transition>
     Create(const std::string &type,
            const std::string &name = RESPOND_DEFAULT_TRANSITION_NAME,
            const std::string &log_name = RESPOND_DEFAULT_LOG,
            const std::string &log_file = RESPOND_DEFAULT_LOG_FILE);
+
+        static std::unique_ptr<Transition>
+        Create(const std::string &type, const std::string &name,
+            const LoggingConfig &logging_config);
 
     /// @brief Helper function to overload to the stream insertion operator for
     /// Transition serialization.

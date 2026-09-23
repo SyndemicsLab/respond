@@ -18,6 +18,47 @@
 
 namespace respond {
 
+namespace {
+
+CreationStatus CreateSharedLogger(
+    const std::string &logger_name,
+    const std::shared_ptr<spdlog::sinks::basic_file_sink_mt> &sink) {
+    if (CheckIfExists(logger_name) == CreationStatus::kExists) {
+        std::cout << "Shared logger " << logger_name << " already exists"
+                  << std::endl;
+        return CreationStatus::kExists;
+    }
+
+    if (!sink) {
+        std::string error_msg =
+            "Failed to create shared logger '" + logger_name +
+            "': shared sink is null";
+        std::cerr << error_msg << std::endl;
+        return CreationStatus::kError;
+    }
+
+    try {
+        spdlog::cfg::load_env_levels();
+        std::string pattern =
+            LoggingRegistry::GetPatternString(LoggingRegistry::GetPattern());
+
+        auto logger = std::make_shared<spdlog::logger>(logger_name, sink);
+        logger->set_pattern(pattern);
+        logger->set_level(spdlog::level::trace);
+
+        spdlog::register_logger(logger);
+
+        return CreationStatus::kSuccess;
+    } catch (const spdlog::spdlog_ex &ex) {
+        std::string error_msg = "Failed to create shared logger '" +
+                                logger_name + "': " + ex.what();
+        std::cerr << error_msg << std::endl;
+        return CreationStatus::kError;
+    }
+}
+
+} // namespace
+
 CreationStatus CreateFileLogger(const std::string &logger_name,
                                 const std::string &filepath) {
     if (CheckIfExists(logger_name) == CreationStatus::kExists) {
@@ -60,49 +101,16 @@ CreationStatus CreateSharedFileSink(const std::string &filepath) {
 }
 
 CreationStatus CreateSharedLogger(const std::string &logger_name) {
-    if (CheckIfExists(logger_name) == CreationStatus::kExists) {
-        std::cout << "Shared logger " << logger_name << " already exists"
-                  << std::endl;
-        return CreationStatus::kExists;
-    }
-
-    try {
-        std::string filepath = LoggingRegistry::GetDefaultSinkPath();
-        auto sink = LoggingRegistry::GetSharedSink(filepath);
-        if (!sink) {
-            std::string error_msg =
-                "Failed to create shared logger '" + logger_name +
-                "': could not get or create shared sink at '" + filepath + "'";
-            std::cerr << error_msg << std::endl;
-            return CreationStatus::kError;
-        }
-
-        spdlog::cfg::load_env_levels();
-        std::string pattern =
-            LoggingRegistry::GetPatternString(LoggingRegistry::GetPattern());
-
-        auto logger = std::make_shared<spdlog::logger>(logger_name, sink);
-        logger->set_pattern(pattern);
-        logger->set_level(spdlog::level::trace);
-
-        spdlog::register_logger(logger);
-
-        return CreationStatus::kSuccess;
-    } catch (const spdlog::spdlog_ex &ex) {
-        std::string error_msg = "Failed to create shared logger '" +
-                                logger_name + "': " + ex.what();
-        std::cerr << error_msg << std::endl;
-        return CreationStatus::kError;
-    }
+    const std::string filepath = LoggingRegistry::GetDefaultSinkPath();
+    return CreateSharedLogger(logger_name,
+                              LoggingRegistry::GetSharedSink(filepath));
 }
 
 CreationStatus ConfigureLogger(const LoggingConfig &config) {
     if (config.use_shared_sink) {
-        const auto sink_status = CreateSharedFileSink(config.file_path);
-        if (sink_status == CreationStatus::kError) {
-            return sink_status;
-        }
-        return CreateSharedLogger(config.logger_name);
+        return CreateSharedLogger(
+            config.logger_name,
+            LoggingRegistry::GetSharedSink(config.file_path));
     }
     return CreateFileLogger(config.logger_name, config.file_path);
 }

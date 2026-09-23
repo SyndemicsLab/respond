@@ -21,6 +21,8 @@ struct ExecutionConfig {
     unsigned int eigen_threads = 1;
 
     /// @brief Whether models may be executed concurrently by the simulation.
+    /// When multiple models actually run in parallel, eigen_threads must be 1
+    /// or less because Eigen's worker setting is process-global.
     bool run_models_concurrently = false;
 };
 } // namespace respond

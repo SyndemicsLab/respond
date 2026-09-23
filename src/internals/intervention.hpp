@@ -25,14 +25,20 @@
 namespace respond {
 class Intervention : public virtual TransitionBase {
 public:
-    Intervention() : Intervention("intervention") {}
+    Intervention() : Intervention("intervention", LoggingConfig{}) {}
     Intervention(const std::string &name)
-        : Intervention(name, RESPOND_DEFAULT_LOG) {}
+        : Intervention(name, LoggingConfig{}) {}
+    [[deprecated("Use Intervention(name, LoggingConfig) instead")]]
     Intervention(const std::string &name, const std::string &log_name)
-        : Intervention(name, log_name, RESPOND_DEFAULT_LOG_FILE) {}
+        : Intervention(name, LoggingConfig{log_name, RESPOND_DEFAULT_LOG_FILE,
+                                           false}) {}
+    [[deprecated("Use Intervention(name, LoggingConfig) instead")]]
     Intervention(const std::string &name, const std::string &log_name,
                  const std::string &log_file)
-        : TransitionBase(name, log_name, log_file) {}
+        : TransitionBase(name, LoggingConfig{log_name, log_file, false}) {}
+    Intervention(const std::string &name,
+                 const LoggingConfig &logging_config)
+        : TransitionBase(name, logging_config) {}
 
     // Run the execute function and return the final state. Do not edit the
     // parameter state, but do edit the history provided. Nothing in the
@@ -42,7 +48,7 @@ public:
 
     // Clone
     std::unique_ptr<Transition> clone() const override {
-        auto ret = std::make_unique<Intervention>(GetName(), _log_name);
+        auto ret = std::make_unique<Intervention>(GetName(), _logging_config);
         for (const auto &t : GetMatrices()) {
             ret->AddMatrix(t);
         }

@@ -13,6 +13,7 @@
 #include <respond/simulation.hpp>
 
 #include <algorithm>
+#include <atomic>
 #include <fstream>
 #include <memory>
 #include <string>
@@ -245,6 +246,157 @@ TEST_F(SimulationTest, RunMultipleModels) {
     s.AddModel(std::move(mock_model2));
 
     s.Run();
+}
+
+TEST_F(SimulationTest, RunsModelsConcurrentlyWhenEnabled) {
+    ExecutionConfig config;
+    config.total_threads = 2;
+    config.eigen_threads = 1;
+    config.run_models_concurrently = true;
+    Simulation simulation(RuntimeConfig{config, LoggingConfig{}});
+
+    std::atomic<int> entered{0};
+    std::atomic<int> maximum_active{0};
+    auto run_model = [&]() {
+        const int active = entered.fetch_add(1) + 1;
+        int observed_maximum = maximum_active.load();
+        while (active > observed_maximum &&
+               !maximum_active.compare_exchange_weak(observed_maximum,
+                                                     active)) {
+        }
+        while (entered.load() < 2) {
+            std::this_thread::yield();
+        }
+    };
+
+    auto first_source = std::make_unique<NiceMock<MockModel>>();
+    auto first_model = std::make_unique<NiceMock<MockModel>>();
+    EXPECT_CALL(*first_model, RunTimesteps()).WillOnce(run_model);
+    EXPECT_CALL(*first_source, clone())
+        .WillOnce(Return(::testing::ByMove(std::move(first_model))));
+    simulation.AddModel(std::move(first_source));
+
+    auto second_source = std::make_unique<NiceMock<MockModel>>();
+    auto second_model = std::make_unique<NiceMock<MockModel>>();
+    EXPECT_CALL(*second_model, RunTimesteps()).WillOnce(run_model);
+    EXPECT_CALL(*second_source, clone())
+        .WillOnce(Return(::testing::ByMove(std::move(second_model))));
+    simulation.AddModel(std::move(second_source));
+
+    simulation.Run();
+
+    EXPECT_EQ(entered.load(), 2);
+    EXPECT_EQ(maximum_active.load(), 2);
+}
+
+TEST_F(SimulationTest, TotalThreadsOneRunsModelsSequentially) {
+    ExecutionConfig config;
+    config.total_threads = 1;
+    config.run_models_concurrently = true;
+    Simulation simulation(RuntimeConfig{config, LoggingConfig{}});
+    std::atomic<int> active{0};
+    std::atomic<int> maximum_active{0};
+
+    auto run_model = [&]() {
+        const int current = active.fetch_add(1) + 1;
+        maximum_active.store(std::max(maximum_active.load(), current));
+        active.fetch_sub(1);
+    };
+
+    for (int index = 0; index < 2; ++index) {
+        auto source = std::make_unique<NiceMock<MockModel>>();
+        auto model = std::make_unique<NiceMock<MockModel>>();
+        EXPECT_CALL(*model, RunTimesteps()).WillOnce(run_model);
+        EXPECT_CALL(*source, clone())
+            .WillOnce(Return(::testing::ByMove(std::move(model))));
+        simulation.AddModel(std::move(source));
+    }
+
+    simulation.Run();
+
+    EXPECT_EQ(maximum_active.load(), 1);
+}
+
+TEST_F(SimulationTest, AllowsEigenThreadsWhenConcurrencyFallsBackToSequential) {
+    ExecutionConfig config;
+    config.eigen_threads = 2;
+    config.run_models_concurrently = false;
+    Simulation simulation(RuntimeConfig{config, LoggingConfig{}});
+
+    for (int index = 0; index < 2; ++index) {
+        auto source = std::make_unique<NiceMock<MockModel>>();
+        auto model = std::make_unique<NiceMock<MockModel>>();
+        EXPECT_CALL(*model, RunTimesteps()).Times(1);
+        EXPECT_CALL(*source, clone())
+            .WillOnce(Return(::testing::ByMove(std::move(model))));
+        simulation.AddModel(std::move(source));
+    }
+
+    EXPECT_NO_THROW(simulation.Run());
+}
+
+TEST_F(SimulationTest, AllowsEigenThreadsForSingleConcurrentModel) {
+    ExecutionConfig config;
+    config.eigen_threads = 2;
+    config.run_models_concurrently = true;
+    Simulation simulation(RuntimeConfig{config, LoggingConfig{}});
+
+    auto source = std::make_unique<NiceMock<MockModel>>();
+    auto model = std::make_unique<NiceMock<MockModel>>();
+    EXPECT_CALL(*model, RunTimesteps()).Times(1);
+    EXPECT_CALL(*source, clone())
+        .WillOnce(Return(::testing::ByMove(std::move(model))));
+    simulation.AddModel(std::move(source));
+
+    EXPECT_NO_THROW(simulation.Run());
+}
+
+TEST_F(SimulationTest, RejectsConcurrentEigenOversubscription) {
+    ExecutionConfig config;
+    config.eigen_threads = 2;
+    config.run_models_concurrently = true;
+    Simulation simulation(RuntimeConfig{config, LoggingConfig{}});
+
+    auto first_source = std::make_unique<NiceMock<MockModel>>();
+    auto first_model = std::make_unique<NiceMock<MockModel>>();
+    EXPECT_CALL(*first_source, clone())
+        .WillOnce(Return(::testing::ByMove(std::move(first_model))));
+    simulation.AddModel(std::move(first_source));
+
+    auto second_source = std::make_unique<NiceMock<MockModel>>();
+    auto second_model = std::make_unique<NiceMock<MockModel>>();
+    EXPECT_CALL(*second_source, clone())
+        .WillOnce(Return(::testing::ByMove(std::move(second_model))));
+    simulation.AddModel(std::move(second_source));
+
+    EXPECT_THROW(simulation.Run(), std::invalid_argument);
+}
+
+TEST_F(SimulationTest, RethrowsWorkerExceptionAfterJoining) {
+    ExecutionConfig config;
+    config.total_threads = 2;
+    config.run_models_concurrently = true;
+    Simulation simulation(RuntimeConfig{config, LoggingConfig{}});
+    std::atomic<int> completed{0};
+
+    auto throwing_source = std::make_unique<NiceMock<MockModel>>();
+    auto throwing_model = std::make_unique<NiceMock<MockModel>>();
+    EXPECT_CALL(*throwing_model, RunTimesteps())
+        .WillOnce(::testing::Throw(std::runtime_error("worker failure")));
+    EXPECT_CALL(*throwing_source, clone())
+        .WillOnce(Return(::testing::ByMove(std::move(throwing_model))));
+    simulation.AddModel(std::move(throwing_source));
+
+    auto completing_source = std::make_unique<NiceMock<MockModel>>();
+    auto completing_model = std::make_unique<NiceMock<MockModel>>();
+    EXPECT_CALL(*completing_model, RunTimesteps())
+        .WillOnce([&]() { completed.fetch_add(1); });
+    EXPECT_CALL(*completing_source, clone())
+        .WillOnce(Return(::testing::ByMove(std::move(completing_model))));
+    simulation.AddModel(std::move(completing_source));
+
+    EXPECT_THROW(simulation.Run(), std::runtime_error);
+    EXPECT_EQ(completed.load(), 1);
 }
 
 TEST_F(SimulationTest, GetModels) {
