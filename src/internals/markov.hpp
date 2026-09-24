@@ -4,7 +4,7 @@
 // Created Date: 2026-02-05                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-09-22                                                  //
+// Last Modified: 2026-09-24                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
@@ -221,16 +221,11 @@ public:
             return;
         }
 
+        _current_timestep = static_cast<int>(idx);
+
         auto transitions = _timestep_vector[idx].GetTransitions();
         for (const auto &t : transitions) {
             _state = t->Execute(_state, _histories);
-        }
-        if (idx != _current_timestep) {
-            LogWarning(_log_name,
-                       "Ran timestep out of order. Current timestep: " +
-                           std::to_string(_current_timestep) +
-                           ", run timestep: " + std::to_string(idx));
-            return;
         }
         _current_timestep++;
     }

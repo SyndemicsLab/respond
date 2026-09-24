@@ -248,6 +248,7 @@ public:
     /// @param transition_name The name of the transition to which the matrix
     /// will be added.
     /// @param m The transition matrix to add (not modified by this transition).
+    /// @throws std::invalid_argument if no transition has the requested name.
     void AddMatrixToTransition(const std::string &transition_name,
                                const Eigen::Ref<const Eigen::MatrixXd> &m) {
         for (size_t i = 0; i < _transitions.size(); ++i) {
@@ -256,9 +257,11 @@ public:
                 return;
             }
         }
-        LogWarning(_log_name,
-                   "Transition not found in AddMatrixToTransition: " +
-                       transition_name);
+        LogError(_log_name, "Transition not found in AddMatrixToTransition: " +
+                               transition_name);
+        throw std::invalid_argument(
+            "Error attempting to AddMatrixToTransition by name: " +
+            transition_name);
     }
 
     ////////////////////////////////////////////////////////////////////////////

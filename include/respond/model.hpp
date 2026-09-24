@@ -37,11 +37,10 @@ public:
     ////////////////////////////////////////////////////////////////////////////
 
     /// @brief Factory method to create a Model instance.
-    /// @details This method creates a new instance of a Model subclass based on
-    /// the provided name. It initializes logging for the model and returns a
-    /// unique_ptr to the created instance. Throws an exception if the model
-    /// name is unsupported.
-    /// @param name The name identifier for the model to create.
+    /// @details This method creates a Markov model instance and uses the
+    /// provided name as its instance identifier. It initializes logging for
+    /// the model and returns a unique_ptr to the created instance.
+    /// @param name The instance name for the model.
     /// @param log_name Name of the logger for this model (default: "console").
     /// @param log_filepath File path for the log file (default: "respond.log").
     /// @return A unique_ptr to the newly created Model instance.
@@ -52,12 +51,11 @@ public:
            const std::string &log_filepath = RESPOND_DEFAULT_LOG_FILE);
 
     /// @brief Alternate factory method to create a Model instance.
-    /// @details This method creates a new instance of a Model subclass based on
-    /// the provided name. It sets the number of threads to be used by the
-    /// model, initializes logging for the model, and returns a unique_ptr to
-    /// the created instance. Throws an exception if the model name is
-    /// unsupported.
-    /// @param name The name identifier for the model to create.
+    /// @details This method creates a Markov model instance and uses the
+    /// provided name as its instance identifier. It sets the number of threads
+    /// to be used by the model, initializes logging, and returns a unique_ptr
+    /// to the created instance.
+    /// @param name The instance name for the model.
     /// @param processor_count The number of threads to be used by the model.
     /// @param log_name Name of the logger for this model (default: "console").
     /// @param log_filepath File path for the log file (default: "respond.log").
@@ -69,7 +67,7 @@ public:
            const std::string &log_filepath = RESPOND_DEFAULT_LOG_FILE);
 
         /// @brief Creates a Model with explicit execution settings.
-        /// @param name The name identifier for the model to create.
+        /// @param name The instance name for the model.
         /// @param execution_config Resource settings for model execution.
         /// @param log_name Name of the logger for this model (default: "console").
         /// @param log_filepath File path for the log file (default: "respond.log").
@@ -80,7 +78,8 @@ public:
             const std::string &log_name = RESPOND_DEFAULT_LOG,
             const std::string &log_filepath = RESPOND_DEFAULT_LOG_FILE);
 
-        /// @brief Creates a Model with shared runtime settings.
+        /// @brief Creates a Markov model with shared runtime settings.
+        /// @param name The instance name for the model.
         static std::unique_ptr<Model>
         Create(const std::string &name, const RuntimeConfig &runtime_config);
 

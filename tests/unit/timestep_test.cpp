@@ -161,6 +161,14 @@ TEST_F(TimestepTest, AddMatrixToTransitionByName) {
     ASSERT_TRUE(transition->GetMatrices()[0].isApprox(m));
 }
 
+TEST_F(TimestepTest, AddMatrixToTransitionByMissingNameThrows) {
+    Timestep ts("test_log", test_log_file_);
+    Eigen::MatrixXd m = Eigen::MatrixXd::Identity(2, 2);
+
+    EXPECT_THROW(ts.AddMatrixToTransition("missing", m),
+                 std::invalid_argument);
+}
+
 TEST_F(TimestepTest, RemoveTransition) {
     Timestep ts("test_log", test_log_file_);
     ts.CreateTransition("migration");

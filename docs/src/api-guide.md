@@ -113,6 +113,11 @@ Eigen::VectorXd current_state = model->GetState();
 auto histories = model->GetHistories();
 ```
 
+`Model::Create()` currently creates the Markov implementation. Its string
+argument is an instance name, not a model-type selector, and any string is
+accepted as that name. Additional model implementations may be exposed by the
+factory in the future.
+
 ### Key Methods
 
 - `SetState(const Eigen::Ref<const Eigen::VectorXd> &state)`: Sets the model's state vector
@@ -171,6 +176,7 @@ auto history_names = sim.GetModelHistoryNames(0);
 
 - `Run(int duration = -1)`: Runs all models for the configured duration
 - `SetDuration(int duration)`: Sets default duration used by `Run()` when no argument is provided
+- `CreateNewModel(const std::string &name)`: Creates and manages a model, then returns an editable deep copy; assign the edited copy through `sim[idx]`
 - `AddModel(const std::unique_ptr<Model> &model)`: Adds a model (cloned internally)
 - `operator[](size_t idx)`: Mutable index access to owned model slot (`sim[idx]->Method()`)
 - `operator[](size_t idx) const`: Const index access to owned model

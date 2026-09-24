@@ -83,6 +83,18 @@ TEST_F(SimulationTest, DefaultConstructor) {
               CreationStatus::kExists);
 }
 
+TEST_F(SimulationTest, RunRejectsSimulationWithNoModels) {
+    Simulation simulation;
+
+    try {
+        simulation.Run();
+        FAIL() << "Expected Run() to reject a simulation with no models.";
+    } catch (const std::invalid_argument &error) {
+        EXPECT_STREQ(error.what(),
+                     "Error attempting to run simulation with no models.");
+    }
+}
+
 TEST_F(SimulationTest, ConstructorWithLogName) {
     Simulation s("custom_log");
     ASSERT_EQ(CreateFileLogger("custom_log", default_log_file_),
@@ -151,6 +163,18 @@ TEST_F(SimulationTest, CreateNewModel) {
     ASSERT_NE(new_model, nullptr);
     ASSERT_EQ(new_model->GetName(), model_name);
     ASSERT_EQ(s.GetModels().size(), 1);
+}
+
+TEST_F(SimulationTest, EditsCreatedModelCopyBeforeManagingIt) {
+    Simulation simulation;
+    auto model_copy = simulation.CreateNewModel("test_model");
+    model_copy->SetFinalTimestep(12);
+
+    EXPECT_EQ(simulation[0]->GetFinalTimestep(), -1);
+
+    simulation[0] = *model_copy;
+
+    EXPECT_EQ(simulation[0]->GetFinalTimestep(), 12);
 }
 
 TEST_F(SimulationTest, CreateMultipleModels) {
@@ -349,6 +373,28 @@ TEST_F(SimulationTest, AllowsEigenThreadsForSingleConcurrentModel) {
     simulation.AddModel(std::move(source));
 
     EXPECT_NO_THROW(simulation.Run());
+}
+
+TEST_F(SimulationTest, AppliesUpdatedEigenThreadsWhenRunning) {
+    const int previous_eigen_threads = Eigen::nbThreads();
+    ExecutionConfig config;
+    config.eigen_threads = 2;
+    Simulation simulation(RuntimeConfig{config, LoggingConfig{}});
+
+    auto source = std::make_unique<NiceMock<MockModel>>();
+    auto model = std::make_unique<NiceMock<MockModel>>();
+    EXPECT_CALL(*model, RunTimesteps()).Times(1);
+    EXPECT_CALL(*source, clone())
+        .WillOnce(Return(::testing::ByMove(std::move(model))));
+    simulation.AddModel(std::move(source));
+
+    Eigen::setNbThreads(2);
+    config.eigen_threads = 1;
+    simulation.SetExecutionConfig(config);
+    simulation.Run();
+
+    EXPECT_EQ(Eigen::nbThreads(), 1);
+    Eigen::setNbThreads(previous_eigen_threads);
 }
 
 TEST_F(SimulationTest, RejectsConcurrentEigenOversubscription) {

@@ -212,8 +212,10 @@ public:
     /// @brief Creates a new model instance and adds it to the simulation.
     /// @param model_name The name identifier for the model to create. This name
     /// is used to identify the model type and initialize it accordingly.
-    /// @return A deep-copied model instance representing the newly created
-    /// model.
+    /// @return An editable deep copy of the newly created model. Changes to
+    /// this copy do not affect the model managed by the simulation until it is
+    /// assigned through the mutable model slot, for example
+    /// `simulation[0] = *model`.
     std::unique_ptr<Model> CreateNewModel(const std::string &model_name) {
         _models.push_back(Model::Create(model_name, _runtime_config));
         return _models.back()->clone();
@@ -241,11 +243,26 @@ public:
     /// limit.
     /// @throws std::invalid_argument if multiple models would execute in
     /// parallel while more than one Eigen worker thread is configured.
+    /// @throws std::invalid_argument if no models have been added.
     /// @throws Any exception raised by a model after all workers have joined.
     void Run(int duration = -1) {
+        if (_models.empty()) {
+            LogError(_runtime_config.logging.logger_name,
+                     "Cannot run a simulation with no models.");
+            throw std::invalid_argument(
+                "Error attempting to run simulation with no models.");
+        }
         if (duration > 0) {
             _duration = duration;
         }
+        const auto &execution = _runtime_config.execution;
+        const unsigned int thread_limit = std::thread::hardware_concurrency();
+        const unsigned int eigen_threads =
+            thread_limit == 0
+                ? execution.eigen_threads
+                : std::min(execution.eigen_threads, thread_limit);
+        Eigen::setNbThreads(eigen_threads);
+
         LogInfo(_runtime_config.logging.logger_name,
                 "Running simulation for duration of " +
                     std::to_string(_duration) + " timesteps.");
@@ -253,8 +270,6 @@ public:
             model->SetFinalTimestep(_duration);
             model->RunTimesteps();
         };
-
-        const auto &execution = _runtime_config.execution;
         if (!execution.run_models_concurrently || _models.size() < 2) {
             for (const auto &model : _models) {
                 run_model(model);
