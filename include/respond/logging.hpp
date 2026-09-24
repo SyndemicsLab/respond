@@ -103,9 +103,9 @@ void SetLogPattern(LogPattern pattern);
 /// @return The active LogPattern enum value.
 LogPattern GetLogPattern();
 
-/// @brief Sets the global flush interval for automatic buffer flushing.
-/// @param seconds Interval in seconds for automatic flush (0 to disable
-/// auto-flush).
+/// @brief Sets the flush policy used by logging calls.
+/// @param seconds Use 0 to flush each log message immediately. Positive values
+/// are stored for compatibility but do not currently enable periodic flushing.
 /// @note Thread-safe configuration change.
 void SetFlushInterval(int seconds);
 
@@ -153,9 +153,10 @@ void LogDebug(const std::string &logger_name, const std::string &message);
 /// @note Thread-safe query.
 CreationStatus CheckLoggerExists(const std::string &logger_name);
 
-/// @brief Retrieve detailed information about a logger.
+/// @brief Retrieve basic information about a logger.
 /// @param logger_name Logger identifier to query.
-/// @return String containing logger name, file path, level, and thread info.
+/// @return String containing the logger name, level, and sink count, or a
+/// not-found message.
 /// @note Thread-safe operation.
 std::string GetLoggerInfo(const std::string &logger_name);
 
@@ -163,8 +164,7 @@ std::string GetLoggerInfo(const std::string &logger_name);
 /// @param logger_name Logger identifier to configure.
 /// @param level Log level: 0=trace, 1=debug, 2=info, 3=warn, 4=error,
 /// 5=critical.
-/// @return CreationStatus::kSuccess if level was set, kNotCreated if logger
-/// doesn't exist.
+/// @note Does nothing when the logger does not exist.
 void SetLoggerLevel(const std::string &logger_name, int level);
 
 } // namespace respond

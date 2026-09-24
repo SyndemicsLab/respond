@@ -469,7 +469,7 @@ int main() {
     // Configure shared logging (all loggers write to the same file)
     respond::ConfigureLogger({"model_1", "unified.log", true});
     respond::SetLogPattern(respond::LogPattern::kThreadSafe);
-    respond::SetFlushInterval(3);  // Auto-flush every 3 seconds
+    respond::SetFlushInterval(0);  // Flush each log message immediately
     
     respond::ConfigureLogger({"model_2", "unified.log", true});
     respond::ConfigureLogger({"model_3", "unified.log", true});
@@ -566,6 +566,7 @@ std::string info = respond::GetLoggerInfo("model_1");
 
 // Set individual logger level
 respond::SetLoggerLevel("model_1", 2);  // 2 = info
+// SetLoggerLevel returns void and does nothing if the logger is not found.
 
 // Flush all loggers immediately
 respond::FlushAllLoggers();
@@ -595,7 +596,7 @@ returns `CreationStatus::kExists`; using a different destination returns
 1. **Call `SetLogPattern()` once** at program startup, before creating any loggers
 2. **Set `LoggingConfig::use_shared_sink` to `true`** when parallel loggers should write to one file
 3. **Use `kThreadSafe` pattern** when logs will have high concurrent write volume
-4. **Set `FlushInterval(0)`** for critical logging; use `FlushInterval(3-5)` for performance
+4. **Set `FlushInterval(0)`** when each message must be flushed immediately; positive values are currently reserved and do not enable periodic flushing
 5. **Call `FlushAllLoggers()`** at end of main before exit to ensure all writes complete
 6. **Monitor logger levels** with `GetLoggerInfo()` when debugging multi-model runs
 
