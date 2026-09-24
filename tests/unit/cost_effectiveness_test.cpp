@@ -42,7 +42,7 @@ protected:
 
 TEST_F(CostEffectivenessTest, ContinuousDiscount) {
     double discount = exp(-discount_rate * (week / total_weeks));
-    auto expected = data - Eigen::VectorXd::Constant(data.size(), discount);
+    auto expected = data * discount;
 
     auto result = Discount(data, discount_rate, week, is_discrete, total_weeks);
     ASSERT_TRUE(expected.isApprox(result));
@@ -52,7 +52,7 @@ TEST_F(CostEffectivenessTest, DiscreteDiscount) {
     is_discrete = true;
 
     double discount = 1 / pow((1.0 + (discount_rate) / total_weeks), week);
-    auto expected = data - Eigen::VectorXd::Constant(data.size(), discount);
+    auto expected = data * discount;
 
     auto result = Discount(data, discount_rate, week, is_discrete, total_weeks);
     ASSERT_TRUE(expected.isApprox(result));
@@ -88,7 +88,7 @@ TEST_F(CostEffectivenessTest, CalculateLifeYearsDiscountHistory) {
     double result = CalculateLifeYears(h, true, discount_rate, 1.0);
 
     double discount = 1.0;
-    auto discounted_result = v - Eigen::VectorXd::Constant(v.size(), discount);
+    auto discounted_result = v * discount;
 
     double expected = (discounted_result.sum()) / 52.0;
     ASSERT_DOUBLE_EQ(result, expected);

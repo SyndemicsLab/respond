@@ -36,8 +36,11 @@ public:
     }
 
     static std::shared_ptr<spdlog::sinks::basic_file_sink_mt>
-    GetSharedSink(const std::string &filepath) {
+    GetSharedSink(const std::string &filepath, bool *created = nullptr) {
         std::lock_guard<std::mutex> lock(GetInstance().sink_mutex_);
+        if (created) {
+            *created = false;
+        }
         auto key = filepath;
         if (GetInstance().shared_sinks_.find(key) ==
             GetInstance().shared_sinks_.end()) {
@@ -45,6 +48,9 @@ public:
                 GetInstance().shared_sinks_[key] =
                     std::make_shared<spdlog::sinks::basic_file_sink_mt>(
                         filepath, false);
+                if (created) {
+                    *created = true;
+                }
             } catch (const spdlog::spdlog_ex &ex) {
                 std::cerr << "Failed to create shared sink: " << ex.what()
                           << std::endl;
@@ -54,9 +60,13 @@ public:
         return GetInstance().shared_sinks_[key];
     }
 
-    static LogPattern GetPattern() { return GetInstance().current_pattern_; }
+    static LogPattern GetPattern() {
+        std::lock_guard<std::mutex> lock(GetInstance().config_mutex_);
+        return GetInstance().current_pattern_;
+    }
 
     static void SetPattern(LogPattern pattern) {
+        std::lock_guard<std::mutex> lock(GetInstance().config_mutex_);
         GetInstance().current_pattern_ = pattern;
     }
 
@@ -75,9 +85,13 @@ public:
         }
     }
 
-    static int GetFlushInterval() { return GetInstance().flush_interval_; }
+    static int GetFlushInterval() {
+        std::lock_guard<std::mutex> lock(GetInstance().config_mutex_);
+        return GetInstance().flush_interval_;
+    }
 
     static void SetFlushInterval(int seconds) {
+        std::lock_guard<std::mutex> lock(GetInstance().config_mutex_);
         GetInstance().flush_interval_ = seconds;
     }
 

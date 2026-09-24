@@ -85,7 +85,7 @@ protected:
 TEST_F(MarkovTest, CreateMarkovModel) {
     auto markov = Model::Create("markov");
     ASSERT_NE(markov, nullptr);
-    ASSERT_EQ(CreateFileLogger(RESPOND_DEFAULT_LOG, ""),
+    ASSERT_EQ(CreateFileLogger(RESPOND_DEFAULT_LOG, default_log_file_),
               CreationStatus::kExists);
 }
 
@@ -96,7 +96,7 @@ TEST_F(MarkovTest, CreateMarkovModelProcessorCount) {
             : 1;
     auto markov = Model::Create("markov", processor_count);
     ASSERT_NE(markov, nullptr);
-    ASSERT_EQ(CreateFileLogger(RESPOND_DEFAULT_LOG, ""),
+    ASSERT_EQ(CreateFileLogger(RESPOND_DEFAULT_LOG, default_log_file_),
               CreationStatus::kExists);
 }
 

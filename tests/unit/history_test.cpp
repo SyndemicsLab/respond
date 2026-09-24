@@ -368,6 +368,24 @@ TEST_F(HistoryTest, GetLatestRecordedTimestep) {
     EXPECT_EQ(history.GetLatestRecordedTimestep(), 10);
 }
 
+TEST_F(HistoryTest, OutOfOrderStateIsInsertedChronologically) {
+    History history("test_history");
+    Eigen::VectorXd state_at_two = Eigen::VectorXd::Constant(1, 2.0);
+    Eigen::VectorXd state_at_five = Eigen::VectorXd::Constant(1, 5.0);
+
+    history.AddState(state_at_five, 5);
+    history.AddState(state_at_two, 2);
+
+    ASSERT_EQ(history.GetRecordedTimesteps(),
+              (std::vector<int>{2, 5}));
+    ASSERT_EQ(history.GetLatestRecordedTimestep(), 5);
+
+    const auto states = history.GetStateAsVector();
+    ASSERT_EQ(states.size(), 6);
+    EXPECT_EQ(states[2](0), 2.0);
+    EXPECT_EQ(states[5](0), 5.0);
+}
+
 TEST_F(HistoryTest, GetLatestRecordedTimestepOnEmptyHistoryReturnsNegativeOne) {
     History history("state");
     EXPECT_EQ(history.GetLatestRecordedTimestep(), -1);

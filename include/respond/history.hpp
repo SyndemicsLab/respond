@@ -16,6 +16,7 @@
 #include <respond/logging.hpp>
 
 #include <algorithm>
+#include <cstddef>
 #include <map>
 #include <utility>
 #include <vector>
@@ -171,25 +172,28 @@ public:
     /// @param state The state vector to record.
     /// @param timestep The timestep index for this state (default: -1 for
     /// automatic next timestep). If timestep is negative, the next sequential
-    /// timestep is used automatically. If timestep already exists, it is
-    /// considered invalid but is currently overwritten.
+    /// timestep is used automatically. Explicit timesteps are kept in
+    /// ascending order; inserting an earlier timestep shifts later records.
+    /// If timestep already exists, its state is overwritten.
     void AddState(const Eigen::Ref<const Eigen::VectorXd> &state,
                   int timestep = -1) {
         if (timestep < 0) {
             timestep = GetNextTimestep();
         }
 
-        const auto existing =
-            std::find(_timesteps.begin(), _timesteps.end(), timestep);
-        if (existing != _timesteps.end()) {
-            const auto index =
-                static_cast<size_t>(existing - _timesteps.begin());
+        const auto insertion_point =
+            std::lower_bound(_timesteps.begin(), _timesteps.end(), timestep);
+        const auto index = static_cast<size_t>(
+            insertion_point - _timesteps.begin());
+        if (insertion_point != _timesteps.end() &&
+            *insertion_point == timestep) {
             _states[index] = state;
             return;
         }
 
-        _timesteps.push_back(timestep);
-        _states.push_back(state);
+        _timesteps.insert(insertion_point, timestep);
+        _states.insert(_states.begin() + static_cast<std::ptrdiff_t>(index),
+                       state);
     }
 
     /// @brief Adds a contribution to an accumulated history.

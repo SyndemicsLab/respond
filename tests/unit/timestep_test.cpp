@@ -52,14 +52,15 @@ protected:
 
 TEST_F(TimestepTest, DefaultConstructor) {
     Timestep ts;
-    ASSERT_EQ(CreateFileLogger(RESPOND_DEFAULT_LOG, ""),
+    ASSERT_EQ(CreateFileLogger(RESPOND_DEFAULT_LOG, default_log_file_),
               CreationStatus::kExists);
 }
 
 TEST_F(TimestepTest, DefaultConstructorWithLogName) {
     std::string log_name = "temp";
     Timestep ts(log_name);
-    ASSERT_EQ(CreateFileLogger(log_name, ""), CreationStatus::kExists);
+    ASSERT_EQ(CreateFileLogger(log_name, default_log_file_),
+              CreationStatus::kExists);
 }
 
 TEST_F(TimestepTest, DefaultConstructorWithLogNameAndFile) {

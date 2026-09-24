@@ -54,13 +54,17 @@ enum class LogPattern : int {
 /// @param logger_name Unique identifier for this logger.
 /// @param filepath File path where the logger will write logs.
 /// @return CreationStatus indicating the result of logger creation.
-/// @note If a logger with the same name already exists, kExists is returned.
+/// @note If a logger with the same name and destination already exists,
+/// kExists is returned. If the existing logger uses a different destination,
+/// kError is returned.
 CreationStatus CreateFileLogger(const std::string &logger_name,
                                 const std::string &filepath);
 
 /// @brief Initializes a logger from a logging configuration.
 /// @param config Logging name, destination, and shared-sink policy.
 /// @return CreationStatus indicating the result of logger creation.
+/// @note Reusing a logger name with the same destination and sink policy
+/// returns kExists. A different destination or sink policy returns kError.
 CreationStatus ConfigureLogger(const LoggingConfig &config);
 
 // ============================================================================
@@ -85,6 +89,7 @@ CreationStatus CreateSharedFileSink(const std::string &filepath);
 /// @note Requires CreateSharedFileSink() to be called first with a file path.
 /// @note If CreateSharedFileSink() wasn't called, creates a default sink to
 /// "respond.log".
+/// @note Reusing a logger name with a different sink returns kError.
 CreationStatus CreateSharedLogger(const std::string &logger_name);
 
 /// @brief Sets the logging pattern template for all subsequent logger
