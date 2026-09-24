@@ -23,8 +23,9 @@ Eigen::VectorXd
 Migration::Execute(const Eigen::Ref<const Eigen::VectorXd> &state,
                    std::map<std::string, History> &h) const {
     TestCorrectNumberMatrices(1);
-    TestMatrixSizes(state, GetMatrices()[0]);
-    Eigen::VectorXd subtracted = state + GetMatrices()[0];
+    auto matrix = GetMatrices()[0];
+    TestMatrixSizes(state, matrix);
+    Eigen::VectorXd subtracted = AsVector(state) + AsVector(matrix);
     Eigen::VectorXd zero_stop = subtracted.array().max(
         Eigen::VectorXd::Zero(subtracted.size()).array());
     return zero_stop;

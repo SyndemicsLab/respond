@@ -4,7 +4,7 @@
 // Created Date: 2026-06-30                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-07-23                                                  //
+// Last Modified: 2026-09-24                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
@@ -18,6 +18,7 @@
 
 #include <respond/constants.hpp>
 #include <respond/logging.hpp>
+#include <respond/logging_config.hpp>
 #include <respond/transition.hpp>
 
 namespace respond {
@@ -92,11 +93,12 @@ public:
 
     /// @brief Default constructor for Timestep. Initializes with default
     /// logger.
-    Timestep() : Timestep(RESPOND_DEFAULT_LOG) {}
+    Timestep() : Timestep(LoggingConfig{}) {}
 
     /// @brief Default constructor for Timestep with specified logger name.
     /// Initializes with default log file path.
     /// @param log_name String name for the logger to be used by this timestep.
+    [[deprecated("Use Timestep(LoggingConfig) instead")]]
     Timestep(const std::string &log_name)
         : Timestep(log_name, RESPOND_DEFAULT_LOG_FILE) {}
 
@@ -105,9 +107,17 @@ public:
     /// @param log_name String name for the logger to be used by this timestep.
     /// @param log_filepath String path for the log file to be used by this
     /// timestep.
+    [[deprecated("Use Timestep(LoggingConfig) instead")]]
     Timestep(const std::string &log_name, const std::string &log_filepath)
-        : _log_name(log_name) {
-        CreateFileLogger(log_name, log_filepath);
+        : Timestep(LoggingConfig{log_name, log_filepath, false}) {}
+
+    explicit Timestep(const LoggingConfig &logging_config)
+        : _log_name(logging_config.logger_name),
+          _logging_config(logging_config) {
+        if (ConfigureLogger(_logging_config) == CreationStatus::kError) {
+            throw std::runtime_error(
+                "Error attempting to initialize timestep logger.");
+        }
     }
 
     /// @brief Destructor for Timestep. Default implementation.
@@ -116,8 +126,8 @@ public:
     /// @brief Copy constructor for Timestep. Creates a deep copy of the
     /// transitions.
     /// @param other The Timestep instance to copy from.
-    Timestep(const Timestep &other) {
-        _transitions.clear();
+    Timestep(const Timestep &other)
+        : _log_name(other._log_name), _logging_config(other._logging_config) {
         for (const auto &t : other._transitions) {
             _transitions.push_back(std::move(t->clone()));
         }
@@ -129,10 +139,13 @@ public:
     /// @return Reference to this Timestep instance after assignment.
     Timestep &operator=(const Timestep &other) {
         if (this != &other) {
-            _transitions.clear();
+            std::vector<std::unique_ptr<Transition>> transitions;
             for (const auto &t : other._transitions) {
-                _transitions.push_back(std::move(t->clone()));
+                transitions.push_back(t->clone());
             }
+            _log_name = other._log_name;
+            _logging_config = other._logging_config;
+            _transitions = std::move(transitions);
         }
         return *this;
     }
@@ -141,7 +154,9 @@ public:
     /// transitions.
     /// @param other The Timestep instance to move from.
     Timestep(Timestep &&other) noexcept
-        : _transitions(std::move(other._transitions)) {
+        : _log_name(std::move(other._log_name)),
+          _logging_config(std::move(other._logging_config)),
+          _transitions(std::move(other._transitions)) {
         other._transitions.clear();
     }
 
@@ -151,6 +166,8 @@ public:
     /// @return Reference to this Timestep instance after assignment.
     Timestep &operator=(Timestep &&other) noexcept {
         if (this != &other) {
+            _log_name = std::move(other._log_name);
+            _logging_config = std::move(other._logging_config);
             _transitions = std::move(other._transitions);
             other._transitions.clear();
         }
@@ -176,8 +193,8 @@ public:
     /// exception if the transition type is unsupported.
     const std::unique_ptr<Transition> &
     CreateTransition(const std::string &transition_name) {
-        _transitions.push_back(
-            Transition::Create(transition_name, transition_name, _log_name));
+        _transitions.push_back(Transition::Create(
+            transition_name, transition_name, _logging_config));
         return _transitions.back();
     }
 
@@ -185,6 +202,12 @@ public:
     /// The transition is cloned and managed by the timestep.
     /// @param transition A unique_ptr to a Transition instance to add.
     void AddTransition(const std::unique_ptr<Transition> &transition) {
+        if (!transition) {
+            LogError(_log_name,
+                     "Cannot add a null transition to the timestep.");
+            throw std::invalid_argument(
+                "Error attempting to add a null transition to timestep.");
+        }
         _transitions.push_back(transition->clone());
     }
 
@@ -227,6 +250,7 @@ public:
     /// @param transition_name The name of the transition to which the matrix
     /// will be added.
     /// @param m The transition matrix to add (not modified by this transition).
+    /// @throws std::invalid_argument if no transition has the requested name.
     void AddMatrixToTransition(const std::string &transition_name,
                                const Eigen::Ref<const Eigen::MatrixXd> &m) {
         for (size_t i = 0; i < _transitions.size(); ++i) {
@@ -235,9 +259,11 @@ public:
                 return;
             }
         }
-        LogWarning(_log_name,
-                   "Transition not found in AddMatrixToTransition: " +
-                       transition_name);
+        LogError(_log_name, "Transition not found in AddMatrixToTransition: " +
+                                transition_name);
+        throw std::invalid_argument(
+            "Error attempting to AddMatrixToTransition by name: " +
+            transition_name);
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -407,6 +433,7 @@ private:
     }
 
     std::string _log_name;
+    LoggingConfig _logging_config;
     std::vector<std::unique_ptr<Transition>> _transitions;
 };
 } // namespace respond

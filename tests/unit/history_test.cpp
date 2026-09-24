@@ -4,7 +4,7 @@
 // Created Date: 2026-05-05                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-07-13                                                  //
+// Last Modified: 2026-09-24                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 ////////////////////////////////////////////////////////////////////////////////
@@ -107,6 +107,15 @@ TEST_F(HistoryTest, ConstructorWithNameModeAndLogger) {
     EXPECT_EQ(history.GetHistoryMode(), HistoryMode::kAccumulated);
     EXPECT_TRUE(history.GetRecordedTimesteps().empty());
     EXPECT_TRUE(history.GetRecordedStates().empty());
+}
+
+TEST_F(HistoryTest, ConstructorWithLoggingConfigSupportsSharedSink) {
+    LoggingConfig config{"shared_history_logger", default_log_file_, true};
+    History history("shared_history", HistoryMode::kSnapshot, config);
+
+    EXPECT_EQ(history.GetName(), "shared_history");
+    EXPECT_EQ(CheckLoggerExists("shared_history_logger"),
+              CreationStatus::kExists);
 }
 
 TEST_F(HistoryTest, ConstructorWithNameAndLogger) {
@@ -366,6 +375,23 @@ TEST_F(HistoryTest, GetLatestRecordedTimestep) {
     history.AddState(state2, 10);
 
     EXPECT_EQ(history.GetLatestRecordedTimestep(), 10);
+}
+
+TEST_F(HistoryTest, OutOfOrderStateIsInsertedChronologically) {
+    History history("test_history");
+    Eigen::VectorXd state_at_two = Eigen::VectorXd::Constant(1, 2.0);
+    Eigen::VectorXd state_at_five = Eigen::VectorXd::Constant(1, 5.0);
+
+    history.AddState(state_at_five, 5);
+    history.AddState(state_at_two, 2);
+
+    ASSERT_EQ(history.GetRecordedTimesteps(), (std::vector<int>{2, 5}));
+    ASSERT_EQ(history.GetLatestRecordedTimestep(), 5);
+
+    const auto states = history.GetStateAsVector();
+    ASSERT_EQ(states.size(), 6);
+    EXPECT_EQ(states[2](0), 2.0);
+    EXPECT_EQ(states[5](0), 5.0);
 }
 
 TEST_F(HistoryTest, GetLatestRecordedTimestepOnEmptyHistoryReturnsNegativeOne) {

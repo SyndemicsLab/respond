@@ -1,0 +1,39 @@
+---
+config:
+    theme: 'base'
+    themeVariables:
+        primaryColor: '#3d9be9'
+        secondaryColor: '#003771'
+        tertiaryColor: '#ffffff'
+        lineColor: '#f0325f'
+        primaryTextColor: '#ffffff'
+        primaryBorderColor: '#f0325f'
+        titleColor: '#003771'
+        fontFamily: 'Helvetica Bold, Helvetica'
+        fontSize: '22px'
+---
+
+flowchart LR
+  subgraph Traditional["RESPONDv1 control flow"]
+    direction LR
+    R1[RESPOND]
+    R1 <-->|gets| D1[Data]
+    R1 <-->|runs| C1[Migration]
+    R1 <-->|runs| C2[Behaviors]
+    R1 <-->|runs| C3[Intervention]
+    R1 <-->|runs| C4[Overdoses]
+    R1 <-->|runs| C5[Fatal Overdoses]
+    R1 <-->|runs| C6[Background Mortality]
+  end
+
+  subgraph Inverted["RESPONDv2 control flow"]
+    direction TB
+    D[Data]
+    D -->|injected into| M[Model]
+    I["«interface»<br/>Transition::Execute()"]
+    M -->|calls| I
+    I -.->|chosen at runtime| T1[Migration<br/>Behaviors<br/>Intervention<br/>Overdoses<br/>Fatal Overdoses<br/>Background Mortality]
+  end
+
+  Traditional --- Inverted
+

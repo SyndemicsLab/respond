@@ -4,7 +4,7 @@
 // Created Date: 2026-07-06                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-08-19                                                  //
+// Last Modified: 2026-09-24                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
@@ -51,14 +51,15 @@ protected:
 
 TEST_F(TimestepTest, DefaultConstructor) {
     Timestep ts;
-    ASSERT_EQ(CreateFileLogger(RESPOND_DEFAULT_LOG, ""),
+    ASSERT_EQ(CreateFileLogger(RESPOND_DEFAULT_LOG, default_log_file_),
               CreationStatus::kExists);
 }
 
 TEST_F(TimestepTest, DefaultConstructorWithLogName) {
     std::string log_name = "temp";
     Timestep ts(log_name);
-    ASSERT_EQ(CreateFileLogger(log_name, ""), CreationStatus::kExists);
+    ASSERT_EQ(CreateFileLogger(log_name, default_log_file_),
+              CreationStatus::kExists);
 }
 
 TEST_F(TimestepTest, DefaultConstructorWithLogNameAndFile) {
@@ -74,6 +75,35 @@ TEST_F(TimestepTest, CreateTransition) {
         ts.CreateTransition("migration");
     ASSERT_NE(transition, nullptr);
     ASSERT_EQ(transition->GetName(), "migration");
+}
+
+TEST_F(TimestepTest, CreateTransitionUsesLoggingConfig) {
+    const LoggingConfig logging_config{"configured_transition", test_log_file_,
+                                       false};
+    Timestep ts(logging_config);
+
+    const auto &transition = ts.CreateTransition("migration");
+
+    ASSERT_NE(transition, nullptr);
+    EXPECT_EQ(CheckLoggerExists("configured_transition"),
+              CreationStatus::kExists);
+}
+
+TEST_F(TimestepTest, ClonedTransitionPreservesLoggingConfig) {
+    const LoggingConfig logging_config{"clone_transition", test_log_file_,
+                                       false};
+    auto transition =
+        Transition::Create("migration", "migration", logging_config);
+    auto clone = transition->clone();
+
+    ASSERT_NE(clone, nullptr);
+    EXPECT_EQ(CheckLoggerExists("clone_transition"), CreationStatus::kExists);
+}
+
+TEST_F(TimestepTest, CreateTransitionRejectsUnsupportedType) {
+    EXPECT_THROW(Transition::Create("unsupported", "unsupported", "test_log",
+                                    test_log_file_),
+                 std::invalid_argument);
 }
 
 TEST_F(TimestepTest, AddTransitionClonesInputTransition) {
@@ -100,6 +130,13 @@ TEST_F(TimestepTest, AddTransitionClonesInputTransition) {
     ASSERT_TRUE(stored->GetMatrices()[0].isApprox(m1));
 }
 
+TEST_F(TimestepTest, AddNullTransitionThrows) {
+    Timestep ts("test_log", test_log_file_);
+    std::unique_ptr<Transition> null_transition;
+
+    EXPECT_THROW(ts.AddTransition(null_transition), std::invalid_argument);
+}
+
 TEST_F(TimestepTest, AddMatrixToTransitionByIndex) {
     Timestep ts("test_log", test_log_file_);
     const std::unique_ptr<Transition> &transition =
@@ -120,6 +157,13 @@ TEST_F(TimestepTest, AddMatrixToTransitionByName) {
     ts.AddMatrixToTransition("migration", m);
     ASSERT_EQ(transition->GetMatrices().size(), 1);
     ASSERT_TRUE(transition->GetMatrices()[0].isApprox(m));
+}
+
+TEST_F(TimestepTest, AddMatrixToTransitionByMissingNameThrows) {
+    Timestep ts("test_log", test_log_file_);
+    Eigen::MatrixXd m = Eigen::MatrixXd::Identity(2, 2);
+
+    EXPECT_THROW(ts.AddMatrixToTransition("missing", m), std::invalid_argument);
 }
 
 TEST_F(TimestepTest, RemoveTransition) {
@@ -178,6 +222,29 @@ TEST_F(TimestepTest, CopyConstructor) {
     std::vector<std::string> names = ts2.GetTransitionNames();
     ASSERT_EQ(names.size(), 1);
     ASSERT_EQ(names[0], "migration");
+}
+
+TEST_F(TimestepTest, CopyPreservesLoggerNameWithoutRecreatingLogger) {
+    Timestep original("test_log", test_log_file_);
+    Timestep copy(original);
+    spdlog::drop("test_log");
+
+    EXPECT_THROW(copy.AddMatrixToTransition(0, Eigen::MatrixXd::Identity(1, 1)),
+                 std::out_of_range);
+
+    EXPECT_EQ(CheckLoggerExists("test_log"), CreationStatus::kNotCreated);
+}
+
+TEST_F(TimestepTest, MovePreservesLoggerNameWithoutRecreatingLogger) {
+    Timestep original("test_log", test_log_file_);
+    Timestep moved(std::move(original));
+    spdlog::drop("test_log");
+
+    EXPECT_THROW(
+        moved.AddMatrixToTransition(0, Eigen::MatrixXd::Identity(1, 1)),
+        std::out_of_range);
+
+    EXPECT_EQ(CheckLoggerExists("test_log"), CreationStatus::kNotCreated);
 }
 
 TEST_F(TimestepTest, CopyAssignment) {

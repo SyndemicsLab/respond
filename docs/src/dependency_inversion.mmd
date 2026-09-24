@@ -1,0 +1,44 @@
+---
+config:
+    theme: 'base'
+    themeVariables:
+        primaryColor: '#3d9be9'
+        secondaryColor: '#003771'
+        tertiaryColor: '#ffffff'
+        lineColor: '#f0325f'
+        primaryTextColor: '#ffffff'
+        primaryBorderColor: '#f0325f'
+        titleColor: '#003771'
+        fontFamily: 'Helvetica Bold, Helvetica'
+        fontSize: '22px'
+---
+
+flowchart TB
+  subgraph Layered["Layered architecture / dependency inversion"]
+    direction TB
+    subgraph Application["Application layer"]
+      direction LR
+      S[Simulation]
+      AM[Model]
+    end
+
+    subgraph Abstraction["Abstraction layer"]
+      direction LR
+      T["Transition interface"]
+      TS[Timestep]
+    end
+
+    subgraph Implementation["Implementation layer"]
+      direction TB
+      MIG[Migration]
+      BEH[Behavior]
+      INT[Intervention]
+      ODO[Overdose]
+      BGD[Background Mortality]
+    end
+
+    S --> AM
+    AM --> TS
+    TS -->|depends on| T
+    T <-.-|implements| Implementation
+  end

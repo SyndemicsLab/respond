@@ -4,7 +4,7 @@
 // Created Date: 2026-02-05                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-07-13                                                  //
+// Last Modified: 2026-09-24                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
@@ -14,9 +14,12 @@
 
 #include <respond/constants.hpp>
 #include <respond/logging.hpp>
+#include <respond/logging_config.hpp>
 
 #include <algorithm>
+#include <cstddef>
 #include <map>
+#include <stdexcept>
 #include <utility>
 #include <vector>
 
@@ -58,43 +61,49 @@ public:
 
     /// @brief Default constructor initializing a history with the default name
     /// "state" and default mode based on that name.
-    History() : History("state") {}
+    History()
+        : History("state", GetDefaultHistoryMode("state"), LoggingConfig{}) {}
 
     /// @brief  Constructs a history with a specified name, using the default
     /// mode based on that name.
     /// @param name The identifier name for this history instance.
     History(const std::string &name)
-        : History(name, GetDefaultHistoryMode(name)) {}
+        : History(name, GetDefaultHistoryMode(name), LoggingConfig{}) {}
 
     /// @brief Constructs a history with a specified name and mode.
     /// @param name The identifier name for this history instance.
     /// @param mode The history recording mode (snapshot or accumulated).
     History(const std::string &name, const HistoryMode &mode)
-        : History(name, mode, RESPOND_DEFAULT_LOG, RESPOND_DEFAULT_LOG_FILE) {}
+        : History(name, mode, LoggingConfig{}) {}
 
     /// @brief Constructs a history with a specified name, mode, and logger.
     /// @param name The identifier name for this history instance.
     /// @param mode The history recording mode (snapshot or accumulated).
     /// @param log_name The name of the logger to use for history output.
+    [[deprecated("Use History(name, mode, LoggingConfig) instead")]]
     History(const std::string &name, const HistoryMode &mode,
             const std::string &log_name)
-        : History(name, mode, log_name, RESPOND_DEFAULT_LOG_FILE) {}
+        : History(name, mode,
+                  LoggingConfig{log_name, RESPOND_DEFAULT_LOG_FILE, false}) {}
 
     /// @brief Constructs a history with a specified name and logger.
     /// @param name The identifier name for this history instance.
     /// @param log_name The name of the logger to use for history output.
+    [[deprecated("Use History(name, LoggingConfig) instead")]]
     History(const std::string &name, const std::string &log_name)
-        : History(name, GetDefaultHistoryMode(name), log_name,
-                  RESPOND_DEFAULT_LOG_FILE) {}
+        : History(name, GetDefaultHistoryMode(name),
+                  LoggingConfig{log_name, RESPOND_DEFAULT_LOG_FILE, false}) {}
 
     /// @brief Constructs a history with a specified name, logger, and log
     /// file path.
     /// @param name The identifier name for this history instance.
     /// @param log_name The name of the logger to use for history output.
     /// @param log_filepath The file path for the logger output.
+    [[deprecated("Use History(name, LoggingConfig) instead")]]
     History(const std::string &name, const std::string &log_name,
             const std::string &log_filepath)
-        : History(name, GetDefaultHistoryMode(name), log_name, log_filepath) {}
+        : History(name, GetDefaultHistoryMode(name),
+                  LoggingConfig{log_name, log_filepath, false}) {}
 
     /// @brief Constructs a history with a specified name, mode, logger, and
     /// log file path.
@@ -102,10 +111,22 @@ public:
     /// @param mode The history recording mode (snapshot or accumulated).
     /// @param log_name The name of the logger to use for history output.
     /// @param log_filepath The file path for the logger output.
+    [[deprecated("Use History(name, mode, LoggingConfig) instead")]]
     History(const std::string &name, const HistoryMode &mode,
             const std::string &log_name, const std::string &log_filepath)
-        : _name(name), _mode(mode), _log_name(log_name) {
-        CreateFileLogger(log_name, log_filepath);
+        : History(name, mode, LoggingConfig{log_name, log_filepath, false}) {}
+
+    History(const std::string &name, const LoggingConfig &logging_config)
+        : History(name, GetDefaultHistoryMode(name), logging_config) {}
+
+    History(const std::string &name, const HistoryMode &mode,
+            const LoggingConfig &logging_config)
+        : _name(name), _mode(mode), _log_name(logging_config.logger_name),
+          _logging_config(logging_config) {
+        if (ConfigureLogger(_logging_config) == CreationStatus::kError) {
+            throw std::runtime_error(
+                "Error attempting to initialize history logger.");
+        }
     }
 
     /// @brief Destructor (default).
@@ -118,6 +139,7 @@ public:
         _states = other.GetRecordedStates();
         _name = other._name;
         _log_name = other._log_name;
+        _logging_config = other._logging_config;
         _mode = other._mode;
         _pending_state = other.GetPendingState();
     }
@@ -131,6 +153,7 @@ public:
             _states = other.GetRecordedStates();
             _name = other._name;
             _log_name = other._log_name;
+            _logging_config = other._logging_config;
             _mode = other._mode;
             _pending_state = other.GetPendingState();
         }
@@ -138,16 +161,14 @@ public:
     }
 
     /// @brief Move constructor implementing the Rule of Five.
-    /// @param other The history to move from (leaves original state unchanged
-    /// per current implementation).
-    History(History &&other) noexcept {
-        _timesteps = std::move(other._timesteps);
-        _states = std::move(other._states);
-        _name = other._name;
-        _log_name = other._log_name;
-        _mode = other._mode;
-        _pending_state = std::move(other._pending_state);
-    }
+    /// @param other The history to move from. The moved-from history remains
+    /// valid but its contents are unspecified.
+    History(History &&other) noexcept
+        : _timesteps(std::move(other._timesteps)),
+          _states(std::move(other._states)), _name(std::move(other._name)),
+          _log_name(std::move(other._log_name)),
+          _logging_config(std::move(other._logging_config)), _mode(other._mode),
+          _pending_state(std::move(other._pending_state)) {}
 
     /// @brief Move assignment operator implementing the Rule of Five.
     /// @param other The history to move from.
@@ -156,8 +177,9 @@ public:
         if (this != &other) {
             _timesteps = std::move(other._timesteps);
             _states = std::move(other._states);
-            _name = other._name;
-            _log_name = other._log_name;
+            _name = std::move(other._name);
+            _log_name = std::move(other._log_name);
+            _logging_config = std::move(other._logging_config);
             _mode = other._mode;
             _pending_state = std::move(other._pending_state);
         }
@@ -174,25 +196,28 @@ public:
     /// @param state The state vector to record.
     /// @param timestep The timestep index for this state (default: -1 for
     /// automatic next timestep). If timestep is negative, the next sequential
-    /// timestep is used automatically. If timestep already exists, it is
-    /// considered invalid but is currently overwritten.
+    /// timestep is used automatically. Explicit timesteps are kept in
+    /// ascending order; inserting an earlier timestep shifts later records.
+    /// If timestep already exists, its state is overwritten.
     void AddState(const Eigen::Ref<const Eigen::VectorXd> &state,
                   int timestep = -1) {
         if (timestep < 0) {
             timestep = GetNextTimestep();
         }
 
-        const auto existing =
-            std::find(_timesteps.begin(), _timesteps.end(), timestep);
-        if (existing != _timesteps.end()) {
-            const auto index =
-                static_cast<size_t>(existing - _timesteps.begin());
+        const auto insertion_point =
+            std::lower_bound(_timesteps.begin(), _timesteps.end(), timestep);
+        const auto index =
+            static_cast<size_t>(insertion_point - _timesteps.begin());
+        if (insertion_point != _timesteps.end() &&
+            *insertion_point == timestep) {
             _states[index] = state;
             return;
         }
 
-        _timesteps.push_back(timestep);
-        _states.push_back(state);
+        _timesteps.insert(insertion_point, timestep);
+        _states.insert(_states.begin() + static_cast<std::ptrdiff_t>(index),
+                       state);
     }
 
     /// @brief Adds a contribution to an accumulated history.
@@ -338,6 +363,11 @@ public:
     /// @return True if all history properties and state are identical.
     bool operator==(const History &other) const {
         return _name == other._name && _log_name == other._log_name &&
+               _logging_config.logger_name ==
+                   other._logging_config.logger_name &&
+               _logging_config.file_path == other._logging_config.file_path &&
+               _logging_config.use_shared_sink ==
+                   other._logging_config.use_shared_sink &&
                _mode == other._mode && GetStateMap() == other.GetStateMap() &&
                GetPendingState().isApprox(other.GetPendingState());
     }
@@ -359,6 +389,8 @@ public:
 private:
     /// @brief The logger name for this history.
     std::string _log_name;
+    /// @brief The logging configuration for this history.
+    LoggingConfig _logging_config;
     /// @brief The identifier name for this history.
     std::string _name;
     /// @brief Controls whether this history stores snapshots or aggregates.

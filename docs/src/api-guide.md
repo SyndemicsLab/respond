@@ -12,6 +12,45 @@ The RESPOND library provides a flexible framework for building opioid use disord
 - **Transition**: Abstract base for specific transition types
 - **History**: Tracks state vectors over time
 
+### Runtime Configuration
+
+`RuntimeConfig` groups the logging and execution settings used by `Simulation`
+and `Model`. Use the configuration-based constructors and factory overloads for
+new code.
+
+```cpp
+#include <respond/respond.hpp>
+
+respond::RuntimeConfig runtime_config;
+runtime_config.logging.logger_name = "respond";
+runtime_config.logging.file_path = "respond.log";
+runtime_config.logging.use_shared_sink = true;
+
+runtime_config.execution.run_models_concurrently = true;
+runtime_config.execution.total_threads = 4;
+runtime_config.execution.eigen_threads = 1;
+```
+
+When multiple models run concurrently, keep `eigen_threads` at `1` because
+Eigen's worker setting is process-global. For sequential execution, including a
+single-model simulation, `eigen_threads` may be greater than `1`.
+
+### Migrating from Legacy Constructors
+
+The string-based `Model::Create`, `Simulation`, `Timestep`, and transition
+factory overloads are deprecated. Replace separate logger-name and file-path
+arguments with `LoggingConfig`, and pass it through `RuntimeConfig` when both
+logging and execution settings are needed:
+
+```cpp
+// Legacy:
+// respond::Simulation sim("app", "simulation.log");
+
+respond::RuntimeConfig config;
+config.logging = {"app", "simulation.log", false};
+respond::Simulation sim(config);
+```
+
 ## Core Concepts
 
 ### State Vectors
@@ -37,12 +76,14 @@ History objects record state vectors at timesteps, enabling analysis of state tr
 The Model class is the abstract base for all models in RESPOND.
 
 ```cpp
-#include <respond/model.hpp>
-#include <respond/timestep.hpp>
-#include <respond/transition.hpp>
+#include <respond/respond.hpp>
+
+respond::RuntimeConfig runtime_config;
+runtime_config.logging.logger_name = "model_logger";
+runtime_config.logging.file_path = "model.log";
 
 // Create a model
-auto model = respond::Model::Create("markov", "logger_name");
+auto model = respond::Model::Create("markov", runtime_config);
 
 // Set the initial state
 Eigen::VectorXd initial_state(50);
@@ -50,11 +91,12 @@ initial_state.setZero();
 model->SetState(initial_state);
 
 // Build one timestep with transitions
-respond::Timestep step("logger_name");
+respond::Timestep step(runtime_config.logging);
 auto &behavior_transition = step.CreateTransition("behavior");
 behavior_transition->AddMatrix(some_matrix);
 
-auto migration_transition = respond::Transition::Create("migration");
+auto migration_transition = respond::Transition::Create(
+    "migration", "migration", runtime_config.logging);
 step.AddTransition(migration_transition);
 
 // Mutable index access to owned transition slots
@@ -70,6 +112,11 @@ Eigen::VectorXd current_state = model->GetState();
 // Access history records
 auto histories = model->GetHistories();
 ```
+
+`Model::Create()` currently creates the Markov implementation. Its string
+argument is an instance name, not a model-type selector, and any string is
+accepted as that name. Additional model implementations may be exposed by the
+factory in the future.
 
 ### Key Methods
 
@@ -91,14 +138,22 @@ auto histories = model->GetHistories();
 The Simulation class manages multiple models and coordinates their execution.
 
 ```cpp
-#include <respond/simulation.hpp>
+#include <respond/respond.hpp>
 
-// Create a simulation
-respond::Simulation sim("my_logger");
+respond::RuntimeConfig runtime_config;
+runtime_config.logging.logger_name = "simulation_logger";
+runtime_config.logging.file_path = "simulation.log";
+runtime_config.logging.use_shared_sink = true;
+runtime_config.execution.run_models_concurrently = true;
+runtime_config.execution.total_threads = 2;
+runtime_config.execution.eigen_threads = 1;
+
+// Create a simulation with explicit logging and execution settings
+respond::Simulation sim(runtime_config);
 
 // Add models
-auto model1 = respond::Model::Create("model1", "my_logger");
-auto model2 = respond::Model::Create("model2", "my_logger");
+auto model1 = respond::Model::Create("model1", runtime_config);
+auto model2 = respond::Model::Create("model2", runtime_config);
 sim.AddModel(model1);
 sim.AddModel(model2);
 
@@ -119,8 +174,9 @@ auto history_names = sim.GetModelHistoryNames(0);
 
 ### Key Methods
 
-- `Run(int duration = -1)`: Runs all models for the configured duration
-- `SetDuration(int duration)`: Sets default duration used by `Run()` when no argument is provided
+- `Run(int duration = -1)`: Runs all models; `-1` uses the configured duration and positive values override it
+- `SetDuration(int duration)`: Sets a positive default duration used by `Run()` when no argument is provided
+- `CreateNewModel(const std::string &name)`: Creates and manages a model, then returns an editable deep copy; assign the edited copy through `sim[idx]`
 - `AddModel(const std::unique_ptr<Model> &model)`: Adds a model (cloned internally)
 - `operator[](size_t idx)`: Mutable index access to owned model slot (`sim[idx]->Method()`)
 - `operator[](size_t idx) const`: Const index access to owned model
@@ -138,17 +194,19 @@ The Timestep class owns transitions for one model step and supports both
 transition creation and clone-based insertion.
 
 ```cpp
-#include <respond/timestep.hpp>
-#include <respond/transition.hpp>
+#include <respond/respond.hpp>
 
-respond::Timestep step("my_logger");
+respond::LoggingConfig logging_config{
+    "timestep_logger", "timestep.log", false};
+respond::Timestep step(logging_config);
 
 // Build transition in-place
 auto &behavior = step.CreateTransition("behavior");
 behavior->AddMatrix(behavior_matrix);
 
 // Add an existing transition by clone
-auto migration = respond::Transition::Create("migration");
+auto migration = respond::Transition::Create(
+    "migration", "migration", logging_config);
 step.AddTransition(migration);
 
 // Mutable slot access (in-place edits)
@@ -233,13 +291,16 @@ hist.Clear();
 The Transition class is abstract; use `Transition::Create(...)` to create concrete instances.
 
 ```cpp
-#include <respond/transition.hpp>
+#include <respond/respond.hpp>
+
+respond::LoggingConfig logging_config{
+    "transition_logger", "transitions.log", false};
 
 // Create a transition
 auto transition = respond::Transition::Create(
     "behavior",      // Type
     "behavior_name", // Instance name
-    "my_logger"      // Logger name
+    logging_config    // Logger configuration
 );
 
 // Add transformation matrices
@@ -269,42 +330,41 @@ transition->ClearMatrices();
 
 ## Logging Integration
 
-RESPOND uses the spdlog library for logging. Models and transitions accept a logger name:
+RESPOND uses the spdlog library for logging. Models, timesteps, and transitions
+accept `LoggingConfig`, which specifies the logger name, file path, and whether
+the logger uses a shared sink:
 
 ```cpp
-// All logging is handled by passing logger names
-auto model = respond::Model::Create("my_model", "my_logger");
+respond::LoggingConfig logging_config{
+    "my_logger", "path/to/logfile.log", false};
+auto model = respond::Model::Create(
+    "my_model", respond::RuntimeConfig{{}, logging_config});
 
-// The model will use this logger for any errors or warnings
-// Create loggers separately using respond::CreateFileLogger
-respond::CreateFileLogger("my_logger", "path/to/logfile.log");
+// Reusing the same logger name and destination is idempotent. Reusing the
+// name with a different destination returns CreationStatus::kError.
+respond::ConfigureLogger(logging_config);
 ```
 
 ## Complete Example
 
 ```cpp
-#include <respond/simulation.hpp>
-#include <respond/model.hpp>
-#include <respond/timestep.hpp>
-#include <respond/logging.hpp>
+#include <respond/respond.hpp>
 
 int main() {
-    // Create logger
-    respond::CreateFileLogger("app", "simulation.log");
+    respond::RuntimeConfig config;
+    config.logging = {"app", "simulation.log", false};
 
-    // Create simulation
-    respond::Simulation sim("app");
+    // Create simulation and model with the same runtime settings
+    respond::Simulation sim(config);
+    auto model = respond::Model::Create("markov", config);
 
-    // Create and configure a model
-    auto model = respond::Model::Create("markov", "app");
-    
     // Set initial state (e.g., 1000 individuals across 50 states)
     Eigen::VectorXd initial_state = Eigen::VectorXd::Zero(50);
     initial_state(0) = 1000;  // All in first state
     model->SetState(initial_state);
 
     // Create a reusable timestep with transitions
-    respond::Timestep step("app");
+    respond::Timestep step(config.logging);
 
     auto &behavior_transition = step.CreateTransition("behavior");
     // behavior_transition->AddMatrix(...);
@@ -359,9 +419,12 @@ RESPOND uses `std::unique_ptr` for ownership management:
 
 ```cpp
 for (int run = 0; run < num_runs; ++run) {
-    respond::Simulation sim("logger_" + std::to_string(run));
-    
-    auto model = respond::Model::Create("markov", "logger_" + std::to_string(run));
+    respond::RuntimeConfig config;
+    config.logging.logger_name = "logger_" + std::to_string(run);
+    config.logging.file_path = "run_" + std::to_string(run) + ".log";
+    respond::Simulation sim(config);
+
+    auto model = respond::Model::Create("markov", config);
     // Configure model...
     
     sim.AddModel(model);
@@ -386,7 +449,9 @@ model->CreateDefaultHistories();
 ### Copying Simulations
 
 ```cpp
-respond::Simulation sim1("logger");
+respond::RuntimeConfig config;
+config.logging.logger_name = "logger";
+respond::Simulation sim1(config);
 // ... configure sim1 ...
 
 // Create independent copy
@@ -402,20 +467,18 @@ When running multiple models in parallel, all loggers can safely write to the sa
 ### Basic Parallel Logging Setup
 
 ```cpp
-#include <respond/logging.hpp>
-#include <respond/model.hpp>
+#include <respond/respond.hpp>
 #include <thread>
 #include <vector>
 
 int main() {
-    // Configure shared logging (all loggers write to same file)
+    // Configure shared logging (all loggers write to the same file)
+    respond::ConfigureLogger({"model_1", "unified.log", true});
     respond::SetLogPattern(respond::LogPattern::kThreadSafe);
-    respond::SetFlushInterval(3);  // Auto-flush every 3 seconds
+    respond::SetFlushInterval(0);  // Flush each log message immediately
     
-    // Create multiple loggers that share the same file sink
-    respond::CreateSharedLogger("model_1");
-    respond::CreateSharedLogger("model_2");
-    respond::CreateSharedLogger("model_3");
+    respond::ConfigureLogger({"model_2", "unified.log", true});
+    respond::ConfigureLogger({"model_3", "unified.log", true});
     
     // Now multiple threads can safely write to shared log
     return 0;
@@ -425,20 +488,19 @@ int main() {
 ### Running Models in Parallel with Unified Logging
 
 ```cpp
-#include <respond/logging.hpp>
-#include <respond/simulation.hpp>
+#include <respond/respond.hpp>
 #include <thread>
 #include <vector>
 
 void RunSimulation(int id, const std::string& log_file) {
     std::string logger_name = "model_" + std::to_string(id);
     
-    // Create logger that uses shared sink
-    respond::CreateSharedLogger(logger_name);
-    
+    respond::RuntimeConfig config;
+    config.logging = {logger_name, log_file, true};
+
     // Create and run simulation
-    respond::Simulation sim(logger_name);
-    auto model = respond::Model::Create("markov", logger_name);
+    respond::Simulation sim(config);
+    auto model = respond::Model::Create("markov", config);
     
     // Configure model...
     Eigen::VectorXd initial_state = Eigen::VectorXd::Zero(50);
@@ -495,7 +557,7 @@ respond::SetLogPattern(respond::LogPattern::kDetailed);
 auto current = respond::GetLogPattern();
 
 // Get pattern as string for programmatic use
-std::string pattern_str = respond::LoggingConfig::GetPatternString(current);
+// The active pattern is available through GetLogPattern().
 ```
 
 ### Monitoring Shared Loggers
@@ -509,7 +571,8 @@ std::string info = respond::GetLoggerInfo("model_1");
 // Returns: "Logger: model_1\n  Level: debug\n  Sinks: 1"
 
 // Set individual logger level
-respond::SetLoggerLevel("model_1", spdlog::level::info);
+respond::SetLoggerLevel("model_1", 2);  // 2 = info
+// SetLoggerLevel returns void and does nothing if the logger is not found.
 
 // Flush all loggers immediately
 respond::FlushAllLoggers();
@@ -517,25 +580,29 @@ respond::FlushAllLoggers();
 
 ### Thread-Safe File Sink Management
 
-The `CreateSharedFileSink` function creates file sinks that are automatically cached and reused:
+Shared sinks are automatically cached and reused by `ConfigureLogger` when
+`LoggingConfig::use_shared_sink` is `true`:
 
 ```cpp
-// Create or get cached sink for filepath
-auto sink = respond::CreateSharedFileSink("logs/simulation.log");
-// If called again with same path, returns existing sink (no duplicate file handles)
+respond::ConfigureLogger({"logger_1", "logs/simulation.log", true});
+respond::ConfigureLogger({"logger_2", "logs/simulation.log", true});
 
-// Multiple loggers using same sink (no file conflicts)
-respond::CreateSharedLogger("logger_1");  // Uses default sink
-respond::CreateSharedLogger("logger_2");  // Uses same sink
+// Both loggers use the cached sink for the same path.
 // Both logger_1 and logger_2 write to same file safely
 ```
+
+The legacy `CreateSharedFileSink` and `CreateSharedLogger` functions remain
+available for existing code. New code should use `ConfigureLogger` so the
+destination is explicit. Reusing a logger name with the same destination
+returns `CreationStatus::kExists`; using a different destination returns
+`CreationStatus::kError`.
 
 ### Best Practices for Parallel Logging
 
 1. **Call `SetLogPattern()` once** at program startup, before creating any loggers
-2. **Call `CreateSharedLogger()` instead of `CreateFileLogger()`** when using parallel execution
+2. **Set `LoggingConfig::use_shared_sink` to `true`** when parallel loggers should write to one file
 3. **Use `kThreadSafe` pattern** when logs will have high concurrent write volume
-4. **Set `FlushInterval(0)`** for critical logging; use `FlushInterval(3-5)` for performance
+4. **Set `FlushInterval(0)`** when each message must be flushed immediately; positive values are currently reserved and do not enable periodic flushing
 5. **Call `FlushAllLoggers()`** at end of main before exit to ensure all writes complete
 6. **Monitor logger levels** with `GetLoggerInfo()` when debugging multi-model runs
 
@@ -543,7 +610,8 @@ respond::CreateSharedLogger("logger_2");  // Uses same sink
 
 - **Assertion failures**: Ensure matrix dimensions match state vector size before adding to transitions
 - **Empty histories**: Call `CreateDefaultHistories()` after model setup or manually add histories
-- **Logger errors**: Ensure logger names exist (create with `CreateFileLogger` if needed)
+- **Logger errors**: Ensure each logger name has one consistent destination; use
+    `ConfigureLogger` with the intended `LoggingConfig`
 - **Memory issues**: Verify no circular unique_ptr references; models own transitions
 
 For more information, see the [Doxygen-generated API documentation](../doxygen/html/index.html) or the [Architecture and Design guide](architecture.md).

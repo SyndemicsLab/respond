@@ -4,10 +4,10 @@
 // Created Date: 2025-06-06                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-07-30                                                  //
+// Last Modified: 2026-09-24                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
-// Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
+// Copyright (c) 2025-2026 Syndemics Lab at Boston Medical Center             //
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef RESPOND_LOGGINGINTERNALS_HPP_
@@ -28,16 +28,19 @@
 
 namespace respond {
 
-class LoggingConfig {
+class LoggingRegistry {
 public:
-    static LoggingConfig &GetInstance() {
-        static LoggingConfig instance;
+    static LoggingRegistry &GetInstance() {
+        static LoggingRegistry instance;
         return instance;
     }
 
     static std::shared_ptr<spdlog::sinks::basic_file_sink_mt>
-    GetSharedSink(const std::string &filepath) {
+    GetSharedSink(const std::string &filepath, bool *created = nullptr) {
         std::lock_guard<std::mutex> lock(GetInstance().sink_mutex_);
+        if (created) {
+            *created = false;
+        }
         auto key = filepath;
         if (GetInstance().shared_sinks_.find(key) ==
             GetInstance().shared_sinks_.end()) {
@@ -45,6 +48,9 @@ public:
                 GetInstance().shared_sinks_[key] =
                     std::make_shared<spdlog::sinks::basic_file_sink_mt>(
                         filepath, false);
+                if (created) {
+                    *created = true;
+                }
             } catch (const spdlog::spdlog_ex &ex) {
                 std::cerr << "Failed to create shared sink: " << ex.what()
                           << std::endl;
@@ -54,9 +60,13 @@ public:
         return GetInstance().shared_sinks_[key];
     }
 
-    static LogPattern GetPattern() { return GetInstance().current_pattern_; }
+    static LogPattern GetPattern() {
+        std::lock_guard<std::mutex> lock(GetInstance().config_mutex_);
+        return GetInstance().current_pattern_;
+    }
 
     static void SetPattern(LogPattern pattern) {
+        std::lock_guard<std::mutex> lock(GetInstance().config_mutex_);
         GetInstance().current_pattern_ = pattern;
     }
 
@@ -75,9 +85,13 @@ public:
         }
     }
 
-    static int GetFlushInterval() { return GetInstance().flush_interval_; }
+    static int GetFlushInterval() {
+        std::lock_guard<std::mutex> lock(GetInstance().config_mutex_);
+        return GetInstance().flush_interval_;
+    }
 
     static void SetFlushInterval(int seconds) {
+        std::lock_guard<std::mutex> lock(GetInstance().config_mutex_);
         GetInstance().flush_interval_ = seconds;
     }
 
@@ -92,7 +106,7 @@ public:
     }
 
 private:
-    LoggingConfig()
+    LoggingRegistry()
         : current_pattern_(LogPattern::kStandard), flush_interval_(3),
           default_sink_path_("respond.log") {
         spdlog::cfg::load_env_levels();
@@ -115,38 +129,33 @@ CreationStatus CheckIfExists(const std::string &logger_name) {
 
 void log(const std::string &logger_name, const std::string &message,
          LogType type = LogType::kInfo) {
-    CreationStatus status = CheckIfExists(logger_name);
-    if ((status == CreationStatus::kNotCreated) &&
-        (CreateFileLogger(logger_name, "respond.log") ==
-         CreationStatus::kError)) {
-        std::cerr << "Failed to create logger: " << logger_name << std::endl;
+    auto logger = spdlog::get(logger_name);
+    if (!logger) {
+        std::cerr << "Logger '" << logger_name
+                  << "' is not configured; message was not persisted: "
+                  << message << std::endl;
         return;
     }
 
-    auto logger = spdlog::get(logger_name);
-    if (logger) {
-        switch (type) {
-        case LogType::kInfo:
-            logger->info(message);
-            break;
-        case LogType::kWarn:
-            logger->warn(message);
-            break;
-        case LogType::kError:
-            logger->error(message);
-            break;
-        case LogType::kDebug:
-            logger->debug(message);
-            break;
-        default:
-            logger->info(message);
-            break;
-        }
-        if (LoggingConfig::GetFlushInterval() == 0) {
-            logger->flush();
-        }
-    } else {
-        spdlog::error("Logger {} not found", logger_name);
+    switch (type) {
+    case LogType::kInfo:
+        logger->info(message);
+        break;
+    case LogType::kWarn:
+        logger->warn(message);
+        break;
+    case LogType::kError:
+        logger->error(message);
+        break;
+    case LogType::kDebug:
+        logger->debug(message);
+        break;
+    default:
+        logger->info(message);
+        break;
+    }
+    if (LoggingRegistry::GetFlushInterval() == 0) {
+        logger->flush();
     }
 }
 

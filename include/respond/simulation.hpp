@@ -4,7 +4,7 @@
 // Created Date: 2026-02-05                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-07-22                                                  //
+// Last Modified: 2026-09-24                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
@@ -13,13 +13,20 @@
 #define RESPOND_SIMULATION_HPP_
 
 #include <respond/constants.hpp>
+#include <respond/eigen_config.hpp>
 #include <respond/history.hpp>
 #include <respond/logging.hpp>
 #include <respond/model.hpp>
+#include <respond/runtime_config.hpp>
 
+#include <atomic>
+#include <exception>
 #include <map>
 #include <memory>
+#include <mutex>
+#include <stdexcept>
 #include <string>
+#include <thread>
 #include <utility>
 #include <vector>
 
@@ -63,7 +70,7 @@ public:
         /// @throws std::invalid_argument if model is nullptr.
         ModelSlotProxy &operator=(const std::unique_ptr<Model> &model) {
             if (!model) {
-                LogError(_owner->_log_name,
+                LogError(_owner->_runtime_config.logging.logger_name,
                          "Cannot assign null model pointer to simulation "
                          "slot.");
                 throw std::invalid_argument(
@@ -87,19 +94,44 @@ public:
 
     /// @brief Default constructor for a Simulation instance.
     /// Initializes the simulation with the default logger.
-    Simulation() : Simulation(RESPOND_DEFAULT_LOG) {}
+    Simulation() : Simulation(RuntimeConfig{}) {}
 
     /// @brief Constructs a Simulation with a specified logger.
     /// @param log_name The name of the logger to use for simulation output.
+    [[deprecated("Use Simulation(RuntimeConfig) instead")]]
     Simulation(const std::string &log_name)
-        : Simulation(log_name, RESPOND_DEFAULT_LOG_FILE) {}
+        : Simulation(RuntimeConfig{
+              ExecutionConfig{},
+              LoggingConfig{log_name, RESPOND_DEFAULT_LOG_FILE, false}}) {}
 
     /// @brief Constructs a Simulation with a specified logger and log file.
     /// @param log_name The name of the logger to use for simulation output.
     /// @param log_filepath The file path for the logger output.
+    [[deprecated("Use Simulation(RuntimeConfig) instead")]]
     Simulation(const std::string &log_name, const std::string &log_filepath)
-        : _log_name(log_name) {
-        CreateFileLogger(log_name, log_filepath);
+        : Simulation(
+              RuntimeConfig{ExecutionConfig{},
+                            LoggingConfig{log_name, log_filepath, false}}) {}
+
+    /// @brief Constructs a Simulation with logger and execution settings.
+    /// @param log_name The name of the logger to use for simulation output.
+    /// @param log_filepath The file path for the logger output.
+    /// @param execution_config Resource settings for simulation execution.
+    [[deprecated("Use Simulation(RuntimeConfig) instead")]]
+    Simulation(const std::string &log_name, const std::string &log_filepath,
+               const ExecutionConfig &execution_config)
+        : Simulation(RuntimeConfig{
+              execution_config, LoggingConfig{log_name, log_filepath, false}}) {
+    }
+
+    /// @brief Constructs a Simulation with shared runtime settings.
+    explicit Simulation(const RuntimeConfig &runtime_config)
+        : _runtime_config(runtime_config) {
+        if (ConfigureLogger(_runtime_config.logging) ==
+            CreationStatus::kError) {
+            throw std::runtime_error(
+                "Error attempting to initialize simulation logger.");
+        }
     }
 
     /// @brief Virtual destructor for polymorphic cleanup.
@@ -110,7 +142,7 @@ public:
     /// affect the original.
     /// @param other The Simulation instance to copy from.
     Simulation(const Simulation &other) {
-        _log_name = other._log_name;
+        _runtime_config = other._runtime_config;
         for (const auto &m : other._models) {
             _models.push_back(m->clone());
         }
@@ -128,11 +160,12 @@ public:
     /// @return Reference to this simulation after assignment.
     Simulation &operator=(const Simulation &other) {
         if (this != &other) {
-            _log_name = other._log_name;
-            _models.clear();
+            std::vector<std::unique_ptr<Model>> models;
             for (const auto &m : other._models) {
-                _models.push_back(m->clone());
+                models.push_back(m->clone());
             }
+            _runtime_config = other._runtime_config;
+            _models = std::move(models);
             _duration = other._duration;
             _parameter_change_times = other._parameter_change_times;
             _stratify_entering_cohort = other._stratify_entering_cohort;
@@ -147,25 +180,22 @@ public:
     /// @brief Move constructor for transferring simulation ownership.
     /// @param other The simulation to move from.
     Simulation(Simulation &&other) noexcept
-        : _log_name(std::move(other._log_name)), _duration(other._duration),
+        : _runtime_config(std::move(other._runtime_config)),
+          _models(std::move(other._models)), _duration(other._duration),
           _parameter_change_times(std::move(other._parameter_change_times)),
           _stratify_entering_cohort(other._stratify_entering_cohort),
           _build_summary_stats(other._build_summary_stats),
           _save_state_history(other._save_state_history),
           _timesteps_to_report(std::move(other._timesteps_to_report)),
-          _pivot_long(other._pivot_long) {
-        for (const auto &m : other._models) {
-            _models.push_back(m->clone());
-        }
-        other._models.clear();
-    }
+          _pivot_long(other._pivot_long) {}
 
     /// @brief Move assignment operator for transferring simulation ownership.
     /// @param other The simulation to move from.
     /// @return Reference to this simulation after assignment.
     Simulation &operator=(Simulation &&other) noexcept {
         if (this != &other) {
-            _log_name = std::move(other._log_name);
+            _runtime_config = std::move(other._runtime_config);
+            _models = std::move(other._models);
             _duration = other._duration;
             _parameter_change_times = std::move(other._parameter_change_times);
             _stratify_entering_cohort = other._stratify_entering_cohort;
@@ -173,11 +203,6 @@ public:
             _save_state_history = other._save_state_history;
             _timesteps_to_report = std::move(other._timesteps_to_report);
             _pivot_long = other._pivot_long;
-
-            for (const auto &m : other._models) {
-                _models.push_back(m->clone());
-            }
-            other._models.clear();
         }
         return *this;
     }
@@ -191,10 +216,12 @@ public:
     /// @brief Creates a new model instance and adds it to the simulation.
     /// @param model_name The name identifier for the model to create. This name
     /// is used to identify the model type and initialize it accordingly.
-    /// @return A deep-copied model instance representing the newly created
-    /// model.
+    /// @return An editable deep copy of the newly created model. Changes to
+    /// this copy do not affect the model managed by the simulation until it is
+    /// assigned through the mutable model slot, for example
+    /// `simulation[0] = *model`.
     std::unique_ptr<Model> CreateNewModel(const std::string &model_name) {
-        _models.push_back(Model::Create(model_name, _log_name));
+        _models.push_back(Model::Create(model_name, _runtime_config));
         return _models.back()->clone();
     }
 
@@ -205,20 +232,113 @@ public:
     /// The model is cloned and managed by the simulation.
     /// @param model A unique_ptr to a Model instance to add.
     void AddModel(const std::unique_ptr<Model> &model) {
+        if (!model) {
+            LogError(_runtime_config.logging.logger_name,
+                     "Cannot add a null model to the simulation.");
+            throw std::invalid_argument(
+                "Error attempting to add a null model to simulation.");
+        }
         _models.push_back(model->clone());
     }
 
-    /// @brief Executes one step of the simulation for all models.
-    /// Calls RunTransitions() on each registered model in sequence.
+    /// @brief Executes the simulation for all registered models.
+    /// Models run sequentially by default. When model concurrency is enabled,
+    /// independent models may run in parallel using the configured worker
+    /// limit.
+    /// @throws std::invalid_argument if multiple models would execute in
+    /// parallel while more than one Eigen worker thread is configured.
+    /// @throws std::invalid_argument if no models have been added.
+    /// @throws std::invalid_argument if duration is zero or less than -1.
+    /// @throws Any exception raised by a model after all workers have joined.
     void Run(int duration = -1) {
+        if (duration == 0 || duration < -1) {
+            throw std::invalid_argument(
+                "Simulation duration must be positive or -1.");
+        }
+        if (_models.empty()) {
+            LogError(_runtime_config.logging.logger_name,
+                     "Cannot run a simulation with no models.");
+            throw std::invalid_argument(
+                "Error attempting to run simulation with no models.");
+        }
+        std::lock_guard<std::mutex> execution_lock(
+            detail::GetEigenExecutionMutex());
         if (duration > 0) {
             _duration = duration;
         }
-        LogInfo(_log_name, "Running simulation for duration of " +
-                               std::to_string(_duration) + " timesteps.");
-        for (const auto &model : _models) {
+        const auto &execution = _runtime_config.execution;
+        const unsigned int thread_limit = std::thread::hardware_concurrency();
+        const unsigned int eigen_threads =
+            thread_limit == 0 ? execution.eigen_threads
+                              : std::min(execution.eigen_threads, thread_limit);
+        Eigen::setNbThreads(eigen_threads);
+
+        LogInfo(_runtime_config.logging.logger_name,
+                "Running simulation for duration of " +
+                    std::to_string(_duration) + " timesteps.");
+        const auto run_model = [this](const std::unique_ptr<Model> &model) {
             model->SetFinalTimestep(_duration);
             model->RunTimesteps();
+        };
+        if (!execution.run_models_concurrently || _models.size() < 2) {
+            for (const auto &model : _models) {
+                run_model(model);
+            }
+            return;
+        }
+
+        if (execution.eigen_threads > 1) {
+            throw std::invalid_argument(
+                "Concurrent model execution requires eigen_threads <= 1.");
+        }
+
+        unsigned int worker_limit = execution.total_threads;
+        if (worker_limit == 0) {
+            worker_limit = std::thread::hardware_concurrency();
+            if (worker_limit == 0) {
+                worker_limit = 1;
+            }
+        }
+        const auto worker_count =
+            std::min<size_t>(worker_limit, _models.size());
+        if (worker_count <= 1) {
+            for (const auto &model : _models) {
+                run_model(model);
+            }
+            return;
+        }
+
+        std::atomic<size_t> next_model{0};
+        std::exception_ptr first_exception;
+        std::mutex exception_mutex;
+        std::vector<std::thread> workers;
+        workers.reserve(worker_count);
+
+        for (size_t worker = 0; worker < worker_count; ++worker) {
+            workers.emplace_back([&]() {
+                while (true) {
+                    const size_t index = next_model.fetch_add(1);
+                    if (index >= _models.size()) {
+                        return;
+                    }
+                    try {
+                        run_model(_models[index]);
+                    } catch (...) {
+                        std::lock_guard<std::mutex> lock(exception_mutex);
+                        if (!first_exception) {
+                            first_exception = std::current_exception();
+                        }
+                        return;
+                    }
+                }
+            });
+        }
+
+        for (auto &worker : workers) {
+            worker.join();
+        }
+        if (first_exception) {
+            std::rethrow_exception(first_exception);
         }
     }
 
@@ -279,11 +399,12 @@ public:
     /// @throws std::out_of_range if no models exist or idx is out of range.
     std::unique_ptr<Model> GetModel(int idx) const {
         if (_models.empty()) {
-            LogError(_log_name, "No models available in GetModel.");
+            LogError(_runtime_config.logging.logger_name,
+                     "No models available in GetModel.");
             throw std::out_of_range("Error attempting to GetModel: no models.");
         }
         if (idx < -1 || idx >= static_cast<int>(_models.size())) {
-            LogError(_log_name,
+            LogError(_runtime_config.logging.logger_name,
                      "Index out of range in GetModel: " + std::to_string(idx));
             throw std::out_of_range("Error attempting to GetModel by index.");
         }
@@ -310,8 +431,9 @@ public:
     /// @return Map of history names to history records for the selected model.
     const std::map<std::string, History> &GetModelHistory(size_t idx) const {
         if (idx >= _models.size()) {
-            LogError(_log_name, "Index out of range in GetModelHistory: " +
-                                    std::to_string(idx));
+            LogError(_runtime_config.logging.logger_name,
+                     "Index out of range in GetModelHistory: " +
+                         std::to_string(idx));
             throw std::out_of_range(
                 "Error attempting to GetModelHistory by index.");
         }
@@ -323,8 +445,9 @@ public:
     /// @return Vector of history names for the selected model.
     const std::vector<std::string> GetModelHistoryNames(size_t idx) const {
         if (idx >= _models.size()) {
-            LogError(_log_name, "Index out of range in GetModelHistoryNames: " +
-                                    std::to_string(idx));
+            LogError(_runtime_config.logging.logger_name,
+                     "Index out of range in GetModelHistoryNames: " +
+                         std::to_string(idx));
             throw std::out_of_range(
                 "Error attempting to GetModelHistoryNames by index.");
         }
@@ -335,13 +458,48 @@ public:
         return ret;
     }
 
-    void SetDuration(int duration) { _duration = duration; }
+    /// @brief Sets the default duration used by Run().
+    /// @param duration A positive number of timesteps.
+    /// @throws std::invalid_argument if duration is not positive.
+    void SetDuration(int duration) {
+        if (duration <= 0) {
+            throw std::invalid_argument(
+                "Simulation duration must be positive.");
+        }
+        _duration = duration;
+    }
+
+    /// @brief Retrieves the simulation execution settings.
+    /// @return The current execution configuration.
+    const ExecutionConfig &GetExecutionConfig() const {
+        return _runtime_config.execution;
+    }
+
+    /// @brief Sets the simulation execution settings.
+    /// @param execution_config Resource settings for simulation execution.
+    void SetExecutionConfig(const ExecutionConfig &execution_config) {
+        _runtime_config.execution = execution_config;
+    }
+
+    const RuntimeConfig &GetRuntimeConfig() const { return _runtime_config; }
+
+    void SetRuntimeConfig(const RuntimeConfig &runtime_config) {
+        if (ConfigureLogger(runtime_config.logging) == CreationStatus::kError) {
+            LogError(_runtime_config.logging.logger_name,
+                     "Unable to apply simulation runtime logging config.");
+            throw std::invalid_argument(
+                "Error attempting to apply simulation runtime logging "
+                "configuration.");
+        }
+        _runtime_config = runtime_config;
+    }
 
 private:
     Model &GetModelRefOrThrow(size_t idx) {
         if (idx >= _models.size()) {
-            LogError(_log_name, "Index out of range in model access: " +
-                                    std::to_string(idx));
+            LogError(_runtime_config.logging.logger_name,
+                     "Index out of range in model access: " +
+                         std::to_string(idx));
             throw std::out_of_range("Error attempting to access model by "
                                     "index.");
         }
@@ -350,25 +508,26 @@ private:
 
     const Model &GetModelRefOrThrow(size_t idx) const {
         if (idx >= _models.size()) {
-            LogError(_log_name, "Index out of range in model access: " +
-                                    std::to_string(idx));
+            LogError(_runtime_config.logging.logger_name,
+                     "Index out of range in model access: " +
+                         std::to_string(idx));
             throw std::out_of_range("Error attempting to access model by "
                                     "index.");
         }
         return *_models[idx];
     }
 
-    std::string _log_name;
+    RuntimeConfig _runtime_config;
     std::vector<std::unique_ptr<Model>> _models;
 
     int _duration = 1; // Default simulation duration in timesteps
     std::vector<int> _parameter_change_times;
-    bool _stratify_entering_cohort;
+    bool _stratify_entering_cohort = false;
 
-    bool _build_summary_stats;
-    bool _save_state_history;
+    bool _build_summary_stats = false;
+    bool _save_state_history = false;
     std::vector<int> _timesteps_to_report;
-    bool _pivot_long;
+    bool _pivot_long = false;
 };
 } // namespace respond
 

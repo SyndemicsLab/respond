@@ -14,6 +14,8 @@
 
 #include <string>
 
+#include <respond/logging_config.hpp>
+
 namespace respond {
 
 /// @brief Logging levels for the logger.
@@ -52,9 +54,18 @@ enum class LogPattern : int {
 /// @param logger_name Unique identifier for this logger.
 /// @param filepath File path where the logger will write logs.
 /// @return CreationStatus indicating the result of logger creation.
-/// @note If a logger with the same name already exists, kExists is returned.
+/// @note If a logger with the same name and destination already exists,
+/// kExists is returned. If the existing logger uses a different destination,
+/// kError is returned.
 CreationStatus CreateFileLogger(const std::string &logger_name,
                                 const std::string &filepath);
+
+/// @brief Initializes a logger from a logging configuration.
+/// @param config Logging name, destination, and shared-sink policy.
+/// @return CreationStatus indicating the result of logger creation.
+/// @note Reusing a logger name with the same destination and sink policy
+/// returns kExists. A different destination or sink policy returns kError.
+CreationStatus ConfigureLogger(const LoggingConfig &config);
 
 // ============================================================================
 // Parallel Execution Support: Shared File Sink
@@ -76,8 +87,9 @@ CreationStatus CreateSharedFileSink(const std::string &filepath);
 /// @return CreationStatus indicating the result of logger creation.
 /// @note Thread-safe: Can be called concurrently from multiple threads.
 /// @note Requires CreateSharedFileSink() to be called first with a file path.
-/// @note If CreateSharedFileSink() wasn't called, creates a default sink to
-/// "respond.log".
+/// @note If CreateSharedFileSink() wasn't called, creates a shared sink for
+/// the configured default sink path.
+/// @note Reusing a logger name with a different sink returns kError.
 CreationStatus CreateSharedLogger(const std::string &logger_name);
 
 /// @brief Sets the logging pattern template for all subsequent logger
@@ -91,9 +103,9 @@ void SetLogPattern(LogPattern pattern);
 /// @return The active LogPattern enum value.
 LogPattern GetLogPattern();
 
-/// @brief Sets the global flush interval for automatic buffer flushing.
-/// @param seconds Interval in seconds for automatic flush (0 to disable
-/// auto-flush).
+/// @brief Sets the flush policy used by logging calls.
+/// @param seconds Use 0 to flush each log message immediately. Positive values
+/// are stored for compatibility but do not currently enable periodic flushing.
 /// @note Thread-safe configuration change.
 void SetFlushInterval(int seconds);
 
@@ -111,24 +123,32 @@ void FlushAllLoggers();
 /// @param logger_name Logger identifier (created via CreateFileLogger or
 /// CreateSharedLogger).
 /// @param message Message to log.
+/// @note If logger_name is not configured, the message is written to stderr
+/// and is not persisted by RESPOND.
 void LogInfo(const std::string &logger_name, const std::string &message);
 
 /// @brief Log a message as warning level.
 /// Thread-safe for concurrent calls from multiple threads.
 /// @param logger_name Logger identifier.
 /// @param message Message to log.
+/// @note If logger_name is not configured, the message is written to stderr
+/// and is not persisted by RESPOND.
 void LogWarning(const std::string &logger_name, const std::string &message);
 
 /// @brief Log a message as error level.
 /// Thread-safe for concurrent calls from multiple threads.
 /// @param logger_name Logger identifier.
 /// @param message Message to log.
+/// @note If logger_name is not configured, the message is written to stderr
+/// and is not persisted by RESPOND.
 void LogError(const std::string &logger_name, const std::string &message);
 
 /// @brief Log a message as debug level.
 /// Thread-safe for concurrent calls from multiple threads.
 /// @param logger_name Logger identifier.
 /// @param message Message to log.
+/// @note If logger_name is not configured, the message is written to stderr
+/// and is not persisted by RESPOND.
 void LogDebug(const std::string &logger_name, const std::string &message);
 
 // ============================================================================
@@ -141,9 +161,10 @@ void LogDebug(const std::string &logger_name, const std::string &message);
 /// @note Thread-safe query.
 CreationStatus CheckLoggerExists(const std::string &logger_name);
 
-/// @brief Retrieve detailed information about a logger.
+/// @brief Retrieve basic information about a logger.
 /// @param logger_name Logger identifier to query.
-/// @return String containing logger name, file path, level, and thread info.
+/// @return String containing the logger name, level, and sink count, or a
+/// not-found message.
 /// @note Thread-safe operation.
 std::string GetLoggerInfo(const std::string &logger_name);
 
@@ -151,8 +172,7 @@ std::string GetLoggerInfo(const std::string &logger_name);
 /// @param logger_name Logger identifier to configure.
 /// @param level Log level: 0=trace, 1=debug, 2=info, 3=warn, 4=error,
 /// 5=critical.
-/// @return CreationStatus::kSuccess if level was set, kNotCreated if logger
-/// doesn't exist.
+/// @note Does nothing when the logger does not exist.
 void SetLoggerLevel(const std::string &logger_name, int level);
 
 } // namespace respond

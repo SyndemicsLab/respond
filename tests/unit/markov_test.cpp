@@ -4,8 +4,8 @@
 // Created Date: 2025-06-06                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-09-14                                                  //
-// Modified By: Dimitri Baptiste                                              //
+// Last Modified: 2026-09-24                                                  //
+// Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025-2026 Syndemics Lab at Boston Medical Center             //
 ////////////////////////////////////////////////////////////////////////////////
@@ -85,7 +85,7 @@ protected:
 TEST_F(MarkovTest, CreateMarkovModel) {
     auto markov = Model::Create("markov");
     ASSERT_NE(markov, nullptr);
-    ASSERT_EQ(CreateFileLogger(RESPOND_DEFAULT_LOG, ""),
+    ASSERT_EQ(CreateFileLogger(RESPOND_DEFAULT_LOG, default_log_file_),
               CreationStatus::kExists);
 }
 
@@ -96,8 +96,16 @@ TEST_F(MarkovTest, CreateMarkovModelProcessorCount) {
             : 1;
     auto markov = Model::Create("markov", processor_count);
     ASSERT_NE(markov, nullptr);
-    ASSERT_EQ(CreateFileLogger(RESPOND_DEFAULT_LOG, ""),
+    ASSERT_EQ(CreateFileLogger(RESPOND_DEFAULT_LOG, default_log_file_),
               CreationStatus::kExists);
+}
+
+TEST_F(MarkovTest, CreateMarkovModelExecutionConfig) {
+    ExecutionConfig config;
+    config.eigen_threads = 2;
+
+    auto markov = Model::Create("markov", config);
+    ASSERT_NE(markov, nullptr);
 }
 
 TEST_F(MarkovTest, MoveConstructor) {
@@ -282,9 +290,11 @@ TEST_F(MarkovTest, AddTimestepBeyondFinalTimestep) {
     Timestep timestep2(RESPOND_DEFAULT_LOG);
     markov.AddTimestep(timestep1);
     markov.AddTimestep(timestep2);
+    markov.SetInitialHistoryRecorded(true);
+    markov.RunTimesteps();
     FlushAllLoggers();
     EXPECT_TRUE(FileContains(RESPOND_DEFAULT_LOG_FILE,
-                             "Final timestep exceeded by added timestep."));
+                             "Only running timesteps up to duration value."));
 }
 
 TEST_F(MarkovTest, RunTimestep) {
@@ -307,13 +317,39 @@ TEST_F(MarkovTest, RunTimestepEmptyTimestepVector) {
 
 TEST_F(MarkovTest, RunTimestepIndex) {
     Markov markov("markov", RESPOND_DEFAULT_LOG);
+    markov.SetState(state);
+
     Timestep timestep1(RESPOND_DEFAULT_LOG);
     Timestep timestep2(RESPOND_DEFAULT_LOG);
+    Timestep timestep3(RESPOND_DEFAULT_LOG);
+
+    Eigen::VectorXd timestep1_change(3);
+    timestep1_change << 1.0, 0.0, 0.0;
+    timestep1.CreateTransition("migration")->AddMatrix(timestep1_change);
+
+    Eigen::VectorXd timestep2_change(3);
+    timestep2_change << 10.0, 0.0, 0.0;
+    timestep2.CreateTransition("migration")->AddMatrix(timestep2_change);
+
+    Eigen::VectorXd timestep3_change(3);
+    timestep3_change << 0.0, 20.0, 0.0;
+    timestep3.CreateTransition("migration")->AddMatrix(timestep3_change);
+
     markov.AddTimestep(timestep1);
     markov.AddTimestep(timestep2);
+    markov.AddTimestep(timestep3);
     EXPECT_EQ(markov.GetTimestep(), 0);
+
     markov.RunTimestep(1);
-    EXPECT_EQ(markov.GetTimestep(), 0); // Current timestep does not change
+    EXPECT_EQ(markov.GetTimestep(), 2);
+    Eigen::VectorXd expected_state = state;
+    expected_state(0) += 10.0;
+    EXPECT_TRUE(markov.GetState().isApprox(expected_state));
+
+    markov.RunTimestep();
+    EXPECT_EQ(markov.GetTimestep(), 3);
+    expected_state(1) += 20.0;
+    EXPECT_TRUE(markov.GetState().isApprox(expected_state));
 }
 
 TEST_F(MarkovTest, RunTimestepIndexOutOfRange) {
@@ -382,6 +418,24 @@ TEST_F(MarkovTest, ClearHistories) {
     EXPECT_FALSE(markov.GetHistories().empty());
     markov.ClearHistories();
     EXPECT_TRUE(markov.GetHistories().empty());
+}
+
+TEST_F(MarkovTest, MoveAssignmentReplacesDestinationState) {
+    Markov source("source", RESPOND_DEFAULT_LOG);
+    source.AddTimestep(Timestep(RESPOND_DEFAULT_LOG));
+    source.AddTimestep(Timestep(RESPOND_DEFAULT_LOG));
+    source.CreateDefaultHistories();
+
+    Markov destination("destination", RESPOND_DEFAULT_LOG);
+    destination.AddTimestep(Timestep(RESPOND_DEFAULT_LOG));
+    destination.ClearHistories();
+    destination = std::move(source);
+
+    EXPECT_EQ(destination.GetName(), "source");
+    EXPECT_NO_THROW((void)destination.GetTimestepAtIndex(1));
+    EXPECT_THROW((void)destination.GetTimestepAtIndex(2), std::out_of_range);
+    EXPECT_FALSE(destination.GetHistories().empty());
+    EXPECT_TRUE(source.GetHistories().empty());
 }
 } // namespace testing
 } // namespace respond
