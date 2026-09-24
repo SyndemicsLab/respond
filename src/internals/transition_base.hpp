@@ -16,6 +16,7 @@
 #include <respond/logging_config.hpp>
 #include <respond/transition.hpp>
 
+#include <stdexcept>
 #include <string>
 #include <vector>
 
@@ -33,7 +34,10 @@ public:
                                      const LoggingConfig &logging_config)
                 : _name(name), _log_name(logging_config.logger_name),
                     _logging_config(logging_config) {
-                ConfigureLogger(_logging_config);
+                if (ConfigureLogger(_logging_config) == CreationStatus::kError) {
+                    throw std::runtime_error(
+                        "Error attempting to initialize transition logger.");
+                }
         }
     virtual ~TransitionBase() = default;
     // Add a Transition Matrix to the set. We have no need to edit it once it's

@@ -114,7 +114,10 @@ public:
     explicit Timestep(const LoggingConfig &logging_config)
         : _log_name(logging_config.logger_name),
           _logging_config(logging_config) {
-        ConfigureLogger(_logging_config);
+        if (ConfigureLogger(_logging_config) == CreationStatus::kError) {
+            throw std::runtime_error(
+                "Error attempting to initialize timestep logger.");
+        }
     }
 
     /// @brief Destructor for Timestep. Default implementation.

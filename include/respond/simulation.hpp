@@ -13,6 +13,7 @@
 #define RESPOND_SIMULATION_HPP_
 
 #include <respond/constants.hpp>
+#include <respond/eigen_config.hpp>
 #include <respond/history.hpp>
 #include <respond/logging.hpp>
 #include <respond/model.hpp>
@@ -126,7 +127,10 @@ public:
     /// @brief Constructs a Simulation with shared runtime settings.
     explicit Simulation(const RuntimeConfig &runtime_config)
         : _runtime_config(runtime_config) {
-        ConfigureLogger(_runtime_config.logging);
+        if (ConfigureLogger(_runtime_config.logging) == CreationStatus::kError) {
+            throw std::runtime_error(
+                "Error attempting to initialize simulation logger.");
+        }
     }
 
     /// @brief Virtual destructor for polymorphic cleanup.
@@ -257,7 +261,8 @@ public:
             throw std::invalid_argument(
                 "Error attempting to run simulation with no models.");
         }
-        std::lock_guard<std::mutex> execution_lock(GetEigenExecutionMutex());
+        std::lock_guard<std::mutex> execution_lock(
+            detail::GetEigenExecutionMutex());
         if (duration > 0) {
             _duration = duration;
         }
@@ -490,11 +495,6 @@ public:
     }
 
 private:
-    static std::mutex &GetEigenExecutionMutex() {
-        static std::mutex mutex;
-        return mutex;
-    }
-
     Model &GetModelRefOrThrow(size_t idx) {
         if (idx >= _models.size()) {
             LogError(_runtime_config.logging.logger_name,

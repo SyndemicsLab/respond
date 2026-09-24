@@ -14,9 +14,11 @@
 
 #include <respond/constants.hpp>
 #include <respond/logging.hpp>
+#include <respond/logging_config.hpp>
 
 #include <algorithm>
 #include <cstddef>
+#include <stdexcept>
 #include <map>
 #include <utility>
 #include <vector>
@@ -59,43 +61,48 @@ public:
 
     /// @brief Default constructor initializing a history with the default name
     /// "state" and default mode based on that name.
-    History() : History("state") {}
+    History() : History("state", GetDefaultHistoryMode("state"), LoggingConfig{}) {}
 
     /// @brief  Constructs a history with a specified name, using the default
     /// mode based on that name.
     /// @param name The identifier name for this history instance.
     History(const std::string &name)
-        : History(name, GetDefaultHistoryMode(name)) {}
+        : History(name, GetDefaultHistoryMode(name), LoggingConfig{}) {}
 
     /// @brief Constructs a history with a specified name and mode.
     /// @param name The identifier name for this history instance.
     /// @param mode The history recording mode (snapshot or accumulated).
     History(const std::string &name, const HistoryMode &mode)
-        : History(name, mode, RESPOND_DEFAULT_LOG, RESPOND_DEFAULT_LOG_FILE) {}
+        : History(name, mode, LoggingConfig{}) {}
 
     /// @brief Constructs a history with a specified name, mode, and logger.
     /// @param name The identifier name for this history instance.
     /// @param mode The history recording mode (snapshot or accumulated).
     /// @param log_name The name of the logger to use for history output.
+    [[deprecated("Use History(name, mode, LoggingConfig) instead")]]
     History(const std::string &name, const HistoryMode &mode,
             const std::string &log_name)
-        : History(name, mode, log_name, RESPOND_DEFAULT_LOG_FILE) {}
+        : History(name, mode,
+                  LoggingConfig{log_name, RESPOND_DEFAULT_LOG_FILE, false}) {}
 
     /// @brief Constructs a history with a specified name and logger.
     /// @param name The identifier name for this history instance.
     /// @param log_name The name of the logger to use for history output.
+    [[deprecated("Use History(name, LoggingConfig) instead")]]
     History(const std::string &name, const std::string &log_name)
-        : History(name, GetDefaultHistoryMode(name), log_name,
-                  RESPOND_DEFAULT_LOG_FILE) {}
+        : History(name, GetDefaultHistoryMode(name),
+                  LoggingConfig{log_name, RESPOND_DEFAULT_LOG_FILE, false}) {}
 
     /// @brief Constructs a history with a specified name, logger, and log
     /// file path.
     /// @param name The identifier name for this history instance.
     /// @param log_name The name of the logger to use for history output.
     /// @param log_filepath The file path for the logger output.
+    [[deprecated("Use History(name, LoggingConfig) instead")]]
     History(const std::string &name, const std::string &log_name,
             const std::string &log_filepath)
-        : History(name, GetDefaultHistoryMode(name), log_name, log_filepath) {}
+        : History(name, GetDefaultHistoryMode(name),
+                  LoggingConfig{log_name, log_filepath, false}) {}
 
     /// @brief Constructs a history with a specified name, mode, logger, and
     /// log file path.
@@ -103,10 +110,22 @@ public:
     /// @param mode The history recording mode (snapshot or accumulated).
     /// @param log_name The name of the logger to use for history output.
     /// @param log_filepath The file path for the logger output.
+    [[deprecated("Use History(name, mode, LoggingConfig) instead")]]
     History(const std::string &name, const HistoryMode &mode,
             const std::string &log_name, const std::string &log_filepath)
-        : _name(name), _mode(mode), _log_name(log_name) {
-        CreateFileLogger(log_name, log_filepath);
+        : History(name, mode, LoggingConfig{log_name, log_filepath, false}) {}
+
+    History(const std::string &name, const LoggingConfig &logging_config)
+        : History(name, GetDefaultHistoryMode(name), logging_config) {}
+
+    History(const std::string &name, const HistoryMode &mode,
+            const LoggingConfig &logging_config)
+        : _name(name), _mode(mode), _log_name(logging_config.logger_name),
+          _logging_config(logging_config) {
+        if (ConfigureLogger(_logging_config) == CreationStatus::kError) {
+            throw std::runtime_error(
+                "Error attempting to initialize history logger.");
+        }
     }
 
     /// @brief Destructor (default).
@@ -119,6 +138,7 @@ public:
         _states = other.GetRecordedStates();
         _name = other._name;
         _log_name = other._log_name;
+        _logging_config = other._logging_config;
         _mode = other._mode;
         _pending_state = other.GetPendingState();
     }
@@ -132,6 +152,7 @@ public:
             _states = other.GetRecordedStates();
             _name = other._name;
             _log_name = other._log_name;
+            _logging_config = other._logging_config;
             _mode = other._mode;
             _pending_state = other.GetPendingState();
         }
@@ -144,7 +165,8 @@ public:
     History(History &&other) noexcept
         : _timesteps(std::move(other._timesteps)),
           _states(std::move(other._states)), _name(std::move(other._name)),
-          _log_name(std::move(other._log_name)), _mode(other._mode),
+          _log_name(std::move(other._log_name)),
+          _logging_config(std::move(other._logging_config)), _mode(other._mode),
           _pending_state(std::move(other._pending_state)) {}
 
     /// @brief Move assignment operator implementing the Rule of Five.
@@ -156,6 +178,7 @@ public:
             _states = std::move(other._states);
             _name = std::move(other._name);
             _log_name = std::move(other._log_name);
+            _logging_config = std::move(other._logging_config);
             _mode = other._mode;
             _pending_state = std::move(other._pending_state);
         }
@@ -339,6 +362,10 @@ public:
     /// @return True if all history properties and state are identical.
     bool operator==(const History &other) const {
         return _name == other._name && _log_name == other._log_name &&
+               _logging_config.logger_name == other._logging_config.logger_name &&
+               _logging_config.file_path == other._logging_config.file_path &&
+               _logging_config.use_shared_sink ==
+                   other._logging_config.use_shared_sink &&
                _mode == other._mode && GetStateMap() == other.GetStateMap() &&
                GetPendingState().isApprox(other.GetPendingState());
     }
@@ -360,6 +387,8 @@ public:
 private:
     /// @brief The logger name for this history.
     std::string _log_name;
+    /// @brief The logging configuration for this history.
+    LoggingConfig _logging_config;
     /// @brief The identifier name for this history.
     std::string _name;
     /// @brief Controls whether this history stores snapshots or aggregates.

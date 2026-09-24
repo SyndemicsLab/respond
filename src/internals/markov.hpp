@@ -23,6 +23,7 @@
 #include <Eigen/Dense>
 
 #include <respond/constants.hpp>
+#include <respond/eigen_config.hpp>
 #include <respond/history.hpp>
 #include <respond/logging.hpp>
 #include <respond/transition.hpp>
@@ -67,14 +68,17 @@ public:
           _runtime_config(runtime_config), _current_timestep(0),
           _history_capture_interval(1), _final_timestep(-1),
           _initial_history_recorded(false) {
-        ConfigureLogger(_runtime_config.logging);
+                if (ConfigureLogger(_runtime_config.logging) == CreationStatus::kError) {
+                        throw std::runtime_error(
+                                "Error attempting to initialize model logger.");
+                }
         const unsigned int thread_limit = std::thread::hardware_concurrency();
         const unsigned int threads =
             thread_limit == 0
                 ? _runtime_config.execution.eigen_threads
                 : std::min(_runtime_config.execution.eigen_threads,
                            thread_limit);
-        Eigen::setNbThreads(threads);
+        detail::SetEigenThreads(threads);
     }
 
     /// @brief Constructs a Markov model with explicit execution settings.

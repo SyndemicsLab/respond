@@ -16,10 +16,13 @@
 
 #include <filesystem>
 #include <iostream>
+#include <mutex>
 
 namespace respond {
 
 namespace {
+
+std::mutex logger_creation_mutex;
 
 bool LoggerUsesFile(const std::shared_ptr<spdlog::logger> &logger,
                     const std::string &filepath) {
@@ -71,6 +74,7 @@ CreationStatus ExistingLoggerStatus(const std::string &logger_name,
 CreationStatus CreateSharedLogger(
     const std::string &logger_name,
     const std::shared_ptr<spdlog::sinks::basic_file_sink_mt> &sink) {
+    std::lock_guard<std::mutex> lock(logger_creation_mutex);
     if (auto existing_logger = spdlog::get(logger_name)) {
         return ExistingLoggerStatus(logger_name,
                                      LoggerUsesSink(existing_logger, sink));
@@ -108,6 +112,7 @@ CreationStatus CreateSharedLogger(
 
 CreationStatus CreateFileLogger(const std::string &logger_name,
                                 const std::string &filepath) {
+    std::lock_guard<std::mutex> lock(logger_creation_mutex);
     if (auto existing_logger = spdlog::get(logger_name)) {
         return ExistingLoggerStatus(logger_name,
                                      LoggerUsesFile(existing_logger, filepath));

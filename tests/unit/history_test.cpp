@@ -109,6 +109,15 @@ TEST_F(HistoryTest, ConstructorWithNameModeAndLogger) {
     EXPECT_TRUE(history.GetRecordedStates().empty());
 }
 
+TEST_F(HistoryTest, ConstructorWithLoggingConfigSupportsSharedSink) {
+    LoggingConfig config{"shared_history_logger", default_log_file_, true};
+    History history("shared_history", HistoryMode::kSnapshot, config);
+
+    EXPECT_EQ(history.GetName(), "shared_history");
+    EXPECT_EQ(CheckLoggerExists("shared_history_logger"),
+              CreationStatus::kExists);
+}
+
 TEST_F(HistoryTest, ConstructorWithNameAndLogger) {
     History history("background_death", "test_logger");
     EXPECT_EQ(history.GetName(), "background_death");

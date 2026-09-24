@@ -107,6 +107,17 @@ TEST_F(SimulationTest, ConstructorWithLogNameAndLogFile) {
               CreationStatus::kExists);
 }
 
+TEST_F(SimulationTest, ConstructorRejectsLoggerInitializationFailure) {
+    ASSERT_EQ(CreateFileLogger("conflicting_simulation_logger",
+                               default_log_file_),
+              CreationStatus::kSuccess);
+    RuntimeConfig config;
+    config.logging.logger_name = "conflicting_simulation_logger";
+    config.logging.file_path = test_log_file_;
+
+    EXPECT_THROW(Simulation simulation(config), std::runtime_error);
+}
+
 TEST_F(SimulationTest, StoresExecutionConfig) {
     ExecutionConfig config;
     config.total_threads = 4;

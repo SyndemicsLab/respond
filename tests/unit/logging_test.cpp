@@ -519,6 +519,32 @@ TEST_F(LoggingTest, ConcurrentCreateSharedLogger) {
     }
 }
 
+TEST_F(LoggingTest, ConcurrentSameNameLoggerCreationIsConsistent) {
+    constexpr int thread_count = 8;
+    std::vector<CreationStatus> statuses(thread_count);
+    std::vector<std::thread> threads;
+
+    for (int index = 0; index < thread_count; ++index) {
+        threads.emplace_back([&, index]() {
+            statuses[index] =
+                CreateFileLogger("same_name_logger", test_log_file_);
+        });
+    }
+    for (auto &thread : threads) {
+        thread.join();
+    }
+
+    int successful_creations = 0;
+    for (const auto status : statuses) {
+        if (status == CreationStatus::kSuccess) {
+            ++successful_creations;
+        } else {
+            EXPECT_EQ(status, CreationStatus::kExists);
+        }
+    }
+    EXPECT_EQ(successful_creations, 1);
+}
+
 // ============================================================================
 // Test: Integration - Full Workflow
 // ============================================================================
