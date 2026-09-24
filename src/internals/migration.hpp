@@ -4,7 +4,7 @@
 // Created Date: 2026-02-05                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-07-13                                                  //
+// Last Modified: 2026-09-24                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
@@ -29,8 +29,8 @@ public:
     Migration(const std::string &name) : Migration(name, LoggingConfig{}) {}
     [[deprecated("Use Migration(name, LoggingConfig) instead")]]
     Migration(const std::string &name, const std::string &log_name)
-        : Migration(name, LoggingConfig{log_name, RESPOND_DEFAULT_LOG_FILE,
-                                        false}) {}
+        : Migration(name,
+                    LoggingConfig{log_name, RESPOND_DEFAULT_LOG_FILE, false}) {}
     [[deprecated("Use Migration(name, LoggingConfig) instead")]]
     Migration(const std::string &name, const std::string &log_name,
               const std::string &log_file)

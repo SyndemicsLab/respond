@@ -4,7 +4,7 @@
 // Created Date: 2026-07-06                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-08-19                                                  //
+// Last Modified: 2026-09-24                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
@@ -47,7 +47,6 @@ protected:
     std::string test_log_file_;
     std::string shared_log_file_;
     std::string default_log_file_;
-
 };
 
 TEST_F(TimestepTest, DefaultConstructor) {
@@ -93,8 +92,8 @@ TEST_F(TimestepTest, CreateTransitionUsesLoggingConfig) {
 TEST_F(TimestepTest, ClonedTransitionPreservesLoggingConfig) {
     const LoggingConfig logging_config{"clone_transition", test_log_file_,
                                        false};
-    auto transition = Transition::Create("migration", "migration",
-                                         logging_config);
+    auto transition =
+        Transition::Create("migration", "migration", logging_config);
     auto clone = transition->clone();
 
     ASSERT_NE(clone, nullptr);
@@ -102,10 +101,9 @@ TEST_F(TimestepTest, ClonedTransitionPreservesLoggingConfig) {
 }
 
 TEST_F(TimestepTest, CreateTransitionRejectsUnsupportedType) {
-    EXPECT_THROW(
-        Transition::Create("unsupported", "unsupported", "test_log",
-                           test_log_file_),
-        std::invalid_argument);
+    EXPECT_THROW(Transition::Create("unsupported", "unsupported", "test_log",
+                                    test_log_file_),
+                 std::invalid_argument);
 }
 
 TEST_F(TimestepTest, AddTransitionClonesInputTransition) {
@@ -165,8 +163,7 @@ TEST_F(TimestepTest, AddMatrixToTransitionByMissingNameThrows) {
     Timestep ts("test_log", test_log_file_);
     Eigen::MatrixXd m = Eigen::MatrixXd::Identity(2, 2);
 
-    EXPECT_THROW(ts.AddMatrixToTransition("missing", m),
-                 std::invalid_argument);
+    EXPECT_THROW(ts.AddMatrixToTransition("missing", m), std::invalid_argument);
 }
 
 TEST_F(TimestepTest, RemoveTransition) {
@@ -243,8 +240,9 @@ TEST_F(TimestepTest, MovePreservesLoggerNameWithoutRecreatingLogger) {
     Timestep moved(std::move(original));
     spdlog::drop("test_log");
 
-    EXPECT_THROW(moved.AddMatrixToTransition(0, Eigen::MatrixXd::Identity(1, 1)),
-                 std::out_of_range);
+    EXPECT_THROW(
+        moved.AddMatrixToTransition(0, Eigen::MatrixXd::Identity(1, 1)),
+        std::out_of_range);
 
     EXPECT_EQ(CheckLoggerExists("test_log"), CreationStatus::kNotCreated);
 }

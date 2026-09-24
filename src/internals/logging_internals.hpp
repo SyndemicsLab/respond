@@ -4,10 +4,10 @@
 // Created Date: 2025-06-06                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2025-07-30                                                  //
+// Last Modified: 2026-09-24                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
-// Copyright (c) 2025 Syndemics Lab at Boston Medical Center                  //
+// Copyright (c) 2025-2026 Syndemics Lab at Boston Medical Center             //
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef RESPOND_LOGGINGINTERNALS_HPP_
@@ -138,21 +138,21 @@ void log(const std::string &logger_name, const std::string &message,
     }
 
     switch (type) {
-        case LogType::kInfo:
-            logger->info(message);
-            break;
-        case LogType::kWarn:
-            logger->warn(message);
-            break;
-        case LogType::kError:
-            logger->error(message);
-            break;
-        case LogType::kDebug:
-            logger->debug(message);
-            break;
-        default:
-            logger->info(message);
-            break;
+    case LogType::kInfo:
+        logger->info(message);
+        break;
+    case LogType::kWarn:
+        logger->warn(message);
+        break;
+    case LogType::kError:
+        logger->error(message);
+        break;
+    case LogType::kDebug:
+        logger->debug(message);
+        break;
+    default:
+        logger->info(message);
+        break;
     }
     if (LoggingRegistry::GetFlushInterval() == 0) {
         logger->flush();

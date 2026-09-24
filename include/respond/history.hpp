@@ -4,7 +4,7 @@
 // Created Date: 2026-02-05                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-07-13                                                  //
+// Last Modified: 2026-09-24                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
@@ -18,8 +18,8 @@
 
 #include <algorithm>
 #include <cstddef>
-#include <stdexcept>
 #include <map>
+#include <stdexcept>
 #include <utility>
 #include <vector>
 
@@ -61,7 +61,8 @@ public:
 
     /// @brief Default constructor initializing a history with the default name
     /// "state" and default mode based on that name.
-    History() : History("state", GetDefaultHistoryMode("state"), LoggingConfig{}) {}
+    History()
+        : History("state", GetDefaultHistoryMode("state"), LoggingConfig{}) {}
 
     /// @brief  Constructs a history with a specified name, using the default
     /// mode based on that name.
@@ -206,8 +207,8 @@ public:
 
         const auto insertion_point =
             std::lower_bound(_timesteps.begin(), _timesteps.end(), timestep);
-        const auto index = static_cast<size_t>(
-            insertion_point - _timesteps.begin());
+        const auto index =
+            static_cast<size_t>(insertion_point - _timesteps.begin());
         if (insertion_point != _timesteps.end() &&
             *insertion_point == timestep) {
             _states[index] = state;
@@ -362,7 +363,8 @@ public:
     /// @return True if all history properties and state are identical.
     bool operator==(const History &other) const {
         return _name == other._name && _log_name == other._log_name &&
-               _logging_config.logger_name == other._logging_config.logger_name &&
+               _logging_config.logger_name ==
+                   other._logging_config.logger_name &&
                _logging_config.file_path == other._logging_config.file_path &&
                _logging_config.use_shared_sink ==
                    other._logging_config.use_shared_sink &&

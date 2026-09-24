@@ -4,8 +4,8 @@
 // Created Date: 2026-02-05                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-09-14                                                  //
-// Modified By: Dimitri Baptiste                                              //
+// Last Modified: 2026-09-24                                                  //
+// Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
 ////////////////////////////////////////////////////////////////////////////////
@@ -66,22 +66,22 @@ public:
            const std::string &log_name = RESPOND_DEFAULT_LOG,
            const std::string &log_filepath = RESPOND_DEFAULT_LOG_FILE);
 
-        /// @brief Creates a Model with explicit execution settings.
-        /// @param name The instance name for the model.
-        /// @param execution_config Resource settings for model execution.
-        /// @param log_name Name of the logger for this model (default: "console").
-        /// @param log_filepath File path for the log file (default: "respond.log").
-        /// @return A unique_ptr to the newly created Model instance.
-        [[deprecated("Use Model::Create(name, RuntimeConfig) instead")]]
-        static std::unique_ptr<Model>
-        Create(const std::string &name, const ExecutionConfig &execution_config,
-            const std::string &log_name = RESPOND_DEFAULT_LOG,
-            const std::string &log_filepath = RESPOND_DEFAULT_LOG_FILE);
+    /// @brief Creates a Model with explicit execution settings.
+    /// @param name The instance name for the model.
+    /// @param execution_config Resource settings for model execution.
+    /// @param log_name Name of the logger for this model (default: "console").
+    /// @param log_filepath File path for the log file (default: "respond.log").
+    /// @return A unique_ptr to the newly created Model instance.
+    [[deprecated("Use Model::Create(name, RuntimeConfig) instead")]]
+    static std::unique_ptr<Model>
+    Create(const std::string &name, const ExecutionConfig &execution_config,
+           const std::string &log_name = RESPOND_DEFAULT_LOG,
+           const std::string &log_filepath = RESPOND_DEFAULT_LOG_FILE);
 
-        /// @brief Creates a Markov model with shared runtime settings.
-        /// @param name The instance name for the model.
-        static std::unique_ptr<Model>
-        Create(const std::string &name, const RuntimeConfig &runtime_config);
+    /// @brief Creates a Markov model with shared runtime settings.
+    /// @param name The instance name for the model.
+    static std::unique_ptr<Model> Create(const std::string &name,
+                                         const RuntimeConfig &runtime_config);
 
     /// @brief Virtual destructor for proper polymorphic cleanup.
     virtual ~Model() = default;

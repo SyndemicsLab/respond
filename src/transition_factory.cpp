@@ -4,7 +4,7 @@
 // Created Date: 2026-02-05                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-07-14                                                  //
+// Last Modified: 2026-09-24                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
@@ -33,7 +33,7 @@ std::unique_ptr<Transition> Transition::Create(const std::string &type,
 
 std::unique_ptr<Transition>
 Transition::Create(const std::string &type, const std::string &name,
-                  const LoggingConfig &logging_config) {
+                   const LoggingConfig &logging_config) {
     std::string type_copy = type;
     std::transform(type_copy.begin(), type_copy.end(), type_copy.begin(),
                    [](unsigned char c) { return std::tolower(c); });

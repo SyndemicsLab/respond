@@ -4,7 +4,7 @@
 // Created Date: 2026-02-05                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-07-13                                                  //
+// Last Modified: 2026-09-24                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
@@ -30,14 +30,13 @@ public:
         : Intervention(name, LoggingConfig{}) {}
     [[deprecated("Use Intervention(name, LoggingConfig) instead")]]
     Intervention(const std::string &name, const std::string &log_name)
-        : Intervention(name, LoggingConfig{log_name, RESPOND_DEFAULT_LOG_FILE,
-                                           false}) {}
+        : Intervention(
+              name, LoggingConfig{log_name, RESPOND_DEFAULT_LOG_FILE, false}) {}
     [[deprecated("Use Intervention(name, LoggingConfig) instead")]]
     Intervention(const std::string &name, const std::string &log_name,
                  const std::string &log_file)
         : TransitionBase(name, LoggingConfig{log_name, log_file, false}) {}
-    Intervention(const std::string &name,
-                 const LoggingConfig &logging_config)
+    Intervention(const std::string &name, const LoggingConfig &logging_config)
         : TransitionBase(name, logging_config) {}
 
     // Run the execute function and return the final state. Do not edit the

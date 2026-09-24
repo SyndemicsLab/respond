@@ -4,7 +4,7 @@
 // Created Date: 2026-02-09                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-08-19                                                  //
+// Last Modified: 2026-09-24                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
@@ -108,9 +108,9 @@ TEST_F(SimulationTest, ConstructorWithLogNameAndLogFile) {
 }
 
 TEST_F(SimulationTest, ConstructorRejectsLoggerInitializationFailure) {
-    ASSERT_EQ(CreateFileLogger("conflicting_simulation_logger",
-                               default_log_file_),
-              CreationStatus::kSuccess);
+    ASSERT_EQ(
+        CreateFileLogger("conflicting_simulation_logger", default_log_file_),
+        CreationStatus::kSuccess);
     RuntimeConfig config;
     config.logging.logger_name = "conflicting_simulation_logger";
     config.logging.file_path = test_log_file_;
@@ -162,8 +162,7 @@ TEST_F(SimulationTest, StoresRuntimeConfig) {
     Simulation s(config);
 
     EXPECT_EQ(s.GetRuntimeConfig().execution.total_threads, 4);
-    EXPECT_EQ(s.GetRuntimeConfig().logging.logger_name,
-              "runtime_simulation");
+    EXPECT_EQ(s.GetRuntimeConfig().logging.logger_name, "runtime_simulation");
     EXPECT_EQ(s.GetRuntimeConfig().logging.file_path, test_log_file_);
 }
 
@@ -335,9 +334,9 @@ TEST_F(SimulationTest, RunsModelsConcurrentlyWhenEnabled) {
     auto run_model = [&]() {
         const int active = entered.fetch_add(1) + 1;
         int observed_maximum = maximum_active.load();
-        while (active > observed_maximum &&
-               !maximum_active.compare_exchange_weak(observed_maximum,
-                                                     active)) {
+        while (
+            active > observed_maximum &&
+            !maximum_active.compare_exchange_weak(observed_maximum, active)) {
         }
         while (entered.load() < 2) {
             std::this_thread::yield();
@@ -486,8 +485,9 @@ TEST_F(SimulationTest, RethrowsWorkerExceptionAfterJoining) {
 
     auto completing_source = std::make_unique<NiceMock<MockModel>>();
     auto completing_model = std::make_unique<NiceMock<MockModel>>();
-    EXPECT_CALL(*completing_model, RunTimesteps())
-        .WillOnce([&]() { completed.fetch_add(1); });
+    EXPECT_CALL(*completing_model, RunTimesteps()).WillOnce([&]() {
+        completed.fetch_add(1);
+    });
     EXPECT_CALL(*completing_source, clone())
         .WillOnce(Return(::testing::ByMove(std::move(completing_model))));
     simulation.AddModel(std::move(completing_source));

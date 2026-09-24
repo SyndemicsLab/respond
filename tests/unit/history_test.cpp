@@ -4,7 +4,7 @@
 // Created Date: 2026-05-05                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-07-13                                                  //
+// Last Modified: 2026-09-24                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 ////////////////////////////////////////////////////////////////////////////////
@@ -385,8 +385,7 @@ TEST_F(HistoryTest, OutOfOrderStateIsInsertedChronologically) {
     history.AddState(state_at_five, 5);
     history.AddState(state_at_two, 2);
 
-    ASSERT_EQ(history.GetRecordedTimesteps(),
-              (std::vector<int>{2, 5}));
+    ASSERT_EQ(history.GetRecordedTimesteps(), (std::vector<int>{2, 5}));
     ASSERT_EQ(history.GetLatestRecordedTimestep(), 5);
 
     const auto states = history.GetStateAsVector();

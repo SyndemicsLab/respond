@@ -4,7 +4,7 @@
 // Created Date: 2026-02-05                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-09-22                                                  //
+// Last Modified: 2026-09-24                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
@@ -127,7 +127,8 @@ public:
     /// @brief Constructs a Simulation with shared runtime settings.
     explicit Simulation(const RuntimeConfig &runtime_config)
         : _runtime_config(runtime_config) {
-        if (ConfigureLogger(_runtime_config.logging) == CreationStatus::kError) {
+        if (ConfigureLogger(_runtime_config.logging) ==
+            CreationStatus::kError) {
             throw std::runtime_error(
                 "Error attempting to initialize simulation logger.");
         }
@@ -180,14 +181,13 @@ public:
     /// @param other The simulation to move from.
     Simulation(Simulation &&other) noexcept
         : _runtime_config(std::move(other._runtime_config)),
-                    _models(std::move(other._models)),
-          _duration(other._duration),
+          _models(std::move(other._models)), _duration(other._duration),
           _parameter_change_times(std::move(other._parameter_change_times)),
           _stratify_entering_cohort(other._stratify_entering_cohort),
           _build_summary_stats(other._build_summary_stats),
           _save_state_history(other._save_state_history),
-                    _timesteps_to_report(std::move(other._timesteps_to_report)),
-                    _pivot_long(other._pivot_long) {}
+          _timesteps_to_report(std::move(other._timesteps_to_report)),
+          _pivot_long(other._pivot_long) {}
 
     /// @brief Move assignment operator for transferring simulation ownership.
     /// @param other The simulation to move from.
@@ -269,9 +269,8 @@ public:
         const auto &execution = _runtime_config.execution;
         const unsigned int thread_limit = std::thread::hardware_concurrency();
         const unsigned int eigen_threads =
-            thread_limit == 0
-                ? execution.eigen_threads
-                : std::min(execution.eigen_threads, thread_limit);
+            thread_limit == 0 ? execution.eigen_threads
+                              : std::min(execution.eigen_threads, thread_limit);
         Eigen::setNbThreads(eigen_threads);
 
         LogInfo(_runtime_config.logging.logger_name,
@@ -300,7 +299,8 @@ public:
                 worker_limit = 1;
             }
         }
-        const auto worker_count = std::min<size_t>(worker_limit, _models.size());
+        const auto worker_count =
+            std::min<size_t>(worker_limit, _models.size());
         if (worker_count <= 1) {
             for (const auto &model : _models) {
                 run_model(model);

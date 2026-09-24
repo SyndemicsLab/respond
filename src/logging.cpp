@@ -4,7 +4,7 @@
 // Created Date: 2025-06-06                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-07-09                                                  //
+// Last Modified: 2026-09-24                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025-2026 Syndemics Lab at Boston Medical Center             //
@@ -33,9 +33,8 @@ bool LoggerUsesFile(const std::shared_ptr<spdlog::logger> &logger,
     for (const auto &sink : logger->sinks()) {
         auto file_sink =
             std::dynamic_pointer_cast<spdlog::sinks::basic_file_sink_mt>(sink);
-        if (file_sink &&
-            std::filesystem::path(file_sink->filename()) ==
-                std::filesystem::path(filepath)) {
+        if (file_sink && std::filesystem::path(file_sink->filename()) ==
+                             std::filesystem::path(filepath)) {
             return true;
         }
     }
@@ -60,8 +59,7 @@ bool LoggerUsesSink(
 CreationStatus ExistingLoggerStatus(const std::string &logger_name,
                                     bool same_configuration) {
     if (same_configuration) {
-        std::cout << "Logger " << logger_name << " already exists"
-                  << std::endl;
+        std::cout << "Logger " << logger_name << " already exists" << std::endl;
         return CreationStatus::kExists;
     }
 
@@ -77,13 +75,12 @@ CreationStatus CreateSharedLogger(
     std::lock_guard<std::mutex> lock(logger_creation_mutex);
     if (auto existing_logger = spdlog::get(logger_name)) {
         return ExistingLoggerStatus(logger_name,
-                                     LoggerUsesSink(existing_logger, sink));
+                                    LoggerUsesSink(existing_logger, sink));
     }
 
     if (!sink) {
-        std::string error_msg =
-            "Failed to create shared logger '" + logger_name +
-            "': shared sink is null";
+        std::string error_msg = "Failed to create shared logger '" +
+                                logger_name + "': shared sink is null";
         std::cerr << error_msg << std::endl;
         return CreationStatus::kError;
     }
@@ -115,7 +112,7 @@ CreationStatus CreateFileLogger(const std::string &logger_name,
     std::lock_guard<std::mutex> lock(logger_creation_mutex);
     if (auto existing_logger = spdlog::get(logger_name)) {
         return ExistingLoggerStatus(logger_name,
-                                     LoggerUsesFile(existing_logger, filepath));
+                                    LoggerUsesFile(existing_logger, filepath));
     }
     try {
         spdlog::cfg::load_env_levels();
@@ -140,8 +137,7 @@ CreationStatus CreateSharedFileSink(const std::string &filepath) {
         auto sink = LoggingRegistry::GetSharedSink(filepath, &created);
         if (sink) {
             LoggingRegistry::SetDefaultSinkPath(filepath);
-            return created ? CreationStatus::kSuccess
-                           : CreationStatus::kExists;
+            return created ? CreationStatus::kSuccess : CreationStatus::kExists;
         }
         std::string error_msg =
             "Failed to create shared file sink: sink is null";

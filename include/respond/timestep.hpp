@@ -4,7 +4,7 @@
 // Created Date: 2026-06-30                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-07-23                                                  //
+// Last Modified: 2026-09-24                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
@@ -154,9 +154,9 @@ public:
     /// transitions.
     /// @param other The Timestep instance to move from.
     Timestep(Timestep &&other) noexcept
-                                : _log_name(std::move(other._log_name)),
-                                    _logging_config(std::move(other._logging_config)),
-                    _transitions(std::move(other._transitions)) {
+        : _log_name(std::move(other._log_name)),
+          _logging_config(std::move(other._logging_config)),
+          _transitions(std::move(other._transitions)) {
         other._transitions.clear();
     }
 
@@ -193,9 +193,8 @@ public:
     /// exception if the transition type is unsupported.
     const std::unique_ptr<Transition> &
     CreateTransition(const std::string &transition_name) {
-        _transitions.push_back(
-            Transition::Create(transition_name, transition_name,
-                               _logging_config));
+        _transitions.push_back(Transition::Create(
+            transition_name, transition_name, _logging_config));
         return _transitions.back();
     }
 
@@ -261,7 +260,7 @@ public:
             }
         }
         LogError(_log_name, "Transition not found in AddMatrixToTransition: " +
-                               transition_name);
+                                transition_name);
         throw std::invalid_argument(
             "Error attempting to AddMatrixToTransition by name: " +
             transition_name);

@@ -4,7 +4,7 @@
 // Created Date: 2026-02-06                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-07-13                                                  //
+// Last Modified: 2026-09-24                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
@@ -187,7 +187,8 @@ TEST_F(BackgroundDeathTest, AcceptsEqualElementTransposedMatricesWithWarning) {
     const Eigen::VectorXd expected_state =
         six_state - six_state.cwiseProduct(
                         Eigen::Map<const Eigen::VectorXd>(matrix.data(), 6));
-    const Eigen::VectorXd result = background_death.Execute(six_state, histories);
+    const Eigen::VectorXd result =
+        background_death.Execute(six_state, histories);
 
     EXPECT_TRUE(result.isApprox(expected_state));
 }

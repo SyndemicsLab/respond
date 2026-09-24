@@ -4,7 +4,7 @@
 // Created Date: 2025-03-18                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-07-14                                                  //
+// Last Modified: 2026-09-24                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025-2026 Syndemics Lab at Boston Medical Center             //
@@ -159,14 +159,12 @@ TEST_F(LoggingTest, ConfigureLoggerCreatesSharedLogger) {
 TEST_F(LoggingTest, ConfigureLoggerRejectsSharedDestinationChange) {
     const std::string other_log_file = "/tmp/respond_other_shared.log";
     std::remove(other_log_file.c_str());
-    ASSERT_EQ(ConfigureLogger(
-                  LoggingConfig{"configured_shared_logger", shared_log_file_,
-                                true}),
+    ASSERT_EQ(ConfigureLogger(LoggingConfig{"configured_shared_logger",
+                                            shared_log_file_, true}),
               CreationStatus::kSuccess);
 
-    EXPECT_EQ(ConfigureLogger(
-                  LoggingConfig{"configured_shared_logger", other_log_file,
-                                true}),
+    EXPECT_EQ(ConfigureLogger(LoggingConfig{"configured_shared_logger",
+                                            other_log_file, true}),
               CreationStatus::kError);
 
     std::remove(other_log_file.c_str());
@@ -176,15 +174,13 @@ TEST_F(LoggingTest, ConcurrentSharedLoggerConfigurationUsesRequestedSinks) {
     constexpr size_t logger_count = 8;
     std::vector<std::string> log_files;
     std::vector<std::string> logger_names;
-    std::vector<CreationStatus> statuses(logger_count,
-                                         CreationStatus::kError);
+    std::vector<CreationStatus> statuses(logger_count, CreationStatus::kError);
     std::vector<std::thread> workers;
 
     for (size_t i = 0; i < logger_count; ++i) {
         log_files.push_back("/tmp/respond_concurrent_shared_" +
                             std::to_string(i) + ".log");
-        logger_names.push_back("concurrent_shared_logger_" +
-                              std::to_string(i));
+        logger_names.push_back("concurrent_shared_logger_" + std::to_string(i));
         std::remove(log_files.back().c_str());
     }
 
@@ -408,8 +404,7 @@ TEST_F(LoggingTest, CheckLoggerExistsFalse) {
 TEST_F(LoggingTest, MissingLoggerDoesNotCreateFallbackLogger) {
     LogInfo("missing_logger", "message without a configured logger");
 
-    EXPECT_EQ(CheckLoggerExists("missing_logger"),
-              CreationStatus::kNotCreated);
+    EXPECT_EQ(CheckLoggerExists("missing_logger"), CreationStatus::kNotCreated);
 }
 
 TEST_F(LoggingTest, GetLoggerInfo) {

@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
-// File: runtime_config.hpp                                                    //
+// File: runtime_config.hpp                                                   //
 // Project: respond                                                           //
 // Created Date: 2026-09-22                                                   //
 // Author: Matthew Carroll                                                    //
