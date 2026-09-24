@@ -74,6 +74,23 @@ protected:
             LogError(_log_name, error_msg);
             throw std::runtime_error(error_msg);
         }
+        if (m1.rows() != m2.rows() || m1.cols() != m2.cols()) {
+            LogWarning(_log_name,
+                       "Transition warning - matrix shapes differ but "
+                       "contain the same number of elements. Matrix 1 size "
+                       "is (" +
+                           std::to_string(m1.rows()) + ", " +
+                           std::to_string(m1.cols()) + ") but Matrix 2 size "
+                           "is (" +
+                           std::to_string(m2.rows()) + ", " +
+                           std::to_string(m2.cols()) + "). Comparing values "
+                           "in column-major order.");
+        }
+    }
+
+    Eigen::VectorXd AsVector(
+        const Eigen::Ref<const Eigen::MatrixXd> &matrix) const {
+        return Eigen::Map<const Eigen::VectorXd>(matrix.data(), matrix.size());
     }
 
     void TestSquareMatrix(const Eigen::Ref<const Eigen::MatrixXd> &m) const {
@@ -131,10 +148,13 @@ protected:
     void TestLessThanState(const Eigen::Ref<const Eigen::MatrixXd> &state,
                            const Eigen::Ref<const Eigen::MatrixXd> &m1,
                            std::string extra_msg = "") const {
-        if (!(state.array() >= m1.array()).all()) {
+        const auto state_vector = AsVector(state);
+        const auto value_vector = AsVector(m1);
+        if (!(state_vector.array() >= value_vector.array()).all()) {
             std::string error_msg =
                 "Transition error - State contains values less than m1! " +
-                std::to_string((state.array() < m1.array()).count()) +
+                std::to_string(
+                    (state_vector.array() < value_vector.array()).count()) +
                 " elements affected. Verify that the transition matrix is "
                 "correct and that the state vector is valid.";
             if (!extra_msg.empty()) {

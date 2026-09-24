@@ -16,8 +16,9 @@ The core API is stable enough for integration, but there are important constrain
 	sharing a simulation across threads, and must not mutate or inspect models
 	while `Simulation::Run()` is executing.
 - `Simulation::Run()` may execute independent models concurrently when enabled
-	through `ExecutionConfig`; the configured Eigen worker limit must still be
-	observed because Eigen's worker setting is process-global.
+	through `ExecutionConfig`. Separate `Simulation::Run()` calls are serialized
+	because Eigen's worker setting is process-global; the configured Eigen worker
+	limit must still be observed within each run.
 - Logging registries and shared sinks are internally synchronized for
 	concurrent logger creation and logging.
 - GPU execution is not supported.

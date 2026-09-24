@@ -87,8 +87,8 @@ CreationStatus CreateSharedFileSink(const std::string &filepath);
 /// @return CreationStatus indicating the result of logger creation.
 /// @note Thread-safe: Can be called concurrently from multiple threads.
 /// @note Requires CreateSharedFileSink() to be called first with a file path.
-/// @note If CreateSharedFileSink() wasn't called, creates a default sink to
-/// "respond.log".
+/// @note If CreateSharedFileSink() wasn't called, creates a shared sink for
+/// the configured default sink path.
 /// @note Reusing a logger name with a different sink returns kError.
 CreationStatus CreateSharedLogger(const std::string &logger_name);
 
@@ -123,24 +123,32 @@ void FlushAllLoggers();
 /// @param logger_name Logger identifier (created via CreateFileLogger or
 /// CreateSharedLogger).
 /// @param message Message to log.
+/// @note If logger_name is not configured, the message is written to stderr
+/// and is not persisted by RESPOND.
 void LogInfo(const std::string &logger_name, const std::string &message);
 
 /// @brief Log a message as warning level.
 /// Thread-safe for concurrent calls from multiple threads.
 /// @param logger_name Logger identifier.
 /// @param message Message to log.
+/// @note If logger_name is not configured, the message is written to stderr
+/// and is not persisted by RESPOND.
 void LogWarning(const std::string &logger_name, const std::string &message);
 
 /// @brief Log a message as error level.
 /// Thread-safe for concurrent calls from multiple threads.
 /// @param logger_name Logger identifier.
 /// @param message Message to log.
+/// @note If logger_name is not configured, the message is written to stderr
+/// and is not persisted by RESPOND.
 void LogError(const std::string &logger_name, const std::string &message);
 
 /// @brief Log a message as debug level.
 /// Thread-safe for concurrent calls from multiple threads.
 /// @param logger_name Logger identifier.
 /// @param message Message to log.
+/// @note If logger_name is not configured, the message is written to stderr
+/// and is not persisted by RESPOND.
 void LogDebug(const std::string &logger_name, const std::string &message);
 
 // ============================================================================

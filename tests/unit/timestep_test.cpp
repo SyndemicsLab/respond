@@ -227,7 +227,7 @@ TEST_F(TimestepTest, CopyConstructor) {
     ASSERT_EQ(names[0], "migration");
 }
 
-TEST_F(TimestepTest, CopyPreservesLoggerName) {
+TEST_F(TimestepTest, CopyPreservesLoggerNameWithoutRecreatingLogger) {
     Timestep original("test_log", test_log_file_);
     Timestep copy(original);
     spdlog::drop("test_log");
@@ -235,10 +235,10 @@ TEST_F(TimestepTest, CopyPreservesLoggerName) {
     EXPECT_THROW(copy.AddMatrixToTransition(0, Eigen::MatrixXd::Identity(1, 1)),
                  std::out_of_range);
 
-    EXPECT_EQ(CheckLoggerExists("test_log"), CreationStatus::kExists);
+    EXPECT_EQ(CheckLoggerExists("test_log"), CreationStatus::kNotCreated);
 }
 
-TEST_F(TimestepTest, MovePreservesLoggerName) {
+TEST_F(TimestepTest, MovePreservesLoggerNameWithoutRecreatingLogger) {
     Timestep original("test_log", test_log_file_);
     Timestep moved(std::move(original));
     spdlog::drop("test_log");
@@ -246,7 +246,7 @@ TEST_F(TimestepTest, MovePreservesLoggerName) {
     EXPECT_THROW(moved.AddMatrixToTransition(0, Eigen::MatrixXd::Identity(1, 1)),
                  std::out_of_range);
 
-    EXPECT_EQ(CheckLoggerExists("test_log"), CreationStatus::kExists);
+    EXPECT_EQ(CheckLoggerExists("test_log"), CreationStatus::kNotCreated);
 }
 
 TEST_F(TimestepTest, CopyAssignment) {

@@ -156,6 +156,18 @@ TEST_F(SimulationTest, StoresRuntimeConfig) {
     EXPECT_EQ(s.GetRuntimeConfig().logging.file_path, test_log_file_);
 }
 
+TEST_F(SimulationTest, RejectsRuntimeLoggingReconfigurationFailure) {
+    Simulation simulation;
+    const auto original_config = simulation.GetRuntimeConfig();
+    RuntimeConfig conflicting_config = original_config;
+    conflicting_config.logging.file_path = test_log_file_;
+
+    EXPECT_THROW(simulation.SetRuntimeConfig(conflicting_config),
+                 std::invalid_argument);
+    EXPECT_EQ(simulation.GetRuntimeConfig().logging.file_path,
+              original_config.logging.file_path);
+}
+
 TEST_F(SimulationTest, CreateNewModel) {
     Simulation s;
     std::string model_name = "test_model";
@@ -251,6 +263,34 @@ TEST_F(SimulationTest, Run) {
         .WillOnce(Return(::testing::ByMove(std::move(cloned))));
     s.AddModel(std::move(mock_model));
     s.Run();
+}
+
+TEST_F(SimulationTest, RejectsInvalidRunDurations) {
+    Simulation simulation;
+    auto source = std::make_unique<NiceMock<MockModel>>();
+    auto model = std::make_unique<NiceMock<MockModel>>();
+    EXPECT_CALL(*model, RunTimesteps()).Times(0);
+    EXPECT_CALL(*source, clone())
+        .WillOnce(Return(::testing::ByMove(std::move(model))));
+    simulation.AddModel(std::move(source));
+
+    EXPECT_THROW(simulation.Run(0), std::invalid_argument);
+    EXPECT_THROW(simulation.Run(-2), std::invalid_argument);
+    EXPECT_THROW(simulation.SetDuration(0), std::invalid_argument);
+    EXPECT_THROW(simulation.SetDuration(-1), std::invalid_argument);
+}
+
+TEST_F(SimulationTest, RunAppliesPositiveDurationOverride) {
+    Simulation simulation;
+    auto source = std::make_unique<NiceMock<MockModel>>();
+    auto model = std::make_unique<NiceMock<MockModel>>();
+    EXPECT_CALL(*model, SetFinalTimestep(4)).Times(1);
+    EXPECT_CALL(*model, RunTimesteps()).Times(1);
+    EXPECT_CALL(*source, clone())
+        .WillOnce(Return(::testing::ByMove(std::move(model))));
+    simulation.AddModel(std::move(source));
+
+    simulation.Run(4);
 }
 
 TEST_F(SimulationTest, RunMultipleModels) {

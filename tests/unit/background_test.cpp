@@ -161,6 +161,37 @@ TEST_F(BackgroundDeathTest, ExecuteWithBackgroundDeathHistory) {
     EXPECT_TRUE(result.isApprox(expected_state));
 }
 
+TEST_F(BackgroundDeathTest, AcceptsVectorAndRowMatrixWithWarning) {
+    BackgroundDeath background_death;
+    Eigen::MatrixXd row_matrix(1, 3);
+    row_matrix << 0.5, 0.1, 0.8;
+    background_death.AddMatrix(row_matrix);
+    histories["state"] = History("state");
+
+    const Eigen::VectorXd result = background_death.Execute(state, histories);
+
+    EXPECT_NEAR(result(0), 0.5, 1e-12);
+    EXPECT_NEAR(result(1), 1.8, 1e-12);
+    EXPECT_NEAR(result(2), 0.6, 1e-12);
+}
+
+TEST_F(BackgroundDeathTest, AcceptsEqualElementTransposedMatricesWithWarning) {
+    Eigen::VectorXd six_state(6);
+    six_state << 1.0, 2.0, 3.0, 4.0, 5.0, 6.0;
+    Eigen::MatrixXd matrix(2, 3);
+    matrix << 0.1, 0.2, 0.3, 0.4, 0.5, 0.6;
+    BackgroundDeath background_death;
+    background_death.AddMatrix(matrix);
+    histories["state"] = History("state");
+
+    const Eigen::VectorXd expected_state =
+        six_state - six_state.cwiseProduct(
+                        Eigen::Map<const Eigen::VectorXd>(matrix.data(), 6));
+    const Eigen::VectorXd result = background_death.Execute(six_state, histories);
+
+    EXPECT_TRUE(result.isApprox(expected_state));
+}
+
 TEST_F(BackgroundDeathTest, Clone) {
     BackgroundDeath background_death;
     background_death.AddMatrix(tran_matrix);

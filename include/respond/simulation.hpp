@@ -244,14 +244,20 @@ public:
     /// @throws std::invalid_argument if multiple models would execute in
     /// parallel while more than one Eigen worker thread is configured.
     /// @throws std::invalid_argument if no models have been added.
+    /// @throws std::invalid_argument if duration is zero or less than -1.
     /// @throws Any exception raised by a model after all workers have joined.
     void Run(int duration = -1) {
+        if (duration == 0 || duration < -1) {
+            throw std::invalid_argument(
+                "Simulation duration must be positive or -1.");
+        }
         if (_models.empty()) {
             LogError(_runtime_config.logging.logger_name,
                      "Cannot run a simulation with no models.");
             throw std::invalid_argument(
                 "Error attempting to run simulation with no models.");
         }
+        std::lock_guard<std::mutex> execution_lock(GetEigenExecutionMutex());
         if (duration > 0) {
             _duration = duration;
         }
@@ -447,7 +453,16 @@ public:
         return ret;
     }
 
-    void SetDuration(int duration) { _duration = duration; }
+    /// @brief Sets the default duration used by Run().
+    /// @param duration A positive number of timesteps.
+    /// @throws std::invalid_argument if duration is not positive.
+    void SetDuration(int duration) {
+        if (duration <= 0) {
+            throw std::invalid_argument(
+                "Simulation duration must be positive.");
+        }
+        _duration = duration;
+    }
 
     /// @brief Retrieves the simulation execution settings.
     /// @return The current execution configuration.
@@ -464,11 +479,22 @@ public:
     const RuntimeConfig &GetRuntimeConfig() const { return _runtime_config; }
 
     void SetRuntimeConfig(const RuntimeConfig &runtime_config) {
+        if (ConfigureLogger(runtime_config.logging) == CreationStatus::kError) {
+            LogError(_runtime_config.logging.logger_name,
+                     "Unable to apply simulation runtime logging config.");
+            throw std::invalid_argument(
+                "Error attempting to apply simulation runtime logging "
+                "configuration.");
+        }
         _runtime_config = runtime_config;
-        ConfigureLogger(_runtime_config.logging);
     }
 
 private:
+    static std::mutex &GetEigenExecutionMutex() {
+        static std::mutex mutex;
+        return mutex;
+    }
+
     Model &GetModelRefOrThrow(size_t idx) {
         if (idx >= _models.size()) {
             LogError(_runtime_config.logging.logger_name,

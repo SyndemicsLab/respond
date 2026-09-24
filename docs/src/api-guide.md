@@ -174,8 +174,8 @@ auto history_names = sim.GetModelHistoryNames(0);
 
 ### Key Methods
 
-- `Run(int duration = -1)`: Runs all models for the configured duration
-- `SetDuration(int duration)`: Sets default duration used by `Run()` when no argument is provided
+- `Run(int duration = -1)`: Runs all models; `-1` uses the configured duration and positive values override it
+- `SetDuration(int duration)`: Sets a positive default duration used by `Run()` when no argument is provided
 - `CreateNewModel(const std::string &name)`: Creates and manages a model, then returns an editable deep copy; assign the edited copy through `sim[idx]`
 - `AddModel(const std::unique_ptr<Model> &model)`: Adds a model (cloned internally)
 - `operator[](size_t idx)`: Mutable index access to owned model slot (`sim[idx]->Method()`)

@@ -405,6 +405,13 @@ TEST_F(LoggingTest, CheckLoggerExistsFalse) {
     EXPECT_EQ(status, CreationStatus::kNotCreated);
 }
 
+TEST_F(LoggingTest, MissingLoggerDoesNotCreateFallbackLogger) {
+    LogInfo("missing_logger", "message without a configured logger");
+
+    EXPECT_EQ(CheckLoggerExists("missing_logger"),
+              CreationStatus::kNotCreated);
+}
+
 TEST_F(LoggingTest, GetLoggerInfo) {
     CreateFileLogger("test_logger", test_log_file_);
 

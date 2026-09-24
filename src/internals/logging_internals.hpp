@@ -129,17 +129,15 @@ CreationStatus CheckIfExists(const std::string &logger_name) {
 
 void log(const std::string &logger_name, const std::string &message,
          LogType type = LogType::kInfo) {
-    CreationStatus status = CheckIfExists(logger_name);
-    if ((status == CreationStatus::kNotCreated) &&
-        (CreateFileLogger(logger_name, "respond.log") ==
-         CreationStatus::kError)) {
-        std::cerr << "Failed to create logger: " << logger_name << std::endl;
+    auto logger = spdlog::get(logger_name);
+    if (!logger) {
+        std::cerr << "Logger '" << logger_name
+                  << "' is not configured; message was not persisted: "
+                  << message << std::endl;
         return;
     }
 
-    auto logger = spdlog::get(logger_name);
-    if (logger) {
-        switch (type) {
+    switch (type) {
         case LogType::kInfo:
             logger->info(message);
             break;
@@ -155,12 +153,9 @@ void log(const std::string &logger_name, const std::string &message,
         default:
             logger->info(message);
             break;
-        }
-        if (LoggingRegistry::GetFlushInterval() == 0) {
-            logger->flush();
-        }
-    } else {
-        spdlog::error("Logger {} not found", logger_name);
+    }
+    if (LoggingRegistry::GetFlushInterval() == 0) {
+        logger->flush();
     }
 }
 
