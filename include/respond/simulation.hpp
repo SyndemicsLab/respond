@@ -4,7 +4,7 @@
 // Created Date: 2026-02-05                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-09-24                                                  //
+// Last Modified: 2026-10-06                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
@@ -289,7 +289,7 @@ public:
 
         if (execution.eigen_threads > 1) {
             throw std::invalid_argument(
-                "Concurrent model execution requires eigen_threads <= 1.");
+                "Concurrent model execution requires eigen_threads == 1.");
         }
 
         unsigned int worker_limit = execution.total_threads;
