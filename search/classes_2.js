@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['simulation_0',['Simulation',['../de/d27/classrespond_1_1Simulation.html',1,'respond']]]
+  ['loggingconfig_0',['LoggingConfig',['../d1/d31/structrespond_1_1LoggingConfig.html',1,'respond']]]
 ];

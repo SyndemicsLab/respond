@@ -182,6 +182,9 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memitem:af8a73129f5f1ae83f16b89d68fc84f8d"><td class="memItemLeft" align="right" valign="top">static std::unique_ptr&lt; <a class="el" href="../../de/d15/classrespond_1_1Transition.html">Transition</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d15/classrespond_1_1Transition.html#af8a73129f5f1ae83f16b89d68fc84f8d">Create</a> (const std::string &amp;type, const std::string &amp;name=RESPOND_DEFAULT_TRANSITION_NAME, const std::string &amp;log_name=RESPOND_DEFAULT_LOG, const std::string &amp;log_file=RESPOND_DEFAULT_LOG_FILE)</td></tr>
 <tr class="memdesc:af8a73129f5f1ae83f16b89d68fc84f8d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a transition of the specified type.  <br /></td></tr>
 <tr class="separator:af8a73129f5f1ae83f16b89d68fc84f8d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab1691c261710a06baea11f09761891ec"><td class="memItemLeft" align="right" valign="top"><a id="ab1691c261710a06baea11f09761891ec" name="ab1691c261710a06baea11f09761891ec"></a>
+static std::unique_ptr&lt; <a class="el" href="../../de/d15/classrespond_1_1Transition.html">Transition</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>Create</b> (const std::string &amp;type, const std::string &amp;name, const <a class="el" href="../../d1/d31/structrespond_1_1LoggingConfig.html">LoggingConfig</a> &amp;logging_config)</td></tr>
+<tr class="separator:ab1691c261710a06baea11f09761891ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-methods" name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
@@ -308,7 +311,13 @@ Protected Member Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>A unique_ptr to the created <a class="el" href="../../de/d15/classrespond_1_1Transition.html" title="Abstract base class representing a state transition operation. Transitions apply transformation matri...">Transition</a>, or nullptr if type is unsupported. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>A unique_ptr to the created <a class="el" href="../../de/d15/classrespond_1_1Transition.html" title="Abstract base class representing a state transition operation. Transitions apply transformation matri...">Transition</a>. </dd></dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">std::invalid_argument</td><td>if type is unsupported. The error is also written through the logger identified by log_name. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -450,7 +459,7 @@ Protected Member Functions</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><b>respond</b></li><li class="navelem"><a class="el" href="../../de/d15/classrespond_1_1Transition.html">Transition</a></li>
-    <li class="footer">Generated on Mon Sep 21 2026 13:43:39 for RESPOND by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
+    <li class="footer">Generated on Wed Oct 7 2026 12:58:19 for RESPOND by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
   </ul>
 </div>
 </body>

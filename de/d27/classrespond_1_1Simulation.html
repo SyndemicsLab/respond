@@ -157,6 +157,13 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ae34192e89f9d611a16f24349e4597f5e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d27/classrespond_1_1Simulation.html#ae34192e89f9d611a16f24349e4597f5e">Simulation</a> (const std::string &amp;log_name, const std::string &amp;log_filepath)</td></tr>
 <tr class="memdesc:ae34192e89f9d611a16f24349e4597f5e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructs a <a class="el" href="../../de/d27/classrespond_1_1Simulation.html" title="Manages and executes multiple models in a coordinated simulation. A Simulation aggregates Model insta...">Simulation</a> with a specified logger and log file.  <br /></td></tr>
 <tr class="separator:ae34192e89f9d611a16f24349e4597f5e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa4a48de8d9c5af8d97e70a7f4e260911"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d27/classrespond_1_1Simulation.html#aa4a48de8d9c5af8d97e70a7f4e260911">Simulation</a> (const std::string &amp;log_name, const std::string &amp;log_filepath, const <a class="el" href="../../d4/d70/structrespond_1_1ExecutionConfig.html">ExecutionConfig</a> &amp;execution_config)</td></tr>
+<tr class="memdesc:aa4a48de8d9c5af8d97e70a7f4e260911"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructs a <a class="el" href="../../de/d27/classrespond_1_1Simulation.html" title="Manages and executes multiple models in a coordinated simulation. A Simulation aggregates Model insta...">Simulation</a> with logger and execution settings.  <br /></td></tr>
+<tr class="separator:aa4a48de8d9c5af8d97e70a7f4e260911"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a780815258c17a34c2dfe7ffcec158bef"><td class="memItemLeft" align="right" valign="top"><a id="a780815258c17a34c2dfe7ffcec158bef" name="a780815258c17a34c2dfe7ffcec158bef"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>Simulation</b> (const <a class="el" href="../../d9/da0/structrespond_1_1RuntimeConfig.html">RuntimeConfig</a> &amp;runtime_config)</td></tr>
+<tr class="memdesc:a780815258c17a34c2dfe7ffcec158bef"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructs a <a class="el" href="../../de/d27/classrespond_1_1Simulation.html" title="Manages and executes multiple models in a coordinated simulation. A Simulation aggregates Model insta...">Simulation</a> with shared runtime settings. <br /></td></tr>
+<tr class="separator:a780815258c17a34c2dfe7ffcec158bef"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a35b97491c85f7516247509fde2c37521"><td class="memItemLeft" align="right" valign="top"><a id="a35b97491c85f7516247509fde2c37521" name="a35b97491c85f7516247509fde2c37521"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>~Simulation</b> ()=default</td></tr>
 <tr class="memdesc:a35b97491c85f7516247509fde2c37521"><td class="mdescLeft">&#160;</td><td class="mdescRight">Virtual destructor for polymorphic cleanup. <br /></td></tr>
@@ -183,9 +190,8 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>ClearModels</b> ()</t
 <tr class="memitem:aebf1197f15e2b7eae43dfffed80c1254"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d27/classrespond_1_1Simulation.html#aebf1197f15e2b7eae43dfffed80c1254">AddModel</a> (const std::unique_ptr&lt; <a class="el" href="../../d4/d00/classrespond_1_1Model.html">Model</a> &gt; &amp;model)</td></tr>
 <tr class="memdesc:aebf1197f15e2b7eae43dfffed80c1254"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds a model to the simulation. The model is cloned and managed by the simulation.  <br /></td></tr>
 <tr class="separator:aebf1197f15e2b7eae43dfffed80c1254"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a40714b0c174621705a89ab1b966f36a2"><td class="memItemLeft" align="right" valign="top"><a id="a40714b0c174621705a89ab1b966f36a2" name="a40714b0c174621705a89ab1b966f36a2"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>Run</b> (int duration=-1)</td></tr>
-<tr class="memdesc:a40714b0c174621705a89ab1b966f36a2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Executes one step of the simulation for all models. Calls RunTransitions() on each registered model in sequence. <br /></td></tr>
+<tr class="memitem:a40714b0c174621705a89ab1b966f36a2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d27/classrespond_1_1Simulation.html#a40714b0c174621705a89ab1b966f36a2">Run</a> (int duration=-1)</td></tr>
+<tr class="memdesc:a40714b0c174621705a89ab1b966f36a2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Executes the simulation for all registered models. Models run sequentially by default. When model concurrency is enabled, independent models may run in parallel using the configured worker limit.  <br /></td></tr>
 <tr class="separator:a40714b0c174621705a89ab1b966f36a2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a33194e90638f4dec468c737e10ee13d3"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::unique_ptr&lt; <a class="el" href="../../d4/d00/classrespond_1_1Model.html">Model</a> &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d27/classrespond_1_1Simulation.html#a33194e90638f4dec468c737e10ee13d3">GetModels</a> () const</td></tr>
 <tr class="memdesc:a33194e90638f4dec468c737e10ee13d3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieves all models in the simulation.  <br /></td></tr>
@@ -211,13 +217,25 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>Run</b> (int duration
 <tr class="memitem:afcd21e110ff388d8bade3a0f3f995115"><td class="memItemLeft" align="right" valign="top">const std::vector&lt; std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d27/classrespond_1_1Simulation.html#afcd21e110ff388d8bade3a0f3f995115">GetModelHistoryNames</a> (size_t idx) const</td></tr>
 <tr class="memdesc:afcd21e110ff388d8bade3a0f3f995115"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieves history names for the model at the specified index.  <br /></td></tr>
 <tr class="separator:afcd21e110ff388d8bade3a0f3f995115"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa3c79b9b5a9893227047f4f42ef61e64"><td class="memItemLeft" align="right" valign="top"><a id="aa3c79b9b5a9893227047f4f42ef61e64" name="aa3c79b9b5a9893227047f4f42ef61e64"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>SetDuration</b> (int duration)</td></tr>
+<tr class="memitem:aa3c79b9b5a9893227047f4f42ef61e64"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d27/classrespond_1_1Simulation.html#aa3c79b9b5a9893227047f4f42ef61e64">SetDuration</a> (int duration)</td></tr>
+<tr class="memdesc:aa3c79b9b5a9893227047f4f42ef61e64"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the default duration used by <a class="el" href="../../de/d27/classrespond_1_1Simulation.html#a40714b0c174621705a89ab1b966f36a2" title="Executes the simulation for all registered models. Models run sequentially by default....">Run()</a>.  <br /></td></tr>
 <tr class="separator:aa3c79b9b5a9893227047f4f42ef61e64"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab636f5e1bf71028998c42ab40f9fc5b4"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="../../d4/d70/structrespond_1_1ExecutionConfig.html">ExecutionConfig</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d27/classrespond_1_1Simulation.html#ab636f5e1bf71028998c42ab40f9fc5b4">GetExecutionConfig</a> () const</td></tr>
+<tr class="memdesc:ab636f5e1bf71028998c42ab40f9fc5b4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieves the simulation execution settings.  <br /></td></tr>
+<tr class="separator:ab636f5e1bf71028998c42ab40f9fc5b4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0d73b8e2f6f6ecb714762528e9a1ba96"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d27/classrespond_1_1Simulation.html#a0d73b8e2f6f6ecb714762528e9a1ba96">SetExecutionConfig</a> (const <a class="el" href="../../d4/d70/structrespond_1_1ExecutionConfig.html">ExecutionConfig</a> &amp;execution_config)</td></tr>
+<tr class="memdesc:a0d73b8e2f6f6ecb714762528e9a1ba96"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the simulation execution settings.  <br /></td></tr>
+<tr class="separator:a0d73b8e2f6f6ecb714762528e9a1ba96"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6aaed5b188c5e22430340c13a2507be3"><td class="memItemLeft" align="right" valign="top"><a id="a6aaed5b188c5e22430340c13a2507be3" name="a6aaed5b188c5e22430340c13a2507be3"></a>
+const <a class="el" href="../../d9/da0/structrespond_1_1RuntimeConfig.html">RuntimeConfig</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>GetRuntimeConfig</b> () const</td></tr>
+<tr class="separator:a6aaed5b188c5e22430340c13a2507be3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a952f65af77671cedd341b23704552c4a"><td class="memItemLeft" align="right" valign="top"><a id="a952f65af77671cedd341b23704552c4a" name="a952f65af77671cedd341b23704552c4a"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>SetRuntimeConfig</b> (const <a class="el" href="../../d9/da0/structrespond_1_1RuntimeConfig.html">RuntimeConfig</a> &amp;runtime_config)</td></tr>
+<tr class="separator:a952f65af77671cedd341b23704552c4a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a5438cd165b1c9e53107b21ca093a28ba" name="a5438cd165b1c9e53107b21ca093a28ba"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5438cd165b1c9e53107b21ca093a28ba">&#9670;&#160;</a></span>Simulation() <span class="overload">[1/4]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a5438cd165b1c9e53107b21ca093a28ba">&#9670;&#160;</a></span>Simulation() <span class="overload">[1/5]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -249,7 +267,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>SetDuration</b> (int 
 </div>
 </div>
 <a id="ae34192e89f9d611a16f24349e4597f5e" name="ae34192e89f9d611a16f24349e4597f5e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae34192e89f9d611a16f24349e4597f5e">&#9670;&#160;</a></span>Simulation() <span class="overload">[2/4]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ae34192e89f9d611a16f24349e4597f5e">&#9670;&#160;</a></span>Simulation() <span class="overload">[2/5]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -291,8 +309,58 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>SetDuration</b> (int 
 
 </div>
 </div>
+<a id="aa4a48de8d9c5af8d97e70a7f4e260911" name="aa4a48de8d9c5af8d97e70a7f4e260911"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa4a48de8d9c5af8d97e70a7f4e260911">&#9670;&#160;</a></span>Simulation() <span class="overload">[3/5]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">respond::Simulation::Simulation </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>log_name</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>log_filepath</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="../../d4/d70/structrespond_1_1ExecutionConfig.html">ExecutionConfig</a> &amp;&#160;</td>
+          <td class="paramname"><em>execution_config</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">log_name</td><td>The name of the logger to use for simulation output. </td></tr>
+    <tr><td class="paramname">log_filepath</td><td>The file path for the logger output. </td></tr>
+    <tr><td class="paramname">execution_config</td><td>Resource settings for simulation execution. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="a9fef496915b13d16b51b9ba796b0270e" name="a9fef496915b13d16b51b9ba796b0270e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9fef496915b13d16b51b9ba796b0270e">&#9670;&#160;</a></span>Simulation() <span class="overload">[3/4]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a9fef496915b13d16b51b9ba796b0270e">&#9670;&#160;</a></span>Simulation() <span class="overload">[4/5]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -324,7 +392,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>SetDuration</b> (int 
 </div>
 </div>
 <a id="a1d2d22448e12c8f15c7586c964ed978d" name="a1d2d22448e12c8f15c7586c964ed978d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1d2d22448e12c8f15c7586c964ed978d">&#9670;&#160;</a></span>Simulation() <span class="overload">[4/4]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a1d2d22448e12c8f15c7586c964ed978d">&#9670;&#160;</a></span>Simulation() <span class="overload">[5/5]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -417,7 +485,33 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>SetDuration</b> (int 
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>A deep-copied model instance representing the newly created model. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>An editable deep copy of the newly created model. Changes to this copy do not affect the model managed by the simulation until it is assigned through the mutable model slot, for example <code>simulation[0] = *model</code>. </dd></dl>
+
+</div>
+</div>
+<a id="ab636f5e1bf71028998c42ab40f9fc5b4" name="ab636f5e1bf71028998c42ab40f9fc5b4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab636f5e1bf71028998c42ab40f9fc5b4">&#9670;&#160;</a></span>GetExecutionConfig()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const <a class="el" href="../../d4/d70/structrespond_1_1ExecutionConfig.html">ExecutionConfig</a> &amp; respond::Simulation::GetExecutionConfig </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="section return"><dt>Returns</dt><dd>The current execution configuration. </dd></dl>
 
 </div>
 </div>
@@ -748,6 +842,111 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>SetDuration</b> (int 
 
 </div>
 </div>
+<a id="a40714b0c174621705a89ab1b966f36a2" name="a40714b0c174621705a89ab1b966f36a2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a40714b0c174621705a89ab1b966f36a2">&#9670;&#160;</a></span>Run()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void respond::Simulation::Run </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>duration</em> = <code>-1</code></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">std::invalid_argument</td><td>if multiple models would execute in parallel while more than one Eigen worker thread is configured. </td></tr>
+    <tr><td class="paramname">std::invalid_argument</td><td>if no models have been added. </td></tr>
+    <tr><td class="paramname">std::invalid_argument</td><td>if duration is zero or less than -1. </td></tr>
+    <tr><td class="paramname">Any</td><td>exception raised by a model after all workers have joined. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="aa3c79b9b5a9893227047f4f42ef61e64" name="aa3c79b9b5a9893227047f4f42ef61e64"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa3c79b9b5a9893227047f4f42ef61e64">&#9670;&#160;</a></span>SetDuration()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void respond::Simulation::SetDuration </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>duration</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">duration</td><td>A positive number of timesteps. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">std::invalid_argument</td><td>if duration is not positive. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a0d73b8e2f6f6ecb714762528e9a1ba96" name="a0d73b8e2f6f6ecb714762528e9a1ba96"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0d73b8e2f6f6ecb714762528e9a1ba96">&#9670;&#160;</a></span>SetExecutionConfig()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void respond::Simulation::SetExecutionConfig </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="../../d4/d70/structrespond_1_1ExecutionConfig.html">ExecutionConfig</a> &amp;&#160;</td>
+          <td class="paramname"><em>execution_config</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">execution_config</td><td>Resource settings for simulation execution. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
 <li><a class="el" href="../../d3/d27/simulation_8hpp_source.html">simulation.hpp</a></li>
 </ul>
@@ -757,7 +956,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>SetDuration</b> (int 
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><b>respond</b></li><li class="navelem"><a class="el" href="../../de/d27/classrespond_1_1Simulation.html">Simulation</a></li>
-    <li class="footer">Generated on Mon Sep 21 2026 13:43:39 for RESPOND by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
+    <li class="footer">Generated on Wed Oct 7 2026 12:58:19 for RESPOND by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
   </ul>
 </div>
 </body>

@@ -373,17 +373,13 @@ Internal Organization</h2>
 </ul>
 <h1><a class="anchor" id="autotoc_md77"></a>
 Threading and Concurrency</h1>
-<p>Current implementation is <b>not thread-safe</b>:</p>
+<p>Simulation execution has explicit concurrency boundaries:</p>
 <ul>
-<li>No internal locking mechanisms</li>
-<li>State modification is not atomic</li>
-<li>Multiple simulations can run independently (each with own state)</li>
+<li><code>Simulation::Run()</code> may execute independent models concurrently when its execution configuration enables it.</li>
+<li>Models run independently, but a <code>Simulation</code> instance must not be mutated or queried for results concurrently with <code>Run()</code>; callers must provide external synchronization for that access.</li>
+<li>Logging configuration and logger operations provide internal synchronization for concurrent logging, including multiple loggers using a shared sink.</li>
 </ul>
-<p>For concurrent execution:</p><ul>
-<li>Create separate Simulation instances</li>
-<li>Each thread manages its own simulation</li>
-<li>Synchronize result collection externally</li>
-</ul>
+<p>For concurrent execution, configure the worker pool through <code>ExecutionConfig</code>, keep Eigen worker settings at one when models run concurrently, and synchronize any shared simulation mutation or result collection externally.</p>
 <h1><a class="anchor" id="autotoc_md78"></a>
 Performance Considerations</h1>
 <h2><a class="anchor" id="autotoc_md79"></a>
@@ -465,7 +461,7 @@ Future Architectural Considerations</h1>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Mon Sep 21 2026 13:43:39 for RESPOND by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
+    <li class="footer">Generated on Wed Oct 7 2026 12:58:19 for RESPOND by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
   </ul>
 </div>
 </body>

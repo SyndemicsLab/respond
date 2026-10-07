@@ -134,10 +134,12 @@ $(document).ready(function(){initNavTree('d6/d3e/md_docs_src_limitations.html','
 Library</h1>
 <p>The core API is stable enough for integration, but there are important constraints:</p>
 <ul>
-<li><code>Model::Create(...)</code> currently returns the Markov implementation; additional model families are not yet exposed through the public factory.</li>
+<li><code>Model::Create(...)</code> currently returns the Markov implementation; its string argument is an instance name, not a model-type selector. Additional model families are not yet exposed through the public factory.</li>
 <li>Execution is timestep-driven; users must construct timesteps and transitions explicitly.</li>
 <li>Transition creation is string-based (<code>Transition::Create(...)</code>), so invalid type names fail at runtime.</li>
-<li>The library is not internally synchronized for shared mutable use across threads.</li>
+<li><code>Simulation</code> mutation and result access are not synchronized. Callers must externally synchronize configuration, model mutation, and result access when sharing a simulation across threads, and must not mutate or inspect models while <code>Simulation::Run()</code> is executing.</li>
+<li><code>Simulation::Run()</code> may execute independent models concurrently when enabled through <code>ExecutionConfig</code>. Separate <code>Simulation::Run()</code> calls are serialized because Eigen's worker setting is process-global; the configured Eigen worker limit must still be observed within each run.</li>
+<li>Logging registries and shared sinks are internally synchronized for concurrent logger creation and logging.</li>
 <li>GPU execution is not supported.</li>
 <li>Legacy standalone executable workflows are maintained separately from the modern library API.</li>
 </ul>
@@ -156,7 +158,7 @@ Data</h1>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Mon Sep 21 2026 13:43:39 for RESPOND by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
+    <li class="footer">Generated on Wed Oct 7 2026 12:58:19 for RESPOND by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
   </ul>
 </div>
 </body>

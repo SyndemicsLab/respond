@@ -163,6 +163,12 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a817f93b19d3f8e6ee858a6eac1d74ec7"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d8/dd8/classrespond_1_1History.html#a817f93b19d3f8e6ee858a6eac1d74ec7">History</a> (const std::string &amp;name, const HistoryMode &amp;mode, const std::string &amp;log_name, const std::string &amp;log_filepath)</td></tr>
 <tr class="memdesc:a817f93b19d3f8e6ee858a6eac1d74ec7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructs a history with a specified name, mode, logger, and log file path.  <br /></td></tr>
 <tr class="separator:a817f93b19d3f8e6ee858a6eac1d74ec7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4ad87dd31d15605f8e5cfd6f79404a81"><td class="memItemLeft" align="right" valign="top"><a id="a4ad87dd31d15605f8e5cfd6f79404a81" name="a4ad87dd31d15605f8e5cfd6f79404a81"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>History</b> (const std::string &amp;name, const <a class="el" href="../../d1/d31/structrespond_1_1LoggingConfig.html">LoggingConfig</a> &amp;logging_config)</td></tr>
+<tr class="separator:a4ad87dd31d15605f8e5cfd6f79404a81"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5693fe02f2515a6d548e170d8b990a71"><td class="memItemLeft" align="right" valign="top"><a id="a5693fe02f2515a6d548e170d8b990a71" name="a5693fe02f2515a6d548e170d8b990a71"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>History</b> (const std::string &amp;name, const HistoryMode &amp;mode, const <a class="el" href="../../d1/d31/structrespond_1_1LoggingConfig.html">LoggingConfig</a> &amp;logging_config)</td></tr>
+<tr class="separator:a5693fe02f2515a6d548e170d8b990a71"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a455d1420dd82d8a95f3d8616c52fc761"><td class="memItemLeft" align="right" valign="top"><a id="a455d1420dd82d8a95f3d8616c52fc761" name="a455d1420dd82d8a95f3d8616c52fc761"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>~History</b> ()=default</td></tr>
 <tr class="memdesc:a455d1420dd82d8a95f3d8616c52fc761"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destructor (default). <br /></td></tr>
@@ -534,7 +540,7 @@ std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operato
 </div><div class="memdoc">
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">other</td><td>The history to move from (leaves original state unchanged per current implementation). </td></tr>
+    <tr><td class="paramname">other</td><td>The history to move from. The moved-from history remains valid but its contents are unspecified. </td></tr>
   </table>
   </dd>
 </dl>
@@ -610,7 +616,7 @@ std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operato
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">state</td><td>The state vector to record. </td></tr>
-    <tr><td class="paramname">timestep</td><td>The timestep index for this state (default: -1 for automatic next timestep). If timestep is negative, the next sequential timestep is used automatically. If timestep already exists, it is considered invalid but is currently overwritten. </td></tr>
+    <tr><td class="paramname">timestep</td><td>The timestep index for this state (default: -1 for automatic next timestep). If timestep is negative, the next sequential timestep is used automatically. Explicit timesteps are kept in ascending order; inserting an earlier timestep shifts later records. If timestep already exists, its state is overwritten. </td></tr>
   </table>
   </dd>
 </dl>
@@ -1035,7 +1041,7 @@ std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operato
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><b>respond</b></li><li class="navelem"><a class="el" href="../../d8/dd8/classrespond_1_1History.html">History</a></li>
-    <li class="footer">Generated on Mon Sep 21 2026 13:43:39 for RESPOND by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
+    <li class="footer">Generated on Wed Oct 7 2026 12:58:19 for RESPOND by <a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
   </ul>
 </div>
 </body>
