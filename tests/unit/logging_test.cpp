@@ -4,7 +4,7 @@
 // Created Date: 2025-03-18                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-07-14                                                  //
+// Last Modified: 2026-09-24                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025-2026 Syndemics Lab at Boston Medical Center             //
@@ -109,6 +109,19 @@ TEST_F(LoggingTest, CreateFileLoggerAlreadyExists) {
     EXPECT_EQ(status, CreationStatus::kExists);
 }
 
+TEST_F(LoggingTest, CreateFileLoggerRejectsDifferentDestination) {
+    const std::string other_log_file = "/tmp/respond_other_test.log";
+    std::remove(other_log_file.c_str());
+    ASSERT_EQ(CreateFileLogger("test_logger", test_log_file_),
+              CreationStatus::kSuccess);
+
+    EXPECT_EQ(CreateFileLogger("test_logger", other_log_file),
+              CreationStatus::kError);
+    EXPECT_FALSE(FileContains(other_log_file, "unexpected destination"));
+
+    std::remove(other_log_file.c_str());
+}
+
 TEST_F(LoggingTest, CreateMultipleFileLoggers) {
     CreationStatus status1 = CreateFileLogger("logger1", test_log_file_);
     CreationStatus status2 = CreateFileLogger("logger2", test_log_file_);
@@ -120,6 +133,13 @@ TEST_F(LoggingTest, CreateMultipleFileLoggers) {
     EXPECT_NE(spdlog::get("logger2"), nullptr);
 }
 
+TEST_F(LoggingTest, ConfigureLoggerCreatesFileLogger) {
+    LoggingConfig config{"configured_logger", test_log_file_, false};
+
+    EXPECT_EQ(ConfigureLogger(config), CreationStatus::kSuccess);
+    EXPECT_NE(spdlog::get(config.logger_name), nullptr);
+}
+
 // ============================================================================
 // Test: Shared File Sink Functionality
 // ============================================================================
@@ -129,6 +149,63 @@ TEST_F(LoggingTest, CreateSharedFileSink) {
     EXPECT_EQ(status, CreationStatus::kSuccess);
 }
 
+TEST_F(LoggingTest, ConfigureLoggerCreatesSharedLogger) {
+    LoggingConfig config{"configured_shared_logger", shared_log_file_, true};
+
+    EXPECT_EQ(ConfigureLogger(config), CreationStatus::kSuccess);
+    EXPECT_NE(spdlog::get(config.logger_name), nullptr);
+}
+
+TEST_F(LoggingTest, ConfigureLoggerRejectsSharedDestinationChange) {
+    const std::string other_log_file = "/tmp/respond_other_shared.log";
+    std::remove(other_log_file.c_str());
+    ASSERT_EQ(ConfigureLogger(LoggingConfig{"configured_shared_logger",
+                                            shared_log_file_, true}),
+              CreationStatus::kSuccess);
+
+    EXPECT_EQ(ConfigureLogger(LoggingConfig{"configured_shared_logger",
+                                            other_log_file, true}),
+              CreationStatus::kError);
+
+    std::remove(other_log_file.c_str());
+}
+
+TEST_F(LoggingTest, ConcurrentSharedLoggerConfigurationUsesRequestedSinks) {
+    constexpr size_t logger_count = 8;
+    std::vector<std::string> log_files;
+    std::vector<std::string> logger_names;
+    std::vector<CreationStatus> statuses(logger_count, CreationStatus::kError);
+    std::vector<std::thread> workers;
+
+    for (size_t i = 0; i < logger_count; ++i) {
+        log_files.push_back("/tmp/respond_concurrent_shared_" +
+                            std::to_string(i) + ".log");
+        logger_names.push_back("concurrent_shared_logger_" + std::to_string(i));
+        std::remove(log_files.back().c_str());
+    }
+
+    for (size_t i = 0; i < logger_count; ++i) {
+        workers.emplace_back([&, i] {
+            const LoggingConfig config{logger_names[i], log_files[i], true};
+            statuses[i] = ConfigureLogger(config);
+            if (statuses[i] == CreationStatus::kSuccess) {
+                LogInfo(logger_names[i], "message-" + std::to_string(i));
+            }
+        });
+    }
+
+    for (auto &worker : workers) {
+        worker.join();
+    }
+    FlushAllLoggers();
+
+    for (size_t i = 0; i < logger_count; ++i) {
+        EXPECT_EQ(statuses[i], CreationStatus::kSuccess);
+        EXPECT_TRUE(FileContains(log_files[i], "message-" + std::to_string(i)));
+        std::remove(log_files[i].c_str());
+    }
+}
+
 TEST_F(LoggingTest, CreateSharedFileSinkCaching) {
     // Create sink first time
     CreationStatus status1 = CreateSharedFileSink(shared_log_file_);
@@ -136,7 +213,7 @@ TEST_F(LoggingTest, CreateSharedFileSinkCaching) {
 
     // Create sink again with same path (should reuse cached)
     CreationStatus status2 = CreateSharedFileSink(shared_log_file_);
-    EXPECT_EQ(status2, CreationStatus::kSuccess);
+    EXPECT_EQ(status2, CreationStatus::kExists);
 }
 
 TEST_F(LoggingTest, CreateSharedLogger) {
@@ -196,6 +273,38 @@ TEST_F(LoggingTest, ChangeLogPatternMultipleTimes) {
 
     SetLogPattern(LogPattern::kThreadSafe);
     EXPECT_EQ(GetLogPattern(), LogPattern::kThreadSafe);
+}
+
+TEST_F(LoggingTest, ConcurrentLogConfigurationAccessIsSafe) {
+    constexpr int iterations = 1000;
+    std::vector<std::thread> workers;
+
+    CreateFileLogger("concurrent_config_logger", test_log_file_);
+
+    workers.emplace_back([] {
+        for (int i = 0; i < iterations; ++i) {
+            SetLogPattern(i % 2 == 0 ? LogPattern::kSimple
+                                     : LogPattern::kDetailed);
+        }
+    });
+    workers.emplace_back([&] {
+        for (int i = 0; i < iterations; ++i) {
+            SetFlushInterval(i % 2);
+            LogInfo("concurrent_config_logger", "configuration update");
+        }
+    });
+    workers.emplace_back([] {
+        for (int i = 0; i < iterations; ++i) {
+            static_cast<void>(GetLogPattern());
+        }
+    });
+
+    for (auto &worker : workers) {
+        worker.join();
+    }
+
+    EXPECT_TRUE(GetLogPattern() == LogPattern::kSimple ||
+                GetLogPattern() == LogPattern::kDetailed);
 }
 
 // ============================================================================
@@ -290,6 +399,12 @@ TEST_F(LoggingTest, CheckLoggerExistsTrue) {
 TEST_F(LoggingTest, CheckLoggerExistsFalse) {
     CreationStatus status = CheckLoggerExists("nonexistent_logger");
     EXPECT_EQ(status, CreationStatus::kNotCreated);
+}
+
+TEST_F(LoggingTest, MissingLoggerDoesNotCreateFallbackLogger) {
+    LogInfo("missing_logger", "message without a configured logger");
+
+    EXPECT_EQ(CheckLoggerExists("missing_logger"), CreationStatus::kNotCreated);
 }
 
 TEST_F(LoggingTest, GetLoggerInfo) {
@@ -397,6 +512,32 @@ TEST_F(LoggingTest, ConcurrentCreateSharedLogger) {
         std::string logger_name = "concurrent_logger_" + std::to_string(i);
         EXPECT_NE(spdlog::get(logger_name), nullptr);
     }
+}
+
+TEST_F(LoggingTest, ConcurrentSameNameLoggerCreationIsConsistent) {
+    constexpr int thread_count = 8;
+    std::vector<CreationStatus> statuses(thread_count);
+    std::vector<std::thread> threads;
+
+    for (int index = 0; index < thread_count; ++index) {
+        threads.emplace_back([&, index]() {
+            statuses[index] =
+                CreateFileLogger("same_name_logger", test_log_file_);
+        });
+    }
+    for (auto &thread : threads) {
+        thread.join();
+    }
+
+    int successful_creations = 0;
+    for (const auto status : statuses) {
+        if (status == CreationStatus::kSuccess) {
+            ++successful_creations;
+        } else {
+            EXPECT_EQ(status, CreationStatus::kExists);
+        }
+    }
+    EXPECT_EQ(successful_creations, 1);
 }
 
 // ============================================================================

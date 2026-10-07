@@ -239,16 +239,19 @@ if (type == "custom") {
 
 ## Threading and Concurrency
 
-Current implementation is **not thread-safe**:
+Simulation execution has explicit concurrency boundaries:
 
-- No internal locking mechanisms
-- State modification is not atomic
-- Multiple simulations can run independently (each with own state)
+- `Simulation::Run()` may execute independent models concurrently when its
+  execution configuration enables it.
+- Models run independently, but a `Simulation` instance must not be mutated or
+  queried for results concurrently with `Run()`; callers must provide external
+  synchronization for that access.
+- Logging configuration and logger operations provide internal synchronization
+  for concurrent logging, including multiple loggers using a shared sink.
 
-For concurrent execution:
-- Create separate Simulation instances
-- Each thread manages its own simulation
-- Synchronize result collection externally
+For concurrent execution, configure the worker pool through `ExecutionConfig`,
+keep Eigen worker settings at one when models run concurrently, and synchronize
+any shared simulation mutation or result collection externally.
 
 ## Performance Considerations
 

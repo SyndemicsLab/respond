@@ -25,8 +25,9 @@ Overdose::Execute(const Eigen::Ref<const Eigen::VectorXd> &state,
     TestCorrectNumberMatrices(2);
     auto matrices = GetMatrices();
 
-    TestMatrixSizes(state, GetMatrices()[0]);
-    Eigen::VectorXd overdoses = state.cwiseProduct(GetMatrices()[0]);
+    TestMatrixSizes(state, matrices[0]);
+    Eigen::VectorXd overdoses =
+        AsVector(state).cwiseProduct(AsVector(matrices[0]));
     TestLessThanState(state, overdoses,
                       "Overdose transition produced more total overdoses than "
                       "available in state.");
@@ -34,8 +35,8 @@ Overdose::Execute(const Eigen::Ref<const Eigen::VectorXd> &state,
         h["total_overdose"].AccumulateState(overdoses);
     }
 
-    TestMatrixSizes(overdoses, GetMatrices()[1]);
-    Eigen::VectorXd fods = overdoses.cwiseProduct(GetMatrices()[1]);
+    TestMatrixSizes(overdoses, matrices[1]);
+    Eigen::VectorXd fods = overdoses.cwiseProduct(AsVector(matrices[1]));
     TestLessThanState(state, fods,
                       "Overdose transition produced more fatal overdoses than "
                       "available in state.");

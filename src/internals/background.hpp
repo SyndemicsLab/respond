@@ -4,7 +4,7 @@
 // Created Date: 2026-02-05                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-07-13                                                  //
+// Last Modified: 2026-09-24                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
@@ -25,14 +25,20 @@
 namespace respond {
 class BackgroundDeath : public virtual TransitionBase {
 public:
-    BackgroundDeath() : BackgroundDeath("background_death") {}
+    BackgroundDeath() : BackgroundDeath("background_death", LoggingConfig{}) {}
     BackgroundDeath(const std::string &name)
-        : BackgroundDeath(name, RESPOND_DEFAULT_LOG) {}
+        : BackgroundDeath(name, LoggingConfig{}) {}
+    [[deprecated("Use BackgroundDeath(name, LoggingConfig) instead")]]
     BackgroundDeath(const std::string &name, const std::string &log_name)
-        : BackgroundDeath(name, log_name, RESPOND_DEFAULT_LOG_FILE) {}
+        : BackgroundDeath(
+              name, LoggingConfig{log_name, RESPOND_DEFAULT_LOG_FILE, false}) {}
+    [[deprecated("Use BackgroundDeath(name, LoggingConfig) instead")]]
     BackgroundDeath(const std::string &name, const std::string &log_name,
                     const std::string &log_file)
-        : TransitionBase(name, log_name, log_file) {}
+        : TransitionBase(name, LoggingConfig{log_name, log_file, false}) {}
+    BackgroundDeath(const std::string &name,
+                    const LoggingConfig &logging_config)
+        : TransitionBase(name, logging_config) {}
 
     // Run the execute function and return the final state. Do not edit the
     // parameter state, but do edit the history provided. Nothing in the
@@ -42,7 +48,8 @@ public:
 
     // Clone
     std::unique_ptr<Transition> clone() const override {
-        auto ret = std::make_unique<BackgroundDeath>(GetName(), _log_name);
+        auto ret =
+            std::make_unique<BackgroundDeath>(GetName(), _logging_config);
         for (const auto &t : GetMatrices()) {
             ret->AddMatrix(t);
         }

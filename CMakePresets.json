@@ -28,8 +28,7 @@
                 "RESPOND_CALCULATE_COVERAGE": "OFF",
                 "RESPOND_BUILD_DOCS": "OFF",
                 "RESPOND_INSTALL": "OFF",
-                "RESPOND_SYSTEM_INCLUDES": "OFF",
-                "RESPOND_NO_EXCEPTIONS": "OFF"
+                "RESPOND_SYSTEM_INCLUDES": "OFF"
             }
         },
         {

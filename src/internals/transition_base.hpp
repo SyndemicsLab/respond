@@ -4,7 +4,7 @@
 // Created Date: 2026-02-05                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-07-14                                                  //
+// Last Modified: 2026-09-24                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
@@ -13,8 +13,10 @@
 #define RESPOND_INTERNALS_TRANSITION_BASE_HPP_
 
 #include <respond/logging.hpp>
+#include <respond/logging_config.hpp>
 #include <respond/transition.hpp>
 
+#include <stdexcept>
 #include <string>
 #include <vector>
 
@@ -24,10 +26,17 @@ namespace respond {
 
 class TransitionBase : public virtual Transition {
 public:
+    [[deprecated("Use TransitionBase(name, LoggingConfig) instead")]]
     TransitionBase(const std::string &name, const std::string &log_name,
                    const std::string &log_file)
-        : _name(name), _log_name(log_name) {
-        CreateFileLogger(log_name, log_file);
+        : TransitionBase(name, LoggingConfig{log_name, log_file, false}) {}
+    TransitionBase(const std::string &name, const LoggingConfig &logging_config)
+        : _name(name), _log_name(logging_config.logger_name),
+          _logging_config(logging_config) {
+        if (ConfigureLogger(_logging_config) == CreationStatus::kError) {
+            throw std::runtime_error(
+                "Error attempting to initialize transition logger.");
+        }
     }
     virtual ~TransitionBase() = default;
     // Add a Transition Matrix to the set. We have no need to edit it once it's
@@ -52,6 +61,7 @@ public:
 
 protected:
     const std::string _log_name;
+    const LoggingConfig _logging_config;
 
     void TestMatrixSizes(const Eigen::Ref<const Eigen::MatrixXd> &m1,
                          const Eigen::Ref<const Eigen::MatrixXd> &m2) const {
@@ -67,6 +77,25 @@ protected:
             LogError(_log_name, error_msg);
             throw std::runtime_error(error_msg);
         }
+        if (m1.rows() != m2.rows() || m1.cols() != m2.cols()) {
+            LogWarning(_log_name,
+                       "Transition warning - matrix shapes differ but "
+                       "contain the same number of elements. Matrix 1 size "
+                       "is (" +
+                           std::to_string(m1.rows()) + ", " +
+                           std::to_string(m1.cols()) +
+                           ") but Matrix 2 size "
+                           "is (" +
+                           std::to_string(m2.rows()) + ", " +
+                           std::to_string(m2.cols()) +
+                           "). Comparing values "
+                           "in column-major order.");
+        }
+    }
+
+    Eigen::VectorXd
+    AsVector(const Eigen::Ref<const Eigen::MatrixXd> &matrix) const {
+        return Eigen::Map<const Eigen::VectorXd>(matrix.data(), matrix.size());
     }
 
     void TestSquareMatrix(const Eigen::Ref<const Eigen::MatrixXd> &m) const {
@@ -124,10 +153,13 @@ protected:
     void TestLessThanState(const Eigen::Ref<const Eigen::MatrixXd> &state,
                            const Eigen::Ref<const Eigen::MatrixXd> &m1,
                            std::string extra_msg = "") const {
-        if (!(state.array() >= m1.array()).all()) {
+        const auto state_vector = AsVector(state);
+        const auto value_vector = AsVector(m1);
+        if (!(state_vector.array() >= value_vector.array()).all()) {
             std::string error_msg =
                 "Transition error - State contains values less than m1! " +
-                std::to_string((state.array() < m1.array()).count()) +
+                std::to_string(
+                    (state_vector.array() < value_vector.array()).count()) +
                 " elements affected. Verify that the transition matrix is "
                 "correct and that the state vector is valid.";
             if (!extra_msg.empty()) {

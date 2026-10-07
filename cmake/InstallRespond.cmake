@@ -6,11 +6,11 @@ message(STATUS "Installing respond version ${RESPOND_VERSION} to ${CMAKE_INSTALL
 # CMAKE_INSTALL_PREFIX variable.
 install(TARGETS respond_model
     EXPORT respondTargets
-    LIBRARY DESTINATION lib
-    ARCHIVE DESTINATION lib
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
     RUNTIME DESTINATION bin
-    INCLUDES DESTINATION include
-    FILE_SET HEADERS DESTINATION include
+    INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+    FILE_SET HEADERS DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 )
 
 include(CMakePackageConfigHelpers)
@@ -38,7 +38,7 @@ configure_file(
 
 # Define where to install the config files and install the targets before the 
 # config files. This is so that the config files can actually find the targets
-set(ConfigPackageLocation lib/cmake/respond)
+set(ConfigPackageLocation ${CMAKE_INSTALL_LIBDIR}/cmake/respond)
 install(
     EXPORT respondTargets
     FILE respondTargets.cmake

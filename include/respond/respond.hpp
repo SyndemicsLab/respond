@@ -13,9 +13,12 @@
 #define RESPOND_RESPOND_HPP_
 
 #include <respond/cost_effectiveness.hpp>
+#include <respond/execution_config.hpp>
 #include <respond/history.hpp>
 #include <respond/logging.hpp>
+#include <respond/logging_config.hpp>
 #include <respond/model.hpp>
+#include <respond/runtime_config.hpp>
 #include <respond/simulation.hpp>
 #include <respond/transition.hpp>
 #include <respond/version.hpp>

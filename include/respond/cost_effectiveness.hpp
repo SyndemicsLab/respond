@@ -4,7 +4,7 @@
 // Created Date: 2025-08-05                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-07-09                                                  //
+// Last Modified: 2026-09-24                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025-2026 Syndemics Lab at Boston Medical Center             //
@@ -19,7 +19,7 @@
 
 namespace respond {
 
-/// @brief A function to calculate the discoutn for the given data.
+/// @brief A function to calculate the discount for the given data.
 /// @param data Data to be discounted.
 /// @param discountRate Discount rate to apply to the data.
 /// @param N Number of weeks to discount over.
@@ -32,7 +32,7 @@ inline Eigen::VectorXd Discount(const Eigen::Ref<const Eigen::VectorXd> &data,
     double discount =
         (is_discrete) ? (1 / pow((1.0 + (discount_rate) / total_weeks), week))
                       : (exp(-discount_rate * (week / total_weeks)));
-    return data - Eigen::VectorXd::Constant(data.size(), discount);
+    return data * discount;
 }
 
 /// @brief A cwise multiplier. This is used for all costs and mult utility.

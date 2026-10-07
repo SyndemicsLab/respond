@@ -4,8 +4,8 @@
 // Created Date: 2026-02-05                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-09-14                                                  //
-// Modified By: Dimitri Baptiste                                              //
+// Last Modified: 2026-09-24                                                  //
+// Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
 ////////////////////////////////////////////////////////////////////////////////
@@ -20,6 +20,7 @@
 
 #include <respond/constants.hpp>
 #include <respond/history.hpp>
+#include <respond/runtime_config.hpp>
 #include <respond/timestep.hpp>
 
 namespace respond {
@@ -36,34 +37,51 @@ public:
     ////////////////////////////////////////////////////////////////////////////
 
     /// @brief Factory method to create a Model instance.
-    /// @details This method creates a new instance of a Model subclass based on
-    /// the provided name. It initializes logging for the model and returns a
-    /// unique_ptr to the created instance. Throws an exception if the model
-    /// name is unsupported.
-    /// @param name The name identifier for the model to create.
+    /// @details This method creates a Markov model instance and uses the
+    /// provided name as its instance identifier. It initializes logging for
+    /// the model and returns a unique_ptr to the created instance.
+    /// @param name The instance name for the model.
     /// @param log_name Name of the logger for this model (default: "console").
     /// @param log_filepath File path for the log file (default: "respond.log").
     /// @return A unique_ptr to the newly created Model instance.
+    [[deprecated("Use Model::Create(name, RuntimeConfig) instead")]]
     static std::unique_ptr<Model>
     Create(const std::string &name,
            const std::string &log_name = RESPOND_DEFAULT_LOG,
            const std::string &log_filepath = RESPOND_DEFAULT_LOG_FILE);
 
     /// @brief Alternate factory method to create a Model instance.
-    /// @details This method creates a new instance of a Model subclass based on
-    /// the provided name. It sets the number of threads to be used by the
-    /// model, initializes logging for the model, and returns a unique_ptr to
-    /// the created instance. Throws an exception if the model name is
-    /// unsupported.
-    /// @param name The name identifier for the model to create.
+    /// @details This method creates a Markov model instance and uses the
+    /// provided name as its instance identifier. It sets the number of threads
+    /// to be used by the model, initializes logging, and returns a unique_ptr
+    /// to the created instance.
+    /// @param name The instance name for the model.
     /// @param processor_count The number of threads to be used by the model.
     /// @param log_name Name of the logger for this model (default: "console").
     /// @param log_filepath File path for the log file (default: "respond.log").
     /// @return A unique_ptr to the newly created Model instance.
+    [[deprecated("Use Model::Create(name, RuntimeConfig) instead")]]
     static std::unique_ptr<Model>
     Create(const std::string &name, const unsigned int processor_count,
            const std::string &log_name = RESPOND_DEFAULT_LOG,
            const std::string &log_filepath = RESPOND_DEFAULT_LOG_FILE);
+
+    /// @brief Creates a Model with explicit execution settings.
+    /// @param name The instance name for the model.
+    /// @param execution_config Resource settings for model execution.
+    /// @param log_name Name of the logger for this model (default: "console").
+    /// @param log_filepath File path for the log file (default: "respond.log").
+    /// @return A unique_ptr to the newly created Model instance.
+    [[deprecated("Use Model::Create(name, RuntimeConfig) instead")]]
+    static std::unique_ptr<Model>
+    Create(const std::string &name, const ExecutionConfig &execution_config,
+           const std::string &log_name = RESPOND_DEFAULT_LOG,
+           const std::string &log_filepath = RESPOND_DEFAULT_LOG_FILE);
+
+    /// @brief Creates a Markov model with shared runtime settings.
+    /// @param name The instance name for the model.
+    static std::unique_ptr<Model> Create(const std::string &name,
+                                         const RuntimeConfig &runtime_config);
 
     /// @brief Virtual destructor for proper polymorphic cleanup.
     virtual ~Model() = default;

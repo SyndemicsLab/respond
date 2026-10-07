@@ -4,7 +4,7 @@
 // Created Date: 2026-02-09                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-08-19                                                  //
+// Last Modified: 2026-09-24                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2026 Syndemics Lab at Boston Medical Center                  //
@@ -13,6 +13,7 @@
 #include <respond/simulation.hpp>
 
 #include <algorithm>
+#include <atomic>
 #include <fstream>
 #include <memory>
 #include <string>
@@ -82,6 +83,18 @@ TEST_F(SimulationTest, DefaultConstructor) {
               CreationStatus::kExists);
 }
 
+TEST_F(SimulationTest, RunRejectsSimulationWithNoModels) {
+    Simulation simulation;
+
+    try {
+        simulation.Run();
+        FAIL() << "Expected Run() to reject a simulation with no models.";
+    } catch (const std::invalid_argument &error) {
+        EXPECT_STREQ(error.what(),
+                     "Error attempting to run simulation with no models.");
+    }
+}
+
 TEST_F(SimulationTest, ConstructorWithLogName) {
     Simulation s("custom_log");
     ASSERT_EQ(CreateFileLogger("custom_log", default_log_file_),
@@ -94,6 +107,77 @@ TEST_F(SimulationTest, ConstructorWithLogNameAndLogFile) {
               CreationStatus::kExists);
 }
 
+TEST_F(SimulationTest, ConstructorRejectsLoggerInitializationFailure) {
+    ASSERT_EQ(
+        CreateFileLogger("conflicting_simulation_logger", default_log_file_),
+        CreationStatus::kSuccess);
+    RuntimeConfig config;
+    config.logging.logger_name = "conflicting_simulation_logger";
+    config.logging.file_path = test_log_file_;
+
+    EXPECT_THROW(Simulation simulation(config), std::runtime_error);
+}
+
+TEST_F(SimulationTest, StoresExecutionConfig) {
+    ExecutionConfig config;
+    config.total_threads = 4;
+    config.eigen_threads = 1;
+    config.run_models_concurrently = true;
+
+    Simulation s("custom_log", test_log_file_, config);
+    EXPECT_EQ(s.GetExecutionConfig().total_threads, 4);
+    EXPECT_EQ(s.GetExecutionConfig().eigen_threads, 1);
+    EXPECT_TRUE(s.GetExecutionConfig().run_models_concurrently);
+
+    ExecutionConfig updated;
+    updated.total_threads = 2;
+    updated.eigen_threads = 2;
+    s.SetExecutionConfig(updated);
+
+    EXPECT_EQ(s.GetExecutionConfig().total_threads, 2);
+    EXPECT_EQ(s.GetExecutionConfig().eigen_threads, 2);
+    EXPECT_FALSE(s.GetExecutionConfig().run_models_concurrently);
+}
+
+TEST_F(SimulationTest, PreservesExecutionConfigWhenCopied) {
+    ExecutionConfig config;
+    config.total_threads = 4;
+    config.eigen_threads = 1;
+    config.run_models_concurrently = true;
+
+    Simulation original("custom_log", test_log_file_, config);
+    Simulation copy(original);
+
+    EXPECT_EQ(copy.GetExecutionConfig().total_threads, 4);
+    EXPECT_EQ(copy.GetExecutionConfig().eigen_threads, 1);
+    EXPECT_TRUE(copy.GetExecutionConfig().run_models_concurrently);
+}
+
+TEST_F(SimulationTest, StoresRuntimeConfig) {
+    RuntimeConfig config;
+    config.execution.total_threads = 4;
+    config.logging.logger_name = "runtime_simulation";
+    config.logging.file_path = test_log_file_;
+
+    Simulation s(config);
+
+    EXPECT_EQ(s.GetRuntimeConfig().execution.total_threads, 4);
+    EXPECT_EQ(s.GetRuntimeConfig().logging.logger_name, "runtime_simulation");
+    EXPECT_EQ(s.GetRuntimeConfig().logging.file_path, test_log_file_);
+}
+
+TEST_F(SimulationTest, RejectsRuntimeLoggingReconfigurationFailure) {
+    Simulation simulation;
+    const auto original_config = simulation.GetRuntimeConfig();
+    RuntimeConfig conflicting_config = original_config;
+    conflicting_config.logging.file_path = test_log_file_;
+
+    EXPECT_THROW(simulation.SetRuntimeConfig(conflicting_config),
+                 std::invalid_argument);
+    EXPECT_EQ(simulation.GetRuntimeConfig().logging.file_path,
+              original_config.logging.file_path);
+}
+
 TEST_F(SimulationTest, CreateNewModel) {
     Simulation s;
     std::string model_name = "test_model";
@@ -101,6 +185,18 @@ TEST_F(SimulationTest, CreateNewModel) {
     ASSERT_NE(new_model, nullptr);
     ASSERT_EQ(new_model->GetName(), model_name);
     ASSERT_EQ(s.GetModels().size(), 1);
+}
+
+TEST_F(SimulationTest, EditsCreatedModelCopyBeforeManagingIt) {
+    Simulation simulation;
+    auto model_copy = simulation.CreateNewModel("test_model");
+    model_copy->SetFinalTimestep(12);
+
+    EXPECT_EQ(simulation[0]->GetFinalTimestep(), -1);
+
+    simulation[0] = *model_copy;
+
+    EXPECT_EQ(simulation[0]->GetFinalTimestep(), 12);
 }
 
 TEST_F(SimulationTest, CreateMultipleModels) {
@@ -137,6 +233,19 @@ TEST_F(SimulationTest, ClearModels) {
     ASSERT_EQ(s.GetModels().size(), 0);
 }
 
+TEST_F(SimulationTest, MoveAssignmentReplacesDestinationModels) {
+    Simulation source;
+    source.CreateNewModel("source_model");
+
+    Simulation destination;
+    destination.CreateNewModel("destination_model");
+    destination = std::move(source);
+
+    ASSERT_EQ(destination.GetModelNames(),
+              std::vector<std::string>{"source_model"});
+    ASSERT_TRUE(source.GetModels().empty());
+}
+
 TEST_F(SimulationTest, AddModel) {
     Simulation s;
     auto mock_model = std::make_unique<NiceMock<MockModel>>();
@@ -148,6 +257,13 @@ TEST_F(SimulationTest, AddModel) {
     ASSERT_EQ(s.GetModels().size(), 1);
 }
 
+TEST_F(SimulationTest, AddNullModelThrows) {
+    Simulation s;
+    std::unique_ptr<Model> null_model;
+
+    EXPECT_THROW(s.AddModel(null_model), std::invalid_argument);
+}
+
 TEST_F(SimulationTest, Run) {
     Simulation s;
     auto mock_model = std::make_unique<NiceMock<MockModel>>();
@@ -157,6 +273,34 @@ TEST_F(SimulationTest, Run) {
         .WillOnce(Return(::testing::ByMove(std::move(cloned))));
     s.AddModel(std::move(mock_model));
     s.Run();
+}
+
+TEST_F(SimulationTest, RejectsInvalidRunDurations) {
+    Simulation simulation;
+    auto source = std::make_unique<NiceMock<MockModel>>();
+    auto model = std::make_unique<NiceMock<MockModel>>();
+    EXPECT_CALL(*model, RunTimesteps()).Times(0);
+    EXPECT_CALL(*source, clone())
+        .WillOnce(Return(::testing::ByMove(std::move(model))));
+    simulation.AddModel(std::move(source));
+
+    EXPECT_THROW(simulation.Run(0), std::invalid_argument);
+    EXPECT_THROW(simulation.Run(-2), std::invalid_argument);
+    EXPECT_THROW(simulation.SetDuration(0), std::invalid_argument);
+    EXPECT_THROW(simulation.SetDuration(-1), std::invalid_argument);
+}
+
+TEST_F(SimulationTest, RunAppliesPositiveDurationOverride) {
+    Simulation simulation;
+    auto source = std::make_unique<NiceMock<MockModel>>();
+    auto model = std::make_unique<NiceMock<MockModel>>();
+    EXPECT_CALL(*model, SetFinalTimestep(4)).Times(1);
+    EXPECT_CALL(*model, RunTimesteps()).Times(1);
+    EXPECT_CALL(*source, clone())
+        .WillOnce(Return(::testing::ByMove(std::move(model))));
+    simulation.AddModel(std::move(source));
+
+    simulation.Run(4);
 }
 
 TEST_F(SimulationTest, RunMultipleModels) {
@@ -176,6 +320,180 @@ TEST_F(SimulationTest, RunMultipleModels) {
     s.AddModel(std::move(mock_model2));
 
     s.Run();
+}
+
+TEST_F(SimulationTest, RunsModelsConcurrentlyWhenEnabled) {
+    ExecutionConfig config;
+    config.total_threads = 2;
+    config.eigen_threads = 1;
+    config.run_models_concurrently = true;
+    Simulation simulation(RuntimeConfig{config, LoggingConfig{}});
+
+    std::atomic<int> entered{0};
+    std::atomic<int> maximum_active{0};
+    auto run_model = [&]() {
+        const int active = entered.fetch_add(1) + 1;
+        int observed_maximum = maximum_active.load();
+        while (
+            active > observed_maximum &&
+            !maximum_active.compare_exchange_weak(observed_maximum, active)) {
+        }
+        while (entered.load() < 2) {
+            std::this_thread::yield();
+        }
+    };
+
+    auto first_source = std::make_unique<NiceMock<MockModel>>();
+    auto first_model = std::make_unique<NiceMock<MockModel>>();
+    EXPECT_CALL(*first_model, RunTimesteps()).WillOnce(run_model);
+    EXPECT_CALL(*first_source, clone())
+        .WillOnce(Return(::testing::ByMove(std::move(first_model))));
+    simulation.AddModel(std::move(first_source));
+
+    auto second_source = std::make_unique<NiceMock<MockModel>>();
+    auto second_model = std::make_unique<NiceMock<MockModel>>();
+    EXPECT_CALL(*second_model, RunTimesteps()).WillOnce(run_model);
+    EXPECT_CALL(*second_source, clone())
+        .WillOnce(Return(::testing::ByMove(std::move(second_model))));
+    simulation.AddModel(std::move(second_source));
+
+    simulation.Run();
+
+    EXPECT_EQ(entered.load(), 2);
+    EXPECT_EQ(maximum_active.load(), 2);
+}
+
+TEST_F(SimulationTest, TotalThreadsOneRunsModelsSequentially) {
+    ExecutionConfig config;
+    config.total_threads = 1;
+    config.run_models_concurrently = true;
+    Simulation simulation(RuntimeConfig{config, LoggingConfig{}});
+    std::atomic<int> active{0};
+    std::atomic<int> maximum_active{0};
+
+    auto run_model = [&]() {
+        const int current = active.fetch_add(1) + 1;
+        maximum_active.store(std::max(maximum_active.load(), current));
+        active.fetch_sub(1);
+    };
+
+    for (int index = 0; index < 2; ++index) {
+        auto source = std::make_unique<NiceMock<MockModel>>();
+        auto model = std::make_unique<NiceMock<MockModel>>();
+        EXPECT_CALL(*model, RunTimesteps()).WillOnce(run_model);
+        EXPECT_CALL(*source, clone())
+            .WillOnce(Return(::testing::ByMove(std::move(model))));
+        simulation.AddModel(std::move(source));
+    }
+
+    simulation.Run();
+
+    EXPECT_EQ(maximum_active.load(), 1);
+}
+
+TEST_F(SimulationTest, AllowsEigenThreadsWhenConcurrencyFallsBackToSequential) {
+    ExecutionConfig config;
+    config.eigen_threads = 2;
+    config.run_models_concurrently = false;
+    Simulation simulation(RuntimeConfig{config, LoggingConfig{}});
+
+    for (int index = 0; index < 2; ++index) {
+        auto source = std::make_unique<NiceMock<MockModel>>();
+        auto model = std::make_unique<NiceMock<MockModel>>();
+        EXPECT_CALL(*model, RunTimesteps()).Times(1);
+        EXPECT_CALL(*source, clone())
+            .WillOnce(Return(::testing::ByMove(std::move(model))));
+        simulation.AddModel(std::move(source));
+    }
+
+    EXPECT_NO_THROW(simulation.Run());
+}
+
+TEST_F(SimulationTest, AllowsEigenThreadsForSingleConcurrentModel) {
+    ExecutionConfig config;
+    config.eigen_threads = 2;
+    config.run_models_concurrently = true;
+    Simulation simulation(RuntimeConfig{config, LoggingConfig{}});
+
+    auto source = std::make_unique<NiceMock<MockModel>>();
+    auto model = std::make_unique<NiceMock<MockModel>>();
+    EXPECT_CALL(*model, RunTimesteps()).Times(1);
+    EXPECT_CALL(*source, clone())
+        .WillOnce(Return(::testing::ByMove(std::move(model))));
+    simulation.AddModel(std::move(source));
+
+    EXPECT_NO_THROW(simulation.Run());
+}
+
+TEST_F(SimulationTest, AppliesUpdatedEigenThreadsWhenRunning) {
+    const int previous_eigen_threads = Eigen::nbThreads();
+    ExecutionConfig config;
+    config.eigen_threads = 2;
+    Simulation simulation(RuntimeConfig{config, LoggingConfig{}});
+
+    auto source = std::make_unique<NiceMock<MockModel>>();
+    auto model = std::make_unique<NiceMock<MockModel>>();
+    EXPECT_CALL(*model, RunTimesteps()).Times(1);
+    EXPECT_CALL(*source, clone())
+        .WillOnce(Return(::testing::ByMove(std::move(model))));
+    simulation.AddModel(std::move(source));
+
+    Eigen::setNbThreads(2);
+    config.eigen_threads = 1;
+    simulation.SetExecutionConfig(config);
+    simulation.Run();
+
+    EXPECT_EQ(Eigen::nbThreads(), 1);
+    Eigen::setNbThreads(previous_eigen_threads);
+}
+
+TEST_F(SimulationTest, RejectsConcurrentEigenOversubscription) {
+    ExecutionConfig config;
+    config.eigen_threads = 2;
+    config.run_models_concurrently = true;
+    Simulation simulation(RuntimeConfig{config, LoggingConfig{}});
+
+    auto first_source = std::make_unique<NiceMock<MockModel>>();
+    auto first_model = std::make_unique<NiceMock<MockModel>>();
+    EXPECT_CALL(*first_source, clone())
+        .WillOnce(Return(::testing::ByMove(std::move(first_model))));
+    simulation.AddModel(std::move(first_source));
+
+    auto second_source = std::make_unique<NiceMock<MockModel>>();
+    auto second_model = std::make_unique<NiceMock<MockModel>>();
+    EXPECT_CALL(*second_source, clone())
+        .WillOnce(Return(::testing::ByMove(std::move(second_model))));
+    simulation.AddModel(std::move(second_source));
+
+    EXPECT_THROW(simulation.Run(), std::invalid_argument);
+}
+
+TEST_F(SimulationTest, RethrowsWorkerExceptionAfterJoining) {
+    ExecutionConfig config;
+    config.total_threads = 2;
+    config.run_models_concurrently = true;
+    Simulation simulation(RuntimeConfig{config, LoggingConfig{}});
+    std::atomic<int> completed{0};
+
+    auto throwing_source = std::make_unique<NiceMock<MockModel>>();
+    auto throwing_model = std::make_unique<NiceMock<MockModel>>();
+    EXPECT_CALL(*throwing_model, RunTimesteps())
+        .WillOnce(::testing::Throw(std::runtime_error("worker failure")));
+    EXPECT_CALL(*throwing_source, clone())
+        .WillOnce(Return(::testing::ByMove(std::move(throwing_model))));
+    simulation.AddModel(std::move(throwing_source));
+
+    auto completing_source = std::make_unique<NiceMock<MockModel>>();
+    auto completing_model = std::make_unique<NiceMock<MockModel>>();
+    EXPECT_CALL(*completing_model, RunTimesteps()).WillOnce([&]() {
+        completed.fetch_add(1);
+    });
+    EXPECT_CALL(*completing_source, clone())
+        .WillOnce(Return(::testing::ByMove(std::move(completing_model))));
+    simulation.AddModel(std::move(completing_source));
+
+    EXPECT_THROW(simulation.Run(), std::runtime_error);
+    EXPECT_EQ(completed.load(), 1);
 }
 
 TEST_F(SimulationTest, GetModels) {

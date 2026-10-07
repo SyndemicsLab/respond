@@ -24,8 +24,9 @@ Eigen::VectorXd
 BackgroundDeath::Execute(const Eigen::Ref<const Eigen::VectorXd> &state,
                          std::map<std::string, History> &h) const {
     TestCorrectNumberMatrices(1);
-    TestMatrixSizes(state, GetMatrices()[0]);
-    Eigen::VectorXd deaths = state.cwiseProduct(GetMatrices()[0]);
+    auto matrix = GetMatrices()[0];
+    TestMatrixSizes(state, matrix);
+    Eigen::VectorXd deaths = AsVector(state).cwiseProduct(AsVector(matrix));
     TestLessThanState(state, deaths,
                       "BackgroundDeath transition produced more deaths than "
                       "available in state.");

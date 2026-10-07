@@ -18,9 +18,8 @@ option(RESPOND_CALCULATE_COVERAGE "Calculate Code Coverage" OFF)
 # bench options
 option(RESPOND_BUILD_BENCH "Build benchmarks" OFF)
 
-# compile level warning and exception options
+# compile level warning options
 option(RESPOND_BUILD_WARNINGS "Enable compiler warnings" OFF)
-option(RESPOND_NO_EXCEPTIONS "Compile with -fno-exceptions. Call abort() on any simdemics exceptions" OFF)
 
 # install options
 option(RESPOND_SYSTEM_INCLUDES "Include as system headers (skip for clang-tidy)." OFF)

@@ -98,10 +98,13 @@ target_sources(respond_model
         FILES
             include/respond/constants.hpp
             include/respond/cost_effectiveness.hpp
+            include/respond/execution_config.hpp
             include/respond/history.hpp
             include/respond/logging.hpp
+            include/respond/logging_config.hpp
             include/respond/model.hpp
             include/respond/respond.hpp
+            include/respond/runtime_config.hpp
             include/respond/simulation.hpp
             include/respond/timestep.hpp
             include/respond/transition.hpp
@@ -112,6 +115,7 @@ target_sources(respond_model
 # Linking Libraries
 #-------------------------------------------------------------------------------
 include(${PRIVATE_MODULE_PATH}/MakeDependenciesAvailable.cmake)
+find_package(Threads REQUIRED)
 set(private_deps spdlog::spdlog)
 if (RESPOND_CALCULATE_COVERAGE)
     list(APPEND private_deps gcov)
@@ -120,6 +124,7 @@ endif()
 target_link_libraries(respond_model
 PUBLIC
     Eigen3::Eigen
+    Threads::Threads
 PRIVATE
     ${private_deps}
 )
