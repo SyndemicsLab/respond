@@ -4,7 +4,7 @@
 // Created Date: 2025-06-06                                                   //
 // Author: Matthew Carroll                                                    //
 // -----                                                                      //
-// Last Modified: 2026-09-24                                                  //
+// Last Modified: 2026-10-14                                                  //
 // Modified By: Matthew Carroll                                               //
 // -----                                                                      //
 // Copyright (c) 2025-2026 Syndemics Lab at Boston Medical Center             //
@@ -59,7 +59,6 @@ bool LoggerUsesSink(
 CreationStatus ExistingLoggerStatus(const std::string &logger_name,
                                     bool same_configuration) {
     if (same_configuration) {
-        std::cout << "Logger " << logger_name << " already exists" << std::endl;
         return CreationStatus::kExists;
     }
 
