@@ -272,15 +272,25 @@ public:
     /// @return A vector of the default history objects.
     void CreateDefaultHistories() override {
         std::map<std::string, History> ret;
-        ret["state"] = History("state", HistoryMode::kSnapshot, _log_name);
-        ret["total_overdose"] =
-            History("total_overdose", HistoryMode::kAccumulated, _log_name);
-        ret["fatal_overdose"] =
-            History("fatal_overdose", HistoryMode::kAccumulated, _log_name);
-        ret["intervention_admission"] = History(
-            "intervention_admission", HistoryMode::kAccumulated, _log_name);
-        ret["background_death"] =
-            History("background_death", HistoryMode::kAccumulated, _log_name);
+        ret.emplace(
+            "state", History("state", HistoryMode::kSnapshot,
+                              _runtime_config.logging));
+        ret.emplace(
+            "total_overdose", History("total_overdose",
+                                       HistoryMode::kAccumulated,
+                                       _runtime_config.logging));
+        ret.emplace(
+            "fatal_overdose",
+            History("fatal_overdose", HistoryMode::kAccumulated,
+                    _runtime_config.logging));
+        ret.emplace(
+            "intervention_admission", History(
+                "intervention_admission", HistoryMode::kAccumulated,
+                _runtime_config.logging));
+        ret.emplace(
+            "background_death", History(
+                "background_death", HistoryMode::kAccumulated,
+                _runtime_config.logging));
         _histories = ret;
         if (_histories.empty()) {
             ResetHistoryTracking();
